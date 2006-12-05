@@ -1,0 +1,2253 @@
+diff -purN kdelibs-3.5.2.orig/kdefx/kstyle.cpp kdelibs-3.5.2/kdefx/kstyle.cpp
+--- kdelibs-3.5.2.orig/kdefx/kstyle.cpp	2005-10-10 10:05:27.000000000 -0500
++++ kdelibs-3.5.2/kdefx/kstyle.cpp	2006-03-28 19:49:20.000000000 -0600
+@@ -154,6 +154,7 @@ struct KStylePrivate
+ 	bool  menuAltKeyNavigation     : 1;
+ 	bool  menuDropShadow           : 1;
+ 	bool  sloppySubMenus           : 1;
++	bool  semiTransparentRubberband : 1;
+ 	int   popupMenuDelay;
+ 	float menuOpacity;
+ 
+@@ -187,6 +188,7 @@ KStyle::KStyle( KStyleFlags flags, KStyl
+ 	d->menuAltKeyNavigation = settings.readBoolEntry("/KStyle/Settings/MenuAltKeyNavigation", true);
+ 	d->scrollablePopupmenus = settings.readBoolEntry("/KStyle/Settings/ScrollablePopupMenus", false);
+ 	d->menuDropShadow       = settings.readBoolEntry("/KStyle/Settings/MenuDropShadow", false);
++	d->semiTransparentRubberband = settings.readBoolEntry("/KStyle/Settings/SemiTransparentRubberband", true);
+ 	d->menuHandler = NULL;
+ 
+ 	if (useMenuTransparency) {
+@@ -553,7 +555,57 @@ void KStyle::drawPrimitive( PrimitiveEle
+ 		else
+ 			// General handle, probably a kicker applet handle.
+ 			drawKStylePrimitive( KPE_GeneralHandle, p, widget, r, cg, flags, opt );
++#if QT_VERSION >= 0x030300
++#ifdef HAVE_XRENDER
++	} else if ( d->semiTransparentRubberband && pe == QStyle::PE_RubberBand ) {
++			QRect rect = r.normalize();
++			QPoint point;
++			point = p->xForm( point );
++	
++			static XRenderColor clr = { 0, 0, 0, 0 };
++			static unsigned long fillColor = 0;
++			if ( fillColor != cg.highlight().rgb() ) {
++				fillColor = cg.highlight().rgb();
++				
++				unsigned long color = fillColor << 8 | 0x40;
+ 
++				int red = (color >> 24) & 0xff;
++				int green = (color >> 16) & 0xff;
++				int blue = (color >> 8) & 0xff;
++				int alpha = (color >> 0) & 0xff;
++
++				red = red * alpha / 255;
++				green = green * alpha / 255;
++				blue = blue * alpha / 255;
++
++				clr.red = (red << 8) + red;
++				clr.green = (green << 8) + green;
++				clr.blue = (blue << 8) + blue;
++				clr.alpha = (alpha << 8) + alpha;
++			}
++		
++			XRenderFillRectangle(
++					p->device()->x11Display(),
++					PictOpOver,
++					p->device()->x11RenderHandle(),
++					&clr,
++					rect.x() + point.x(),
++					rect.y() + point.y(),
++					rect.width(),
++					rect.height() );
++
++			p->save();
++			p->setRasterOp( Qt::CopyROP );
++			p->setPen( QPen( cg.highlight().dark( 160 ), 1 ) );
++			p->setBrush( NoBrush );
++			p->drawRect(
++					rect.x() + point.x(),
++					rect.y() + point.y(),
++					rect.width(),
++					rect.height() );
++			p->restore();
++#endif
++#endif
+ 	} else
+ 		QCommonStyle::drawPrimitive( pe, p, r, cg, flags, opt );
+ }
+diff -purN kdelibs-3.5.2.orig/kdeui/kiconview.cpp kdelibs-3.5.2/kdeui/kiconview.cpp
+--- kdelibs-3.5.2.orig/kdeui/kiconview.cpp	2005-10-10 10:06:38.000000000 -0500
++++ kdelibs-3.5.2/kdeui/kiconview.cpp	2006-03-28 19:49:20.000000000 -0600
+@@ -548,7 +548,7 @@ void KIconViewItem::calcRect( const QStr
+     r = m_wordWrap->boundingRect();
+ 
+     int realWidth = QMAX( QMIN( r.width() + 4, tw ), fm->width( "X" ) );
+-    itemTextRect.setWidth( realWidth );
++    itemTextRect.setWidth( realWidth + 4 );
+     itemTextRect.setHeight( r.height() );
+ 
+     int w = 0;    int h = 0;    int y = 0;
+@@ -699,11 +699,13 @@ void KIconViewItem::paintPixmap( QPainte
+ 
+ void KIconViewItem::paintText( QPainter *p, const QColorGroup &cg )
+ {
+-    int textX = textRect( false ).x() + 2;
++    int textX = textRect( false ).x() + 4;
+     int textY = textRect( false ).y();
+ 
+     if ( isSelected() ) {
+-        p->fillRect( textRect( false ), cg.highlight() );
++	p->setBrush(QBrush(cg.highlight()));
++	p->setPen(QPen(cg.highlight()));
++	p->drawRoundRect( textRect( false ) ,1000/textRect(false).width(),1000/textRect(false).height() );		
+         p->setPen( QPen( cg.highlightedText() ) );
+     } else {
+         if ( iconView()->itemTextBackground() != NoBrush )
+diff -purN kdelibs-3.5.2.orig/kdeui/kiconview.cpp.orig kdelibs-3.5.2/kdeui/kiconview.cpp.orig
+--- kdelibs-3.5.2.orig/kdeui/kiconview.cpp.orig	1969-12-31 18:00:00.000000000 -0600
++++ kdelibs-3.5.2/kdeui/kiconview.cpp.orig	2005-10-10 10:06:38.000000000 -0500
+@@ -0,0 +1,734 @@
++/* This file is part of the KDE libraries
++   Copyright (C) 1999 Torben Weis <weis@kde.org>
++
++   This library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Library General Public
++   License version 2 as published by the Free Software Foundation.
++
++   This library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Library General Public License for more details.
++
++   You should have received a copy of the GNU Library General Public License
++   along with this library; see the file COPYING.LIB.  If not, write to
++   the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
++   Boston, MA 02110-1301, USA.
++*/
++
++#include "config.h"
++
++#include <qtimer.h>
++#include <qpainter.h>
++#include <qpixmapcache.h>
++#include <qcleanuphandler.h>
++
++#include "kiconview.h"
++#include "kwordwrap.h"
++#include <kconfig.h>
++#include <kdebug.h>
++#include <kglobal.h>
++#include <kglobalsettings.h>
++#include <kapplication.h>
++#include <kipc.h> 
++
++#include <kcursor.h>
++#include <kpixmap.h>
++#include <kpixmapeffect.h>
++
++class KIconView::KIconViewPrivate
++{
++public:
++    KIconViewPrivate() {
++        mode = KIconView::Execute;
++        fm = 0L;
++        doAutoSelect = true;
++        textHeight = 0;
++        dragHoldItem = 0L;
++    }
++    KIconView::Mode mode;
++    bool doAutoSelect;
++    QFontMetrics *fm;
++    QPixmapCache maskCache;
++    int textHeight;
++    QIconViewItem *dragHoldItem;
++    QTimer dragHoldTimer;
++    QTimer doubleClickIgnoreTimer;
++};
++
++KIconView::KIconView( QWidget *parent, const char *name, WFlags f )
++    : QIconView( parent, name, f )
++{
++    d = new KIconViewPrivate;
++
++    connect( this, SIGNAL( onViewport() ),
++             this, SLOT( slotOnViewport() ) );
++    connect( this, SIGNAL( onItem( QIconViewItem * ) ),
++             this, SLOT( slotOnItem( QIconViewItem * ) ) );
++    slotSettingsChanged( KApplication::SETTINGS_MOUSE );
++    if ( kapp ) { // maybe null when used inside designer
++        connect( kapp, SIGNAL( settingsChanged(int) ), SLOT( slotSettingsChanged(int) ) );
++        kapp->addKipcEventMask( KIPC::SettingsChanged );
++    }
++
++    m_pCurrentItem = 0L;
++
++    m_pAutoSelect = new QTimer( this );
++    connect( m_pAutoSelect, SIGNAL( timeout() ),
++             this, SLOT( slotAutoSelect() ) );
++
++    connect( &d->dragHoldTimer, SIGNAL(timeout()), this, SLOT(slotDragHoldTimeout()) );
++}
++
++KIconView::~KIconView()
++{
++    delete d->fm;
++    delete d;
++}
++
++
++void KIconView::setMode( KIconView::Mode mode )
++{
++    d->mode = mode;
++}
++
++KIconView::Mode KIconView::mode() const
++{
++    return d->mode;
++}
++
++void KIconView::slotOnItem( QIconViewItem *item )
++{
++    if ( item ) {
++        if ( m_bUseSingle ) {
++            if ( m_bChangeCursorOverItem )
++                viewport()->setCursor( KCursor().handCursor() );
++
++            if ( (m_autoSelectDelay > -1) ) {
++                m_pAutoSelect->start( m_autoSelectDelay, true );
++            }
++        }
++        m_pCurrentItem = item;
++    }
++}
++
++void KIconView::slotOnViewport()
++{
++    if ( m_bUseSingle && m_bChangeCursorOverItem )
++        viewport()->unsetCursor();
++
++    m_pAutoSelect->stop();
++    m_pCurrentItem = 0L;
++}
++
++void KIconView::slotSettingsChanged(int category)
++{
++    if ( category != KApplication::SETTINGS_MOUSE )
++      return;
++    m_bUseSingle = KGlobalSettings::singleClick();
++    //kdDebug() << "KIconView::slotSettingsChanged for mouse, usesingle=" << m_bUseSingle << endl;
++
++    disconnect( this, SIGNAL( mouseButtonClicked( int, QIconViewItem *,
++						  const QPoint & ) ),
++		this, SLOT( slotMouseButtonClicked( int, QIconViewItem *,
++						    const QPoint & ) ) );
++//         disconnect( this, SIGNAL( doubleClicked( QIconViewItem *,
++// 						 const QPoint & ) ),
++// 		    this, SLOT( slotExecute( QIconViewItem *,
++// 					     const QPoint & ) ) );
++
++    if( m_bUseSingle ) {
++      connect( this, SIGNAL( mouseButtonClicked( int, QIconViewItem *,
++						 const QPoint & ) ),
++	       this, SLOT( slotMouseButtonClicked( int, QIconViewItem *,
++						   const QPoint & ) ) );
++    }
++    else {
++//         connect( this, SIGNAL( doubleClicked( QIconViewItem *,
++// 					      const QPoint & ) ),
++//                  this, SLOT( slotExecute( QIconViewItem *,
++// 					  const QPoint & ) ) );
++    }
++
++    m_bChangeCursorOverItem = KGlobalSettings::changeCursorOverIcon();
++    m_autoSelectDelay = m_bUseSingle ? KGlobalSettings::autoSelectDelay() : -1;
++
++    if( !m_bUseSingle || !m_bChangeCursorOverItem )
++        viewport()->unsetCursor();
++}
++
++void KIconView::slotAutoSelect()
++{
++  // check that the item still exists
++  if( index( m_pCurrentItem ) == -1 || !d->doAutoSelect )
++    return;
++
++  //Give this widget the keyboard focus.
++  if( !hasFocus() )
++    setFocus();
++
++  ButtonState keybstate = KApplication::keyboardMouseState();
++  QIconViewItem* previousItem = currentItem();
++  setCurrentItem( m_pCurrentItem );
++
++  if( m_pCurrentItem ) {
++    //Shift pressed?
++    if( (keybstate & ShiftButton) ) {
++      //Temporary implementation of the selection until QIconView supports it
++      bool block = signalsBlocked();
++      blockSignals( true );
++
++      //No Ctrl? Then clear before!
++      if( !(keybstate & ControlButton) )
++	clearSelection();
++
++      bool select = !m_pCurrentItem->isSelected();
++      bool update = viewport()->isUpdatesEnabled();
++      viewport()->setUpdatesEnabled( false );
++
++      //Calculate the smallest rectangle that contains the current Item
++      //and the one that got the autoselect event
++      QRect r;
++      QRect redraw;
++      if ( previousItem )
++	r = QRect( QMIN( previousItem->x(), m_pCurrentItem->x() ),
++		   QMIN( previousItem->y(), m_pCurrentItem->y() ),
++		   0, 0 );
++      else
++	r = QRect( 0, 0, 0, 0 );
++      if ( previousItem->x() < m_pCurrentItem->x() )
++	r.setWidth( m_pCurrentItem->x() - previousItem->x() + m_pCurrentItem->width() );
++      else
++	r.setWidth( previousItem->x() - m_pCurrentItem->x() + previousItem->width() );
++      if ( previousItem->y() < m_pCurrentItem->y() )
++	r.setHeight( m_pCurrentItem->y() - previousItem->y() + m_pCurrentItem->height() );
++      else
++	r.setHeight( previousItem->y() - m_pCurrentItem->y() + previousItem->height() );
++      r = r.normalize();
++
++      //Check for each item whether it is within the rectangle.
++      //If yes, select it
++      for( QIconViewItem* i = firstItem(); i; i = i->nextItem() ) {
++	if( i->intersects( r ) ) {
++	  redraw = redraw.unite( i->rect() );
++	  setSelected( i, select, true );
++	}
++      }
++
++      blockSignals( block );
++      viewport()->setUpdatesEnabled( update );
++      repaintContents( redraw, false );
++
++      emit selectionChanged();
++
++      if( selectionMode() == QIconView::Single )
++	emit selectionChanged( m_pCurrentItem );
++
++      //setSelected( m_pCurrentItem, true, (keybstate & ControlButton), (keybstate & ShiftButton) );
++    }
++    else if( (keybstate & ControlButton) )
++      setSelected( m_pCurrentItem, !m_pCurrentItem->isSelected(), true );
++    else
++      setSelected( m_pCurrentItem, true );
++  }
++  else
++    kdDebug() << "KIconView: That's not supposed to happen!!!!" << endl;
++}
++
++void KIconView::emitExecute( QIconViewItem *item, const QPoint &pos )
++{
++  if ( d->mode != Execute )
++  {
++    // kdDebug() << "KIconView::emitExecute : not in execute mode !" << endl;
++    return;
++  }
++
++  ButtonState keybstate = KApplication::keyboardMouseState();
++
++  m_pAutoSelect->stop();
++
++  //Don´t emit executed if in SC mode and Shift or Ctrl are pressed
++  if( !( m_bUseSingle && ((keybstate & ShiftButton) || (keybstate & ControlButton)) ) ) {
++    setSelected( item, false );
++    viewport()->unsetCursor();
++    emit executed( item );
++    emit executed( item, pos );
++  }
++}
++
++void KIconView::updateDragHoldItem( QDropEvent *e )
++{
++  QIconViewItem *item = findItem( e->pos() );
++
++  if ( d->dragHoldItem != item)
++  {
++    d->dragHoldItem = item;
++    if( item  )
++    {
++      d->dragHoldTimer.start( 1000, true );
++    }
++    else
++    {
++      d->dragHoldTimer.stop();
++    }
++  }
++}
++
++void KIconView::focusOutEvent( QFocusEvent *fe )
++{
++  m_pAutoSelect->stop();
++
++  QIconView::focusOutEvent( fe );
++}
++
++void KIconView::leaveEvent( QEvent *e )
++{
++  m_pAutoSelect->stop();
++
++  QIconView::leaveEvent( e );
++}
++
++void KIconView::contentsMousePressEvent( QMouseEvent *e )
++{
++  if( (selectionMode() == Extended) && (e->state() & ShiftButton) && !(e->state() & ControlButton) ) {
++    bool block = signalsBlocked();
++    blockSignals( true );
++
++    clearSelection();
++
++    blockSignals( block );
++  }
++
++  QIconView::contentsMousePressEvent( e );
++  d->doAutoSelect = false;
++}
++
++void KIconView::contentsMouseDoubleClickEvent ( QMouseEvent * e )
++{
++  QIconView::contentsMouseDoubleClickEvent( e );
++
++  QIconViewItem* item = findItem( e->pos() );
++
++  if( item ) {
++    if( (e->button() == LeftButton) && !m_bUseSingle )
++      emitExecute( item, e->globalPos() );
++
++    emit doubleClicked( item, e->globalPos() );
++  }
++  d->doubleClickIgnoreTimer.start(0, true);
++}
++
++void KIconView::slotMouseButtonClicked( int btn, QIconViewItem *item, const QPoint &pos )
++{
++  //kdDebug() << " KIconView::slotMouseButtonClicked() item=" << item << endl;
++  if( d->doubleClickIgnoreTimer.isActive() )
++    return; // Ignore double click
++    
++  if( (btn == LeftButton) && item )
++    emitExecute( item, pos );
++}
++
++void KIconView::contentsMouseReleaseEvent( QMouseEvent *e )
++{
++    d->doAutoSelect = true;
++    QIconView::contentsMouseReleaseEvent( e );
++}
++
++void KIconView::contentsDragEnterEvent( QDragEnterEvent *e )
++{
++    updateDragHoldItem( e );
++    QIconView::contentsDragEnterEvent( e );
++}
++
++void KIconView::contentsDragLeaveEvent( QDragLeaveEvent *e )
++{
++    d->dragHoldTimer.stop();
++    d->dragHoldItem = 0L;
++    QIconView::contentsDragLeaveEvent( e );
++}
++
++
++void KIconView::contentsDragMoveEvent( QDragMoveEvent *e )
++{
++    updateDragHoldItem( e );
++    QIconView::contentsDragMoveEvent( e );
++}
++
++void KIconView::contentsDropEvent( QDropEvent* e )
++{
++    d->dragHoldTimer.stop();
++    QIconView::contentsDropEvent( e );
++}
++
++void KIconView::slotDragHoldTimeout()
++{
++    QIconViewItem *tmp = d->dragHoldItem;
++    d->dragHoldItem = 0L;
++
++    emit held( tmp );
++}
++
++void KIconView::takeItem( QIconViewItem * item )
++{
++    if ( item == d->dragHoldItem )
++    {
++        d->dragHoldTimer.stop();
++        d->dragHoldItem = 0L;
++    }
++
++    QIconView::takeItem( item );
++}
++
++void KIconView::cancelPendingHeldSignal()
++{
++    d->dragHoldTimer.stop();
++    d->dragHoldItem = 0L;
++}
++
++void KIconView::wheelEvent( QWheelEvent *e )
++{
++    if (horizontalScrollBar() && (arrangement() == QIconView::TopToBottom)) {
++        QWheelEvent ce(e->pos(), e->delta(), e->state(), Qt::Horizontal);
++        QApplication::sendEvent( horizontalScrollBar(), &ce);
++	if (ce.isAccepted()) {
++            e->accept();
++	    return;
++	}
++    }
++    QIconView::wheelEvent(e);
++}
++
++void KIconView::setFont( const QFont &font )
++{
++    delete d->fm;
++    d->fm = 0L;
++    QIconView::setFont( font );
++}
++
++QFontMetrics *KIconView::itemFontMetrics() const
++{
++    if (!d->fm) {
++        // QIconView creates one too, but we can't access it
++        d->fm = new QFontMetrics( font() );
++    }
++    return d->fm;
++}
++
++QPixmap KIconView::selectedIconPixmap( QPixmap *pix, const QColor &col ) const
++{
++    QPixmap m;
++    if ( d->maskCache.find( QString::number( pix->serialNumber() ), m ) )
++	return m;
++    m = KPixmapEffect::selectedPixmap( KPixmap(*pix), col );
++    d->maskCache.insert( QString::number( pix->serialNumber() ), m );
++    return m;
++}
++
++int KIconView::iconTextHeight() const
++{
++    return d->textHeight > 0 ? d->textHeight : ( wordWrapIconText() ? 99 : 1 );
++}
++
++void KIconView::setIconTextHeight( int n )
++{
++    int oldHeight = iconTextHeight();
++    if ( n > 1 )
++        d->textHeight = n;
++    else
++        d->textHeight = 1;
++
++    // so that Qt still shows the tooltip when even a wrapped text is too long
++    setWordWrapIconText( false );
++
++    // update view if needed
++    if ( iconTextHeight() != oldHeight )
++        setFont( font() );  // hack to recalc items
++}
++
++/////////////
++
++struct KIconViewItem::KIconViewItemPrivate
++{
++    QSize m_pixmapSize;
++};
++
++void KIconViewItem::init()
++{
++    m_wordWrap = 0L;
++    d = 0L;
++    calcRect();
++}
++
++KIconViewItem::~KIconViewItem()
++{
++    delete m_wordWrap;
++    delete d;
++}
++
++void KIconViewItem::calcRect( const QString& text_ )
++{
++    Q_ASSERT( iconView() );
++    if ( !iconView() )
++        return;
++    delete m_wordWrap;
++    m_wordWrap = 0L;
++#ifndef NDEBUG // be faster for the end-user, such a bug will have been fixed before hand :)
++    if ( !iconView()->inherits("KIconView") )
++    {
++        kdWarning() << "KIconViewItem used in a " << iconView()->className() << " !!" << endl;
++        return;
++    }
++#endif
++    //kdDebug() << "KIconViewItem::calcRect - " << text() << endl;
++    KIconView *view = static_cast<KIconView *>(iconView());
++    QRect itemIconRect = pixmapRect();
++    QRect itemTextRect = textRect();
++    QRect itemRect = rect();
++
++    int pw = 0;
++    int ph = 0;
++
++#ifndef QT_NO_PICTURE
++    if ( picture() ) {
++        QRect br = picture()->boundingRect();
++        pw = br.width() + 2;
++        ph = br.height() + 2;
++    } else
++#endif
++    {
++        // Qt uses unknown_icon if no pixmap. Let's see if we need that - I doubt it
++        if (!pixmap())
++            return;
++        pw = pixmap()->width() + 2;
++        ph = pixmap()->height() + 2;
++    }
++    itemIconRect.setWidth( pw );
++#if 1 // FIXME 
++    // There is a bug in Qt which prevents the item from being placed
++    // properly when the pixmapRect is not at the top of the itemRect, so we
++    // have to increase the height of the pixmapRect and leave it at the top
++    // of the itemRect...
++    if ( d && !d->m_pixmapSize.isNull() )
++        itemIconRect.setHeight( d->m_pixmapSize.height() + 2 );
++    else
++#endif
++    itemIconRect.setHeight( ph );
++
++    int tw = 0;
++    if ( d && !d->m_pixmapSize.isNull() )
++        tw = view->maxItemWidth() - ( view->itemTextPos() == QIconView::Bottom ? 0 :
++                                      d->m_pixmapSize.width() + 2 );
++    else
++        tw = view->maxItemWidth() - ( view->itemTextPos() == QIconView::Bottom ? 0 :
++                                      itemIconRect.width() );
++    
++    QFontMetrics *fm = view->itemFontMetrics();
++    QString t;
++    QRect r;
++    
++    // When is text_ set ? Doesn't look like it's ever set.
++    t = text_.isEmpty() ? text() : text_;
++    
++    // Max text height
++    int nbLines = static_cast<KIconView*>( iconView() )->iconTextHeight();
++    int height = nbLines > 0 ? fm->height() * nbLines : 0xFFFFFFFF;
++    
++    // Should not be higher than pixmap if text is alongside icons
++    if ( view->itemTextPos() != QIconView::Bottom ) {
++        if ( d && !d->m_pixmapSize.isNull() )
++            height = QMIN( d->m_pixmapSize.height() + 2, height );
++        else
++            height = QMIN( itemIconRect.height(), height );
++        height = QMAX( height, fm->height() );
++    }
++    
++    // Calculate the word-wrap
++    QRect outerRect( 0, 0, tw - 6, height );
++    m_wordWrap = KWordWrap::formatText( *fm, outerRect, 0, t );
++    r = m_wordWrap->boundingRect();
++
++    int realWidth = QMAX( QMIN( r.width() + 4, tw ), fm->width( "X" ) );
++    itemTextRect.setWidth( realWidth );
++    itemTextRect.setHeight( r.height() );
++
++    int w = 0;    int h = 0;    int y = 0;
++    if ( view->itemTextPos() == QIconView::Bottom ) {
++        // If the pixmap size has been specified, use it
++        if ( d && !d->m_pixmapSize.isNull() )
++        {
++            w = QMAX( itemTextRect.width(), d->m_pixmapSize.width() + 2 );
++            h = itemTextRect.height() + d->m_pixmapSize.height() + 2 + 1;
++#if 0 // FIXME 
++            // Waiting for the qt bug to be solved, the pixmapRect must
++            // stay on the top...
++            y = d->m_pixmapSize.height() + 2 - itemIconRect.height();
++#endif
++        }
++        else {
++            w = QMAX( itemTextRect.width(), itemIconRect.width() );
++            h = itemTextRect.height() + itemIconRect.height() + 1;
++        }
++
++        itemRect.setWidth( w );
++        itemRect.setHeight( h );
++        int width = QMAX( w, QApplication::globalStrut().width() ); // see QIconViewItem::width()
++        int height = QMAX( h, QApplication::globalStrut().height() ); // see QIconViewItem::height()
++        itemTextRect = QRect( ( width - itemTextRect.width() ) / 2, height - itemTextRect.height(),
++                              itemTextRect.width(), itemTextRect.height() );
++        itemIconRect = QRect( ( width - itemIconRect.width() ) / 2, y,
++                              itemIconRect.width(), itemIconRect.height() );
++    } else {
++        // If the pixmap size has been specified, use it
++        if ( d && !d->m_pixmapSize.isNull() )
++        {
++            h = QMAX( itemTextRect.height(), d->m_pixmapSize.height() + 2 );
++#if 0 // FIXME 
++            // Waiting for the qt bug to be solved, the pixmapRect must
++            // stay on the top...
++            y = ( d->m_pixmapSize.height() + 2 - itemIconRect.height() ) / 2;
++#endif
++        }
++        else
++            h = QMAX( itemTextRect.height(), itemIconRect.height() );
++        w = itemTextRect.width() + itemIconRect.width() + 1;
++
++        itemRect.setWidth( w );
++        itemRect.setHeight( h );
++        int width = QMAX( w, QApplication::globalStrut().width() ); // see QIconViewItem::width()
++        int height = QMAX( h, QApplication::globalStrut().height() ); // see QIconViewItem::height()
++
++        itemTextRect = QRect( width - itemTextRect.width(), ( height - itemTextRect.height() ) / 2,
++                              itemTextRect.width(), itemTextRect.height() );
++        if ( itemIconRect.height() > itemTextRect.height() ) // icon bigger than text -> center vertically
++            itemIconRect = QRect( 0, ( height - itemIconRect.height() ) / 2,
++                                  itemIconRect.width(), itemIconRect.height() );
++        else // icon smaller than text -> place in top or center with first line
++	    itemIconRect = QRect( 0, QMAX(( fm->height() - itemIconRect.height() ) / 2 + y, 0),
++                                  itemIconRect.width(), itemIconRect.height() );
++        if ( ( itemIconRect.height() <= 20 ) && ( itemTextRect.height() < itemIconRect.height() ) )
++        {
++            itemTextRect.setHeight( itemIconRect.height() - 2 );
++            itemTextRect.setY( itemIconRect.y() );
++        }
++    }
++
++    if ( itemIconRect != pixmapRect() )
++        setPixmapRect( itemIconRect );
++    if ( itemTextRect != textRect() )
++        setTextRect( itemTextRect );
++    if ( itemRect != rect() )
++        setItemRect( itemRect );
++
++    // Done by setPixmapRect, setTextRect and setItemRect !  [and useless if no rect changed]
++    //view->updateItemContainer( this );
++
++}
++
++void KIconViewItem::paintItem( QPainter *p, const QColorGroup &cg )
++{
++    QIconView* view = iconView();
++    Q_ASSERT( view );
++    if ( !view )
++        return;
++#ifndef NDEBUG // be faster for the end-user, such a bug will have been fixed before hand :)
++    if ( !view->inherits("KIconView") )
++    {
++        kdWarning() << "KIconViewItem used in a " << view->className() << " !!" << endl;
++        return;
++    }
++#endif
++
++    p->save();
++
++    paintPixmap(p, cg);
++    paintText(p, cg);
++
++    p->restore();
++}
++
++KWordWrap * KIconViewItem::wordWrap()
++{
++    return m_wordWrap;
++}
++
++void KIconViewItem::paintPixmap( QPainter *p, const QColorGroup &cg )
++{
++    KIconView *kview = static_cast<KIconView *>(iconView());
++
++#ifndef QT_NO_PICTURE
++    if ( picture() ) {
++	QPicture *pic = picture();
++	if ( isSelected() ) {
++            // TODO something as nice as selectedIconPixmap if possible ;)
++	    p->fillRect( pixmapRect( false ), QBrush( cg.highlight(), QBrush::Dense4Pattern) );
++	}
++	p->drawPicture( x()-pic->boundingRect().x(), y()-pic->boundingRect().y(), *pic );
++    } else
++#endif
++    {
++        int iconX = pixmapRect( false ).x();
++        int iconY = pixmapRect( false ).y();
++
++        QPixmap *pix = pixmap();
++        if ( !pix || pix->isNull() )
++            return;
++
++#if 1 // FIXME 
++        // Move the pixmap manually because the pixmapRect is at the
++        // top of the itemRect
++        // (won't be needed anymore in future versions of qt)
++        if ( d && !d->m_pixmapSize.isNull() )
++        {
++            int offset = 0;
++            if ( kview->itemTextPos() == QIconView::Bottom )
++                offset = d->m_pixmapSize.height() - pix->height();
++            else
++                offset = ( d->m_pixmapSize.height() - pix->height() ) / 2;
++            if ( offset > 0 )
++                iconY += offset;
++        }
++#endif
++        if ( isSelected() ) {
++            QPixmap selectedPix = kview->selectedIconPixmap( pix, cg.highlight() );
++            p->drawPixmap( iconX, iconY, selectedPix );
++        } else {
++            p->drawPixmap( iconX, iconY, *pix );
++        }
++    }
++}
++
++void KIconViewItem::paintText( QPainter *p, const QColorGroup &cg )
++{
++    int textX = textRect( false ).x() + 2;
++    int textY = textRect( false ).y();
++
++    if ( isSelected() ) {
++        p->fillRect( textRect( false ), cg.highlight() );
++        p->setPen( QPen( cg.highlightedText() ) );
++    } else {
++        if ( iconView()->itemTextBackground() != NoBrush )
++            p->fillRect( textRect( false ), iconView()->itemTextBackground() );
++        p->setPen( cg.text() );
++    }
++
++    int align = iconView()->itemTextPos() == QIconView::Bottom ? AlignHCenter : AlignAuto;
++    m_wordWrap->drawText( p, textX, textY, align | KWordWrap::Truncate );
++}
++
++QSize KIconViewItem::pixmapSize() const
++{
++    return d ? d->m_pixmapSize : QSize( 0, 0 );
++}
++
++void KIconViewItem::setPixmapSize( const QSize& size )
++{
++    if ( !d )
++        d = new KIconViewItemPrivate;
++
++    d->m_pixmapSize = size;
++}
++
++void KIconView::virtual_hook( int, void* )
++{ /*BASE::virtual_hook( id, data );*/ }
++
++#include "kiconview.moc"
+diff -purN kdelibs-3.5.2.orig/kdeui/kjanuswidget.cpp kdelibs-3.5.2/kdeui/kjanuswidget.cpp
+--- kdelibs-3.5.2.orig/kdeui/kjanuswidget.cpp	2005-11-08 16:38:47.000000000 -0600
++++ kdelibs-3.5.2/kdeui/kjanuswidget.cpp	2006-03-28 19:49:20.000000000 -0600
+@@ -49,16 +49,19 @@ class KJanusWidget::IconListItem : publi
+ {
+   public:
+     IconListItem( QListBox *listbox, const QPixmap &pixmap,
+-		   const QString &text );
++                  const QString &text );
+     virtual int height( const QListBox *lb ) const;
+     virtual int width( const QListBox *lb ) const;
+     int expandMinimumWidth( int width );
++    void highlight( bool erase );
+ 
+   protected:
+     const QPixmap &defaultPixmap();
+     void paint( QPainter *painter );
+ 
+   private:
++    void paintContents( QPainter *painter );
++
+     QPixmap mPixmap;
+     int mMinimumWidth;
+ };
+@@ -141,6 +144,8 @@ KJanusWidget::KJanusWidget( QWidget *par
+ 
+       mIconList->verticalScrollBar()->installEventFilter( this );
+       connect( mIconList, SIGNAL(selectionChanged()), SLOT(slotShowPage()));
++      connect( mIconList, SIGNAL(onItem(QListBoxItem *)), SLOT(slotOnItem(QListBoxItem *)));
++
+       hbox->addSpacing( KDialog::marginHint() );
+       page = new QFrame( this );
+       hbox->addWidget( page, 10 );
+@@ -259,7 +264,7 @@ void KJanusWidget::slotReopen( QListView
+ }
+ 
+ QFrame *KJanusWidget::addPage( const QString &itemName, const QString &header,
+-			       const QPixmap &pixmap )
++          const QPixmap &pixmap )
+ {
+   QStringList items;
+   items << itemName;
+@@ -269,8 +274,8 @@ QFrame *KJanusWidget::addPage( const QSt
+ 
+ 
+ QVBox *KJanusWidget::addVBoxPage( const QStringList &items,
+-				  const QString &header,
+-				  const QPixmap &pixmap )
++          const QString &header,
++          const QPixmap &pixmap )
+ {
+   if( !mValid )
+   {
+@@ -721,6 +726,12 @@ void KJanusWidget::slotItemClicked(QList
+     it->setOpen(!it->isOpen());
+ }
+ 
++// hack because qt does not support Q_OBJECT in nested classes
++void KJanusWidget::slotOnItem(QListBoxItem *qitem)
++{
++  mIconList->slotOnItem( qitem );
++}
++
+ void KJanusWidget::setFocus()
+ {
+   if( !mValid ) { return; }
+@@ -929,11 +940,11 @@ bool KJanusWidget::eventFilter( QObject 
+ KJanusWidget::IconListBox::IconListBox( QWidget *parent, const char *name,
+ 					WFlags f )
+   :KListBox( parent, name, f ), mShowAll(false), mHeightValid(false),
+-   mWidthValid(false)
++   mWidthValid(false),
++   mOldItem(0)
+ {
+ }
+ 
+-
+ void KJanusWidget::IconListBox::updateMinimumHeight()
+ {
+   if( mShowAll && !mHeightValid )
+@@ -995,6 +1006,45 @@ void KJanusWidget::IconListBox::setShowA
+ }
+ 
+ 
++void KJanusWidget::IconListBox::leaveEvent( QEvent *ev )
++{
++  KListBox::leaveEvent( ev );
++
++  if ( mOldItem && !mOldItem->isSelected() )
++  {
++    ((KJanusWidget::IconListItem *) mOldItem)->highlight( true );
++    mOldItem = 0;
++  }
++}
++
++// hack because qt does not support Q_OBJECT in nested classes
++void KJanusWidget::IconListBox::slotOnItem(QListBoxItem *qitem)
++{
++  KListBox::slotOnItem( qitem );
++
++  if ( qitem == mOldItem )
++  {
++    return;
++  }
++
++  if ( mOldItem && !mOldItem->isSelected() )
++  {
++    ((KJanusWidget::IconListItem *) mOldItem)->highlight( true );
++  }
++
++  KJanusWidget::IconListItem *item = dynamic_cast< KJanusWidget::IconListItem * >( qitem );
++  if ( item && !item->isSelected() )
++  {
++    item->highlight( false );
++    mOldItem = item;
++  }
++  else
++  {
++    mOldItem = 0;
++  }
++}
++
++
+ 
+ KJanusWidget::IconListItem::IconListItem( QListBox *listbox, const QPixmap &pixmap,
+                                           const QString &text )
+@@ -1006,6 +1056,7 @@ KJanusWidget::IconListItem::IconListItem
+     mPixmap = defaultPixmap();
+   }
+   setText( text );
++  setCustomHighlighting( true );
+   mMinimumWidth = 0;
+ }
+ 
+@@ -1017,6 +1068,36 @@ int KJanusWidget::IconListItem::expandMi
+ }
+ 
+ 
++void KJanusWidget::IconListItem::highlight( bool erase )
++{
++   QRect r = listBox()->itemRect( this );
++   r.addCoords( 1, 1, -1, -1 );
++
++   QPainter p( listBox()->viewport() );
++   p.setClipRegion( r );
++
++   const QColorGroup &cg = listBox()->colorGroup();
++   if ( erase )
++   {
++      p.setPen( cg.base() );
++      p.setBrush( cg.base() );
++      p.drawRect( r );
++   }
++   else
++   {
++      p.setBrush( cg.highlight().light( 120 ) );
++      p.drawRect( r );
++
++      p.setPen( cg.highlight().dark( 140 ) );
++      p.drawRect( r );
++   }
++
++   p.setPen( cg.foreground() );
++   p.translate( r.x() - 1, r.y() - 1 );
++   paintContents( &p );
++}
++
++
+ const QPixmap &KJanusWidget::IconListItem::defaultPixmap()
+ {
+   static QPixmap *pix=0;
+@@ -1044,6 +1125,25 @@ const QPixmap &KJanusWidget::IconListIte
+ 
+ void KJanusWidget::IconListItem::paint( QPainter *painter )
+ {
++  QRect itemPaintRegion( listBox()->itemRect( this ) );
++  QRect r( 1, 1, itemPaintRegion.width() - 2, itemPaintRegion.height() - 2);
++
++  if ( isSelected() )
++  {
++    painter->eraseRect( r );
++
++    painter->save();
++    painter->setPen( listBox()->colorGroup().highlight().dark( 160 ) );
++    painter->drawRect( r );
++    painter->restore();
++  }
++
++  paintContents( painter );
++}
++
++
++void KJanusWidget::IconListItem::paintContents( QPainter *painter )
++{
+   QFontMetrics fm = painter->fontMetrics();
+   int ht = fm.boundingRect( 0, 0, 0, 0, Qt::AlignCenter, text() ).height();
+   int wp = mPixmap.width();
+@@ -1082,6 +1182,7 @@ int KJanusWidget::IconListItem::width( c
+ void KJanusWidget::virtual_hook( int, void* )
+ { /*BASE::virtual_hook( id, data );*/ }
+ 
++
+ // TODO: In TreeList, if the last child of a node is removed, and there is no corrsponding widget for that node, allow the caller to
+ // delete the node.
+ void KJanusWidget::removePage( QWidget *page )
+@@ -1129,6 +1230,7 @@ void KJanusWidget::removePage( QWidget *
+   }
+ }
+ 
++
+ QString KJanusWidget::pageTitle(int index) const
+ {
+   if (!d || !d->mIntToTitle.contains(index))
+@@ -1137,6 +1239,7 @@ QString KJanusWidget::pageTitle(int inde
+     return d->mIntToTitle[index];
+ }
+ 
++
+ QWidget *KJanusWidget::pageWidget(int index) const
+ {
+   if (!d || !d->mIntToPage.contains(index))
+diff -purN kdelibs-3.5.2.orig/kdeui/kjanuswidget.cpp.orig kdelibs-3.5.2/kdeui/kjanuswidget.cpp.orig
+--- kdelibs-3.5.2.orig/kdeui/kjanuswidget.cpp.orig	1969-12-31 18:00:00.000000000 -0600
++++ kdelibs-3.5.2/kdeui/kjanuswidget.cpp.orig	2005-11-08 16:38:47.000000000 -0600
+@@ -0,0 +1,1148 @@
++/*  This file is part of the KDE Libraries
++ *  Copyright (C) 1999-2000 Espen Sand (espensa@online.no)
++ *  Copyright (C) 2003 Ravikiran Rajagopal (ravi@kde.org)
++ *
++ *  This library is free software; you can redistribute it and/or
++ *  modify it under the terms of the GNU Library General Public
++ *  License as published by the Free Software Foundation; either
++ *  version 2 of the License, or (at your option) any later version.
++ *
++ *  This library is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  Library General Public License for more details.
++ *
++ *  You should have received a copy of the GNU Library General Public License
++ *  along with this library; see the file COPYING.LIB.  If not, write to
++ *  the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
++ *  Boston, MA 02110-1301, USA.
++ */
++
++#include <qbitmap.h>
++#include <qgrid.h>
++#include <qhbox.h>
++#include <qheader.h>
++#include <qlabel.h>
++#include <qlayout.h>
++#include <qobjectlist.h>
++#include <qpixmap.h>
++#include <qsplitter.h>
++#include <qtabwidget.h>
++#include <qvbox.h>
++#include <qwidgetstack.h>
++#include <qpainter.h>
++#include <qstyle.h>
++
++#include <kapplication.h>
++#include <kdialog.h> // Access to some static members
++#include <klocale.h>
++#include <kglobal.h>
++#include <kglobalsettings.h>
++#include <kseparator.h>
++#include <kdebug.h>
++#include "kjanuswidget.h"
++#include <klistview.h>
++#include "kpushbutton.h"
++#include "kguiitem.h"
++
++class KJanusWidget::IconListItem : public QListBoxItem
++{
++  public:
++    IconListItem( QListBox *listbox, const QPixmap &pixmap,
++		   const QString &text );
++    virtual int height( const QListBox *lb ) const;
++    virtual int width( const QListBox *lb ) const;
++    int expandMinimumWidth( int width );
++
++  protected:
++    const QPixmap &defaultPixmap();
++    void paint( QPainter *painter );
++
++  private:
++    QPixmap mPixmap;
++    int mMinimumWidth;
++};
++
++class KJanusWidget::KJanusWidgetPrivate
++{
++public:
++  KJanusWidgetPrivate() : mNextPageIndex(0), mListFrame( 0 ) { }
++
++  int mNextPageIndex; // The next page index.
++
++  // Dictionary for multipage modes.
++  QMap<int,QWidget*> mIntToPage;
++  // Reverse dictionary. Used because showPage() may be performance critical.
++  QMap<QWidget*,int> mPageToInt;
++  // Dictionary of title string associated with page.
++  QMap<int, QString> mIntToTitle;
++
++  QWidget * mListFrame;
++  QSplitter * mSplitter;
++};
++
++template class QPtrList<QListViewItem>;
++
++
++KJanusWidget::KJanusWidget( QWidget *parent, const char *name, int face )
++  : QWidget( parent, name, 0 ),
++    mValid(false), mPageList(0),
++    mTitleList(0), mFace(face), mTitleLabel(0), mActivePageWidget(0),
++    mShowIconsInTreeList(false), d(0)
++{
++  QVBoxLayout *topLayout = new QVBoxLayout( this );
++
++  if( mFace == TreeList || mFace == IconList )
++  {
++    d = new KJanusWidgetPrivate;
++    d->mSplitter = 0;
++
++    QFrame *page;
++    if( mFace == TreeList )
++    {
++      d->mSplitter = new QSplitter( this );
++      topLayout->addWidget( d->mSplitter, 10 );
++      mTreeListResizeMode = QSplitter::KeepSize;
++
++      d->mListFrame = new QWidget( d->mSplitter );
++      QVBoxLayout *dummy = new QVBoxLayout( d->mListFrame, 0, KDialog::spacingHint() );
++      dummy->setAutoAdd( true );
++      mTreeList = new KListView( d->mListFrame );
++      mTreeList->addColumn( QString::null );
++      mTreeList->header()->hide();
++      mTreeList->setRootIsDecorated(true);
++      mTreeList->setSorting( -1 );
++      connect( mTreeList, SIGNAL(selectionChanged()), SLOT(slotShowPage()) );
++      connect( mTreeList, SIGNAL(clicked(QListViewItem *)), SLOT(slotItemClicked(QListViewItem *)));
++
++      //
++      // Page area. Title at top with a separator below and a pagestack using
++      // all available space at bottom.
++      //
++      QFrame *p = new QFrame( d->mSplitter );
++
++      QHBoxLayout *hbox = new QHBoxLayout( p, 0, 0 );
++
++      page = new QFrame( p );
++      hbox->addWidget( page, 10 );
++    }
++    else
++    {
++      QHBoxLayout *hbox = new QHBoxLayout( topLayout );
++      d->mListFrame = new QWidget( this );
++      hbox->addWidget( d->mListFrame );
++
++      ( new QVBoxLayout( d->mListFrame, 0, 0 ) )->setAutoAdd( true );
++      mIconList = new IconListBox( d->mListFrame );
++
++      QFont listFont( mIconList->font() );
++      listFont.setBold( true );
++      mIconList->setFont( listFont );
++
++      mIconList->verticalScrollBar()->installEventFilter( this );
++      connect( mIconList, SIGNAL(selectionChanged()), SLOT(slotShowPage()));
++      hbox->addSpacing( KDialog::marginHint() );
++      page = new QFrame( this );
++      hbox->addWidget( page, 10 );
++    }
++
++    //
++    // Rest of page area. Title at top with a separator below and a
++    // pagestack using all available space at bottom.
++    //
++
++    QVBoxLayout *vbox = new QVBoxLayout( page, 0, KDialog::spacingHint() );
++
++    mTitleLabel = new QLabel( QString::fromLatin1("Empty Page"), page, "KJanusWidgetTitleLabel" );
++    vbox->addWidget( mTitleLabel, 0, QApplication::reverseLayout() ? AlignRight : AlignLeft );
++
++    QFont titleFont( mTitleLabel->font() );
++    titleFont.setBold( true );
++    mTitleLabel->setFont( titleFont );
++
++    mTitleSep = new KSeparator( page );
++    mTitleSep->setFrameStyle( QFrame::HLine|QFrame::Plain );
++    vbox->addWidget( mTitleSep );
++
++    mPageStack = new QWidgetStack( page );
++    connect(mPageStack, SIGNAL(aboutToShow(QWidget *)),
++            SIGNAL(aboutToShowPage(QWidget *)));
++    vbox->addWidget( mPageStack, 10 );
++  }
++  else if( mFace == Tabbed )
++  {
++    d = new KJanusWidgetPrivate;
++
++    mTabControl = new QTabWidget( this );
++    mTabControl->setMargin (KDialog::marginHint());
++    connect(mTabControl, SIGNAL(currentChanged(QWidget *)),
++            SIGNAL(aboutToShowPage(QWidget *)));
++    topLayout->addWidget( mTabControl, 10 );
++  }
++  else if( mFace == Swallow )
++  {
++    mSwallowPage = new QWidget( this );
++    topLayout->addWidget( mSwallowPage, 10 );
++  }
++  else
++  {
++    mFace = Plain;
++    mPlainPage = new QFrame( this );
++    topLayout->addWidget( mPlainPage, 10 );
++  }
++
++  if ( kapp )
++    connect(kapp,SIGNAL(kdisplayFontChanged()),SLOT(slotFontChanged()));
++  mValid = true;
++
++  setSwallowedWidget(0); // Set default size if 'mFace' is Swallow.
++}
++
++
++KJanusWidget::~KJanusWidget()
++{
++  delete d;
++}
++
++
++bool KJanusWidget::isValid() const
++{
++  return mValid;
++}
++
++
++QFrame *KJanusWidget::plainPage()
++{
++  return mPlainPage;
++}
++
++
++int KJanusWidget::face() const
++{
++  return mFace;
++}
++
++QWidget *KJanusWidget::FindParent()
++{
++  if( mFace == Tabbed ) {
++    return mTabControl;
++  }
++  else {
++    return this;
++  }
++}
++
++QFrame *KJanusWidget::addPage( const QStringList &items, const QString &header,
++			       const QPixmap &pixmap )
++{
++  if( !mValid )
++  {
++    kdDebug() << "addPage: Invalid object" << endl;
++    return 0;
++  }
++
++  QFrame *page = new QFrame( FindParent(), "page" );
++  addPageWidget( page, items, header, pixmap );
++
++  return page;
++}
++
++void KJanusWidget::pageGone( QObject *obj )
++{
++  removePage( static_cast<QWidget*>( obj ) );
++}
++
++void KJanusWidget::slotReopen( QListViewItem * item )
++{
++  if( item )
++    item->setOpen( true );
++}
++
++QFrame *KJanusWidget::addPage( const QString &itemName, const QString &header,
++			       const QPixmap &pixmap )
++{
++  QStringList items;
++  items << itemName;
++  return addPage(items, header, pixmap);
++}
++
++
++
++QVBox *KJanusWidget::addVBoxPage( const QStringList &items,
++				  const QString &header,
++				  const QPixmap &pixmap )
++{
++  if( !mValid )
++  {
++    kdDebug() << "addPage: Invalid object" << endl;
++    return 0;
++  }
++
++  QVBox *page = new QVBox(FindParent() , "page" );
++  page->setSpacing( KDialog::spacingHint() );
++  addPageWidget( page, items, header, pixmap );
++
++  return page;
++}
++
++QVBox *KJanusWidget::addVBoxPage( const QString &itemName,
++				  const QString &header,
++				  const QPixmap &pixmap )
++{
++  QStringList items;
++  items << itemName;
++  return addVBoxPage(items, header, pixmap);
++}
++
++QHBox *KJanusWidget::addHBoxPage( const QStringList &items,
++				  const QString &header,
++				  const QPixmap &pixmap )
++{
++  if( !mValid ) {
++    kdDebug() << "addPage: Invalid object" << endl;
++    return 0;
++  }
++
++  QHBox *page = new QHBox(FindParent(), "page");
++  page->setSpacing( KDialog::spacingHint() );
++  addPageWidget( page, items, header, pixmap );
++
++  return page;
++}
++
++QHBox *KJanusWidget::addHBoxPage( const QString &itemName,
++				  const QString &header,
++				  const QPixmap &pixmap )
++{
++  QStringList items;
++  items << itemName;
++  return addHBoxPage(items, header, pixmap);
++}
++
++QGrid *KJanusWidget::addGridPage( int n, Orientation dir,
++				  const QStringList &items,
++				  const QString &header,
++				  const QPixmap &pixmap )
++{
++  if( !mValid )
++  {
++    kdDebug() << "addPage: Invalid object" << endl;
++    return 0;
++  }
++
++  QGrid *page = new QGrid( n, dir, FindParent(), "page" );
++  page->setSpacing( KDialog::spacingHint() );
++  addPageWidget( page, items, header, pixmap );
++
++  return page;
++}
++
++
++QGrid *KJanusWidget::addGridPage( int n, Orientation dir,
++				  const QString &itemName,
++				  const QString &header,
++				  const QPixmap &pixmap )
++{
++  QStringList items;
++  items << itemName;
++  return addGridPage(n, dir, items, header, pixmap);
++}
++
++void KJanusWidget::InsertTreeListItem(const QStringList &items, const QPixmap &pixmap, QFrame *page)
++{
++  bool isTop = true;
++  QListViewItem *curTop = 0, *child, *last, *newChild;
++  unsigned int index = 1;
++  QStringList curPath;
++
++  for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it, index++ ) {
++    QString name = (*it);
++    bool isPath = ( index != items.count() );
++
++    // Find the first child.
++    if (isTop) {
++      child = mTreeList->firstChild();
++    }
++    else {
++      child = curTop->firstChild();
++    }
++
++    // Now search for a child with the current Name, and if it we doesn't
++    // find it, then remember the location of the last child.
++    for (last = 0; child && child->text(0) != name ; last = child, child = child->nextSibling());
++
++    if (!last && !child) {
++      // This node didn't have any children at all, lets just insert the
++      // new child.
++      if (isTop)
++        newChild = new QListViewItem(mTreeList, name);
++      else
++        newChild = new QListViewItem(curTop, name);
++
++    }
++    else if (child) {
++      // we found the given name in this child.
++      if (!isPath) {
++        kdDebug() << "The element inserted was already in the TreeList box!" << endl;
++        return;
++      }
++      else {
++        // Ok we found the folder
++        newChild  = child;
++      }
++    }
++    else {
++      // the node had some children, but we didn't find the given name
++      if (isTop)
++        newChild = new QListViewItem(mTreeList, last, name);
++      else
++        newChild = new QListViewItem(curTop, last, name);
++    }
++
++    // Now make the element expandable if it is a path component, and make
++    // ready for next loop
++    if (isPath) {
++      newChild->setExpandable(true);
++      curTop = newChild;
++      isTop = false;
++      curPath << name;
++
++      QString key = curPath.join("_/_");
++      if (mFolderIconMap.contains(key)) {
++        QPixmap p = mFolderIconMap[key];
++        newChild->setPixmap(0,p);
++      }
++    }
++    else {
++      if (mShowIconsInTreeList) {
++        newChild->setPixmap(0, pixmap);
++      }
++      mTreeListToPageStack.insert(newChild, page);
++    }
++  }
++}
++
++void KJanusWidget::addPageWidget( QFrame *page, const QStringList &items,
++				  const QString &header,const QPixmap &pixmap )
++{
++  connect(page, SIGNAL(destroyed(QObject*)), SLOT(pageGone(QObject*)));
++
++  if( mFace == Tabbed )
++  {
++    mTabControl->addTab (page, items.last());
++    d->mIntToPage[d->mNextPageIndex] = static_cast<QWidget*>(page);
++    d->mPageToInt[static_cast<QWidget*>(page)] = d->mNextPageIndex;
++    d->mNextPageIndex++;
++  }
++  else if( mFace == TreeList || mFace == IconList )
++  {
++    d->mIntToPage[d->mNextPageIndex] = static_cast<QWidget*>(page);
++    d->mPageToInt[static_cast<QWidget*>(page)] = d->mNextPageIndex;
++    mPageStack->addWidget( page, 0 );
++
++    if (items.isEmpty()) {
++      kdDebug() << "Invalid QStringList, with zero items" << endl;
++      return;
++    }
++
++    if( mFace == TreeList )
++    {
++      InsertTreeListItem(items, pixmap, page);
++    }
++    else // mFace == IconList
++    {
++      QString itemName = items.last();
++      IconListItem *item = new IconListItem( mIconList, pixmap, itemName );
++      mIconListToPageStack.insert(item, page);
++      mIconList->invalidateHeight();
++      mIconList->invalidateWidth();
++
++      if (mIconList->isVisible())
++        mIconList->updateWidth();
++    }
++
++    //
++    // Make sure the title label is sufficiently wide
++    //
++    QString lastName = items.last();
++    const QString &title = (!header.isNull() ? header : lastName);
++    QRect r = mTitleLabel->fontMetrics().boundingRect( title );
++    if( mTitleLabel->minimumWidth() < r.width() )
++    {
++      mTitleLabel->setMinimumWidth( r.width() );
++    }
++    d->mIntToTitle[d->mNextPageIndex] = title;
++    if( d->mIntToTitle.count() == 1 )
++    {
++      showPage(0);
++    }
++    d->mNextPageIndex++;
++  }
++  else
++  {
++    kdDebug() << "KJanusWidget::addPageWidget: can only add a page in Tabbed, TreeList or IconList modes" << endl;
++  }
++
++}
++
++void KJanusWidget::setFolderIcon(const QStringList &path, const QPixmap &pixmap)
++{
++  QString key = path.join("_/_");
++  mFolderIconMap.insert(key,pixmap);
++}
++
++
++
++bool KJanusWidget::setSwallowedWidget( QWidget *widget )
++{
++  if( mFace != Swallow || !mValid )
++  {
++    return false;
++  }
++
++  //
++  // Remove current layout and make a new.
++  //
++  delete mSwallowPage->layout();
++
++  QGridLayout *gbox = new QGridLayout( mSwallowPage, 1, 1, 0 );
++
++  //
++  // Hide old children
++  //
++  QObjectList *l = (QObjectList*)mSwallowPage->children(); // silence please
++  for( uint i=0; i < l->count(); i++ )
++  {
++    QObject *o = l->at(i);
++    if( o->isWidgetType() )
++    {
++      ((QWidget*)o)->hide();
++    }
++  }
++
++  //
++  // Add new child or make default size
++  //
++  if( !widget )
++  {
++    gbox->addRowSpacing(0,100);
++    gbox->addColSpacing(0,100);
++    mSwallowPage->setMinimumSize(100,100);
++  }
++  else
++  {
++    if( widget->parent() != mSwallowPage )
++    {
++      widget->reparent( mSwallowPage, 0, QPoint(0,0) );
++    }
++    gbox->addWidget(widget, 0, 0 );
++    gbox->activate();
++    mSwallowPage->setMinimumSize( widget->minimumSize() );
++  }
++
++  return true;
++}
++
++bool KJanusWidget::slotShowPage()
++{
++  if( !mValid )
++  {
++    return false;
++  }
++
++  if( mFace == TreeList )
++  {
++    QListViewItem *node = mTreeList->selectedItem();
++    if( !node ) { return false; }
++
++    QWidget *stackItem = mTreeListToPageStack[node];
++    // Make sure to call through the virtual function showPage(int)
++    return showPage(d->mPageToInt[stackItem]);
++  }
++  else if( mFace == IconList )
++  {
++    QListBoxItem *node = mIconList->item( mIconList->currentItem() );
++    if( !node ) { return false; }
++    QWidget *stackItem = mIconListToPageStack[node];
++    // Make sure to call through the virtual function showPage(int)
++    return showPage(d->mPageToInt[stackItem]);
++  }
++
++  return false;
++}
++
++
++bool KJanusWidget::showPage( int index )
++{
++  if( !d || !mValid )
++  {
++    return false;
++  }
++  else
++  {
++    return showPage(d->mIntToPage[index]);
++  }
++}
++
++
++bool KJanusWidget::showPage( QWidget *w )
++{
++  if( !w || !mValid )
++  {
++    return false;
++  }
++
++  if( mFace == TreeList || mFace == IconList )
++  {
++    mPageStack->raiseWidget( w );
++    mActivePageWidget = w;
++
++    int index = d->mPageToInt[w];
++    mTitleLabel->setText( d->mIntToTitle[index] );
++    if( mFace == TreeList )
++    {
++      QMap<QListViewItem *, QWidget *>::Iterator it;
++      for (it = mTreeListToPageStack.begin(); it != mTreeListToPageStack.end(); ++it){
++        QListViewItem *key = it.key();
++        QWidget *val = it.data();
++        if (val == w) {
++          mTreeList->setSelected(key, true );
++          break;
++        }
++      }
++    }
++    else
++    {
++      QMap<QListBoxItem *, QWidget *>::Iterator it;
++      for (it = mIconListToPageStack.begin(); it != mIconListToPageStack.end(); ++it){
++        QListBoxItem *key = it.key();
++        QWidget *val = it.data();
++        if (val == w) {
++          mIconList->setSelected( key, true );
++          break;
++        }
++      }
++    }
++  }
++  else if( mFace == Tabbed )
++  {
++    mTabControl->showPage(w);
++    mActivePageWidget = w;
++  }
++  else
++  {
++    return false;
++  }
++
++  return true;
++}
++
++
++int KJanusWidget::activePageIndex() const
++{
++  if( mFace == TreeList) {
++    QListViewItem *node = mTreeList->selectedItem();
++    if( !node ) { return -1; }
++    QWidget *stackItem = mTreeListToPageStack[node];
++    return d->mPageToInt[stackItem];
++  }
++  else if (mFace == IconList) {
++    QListBoxItem *node = mIconList->item( mIconList->currentItem() );
++    if( !node ) { return false; }
++    QWidget *stackItem = mIconListToPageStack[node];
++    return d->mPageToInt[stackItem];
++  }
++  else if( mFace == Tabbed ) {
++    QWidget *widget = mTabControl->currentPage();
++    return ( !widget ? -1 : d->mPageToInt[widget] );
++  }
++  else {
++    return -1;
++  }
++}
++
++
++int KJanusWidget::pageIndex( QWidget *widget ) const
++{
++  if( !widget )
++  {
++    return -1;
++  }
++  else if( mFace == TreeList || mFace == IconList )
++  {
++    return d->mPageToInt[widget];
++  }
++  else if( mFace == Tabbed )
++  {
++    //
++    // The user gets the real page widget with addVBoxPage(), addHBoxPage()
++    // and addGridPage() but not with addPage() which returns a child of
++    // the toplevel page. addPage() returns a QFrame so I check for that.
++    //
++    if( widget->isA("QFrame") )
++    {
++      return d->mPageToInt[widget->parentWidget()];
++    }
++    else
++    {
++      return d->mPageToInt[widget];
++    }
++  }
++  else
++  {
++    return -1;
++  }
++}
++
++void KJanusWidget::slotFontChanged()
++{
++  if( mTitleLabel )
++  {
++    mTitleLabel->setFont( KGlobalSettings::generalFont() );
++    QFont titleFont( mTitleLabel->font() );
++    titleFont.setBold( true );
++    mTitleLabel->setFont( titleFont );
++  }
++
++  if( mFace == IconList )
++  {
++    QFont listFont( mIconList->font() );
++    listFont.setBold( true );
++    mIconList->setFont( listFont );
++    mIconList->invalidateHeight();
++    mIconList->invalidateWidth();
++  }
++}
++
++// makes the treelist behave like the list of kcontrol
++void KJanusWidget::slotItemClicked(QListViewItem *it)
++{
++  if(it && (it->childCount()>0))
++    it->setOpen(!it->isOpen());
++}
++
++void KJanusWidget::setFocus()
++{
++  if( !mValid ) { return; }
++  if( mFace == TreeList )
++  {
++    mTreeList->setFocus();
++  }
++  if( mFace == IconList )
++  {
++    mIconList->setFocus();
++  }
++  else if( mFace == Tabbed )
++  {
++    mTabControl->setFocus();
++  }
++  else if( mFace == Swallow )
++  {
++    mSwallowPage->setFocus();
++  }
++  else if( mFace == Plain )
++  {
++    mPlainPage->setFocus();
++  }
++}
++
++
++QSize KJanusWidget::minimumSizeHint() const
++{
++  if( mFace == TreeList || mFace == IconList )
++  {
++    QSize s1( KDialog::spacingHint(), KDialog::spacingHint()*2 );
++    QSize s2(0,0);
++    QSize s3(0,0);
++    QSize s4( mPageStack->sizeHint() );
++
++    if( mFace == TreeList )
++    {
++      s1.rwidth() += style().pixelMetric( QStyle::PM_SplitterWidth );
++      s2 = mTreeList->minimumSize();
++    }
++    else
++    {
++      mIconList->updateMinimumHeight();
++      mIconList->updateWidth();
++      s2 = mIconList->minimumSize();
++    }
++
++    if( mTitleLabel->isVisible() )
++    {
++      s3 += mTitleLabel->sizeHint();
++      s3.rheight() += mTitleSep->minimumSize().height();
++    }
++
++    //
++    // Select the tallest item. It has only effect in IconList mode
++    //
++    int h1 = s1.rheight() + s3.rheight() + s4.height();
++    int h2 = QMAX( h1, s2.rheight() );
++
++    return QSize( s1.width()+s2.width()+QMAX(s3.width(),s4.width()), h2 );
++  }
++  else if( mFace == Tabbed )
++  {
++    return mTabControl->sizeHint();
++  }
++  else if( mFace == Swallow )
++  {
++    return mSwallowPage->minimumSize();
++  }
++  else if( mFace == Plain )
++  {
++    return mPlainPage->sizeHint();
++  }
++  else
++  {
++    return QSize( 100, 100 ); // Should never happen though.
++  }
++
++}
++
++
++QSize KJanusWidget::sizeHint() const
++{
++  return minimumSizeHint();
++}
++
++
++void KJanusWidget::setTreeListAutoResize( bool state )
++{
++  if( mFace == TreeList )
++  {
++    mTreeListResizeMode = !state ?
++      QSplitter::KeepSize : QSplitter::Stretch;
++    if( d->mSplitter )
++      d->mSplitter->setResizeMode( d->mListFrame, mTreeListResizeMode );
++  }
++}
++
++
++void KJanusWidget::setIconListAllVisible( bool state )
++{
++  if( mFace == IconList )
++  {
++    mIconList->setShowAll( state );
++  }
++}
++
++void KJanusWidget::setShowIconsInTreeList( bool state )
++{
++  mShowIconsInTreeList = state;
++}
++
++void KJanusWidget::setRootIsDecorated( bool state )
++{
++  if( mFace == TreeList ) {
++    mTreeList->setRootIsDecorated(state);
++  }
++}
++
++void KJanusWidget::unfoldTreeList( bool persist )
++{
++  if( mFace == TreeList )
++  {
++    if( persist )
++      connect( mTreeList, SIGNAL( collapsed( QListViewItem * ) ), this, SLOT( slotReopen( QListViewItem * ) ) );
++    else
++      disconnect( mTreeList, SIGNAL( collapsed( QListViewItem * ) ), this, SLOT( slotReopen( QListViewItem * ) ) );
++
++    for( QListViewItem * item = mTreeList->firstChild(); item; item = item->itemBelow() )
++      item->setOpen( true );
++  }
++}
++
++void KJanusWidget::addWidgetBelowList( QWidget * widget )
++{
++  if( ( mFace == TreeList || mFace == IconList ) && d->mListFrame )
++  {
++    widget->reparent( d->mListFrame, QPoint() );
++  }
++}
++
++void KJanusWidget::addButtonBelowList( const QString & text, QObject * recv, const char * slot )
++{
++  if( ( mFace == TreeList || mFace == IconList ) && d->mListFrame )
++  {
++    QPushButton * button = new QPushButton( text, d->mListFrame, "KJanusWidget::buttonBelowList" );
++    connect( button, SIGNAL( clicked() ), recv, slot );
++  }
++}
++
++void KJanusWidget::addButtonBelowList( const KGuiItem & item, QObject * recv, const char * slot )
++{
++  if( ( mFace == TreeList || mFace == IconList ) && d->mListFrame )
++  {
++    KPushButton * button = new KPushButton( item, d->mListFrame, "KJanusWidget::buttonBelowList" );
++    connect( button, SIGNAL( clicked() ), recv, slot );
++  }
++}
++
++void KJanusWidget::showEvent( QShowEvent * )
++{
++  if( mFace == TreeList )
++  {
++    if( d->mSplitter )
++      d->mSplitter->setResizeMode( d->mListFrame, mTreeListResizeMode );
++  }
++}
++
++
++//
++// 2000-13-02 Espen Sand
++// It should be obvious that this eventfilter must only be
++// be installed on the vertical scrollbar of the mIconList.
++//
++bool KJanusWidget::eventFilter( QObject *o, QEvent *e )
++{
++  if( e->type() == QEvent::Show )
++  {
++    IconListItem *item = (IconListItem*)mIconList->item(0);
++    if( item )
++    {
++      int lw = item->width( mIconList );
++      int sw = mIconList->verticalScrollBar()->sizeHint().width();
++      mIconList->setFixedWidth( lw+sw+mIconList->frameWidth()*2 );
++    }
++  }
++  else if( e->type() == QEvent::Hide )
++  {
++    IconListItem *item = (IconListItem*)mIconList->item(0);
++    if( item )
++    {
++      int lw = item->width( mIconList );
++      mIconList->setFixedWidth( lw+mIconList->frameWidth()*2 );
++    }
++  }
++  return QWidget::eventFilter( o, e );
++}
++
++
++
++//
++// Code for the icon list box
++//
++
++
++KJanusWidget::IconListBox::IconListBox( QWidget *parent, const char *name,
++					WFlags f )
++  :KListBox( parent, name, f ), mShowAll(false), mHeightValid(false),
++   mWidthValid(false)
++{
++}
++
++
++void KJanusWidget::IconListBox::updateMinimumHeight()
++{
++  if( mShowAll && !mHeightValid )
++  {
++    int h = frameWidth()*2;
++    for( QListBoxItem *i = item(0); i; i = i->next() )
++    {
++      h += i->height( this );
++    }
++    setMinimumHeight( h );
++    mHeightValid = true;
++  }
++}
++
++
++void KJanusWidget::IconListBox::updateWidth()
++{
++  if( !mWidthValid )
++  {
++    int maxWidth = 10;
++    for( QListBoxItem *i = item(0); i; i = i->next() )
++    {
++      int w = ((IconListItem *)i)->width(this);
++      maxWidth = QMAX( w, maxWidth );
++    }
++
++    for( QListBoxItem *i = item(0); i; i = i->next() )
++    {
++      ((IconListItem *)i)->expandMinimumWidth( maxWidth );
++    }
++
++    if( verticalScrollBar()->isVisible() )
++    {
++      maxWidth += verticalScrollBar()->sizeHint().width();
++    }
++
++    setFixedWidth( maxWidth + frameWidth()*2 );
++    mWidthValid = true;
++  }
++}
++
++
++void KJanusWidget::IconListBox::invalidateHeight()
++{
++  mHeightValid = false;
++}
++
++
++void KJanusWidget::IconListBox::invalidateWidth()
++{
++  mWidthValid = false;
++}
++
++
++void KJanusWidget::IconListBox::setShowAll( bool showAll )
++{
++  mShowAll = showAll;
++  mHeightValid = false;
++}
++
++
++
++KJanusWidget::IconListItem::IconListItem( QListBox *listbox, const QPixmap &pixmap,
++                                          const QString &text )
++  : QListBoxItem( listbox )
++{
++  mPixmap = pixmap;
++  if( mPixmap.isNull() )
++  {
++    mPixmap = defaultPixmap();
++  }
++  setText( text );
++  mMinimumWidth = 0;
++}
++
++
++int KJanusWidget::IconListItem::expandMinimumWidth( int width )
++{
++  mMinimumWidth = QMAX( mMinimumWidth, width );
++  return mMinimumWidth;
++}
++
++
++const QPixmap &KJanusWidget::IconListItem::defaultPixmap()
++{
++  static QPixmap *pix=0;
++  if( !pix )
++  {
++    pix = new QPixmap( 32, 32 );
++    QPainter p( pix );
++    p.eraseRect( 0, 0, pix->width(), pix->height() );
++    p.setPen( Qt::red );
++    p.drawRect ( 0, 0, pix->width(), pix->height() );
++    p.end();
++
++    QBitmap mask( pix->width(), pix->height(), true );
++    mask.fill( Qt::black );
++    p.begin( &mask );
++    p.setPen( Qt::white );
++    p.drawRect ( 0, 0, pix->width(), pix->height() );
++    p.end();
++
++    pix->setMask( mask );
++  }
++  return *pix;
++}
++
++
++void KJanusWidget::IconListItem::paint( QPainter *painter )
++{
++  QFontMetrics fm = painter->fontMetrics();
++  int ht = fm.boundingRect( 0, 0, 0, 0, Qt::AlignCenter, text() ).height();
++  int wp = mPixmap.width();
++  int hp = mPixmap.height();
++
++  painter->drawPixmap( (mMinimumWidth-wp)/2, 5, mPixmap );
++  if( !text().isEmpty() )
++  {
++    painter->drawText( 0, hp+7, mMinimumWidth, ht, Qt::AlignCenter, text() );
++  }
++}
++
++int KJanusWidget::IconListItem::height( const QListBox *lb ) const
++{
++  if( text().isEmpty() )
++  {
++    return mPixmap.height();
++  }
++  else
++  {
++    int ht = lb->fontMetrics().boundingRect( 0, 0, 0, 0, Qt::AlignCenter, text() ).height();
++    return (mPixmap.height() + ht + 10);
++  }
++}
++
++
++int KJanusWidget::IconListItem::width( const QListBox *lb ) const
++{
++  int wt = lb->fontMetrics().boundingRect( 0, 0, 0, 0, Qt::AlignCenter, text() ).width() + 10;
++  int wp = mPixmap.width() + 10;
++  int w  = QMAX( wt, wp );
++  return QMAX( w, mMinimumWidth );
++}
++
++
++void KJanusWidget::virtual_hook( int, void* )
++{ /*BASE::virtual_hook( id, data );*/ }
++
++// TODO: In TreeList, if the last child of a node is removed, and there is no corrsponding widget for that node, allow the caller to
++// delete the node.
++void KJanusWidget::removePage( QWidget *page )
++{
++  if (!d || !d->mPageToInt.contains(page))
++    return;
++
++  int index = d->mPageToInt[page];
++
++  if ( mFace == TreeList )
++  {
++    QMap<QListViewItem*, QWidget *>::Iterator i;
++    for( i = mTreeListToPageStack.begin(); i != mTreeListToPageStack.end(); ++i )
++      if (i.data()==page)
++      {
++        delete i.key();
++        mPageStack->removeWidget(page);
++        mTreeListToPageStack.remove(i);
++        d->mIntToTitle.remove(index);
++        d->mPageToInt.remove(page);
++        d->mIntToPage.remove(index);
++        break;
++      }
++  }
++  else if ( mFace == IconList )
++  {
++    QMap<QListBoxItem*, QWidget *>::Iterator i;
++    for( i = mIconListToPageStack.begin(); i != mIconListToPageStack.end(); ++i )
++      if (i.data()==page)
++      {
++        delete i.key();
++        mPageStack->removeWidget(page);
++        mIconListToPageStack.remove(i);
++        d->mIntToTitle.remove(index);
++        d->mPageToInt.remove(page);
++        d->mIntToPage.remove(index);
++        break;
++      }
++  }
++  else // Tabbed
++  {
++    mTabControl->removePage(page);
++    d->mPageToInt.remove(page);
++    d->mIntToPage.remove(index);
++  }
++}
++
++QString KJanusWidget::pageTitle(int index) const
++{
++  if (!d || !d->mIntToTitle.contains(index))
++    return QString::null;
++  else
++    return d->mIntToTitle[index];
++}
++
++QWidget *KJanusWidget::pageWidget(int index) const
++{
++  if (!d || !d->mIntToPage.contains(index))
++    return 0;
++  else
++    return d->mIntToPage[index];
++}
++
++#include "kjanuswidget.moc"
+diff -purN kdelibs-3.5.2.orig/kdeui/kjanuswidget.h kdelibs-3.5.2/kdeui/kjanuswidget.h
+--- kdelibs-3.5.2.orig/kdeui/kjanuswidget.h	2005-10-10 10:06:38.000000000 -0500
++++ kdelibs-3.5.2/kdeui/kjanuswidget.h	2006-03-28 19:49:20.000000000 -0600
+@@ -71,6 +71,8 @@ class KDEUI_EXPORT KJanusWidget : public
+   private:
+     class IconListBox : public KListBox
+     {
++      friend class KJanusWidget;
++
+       public:
+         IconListBox( QWidget *parent=0, const char *name=0, WFlags f=0 );
+ 	void updateMinimumHeight();
+@@ -79,10 +81,15 @@ class KDEUI_EXPORT KJanusWidget : public
+ 	void invalidateWidth();
+ 	void setShowAll( bool showAll );
+ 
++      protected:
++    	void slotOnItem( QListBoxItem *item );
++	virtual void leaveEvent( QEvent * );
++    
+       private:
+ 	bool mShowAll;
+ 	bool mHeightValid;
+ 	bool mWidthValid;
++	QListBoxItem *mOldItem;	
+     };
+ 
+   public:
+@@ -558,6 +565,8 @@ class KDEUI_EXPORT KJanusWidget : public
+   private slots:
+     bool slotShowPage();
+     void slotFontChanged();
++
++    void slotOnItem(QListBoxItem *item);
+     void slotItemClicked(QListViewItem *it);
+     void pageGone(QObject *obj); // signal from the added page's "destroyed" signal
+     void slotReopen(QListViewItem *item);

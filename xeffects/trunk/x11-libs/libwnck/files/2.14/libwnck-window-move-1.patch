@@ -1,0 +1,150 @@
+diff -ur ../libwnck-2.14.0/libwnck/pager.c ./libwnck/pager.c
+--- ../libwnck-2.14.0/libwnck/pager.c	2006-03-06 19:58:22.000000000 +0100
++++ ./libwnck/pager.c	2006-03-16 16:49:19.000000000 +0100
+@@ -1262,12 +1262,45 @@
+ 
+ 	  if (space)
+             {
++	      gboolean new_on_workspace;
++ 	      int dx, dy;
++
++	      new_on_workspace =
++		!wnck_window_is_on_workspace (pager->priv->drag_window, space); 
++
+               if (wnck_window_get_workspace (pager->priv->drag_window) != space)
+                 pager->priv->action_window = pager->priv->drag_window;
+ 
+               wnck_window_move_to_workspace (pager->priv->drag_window,
+                                              space);
+-              if (space == wnck_screen_get_active_workspace (pager->priv->screen))
++
++	      dx = pager->priv->drag_window_x - pager->priv->drag_start_x;
++	      dy = pager->priv->drag_window_y - pager->priv->drag_start_y;
++
++	      if (dx || dy)
++		{
++		  double       width_ratio, height_ratio;
++		  int	       x, y;
++		  GdkRectangle rect;
++
++		  get_workspace_rect (pager, i, &rect);
++
++		  wnck_window_get_geometry (pager->priv->drag_window,
++					    &x, &y, NULL, NULL);
++
++		  width_ratio = (double) rect.width /
++		    wnck_workspace_get_width (space);
++		  height_ratio = (double) rect.height /
++		    wnck_workspace_get_height (space);
++
++		  x += dx / width_ratio;
++		  y += dy / height_ratio;
++
++		  wnck_window_move (pager->priv->drag_window, x, y);
++		}
++
++              if (new_on_workspace &&
++		  space == wnck_screen_get_active_workspace (pager->priv->screen))
+                 wnck_window_activate (pager->priv->drag_window, event->time);
+             }
+ 	}
+Only in ./libwnck: pager.c.orig
+Only in ./libwnck: pager.c.rej
+diff -ur ../libwnck-2.14.0/libwnck/window.c ./libwnck/window.c
+--- ../libwnck-2.14.0/libwnck/window.c	2006-02-11 09:29:51.000000000 +0100
++++ ./libwnck/window.c	2006-03-16 16:44:49.000000000 +0100
+@@ -1105,6 +1105,20 @@
+                        window->priv->xwindow);
+ }
+ 
++void
++wnck_window_move (WnckWindow *window, int x, int y)
++{
++  g_return_if_fail (WNCK_IS_WINDOW (window));
++
++  _wnck_move_resize (WNCK_SCREEN_XSCREEN (window->priv->screen),
++		     window->priv->xwindow,
++		     TRUE,
++		     FALSE,
++		     x, y,
++		     0, 0);
++}
++
++
+ /**
+  * wnck_window_get_workspace:
+  * @window: a #WnckWindow
+Only in ./libwnck: window.c.orig
+diff -ur ../libwnck-2.14.0/libwnck/window.h ./libwnck/window.h
+--- ../libwnck-2.14.0/libwnck/window.h	2006-01-21 20:52:50.000000000 +0100
++++ ./libwnck/window.h	2006-03-16 16:44:49.000000000 +0100
+@@ -193,6 +193,7 @@
+ void wnck_window_unstick                 (WnckWindow *window);
+ void wnck_window_keyboard_move           (WnckWindow *window);
+ void wnck_window_keyboard_size           (WnckWindow *window);
++void wnck_window_move                    (WnckWindow *window, int x, int y);
+ 
+ WnckWorkspace* wnck_window_get_workspace     (WnckWindow    *window);
+ void           wnck_window_move_to_workspace (WnckWindow    *window,
+Only in ./libwnck: window.h.orig
+diff -ur ../libwnck-2.14.0/libwnck/xutils.c ./libwnck/xutils.c
+--- ../libwnck-2.14.0/libwnck/xutils.c	2006-01-04 00:06:53.000000000 +0100
++++ ./libwnck/xutils.c	2006-03-16 16:44:49.000000000 +0100
+@@ -919,6 +919,38 @@
+ }
+ 
+ void
++_wnck_move_resize (Screen	*screen,
++		   Window	xwindow,
++		   gboolean	move,
++		   gboolean	resize,
++		   int		x,
++		   int		y,
++		   unsigned int width,
++		   unsigned int height)
++{
++  XEvent xev;
++  
++  xev.xclient.type = ClientMessage;
++  xev.xclient.serial = 0;
++  xev.xclient.send_event = True;
++  xev.xclient.display = gdk_display;
++  xev.xclient.window = xwindow;
++  xev.xclient.message_type = _wnck_atom_get ("_NET_MOVERESIZE_WINDOW");
++  xev.xclient.format = 32;
++  xev.xclient.data.l[0] = ((move) ? 3 << 7 : 0) | ((resize) ? 3 << 9 : 0);
++  xev.xclient.data.l[1] = x;
++  xev.xclient.data.l[2] = y;
++  xev.xclient.data.l[3] = width;
++  xev.xclient.data.l[4] = height;
++
++  XSendEvent (gdk_display,
++              RootWindowOfScreen (screen),
++              False,
++              SubstructureRedirectMask | SubstructureNotifyMask,
++              &xev); 
++}
++
++void
+ _wnck_change_state (Screen  *screen,
+ 		    Window   xwindow,
+                     gboolean add,
+diff -ur ../libwnck-2.14.0/libwnck/xutils.h ./libwnck/xutils.h
+--- ../libwnck-2.14.0/libwnck/xutils.h	2005-06-16 19:32:36.000000000 +0200
++++ ./libwnck/xutils.h	2006-03-16 16:44:49.000000000 +0100
+@@ -126,6 +126,15 @@
+ void   _wnck_keyboard_size    (Screen *screen,
+                                Window  xwindow);
+ 
++void _wnck_move_resize (Screen	     *screen,
++			Window	     xwindow,
++			gboolean     move,
++			gboolean     resize,
++			int	     x,
++			int	     y,
++			unsigned int width,
++			unsigned int height);
++
+ void _wnck_toggle_showing_desktop (Screen  *screen,
+                                    gboolean show);
+ 

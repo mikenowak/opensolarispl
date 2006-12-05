@@ -1,0 +1,20 @@
+Index: libwnck/window.c
+===================================================================
+RCS file: /cvs/gnome/libwnck/libwnck/window.c,v
+retrieving revision 1.64
+diff -u -r1.64 window.c
+--- libwnck/window.c	28 Mar 2006 21:49:20 -0000	1.64
++++ libwnck/window.c	6 Apr 2006 09:38:00 -0000
+@@ -2081,6 +2081,12 @@
+     window->priv->actions |=
+         WNCK_WINDOW_ACTION_MAXIMIZE   |
+         WNCK_WINDOW_ACTION_UNMAXIMIZE;
++
++  /* There's no _NET_WM_ACTION_ABOVE hint so always add it if
++     window manager claims to support_NET_WM_STATE_ABOVE */
++  if (wnck_screen_net_wm_supports (wnck_window_get_screen (window),
++				   "_NET_WM_STATE_ABOVE"))
++      window->priv->actions |= WNCK_WINDOW_ACTION_ABOVE;
+ }
+ 
+ static void

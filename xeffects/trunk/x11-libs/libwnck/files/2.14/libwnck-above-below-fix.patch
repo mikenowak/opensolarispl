@@ -1,0 +1,22 @@
+--- libwnck/window.c	2006-06-17 16:37:58.000000000 +0200
++++ libwnck/window.c	2006-06-17 16:38:36.000000000 +0200
+@@ -1097,6 +1097,9 @@ wnck_window_make_above (WnckWindow *wind
+ {
+   g_return_if_fail (WNCK_IS_WINDOW (window));
+ 
++  if ( wnck_window_is_below ( window ) )
++    wnck_window_unmake_below ( window );
++
+   _wnck_change_state (WNCK_SCREEN_XSCREEN (window->priv->screen),
+                       window->priv->xwindow,
+                       TRUE,
+@@ -1121,6 +1124,9 @@ wnck_window_make_below (WnckWindow *wind
+ {
+   g_return_if_fail (WNCK_IS_WINDOW (window));
+ 
++  if ( wnck_window_is_above ( window ) )
++    wnck_window_unmake_above ( window );
++
+   _wnck_change_state (WNCK_SCREEN_XSCREEN (window->priv->screen),
+                       window->priv->xwindow,
+                       TRUE,
