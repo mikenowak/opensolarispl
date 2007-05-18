@@ -277,69 +277,56 @@ tank/home        compression    on                         local</screen>
 </para>
 </step>
 <step>
-<para>Create the individual file systems.</para>
-<para>Note that the
-file systems could have been created and then the properties could have been
-changed at the <filename>home</filename> level. All properties can be changed
-dynamically while file systems are in use.</para>
+<para>Tworzenie pojedycznych systemów plików.</para>
+<para>Należy zauważyć, że można było zarówno utworzyć systemy plików, jak i ustalić ich właściwości na poziomie <filename>home</filename>. Wszystkie własciwości można zmieniać dynamicznie, w trakcie użytkowania systemów plików.</para>
 <screen># <userinput>zfs create tank/home/bonwick</userinput>
 # <userinput>zfs create tank/home/billm</userinput>
 </screen>
-<para>These file systems inherit their property settings from their parent,
-so they are automatically mounted at <filename>/export/zfs/</filename>
-<replaceable>user</replaceable> and are NFS shared. You do not need to edit the <filename>/etc/vfstab</filename> or <filename>/etc/dfs/dfstab</filename> file.</para>
-<para>For
-more information about creating file systems, see <olink targetdoc="" remap="internal" targetptr="gazsf">Creating a ZFS File System</olink>.</para>
-<para>For more information about mounting
-and sharing file systems, see <olink targetdoc="" remap="internal" targetptr="gaynd">Mounting and Sharing ZFS File Systems</olink>.</para>
+<para>Powyższe systemy plików dziedziczą swoje właściwości od swoiego rodzica, zatem ich punkt montowania został automatycznie ustalony na <filename>/export/zfs/</filename>
+<replaceable>user</replaceable> i są wspóldzielone za pośrednictwem NFS-a. Nie ma potrzeby dokonywania zmian w plikach <filename>/etc/vfstab</filename> i <filename>/etc/dfs/dfstab</filename>.</para>
+<para>Więcej informacji o tworzeniu systemów plików w <olink targetdoc="" remap="internal" targetptr="gazsf">tworzeniu systemów plików ZFS</olink>.</para>
+<para>Więcej informacji o montowaniu i współdzieleniu systemu plików w <olink targetdoc="" remap="internal" targetptr="gaynd">montowaniu i współdzieleniu systemów plików ZFS</olink>.</para>
 </step>
 <step>
-<para>Set the file system-specific properties.</para>
-<para>In this example,
-user <filename>bonwick</filename> is assigned a quota of 10 Gbytes. This property
-places a limit on the amount of space he can consume, regardless of how much
-space is available in the pool.<indexterm xml:id="indexterm-65">
+<para>Ustalenie właściwości charakterystycznych dla systemu plików.</para>
+<para>W tym przykładzie użytkownikowi <filename>bonwick</filename> ustala się limit w wysokości 10 GB. Oznacza to, że ilość miejsca, które może zapełnić, wynosi 10GB, niezależnie od tego, ile wolnego miejsca jest w puli.<indexterm xml:id="indexterm-65">
 <primary>
 <command>zfs set quota</command>
 </primary>
-<secondary>(example of)</secondary>
+<secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-66">
-<primary>setting</primary>
-<secondary>
-<property>quota</property> property (example of)</secondary>
+<primary>ustalanie</primary>
+<secondary>własciwości 
+<property>limitu (quota)</property> (przykład)</secondary>
 </indexterm>
 </para>
 <screen># <userinput>zfs set quota=10G tank/home/bonwick</userinput>
 </screen>
 </step>
 <step>
-<para>View the results.</para>
-<para>View available file system information
-by using the <command>zfs list</command> command:</para>
+<para>Sprawdzenie wyników.</para>
+<para>Sprawdzianie informacji o dostępnych systemach plików komendą <command>zfs list</command> command:</para>
 <screen># <userinput>zfs list</userinput>
 NAME                   USED  AVAIL  REFER  MOUNTPOINT
 tank                  92.0K  67.0G   9.5K  /tank
 tank/home             24.0K  67.0G     8K  /export/zfs
 tank/home/billm          8K  67.0G     8K  /export/zfs/billm
 tank/home/bonwick        8K  10.0G     8K  /export/zfs/bonwick</screen>
-<para>Note that the user <filename>bonwick</filename> only has 10 Gbytes of
-space available, while the user <filename>billm</filename> can use the full
-pool (67 Gbytes).<indexterm xml:id="indexterm-67">
+<para>Należy zauważyć, że użytkownik <filename>bonwick</filename> ma dostępne tylko 10GB miejsca, a użytkownik <filename>billm</filename> może używać całej puli (67 GB).<indexterm xml:id="indexterm-67">
 <primary>
 <command>zfs list</command>
 </primary>
-<secondary>(example of)</secondary>
+<secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-68">
-<primary>listing</primary>
-<secondary>ZFS file systems (<command>zfs list</command>)</secondary>
-<tertiary>(example of)</tertiary>
+<primary>listy</primary>
+<secondary>systemów plików ZFS(<command>zfs list</command>)</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>For more information about viewing file system status,
-see <olink targetdoc="" remap="internal" targetptr="gazsu">Querying ZFS File System Information</olink>. </para>
-<para>For more information about how space is used and calculated, see <olink targetdoc="" remap="internal" targetptr="gbchp">ZFS Space Accounting</olink>.</para>
+<para>Więcej informacji o sprawdzaniu statusu systemów plików w <olink targetdoc="" remap="internal" targetptr="gazsu">sprawdzaniu informacji o systemie plików ZFS</olink>. </para>
+<para>Więcej informacji o obliczaniu zużycia miejsca w <olink targetdoc="" remap="internal" targetptr="gbchp">śledzeniu żużycia miejsca w ZFS</olink>.</para>
 </step>
 </procedure>
 </task>
