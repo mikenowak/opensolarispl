@@ -132,69 +132,57 @@ tank/fs                 80G   100M    80G     1%    /tank/fs</screen>
 </step>
 <step>
 <para>Wybór nazwy dla puli.</para>
-<para>The pool name is used to identify
-the storage pool when you are using the <command>zpool</command> or <command>zfs</command> commands.
-Most systems require only a single pool, so you can pick any name that you
-prefer, provided it satisfies the naming requirements outlined in <olink targetdoc="" remap="internal" targetptr="gbcpt">ZFS Component Naming Requirements</olink>. </para>
+<para>Nazwa puli służy do indentyfikacji puli przy pracy z komendami <command>zpool</command> i <command>zfs</command>.
+Większość systemów wymaga pojedynczej puli, można zatem wybrać dowolną nazwę, przy zachowaniu wymagań nazewniczych wymienionych w <olink targetdoc="" remap="internal" targetptr="gbcpt">wymaganiach nazewniczych komponentów ZFS</olink>. </para>
 </step>
 <step>
-<para>Create the pool.</para>
-<para>For example, create a mirrored pool
-that is named <literal>tank</literal>.<indexterm xml:id="indexterm-52">
+<para>Stworzenie puli.</para>
+<para>Stwórzmy na przykład pulę nazwaną <literal>tank</literal>.<indexterm xml:id="indexterm-52">
 <primary>
 <command>zpool create</command>
 </primary>
-<secondary>(example of)</secondary>
+<secondary>(przykład)</secondary>
 </indexterm>
 </para>
 <screen># <userinput>zpool create tank mirror c1t0d0 c1t1d0</userinput>
 </screen>
-<para>If one or more devices contains another file system or is otherwise
-in use, the command cannot create the pool.</para>
-<para>For more information
-about creating storage pools, see <olink targetdoc="" remap="internal" targetptr="gaynr">Creating a ZFS Storage Pool</olink>.</para>
-<para>For more information about how device usage
-is determined, see <olink targetdoc="" remap="internal" targetptr="gazht">Detecting in Use Devices</olink>.</para>
+<para>Jeśli jedno lub więcej urządzeń zawiera już systm plików, bądź jest inaczej używane, komenda nie utworzy puli.</para>
+<para>Więcej informacji o tworzeniu pul w <olink targetdoc="" remap="internal" targetptr="gaynr">tworzeniu pul ZFS</olink>.</para>
+<para>Więcej informacji o ustalaniu użytkowania urządzeń w <olink targetdoc="" remap="internal" targetptr="gazht">wykrywanie używanych urządzeń</olink>.</para>
 </step>
 <step>
-<para>View the results.</para>
-<para>You can determine if your pool was
-successfully created by using the <command>zpool list</command> command.<indexterm xml:id="indexterm-53">
+<para>Sprawdzenie wyników.</para>
+<para>Komendą <command>zpool list</command> można sprawdzić, czy pula została utworzona.<indexterm xml:id="indexterm-53">
 <primary>
 <command>zpool list</command>
 </primary>
-<secondary>(example of)</secondary>
+<secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-54">
-<primary>listing</primary>
-<secondary>ZFS pool information</secondary>
+<primary>lista</primary>
+<secondary>informacji o puli ZFS</secondary>
 </indexterm>
 </para>
 <screen># <userinput>zpool list</userinput>
 NAME                    SIZE    USED   AVAIL    CAP  HEALTH     ALTROOT
 tank                     80G    137K     80G     0%  ONLINE     -</screen>
-<para>For more information about viewing pool status, see <olink targetdoc="" remap="internal" targetptr="gaynp">Querying ZFS Storage Pool Status</olink>.</para>
+<para>Więcej informacji o sprawdzaniu statusu pul w <olink targetdoc="" remap="internal" targetptr="gaynp">sprawdzanie stanu pul ZFS</olink>.</para>
 </step>
 </procedure>
 </task>
 </sect1>
 <sect1 xml:id="gaypa">
-<title>Creating a ZFS File System Hierarchy</title>
-<para>After creating a storage pool to store your data, you can create your
-file system hierarchy. Hierarchies are simple yet powerful mechanisms for
-organizing information. They are also very familiar to anyone who has used
-a file system.<indexterm xml:id="indexterm-55">
-<primary>creating</primary>
-<secondary>ZFS file system hierarchy</secondary>
+<title>Tworzenie hierarchii systemu plików ZFS</title>
+<para>Po stworzeniu puli dla danych, można stworzyć system plików. Hierarchiczna struktura to prosty ale potężny mechanizm organizacji informacji. Jest do tego znajoma wszystkim, którzy używali systemu plików.<indexterm xml:id="indexterm-55">
+<primary>tworzenie</primary>
+<secondary>hierarchii systemów plików ZFS</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-56">
-<primary>file system hierarchy</primary>
-<secondary>creating</secondary>
+<primary>hierarchia systemu plików</primary>
+<secondary>tworzenie</secondary>
 </indexterm>
 </para>
-<para>ZFS allows file systems to be organized into arbitrary hierarchies,
-where each file system has only a single parent. The root of the hierarchy
-is always the pool name. ZFS leverages this hierarchy by supporting property
+<para>ZFS umożliwia organizowanie systemów plików w hierarchie, w których każdy system plików ma tylko jednego rodzica. Korzeniem hierarchii jest zawsze nazwa puli. ZFS leverages this hierarchy by supporting property
 inheritance so that common properties can be set quickly and easily on entire
 trees of file systems.</para>
 <task xml:id="gaypd">
