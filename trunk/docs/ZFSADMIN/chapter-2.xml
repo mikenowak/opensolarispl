@@ -182,121 +182,97 @@ tank                     80G    137K     80G     0%  ONLINE     -</screen>
 <secondary>tworzenie</secondary>
 </indexterm>
 </para>
-<para>ZFS umożliwia organizowanie systemów plików w hierarchie, w których każdy system plików ma tylko jednego rodzica. Korzeniem hierarchii jest zawsze nazwa puli. ZFS leverages this hierarchy by supporting property
-inheritance so that common properties can be set quickly and easily on entire
-trees of file systems.</para>
+<para>ZFS umożliwia organizowanie systemów plików w hierarchie, w których każdy system plików ma tylko jednego rodzica. Korzeniem hierarchii jest zawsze nazwa puli. ZFS wykorzystuje tę hierarchię zezwalając na dziedziczenie właściwości, dzięki czemu można szybko i łatwo ustalić wspólne właściwości dla całego drzewa systemów plików.</para>
 <task xml:id="gaypd">
-<title>Determining the ZFS File System Hierarchy</title>
+<title>Ustalanie hierarchii systemu plików ZFS</title>
 <procedure>
 <step>
-<para>Pick the file system granularity.</para>
-<para>ZFS file systems
-are the central point of administration. They are lightweight and can be created
-easily. A good model to use is a file system per user or project, as this
-model allows properties, snapshots, and backups to be controlled on a per-user
-or per-project basis. </para>
-<para>Two ZFS file systems, <filename>bonwick</filename> and <filename>billm</filename>, are created in <olink targetdoc="" remap="internal" targetptr="gayog">Creating ZFS File Systems</olink>.</para>
-<para>For more information on managing file systems,
-see <olink targetdoc="" remap="internal" targetptr="gavwq">Chapter 5, Managing ZFS File Systems</olink>.</para>
+<para>Wybór ziarnistości systemu plików.</para>
+<para>Systemy plików ZFS są centralnym elementem zarządzania. Są lekkie i łatwo się je tworzy. Dobrym modelem jest używanie jednego systemu plików na jednego użytkownika lub projekt, ponieważ umożliwia kontrolować właściwości, migawki i kopie zapasowe na podstawie użytkownika bądź projektu. </para>
+<para>Stworzono dwa systemy plików , <filename>bonwick</filename> i <filename>billm</filename>, w <olink targetdoc="" remap="internal" targetptr="gayog">tworzeniu systemów plików ZFS</olink>.</para>
+<para>Więcej o zarządzaniu systemami plików w <olink targetdoc="" remap="internal" targetptr="gavwq">Rozdział 5, zarządzania systemami plików ZFS</olink>.</para>
 </step>
 <step>
-<para>Group similar file systems.</para>
-<para>ZFS allows file systems
-to be organized into hierarchies so that similar file systems can be grouped.
-This model provides a central point of administration for controlling properties
-and administering file systems. Similar file systems should be created under
-a common name.</para>
-<para>For the example in <olink targetdoc="" remap="internal" targetptr="gayog">Creating ZFS File Systems</olink>, the two file systems are placed under a file system
-named <filename>home</filename>. </para>
+<para>Grupy podobnych systemów plików.</para>
+<para>ZFS umożliwia hierarchiczną organizację systemów plików, a zatem podobne systemy plików mogą być grupowane. Model ten wprowadza centralny punkt kontroli właściwości i zarządzania systemami plików. Podobne systemy plików należy tworzyć pod podobną nazwą.</para>
+<para>Na przykład, w <olink targetdoc="" remap="internal" targetptr="gayog">tworzeniu systemów plików ZFS</olink> dwa systemy plików umieszczone są w systemie plików o nazwie <filename>home</filename>. </para>
 </step>
 <step>
-<para>Choose the file system properties.</para>
-<para>Most file system
-characteristics are controlled by using simple properties. These properties
-control a variety of behavior, including where the file systems are mounted,
-how they are shared, if they use compression, and if any quotas are in effect. </para>
-<para>For the example in <olink targetdoc="" remap="internal" targetptr="gayog">Creating ZFS File Systems</olink>,
-all home directories are mounted at <filename>/export/zfs/</filename>
-<replaceable>user</replaceable>, are shared by using NFS, and with compression enabled.
-In addition, a quota of 10 Gbytes on <filename>bonwick</filename> is enforced.</para>
-<para>For more information about properties, see <olink targetdoc="" remap="internal" targetptr="gazss">ZFS Properties</olink>.</para>
+<para>Wybór właściwości systemów plików.</para>
+<para>Większość cech systemów plików kontrolowana jest za pomocą prostych właściwości. Kontrolują one zachowanie włącznie z miejscem montowania systemów plików, sposobu współdzielenia, kompresji oraz użycia limitów (quote). </para>
+<para>Na przykład, w <olink targetdoc="" remap="internal" targetptr="gayog">tworzeniu systemów plików ZFS</olink> wszystkie katalogi domowe zamontowane są w hierarchii <filename>/export/zfs/</filename>
+<replaceable>user</replaceable>, są współdzielone za pośrednictwem NFS-a i mają włączoną kompresję. Dodatkowo ustalono limit w wysokości 10 GB dla <filename>bonwick</filename>.</para>
+<para>Więcej informacji o właściwościach w <olink targetdoc="" remap="internal" targetptr="gazss">właściwościach ZFS</olink>.</para>
 </step>
 </procedure>
 </task>
 <task xml:id="gayog">
-<title>Creating ZFS File Systems</title>
+<title>Tworzenie systemów plików ZFS</title>
 <procedure>
 <step>
-<para>Become root or assume an equivalent role with the appropriate
-ZFS rights profile.</para>
-<para>For more information about the ZFS rights
-profiles, see <olink targetdoc="" remap="internal" targetptr="gbfvq">ZFS Rights Profiles</olink>.</para>
+<para>Zaloguj się jako root, bądź przyjmij rolę z odpowiednimi prawami do ZFS.</para>
+<para>Więcej informacji o profilach praw do ZFS w <olink targetdoc="" remap="internal" targetptr="gbfvq">profilach praw do ZFS</olink>.</para>
 </step>
 <step>
-<para>Create the desired hierarchy.</para>
-<para>In this example, a file
-system that acts as a container for individual file systems is created.<indexterm xml:id="indexterm-57">
+<para>Tworzenie przyjętej hierarchii.</para>
+<para>W tym przykładzie stworzono system plików, który będzie kontenerem dla innych systemów plików.<indexterm xml:id="indexterm-57">
 <primary>
 <command>zfs create</command>
 </primary>
-<secondary>(example of)</secondary>
+<secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-58">
-<primary>creating</primary>
-<secondary>ZFS file system</secondary>
+<primary>tworzenie</primary>
+<secondary>system plików ZFS</secondary>
 </indexterm>
 </para>
 <screen># <userinput>zfs create tank/home</userinput>
 </screen>
-<para>Next, individual file systems are grouped under the <filename>home</filename> file
-system in the pool <filename>tank</filename>.</para>
+<para>Następnie pojedyncze systemy plików zgrupowane będą w systemie plików <filename>home</filename> w puli <filename>tank</filename>.</para>
 </step>
 <step>
-<para>Set the inherited properties.</para>
-<para>After the file system
-hierarchy is established, set up any properties that should be shared among
-all users:</para>
+<para>Ustalenie dziedziczonych właściwości.</para>
+<para>Po ustaleniu hierarchii systemu plików, należy ustalić właściwości spólne dla wszystkich użytkowników:</para>
 <screen># <userinput>zfs set mountpoint=/export/zfs tank/home</userinput>
 # <userinput>zfs set sharenfs=on tank/home</userinput>
 # <userinput>zfs set compression=on tank/home</userinput>
 # <userinput>zfs get compression tank/home</userinput>
 NAME             PROPERTY       VALUE                      SOURCE
 tank/home        compression    on                         local</screen>
-<para>For more information about properties and property inheritance,
-see <olink targetdoc="" remap="internal" targetptr="gazss">ZFS Properties</olink>.<indexterm xml:id="indexterm-59">
+<para>Więcej informacji o właściwościach i ich dziedziczeniu w <olink targetdoc="" remap="internal" targetptr="gazss">właściwościach ZFS</olink>.<indexterm xml:id="indexterm-59">
 <primary>
 <command>zfs set mountpoint</command>
 </primary>
-<secondary>(example of)</secondary>
+<secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-60">
 <primary>
 <command>zfs set sharenfs</command>
 </primary>
-<secondary>(example of)</secondary>
+<secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-61">
 <primary>
 <command>zfs set compression</command>
 </primary>
-<secondary>(example of)</secondary>
+<secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-62">
-<primary>setting</primary>
-<secondary>
-<property>mountpoint</property> property</secondary>
+<primary>ustalanie</primary>
+<secondary> właściwości 
+<property>mountpoint</property></secondary>
 </indexterm>
 <indexterm xml:id="indexterm-63">
-<primary>setting</primary>
-<secondary>
-<property>sharenfs</property> property</secondary>
-<tertiary>(example of)</tertiary>
+<primary>ustalanie</primary>
+<secondary> właściwości 
+<property>sharenfs</property></secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-64">
-<primary>setting</primary>
-<secondary>
-<property>compression</property> property</secondary>
-<tertiary>(example of)</tertiary>
+<primary>ustalanie</primary>
+<secondary> właściwości 
+<property>compression</property></secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 </step>
