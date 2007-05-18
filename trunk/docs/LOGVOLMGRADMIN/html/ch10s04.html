@@ -1,0 +1,25 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>The Affect of Booting Into Single-User Mode on
+RAID-1 Volumes</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch10.html" title="Chapter 10. RAID-1 (Mirror) Volumes (Overview)"><link rel="prev" href="ch10s03.html" title="Creating and Maintaining RAID-1 Volumes"><link rel="next" href="ch10s05.html" title="Scenario&#8212;RAID-1 Volumes (Mirrors)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">The Affect of Booting Into Single-User Mode on
+RAID-1 Volumes</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10s03.html">Prev</a> </td><th width="60%" align="center">Chapter 10. RAID-1 (Mirror) Volumes (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch10s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tipsandtricks-94"></a>The Affect of Booting Into Single-User Mode on
+RAID-1 Volumes</h2></div></div></div>
+
+<a class="indexterm" name="tipsandtricks-ix529"></a>
+<a class="indexterm" name="indexterm-71"></a>
+<p>Sometimes, you may need to boot a system with mirrors for root (<code class="filename">/</code>), <code class="filename">/usr</code>, and <code class="filename">swap</code>, the so-called &#8220;boot&#8221;
+file systems, into single-user mode (by using the <span><strong class="command">boot <code class="option">
+s</code>
+</strong></span> command).
+In this case, these mirrors and possibly all mirrors on the system will appear in
+the &#8220;Needing Maintenance&#8221; state when viewed with the <span><strong class="command">metastat</strong></span> command. Furthermore, if writes occur to these slices, the <span><strong class="command">metastat</strong></span> command shows an increase in dirty regions on the mirrors.</p>
+<p>This situation appears to be potentially dangerous. However, the <span><strong class="command">metasync <code class="option">
+r</code>
+</strong></span> command, which normally runs during boot to resynchronize mirrors,
+is interrupted when the system is booted into single-user mode. Once the system is
+rebooted, the  <span><strong class="command">metasync <code class="option">
+r</code>
+</strong></span> command will run and
+resynchronize all mirrors.</p>
+<p>If this situation is a concern, you can run the <span><strong class="command">metasync <code class="option">
+r</code>
+</strong></span> command manually.</p>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch10.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch10s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Creating and Maintaining RAID-1 Volumes </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Scenario&#8212;RAID-1 Volumes (Mirrors)</td></tr></table></div></body></html>

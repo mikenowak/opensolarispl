@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>How to Convert All LDAP Data to NIS+
+in One Operation - System Administration Guide: Naming and Directory Services (DNS, NIS, and LDAP)</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2006-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Naming and Directory Services (DNS, NIS, and LDAP)<?GenHTML /ReferencePage> > <a href="p61.html">16.&nbsp;&nbsp;Transitioning From NIS+ to LDAP</a> > <a href="p62.html#nisplus2ldap-5">Getting Started With the NIS+ to LDAP Transition</a> > <a href="p64.html#nisplus2ldap-21">NIS+ to LDAP Migration Scenarios</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p64.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p66.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="nisplus2ldap-proc-25"></a><h4><img src="graphics/procedure.gif"> How to Convert All LDAP Data to NIS+
+in One Operation</h4>
+<ol><li><a name="nisplus2ldap-step-26"></a><b>Use the <tt>rpc.nisd</tt> to
+download all LDAP data to NIS+, overwriting existing NIS+ data.</b><p>Assuming
+all NIS+/LDAP data mappings have been established in the default location
+(<tt>/var/nis/NIS+LDAPmapping</tt>), use the following command.</p><pre># <tt><b>/usr/sbin/rpc.nisd</b></tt> <tt>-D</tt> <tt><b>\</b></tt>
+<tt><b></b></tt><tt>-x</tt> <tt><b>nisplusLDAPinitialUpdateAction=from_ldap \</b></tt>
+<tt><b></b></tt><tt>-x</tt> <tt><b>nisplusLDAPinitialUpdateOnly=yes</b></tt></pre><p>The above would make the <tt>rpc.nisd</tt> daemon download
+data from LDAP, and then exit. The LDAP data would be unaffected by this operation.</p><p>See the <tt>nisplusLDAPinitialUpdateAction</tt> attribute
+on <tt>rpc.nisd</tt>(4).</p></li></ol><a name="nisplus2ldap-28"></a><h4>Merging NIS+ and LDAP Data</h4>
+<p><a href="p64.html#nisplus2ldap-21">NIS+ to LDAP Migration Scenarios</a> showed
+how to synchronize NIS+ and LDAP data when data conflicts between the two
+should be resolved by letting either the NIS+ or the LDAP data be authoritative.
+Merging data requires a more complicated procedure.</p>
+<p>The example procedure in this section assumes the following.</p>
+<ul><li><p>You are putting a backup of the NIS+ data in the <tt>/nisbackup</tt> directory.</p>
+</li>
+<li><p>Valid mapping configuration already exists in <tt>/etc/default/rpc.nisd</tt> and <tt>/var/nis/tmpmap</tt> (for tables that should
+be merged).</p>
+</li>
+<li><p>Flat file representations of the NIS+ data before the merge
+are stored in <tt>/before</tt>, and after-merge representations
+in <tt>/after</tt>.</p>
+</li>
+<li><p><tt>niscat</tt> is used to dump flat file representations
+of custom NIS+ tables not supported by <tt>nisaddent</tt>(1M). You might have your own
+commands or scripts for dumping and loading such custom tables from and to
+NIS+. If so, those commands/scripts should be used in preference to <tt>niscat</tt> since the latter has no convenient counterpart to load data back
+into NIS+.</p>
+<p>If you are forced to dump data using <tt>niscat</tt>(1), you can use <tt>nistbladm</tt>(1) to load entries
+back into NIS+ one by one.</p>
+</li>
+<li><p>Your command path includes <tt>/usr/lib/nis</tt> (which
+is where <tt>nisaddent</tt>(1M) resides).</p>
+</li>
+</ul>
+<a name="nisplus2ldap-proc-29"></a><h4><img src="graphics/procedure.gif"> How to Merge NIS+ and LDAP Data</h4>
+<hr>
+<p><b>Caution - </b>If the LDAP data should change between the download in Step
+4 and the upload in Step 10, the upload might overwrite those changes. For
+this reason, you should try to prevent modifications to the LDAP data during
+this procedure. Consult your LDAP server documentation for more information.</p>
+<hr>
+<ol><li><a name="nisplus2ldap-step-30"></a><b>Back up all NIS+ data using the <tt>nisbackup</tt> command.</b><pre># <tt><b>nisbackup</b></tt> <tt>-a</tt> <tt><b>/nisbackup</b></tt></pre></li><li><a name="nisplus2ldap-step-31"></a><b>Identify the NIS+ tables that have data
+which must be merged with LDAP. Dump the contents of these tables to flat
+files. For example, dump the contents of <tt>group.org_dir</tt> by
+using <tt>nisaddent</tt> as follows.</b><pre># <tt><b>nisaddent</b></tt> <tt>-d</tt> <tt><b>group | sort > /before/group</b></tt></pre><p>Piping the <tt>nisaddent</tt> output to <tt>sort</tt> will
+make for convenient comparison later on.</p></li><li><a name="nisplus2ldap-step-32"></a><b>Stop the NIS+ service.</b><pre># <tt><b>svcadm disable network/rpc/nisplus:default</b></tt></pre></li><li><a name="nisplus2ldap-step-33"></a><b>Download LDAP data to NIS+.</b><pre># <tt><b>/usr/sbin/rpc.nisd</b></tt> <tt>-D</tt> <tt><b></b></tt><tt>-m</tt> <tt><b>tmpmap \</b></tt>
+<tt><b></b></tt><tt>-x</tt> <tt><b>nisplusLDAPinitialUpdateAction=from_ldap \</b></tt>
+<tt><b></b></tt><tt>-x</tt> <tt><b>nisplusLDAPinitialUpdateOnly=yes</b></tt></pre></li><li><a name="nisplus2ldap-step-34"></a><b>Start the NIS+ service.</b><pre># <tt><b>svcadm enable network/rpc/nisplus:default</b></tt></pre><p>The <tt>rpc.nisd</tt> daemon will now be serving the data
+downloaded from LDAP. If the conflicts to be resolved are such that NIS+ clients
+should not be exposed to them, make sure to perform this and the following
+steps when there are few (preferably no) active NIS+ clients.</p></li><li><a name="nisplus2ldap-step-35"></a><b>Dump the NIS+ data for the affected
+tables.</b><p>The following example uses the <tt>group.org_dir</tt> table.</p><pre># <tt><b>nisaddent</b></tt> <tt>-d</tt> <tt><b>group | sort > /after/group</b></tt></pre></li><li><a name="nisplus2ldap-step-36"></a><b>Create merged versions of the tables.</b><p>Use the file merge procedure of your choice to produce the merged tables.
+If no other tools are available, you can use <tt>diff</tt>(1) to collect differences between the <tt>/before</tt> and <tt>/after</tt> files, and merge manually with a text editor.</p><p>The
+following example assumes that the merged results are available in <tt>/after</tt>.</p></li><li><a name="nisplus2ldap-step-37"></a><b>Load the merged data into NIS+. The
+following example uses the <tt>group</tt> table.</b><pre># <tt><b>nisaddent</b></tt> <tt>-m</tt> <tt><b></b></tt><tt>-f</tt> <tt><b>/after/group group</b></tt></pre></li><li><a name="nisplus2ldap-step-38"></a><b>Remove LDAP entries that should not
+exist after the merge.</b><p>A. If there are LDAP entries that do not
+exist in the (now merged) NIS+ data, and that should not exist in LDAP after
+the upload, you must remove those LDAP entries.</p><p>Your LDAP server
+might provide a convenient method for removing multiple entries, such as a
+way to delete all entries in a container. If this is not the case, you can
+use <tt>ldapsearch</tt>(1) to
+generate a list of entries for each container. For example, to generate a
+list of all entries in the <tt>ou=Rpc</tt> container, use <tt>ldapsearch</tt>(1) as follows.</p><pre># <tt><b>ldapsearch</b></tt> <tt>-h</tt> <tt><b></tt><i>server-address</i><tt></b></tt> <tt>-D</tt> <tt><b></tt><i>bind-DN</i><tt></b></tt> <tt>-w</tt> <tt><b></tt><i>password</i><tt> \</b></tt>
+<tt><b></b></tt><tt>-b</tt> <tt><b>ou=Rpc,</tt><i>search-base</i><tt> 'objectClass=*' dn | \</b></tt>
+<tt><b>grep</b></tt> <tt>-i</tt> <tt><b>ou=Rpc | grep</b></tt> <tt>-v</tt> <tt><b></b></tt><tt>-i</tt> <tt><b>\^ou=Rpc > \</b></tt>
+<tt><b>/tmp/delete-dn</b></tt></pre><p>See <a href="p66.html#nisplus2ldap-48">Performance and Indexing</a> for
+an explanation of the meta-arguments (<i>server-address</i>, <i>bind-DN</i>, for example).</p><p>B. You can now edit the result
+file (<tt>/tmp/delete-dn</tt>) to specify only those entries that
+should be removed. Alternatively, in order to remove all entries in the container,
+use the file as is, and rely on the NIS+ upload to restore the LDAP data.
+Either way, you should backup the LDAP data before performing the <tt>ldapdelete</tt> operation below.</p><p>C. Use <tt>ldapdelete</tt> to
+remove LDAP entries, redirecting <tt>stdout</tt> (which usually
+is one blank line for each entry removed) to <tt>/dev/null</tt>.</p><pre># <tt><b>ldapdelete</b></tt> <tt>-h</tt> <tt><b></tt><i>server-address</i><tt></b></tt> <tt>-D</tt> <tt><b></tt><i>bind-DN</i><tt></b></tt> <tt>-w</tt> <tt><b></tt><i>password</i><tt> \</b></tt>
+<tt><b></b></tt><tt>/tmp/delete-dn</tt> <tt><b>/dev/null</b></tt></pre><p>D. Repeat the above procedure for each container that has at least one
+entry which must be removed.</p></li><li><a name="nisplus2ldap-step-39"></a><b>Upload the merged NIS+ data to LDAP.</b><ol><li><b>Stop the NIS+ service.</b><pre># <tt><b>svcadm disable network/rpc/nisplus:default</b></tt></pre></li><li><a name="nisplus2ldap-step-3"></a><b>Perform the upload.</b><pre># <tt><b>/usr/sbin/rpc.nisd</b></tt> <tt>-D</tt> <tt><b></b></tt><tt>-m</tt> <tt><b>tmpmap \</b></tt>
+<tt><b></b></tt><tt>-x</tt> <tt><b>nisplusLDAPinitialUpdateAction=to_ldap \</b></tt>
+<tt><b></b></tt><tt>-x</tt> <tt><b>nisplusLDAPinitialUpdateOnly=yes</b></tt></pre></li></ol></li><li><a name="nisplus2ldap-step-4"></a><b>(Optional) Modify
+the <tt>/lib/svc/method/nisplus</tt> file as needed.</b><ul><li><p>If the <tt>rpc.nisd</tt> daemon uses the LDAP repository,
+specify an appropriate mapping file with the <tt>-m</tt> <i>mappingfile</i> option, if the default <tt>/var/yp/NIS+LDAPmapping</tt> file
+is not used.</p>
+</li>
+<li><p>If the <tt>rpc.nisd</tt> daemon provides NIS (YP)
+emulation, specify the <tt>-Y</tt> option by using <tt>svcprop</tt> or
+by modifying the <tt>/lib/svc/method/nisplus</tt> file .</p>
+</li>
+</ul>
+<p>See <a href="p61.html#nisplus2ldap-66">NIS+ to LDAP Tools and the Service Management Facility</a> for more information.</p></li><li><a name="nisplus2ldap-step-40"></a><b>Start the NIS+ service.</b><pre># <tt><b>svcadm enable network/rpc/nisplus:default</b></tt></pre></li></ol>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p64.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p66.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2006 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

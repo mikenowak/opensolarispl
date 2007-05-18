@@ -1,0 +1,583 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Using Package Commands to Manage Software Packages</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch20.html" title="Chapter 20. Managing Software by Using Package
+Commands (Tasks)"><link rel="prev" href="ch20s03.html" title="Managing Software Packages by Using Package Commands
+(Task Map)"><link rel="next" href="ch21.html" title="Chapter 21. Managing Solaris Patches and
+Updates (Overview)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Using Package Commands to Manage Software Packages</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch20s03.html">Prev</a> </td><th width="60%" align="center">Chapter 20. Managing Software by Using Package
+Commands (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch21.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ewbej"></a>Using Package Commands to Manage Software Packages</h2></div></div></div>
+
+<p>The following procedures explain how to manage software packages by using package
+commands.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2132822"></a></h3></div></div></div>
+
+<div class="task"><a name="swmgrpkgscli-23"></a><p class="title"><b>How to Add Software Packages (<span><strong class="command">pkgadd</strong></span>)</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles contain authorizations and privileged commands. For more information about roles,
+see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li><a name="swmgrpkgscli-step-25"></a>
+<p>Remove any already installed packages with the
+same names as the packages you are adding.</p>
+<p>
+<a class="indexterm" name="indexterm-340"></a>
+<a class="indexterm" name="indexterm-341"></a>
+<a class="indexterm" name="indexterm-342"></a>
+<a class="indexterm" name="indexterm-343"></a>This step ensures that the system keeps a proper record of software
+that has been added and removed. Sometimes, you might want to maintain multiple versions
+of the same application on the system. For strategies on maintaining multiple software
+copies, see <span class="olink">Guidelines for Removing Packages (<span><strong class="command">pkgrm</strong></span>)</span>. For task information, see <span class="olink">How to Remove Software Packages (<span><strong class="command">pkgrm</strong></span>)</span>.  </p>
+</li><li><a name="swmgrpkgscli-step-26"></a>
+<p>Add a software package to the system.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgadd -a</code></strong> <em class="replaceable"><code>admin-file</code></em> <strong class="userinput"><code>-d</code></strong> <em class="replaceable"><code>device-name</code></em> <em class="replaceable"><code>pkgid</code></em> ...</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+a</code> <em class="replaceable"><code>admin-file</code></em>
+</span></dt><dd>
+<p>(Optional) Specifies an administration file that the <span><strong class="command">pkgadd</strong></span> command should check during the installation. For details about using an
+administration file, see <span class="olink">Using an Administration File</span>.</p>
+</dd><dt><span class="term">
+<code class="option">
+d</code> <em class="replaceable"><code>device-name</code></em>
+</span></dt><dd>
+<p>Specifies the absolute path to the software packages. <em class="replaceable"><code>device-name</code></em> can be the path to a device, a directory, or a spool directory.
+If you do not specify the path where the package resides, the <span><strong class="command">pkgadd</strong></span> command
+checks the default spool directory (<code class="filename">/var/spool/pkg</code>). If the package
+is not there, the package installation fails. </p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>pkgid</code></em>
+</span></dt><dd>
+<p>(Optional) Is the name of one or more packages, separated by spaces,
+to be installed. If omitted, the <span><strong class="command">pkgadd</strong></span> command installs all available
+packages from the specified device, directory, or spool directory.</p>
+</dd></dl></div>
+<p>If the <span><strong class="command">pkgadd</strong></span> command encounters a problem during installation
+of the package, it displays a message related to the problem, followed by this prompt: </p>
+<pre class="screen">Do you want to continue with this installation?</pre>
+<p>Respond with <code class="literal">yes</code>, <code class="literal">no</code>, or <code class="literal">quit</code>. If more than one package has been specified, type <code class="literal">no</code> to
+stop the installation of the package being installed. The <span><strong class="command">pkgadd</strong></span> command
+continues to install the other packages. Type <code class="literal">quit</code> to stop the
+installation.</p>
+</li><li><a name="swmgrpkgscli-step-27"></a>
+<p>Verify that the package has been installed successfully.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgchk -v</code></strong> <em class="replaceable"><code>pkgid</code></em>
+</pre>
+<p>If no errors occur, a list of installed files is returned. Otherwise, the <span><strong class="command">pkgchk</strong></span> command reports the error.</p>
+</li></ol></div><div class="example"><a name="swmgrpkgscli-28"></a><p class="title"><b>Example 20.5. Adding Software Packages From a Mounted CD</b></p>
+
+
+<p>
+<a class="indexterm" name="indexterm-344"></a>
+<a class="indexterm" name="indexterm-345"></a>
+<a class="indexterm" name="indexterm-346"></a>The following example shows how install the <code class="filename">SUNWpl5u</code> package
+from a mounted Solaris 10 CD. The example also shows how to verify that the package
+files were installed properly.    </p>
+<pre class="screen"># <strong class="userinput"><code>pkgadd -d /cdrom/cdrom0/s0/Solaris_10/Product SUNWpl5u</code></strong>
+	.
+	.
+	.
+Installation of &lt;SUNWpl5u&gt; was successful.
+# <strong class="userinput"><code>pkgchk -v SUNWpl5u</code></strong>
+/usr
+/usr/bin
+/usr/bin/perl
+/usr/perl5
+/usr/perl5/5.8.4
+.
+.
+.</pre>
+</div><div class="example"><a name="swmgrpkgscli-29"></a><p class="title"><b>Example 20.6. Installing Software Packages From a Remote Package Server</b></p>
+
+
+<p>If the packages you want to install are available from a remote system, you
+can manually mount the directory that contains the packages (in package format) and
+install packages on the local system.</p>
+<p>
+<a class="indexterm" name="indexterm-347"></a>
+<a class="indexterm" name="indexterm-348"></a>The following example shows
+how to install software packages from a remote system. In this example, assume that
+the remote system named <code class="filename">package-server</code> has software packages
+in the <code class="filename">/latest-packages</code> directory. The <span><strong class="command">mount</strong></span> command
+mounts the packages locally on <code class="filename">/mnt</code>. The <span><strong class="command">pkgadd</strong></span> command
+installs the <code class="filename">SUNWpl5u</code> package.  </p>
+<pre class="screen"># <strong class="userinput"><code>mount -F nfs -o ro package-server:/latest-packages /mnt</code></strong>
+# <strong class="userinput"><code>pkgadd -d /mnt SUNWpl5u</code></strong>
+	.
+	.
+	.
+Installation of &lt;SUNWpl5u&gt; was successful.</pre>
+<p>If the automounter is running at your site, you do not need to mount the remote
+package server manually. Instead, use the automounter path, in this case, <code class="filename">/net/package-server/latest-packages</code>, as the argument to the <span><strong class="command">-d</strong></span> option. </p>
+<pre class="screen"># <strong class="userinput"><code>pkgadd -d /net/package-server/latest-packages SUNWpl5u</code></strong>
+	.
+	.
+	.
+Installation of &lt;SUNWpl5u&gt; was successful.</pre>
+</div><div class="example"><a name="ewiay"></a><p class="title"><b>Example 20.7. Installing Software Packages From a Remote Package Server by Specifying an
+Administration File</b></p>
+
+
+<p>
+<a class="indexterm" name="indexterm-349"></a>
+<a class="indexterm" name="indexterm-350"></a>
+<a class="indexterm" name="indexterm-351"></a>
+<a class="indexterm" name="indexterm-352"></a>
+<a class="indexterm" name="indexterm-353"></a>This example is similar to the previous example,
+except that it uses the <code class="option">
+a</code> option and specifies an administration
+file named <code class="filename">noask-pkgadd</code>, which is illustrated in <span class="olink">Avoiding User Interaction When Adding Packages (<span><strong class="command">pkgadd</strong></span>)</span>. In this example,
+assume that the  <code class="filename">noask-pkgadd</code> administration file is in the default
+location, <code class="filename">/var/sadm/install/admin</code>.  </p>
+<pre class="screen"># <strong class="userinput"><code>pkgadd -a noask-pkgadd -d /net/package-server/latest-packages SUNWpl5u</code></strong>
+	.
+	.
+	.
+Installation of &lt;SUNWpl5u&gt; was successful.</pre>
+</div><div class="example"><a name="swmgrpkgscli-30"></a><p class="title"><b>Example 20.8. Installing Software Packages From an <code class="literal">HTTP</code> URL</b></p>
+
+
+<p>
+<a class="indexterm" name="indexterm-354"></a>The
+following example shows how to install a package using an <code class="literal">HTTP</code> URL
+as the device name. The URL must point to a stream-formatted package.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgadd -d http://install/xf86-4.3.0-video.pkg</code></strong>
+
+## Downloading...
+..............25%..............50%..............75%..............100%
+## Download Complete
+
+
+The following packages are available:
+  1  SUNWxf86r     XFree86 Driver Porting Kit (Root)
+                   (i386) 4.3.0,REV=0.2003.02.28
+  2  SUNWxf86u     XFree86 Driver Porting Kit (User)
+                   (i386) 4.3.0,REV=0.2003.02.28
+
+.
+.
+.</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="swmgrpkgscli-31"></a>Adding a Software Package to a Spool Directory</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-355"></a>For convenience, you can copy frequently
+installed packages to a spool directory. If you copy packages to the default spool
+directory, <code class="filename">/var/spool/pkg</code>, you do not need to specify the source
+location of the package (<code class="option">
+d</code> <em class="replaceable"><code>device-name</code></em> argument)
+when you use the <span><strong class="command">pkgadd</strong></span> command. The <span><strong class="command">pkgadd</strong></span> command,
+by default, checks the <code class="filename">/var/spool/pkg</code> directory for any packages
+that are specified on the command line. Note that copying packages to a spool directory
+is not the same as installing the packages on a system.</p>
+<div class="task"><a name="swmgrpkgscli-32"></a><p class="title"><b>How to Add Software Packages to a Spool Directory
+(<span><strong class="command">pkgadd</strong></span>)</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles contain authorizations and privileged commands. For more information about roles,
+see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li><a name="swmgrpkgscli-step-34"></a>
+<p>Remove any already spooled packages with the
+same names as the packages you are adding.</p>
+<p>
+<a class="indexterm" name="indexterm-356"></a>
+<a class="indexterm" name="indexterm-357"></a>
+<a class="indexterm" name="indexterm-358"></a>
+<a class="indexterm" name="indexterm-359"></a>
+<a class="indexterm" name="indexterm-360"></a>
+<a class="indexterm" name="indexterm-361"></a>For information on removing spooled packages, see <span class="olink">Example 20&#8211;20</span>. </p>
+</li><li><a name="swmgrpkgscli-step-35"></a>
+<p>Add a software package to a spool directory.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgadd -d</code></strong> <em class="replaceable"><code>device-name</code></em> <strong class="userinput"><code>-s</code></strong> <em class="replaceable"><code>spooldir</code></em> <em class="replaceable"><code>pkgid</code></em> ...</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+d</code> <em class="replaceable"><code>device-name</code></em>
+</span></dt><dd>
+<p>Specifies the absolute path to the software packages. <em class="replaceable"><code>device-name</code></em> can be the path to a device, a directory, or a spool directory.</p>
+</dd><dt><span class="term">
+<code class="option">
+s</code> <em class="replaceable"><code>spooldir</code></em>
+</span></dt><dd>
+<p>Specifies the name of the spool directory where the package will be
+spooled. You must specify a <em class="replaceable"><code>spooldir</code></em>. </p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>pkgid</code></em>
+</span></dt><dd>
+<p>(Optional) Is the name of one or more packages, separated by spaces,
+to be added to the spool directory. If omitted, the <span><strong class="command">pkgadd</strong></span> command
+copies all available packages.</p>
+</dd></dl></div>
+</li><li><a name="swmgrpkgscli-step-36"></a>
+<p>Verify that the package has been copied successfully
+to the spool directory.</p>
+<pre class="screen">$ <strong class="userinput"><code>pkginfo -d</code></strong> <em class="replaceable"><code>spooldir</code></em>
+<strong class="userinput"><code>| grep</code></strong> <em class="replaceable"><code>pkgid</code></em>
+</pre>
+<p>If <em class="replaceable"><code>pkgid</code></em> was copied correctly, the <span><strong class="command">pkginfo</strong></span> command returns a line of information about the <em class="replaceable"><code>pkgid</code></em>.
+Otherwise, the <span><strong class="command">pkginfo</strong></span> command returns the system prompt. </p>
+</li></ol></div><div class="example"><a name="id2134264"></a><p class="title"><b>Example 20.9. Setting Up a Spool Directory From a Mounted CD</b></p>
+
+
+<p>
+<a class="indexterm" name="indexterm-362"></a>
+<a class="indexterm" name="indexterm-363"></a>The following example shows how to transfer the <code class="literal">SUNWman</code> package
+from a mounted SPARC based Solaris 10 CD to the default spool directory (<code class="filename">/var/spool/pkg</code>).   </p>
+<pre class="screen"># <strong class="userinput"><code>pkgadd -d /cdrom/cdrom0/s0/Solaris_10/Product -s /var/spool/pkg SUNWman</code></strong>
+Transferring &lt;SUNWman&gt; package instance</pre>
+</div><div class="example"><a name="id2134329"></a><p class="title"><b>Example 20.10. Setting Up a Spool Directory From a Remote Software Package Server</b></p>
+
+
+<p>If packages you want to copy are available from a remote system, you can manually
+mount the directory that contains the packages, in package format,  and copy them
+to a local spool directory.</p>
+<p>
+<a class="indexterm" name="indexterm-364"></a>
+<a class="indexterm" name="indexterm-365"></a>The following example shows
+the commands for this scenario. In this example, assume that the remote system named <code class="literal">package-server</code> has software packages in the <code class="filename">/latest-packages</code> directory.
+The <span><strong class="command">mount</strong></span> command mounts the package directory locally on <code class="filename">/mnt</code>. The <span><strong class="command">pkgadd</strong></span> command copies the <code class="literal">SUNWpl5p</code> package from <code class="filename">/mnt</code> to the default spool directory (<code class="filename">/var/spool/pkg</code>).  </p>
+<pre class="screen"># <strong class="userinput"><code>mount -F nfs -o ro package-server:/latest-packages /mnt</code></strong>
+# <strong class="userinput"><code>pkgadd -d /mnt -s /var/spool/pkg SUNWpl5p</code></strong>
+Transferring &lt;SUNWpl5p&gt; package instance</pre>
+<p>If the automounter is running at your site, you do not have to mount the remote
+package server manually. Instead, use the automounter path, in this case, <code class="filename">/net/package-server/latest-packages</code>, as the argument to the <code class="option">
+d</code> option. </p>
+<pre class="screen"># <strong class="userinput"><code>pkgadd -d /net/package-server/latest-packages -s /var/spool/pkg SUNWpl5p</code></strong>
+Transferring &lt;SUNWpl5p&gt; package instance</pre>
+</div><div class="example"><a name="id2134496"></a><p class="title"><b>Example 20.11. Installing Software Packages From the Default Spool Directory</b></p>
+
+
+<p>
+<a class="indexterm" name="indexterm-366"></a>
+<a class="indexterm" name="indexterm-367"></a>
+<a class="indexterm" name="indexterm-368"></a>
+<a class="indexterm" name="indexterm-369"></a>
+<a class="indexterm" name="indexterm-370"></a>
+<a class="indexterm" name="indexterm-371"></a>The following
+example shows how to install the <code class="literal">SUNWpl5p</code> package from the default
+spool directory. When no options are used, the <span><strong class="command">pkgadd</strong></span> command searches
+the <code class="filename">/var/spool/pkg</code> directory for the named packages.  </p>
+<pre class="screen"># <strong class="userinput"><code>pkgadd SUNWpl5p</code></strong>
+	.
+	.
+	.
+Installation of &lt;SUNWpl5p&gt; was successful.</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2134634"></a></h3></div></div></div>
+
+<div class="task"><a name="ewiaw"></a><p class="title"><b>How to List Information About All Installed Packages (<span><strong class="command">pkginfo</strong></span>)</b></p><div class="procedure"><ul><li>
+<p>
+<a class="indexterm" name="indexterm-372"></a>
+<a class="indexterm" name="indexterm-373"></a>List information about installed
+packages by using the <span><strong class="command">pkginfo</strong></span> command.</p>
+<pre class="screen">$ <strong class="userinput"><code>pkginfo</code></strong>
+</pre>
+</li></ul></div><div class="example"><a name="ewiaz"></a><p class="title"><b>Example 20.12. Listing Installed Packages</b></p>
+
+
+<p>
+<a class="indexterm" name="indexterm-374"></a>
+<a class="indexterm" name="indexterm-375"></a>This example shows how to list all packages installed on a local system,
+whether that system is a stand-alone system or a server. The output shows the primary
+category, package name, and the description of the package. </p>
+<pre class="screen">$ <strong class="userinput"><code>pkginfo</code></strong>
+system      SUNWaccr       System Accounting, (Root)
+system      SUNWaccu       System Accounting, (Usr)
+system      SUNWadmap      System administration applications
+system      SUNWadmc       System administration core libraries
+.
+.
+.</pre>
+</div><div class="example"><a name="ewiba"></a><p class="title"><b>Example 20.13. Displaying Detailed Information About Software Packages</b></p>
+
+
+<p>This example shows how to list all packages installed on a system by specifying
+the long format, which includes all available information about the designated packages.</p>
+<pre class="screen">$ <strong class="userinput"><code>pkginfo -l SUNWcar</code></strong>
+   PKGINST:  SUNWcar
+      NAME:  Core Architecture, (Root)
+  CATEGORY:  system
+      ARCH:  sparc.sun4u
+   VERSION:  11.9.0,REV=2002.04.06.15.27
+   BASEDIR:  /
+    VENDOR:  Sun Microsystems, Inc.
+      DESC:  core software for a specific hardware platform group
+    PSTAMP:  leo20031003183400
+  INSTDATE:  Feb 20 2004 16:57
+   HOTLINE:  Please contact your local service provider
+    STATUS:  completely installed
+     FILES:      114 installed pathnames
+                  36 shared pathnames
+                  40 directories
+                  57 executables
+               21469 blocks used (approx)</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2134819"></a></h3></div></div></div>
+
+<div class="task"><a name="swmgrpkgscli-43"></a><p class="title"><b>How to Check the Integrity of Installed Software
+Packages (<span><strong class="command">pkgchk</strong></span>)</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles contain authorizations and privileged commands. For more information about roles,
+see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li><a name="swmgrpkgscli-step-45"></a>
+<p>Check the status of an installed package.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>To check the file attributes and contents, type the following:</p>
+<pre class="screen"># <strong class="userinput"><code>pkgchk -a</code></strong>| <strong class="userinput"><code>-c -v</code></strong> <em class="replaceable"><code>pkgid</code></em> ...</pre>
+</li><li>
+<p>To specify the absolute path of the spool directory, type the following:</p>
+<pre class="screen"># <strong class="userinput"><code>pkgchk -d</code></strong> <em class="replaceable"><code>spooldir pkgid</code></em> ...</pre>
+</li></ul></div>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+a</code>
+</span></dt><dd>
+<p>Specifies to audit only the file attributes (the permissions), rather
+than the file attributes and the contents, which is the default.</p>
+</dd><dt><span class="term">
+<code class="option">
+c</code>
+</span></dt><dd>
+<p>Specifies to audit only the file contents, rather than the file contents
+and attributes, which is the default.</p>
+</dd><dt><span class="term">
+<code class="option">
+v</code>
+</span></dt><dd>
+<p>Specifies verbose mode, which displays file names as they are processed.</p>
+</dd><dt><span class="term">
+<code class="option">
+d</code> <em class="replaceable"><code>spooldir</code></em>
+</span></dt><dd>
+<p>Specifies the absolute path of the spool directory.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>pkgid</code></em>
+</span></dt><dd>
+<p>(Optional) Is the name of one or more packages, separated by spaces.
+If you do not specify a <em class="replaceable"><code>pkgid</code></em>, all the software packages
+installed on the system are checked.</p>
+</dd></dl></div>
+</li></ol></div><div class="example"><a name="swmgrpkgscli-46"></a><p class="title"><b>Example 20.14. Checking the Contents of Installed Software Packages</b></p>
+
+
+<p>The following example shows how to check the contents of a package.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgchk -c SUNWbash</code></strong>
+</pre>
+<p>If no errors occur, the system prompt is returned. Otherwise, the <span><strong class="command">pkgck</strong></span> command reports the error.</p>
+</div><div class="example"><a name="swmgrpkgscli-47"></a><p class="title"><b>Example 20.15. Checking the File Attributes of Installed Software Packages</b></p>
+
+
+<p>
+<a class="indexterm" name="indexterm-376"></a>
+<a class="indexterm" name="indexterm-377"></a>The following example shows
+how to check the file attributes of a package. </p>
+<pre class="screen"># <strong class="userinput"><code>pkgchk -a SUNWbash</code></strong>
+</pre>
+<p>If no errors occur, the system prompt is returned. Otherwise, the <span><strong class="command">pkgck</strong></span> command reports the error.</p>
+</div><div class="example"><a name="swmgrpkgscli-48"></a><p class="title"><b>Example 20.16. Checking Software Packages Installed in a Spool Directory</b></p>
+
+
+<p>
+<a class="indexterm" name="indexterm-378"></a>
+<a class="indexterm" name="indexterm-379"></a>
+<a class="indexterm" name="indexterm-380"></a>
+<a class="indexterm" name="indexterm-381"></a>The following example shows how to
+check a software package that was copied to a spool directory (<code class="filename">/export/install/packages</code>).     </p>
+<pre class="screen"># <strong class="userinput"><code>pkgchk -d /export/install/packages</code></strong>
+## checking spooled package &lt;SUNWadmap&gt;
+## checking spooled package &lt;SUNWadmfw&gt;
+## checking spooled package &lt;SUNWadmc&gt;
+## checking spooled package &lt;SUNWsadml&gt;
+</pre>
+<p>The checks made on a spooled package are limited because not all information
+can be audited until a package is installed. </p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2135324"></a></h3></div></div></div>
+
+<div class="task"><a name="eywvy"></a><p class="title"><b>How to Check the Integrity of Installed Objects (<span><strong class="command">pkgchk -p, pkgchk -P</strong></span>)</b></p><div class="tasksummary">
+<p>This procedure explains how to use the <span><strong class="command">pkgchk</strong></span> command to
+check the integrity of installed objects. The new <code class="option">
+P</code> option enables
+you to specify a partial path. This option has been added to assist you in mapping
+files to packages. Use this option with the <code class="option">
+l</code> option to list the
+information about the files that contain the partial path. Use the <code class="option">
+p</code> option
+to check the integrity of installed objects by specifying the full path. For more
+information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">pkgchk</span>
+(
+1M
+)
+</span>
+</span> man
+page.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles contain authorizations and privileged commands. For more information about roles,
+see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li><a name="eywwa"></a>
+<p>Check the integrity of an installed object.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>To verify the integrity of an installed object for a full path name
+or path names, type the following:</p>
+<pre class="screen"># <strong class="userinput"><code>pkgchk -lp <em class="replaceable"><code>path-name</code></em>
+</code></strong>
+</pre>
+</li><li>
+<p>To verify the integrity of an installed object for a partial-path
+name or path names, type the following:</p>
+<pre class="screen"># <strong class="userinput"><code>pkgchk -lP  <em class="replaceable"><code>partial-path-name</code></em>
+</code></strong>
+</pre>
+</li></ul></div>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code> <em class="replaceable"><code>path</code></em>
+</span></dt><dd>
+<p>Checks the accuracy only of the path name or path names that are listed.
+ Path can be one or more path names separated by commas. Specifies to audit only the
+file attributes (the permissions), rather than the file attributes and the contents,
+which is the default.</p>
+</dd><dt><span class="term">
+<code class="option">
+P</code> <em class="replaceable"><code>partial-path</code></em>
+</span></dt><dd>
+<p>Checks the accuracy of only the partial  path name or path names that
+are listed.  The partial-path can be one or more partial path names separated by commas.
+Matches any path name that contains the string contained in the partial path. Specifies
+to audit only the file contents, rather than the file contents and attributes, which
+is the default.</p>
+</dd><dt><span class="term">
+<code class="option">
+l</code>
+</span></dt><dd>
+<p>Lists information about the selected files that make up a package.
+ This option is not compatible with the <code class="option">
+a</code>, <code class="option">
+c</code>, <code class="option">
+f</code>, <code class="option">
+g</code>, and <code class="option">
+v</code> options. Specifies verbose
+mode, which displays file names as they are processed.</p>
+</dd></dl></div>
+</li></ol></div><div class="example"><a name="eywwc"></a><p class="title"><b>Example 20.17. Checking the Integrity of an Installed Object by Specifying a Full Path Name</b></p>
+
+
+<p>This example shows you how to use the <span><strong class="command">pkgchk</strong></span> <code class="option">
+lp</code> command
+to check the contents/attributes of an object on a file system by a specifying the
+full path name. The <code class="option">
+l</code> option lists information on the selected files
+that make up a package.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgchk -lp /usr/sbin/pkgadd</code></strong>
+Pathname: /usr/sbin/pkgadd
+Type: regular file
+Expected mode: 0555
+Expected owner: root
+Expected group: sys
+Expected file size (bytes): 867152
+Expected sum(1) of contents: 45580
+Expected last modification: Jul 02 02:20:34 2004
+Referenced by the following packages:
+        SUNWpkgcmdsu   
+Current status: installed</pre>
+</div><div class="example"><a name="eywwg"></a><p class="title"><b>Example 20.18. Checking the Integrity of an Installed Object by Specifying a Partial Path
+Name</b></p>
+
+
+<p>This example shows you how to use the <span><strong class="command">pkgchk</strong></span> <code class="option">
+lP</code> command
+to check the contents/attributes of an object on a file system by a specifying a partial
+path name, such as a file or directory name. The <code class="option">
+l</code> option lists information
+on the selected files that make up a package.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgchk -lP /sbin/pkgadd</code></strong>
+Pathname: /usr/sbin/pkgadd
+Type: regular file
+Expected mode: 0555
+Expected owner: root
+Expected group: sys
+Expected file size (bytes): 867152
+Expected sum(1) of contents: 45580
+Expected last modification: Jul 02 02:20:34 2004
+Referenced by the following packages:
+        SUNWpkgcmdsu   
+Current status: installed
+
+Pathname: /usr/sbin/pkgask
+Type: linked file
+Source of link: ../../usr/sbin/pkgadd
+Referenced by the following packages:
+        SUNWpkgcmdsu   
+Current status: installed</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="swmgrpkgscli-49"></a>Removing Software Packages</h3></div></div></div>
+
+<p>To remove or uninstall a software package, use the associated tool that you
+used to add or install a software package. For example, if you used the Solaris installation
+GUI to install software, use the Solaris installation GUI to uninstall software.</p>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>Do no use the <span><strong class="command">rm</strong></span> command to remove software packages.
+Doing so will result in inaccuracies in the database that keeps track of all installed
+packages on the system.</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2135781"></a></h3></div></div></div>
+
+<div class="task"><a name="swmgrpkgscli-50"></a><p class="title"><b>How to Remove Software Packages (<span><strong class="command">pkgrm</strong></span>)</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles contain authorizations and privileged commands. For more information about roles,
+see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li><a name="swmgrpkgscli-step-52"></a>
+<p>Remove an installed package.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgrm</code></strong> <em class="replaceable"><code>pkgid</code></em> ...</pre>
+<p>
+<em class="replaceable"><code>pkgid</code></em> identifies the name of one or more packages,
+separated by spaces, to be removed. If omitted, the <span><strong class="command">pkgrm</strong></span>command
+removes all available packages.</p>
+</li></ol></div><div class="example"><a name="swmgrpkgscli-53"></a><p class="title"><b>Example 20.19. Removing Software Packages</b></p>
+
+
+<p>This example shows how to remove a package.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgrm SUNWctu</code></strong>
+
+The following package is currently installed:
+   SUNWctu         Netra ct usr/platform links (64-bit)
+                   (sparc.sun4u) 11.9.0,REV=2001.07.24.15.53
+
+Do you want to remove this package? <strong class="userinput"><code>y</code></strong>
+
+## Removing installed package instance &lt;SUNWctu&gt;
+## Verifying package dependencies.
+## Processing package information.
+## Removing pathnames in class &lt;none&gt;
+.
+.
+.</pre>
+</div><div class="example"><a name="swmgrpkgscli-54"></a><p class="title"><b>Example 20.20. Removing a Spooled Software Package</b></p>
+
+
+<p>This example shows how to remove a spooled package.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgrm -s /export/pkg SUNWaudh</code></strong>
+The following package is currently spooled:
+   SUNWaudh        Audio Header Files
+                   (sparc) 11.10.0,REV=2003.08.08.00.03
+Do you want to remove this package? <strong class="userinput"><code>y</code></strong>
+Removing spooled package instance &lt;SUNWaudh&gt;
+</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch20s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch20.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch21.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Managing Software Packages by Using Package Commands
+(Task Map) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 21. Managing Solaris Patches and
+Updates (Overview)</td></tr></table></div></body></html>

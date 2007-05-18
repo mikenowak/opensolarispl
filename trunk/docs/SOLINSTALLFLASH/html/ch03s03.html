@@ -1,0 +1,229 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Creating Customization Scripts</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Express Installation Guide: Solaris Flash Archives (Creation and Installation)"><link rel="up" href="ch03.html" title="Chapter 3. Creating Solaris Flash Archives
+(Tasks)"><link rel="prev" href="ch03s02.html" title="Installing the Master System"><link rel="next" href="ch03s04.html" title="Creating a Solaris Flash Archive"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Creating Customization Scripts</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s02.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Creating Solaris Flash Archives
+(Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch03s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="flashcreate-65"></a>Creating Customization Scripts</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-41"></a>Scripts can customize the archive. Use these scripts for the following
+purposes:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>A precreation script validates the archive at creation time and prepares
+the archive for later customization, especially differential archives. This script
+also can create a user-defined section in the archive.</p>
+</li><li>
+<p>A predeployment script validates the archive during installation and
+prepares the archive for later customization.</p>
+</li><li>
+<p>A postdeployment script reconfigures a new system image on a clone
+system.</p>
+</li><li>
+<p>A reboot script processes a final reconfiguration after the system
+is rebooted.</p>
+</li></ul></div>
+<p>For guidelines about creating scripts, see <span class="olink">Guidelines for Creating a Custom Script</span>.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1563800"></a></h3></div></div></div>
+
+<div class="task"><a name="flashcreate-55"></a><p class="title"><b>To Create a Precreation Script</b></p><div class="tasksummary">
+<p>This script runs during archive creation. The script has various uses.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Validates the contents and the integrity of the software. The script
+fails the archive creation if the integrity is broken. </p>
+</li><li>
+<p>Prepares products for later customization on clone system. </p>
+</li><li>
+<p>Registers other installation scripts dynamically during archive creation. </p>
+</li><li>
+<p>Adds a message to the flash-creation summary file. The message must
+be short and record only that scripts were started and finished and the results. You
+can view the results in the summary section.</p>
+</li></ul></div>
+</div><div class="procedure"><ol type="1"><li>
+<p>Create the precreation script. Follow the guidelines that are described
+in <span class="olink">Guidelines for Creating a Custom Script</span>.</p>
+</li><li><a name="flashcreate-step-74"></a>
+<p>Store the script in the <code class="filename">/etc/flash/precreation</code> directory.</p>
+</li></ol></div><div class="example"><a name="flashcreate-ex-56"></a><p class="title"><b>Example 3.1. Excerpts From a Precreation Script</b></p>
+
+
+<p>The following examples are excerpts from a precreation script. </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>To log the start time in the summary section, use the following example:</p>
+<pre class="programlisting">echo "MyApp precreation script started"&gt;&gt; $FLASHDIR/summary</pre>
+</li><li>
+<p>To check the software integrity, use the <span><strong class="command">flcheck</strong></span> command.
+This command cannot be used at the command line. The syntax for this command is as
+follows:</p>
+<pre class="screen">flcheck <em class="replaceable"><code>software component files and directories</code></em> ...| -</pre>
+<p>For example, to validate the files and directories, use the following example:</p>
+<pre class="programlisting">flcheck <em class="replaceable"><code>software component files and directories</code></em> 
+If Not in selection - refuse creation
+
+echo "Myapp Integrity Damage"&gt;&gt;$FLASHDIR/summary</pre>
+<p>Or, to keep new files and directories that are unexpected and not fail the archive
+creation, use the following example:</p>
+<pre class="programlisting">flcheck <em class="replaceable"><code>software component files and directories</code></em> 
+If Not in selection include by force
+flinclude <em class="replaceable"><code>software component</code></em>
+</pre>
+</li><li>
+<p>To register deployment scripts and data, use the following example:</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>Copy the script to the following directory:</p>
+<pre class="programlisting">cp <em class="replaceable"><code>predeployment script</code></em> /etc/flash/predeployment</pre>
+</li><li>
+<p>Or, to register the script dynamically during archive creation, copy
+the script to the following directory.</p>
+<pre class="programlisting">cp <em class="replaceable"><code>predeployment script</code></em> $FLASHDIR/predeployment</pre>
+</li></ul></div>
+</li><li>
+<p>To see application-specific data in a user-defined section, use the
+following example:</p>
+<pre class="programlisting">cp <em class="replaceable"><code>custom section</code></em> $FLASHDIR/custom_sections/MyApp</pre>
+</li><li>
+<p>To log the success of the installation in the summary section, use
+the following example:</p>
+<pre class="programlisting">echo "product one flash preparation started." &gt;&gt;$FLASH_DIR/summary
+...
+echo "product one flash preparation finished successfully"&gt;&gt;$FLASH_DIR/summary</pre>
+</li></ul></div>
+</div><div class="example"><a name="flashcreate-ex-82"></a><p class="title"><b>Example 3.2. Precreation Script</b></p>
+
+
+<pre class="programlisting">#!/bin/sh
+echo "Test precreation script started" &gt;&gt; $FLASH_DIR/summary
+cat /opt/TestApp/critical_file_list | flcheck -
+if [ $? != 0 ]; then
+	echo "Test precreation script failure" &gt;&gt; $FLASH_DIR/summary
+	exit 1
+if
+echo "Test precreation script started" &gt;&gt; $FLASH_DIR/summary
+/opt/TestApplication/license_cloning
+	$FLASH_DIR/predeployment/.TestApplicationLicenceTransfer \
+	$FLASH_DIR/custom_sections/TestApplicationLicenceCounter
+echo "Test precreation script finished" &gt;&gt; $FLASH_DIR/summary
+exit 0</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="egyrh"></a>Using a Precreation Script to Create a User-Defined Archive
+Section</h3></div></div></div>
+
+<p>A precreation script can create a user-defined section in the archive to provide
+specific application information. This section is intended for archive maintenance.
+The script must be put in the <code class="filename">$FLASH_DIR/sections</code> directory.
+The Solaris Flash archive does not process a user-defined section. For example,
+a section could contain a description of the archive or perhaps a script to check
+the integrity of an application. </p>
+<p>A user-defined section requires the following format.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Must be line oriented</p>
+</li><li>
+<p>Must terminate with newline (ASCII 0x0a) characters</p>
+</li><li>
+<p>Can have unlimited  length of individual lines </p>
+</li><li>
+<p>Must encode binary data  by using base64 or a similar algorithm</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1564213"></a></h3></div></div></div>
+
+<div class="task"><a name="flashcreate-67"></a><p class="title"><b>To Create a Predeployment Script</b></p><div class="tasksummary">
+<p>This script is run before the installation of the archive. If the script is
+meant to validate the archive, it is kept in the archive. If the script is meant to
+preserve local configurations on the clone system, it is kept on the clone system.
+This script also can analyze and collect local data necessary for later customization.
+For example, client-specific information can be saved before being overwitten by files
+about to be extracted. This information can then be used in the final stage after
+extraction.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Create the predeployment script.  Follow the guidelines that are described
+in <span class="olink">Guidelines for Creating a Custom Script</span>.</p>
+</li><li><a name="flashcreate-step-720"></a>
+<p>Store the script in one of the following directories.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>For archive validation, store in the <code class="filename">/etc/flash/predeployment</code> directory.</p>
+</li><li>
+<p>If you are referencing with a precreation script, store in the <code class="filename">$FLASH_DIR/preinstall</code> directory. </p>
+</li><li>
+<p>If you are preserving configurations on a clone system, provide the
+path to the script that is stored on the clone system with the <code class="literal">local_customization</code> keyword in the JumpStart profile.</p>
+</li></ul></div>
+</li></ol></div><div class="example"><a name="flashcreate-ex-59"></a><p class="title"><b>Example 3.3. Predeployment Script</b></p>
+
+
+<pre class="programlisting">#!/bin/sh
+$FLASH_DIR/TestApplication/check_hardware
+if [ $? != 0 ]; then
+	echo Unsupported hardware
+	exit 1
+fi
+$FLASH_DIR/TestApplication/check_licence_key
+if [ $? != 0 ]; then
+	echo No license for this host
+	exit 1
+fi
+$FLASH_DIR/TestApplication/deploy_license_key \
+	$FLASH_DIR/TestApplication/.TestApplicationLicenceTransfer
+$FLASH_DIR/TestApplication/save_data_files $FLASH_DIR/flash
+
+exit 0</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1564357"></a></h3></div></div></div>
+
+<div class="task"><a name="flashcreate-70"></a><p class="title"><b>To Create a Postdeployment Script</b></p><div class="tasksummary">
+<p>This script is kept in the archive or stored in a local directory on the clone
+system and runs after installation. The script reconfigures a new system image on
+a clone system. If the script is stored in the archive, the changes affect all the
+clone systems. If the script is stored in a local directory on the clone system, the
+changes affect only the clone system. For example, client-specific information that
+is saved by a predeployment script can be applied to the clone environment, completing
+the installation.</p>
+<p>Postdeployment scripts can also be used to clean up files after the archive
+is installed. For example, log files such as those files in <code class="filename">/var/adm</code> can
+be cleaned out.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Not all log files need a script for cleanup. Log files in <code class="filename">/var/tmp</code> can be excluded when the archive is created.</p>
+</div>
+</div><div class="procedure"><ol type="1"><li>
+<p>Create the postdeployment script. Follow the guidelines that are described
+in <span class="olink">Guidelines for Creating a Custom Script</span>.</p>
+</li><li><a name="flashcreate-step-745"></a>
+<p>Store the script in one of the following directories.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>To affect all clone systems, store the script in the <code class="filename">/etc/flash/postdeployment</code> directory.</p>
+</li><li>
+<p>To affect only a local clone system, provide the path to the script
+that is stored on the clone system with the <code class="literal">local_customization</code> keyword
+in the JumpStart profile.</p>
+</li></ul></div>
+</li></ol></div><div class="example"><a name="flashcreate-ex-60"></a><p class="title"><b>Example 3.4. Postdeployment Script</b></p>
+
+
+<pre class="programlisting">#!/bin/sh
+$FLASH_DIR/TestApplication/clone_reconfiguration
+$FLASH_DIR/TestApplication/restore_data $FLASH_DIR/flash</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1564506"></a></h3></div></div></div>
+
+<div class="task"><a name="flashcreate-68"></a><p class="title"><b>To Create a Reboot Script</b></p><div class="tasksummary">
+<p>This script is kept in the archive and runs after the system is rebooted. The
+script does any final configuration after system reconfiguration. </p>
+<p>After you install the Solaris Flash archive on a clone system, some host-specific
+files are deleted and are re-created for the clone machine. The installation program
+uses the <span><strong class="command">sys-unconfig</strong></span>(1M) command and the <span><strong class="command">sysidtool</strong></span>(1M)
+programs to delete and re-create host-specific network configuration files. The files
+that are re-created include, for example, <code class="filename">/etc/hosts</code>, <code class="filename">/etc/defaultrouter</code>, and <code class="filename">/etc/defaultdomain</code>. You can
+use the reboot script for any final reconfiguration.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Create the <code class="literal">reboot</code> script. </p>
+</li><li><a name="flashcreate-step-741"></a>
+<p>Store the script in the <code class="filename">/etc/flash/reboot</code> directory.</p>
+</li></ol></div><div class="example"><a name="flashcreate-ex-63"></a><p class="title"><b>Example 3.5. Creating a <code class="literal">reboot</code> Script</b></p>
+
+
+<pre class="programlisting">#!/bin/sh 
+$FLASH_DIR/TestApplication/finalize_license</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Installing the Master System </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Creating a Solaris Flash Archive</td></tr></table></div></body></html>

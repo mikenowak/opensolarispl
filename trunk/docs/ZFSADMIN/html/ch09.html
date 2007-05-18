@@ -1,0 +1,94 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 9. ZFS Troubleshooting and Data Recovery</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="up" href="index.html" title="Solaris ZFS Administration Guide"><link rel="prev" href="ch08s04.html" title="ZFS Rights Profiles"><link rel="next" href="ch09s02.html" title="Checking ZFS Data Integrity"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 9. ZFS Troubleshooting and Data Recovery</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch08s04.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch09s02.html">Next</a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="gavwg"></a>Chapter 9. ZFS Troubleshooting and Data Recovery</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="ch09.html#gbbth">ZFS Failure Modes</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch09.html#gbbxj">Missing Devices in a ZFS Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch09.html#gbbym">Damaged Devices in a ZFS Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch09.html#gbbwx">Corrupted ZFS Data</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch09s02.html">Checking ZFS Data Integrity</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch09s02.html#gbbyc">Data Repair</a></span></dt><dt><span class="sect2"><a href="ch09s02.html#gbbyd">Data Validation</a></span></dt><dt><span class="sect2"><a href="ch09s02.html#gbbxi">Controlling ZFS Data Scrubbing</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch09s03.html">Identifying Problems in ZFS</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch09s03.html#gbcwb">Determining if Problems Exist in a ZFS Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch09s03.html#gbcve">Understanding <span><strong class="command">zpool status</strong></span> Output</a></span></dt><dt><span class="sect2"><a href="ch09s03.html#gbcvk">System Reporting of ZFS Error Messages</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch09s04.html">Repairing a Damaged ZFS Configuration</a></span></dt><dt><span class="sect1"><a href="ch09s05.html">Repairing a Missing Device</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch09s05.html#gbbxn">Physically Reattaching the Device</a></span></dt><dt><span class="sect2"><a href="ch09s05.html#gbbyi">Notifying ZFS of Device Availability</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch09s06.html">Repairing a Damaged Device</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch09s06.html#gbbzs">Determining the Type of Device Failure</a></span></dt><dt><span class="sect2"><a href="ch09s06.html#gbbzv">Clearing Transient Errors</a></span></dt><dt><span class="sect2"><a href="ch09s06.html#gbbzy">Replacing a Device in a ZFS Storage Pool</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch09s07.html">Repairing Damaged Data</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch09s07.html#gbcuz">Identifying the Type of Data Corruption</a></span></dt><dt><span class="sect2"><a href="ch09s07.html#gbctx">Repairing a Corrupted File or Directory</a></span></dt><dt><span class="sect2"><a href="ch09s07.html#gbctt">Repairing ZFS Storage Pool-Wide Damage</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch09s08.html">Repairing an Unbootable System</a></span></dt></dl></div>
+
+
+
+
+
+<div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gbbth"></a>ZFS Failure Modes</h2></div></div></div>
+
+<p>As a combined file system and volume manager, ZFS can exhibit many different
+failure modes. This chapter begins by outlining the various failure modes,
+then discusses how to identify them on a running system. This chapter concludes
+by discussing how to repair the problems. ZFS can encounter three basic types
+of errors:<a class="indexterm" name="indexterm-493"></a>
+<a class="indexterm" name="indexterm-494"></a>
+<a class="indexterm" name="indexterm-495"></a>
+</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Missing devices</p>
+</li><li>
+<p>Damaged devices</p>
+</li><li>
+<p>Corrupted data</p>
+</li></ul></div>
+<p>Note that a single pool can experience all three errors, so a complete
+repair procedure involves finding and correcting one error, proceeding to
+the next error, and so on.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbbxj"></a>Missing Devices in a ZFS Storage Pool</h3></div></div></div>
+
+<p>If a device is completely removed from the system, ZFS detects that
+the device cannot be opened and places it in the <code class="literal">FAULTED</code> state.
+Depending on the data replication level of the pool, this might or might not
+result in the entire pool becoming unavailable. If one disk in a mirrored
+or RAID-Z device is removed, the pool continues to be accessible. If all components
+of a mirror are removed, if more than one device in a RAID-Z device is removed,
+or if a single-disk, top-level device is removed, the pool becomes <code class="literal">FAULTED</code>. No data is accessible until the device is reattached.<a class="indexterm" name="indexterm-496"></a>
+<a class="indexterm" name="indexterm-497"></a>
+<a class="indexterm" name="indexterm-498"></a>
+</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbbym"></a>Damaged Devices in a ZFS Storage Pool</h3></div></div></div>
+
+<p>The term &#8220;damaged&#8221; covers a wide variety of possible errors.
+Examples include the following errors:<a class="indexterm" name="indexterm-499"></a>
+<a class="indexterm" name="indexterm-500"></a>
+<a class="indexterm" name="indexterm-501"></a>
+</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Transient I/O errors due to a bad disk or controller</p>
+</li><li>
+<p>On-disk data corruption due to cosmic rays</p>
+</li><li>
+<p>Driver bugs resulting in data being transferred to or from
+the wrong location</p>
+</li><li>
+<p>Simply another user overwriting portions of the physical device
+by accident</p>
+</li></ul></div>
+<p>In some cases, these errors are transient, such as a random I/O error
+while the controller is having problems. In other cases, the damage is permanent,
+such as on-disk corruption. Even still, whether the damage is permanent does
+not necessarily indicate that the error is likely to occur again. For example,
+if an administrator accidentally overwrites part of a disk, no type of hardware
+failure has occurred, and the device need not be replaced. Identifying exactly
+what went wrong with a device is not an easy task and is covered in more detail
+in a later section.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbbwx"></a>Corrupted ZFS Data</h3></div></div></div>
+
+<p>Data corruption occurs when one or more device errors (indicating missing
+or damaged devices) affects a top-level virtual device. For example, one half
+of a mirror can experience thousands of device errors without ever causing
+data corruption. If an error is encountered on the other side of the mirror
+in the exact same location, corrupted data will be the result.<a class="indexterm" name="indexterm-502"></a>
+<a class="indexterm" name="indexterm-503"></a>
+<a class="indexterm" name="indexterm-504"></a>
+</p>
+<p>Data corruption is always permanent and requires special consideration
+during repair. Even if the underlying devices are repaired or replaced, the
+original data is lost forever. Most often this scenario requires restoring
+data from backups. Data errors are recorded as they are encountered, and can
+be controlled through regular disk scrubbing as explained in the following
+section. When a corrupted block is removed, the next scrubbing pass recognizes
+that the corruption is no longer present and removes any trace of the error
+from the system.</p>
+</div>
+</div>
+
+
+
+
+
+
+
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch08s04.html">Prev</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="ch09s02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">ZFS Rights Profiles </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Checking ZFS Data Integrity</td></tr></table></div></body></html>

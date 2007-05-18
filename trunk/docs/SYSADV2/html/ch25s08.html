@@ -1,0 +1,125 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Troubleshooting Common Agent Container Problems in
+the Solaris OS</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch25.html" title="Chapter 25. Troubleshooting Miscellaneous Software Problems (Tasks)"><link rel="prev" href="ch25s07.html" title="Troubleshooting Backup Problems"><link rel="next" href="ch26.html" title="Chapter 26. Troubleshooting File Access Problems
+(Tasks)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Troubleshooting Common Agent Container Problems in
+the Solaris OS</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch25s07.html">Prev</a> </td><th width="60%" align="center">Chapter 25. Troubleshooting Miscellaneous Software Problems (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch26.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gcbwx"></a>Troubleshooting Common Agent Container Problems in
+the Solaris OS</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-300"></a>
+<a class="indexterm" name="indexterm-301"></a>
+<a class="indexterm" name="indexterm-302"></a>
+<a class="indexterm" name="indexterm-303"></a>
+<a class="indexterm" name="indexterm-304"></a>
+<a class="indexterm" name="indexterm-305"></a>
+<a class="indexterm" name="indexterm-306"></a>
+<a class="indexterm" name="indexterm-307"></a>
+<p>This section addresses problems that you might encounter with the Common
+Agent Container shared component. Starting with the Solaris Express 4/06 release, the Common Agent Container
+Java program is included in the Solaris OS. The program implements a container
+for Java management applications.  Typically, the Common Agent Container is
+not visible. The following are potential problems:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Port number conflicts</p>
+</li><li>
+<p>Compromised security for the superuser password</p>
+</li></ul></div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcbwe"></a>Port Number Conflicts</h3></div></div></div>
+
+<p>The Common Agent Container, version 2.0, inside the Java Enterprise
+Server (Java ES), occupies the following port numbers by default:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>JMX port (TCP) = <code class="literal">11162</code>
+</p>
+</li><li>
+<p>SNMPAdaptor port (UDP) = <code class="literal">11161</code>
+</p>
+</li><li>
+<p>SNMPAdaptor port for traps (UDP) = <code class="literal">11162</code>
+</p>
+</li><li>
+<p>Commandstream Adaptor port (TCP) = <code class="literal">11163</code>
+</p>
+</li><li>
+<p>RMI connector port (TCP) = <code class="literal">11164</code>
+</p>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>If you are troubleshooting
+an installation of Sun Cluster, the port assignments are different. For more
+information, see the <em class="citetitle">Sun Java Enterprise System 2006Q3 Installation
+Guide for UNIX</em> at <a href="http://docs.sun.com" target="_top">
+</a>.</p>
+</div>
+<p>If your installation already reserves any of these port numbers, change
+the port numbers that are occupied by the Common Agent Container, as described
+in the following procedure.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2267773"></a></h3></div></div></div>
+
+<div class="task"><a name="gcbwu"></a><p class="title"><b>How to Check Port Numbering</b></p><a class="indexterm" name="indexterm-308"></a><a class="indexterm" name="indexterm-309"></a><div class="tasksummary">
+<p>This procedure shows you how to verify the Solaris port.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Stop the Common Agent Container management daemon.</p>
+<pre class="screen"># /<strong class="userinput"><code>/usr/sbin/cacaoadm stop</code></strong>
+</pre>
+</li><li>
+<p>Change the port number using the following syntax:</p>
+<pre class="screen"># <strong class="userinput"><code>/usr/sbin/cacaoadm set-param <em class="replaceable"><code>param=value</code></em>
+</code></strong>
+</pre>
+<p>For example, to change the port occupied by the <code class="literal">SNMPAdaptor</code> from
+the default of 11161 to 11165, type:</p>
+<pre class="screen"># <strong class="userinput"><code>/usr/sbin/cacaoadm set-param snmp-adaptor-port=11165</code></strong> </pre>
+</li><li>
+<p>Restart the Common Agent Container management daemon.</p>
+<pre class="screen"># <strong class="userinput"><code>/usr/sbin/cacaoadm start</code></strong>
+</pre>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcbws"></a>Compromised Security for Superuser Password</h3></div></div></div>
+
+<p>It might be necessary to regenerate security keys on a host that is
+running the Java ES. For example, if there is a risk that a superuser password
+has been exposed or compromised, you should regenerate the security keys.
+The keys that are used by the Common Agent Container services are stored in <code class="filename">/etc/opt/SUNWcacao/security</code> directory. The following task shows
+you how to generate security keys for the Solaris OS.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2268019"></a></h3></div></div></div>
+
+<div class="task"><a name="gcbwc"></a><p class="title"><b>How to Generate Security Keys for the Solaris OS</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Stop the Common Agent Container management daemon. </p>
+<pre class="screen"># <strong class="userinput"><code>/opt/SUNWcacao/bin/cacaoadm stop</code></strong>
+</pre>
+</li><li>
+<p>Regenerate the security keys.</p>
+<pre class="screen"># <strong class="userinput"><code>/opt/SUNWcacao/bin/cacaoadm create-keys --force</code></strong>
+</pre>
+</li><li>
+<p>Restart the Common Agent Container management daemon.</p>
+<pre class="screen"># <strong class="userinput"><code>/opt/SUNWcacao/bin/cacaoadm start</code></strong>
+</pre>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>For the Sun Cluster software, you must propagate this change across
+all nodes in the cluster. For further instructions, see the <em class="citetitle">Sun
+Java Enterprise System 2006Q3 Installation Guide for UNIX</em> at <a href="http://docs.sun.com" target="_top">
+</a>.</p>
+</div>
+</li></ol></div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch25s07.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch25.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch26.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Troubleshooting Backup Problems </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 26. Troubleshooting File Access Problems
+(Tasks)</td></tr></table></div></body></html>

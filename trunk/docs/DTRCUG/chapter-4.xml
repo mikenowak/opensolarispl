@@ -1,0 +1,1870 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="gbxwz">
+
+
+
+<title>Using DTrace</title>
+<toc>
+<para>This chapter examines the use of DTrace for common basic tasks, and
+has information on several different types of tracing.</para>
+</toc>
+<sect1 xml:id="gcggv">
+<title>Performance Monitoring</title>
+<para>Several DTrace providers implement probes that correspond to existing
+performance monitoring tools:</para>
+<itemizedlist>
+<listitem>
+<para>The <literal>vminfo</literal> provider implements probes that
+correspond to the <olink remap="external" targetdoc="816-5166" targetptr="vmstat-1m">
+<citerefentry>
+<refentrytitle>vmstat</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> tool</para>
+</listitem>
+<listitem>
+<para>The <literal>sysinfo</literal> provider implements probes
+that correspond to the <olink remap="external" targetdoc="816-5166" targetptr="mpstat-1m">
+<citerefentry>
+<refentrytitle>mpstat</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> tool</para>
+</listitem>
+<listitem>
+<para>The <literal>io</literal> provider implements probes that
+correspond to the <olink remap="external" targetdoc="816-5166" targetptr="iostat-1m">
+<citerefentry>
+<refentrytitle>iostat</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> tool</para>
+</listitem>
+<listitem>
+<para>The <literal>syscall</literal> provider implements probes
+that correspond to the <olink remap="external" targetdoc="816-5165" targetptr="truss-1">
+<citerefentry>
+<refentrytitle>truss</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> tool</para>
+</listitem>
+</itemizedlist>
+<para>You can use the DTrace facility to extract the same information that
+the bundled tools provide, but with greater flexibility. The DTrace facility
+provides arbitrary kernel information that is available at the time that the
+probes fire. The DTrace facility enables you to receive information such as
+process identification, thread identification, and stack traces.</para>
+<sect2 xml:id="gcgfx">
+<title>Examining Performance Problems With The <literal>sysinfo</literal> Provider</title>
+<para>The <literal>sysinfo</literal> provider makes available probes that
+correspond to the <literal>sys</literal> kernel statistics. These statistics
+provide the input for system monitoring utilities such as <literal>mpstat</literal>.
+The <literal>sysinfo</literal> provider probes fire immediately before the <literal>sys</literal> named <literal>kstat</literal> increments. The probes that are
+provided by the <literal>sysinfo</literal> provider are in the following list.</para>
+<variablelist>
+<varlistentry>
+<term>
+<literal>bawrite</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a buffer is about to be asynchronously
+written out to a device.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>bread</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a buffer is physically read from
+a device. <literal>bread</literal> fires <emphasis>after</emphasis> the buffer
+has been requested from the device, but <emphasis>before</emphasis> blocking
+pending its completion.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>bwrite</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a buffer is about to be written
+out to a device, whether synchronously <emphasis>or</emphasis> asynchronously.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>cpu_ticks_idle</literal>
+</term>
+<listitem>
+<para>Probe that fires when the periodic system clock has made the
+determination that a CPU is <emphasis>idle</emphasis>. Note that this probe
+fires in the context of the system clock and therefore fires on the CPU running
+the system clock. The <literal>cpu_t</literal> argument (<literal>arg2</literal>)
+indicates the CPU that has been deemed idle.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>cpu_ticks_kernel</literal>
+</term>
+<listitem>
+<para>Probe that fires when the periodic system clock has made the
+determination that a CPU is executing in the <emphasis>kernel</emphasis>.
+This probe fires in the context of the system clock and therefore fires on
+the CPU running the system clock. The <literal>cpu_t</literal> argument (<literal>arg2</literal>) indicates the CPU that has been deemed to be executing in
+the kernel.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>cpu_ticks_user</literal>
+</term>
+<listitem>
+<para>Probe that fires when the periodic system clock has made the
+determination that a CPU is executing in <emphasis>user mode</emphasis>. This
+probe fires in the context of the system clock and therefore fires on the
+CPU running the system clock. The <literal>cpu_t</literal> argument (<literal>arg2</literal>) indicates the CPU that has been deemed to be running in user-mode.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>cpu_ticks_wait</literal>
+</term>
+<listitem>
+<para>Probe that fires when the periodic system clock has made the
+determination that a CPU is otherwise idle, but some threads are waiting for
+I/O on the CPU. This probe fires in the context of the system clock and therefore
+fires on the CPU running the system clock. The <literal>cpu_t</literal> argument
+(<literal>arg2</literal>) indicates the CPU that has been deemed waiting on
+I/O.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>idlethread</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a CPU enters the idle loop.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>intrblk</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever an interrupt thread blocks.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>inv_swtch</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a running thread is forced to involuntarily
+give up the CPU.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>lread</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a buffer is logically read from
+a device.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>lwrite</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a buffer is logically written to
+a device</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>modload</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a kernel module is loaded.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>modunload</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a kernel module is unloaded.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>msg</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a <olink remap="external" targetdoc="816-5167" targetptr="msgsnd-2">
+<citerefentry>
+<refentrytitle>msgsnd</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink> or <olink remap="external" targetdoc="816-5167" targetptr="msgrcv-2">
+<citerefentry>
+<refentrytitle>msgrcv</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink> system call is made, but before
+the message queue operations have been performed.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>mutex_adenters</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever an attempt is made to acquire an
+owned adaptive lock. If this probe fires, one of the <literal>lockstat</literal> provider's <literal>adaptive-block</literal> or <literal>adaptive-spin</literal> probes also fires.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>namei</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a name lookup is attempted in the
+filesystem.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>nthreads</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a thread is created.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>phread</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a raw I/O read is about to be performed.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>phwrite</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a raw I/O write is about to be performed.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>procovf</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a new process cannot be created
+because the system is out of process table entries.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>pswitch</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a CPU switches from executing one
+thread to executing another.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>readch</literal>
+</term>
+<listitem>
+<para>Probe that fires after each successful read, but before control
+is returned to the thread that is performing the read. A read can occur through
+the <olink remap="external" targetdoc="816-5167" targetptr="read-2">
+<citerefentry>
+<refentrytitle>read</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="816-5167" targetptr="readv-2">
+<citerefentry>
+<refentrytitle>readv</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink> or <olink remap="external" targetdoc="816-5167" targetptr="pread-2">
+<citerefentry>
+<refentrytitle>pread</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink> system calls. <literal>arg0</literal> contains
+the number of bytes that were successfully read.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>rw_rdfails</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever an attempt is made to read-lock
+a reader or writer when the lock is held by a writer or desired by a writer.
+If this probe fires, the <literal>lockstat</literal> provider's <literal>rw-block</literal> probe also fires.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>rw_wrfails</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever an attempt is made to write-lock
+a reader or writer lock when the lock is held by readers or by another writer.
+If this probe fires, the <literal>lockstat</literal> provider's <literal>rw-block</literal> probe also fires.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>sema</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a <olink remap="external" targetdoc="816-5167" targetptr="semop-2">
+<citerefentry>
+<refentrytitle>semop</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink> system call is made, but before
+any semaphore operations have been performed.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>sysexec</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever an <olink remap="external" targetdoc="816-5167" targetptr="exec-2">
+<citerefentry>
+<refentrytitle>exec</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink> system call is made.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>sysfork</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a <olink remap="external" targetdoc="816-5167" targetptr="fork-2">
+<citerefentry>
+<refentrytitle>fork</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink> system call is made.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>sysread</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a <command>read</command>, <command>readv</command>, or <command>pread</command> system call is made.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>sysvfork</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a <olink remap="external" targetdoc="816-5167" targetptr="vfork-2">
+<citerefentry>
+<refentrytitle>vfork</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink> system call is made.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>syswrite</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a <olink remap="external" targetdoc="816-5167" targetptr="write-2">
+<citerefentry>
+<refentrytitle>write</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="816-5167" targetptr="writev-2">
+<citerefentry>
+<refentrytitle>writev</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink>, or <olink remap="external" targetdoc="816-5167" targetptr="pwrite-2">
+<citerefentry>
+<refentrytitle>pwrite</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink> system call is made.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>trap</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a processor trap occurs. Note that
+some processors, in particular UltraSPARC variants, handle some lightweight
+traps through a mechanism that does not cause this probe to fire.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>ufsdirblk</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a directory block is read from the
+UFS file system. See <olink remap="external" targetdoc="816-5177" targetptr="ufs-7fs">
+<citerefentry>
+<refentrytitle>ufs</refentrytitle>
+<manvolnum>
+7FS
+</manvolnum>
+</citerefentry>
+</olink> for
+details on UFS.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>ufsiget</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever an inode is retrieved. See <olink remap="external" targetdoc="816-5177" targetptr="ufs-7fs">
+<citerefentry>
+<refentrytitle>ufs</refentrytitle>
+<manvolnum>
+7FS
+</manvolnum>
+</citerefentry>
+</olink> for details on UFS.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>ufsinopage</literal>
+</term>
+<listitem>
+<para>Probe that fires after an in-core inode <emphasis>without</emphasis> any
+associated data pages has been made available for reuse. See <olink remap="external" targetdoc="816-5177" targetptr="ufs-7fs">
+<citerefentry>
+<refentrytitle>ufs</refentrytitle>
+<manvolnum>
+7FS
+</manvolnum>
+</citerefentry>
+</olink> for details on UFS.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>ufsipage</literal>
+</term>
+<listitem>
+<para>Probe that fires after an in-core inode <emphasis>with</emphasis> associated
+data pages has been made available for reuse. This probe fires after the associated
+data pages have been flushed to disk. See <olink remap="external" targetdoc="816-5177" targetptr="ufs-7fs">
+<citerefentry>
+<refentrytitle>ufs</refentrytitle>
+<manvolnum>
+7FS
+</manvolnum>
+</citerefentry>
+</olink> for details on UFS.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>wait_ticks_io</literal>
+</term>
+<listitem>
+<para>Probe that fires when the periodic system clock has made the
+determination that a CPU is otherwise idle but some threads are waiting for
+I/O on the CPU. This probe fires in the context of the system clock and therefore
+fires on the CPU running the system clock. The <literal>cpu_t</literal> argument
+(<literal>arg2</literal>) indicates the CPU that is described as waiting for
+I/O. No semantic difference between <literal>wait_ticks_io</literal> and <literal>cpu_ticks_wait</literal>; <literal>wait_ticks_io</literal> exists solely for
+historical reasons.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>writech</literal>
+</term>
+<listitem>
+<para>Probe that fires after each successful write, but before control
+is returned to the thread performing the write. A write can occur through
+the <command>write</command>, <command>writev</command>, or <command>pwrite</command> system
+calls. <literal>arg0</literal> contains the number of bytes that were successfully
+written.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>xcalls</literal>
+</term>
+<listitem>
+<para>Probe that fires whenever a cross-call is about to be made.
+A cross-call is the operating system's mechanism for one CPU to request immediate
+work of another CPU.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+<example xml:id="gcgii">
+
+<title>Using the <literal>quantize</literal> Aggregation
+Function With the <literal>sysinfo</literal> Probes</title>
+<para>The quantize aggregation function displays a power-of-two frequency
+distribution bar graph of its argument. The following example uses the <literal>quantize</literal> function to determine the size of the <literal>read</literal> calls
+that are performed by all processes on the system over a period of ten seconds.
+The <literal>arg0</literal> argument for the <literal>sysinfo</literal> probes
+states the amount by which to increment the statistic. This value is <literal>1</literal> for
+most <literal>sysinfo</literal> probes. Two exceptions are the <literal>readch</literal> and <literal>writech</literal> probes. For these probes, the <literal>arg0</literal> argument
+is set to the actual number of bytes that are read or are written, respectively.</para>
+<screen># <userinput>cat -n read.d</userinput>
+   1  #!/usr/sbin/dtrace -s
+   2  sysinfo:::readch
+   3  {
+   4     @[execname] = quantize(arg0);
+   5  }
+   6
+   7  tick-10sec
+   8  {
+   9     exit(0);
+  10  }
+
+# <userinput>dtrace -s read.d</userinput>
+dtrace: script 'read.d' matched 5 probes
+CPU        ID                    FUNCTION:NAME
+  0     36754                      :tick-10sec
+
+  bash
+         value  ---------- Distribution ---------- count
+             0 |                                   0
+             1 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 13
+             2 |                                   0
+
+  file
+         value  ---------- Distribution ---------- count
+            -1 |                                   0
+             0 |                                   2
+             1 |                                   0
+             2 |                                   0
+             4 |                                   6
+             8 |                                   0
+            16 |                                   0
+            32 |                                   6
+            64 |                                   6
+           128 |@@                                 16
+           256 |@@@@                               30
+           512 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      199
+          1024 |                                   0
+          2048 |                                   0
+          4096 |                                   1
+          8192 |                                   1
+         16384 |                                   0
+
+  grep
+         value  ---------- Distribution ---------- count
+            -1 |                                   0
+             0 |@@@@@@@@@@@@@@@@@@@                99
+             1 |                                   0
+             2 |                                   0
+             4 |                                   0
+             8 |                                   0
+            16 |                                   0
+            32 |                                   0
+            64 |                                   0
+           128 |                                   1
+           256 |@@@@                               25
+           512 |@@@@                               23
+          1024 |@@@@                               24
+          2048 |@@@@                               22
+          4096 |                                   4
+          8192 |                                   3
+         16384 |                                   0</screen>
+</example>
+<example xml:id="gcgis">
+
+<title>Finding the Source of Cross-Calls</title>
+<para>In this example, consider the following output form the <olink remap="external" targetdoc="816-5166" targetptr="mpstat-1m">
+<citerefentry>
+<refentrytitle>mpstat</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> command:</para>
+<screen>CPU minf mjf xcal  intr ithr  csw icsw migr smtx  srw syscl  usr sys  wt idl
+  0 2189   0 1302    14    1  215   12   54   28    0 12995   13  14   0  73
+  1 3385   0 1137   218  104  195   13   58   33    0 14486   19  15   0  66
+  2 1918   0 1039    12    1  226   15   49   22    0 13251   13  12   0  75
+  3 2430   0 1284   220  113  201   10   50   26    0 13926   10  15   0  75</screen>
+<para>The values in the <literal>xcal</literal> and <literal>syscl</literal> columns
+are atypically high, reflecting a possible drain on system performance. The
+system is relatively idle and is not spending an unusual amount of time waiting
+for I/O. The numbers in the <literal>xcal</literal> column are scaled per
+second and are read from the <literal>xcalls</literal> field of the <literal>sys</literal> kstat.
+To see which executables are responsible for the cross-calls, enter the following <command>dtrace</command> command:</para>
+<screen># <userinput>dtrace -n 'xcalls {@[execname] = count()}'</userinput>
+dtrace: description 'xcalls ' matched 3 probes
+<userinput>^C</userinput>
+  find                                                   2
+  cut                                                    2
+  snmpd                                                  2
+  mpstat                                                22
+  sendmail                                             101
+  grep                                                 123
+  bash                                                 175
+  dtrace                                               435
+  sched                                                784
+  xargs                                              22308
+  file                                               89889
+#</screen>
+<para>This output indicates that the bulk of the cross calls are originating
+from <olink remap="external" targetdoc="816-5165" targetptr="file-1">
+<citerefentry>
+<refentrytitle>file</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> and <olink remap="external" targetdoc="816-5165" targetptr="xargs-1">
+<citerefentry>
+<refentrytitle>xargs</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> processes. You can find these
+processes with the <olink remap="external" targetdoc="816-5165" targetptr="pgrep-1">
+<citerefentry>
+<refentrytitle>pgrep</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> and <olink remap="external" targetdoc="816-5165" targetptr="ptree-1">
+<citerefentry>
+<refentrytitle>ptree</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> commands.</para>
+<screen># <userinput>pgrep xargs</userinput>
+15973
+# <userinput>ptree 15973</userinput>
+204   /usr/sbin/inetd -s
+  5650  in.telnetd
+    5653  -sh
+      5657  bash
+        15970 /bin/sh ./findtxt configuration
+          15971 cut -f1 -d:
+            15973 xargs file
+              16686 file /usr/bin/tbl /usr/bin/troff /usr/bin/ul /usr/bin/vgrind /usr/bin/catman</screen>
+<para>This output indicates that the <command>xargs</command> and <command>file</command> commands
+form part of a custom user shell script. To locate this script, you can perform
+the following commands:</para>
+<screen># <userinput>find / -name findtxt</userinput>
+/usrs1/james/findtxt
+# <userinput>cat /usrs1/james/findtxt</userinput>
+#!/bin/sh
+find / -type f | xargs file | grep text | cut -f1 -d: &gt; /tmp/findtxt$$
+cat /tmp/findtxt$$ | xargs grep $1
+rm /tmp/findtxt$$
+#</screen>
+<para>This script runs many process concurrently. A large amount of interprocess
+communication is happening through pipes. The number of pipes makes the script
+resource intensive. The script attempts to find every text file on the system
+and then searches each file for a specific text.</para>
+</example>
+</sect2>
+</sect1>
+<sect1 xml:id="gcgkk">
+<title>Tracing User Processes</title>
+<para>This section focuses on the DTrace facilities that are useful for tracing
+user process activity and provides examples to illustrate their use.</para>
+<sect2 xml:id="gcglu">
+<title>Using the <function>copyin
+</function> and <function>copyinstr
+</function> Subroutines</title>
+<para>
+<indexterm xml:id="indexterm-25">
+<primary>subroutines</primary>
+<secondary>
+<function>copyinstr
+</function>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-26">
+<primary>subroutines</primary>
+<secondary>
+<function>copyin
+</function>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-27">
+<primary>
+<function>copyinstr
+</function>
+</primary>
+</indexterm>
+<indexterm xml:id="indexterm-28">
+<primary>
+<function>copyin
+</function>
+</primary>
+</indexterm>
+<indexterm xml:id="indexterm-29">
+<primary>user process tracing</primary>
+</indexterm>DTrace probes execute in the Solaris kernel. Probes use the <function>copyin
+</function> or <function>copyinstr
+</function> subroutines to copy user
+process data into the kernel's address space.</para>
+<para>Consider the following <function>write
+</function> system call:</para>
+<programlisting>ssize_t write(int fd, const void *buf, size_t nbytes);</programlisting>
+<para>The following D program illustrates an incorrect attempt to print the
+contents of a string that is passed to the <command>write</command> system
+call:</para>
+<programlisting>syscall::write:entry
+{
+	printf("%s", stringof(arg1)); /* incorrect use of arg1 */
+}</programlisting>
+<para>When you run this script, DTrace produces error messages similar to
+the following example.</para>
+<screen>dtrace: error on enabled probe ID 1 (ID 37: syscall::write:entry): \
+    invalid address (0x10038a000) in action #1</screen>
+<para>The <literal>arg1</literal> variable is an address that refers to memory
+in the process that is executing the system call. Use the <function>copyinstr
+</function> subroutine
+to read the string at that address. Record the result with the <function>printf
+</function> action:</para>
+<programlisting>syscall::write:entry
+{
+	printf("%s", copyinstr(arg1)); /* correct use of arg1 */</programlisting>
+<para>The output of this script shows all of the strings that are passed to
+the <command>write</command> system call.</para>
+<sect3 xml:id="gcgkr">
+<title>Avoiding Errors</title>
+<para>The <function>copyin
+</function> and <function>copyinstr
+</function> subroutines
+cannot read from user addresses which have not yet been touched. A valid address
+might cause an error if the page that contains that address has not been faulted
+in by an access attempt. Consider the following example:</para>
+<screen># <userinput>dtrace -n syscall::open:entry'{ trace(copyinstr(arg0)); }'</userinput>
+dtrace: description 'syscall::open:entry' matched 1 probe
+CPU     ID                    FUNCTION:NAME
+dtrace: error on enabled probe ID 2 (ID 50: syscall::open:entry): invalid address
+(0x9af1b) in action #1 at DIF offset 52</screen>
+<para>In the output from the previous example, the application was functioning
+properly and the address in <literal>arg0</literal> was valid. However, the
+address in <literal>arg0</literal> referred to a page that the corresponding
+process had not accessed. To resolve this issue, wait for the kernel or application
+to use the data before tracing the data. For example, you might wait until
+the system call returns to apply <function>copyinstr
+</function>, as shown
+in the following example:</para>
+<screen># <userinput>dtrace -n syscall::open:entry'{ self-&gt;file = arg0; }' \
+-n syscall::open:return'{ trace(copyinstr(self-&gt;file)); self-&gt;file = 0; }'</userinput>
+dtrace: description 'syscall::open:entry' matched 1 probe
+CPU     ID                    FUNCTION:NAME
+  2     51                      open:return   /dev/null                        </screen>
+</sect3>
+</sect2>
+<sect2 xml:id="gcgmh">
+<title>Eliminating <command>dtrace</command> Interference</title>
+<para>
+<indexterm xml:id="indexterm-30">
+<primary>
+<literal>dtrace</literal> interference</primary>
+</indexterm>If you trace every call to the <command>write</command> system
+call, you will cause a cascade of output. Each call to the <function>write
+</function> function
+causes the <command>dtrace</command> command to call the <function>write
+</function> function
+as it displays the output. This feedback loop is a good example of how the <command>dtrace</command> command can interfere with the desired data. You can use
+a simple predicate to avoid this behavior, as shown in the following example:</para>
+<programlisting>syscall::write:entry
+/pid != $pid/
+{
+	printf("%s", stringof(copyin(arg1, arg2)));
+}</programlisting>
+<para>The <literal>$pid</literal> macro variable expands to the process identifier
+of the process that enabled the probes. The <literal>pid</literal> variable
+contains the process identifier of the process whose thread was running on
+the CPU where the probe was fired. The predicate <literal>/pid != $pid/</literal> ensures
+that the script does not trace any events related to the running of this script.</para>
+</sect2>
+<sect2 xml:id="gcgld">
+<title>
+<literal>syscall</literal> Provider</title>
+<para>
+<indexterm xml:id="indexterm-31">
+<primary>probes</primary>
+<secondary>
+<function>syscall
+</function>
+</secondary>
+</indexterm>The <literal>syscall</literal> provider enables you to trace every
+system call entry and return. You can use the <olink remap="external" targetdoc="816-5166" targetptr="prstat-1m">
+<citerefentry>
+<refentrytitle>prstat</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> command to see examine process
+behavior.</para>
+<screen>$ <userinput>prstat -m -p 31337</userinput>
+   PID USERNAME USR SYS TRP TFL DFL LCK SLP LAT VCX ICX SCL SIG PROCESS/NLWP  
+ 13499 user1     53  44 0.0 0.0 0.0 0.0 2.5 0.0  4K  24  9K   0 mystery/6</screen>
+<para>This example shows that the process is consuming a large amount of system
+time. One possible explanation for this behavior is that the process is executing
+a large number of system calls. You can use a simple D program specified on
+the command line to see which system calls are happening most often:</para>
+<screen># <userinput>dtrace -n syscall:::entry'/pid == 31337/{ @syscalls[probefunc] = count(); }'</userinput>
+dtrace: description 'syscall:::entry' matched 215 probes
+<userinput>^C</userinput>
+
+  open                                                              1
+  lwp_park                                                          2
+  times                                                             4
+  fcntl                                                             5
+  close                                                             6
+  sigaction                                                         6
+  read                                                             10
+  ioctl                                                            14
+  sigprocmask                                                     106
+  write                                                          1092</screen>
+<para>This report shows a large number of system calls to the <function>write
+</function> function.
+You can use the <literal>syscall</literal> provider to further examine the
+source of all the <function>write
+</function> system calls:</para>
+<screen>
+<userinput># dtrace -n syscall::write:entry'/pid == 31337/{ @writes[arg2] = quantize(); }'</userinput>
+dtrace: description 'syscall::write:entry' matched 1 probe
+<userinput>^C</userinput>
+
+           value  ------------- Distribution ------------- count    
+               0 |                                         0        
+               1 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@   1037
+               2 |@                                        3        
+               4 |                                         0        
+               8 |                                         0        
+              16 |                                         0        
+              32 |@                                        3        
+              64 |                                         0        
+             128 |                                         0        
+             256 |                                         0        
+             512 |                                         0        
+            1024 |@                                        5        
+            2048 |                                         0        </screen>
+<para>The output shows that the process is executing many <function>write
+</function> system
+calls with a relatively small amount of data.</para>
+</sect2>
+<sect2 xml:id="gcgma">
+<title>The <function>ustack
+</function> Action</title>
+<para>
+<indexterm xml:id="indexterm-32">
+<primary>
+<function>ustack
+</function>
+</primary>
+</indexterm>The <function>ustack
+</function> action traces the user thread's
+stack. If a process that opens many files occasionally fails in the <function>open
+</function> system call, you can use the <function>ustack
+</function> action
+to discover the code path that executes the failed <function>open
+</function>:</para>
+<programlisting>syscall::open:entry
+/pid == $1/
+{
+	self-&gt;path = copyinstr(arg0);
+}
+
+syscall::open:return
+/self-&gt;path != NULL &amp;&amp; arg1 == -1/
+{
+	printf("open for '%s' failed", self-&gt;path);
+	ustack();
+}</programlisting>
+<para>This script also illustrates the use of the <literal>$1</literal> macro
+variable. This macro variable takes the value of the first operand that is
+specified on the <command>dtrace</command> command line:</para>
+<screen># <userinput>dtrace -s ./badopen.d 31337</userinput>
+dtrace: script './badopen.d' matched 2 probes
+CPU     ID                    FUNCTION:NAME
+  0     40                      open:return open for '/usr/lib/foo' failed
+              libc.so.1`__open+0x4
+              libc.so.1`open+0x6c
+              420b0
+              tcsh`dosource+0xe0
+              tcsh`execute+0x978
+              tcsh`execute+0xba0
+              tcsh`process+0x50c
+              tcsh`main+0x1d54
+              tcsh`_start+0xdc</screen>
+<para>The <function>ustack
+</function> action records program counter (<acronym>PC</acronym>) values for the stack. The <command>dtrace</command> command resolves
+those <acronym>PC</acronym> values to symbol names by looking though the process's
+symbol tables. The <command>dtrace</command> command prints out <acronym>PC</acronym> values
+that cannot be resolved as hexadecimal integers.</para>
+<para>When a process exits or is killed before the <function>ustack
+</function> data
+is formatted for output, the <command>dtrace</command> command might be unable
+to convert the <acronym>PC</acronym> values in the stack trace to symbol names.
+In that event the <command>dtrace</command> command displays these values
+as hexadecimal integers. To work around this limitation, specify a process
+of interest with the <option>
+c</option> or <option>
+p</option> option to <literal>dtrace</literal>. If the process ID or command is not known in advance, the
+following example D program that can be used to work around the limitation.
+The example uses the <literal>open</literal> system call probe, but this technique
+can be used with any script that uses the <literal>ustack</literal> action.</para>
+<programlisting> syscall::open:entry
+{
+	ustack();
+	stop_pids[pid] = 1;
+}
+
+syscall::rexit:entry
+/stop_pids[pid] != 0/
+{
+	printf("stopping pid %d", pid);
+	stop();
+	stop_pids[pid] = 0;
+}</programlisting>
+<para>The previous script stops a process just before the process exits, if
+the <function>ustack
+</function> action has been applied to a thread in that
+process. This technique ensures that the <command>dtrace</command> command
+can resolve the <acronym>PC</acronym> values to symbolic names. The value
+of <literal>stop_pids[pid]</literal> is set to <literal>0</literal> after
+clearing the dynamic variable.</para>
+</sect2>
+<sect2 xml:id="gcgmc">
+<title>The <literal>pid</literal> Provider</title>
+<para>
+<indexterm xml:id="indexterm-33">
+<primary>
+<literal>pid</literal> provider</primary>
+</indexterm>The <literal>pid</literal> provider enables you to trace any instruction
+in a process. Unlike most other providers, <literal>pid</literal> probes are
+created on demand, based on the probe descriptions found in your D programs.</para>
+<sect3 xml:id="gcglh">
+<title>User Function Boundary Tracing</title>
+<para>
+<indexterm xml:id="indexterm-34">
+<primary>function boundary testing (FBT)</primary>
+</indexterm>The simplest mode of operation for the <literal>pid</literal> provider
+is as the user space analogue to the <literal>fbt</literal> provider. The
+following example program traces all function entries and returns that are
+made from a single function. The <literal>$1</literal> macro variable expands
+to the first operand on the command line. This macro variable is the process
+ID for the process to trace. The <literal>$2</literal> macro variable expands
+to the second operand on the command line. This macro variable is the name
+of the function that all function calls are traced from.</para>
+<example xml:id="gcgkx">
+
+<title>
+<filename>userfunc.d</filename>: Trace User Function
+Entry and Return</title>
+<programlisting>pid$1::$2:entry
+{
+	self-&gt;trace = 1;
+}
+
+pid$1::$2:return
+/self-&gt;trace/
+{
+	self-&gt;trace = 0;
+}
+
+pid$1:::entry,
+pid$1:::return
+/self-&gt;trace/
+{
+}</programlisting>
+</example>
+<para>This script produces output that is similar to the following example:</para>
+<screen># <userinput>./userfunc.d 15032 execute</userinput>
+dtrace: script './userfunc.d' matched 11594 probes
+  0  -&gt; execute                               
+  0    -&gt; execute                             
+  0      -&gt; Dfix                              
+  0      &lt;- Dfix                              
+  0      -&gt; s_strsave                         
+  0        -&gt; malloc                          
+  0        &lt;- malloc                          
+  0      &lt;- s_strsave                         
+  0      -&gt; set                               
+  0        -&gt; malloc                          
+  0        &lt;- malloc                          
+  0      &lt;- set                               
+  0      -&gt; set1                              
+  0        -&gt; tglob                           
+  0        &lt;- tglob                           
+  0      &lt;- set1                              
+  0      -&gt; setq                              
+  0        -&gt; s_strcmp                        
+  0        &lt;- s_strcmp                        
+...</screen>
+<para>The <literal>pid</literal> provider can only be used on processes that
+are already running. You can use the <literal>$target</literal> macro variable
+and the <command>dtrace</command> options <option>
+c</option> and <option>
+p</option> to
+create and instrument processes of interest using the <command>dtrace</command> facility.
+The following D script determines the distribution of function calls that
+are made to <literal>libc</literal> by a particular subject process:</para>
+<programlisting>pid$target:libc.so::entry
+{
+	@[probefunc] = count();
+}</programlisting>
+<para>To determine the distribution of such calls made by the <olink remap="external" targetdoc="816-5165" targetptr="date-1">
+<citerefentry>
+<refentrytitle>date</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> command, execute the following
+command:</para>
+<screen># <userinput>dtrace -s libc.d -c date</userinput>
+dtrace: script 'libc.d' matched 2476 probes
+Fri Jul 30 14:08:54 PDT 2004
+dtrace: pid 109196 has exited
+
+  pthread_rwlock_unlock                                             1
+  _fflush_u                                                         1
+  rwlock_lock                                                       1
+  rw_write_held                                                     1
+  strftime                                                          1
+  _close                                                            1
+  _read                                                             1
+  __open                                                            1
+  _open                                                             1
+  strstr                                                            1
+  load_zoneinfo                                                     1
+
+...
+  _ti_bind_guard                                                   47
+  _ti_bind_clear                                                   94</screen>
+</sect3>
+<sect3 xml:id="gcgkv">
+<title>Tracing Arbitrary Instructions</title>
+<para>
+<indexterm xml:id="indexterm-35">
+<primary>
+<literal>pid</literal> provider</primary>
+</indexterm>
+<indexterm xml:id="indexterm-36">
+<primary>tracing instructions</primary>
+</indexterm>You can use the <literal>pid</literal> provider to trace any instruction
+in any user function. Upon demand, the <literal>pid</literal> provider creates
+a probe for every instruction in a function. The name of each probe is the
+offset of its corresponding instruction in the function expressed as a hexadecimal
+integer. To enable a probe that is associated with the instruction at offset <literal>0x1c</literal> in function <literal>foo</literal> of module <literal>bar.so</literal> in
+the process with PID 123, use the following command.</para>
+<screen># <userinput>dtrace -n pid123:bar.so:foo:1c</userinput>
+</screen>
+<para>To enable all of the probes in the function <literal>foo</literal>,
+including the probe for each instruction, you can use the command:</para>
+<screen># <userinput>dtrace -n pid123:bar.so:foo:</userinput>
+</screen>
+<para>The following example demonstrates how to combine the <literal>pid</literal> provider
+with speculative tracing to trace every instruction in a function.</para>
+<example xml:id="gcgle">
+
+<title>
+<filename>errorpath.d</filename>: Trace User Function
+Call Error Path</title>
+<programlisting>pid$1::$2:entry
+{
+	self-&gt;spec = speculation();
+	speculate(self-&gt;spec);
+	printf("%x %x %x %x %x", arg0, arg1, arg2, arg3, arg4);
+}
+
+pid$1::$2:
+/self-&gt;spec/
+{
+	speculate(self-&gt;spec);
+}
+
+pid$1::$2:return
+/self-&gt;spec &amp;&amp; arg1 == 0/
+{
+	discard(self-&gt;spec);
+	self-&gt;spec = 0;
+}
+
+pid$1::$2:return
+/self-&gt;spec &amp;&amp; arg1 != 0/
+{
+	commit(self-&gt;spec);
+	self-&gt;spec = 0;
+}</programlisting>
+</example>
+<para>When <filename>errorpath.d</filename> executes, the output of the script
+is similar to the following example.</para>
+<screen># <userinput>./errorpath.d 100461 _chdir</userinput>
+dtrace: script './errorpath.d' matched 19 probes
+CPU     ID                    FUNCTION:NAME
+  0  25253                     _chdir:entry 81e08 6d140 ffbfcb20 656c73 0
+  0  25253                     _chdir:entry
+  0  25269                         _chdir:0
+  0  25270                         _chdir:4
+  0  25271                         _chdir:8
+  0  25272                         _chdir:c
+  0  25273                        _chdir:10
+  0  25274                        _chdir:14
+  0  25275                        _chdir:18
+  0  25276                        _chdir:1c
+  0  25277                        _chdir:20
+  0  25278                        _chdir:24
+  0  25279                        _chdir:28
+  0  25280                        _chdir:2c
+  0  25268                    _chdir:return</screen>
+</sect3>
+</sect2>
+</sect1>
+<sect1 xml:id="gcgln">
+<title>Anonymous Tracing</title>
+<para>This section describes tracing that is not associated with any DTrace
+consumer. Anonymous tracing is used in situations when no DTrace consumer
+processes can run. Only the super user may create an anonymous enabling. Only
+one anonymous enabling can exist at any time.</para>
+<sect2 xml:id="gcglb">
+<title>Anonymous Enablings</title>
+<para>
+<indexterm xml:id="indexterm-37">
+<primary>anonymous tracing</primary>
+</indexterm>
+<indexterm xml:id="indexterm-38">
+<primary>anonymous enabling</primary>
+</indexterm>To create an anonymous enabling, use the <option>
+A</option> option
+with a <command>dtrace</command> command invocation that specifies the desired
+probes, predicates, actions and options. The <command>dtrace</command> command
+ adds a series of driver properties that represent your request to the configuration
+file for the <olink remap="external" targetdoc="816-5177" targetptr="dtrace-7d">
+<citerefentry>
+<refentrytitle>dtrace</refentrytitle>
+<manvolnum>
+7D
+</manvolnum>
+</citerefentry>
+</olink> driver.
+The configuration file is typically <filename>/kernel/drv/dtrace.conf</filename>.
+The <filename>dtrace</filename> driver reads these properties when the driver
+is loaded. The driver enables the specified probes with the specified actions
+and creates an <firstterm>anonymous state</firstterm> to associate with the
+new enabling. The <filename>dtrace</filename> driver is normally loaded on
+demand, along with any drivers that act as <command>dtrace</command> providers.
+To allow tracing during boot, the <filename>dtrace</filename> driver must
+be loaded as early as possible.  The <command>dtrace</command> command adds
+the necessary <literal>forceload</literal> statements to <filename>/etc/system</filename> (see <olink remap="external" targetdoc="816-5174" targetptr="system-4">
+<citerefentry>
+<refentrytitle>system</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> for each required <command>dtrace</command> provider and for the <filename>dtrace</filename> driver. </para>
+<para>When the system boots, the <filename>dtrace</filename> driver sends
+a message indicating that the configuration file has been successfully processed.
+An anonymous enabling can set any of the options that are available during
+normal use of the <command>dtrace</command> command.</para>
+<para>To remove an anonymous enabling, specify the <option>
+A</option> option
+to the <command>dtrace</command> command without any probe descriptions.</para>
+</sect2>
+<sect2 xml:id="gcgkj">
+<title>Claiming Anonymous State</title>
+<para>
+<indexterm xml:id="indexterm-39">
+<primary>anonymous tracing</primary>
+<secondary>claiming anonymous state</secondary>
+</indexterm>When the machine has completely booted, you can claim an existing
+anonymous state by specifying the <option>
+a</option> option with the <command>dtrace</command> command. By default, the <option>
+a</option> option claims the anonymous
+state and processes the existing data, then continues to run. To consume the
+anonymous state and exit, add the <option>
+e</option> option.</para>
+<para>When the anonymous state has been consumed from the kernel, the anonymous
+state cannot be replaced. If you attempt to claim an anonymous tracing state
+that does not exist, the <command>dtrace</command> command generates a message
+that is similar to the following example:</para>
+<screen>dtrace: could not enable tracing: No anonymous tracing state</screen>
+<para>If drops or errors occur, the <command>dtrace</command> command generates
+the appropriate messages when the anonymous state is claimed. The messages
+for drops and errors are the same for both anonymous and non-anonymous state.</para>
+</sect2>
+<sect2 xml:id="gcgki">
+<title>Anonymous Tracing Examples</title>
+<para>
+<indexterm xml:id="indexterm-40">
+<primary>examples</primary>
+<secondary>anonymous tracing</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-41">
+<primary>anonymous tracing</primary>
+<secondary>example of use</secondary>
+</indexterm>The following example shows an anonymous DTrace enabling for every
+probe in the <olink remap="external" targetdoc="816-5177" targetptr="iprb-7d">
+<citerefentry>
+<refentrytitle>iprb</refentrytitle>
+<manvolnum>
+7D
+</manvolnum>
+</citerefentry>
+</olink> module:</para>
+<screen># <userinput>dtrace -A -m iprb</userinput>
+dtrace: saved anonymous enabling in /kernel/drv/dtrace.conf
+dtrace: added forceload directives to /etc/system
+dtrace: run update_drv(1M) or reboot to enable changes
+# <userinput>reboot</userinput>
+</screen>
+<para>After rebooting, the <filename>dtrace</filename> driver prints a message
+on the console to indicate that the driver is enabling the specified probes:</para>
+<screen>  ...
+  Copyright 1983-2003 Sun Microsystems, Inc.  All rights reserved.
+  Use is subject to license terms.
+  NOTICE: enabling probe 0 (:iprb::)
+  NOTICE: enabling probe 1 (dtrace:::ERROR)
+  configuring IPv4 interfaces: iprb0.
+  ...</screen>
+<para>After rebooting the machine, specifying the <option>
+a</option> option
+with the <command>dtrace</command> command consumes the anonymous state:</para>
+<screen>
+<userinput># dtrace -a</userinput>
+  CPU     ID                    FUNCTION:NAME
+    0  22954                      _init:entry 
+    0  22955                     _init:return 
+    0  22800                  iprbprobe:entry 
+    0  22934          iprb_get_dev_type:entry 
+    0  22935         iprb_get_dev_type:return 
+    0  22801                 iprbprobe:return 
+    0  22802                 iprbattach:entry 
+    0  22874               iprb_getprop:entry 
+    0  22875              iprb_getprop:return 
+    0  22934          iprb_get_dev_type:entry 
+    0  22935         iprb_get_dev_type:return 
+    0  22870             iprb_self_test:entry 
+    0  22871            iprb_self_test:return 
+    0  22958            iprb_hard_reset:entry 
+    0  22959           iprb_hard_reset:return 
+    0  22862       iprb_get_eeprom_size:entry 
+    0  22826              iprb_shiftout:entry 
+    0  22828            iprb_raiseclock:entry 
+    0  22829           iprb_raiseclock:return 
+  ...</screen>
+<para>The following example focuses only on functions that are called from <function>iprbattach
+</function>.</para>
+<programlisting>fbt::iprbattach:entry
+{
+	self-&gt;trace = 1;
+}
+
+fbt:::
+/self-&gt;trace/
+{}
+
+fbt::iprbattach:return
+{
+	self-&gt;trace = 0;
+}</programlisting>
+<para>Run the following commands to clear the previous settings from the driver
+configuration file, install the new anonymous tracing request, and reboot:</para>
+<screen># <userinput>dtrace -AFs iprb.d</userinput>
+dtrace: cleaned up old anonymous enabling in /kernel/drv/dtrace.conf
+dtrace: cleaned up forceload directives in /etc/system
+dtrace: saved anonymous enabling in /kernel/drv/dtrace.conf
+dtrace: added forceload directives to /etc/system
+dtrace: run update_drv(1M) or reboot to enable changes
+# <userinput>reboot</userinput>
+</screen>
+<para>After rebooting, the <command>dtrace</command> driver prints a different
+message on the console to indicate the slightly different enabling:</para>
+<screen>  ...
+  Copyright 1983-2003 Sun Microsystems, Inc.  All rights reserved.
+  Use is subject to license terms.
+  NOTICE: enabling probe 0 (fbt::iprbattach:entry)
+  NOTICE: enabling probe 1 (fbt:::)
+  NOTICE: enabling probe 2 (fbt::iprbattach:return)
+  NOTICE: enabling probe 3 (dtrace:::ERROR)
+  configuring IPv4 interfaces: iprb0.
+  ...</screen>
+<para>After the machine has finished booting, run the <command>dtrace</command> command
+with the <option>
+a</option> and the <option>
+e</option> options to consume
+the anonymous data and then exit.</para>
+<screen>
+<userinput># dtrace -ae</userinput>
+  CPU FUNCTION                                 
+    0  -&gt; iprbattach                            
+    0    -&gt; gld_mac_alloc                       
+    0      -&gt; kmem_zalloc                       
+    0        -&gt; kmem_cache_alloc                
+    0          -&gt; kmem_cache_alloc_debug        
+    0            -&gt; verify_and_copy_pattern     
+    0            &lt;- verify_and_copy_pattern     
+    0            -&gt; tsc_gethrtime               
+    0            &lt;- tsc_gethrtime               
+    0            -&gt; getpcstack                  
+    0            &lt;- getpcstack                  
+    0            -&gt; kmem_log_enter              
+    0            &lt;- kmem_log_enter              
+    0          &lt;- kmem_cache_alloc_debug        
+    0        &lt;- kmem_cache_alloc                
+    0      &lt;- kmem_zalloc                       
+    0    &lt;- gld_mac_alloc                       
+    0    -&gt; kmem_zalloc                         
+    0      -&gt; kmem_alloc                        
+    0        -&gt; vmem_alloc                      
+    0          -&gt; highbit                       
+    0          &lt;- highbit                       
+    0          -&gt; lowbit                        
+    0          &lt;- lowbit                        
+    0          -&gt; vmem_xalloc                   
+    0            -&gt; highbit                     
+    0            &lt;- highbit                     
+    0            -&gt; lowbit                      
+    0            &lt;- lowbit                      
+    0            -&gt; segkmem_alloc               
+    0              -&gt; segkmem_xalloc            
+    0                -&gt; vmem_alloc              
+    0                  -&gt; highbit               
+    0                  &lt;- highbit               
+    0                  -&gt; lowbit                
+    0                  &lt;- lowbit                
+    0                  -&gt; vmem_seg_alloc        
+    0                    -&gt; highbit             
+    0                    &lt;- highbit             
+    0                    -&gt; highbit             
+    0                    &lt;- highbit             
+    0                    -&gt; vmem_seg_create     
+  ...</screen>
+</sect2>
+</sect1>
+<sect1 xml:id="gbxxu">
+<title>Speculative Tracing</title>
+<para>This section discusses the DTrace facility for <firstterm>speculative
+tracing</firstterm>. Speculative tracing is the ability to tentatively trace
+data and decide whether to <firstterm>commit</firstterm> the data to a tracing
+buffer or <firstterm>discard</firstterm> it. The primary mechanism to filter
+out uninteresting events is the <firstterm>predicate</firstterm> mechanism.
+Predicates are useful when you know at the time that a probe fires whether
+or not the probe event is of interest. Predicates are not well suited to dealing
+with situations where you do not know if a given probe event is of interest
+or not until after the probe fires.</para>
+<para>If a system call is occasionally failing with a common error code, you
+might want to examine the code path that leads to the error condition. You
+can use the speculative tracing facility to tentatively trace data at one
+or more probe locations, then decide to commit the data to the principal buffer
+at another probe location. The resulting trace data contains only the output
+of interest and requires no postprocessing.</para>
+<sect2 xml:id="gcgmb">
+<title>Speculation Interfaces</title>
+<para>
+<indexterm xml:id="indexterm-42">
+<primary>speculation</primary>
+</indexterm>The following table describes the DTrace speculation functions.</para>
+<table frame="topbot" xml:id="gcglj">
+
+<title>DTrace Speculation Functions</title>
+<tgroup cols="3" colsep="0" rowsep="0">
+<colspec colwidth="1.14in"/>
+<colspec colwidth="1.00in"/>
+<colspec colwidth="2.38in"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Function Name</para>
+</entry>
+<entry>
+<para>Arguments</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>
+<literal>speculation</literal>
+</para>
+</entry>
+<entry>
+<para>None</para>
+</entry>
+<entry>
+<para>Returns an identifier for a new speculative buffer</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>speculate</literal>
+</para>
+</entry>
+<entry>
+<para>ID</para>
+</entry>
+<entry>
+<para>Denotes that the remainder of the clause should be traced to the speculative
+buffer specified by ID</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>commit</literal>
+</para>
+</entry>
+<entry>
+<para>ID</para>
+</entry>
+<entry>
+<para>Commits the speculative buffer that is associated with ID</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>discard</literal>
+</para>
+</entry>
+<entry>
+<para>ID</para>
+</entry>
+<entry>
+<para>Discards the speculative buffer associated with ID</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</sect2>
+<sect2 xml:id="gcgkl">
+<title>Creating a Speculation</title>
+<para>
+<indexterm xml:id="indexterm-43">
+<primary>speculation</primary>
+<secondary>creating</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-44">
+<primary>
+<function>speculation
+</function> function</primary>
+</indexterm>The <function>speculation
+</function> function allocates a speculative
+buffer and returns a speculation identifier. Use the speculation identifier
+in subsequent calls to the <function>speculate
+</function> function. A speculation
+identifier of zero is always invalid, but can be passed to <function>speculate
+</function>, <function>commit
+</function> or <function>discard
+</function>. If a call to <function>speculation
+</function> fails, the <command>dtrace</command> command generates a message
+that is similar to the following example.</para>
+<screen>dtrace: 2 failed speculations (no speculative buffer space available)</screen>
+</sect2>
+<sect2 xml:id="gcgli">
+<title>Using a Speculation</title>
+<para>
+<indexterm xml:id="indexterm-45">
+<primary>speculation</primary>
+<secondary>use</secondary>
+</indexterm>To use a speculation, use a clause to pass an identifier that
+has been returned from <function>speculation
+</function> to the <function>speculate
+</function> function before any data-recording actions. All data-recording
+actions in a clause that contains a <function>speculate
+</function> are speculatively
+traced. The D compiler generates a compile-time error if a call to <function>speculate
+</function> follows data recording actions in a D probe clause. Clauses can
+contain either speculative tracing requests or non-speculative tracing requests,
+but not both.</para>
+<para>Aggregating actions, destructive actions, and the <literal>exit</literal> action
+may never be speculative. Any attempt to take one of these actions in a clause
+that contains a <function>speculate
+</function> results in a compile-time error.
+A <function>speculate
+</function> function may not follow a previous <function>speculate
+</function> function. Only one speculation is permitted per clause. A clause
+that contains only a <function>speculate
+</function> function will speculatively
+trace the default action, which is defined to trace only the enabled probe
+ID.</para>
+<para>The typical use of the <function>speculation
+</function> function is
+to assign the result of the <function>speculation
+</function> function to a
+thread-local variable. That thread-local variable acts as a subsequent predicate
+to other probes, as well as an argument to <function>speculate
+</function>.</para>
+<example xml:id="gcgmg">
+
+<title>Typical Use of The <function>speculation
+</function> Function</title>
+<programlisting>syscall::open:entry
+{
+	self-&gt;spec = speculation();
+}
+
+syscall:::
+/self-&gt;spec/
+{
+	speculate(self-&gt;spec);
+	printf("this is speculative");
+}</programlisting>
+</example>
+</sect2>
+<sect2 xml:id="gcglw">
+<title>Committing a Speculation</title>
+<para>
+<indexterm xml:id="indexterm-46">
+<primary>speculation</primary>
+<secondary>committing</secondary>
+</indexterm>Commit speculations by using the <function>commit
+</function> function.
+When you commit a speculative buffer the buffer's data is copied into the
+principal buffer. If the data in the speculative buffer exceeds the available
+space in the principal buffer, no data is copied and the drop count for the
+buffer increments. If the buffer has been speculatively traced on more than
+one CPU, the speculative data on the committing CPU is copied immediately,
+while speculative data on other CPUs is copied after the <function>commit
+</function>.</para>
+<para>A speculative buffer that is being committed is not available to subsequent <function>speculation
+</function> calls until each per-CPU speculative buffer is completely
+copied into its corresponding per-CPU principal buffer. Subsequent attempts
+to write the results of a <function>speculate
+</function> function call to
+the committing buffer discard the data without generating an error. Subsequent
+calls to <function>commit
+</function> or <function>discard
+</function> also
+fail without generating an error. A clause that contains a <function>commit
+</function> function
+cannot contain a data recording action, but a clause can contain multiple <function>commit
+</function> calls to commit disjoint buffers.</para>
+</sect2>
+<sect2 xml:id="gcgkq">
+<title>Discarding a Speculation</title>
+<para>
+<indexterm xml:id="indexterm-47">
+<primary>speculation</primary>
+<secondary>discarding</secondary>
+</indexterm>Discard speculations by using the <function>discard
+</function> function.
+If the speculation has only been active on the CPU that is calling the <function>discard
+</function> function, the buffer is immediately available for subsequent
+calls to the <function>speculation
+</function> function. If the speculation
+has been active on more than one CPU, the discarded buffer will be available
+for subsequent calls to the <function>speculation
+</function> function after
+the call to <function>discard
+</function>. If no speculative buffers are available
+at the time that the <function>speculation
+</function> function is called a<command>dtrace</command> message that is similar to the following example is generated:</para>
+<screen>dtrace: 905 failed speculations (available buffer(s) still busy)</screen>
+</sect2>
+<sect2 xml:id="gcglc">
+<title>Speculation Example</title>
+<para>
+<indexterm xml:id="indexterm-48">
+<primary>speculation</primary>
+<secondary>example of use</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-49">
+<primary>examples</primary>
+<secondary>speculation</secondary>
+</indexterm>One potential use for speculations is to highlight a particular
+code path. The following example shows the entire code path under the <olink remap="external" targetdoc="816-5167" targetptr="open-2">
+<citerefentry>
+<refentrytitle>open</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink> system call when the <function>open
+</function> fails.</para>
+<example xml:id="gcgkt">
+
+<title>
+<filename>specopen.d</filename>: Code Flow for
+Failed <function>open
+</function>
+</title>
+<programlisting>#!/usr/sbin/dtrace -Fs
+
+syscall::open:entry,
+syscall::open64:entry
+{
+	/*
+	 * The call to speculation() creates a new speculation.  If this fails,
+	 * dtrace(1M) will generate an error message indicating the reason for
+	 * the failed speculation(), but subsequent speculative tracing will be
+	 * silently discarded.
+	 */
+	self-&gt;spec = speculation();
+	speculate(self-&gt;spec);
+
+	/*
+	 * Because this printf() follows the speculate(), it is being 
+	 * speculatively traced; it will only appear in the data buffer if the
+	 * speculation is subsequently commited.
+	 */
+	printf("%s", stringof(copyinstr(arg0)));
+}
+
+fbt:::
+/self-&gt;spec/
+{
+	/*
+	 * A speculate() with no other actions speculates the default action:
+	 * tracing the EPID.
+	 */
+	speculate(self-&gt;spec);
+}
+
+syscall::open:return,
+syscall::open64:return
+/self-&gt;spec/
+{
+	/*
+	 * To balance the output with the -F option, we want to be sure that
+	 * every entry has a matching return.  Because we speculated the
+	 * open entry above, we want to also speculate the open return.
+	 * This is also a convenient time to trace the errno value.
+	 */
+	speculate(self-&gt;spec);
+	trace(errno);
+}
+
+syscall::open:return,
+syscall::open64:return
+/self-&gt;spec &amp;&amp; errno != 0/
+{
+	/*
+	 * If errno is non-zero, we want to commit the speculation.
+	 */
+	commit(self-&gt;spec);
+	self-&gt;spec = 0;
+}
+
+syscall::open:return,
+syscall::open64:return
+/self-&gt;spec &amp;&amp; errno == 0/
+{
+	/*
+	 * If errno is not set, we discard the speculation.
+	 */
+	discard(self-&gt;spec);
+	self-&gt;spec = 0;
+}</programlisting>
+</example>
+<para>When you run the previous script, the script generates output that is
+similar to the following example.</para>
+<screen># <userinput>./specopen.d</userinput>
+dtrace: script './specopen.d' matched 24282 probes
+CPU FUNCTION                                 
+  1  =&gt; open                                  /var/ld/ld.config
+  1    -&gt; open                                
+  1      -&gt; copen                             
+  1        -&gt; falloc                          
+  1          -&gt; ufalloc                       
+  1            -&gt; fd_find                     
+  1              -&gt; mutex_owned               
+  1              &lt;- mutex_owned               
+  1            &lt;- fd_find                     
+  1            -&gt; fd_reserve                  
+  1              -&gt; mutex_owned               
+  1              &lt;- mutex_owned               
+  1              -&gt; mutex_owned               
+  1              &lt;- mutex_owned               
+  1            &lt;- fd_reserve                  
+  1          &lt;- ufalloc                       
+  1          -&gt; kmem_cache_alloc              
+  1            -&gt; kmem_cache_alloc_debug      
+  1              -&gt; verify_and_copy_pattern   
+  1              &lt;- verify_and_copy_pattern   
+  1              -&gt; file_cache_constructor    
+  1                -&gt; mutex_init              
+  1                &lt;- mutex_init              
+  1              &lt;- file_cache_constructor    
+  1              -&gt; tsc_gethrtime             
+  1              &lt;- tsc_gethrtime             
+  1              -&gt; getpcstack                
+  1              &lt;- getpcstack                
+  1              -&gt; kmem_log_enter            
+  1              &lt;- kmem_log_enter            
+  1            &lt;- kmem_cache_alloc_debug      
+  1          &lt;- kmem_cache_alloc              
+  1          -&gt; crhold                        
+  1          &lt;- crhold                        
+  1        &lt;- falloc                          
+  1        -&gt; vn_openat                       
+  1          -&gt; lookupnameat                  
+  1            -&gt; copyinstr                   
+  1            &lt;- copyinstr                   
+  1            -&gt; lookuppnat                  
+  1              -&gt; lookuppnvp                
+  1                -&gt; pn_fixslash             
+  1                &lt;- pn_fixslash             
+  1                -&gt; pn_getcomponent         
+  1                &lt;- pn_getcomponent         
+  1                -&gt; ufs_lookup              
+  1                  -&gt; dnlc_lookup           
+  1                    -&gt; bcmp                
+  1                    &lt;- bcmp                
+  1                  &lt;- dnlc_lookup           
+  1                  -&gt; ufs_iaccess           
+  1                    -&gt; crgetuid            
+  1                    &lt;- crgetuid            
+  1                    -&gt; groupmember         
+  1                      -&gt; supgroupmember    
+  1                      &lt;- supgroupmember
+  1                    &lt;- groupmember         
+  1                  &lt;- ufs_iaccess           
+  1                &lt;- ufs_lookup              
+  1                -&gt; vn_rele                 
+  1                &lt;- vn_rele                 
+  1                -&gt; pn_getcomponent         
+  1                &lt;- pn_getcomponent         
+  1                -&gt; ufs_lookup              
+  1                  -&gt; dnlc_lookup           
+  1                    -&gt; bcmp                
+  1                    &lt;- bcmp                
+  1                  &lt;- dnlc_lookup           
+  1                  -&gt; ufs_iaccess           
+  1                    -&gt; crgetuid            
+  1                    &lt;- crgetuid            
+  1                  &lt;- ufs_iaccess           
+  1                &lt;- ufs_lookup              
+  1                -&gt; vn_rele                 
+  1                &lt;- vn_rele                 
+  1                -&gt; pn_getcomponent         
+  1                &lt;- pn_getcomponent         
+  1                -&gt; ufs_lookup              
+  1                  -&gt; dnlc_lookup           
+  1                    -&gt; bcmp                
+  1                    &lt;- bcmp                
+  1                  &lt;- dnlc_lookup           
+  1                  -&gt; ufs_iaccess           
+  1                    -&gt; crgetuid            
+  1                    &lt;- crgetuid            
+  1                  &lt;- ufs_iaccess           
+  1                  -&gt; vn_rele               
+  1                  &lt;- vn_rele               
+  1                &lt;- ufs_lookup              
+  1                -&gt; vn_rele                 
+  1                &lt;- vn_rele                 
+  1              &lt;- lookuppnvp                
+  1            &lt;- lookuppnat                  
+  1          &lt;- lookupnameat                  
+  1        &lt;- vn_openat                       
+  1        -&gt; setf                            
+  1          -&gt; fd_reserve                    
+  1            -&gt; mutex_owned                 
+  1            &lt;- mutex_owned                 
+  1            -&gt; mutex_owned                 
+  1            &lt;- mutex_owned                 
+  1          &lt;- fd_reserve                    
+  1          -&gt; cv_broadcast                  
+  1          &lt;- cv_broadcast                  
+  1        &lt;- setf                            
+  1        -&gt; unfalloc                        
+  1          -&gt; mutex_owned                   
+  1          &lt;- mutex_owned                   
+  1          -&gt; crfree                        
+  1          &lt;- crfree                        
+  1          -&gt; kmem_cache_free               
+  1            -&gt; kmem_cache_free_debug       
+  1              -&gt; kmem_log_enter            
+  1              &lt;- kmem_log_enter            
+  1              -&gt; tsc_gethrtime             
+  1              &lt;- tsc_gethrtime             
+  1              -&gt; getpcstack                
+  1              &lt;- getpcstack                
+  1              -&gt; kmem_log_enter            
+  1              &lt;- kmem_log_enter
+  1              -&gt; file_cache_destructor     
+  1                -&gt; mutex_destroy           
+  1                &lt;- mutex_destroy           
+  1              &lt;- file_cache_destructor     
+  1              -&gt; copy_pattern              
+  1              &lt;- copy_pattern              
+  1            &lt;- kmem_cache_free_debug       
+  1          &lt;- kmem_cache_free               
+  1        &lt;- unfalloc                        
+  1        -&gt; set_errno                       
+  1        &lt;- set_errno                       
+  1      &lt;- copen                             
+  1    &lt;- open                                
+  1  &lt;= open                                          2</screen>
+</sect2>
+</sect1>
+</chapter>

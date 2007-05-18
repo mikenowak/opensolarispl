@@ -1,0 +1,136 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>TTY Monitor and Network Listener Port Monitors</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch10.html" title="Chapter 10. Managing Serial
+Ports With the Service Access Facility (Tasks)"><link rel="prev" href="ch10s04.html" title="Port Monitor Service Administration (pmadm)"><link rel="next" href="ch10s06.html" title="Administering ttymon Port
+Monitors"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">TTY Monitor and Network Listener Port Monitors</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10s04.html">Prev</a> </td><th width="60%" align="center">Chapter 10. Managing Serial
+Ports With the Service Access Facility (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch10s06.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="modsafapp-7"></a>TTY Monitor and Network Listener Port Monitors</h2></div></div></div>
+
+<a class="indexterm" name="modsafapp-ix1108"></a>
+<p>Though the SAF provides a generic means for administering any future
+or third-party port monitors, only two port monitors are implemented in the Solaris Operating System: <code class="literal">ttymon</code> and <code class="literal">listen</code>.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-8"></a>TTY Port Monitor (<code class="literal">ttymon</code>)</h3></div></div></div>
+
+<p>The <code class="literal">ttymon</code> port monitor is STREAMS-based and does
+the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Monitors ports</p>
+</li><li>
+<p>Sets terminal modes, baud rates, and line disciplines</p>
+</li><li>
+<p>Invokes the login process</p>
+</li></ul></div>
+<p>The <code class="literal">ttymon</code> port monitor provides Solaris users the
+same services that the <span><strong class="command">getty</strong></span> port monitor did under previous
+versions of SunOS 4.1 software.</p>
+<p>The <code class="literal">ttymon</code> port monitor runs under the SAC program
+and is configured with the <span><strong class="command">sacadm</strong></span> command. Each instance
+of <code class="literal">ttymon</code> can monitor multiple ports. These ports are specified
+in the port monitor's administrative file. The administrative file is configured
+by using the <span><strong class="command">pmadm</strong></span> and <span><strong class="command">ttyadm</strong></span> commands.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-38"></a>
+<code class="literal">ttymon</code> and the Console
+Port</h3></div></div></div>
+
+<p>Console services are not managed by the Service Access Controller (SAC),
+nor by any explicit <span><strong class="command">ttymon</strong></span> administration file. <span><strong class="command">ttymon</strong></span> invocations are managed by SMF. As a result, you can no longer
+invoke <span><strong class="command">ttymon</strong></span> by adding an entry to the <code class="filename">/etc/inittab</code> file. A property group with the type, <code class="literal">application</code>,
+and the name <span><strong class="command">ttymon</strong></span>, has been added to the SMF service, <code class="literal">svc:/system/console-login:default</code>. The properties within this property
+group are used by the method script, <span><strong class="command">/lib/svc/method/console-login</strong></span>.
+This script uses the property values as arguments to the <span><strong class="command">ttymon</strong></span> invocation.
+Usually, if the values are empty, or if the values are not defined for any
+of the properties, then the value is not used for <span><strong class="command">ttymon</strong></span>.
+However, if the <span><strong class="command">ttymon</strong></span> device value is empty, or not set,
+then <code class="filename">/dev/console</code> is used as the default to enable <span><strong class="command">ttymon</strong></span> to run.</p>
+<p>The following properties are available under the SMF service, <code class="literal">svc:/system/console-login:default</code>:</p>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="literal">ttymon/nohangup</code>
+</span></dt><dd>
+<p>Specifies the <code class="literal">nohangup</code> property. If set
+to <code class="literal">true</code>, do not force a line hang up by setting the line
+speed to zero before setting the default or specified speed.</p>
+</dd><dt><span class="term">
+<code class="literal">ttymon/prompt</code>
+</span></dt><dd>
+<p>Specifies the prompt string for the console port.</p>
+</dd><dt><span class="term">
+<code class="literal">ttymon/terminal_type</code>
+</span></dt><dd>
+<p>Specifies the default terminal type for the console.</p>
+</dd><dt><span class="term">
+<code class="literal">ttymon/device</code>
+</span></dt><dd>
+<p>Specifies the console device.</p>
+</dd><dt><span class="term">
+<code class="literal">ttymon/label</code>
+</span></dt><dd>
+<p>Specifies the TTY label in the <code class="filename">/etc/ttydefs</code> line.</p>
+</dd></dl></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-10122"></a>
+<code class="literal">ttymon</code>-Specific Administrative
+Command (<span><strong class="command">ttyadm</strong></span>)</h3></div></div></div>
+
+<a class="indexterm" name="modsafapp-ix1109"></a>
+<p>The <span><strong class="command">ttymon</strong></span> administrative file is updated by the <span><strong class="command">sacadm</strong></span> and <span><strong class="command">pmadm</strong></span> commands, as well as by the <span><strong class="command">ttyadm</strong></span> command. The <span><strong class="command">ttyadm</strong></span> command formats <span><strong class="command">ttymon</strong></span>-specific information and writes it to standard output, providing
+a means for presenting formatted <code class="literal">ttymon</code>-specific data to
+the <span><strong class="command">sacadm</strong></span> and <span><strong class="command">pmadm</strong></span> commands. </p>
+<p>Thus, the <span><strong class="command">ttyadm</strong></span> command does not administer <code class="literal">ttymon</code> directly. The <span><strong class="command">ttyadm</strong></span> command complements the
+generic administrative commands, <span><strong class="command">sacadm</strong></span> and <span><strong class="command">pmadm</strong></span>.
+For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">ttyadm</span>
+(
+1M
+)
+</span>
+</span> man
+page.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-9"></a>Network Listener Service (<span><strong class="command">listen</strong></span>)</h3></div></div></div>
+
+<p>The <span><strong class="command">listen</strong></span> port monitor runs under the SAC and does
+the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Monitors the network for service requests</p>
+</li><li>
+<p>Accepts requests when they arrive</p>
+</li><li>
+<p>Invokes servers in response to those service requests</p>
+</li></ul></div>
+<p>The <span><strong class="command">listen</strong></span> port monitor is configured by using the <span><strong class="command">sacadm</strong></span> command. Each instance of <span><strong class="command">listen</strong></span> can provide
+multiple services. These services are specified in the port monitor's administrative
+file. This administrative file is configured by using the <span><strong class="command">pmadm</strong></span> and <span><strong class="command">nlsadmin</strong></span> commands.</p>
+<p>The network listener process can be used with any connection-oriented
+transport provider that conforms to the Transport Layer Interface (TLI) specification.
+In the Solaris Operating System, <span><strong class="command">listen</strong></span> port monitors can provide additional
+network services not provided by the <span><strong class="command">inetd</strong></span> service.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-93595"></a>Special <span><strong class="command">listen</strong></span>-Specific
+Administrative Command (<span><strong class="command">nlsadmin</strong></span>)</h3></div></div></div>
+
+<a class="indexterm" name="modsafapp-ix1110"></a>
+<p>The <span><strong class="command">listen</strong></span> port monitor's administrative file is
+updated by the <span><strong class="command">sacadm</strong></span> and <span><strong class="command">pmadm</strong></span> commands,
+as well as by the <span><strong class="command">nlsadmin</strong></span> command. The <span><strong class="command">nlsadmin</strong></span> command
+formats <span><strong class="command">listen</strong></span>-specific information and writes it to standard
+output, providing a means of presenting formatted <span><strong class="command">listen</strong></span>-specific
+data to the <span><strong class="command">sacadm</strong></span> and <span><strong class="command">pmadm</strong></span> commands.</p>
+<p>Thus, the <span><strong class="command">nlsadmin</strong></span> command does not administer <span><strong class="command">listen</strong></span> directly. The command complements the generic administrative
+commands, <span><strong class="command">sacadm</strong></span> and <span><strong class="command">pmadm</strong></span>. </p>
+<p>Each network, configured separately, can have at least one instance
+of the network listener process associated with it. The <span><strong class="command">nlsadmin</strong></span> command
+controls the operational states of <span><strong class="command">listen</strong></span> port monitors.</p>
+<p>The <span><strong class="command">nlsadmin</strong></span> command can establish a <span><strong class="command">listen</strong></span> port
+monitor for a given network, configure the specific attributes of that port
+monitor, and <em class="replaceable"><code>start</code></em> and <em class="replaceable"><code>kill</code></em> the
+monitor. The <span><strong class="command">nlsadmin</strong></span> command can also report on the <span><strong class="command">listen</strong></span> port monitors on a machine.</p>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">nlsadmin</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10s04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch10.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch10s06.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Port Monitor Service Administration (<span><strong class="command">pmadm</strong></span>) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Administering <code class="literal">ttymon</code> Port
+Monitors</td></tr></table></div></body></html>

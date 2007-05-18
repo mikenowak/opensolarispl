@@ -1,0 +1,1284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="hboverview-25463">
+
+
+
+<title>Shutting Down and Booting a System (Overview)</title>
+<toc>
+<para>This chapter provides guidelines for shutting down and booting a system.
+The Solaris Operating System (Solaris OS) is designed to run continuously
+so that electronic mail and network resources are available to users. Occasionally,
+shutting down or rebooting a system is necessary because of a system configuration
+change, a scheduled maintenance event, or a power outage.</para>
+<para>This is a list of the overview information in this chapter.</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="etmjx">What's New in Shutting Down and Booting a System</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="hbrunlevels-27">Where to Find Shut Down and Boot Tasks</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="hboverview-21323">Shut Down and Boot Terminology</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="hboverview-40266">Guidelines for Shutting Down a System</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="hboverview-19075">Guidelines for Booting a System</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="hboverview-70350">When to Shut Down a System</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="hboverview-24993">When to Boot a System</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="hboverview-33">Booting a System From the Network</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="fcpez">
+Support for 64-Bit Computing</olink>
+</para>
+</listitem>
+</itemizedlist>
+<note>
+
+<para>Overview information in this chapter that pertains only to a specific
+Solaris release is labeled as such.</para>
+</note>
+<para>For overview
+information about GRUB based booting on x86 based systems in the Solaris Express release, see <olink remap="external" targetdoc="chapter-11.xml" targetptr="fvbsc">
+GRUB Based Booting (Overview)</olink>.</para>
+</toc>
+<sect1 xml:id="etmjx">
+<title>What's New in Shutting Down and Booting a System</title>
+<para>This section describes new boot features in this Solaris release. For
+a complete listing of new Solaris features and a description of Solaris releases,
+see  <olink remap="external" targetdoc="819-2183">
+<citetitle remap="book">What’s New in Solaris Express</citetitle>
+</olink>.</para>
+<para>For information about new features for shutting down and booting a system
+in the Solaris 10 release, see the following references:</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="external" targetdoc="chapter-14.xml" targetptr="fddwo">SMF and Booting</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="fcpez">
+Support for 64-Bit Computing</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="ewpnz">
+Systems Booting From PXE, CD, or DVD Now Boot Automatically</olink>
+</para>
+</listitem>
+</itemizedlist>
+<sect2 xml:id="gcbpf">
+<title>Changes to GRUB Failsafe
+Interaction</title>
+<para>
+<emphasis role="strong">Solaris Express 3/06:</emphasis> In this Solaris release, the
+GRUB failsafe interaction has changed. Previously, if you booted the failsafe
+archive, you were prompted to automatically update the boot archives, regardless
+of whether any boot archives were out-of-date. Starting with the Solaris Express 3/06 release, the system only prompts
+you to update the boot archives if out-of-date boot archives are detected.
+For an example of the GRUB failsafe interaction in the current Solaris release,
+see <olink remap="external" targetdoc="chapter-11.xml" targetptr="fvznb">
+How to Boot the Failsafe Archive for Recovery Purposes</olink>.</para>
+</sect2>
+<sect2 arch="x86" xml:id="fvbse">
+<title>
+GRUB Based
+Booting</title>
+<para>
+<emphasis role="strong">Solaris Express 6/05:</emphasis> The open source GRand Unified
+Bootloader (GRUB) has been adopted as the default boot loader on x86 based
+systems. GRUB is responsible for loading a boot archive into the system's
+memory. A boot archive is a collection of critical files that is needed during
+system startup before the root (<filename>/</filename>) file system is mounted.
+The boot archive is used to boot the Solaris OS. You can find more information
+about GRUB at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://www.gnu.org/software/grub/grub.html">
+</link>.
+See also the <olink remap="external" targetdoc="819-2252" targetptr="grub-5">
+<citerefentry>
+<refentrytitle>grub</refentrytitle>
+<manvolnum>
+5
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+<note>
+
+<para>GRUB based booting is not available on SPARC based systems in
+this Solaris release.</para>
+</note>
+<para>The most notable change is the replacement of the Solaris Device Configuration
+Assistant with the GRUB menu. The GRUB menu is displayed when you boot an
+x86 based system. This menu facilitates the boot, you can select
+which OS instance to boot. If you do not make a selection, the default OS
+instance is booted.</para>
+<para>GRUB Based Booting provides the following improvements:</para>
+<itemizedlist>
+<listitem>
+<para>Faster boot times</para>
+</listitem>
+<listitem>
+<para>Installation capability from USB CD and DVD drives</para>
+</listitem>
+<listitem>
+<para>Ability to boot from USB storage devices</para>
+</listitem>
+<listitem>
+<para>Simplified DHCP setup for PXE boot (no vendor-specific options)</para>
+</listitem>
+<listitem>
+<para>Elimination of all realmode drivers</para>
+</listitem>
+</itemizedlist>
+<para>In addition, two new administrative commands have been added to assist
+you in managing system bootability.</para>
+<itemizedlist>
+<listitem>
+<para>
+<command>bootadm</command> – Rebuilds the <filename>boot_archive</filename>
+</para>
+</listitem>
+<listitem>
+<para>
+<command>installgrub</command> – Installs the GRUB boot
+blocks</para>
+</listitem>
+</itemizedlist>
+<para>For more information, see the <olink remap="external" targetdoc="819-2240" targetptr="bootadm-1m">
+<citerefentry>
+<refentrytitle>bootadm</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> and the <olink remap="external" targetdoc="819-2240" targetptr="installgrub-1m">
+<citerefentry>
+<refentrytitle>installgrub</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man pages.
+For overview, task, and reference information, see <olink remap="external" targetdoc="chapter-11.xml" targetptr="hbx86boot-68676">Chapter 11, GRUB Based Booting (Tasks)</olink>.</para>
+<para>For installation information, see the <olink remap="external" targetdoc="819-2394">
+<citetitle remap="book">Solaris Express Installation Guide: Network-Based Installations</citetitle>
+</olink> and
+the <olink remap="external" targetdoc="819-2396">
+<citetitle remap="book">Solaris Express Installation Guide: Custom JumpStart and Advanced Installations</citetitle>
+</olink>.</para>
+</sect2>
+</sect1>
+<sect1 xml:id="hbrunlevels-27">
+<title>Where to Find Shut Down and Boot Tasks</title>
+<para>Use these references to find step-by-step instructions for shutting
+down and booting a system.</para>
+<informaltable frame="topbot">
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colname="colspec0" colwidth="50*"/>
+<colspec colname="colspec1" colwidth="50*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Shut Down and Boot Task</para>
+</entry>
+<entry>
+<para>For More Information</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Shut down a SPARC based system or an x86 based system</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-9.xml" targetptr="hbsyshalt-84412">Chapter 9, Shutting Down a System (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Boot a SPARC based system</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-10.xml" targetptr="hbsparcboot-79782">Chapter 10, Booting a System (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<emphasis role="strong">Solaris Express 6/05:</emphasis> Boot an x86 based system with
+GRUB</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-11.xml" targetptr="hbx86boot-68676">Chapter 11, GRUB Based Booting (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> Boot an x86 based
+system in a non-GRUB based boot environment.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-12.xml" targetptr="hbx86boot-aaa">Chapter 12, Booting a System (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Manage a SPARC based system by using the power management software</para>
+</entry>
+<entry>
+<para> <olink remap="external" targetdoc="819-2251" targetptr="power.conf-4">
+<citerefentry>
+<refentrytitle>power.conf</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="819-2240" targetptr="pmconfig-1m">
+<citerefentry>
+<refentrytitle>pmconfig</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect1>
+<sect1 xml:id="hboverview-21323">
+<title>Shut Down and Boot Terminology</title>
+<para>This section describes the terminology that is used in shutting down
+and booting a system.</para>
+<variablelist>
+<varlistentry>
+<term>
+<emphasis role="strong">Run levels and init states</emphasis>
+</term>
+<listitem>
+<para>A <emphasis>run level</emphasis> is a letter or digit that
+represents a system state in which a particular set of system services are
+available. The system is always running in one of a set of well-defined run
+levels. Run levels are also referred to as <emphasis>init states</emphasis> because
+the <command>init</command> process maintains the run level. System administrators
+use the <command>init</command> command or the <command>svcadm</command> command
+to initiate a run-level transition. This book refers to init states as run
+levels.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<emphasis role="strong">Boot options</emphasis>
+</term>
+<listitem>
+<para>A <emphasis>boot option</emphasis> describes how a system
+is booted. Different boot options include the following:</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="strong">Interactive boot</emphasis> –
+You are prompted to provide information about how the system is booted, such
+as the kernel and device path name.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Reconfiguration boot</emphasis> –
+The system is reconfigured to support newly added hardware or new pseudo devices.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Recovery boot</emphasis> – The
+system is hung or an invalid entry is prohibiting the system from booting
+successfully or from allowing users to log in.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect1>
+<sect1 xml:id="hboverview-40266">
+<title>Guidelines for Shutting Down a System</title>
+<para>
+<indexterm xml:id="hboverview-ix931">
+<primary>shutting down</primary>
+<secondary>a system, guidelines</secondary>
+</indexterm>Keep the following in mind when you shut down a system:</para>
+<itemizedlist>
+<listitem>
+<para>Use the <command>init</command> and <command>shutdown</command> commands
+to shut down a system. Both commands perform a clean system shutdown, which
+means that all system processes and services are terminated normally.</para>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="hboverview-ix932">
+<primary>
+<command>shutdown</command> command</primary>
+<secondary>shutting down a server</secondary>
+</indexterm>Use the <command>shutdown</command> command to shut down a server.
+Logged-in users and systems that mount resources from the server are notified
+before the server is shut down. Additional notification of system shutdowns
+by electronic mail is also recommended so that users can prepare for system
+downtime. </para>
+</listitem>
+<listitem>
+<para>You need superuser privileges to use the <command>shutdown</command> or <command>init</command> command to shut down a system. </para>
+</listitem>
+<listitem>
+<para>Both <command>shutdown</command> and <command>init</command> commands
+take a run level as an argument. The three most common run levels are as follows:</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="strong">Run level 3</emphasis> – All
+system resources are available and users can log in. By default, booting a
+system brings it to run level 3, which is used for normal day-to-day operations.
+This run level is also known as multiuser level with NFS resources shared.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Run level 6</emphasis> – Stops
+the operating system and reboots to the state that is defined by the <literal>initdefault</literal> entry in the <filename>/etc/inittab</filename> file.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Run level 0</emphasis> – The
+operating system is shut down, and it is safe to turn off power. You need
+to bring a system to run level 0 whenever you move a system, or add or remove
+hardware.</para>
+</listitem>
+</itemizedlist>
+<para>Run levels are fully described in <olink remap="external" targetdoc="chapter-14.xml" targetptr="hbrunlevels-25516">Chapter 14, Managing Services (Overview)</olink>.</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="hboverview-19075">
+<title>Guidelines for Booting a System</title>
+<para>
+<indexterm xml:id="hboverview-ix933">
+<primary>booting</primary>
+<secondary>a system, guidelines</secondary>
+</indexterm>Keep the following in mind when you boot a system:</para>
+<itemizedlist>
+<listitem>
+<para>After a SPARC based system is shut down, it is booted by using
+the <command>boot</command> command at the PROM level.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Solaris Express 6/05:</emphasis> After an x86 based system is shut down,
+it is booted by selecting an OS instance in the GRUB menu.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> After an x86
+based system is shut down, it is booted by using the <command>boot</command> command
+at the Primary Boot Subsystem menu.</para>
+</listitem>
+<listitem>
+<para>A system can be rebooted by turning the power off and then
+back on. </para>
+<caution>
+
+<para>This method is not considered a clean shutdown. Use this shutdown
+method only as an alternative in emergency situations. Because system services
+and processes are terminated abruptly, file system damage is likely to occur.
+The work required to repair this type of damage could be substantial and might
+require the restoration of various user and system files from backup copies.</para>
+</caution>
+</listitem>
+<listitem>
+<para>SPARC based systems and x86 based systems use different hardware
+components for booting. These differences are described in <olink remap="external" targetdoc="chapter-13.xml" targetptr="hbsysboot-76719">Chapter 13, The Boot Process (Reference)</olink>.</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="hboverview-70350">
+<title>When to Shut Down a System</title>
+<para>The following table lists system administration tasks and the type of
+shutdown that is needed to initiate the task.</para>
+<table frame="topbot" xml:id="hboverview-12489" pgwide="1">
+
+<title>Shutting Down
+a System</title>
+<tgroup cols="3" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="30*"/>
+<colspec colname="column2" colwidth="30*"/>
+<colspec colname="column3" colwidth="40*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Reason for System Shutdown</para>
+</entry>
+<entry>
+<para>Appropriate Run Level</para>
+</entry>
+<entry>
+<para>For More Information</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>To turn off system power due to anticipated power outage</para>
+</entry>
+<entry>
+<para>Run level 0, where it is safe to turn off power</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-9.xml" targetptr="hbsyshalt-84412">Chapter 9, Shutting Down a System (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>To change kernel parameters in the <filename>/etc/system</filename> file</para>
+</entry>
+<entry>
+<para>Run level 6 (reboot the system)</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-9.xml" targetptr="hbsyshalt-84412">Chapter 9, Shutting Down a System (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>To perform file system maintenance, such as backing up or restoring
+system data</para>
+</entry>
+<entry>
+<para>Run level S (single-user level)</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-9.xml" targetptr="hbsyshalt-84412">Chapter 9, Shutting Down a System (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>To repair a system configuration file such as <filename>/etc/system</filename>
+</para>
+</entry>
+<entry>
+<para>See <olink remap="internal" targetdoc="chapter-8.xml" targetptr="hboverview-24993">When to Boot a System</olink>
+</para>
+</entry>
+<entry>
+<para>N/A</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>To add or remove hardware from the system</para>
+</entry>
+<entry>
+<para>Reconfiguration boot (also to turn off power when adding or removing
+hardware)</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2723" targetptr="devconfig-6">
+<citetitle remap="section">Adding a Peripheral Device to a System</citetitle> in <citetitle remap="book">System Administration Guide: Devices and File Systems</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>To repair an important system file that is causing system boot failure</para>
+</entry>
+<entry>
+<para>See <olink remap="internal" targetdoc="chapter-8.xml" targetptr="hboverview-24993">When to Boot a System</olink>
+</para>
+</entry>
+<entry>
+<para>N/A</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>To boot the kernel debugger (<command>kmdb</command>) to track down
+a system problem</para>
+</entry>
+<entry>
+<para>Run level 0, if possible</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-9.xml" targetptr="hbsyshalt-84412">Chapter 9, Shutting Down a System (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>To recover from a hung system and force a crash dump</para>
+</entry>
+<entry>
+<para>See <olink remap="internal" targetdoc="chapter-8.xml" targetptr="hboverview-24993">When to Boot a System</olink>
+</para>
+</entry>
+<entry>
+<para>N/A</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Reboot the system by using the kernel debugger (<command>kmdb</command>),
+if the debugger can't be loaded at runtime.</para>
+</entry>
+<entry>
+<para>Run level 6 (reboot the system)</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-10.xml" targetptr="euayz">
+How to Boot the System With the Kernel Debugger (<command>kmdb</command>)</olink>, <emphasis role="strong">Solaris Express 6/05:</emphasis> <olink remap="external" targetdoc="chapter-11.xml" targetptr="fvzpl">
+How to Boot a System With the Kernel Debugger in the GRUB Based Boot Environment (<command>kmdb</command>)</olink> <emphasis role="strong">Solaris 10:</emphasis> <olink remap="external" targetdoc="chapter-12.xml" targetptr="hbx86boot-59">
+How to Boot a System With the Kernel Debugger (<command>kmdb</command>)</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>For examples of shutting down a server or a stand-alone system, see <olink remap="external" targetdoc="chapter-9.xml" targetptr="hbsyshalt-84412">Chapter 9, Shutting Down a System (Tasks)</olink>.</para>
+</sect1>
+<sect1 xml:id="hboverview-24993">
+<title>When to Boot a System</title>
+<para>The following table lists system administration tasks and the corresponding
+boot option that is used to complete the task.</para>
+<table frame="topbot" xml:id="hboverview-tbl-34" pgwide="1">
+
+<title>Booting a System</title>
+<tgroup cols="4" colsep="0" rowsep="0">
+<colspec colname="colspec2" colwidth="25*"/>
+<colspec colname="colspec3" colwidth="25*"/>
+<colspec colname="colspec4" colwidth="25*"/>
+<colspec colname="colspec5" colwidth="25*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Reason for System Reboot</para>
+</entry>
+<entry>
+<para>Appropriate Boot Option</para>
+</entry>
+<entry>
+<para>Information for SPARC Based System Procedure</para>
+</entry>
+<entry>
+<para>Information for x86 Based Systems Procedure</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Turn off system power due to anticipated power outage.</para>
+</entry>
+<entry>
+<para>Turn system power back on</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-9.xml" targetptr="hbsyshalt-84412">Chapter 9, Shutting Down a System (Tasks)</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-9.xml" targetptr="hbsyshalt-84412">Chapter 9, Shutting Down a System (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Change kernel parameters in the <filename>/etc/system</filename> file.</para>
+</entry>
+<entry>
+<para>Reboot the system to run level 3 (multiuser level with NFS resources
+shared)</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-10.xml" targetptr="hbsparcboot-36744">
+How to Boot a System to Run Level 3 (Multiuser Level)</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-12.xml" targetptr="hbx86boot-92385">
+How to Boot a System to Run Level 3 (Multiuser Level)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Perform file system maintenance, such as backing up or restoring system
+data.</para>
+</entry>
+<entry>
+<para>Press Control-D from run level S to bring the system back to run level
+3</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-10.xml" targetptr="hbsparcboot-83723">
+How to Boot a System to Run Level S (Single-User Level)</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-12.xml" targetptr="hbx86boot-10398">
+How to Boot a System to Run Level S (Single-User Level)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Repair a system configuration file such as <filename>/etc/system</filename>.</para>
+</entry>
+<entry>
+<para>Interactive boot</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-10.xml" targetptr="hbsparcboot-66353">
+How to Boot a System Interactively</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-12.xml" targetptr="hbx86boot-33570">
+How to Boot a System Interactively</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Add or remove hardware from the system.</para>
+</entry>
+<entry>
+<para>Reconfiguration boot (also to turn on system power after adding or removing
+hardware)</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2723" targetptr="diskssadd-53">
+<citetitle remap="section">Adding a System Disk or a Secondary Disk (Task Map)</citetitle> in <citetitle remap="book">System Administration Guide: Devices and File Systems</citetitle>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2723" targetptr="disksxadd-73">
+<citetitle remap="section">Adding a System Disk or a Secondary Disk (Task Map)</citetitle> in <citetitle remap="book">System Administration Guide: Devices and File Systems</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Boot the system by using the kernel debugger (<command>kmdb</command>)
+to track down a system problem.</para>
+</entry>
+<entry>
+<para>Booting <command>kmdb</command>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-10.xml" targetptr="euayz">
+How to Boot the System With the Kernel Debugger (<command>kmdb</command>)</olink>
+</para>
+</entry>
+<entry>
+<para>
+<emphasis role="strong">Solaris Express 6/05:</emphasis> <olink remap="external" targetdoc="chapter-11.xml" targetptr="fvzpl">
+How to Boot a System With the Kernel Debugger in the GRUB Based Boot Environment (<command>kmdb</command>)</olink>
+</para>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> <olink remap="external" targetdoc="chapter-12.xml" targetptr="hbx86boot-59">
+How to Boot a System With the Kernel Debugger (<command>kmdb</command>)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>To repair an important system file that is causing system boot failure</para>
+</entry>
+<entry>
+<para>
+<emphasis role="strong">Solaris
+Express 6/05:</emphasis> Boot the failsafe archive</para>
+<para>Recovery boot</para>
+</entry>
+<entry>
+<note>
+
+<para>GRUB based booting is not available on SPARC based systems in
+this Solaris release.</para>
+</note>
+<para>
+<olink remap="external" targetdoc="chapter-10.xml" targetptr="hbsparcboot-82678">
+How to Boot a System for Recovery Purposes</olink>
+</para>
+</entry>
+<entry>
+<para>:<emphasis role="strong">Solaris Express 6/05: </emphasis> <olink remap="external" targetdoc="chapter-11.xml" targetptr="fvznb">
+How to Boot the Failsafe Archive for Recovery Purposes</olink>
+</para>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> <olink remap="external" targetdoc="chapter-12.xml" targetptr="hbx86boot-35111">
+How to Boot a System for Recovery Purposes</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>To recover from a hung system and force a crash dump</para>
+</entry>
+<entry>
+<para>Recovery boot</para>
+</entry>
+<entry>
+<para>See example for <olink remap="external" targetdoc="chapter-10.xml" targetptr="hbsparcboot-70469">
+How to Force a Crash Dump and Reboot of the System</olink>
+</para>
+</entry>
+<entry>
+<para>See example for <olink remap="external" targetdoc="chapter-12.xml" targetptr="hbx86boot-89163">
+How to Force a Crash Dump and Reboot of the System</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</sect1>
+<sect1 xml:id="hboverview-33">
+<title>Booting a System From the Network</title>
+<para>You might need to boot a system from the network under the following
+situations:</para>
+<itemizedlist>
+<listitem>
+<para>When the system is first installed</para>
+</listitem>
+<listitem>
+<para>If the system won't boot from the local disk</para>
+</listitem>
+<listitem>
+<para>If the system is a diskless client</para>
+</listitem>
+</itemizedlist>
+<para>Two network configuration boot strategies are available:</para>
+<itemizedlist>
+<listitem>
+<para>Reverse Address Resolution Protocol (RARP) and <trademark>ONC+</trademark> RPC
+Bootparams Protocol </para>
+</listitem>
+<listitem>
+<para>Dynamic Host Configuration Protocol (DHCP)</para>
+</listitem>
+</itemizedlist>
+<note>
+
+<para>The default network boot strategy for an x86 based PXE network
+device is DHCP. You cannot change the default network strategy for a PXE device.
+However, it is possible to configure a non-PXE device to use DHCP.</para>
+</note>
+<para>Use this table if you need information on booting a system over the
+network.</para>
+<informaltable frame="topbot">
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colwidth="50*"/>
+<colspec colwidth="50*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Network Boot Task</para>
+</entry>
+<entry>
+<para>For More Information</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Boot a SPARC based system or a SPARC based diskless client.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-10.xml" targetptr="hbsparcboot-79782">Chapter 10, Booting a System (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<emphasis role="strong">Solaris Express 6/05:</emphasis> Perform
+a GRUB based network boot on an x86 based system.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-11.xml" targetptr="hbx86boot-68676">Chapter 11, GRUB Based Booting (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> Boot an x86 based system
+or an x86 based diskless client.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-12.xml" targetptr="hbx86boot-aaa">Chapter 12, Booting a System (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Boot a DHCP client during installation.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2394">
+<citetitle remap="book">Solaris Express Installation Guide: Network-Based Installations</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Configure a DHCP client by using DHCP Manager.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-3000">
+<citetitle remap="book">System Administration Guide: IP Services</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<sect2 arch="x86" xml:id="ewpnz">
+<title>
+Systems Booting From PXE, CD, or DVD Now
+Boot Automatically</title>
+<note>
+
+<para>Starting with the Solaris Express 6/05 release, the Device Configuration Assistant has been replaced by
+the GRUB menu on x86 based systems.</para>
+</note>
+<para>
+<emphasis role="strong">Solaris
+Express 6/05:</emphasis> When you perform a Preboot Execution Environment (PXE)
+network boot on an x86 based system, or you boot an x86 based system from
+the Solaris Software 1 CD or DVD, the system boots automatically. The GRUB
+menu is displayed after you boot the system. The GRUB menu interface provides
+you with a list of boot entries to choose from. Use the arrow keys to select
+the desired boot method. If no selection is made, the system boots the default
+entry.</para>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> When you perform a Preboot
+Execution Environment (PXE) network boot on an x86 based system, or you boot
+an x86 based system from the Solaris Software 1 CD or DVD, the system boots
+automatically. The Device Configuration Assistant menu is no longer displayed
+by default. If you need to access the Solaris Device Configuration Assistant,
+press the Escape key to interrupt the autoboot process. Doing so, enables
+you to access the Device Configuration Assistant menu. For more information,
+see <olink remap="external" targetdoc="chapter-12.xml" targetptr="ettmr">
+How to Boot a System From the Network</olink>.</para>
+<para>For a fully automated JumpStart installation, boot scripts that run
+the Device Configuration Assistant during the boot process from CD, DVD, or
+a PXE network boot are no longer necessary.</para>
+</sect2>
+<sect2 arch="x86" xml:id="hboverview-35">
+<title>
+PXE Network Boot</title>
+<para>You can boot x86 based systems directly from a network without the
+Solaris boot diskette on x86 based systems that support the PXE network booting
+protocol. The PXE network boot is available only for devices that implement
+the Intel PXE specification. The default network strategy for devices that
+use PXE is DHCP.</para>
+<note>
+
+<para>If you use a DHCP server for PXE network boots, additional DHCP
+configuration is required. For more information about configuring
+DHCP for booting from the Network with GRUB, see <olink remap="external" targetdoc="chapter-11.xml" targetptr="fvzok">
+Performing a GRUB Based Boot From the Network</olink>. For general information on
+DHCP configuration, see <olink remap="external" targetdoc="819-3000" targetptr="dhcptm-1">Part III, <citetitle remap="chapter">DHCP,</citetitle> in <citetitle remap="book">System Administration Guide: IP Services</citetitle>
+</olink>. If you want to set up your DHCP server
+to support installation, see <olink remap="external" targetdoc="819-2394">
+<citetitle remap="book">Solaris Express Installation Guide: Network-Based Installations</citetitle>
+</olink>.</para>
+</note>
+<para>You can enable the PXE network boot on the client system by using the
+BIOS setup program in the system BIOS, the network adapter BIOS, or both.
+On some systems, you must also adjust the boot device priority list so that
+a network boot is attempted before a boot from other devices. See the manufacturer's
+documentation for each setup program, or watch for setup program entry instructions
+during boot.</para>
+<para>Some PXE-capable network adapters have a feature that enables a PXE
+boot if you type a particular keystroke in response to a brief boot-time prompt.
+This feature is ideal when you use PXE for an install boot on a system that
+normally boots from the disk drive because you do not have to modify the PXE
+settings. If your adapter does not have this feature, disable PXE in the BIOS
+setup when the system reboots after installation. Then, the system will boot
+from the disk drive.</para>
+<para>Some versions of PXE firmware cannot boot the Solaris system. If your
+system has a supported PXE firmware version, it can read the PXE network bootstrap
+program from a boot server. However, the bootstrap will not transmit packets.
+If this problem occurs, upgrade the PXE firmware on the adapter. Obtain firmware
+upgrade information from the adapter manufacturer's web site. For more information,
+see the <olink remap="external" targetdoc="819-2254" targetptr="elxl-7d">
+<citerefentry>
+<refentrytitle>elxl</refentrytitle>
+<manvolnum>
+7D
+</manvolnum>
+</citerefentry>
+</olink> and <olink remap="external" targetdoc="819-2254" targetptr="iprb-7d">
+<citerefentry>
+<refentrytitle>iprb</refentrytitle>
+<manvolnum>
+7D
+</manvolnum>
+</citerefentry>
+</olink> man page.</para>
+<para>
+<emphasis role="strong">Solaris Express
+6/05:</emphasis> For
+more information on booting an x86 based system from the network with GRUB,
+see <olink remap="external" targetdoc="chapter-11.xml" targetptr="fvzpk">
+How to Perform a GRUB Based Boot From the Network</olink>.</para>
+<para> For information
+on booting x86 based systems with or without the boot diskette, see <olink remap="external" targetdoc="chapter-12.xml" targetptr="ettmr">
+How to Boot a System From the Network</olink>.</para>
+</sect2>
+</sect1>
+<sect1 arch="amd64" xml:id="fcpez">
+<title>
+Support for 64-Bit Computing</title>
+<para> The system
+autodetects the appropriate kernel to boot on x86 based systems. New installations
+of the Solaris OS autoboot to 64-bit mode on 64-bit capable hardware. Upgrade
+installations of the Solaris OS autoboot to 64-bit mode on 64-bit capable
+hardware, <emphasis>unless</emphasis> the <command>eeprom</command> <literal>boot-file</literal> parameter was previously set to a value other than <filename>kernel/unix</filename>.<indexterm xml:id="indexterm-106">
+<primary>booting</primary>
+<secondary>x86 based system in 64-bit mode</secondary>
+</indexterm>
+</para>
+<para>For upgrade installations of the Solaris OS, where the <command>eeprom</command> <literal>boot-file</literal> parameter was previously set to a value other than <filename>kernel/unix</filename>, you will need to do one of the following to boot the
+system to 64-bit mode:</para>
+<para>If you are running at least the Solaris
+Express release:</para>
+<itemizedlist>
+<listitem>
+<para>Manually set the system to boot to 64-bit mode. See <olink remap="external" targetdoc="chapter-11.xml" targetptr="fwbme">
+How to Modify the Solaris Boot Behavior by Editing the GRUB Menu</olink>.</para>
+</listitem>
+<listitem>
+<para>Use the <command>eeprom</command> command to enable autodetection.
+See <olink remap="external" targetdoc="chapter-11.xml" targetptr="fwbon">
+How to Set Solaris Boot Parameters by Using the <command>eeprom</command> Command</olink>.</para>
+</listitem>
+</itemizedlist>
+<para>If you are running the Solaris 10 release:</para>
+<itemizedlist>
+<listitem>
+<para>Manually set the system to boot to 64-bit mode. See <olink remap="external" targetdoc="chapter-12.xml" targetptr="fcozs">Example 12–2</olink>.</para>
+</listitem>
+<listitem>
+<para>Use the <command>eeprom</command> command to enable autodetection.
+See <olink remap="internal" targetdoc="chapter-8.xml" targetptr="ffktp">
+Setting the <literal>boot-file</literal> Parameter With the <command>eeprom</command> Command</olink>.</para>
+</listitem>
+</itemizedlist>
+<sect2 arch="x86" xml:id="ffktp">
+<title>
+Setting the <literal>boot-file</literal> Parameter
+With the <command>eeprom</command> Command</title>
+<indexterm xml:id="indexterm-107">
+<primary>
+<command>eeprom</command> command</primary>
+<secondary>
+<literal>boot-file</literal> parameter</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-108">
+<primary>
+<literal>boot-file</literal> parameter</primary>
+<secondary>setting with the <command>eeprom</command> command</secondary>
+</indexterm>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> For all new software
+installations, as well as upgrade installations, where the <command>eeprom</command> <literal>boot-file</literal> parameter had previously been set to <filename>kernel/unix</filename>,
+the <command>eeprom</command> <literal>boot-file</literal> parameter is set
+to a null value (<literal>""</literal>). The system then automatically boots
+to 64-bit mode on x86 based systems that are capable of 64-bit computing when
+you type <command>b</command> at the boot prompt.</para>
+<para>You do not need to manually specify which kernel a 64-bit capable system
+should boot unless one of the following conditions exists: </para>
+<itemizedlist>
+<listitem>
+<para>The <command>eeprom</command> <literal>boot-file</literal> parameter
+was previously set to a value other than <literal>kernel/unix</literal>.</para>
+</listitem>
+<listitem>
+<para>You want to force the system to boot to a particular mode.</para>
+</listitem>
+</itemizedlist>
+<para>The following table shows the boot mode result for an x86 based system
+that is 64-bit capable, depending on the Solaris OS version, the boot command
+that is used, and how the <command>eeprom</command> <literal>boot-file</literal> parameter
+is set. </para>
+<informaltable frame="topbot">
+<tgroup cols="3" colsep="0" rowsep="0">
+<colspec colwidth="33*"/>
+<colspec colwidth="33*"/>
+<colspec colwidth="33*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Boot Command</para>
+</entry>
+<entry>
+<para>
+<command>eeprom</command> <literal>boot-file</literal> Parameter Setting</para>
+</entry>
+<entry>
+<para>Boot Mode Result</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>
+<command>b kernel/unix</command>
+</para>
+</entry>
+<entry>
+<para>The <literal>boot-file</literal> parameter is ignored when this command
+is used.</para>
+</entry>
+<entry>
+<para>32-bit mode boot</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<command>b kernel/amd64/unix</command>
+</para>
+</entry>
+<entry>
+<para>The <literal>boot-file</literal> parameter is ignored when this command
+is used.</para>
+</entry>
+<entry>
+<para>64-bit mode boot</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<command>b</command>
+</para>
+</entry>
+<entry>
+<para>
+<literal>""</literal>
+</para>
+</entry>
+<entry>
+<para>64-bit mode boot</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<command>b</command>
+</para>
+</entry>
+<entry>
+<para>
+<literal>kernel/unix</literal>
+</para>
+</entry>
+<entry>
+<para>32-bit mode boot</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<command>b</command>
+</para>
+</entry>
+<entry>
+<para>
+<literal>kernel/amd64/unix</literal>
+</para>
+</entry>
+<entry>
+<para>64-bit mode boot</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<para>To manually specify which mode a 64-bit capable x86 based system boots
+to on future reboots, set the <command>eeprom</command> <literal>boot-file</literal> parameter.
+Note that you must be superuser or assume an equivalent role to run the <command>eeprom</command> command. </para>
+<para>To manually specify that a 64-bit capable x86 system always boot a 64-bit
+kernel, set the <command>eeprom</command> <literal>boot-file</literal> parameter
+as follows:</para>
+<screen># <userinput>eeprom boot-file=kernel/amd64/unix</userinput>
+</screen>
+<para>To manually specify that a 64-bit capable x86 system always boot a 32-bit
+kernel, set the <command>eeprom</command> <literal>boot-file</literal> parameter
+as follows:</para>
+<screen># <userinput>eeprom boot-file=kernel/unix</userinput>
+</screen>
+<para>To restore the default autodetect boot behavior, type:</para>
+<screen># <userinput>eeprom boot-file=""</userinput>
+</screen>
+<para>To determine the current <literal>boot-file</literal> parameter, type:</para>
+<screen>$ <userinput>eeprom boot-file</userinput>
+</screen>
+<para>For more information on the <command>eeprom</command> command, see the <olink remap="external" targetdoc="819-2240" targetptr="eeprom-1m">
+<citerefentry>
+<refentrytitle>eeprom</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man page. For information
+on how to troubleshoot problems on 64-bit capable x86 based systems, see <olink remap="external" targetdoc="chapter-12.xml" targetptr="ffktz">
+Troubleshooting a Failed 64-Bit Boot</olink>.</para>
+</sect2>
+<sect2 arch="x86" xml:id="ffktv">
+<title>
+Booting a System With the Kernel Debugger
+(<command>kmdb</command>)</title>
+<indexterm xml:id="indexterm-109">
+<primary>booting</primary>
+<secondary>a system with the kernel debugger (<command>kmdb</command>)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-110">
+<primary>kernel debugger (<command>kmdb</command>)</primary>
+</indexterm>
+<indexterm xml:id="indexterm-111">
+<primary>
+<command>kmdb</command> command</primary>
+<secondary>booting a system with</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-112">
+<primary>boot options</primary>
+<secondary>
+<option>
+k</option>
+</secondary>
+</indexterm>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> To boot a 64-bit capable
+x86 based system with <command>kmdb</command>, use the <option>
+k</option> option
+to the boot specification. Although <command>b kmdb</command> is still a valid
+command, the preferred method is to use <command>b</command> <option>
+k</option>.</para>
+<note>
+
+<para>Typing <command>b kmdb</command> at the boot prompt causes a system
+to boot the autodetected kernel type with the kernel debugger enabled, regardless
+of how the <command>eeprom</command> <literal>boot-file</literal> parameter
+is set.</para>
+<para>Typing <command>b</command> <option>
+k</option> at the
+boot prompt boots whichever kernel the system would otherwise boot if you
+typed <command>b</command>, with the kernel debugger enabled. The kernel is
+specified by the <command>eeprom</command> <literal>boot-file</literal> parameter,
+or by the autodetected default, if the <literal>boot-file</literal> parameter
+is set to a null value (<literal>""</literal>).</para>
+</note>
+<para>For an example of how to boot a 64-bit capable x86 based system with <command>kmdb</command>, see <olink remap="external" targetdoc="chapter-12.xml" targetptr="ffkto">Example 12–8</olink>.</para>
+<para>For more information on 64-bit computing on the x86 platform, see the <olink remap="external" targetdoc="819-2239" targetptr="isainfo-1">
+<citerefentry>
+<refentrytitle>isainfo</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="819-2239" targetptr="isalist-1">
+<citerefentry>
+<refentrytitle>isalist</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink>, and <olink remap="external" targetdoc="819-2241" targetptr="sysinfo-2">
+<citerefentry>
+<refentrytitle>sysinfo</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink> man pages.</para>
+</sect2>
+</sect1>
+</chapter>

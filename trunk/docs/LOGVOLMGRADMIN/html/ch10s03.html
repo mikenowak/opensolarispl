@@ -1,0 +1,313 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Creating and Maintaining RAID-1 Volumes</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch10.html" title="Chapter 10. RAID-1 (Mirror) Volumes (Overview)"><link rel="prev" href="ch10s02.html" title="RAID-1 Volume (Mirror) Resynchronization"><link rel="next" href="ch10s04.html" title="The Affect of Booting Into Single-User Mode on
+RAID-1 Volumes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Creating and Maintaining RAID-1 Volumes</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10s02.html">Prev</a> </td><th width="60%" align="center">Chapter 10. RAID-1 (Mirror) Volumes (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch10s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="eyaso"></a>Creating and Maintaining RAID-1 Volumes</h2></div></div></div>
+
+<p>This section provides guidelines can assist you in creating mirrors. This section
+also provides performance guidelines for the mirrors that you create.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="eyasp"></a>Configuration Guidelines for RAID-1 Volumes</h3></div></div></div>
+
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Before you create a mirror, create the RAID-0 (stripe or concatenation)
+volumes that comprise the mirror.</p>
+</li><li>
+<p>When creating a mirror, first create a one-way mirror, then attach
+a second submirror. This strategy starts a resynchronization operation. This strategy
+also ensures that data is not corrupted. You can also create a one-way mirror for
+use as a future two-way or multi-way mirror.</p>
+</li><li>
+<p>You can create a two-way mirror, three-way mirror, or four-way mirror
+from a one-way mirror with a single command. You can speed the creation process by
+creating all submirrors with a single command. Use this process only if you are not
+mirroring existing data and if you are comfortable destroying the data on all of the
+submirrors.</p>
+</li><li>
+<p>You can create a RAID-1 volume from an existing file system that is
+built on a slice. Only the single slice may be included in the primary RAID-0 volume
+(submirror). If you are mirroring root or other system-critical file systems, all
+submirrors must consist of only a single slice. </p>
+</li><li>
+<p>Use the <span><strong class="command">swap <code class="option">
+l</code>
+</strong></span> command to check
+for all <code class="filename">swap</code> devices. Each slice that is specified as <code class="filename">swap</code> must be mirrored independently from the remaining swap slices.</p>
+</li><li>
+<p>The Enhanced Storage tool within the Solaris Management Console does not support unmirroring root (<code class="filename">/</code>), <code class="filename">/opt</code>, <code class="filename">/usr</code>, or <code class="filename">swap</code>. In fact,
+the tool does not support unmirroring any file system that cannot be unmounted while
+the system is running. Instead, use the command-line procedure for these file systems.</p>
+</li><li>
+<p>Use submirrors of the same size. Submirrors of different sizes result
+in unused disk space.</p>
+</li><li>
+<p>Use only similarly configured submirrors within a mirror. In particular,
+if you create a mirror with an unlabeled submirror, you cannot attach any submirrors
+that contain disk labels. </p>
+</li><li>
+<p>You can have a mirrored file system in which the first submirror attached
+does not start on cylinder 0.  All additional submirrors you attach must also not
+start on cylinder 0. If you attempt to attach a submirror starting in this situation,
+the following error message displays:        </p>
+<pre class="screen">can't attach labeled submirror to an unlabeled mirror </pre>
+<p>Either all submirrors intended for use within a specific mirror must start on
+cylinder 0, or all of the submirrors must <span class="emphasis"><em>not</em></span> start on cylinder
+0. </p>
+<p>Starting cylinders do not have to be the same across all submirrors.
+However, all submirrors must either include or not include cylinder 0.</p>
+</li><li>
+<p>You can improve a mirror's performance by adding additional state
+database replicas before you create the mirror. As a general rule, add two additional
+replicas for each mirror you add to the system. Solaris Volume Manager uses these additional
+replicas to store the dirty region log (DRL), which is used to provide optimized resynchronization.
+By providing adequate numbers of replicas, you can minimize I/O impact on RAID-1 volume
+performance. Using at least two replicas on the same disks or controllers as the mirror
+that the replicas log also helps to improve overall performance.</p>
+</li><li>
+<p>Only mount the mirror device directly. Do not try to mount a submirror
+directly, unless the submirror is offline and mounted read-only. Do not mount a slice
+that is part of a submirror. This process could destroy data and crash the system.</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="eyasl"></a>Performance Guidelines for RAID-1 Volumes</h3></div></div></div>
+
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Keep the slices of different submirrors on different disks and controllers.
+Data protection is diminished considerably if slices of two or more submirrors of
+the same mirror are on the same disk. Likewise, organize submirrors across separate
+controllers, because controllers and associated cables tend to fail more often than
+disks. This practice also improves mirror performance.</p>
+</li><li>
+<p>Use the same type of disks and controllers in a single mirror. Particularly
+in old SCSI storage devices, different models or different brands of disks or controllers
+can have widely varying performance. If disks and controller that have the different
+performance levels are used in a single mirror, performance can degrade significantly.</p>
+</li><li>
+<p>Mirroring might improve read performance, but write performance is
+always degraded. Mirroring improves read performance only in threaded or asynchronous
+I/O situations.  A single thread reading from the volume does not provide a performance
+gain.</p>
+</li><li>
+<p>You can experiment with the mirror read policies can improve performance.
+For example, the default read mode is to alternate reads in a round-robin fashion
+among the disks. This policy is the default because round-robin tends to work best
+for UFS multiuser, multiprocessor activity.</p>
+<p>In some cases, the <code class="literal">geometric</code> read option improves performance by minimizing head motion and
+access time. This option is most effective when:</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>There is only one slice per disk</p>
+</li><li>
+<p>Only one process at a time is using the slice or file system</p>
+</li><li>
+<p>I/O patterns are highly sequential or when all accesses are read</p>
+</li></ul></div>
+</li><li>
+<p>You can attach a submirror to a mirror without interrupting service.
+You attach submirrors to mirrors to create two-way, three-way, and four-way mirrors.</p>
+</li><li>
+<p>When you place a submirror offline, you prevent the mirror from reading
+from and writing to the submirror. However, you preserve the submirror's logical association
+to the mirror. While the submirror is offline, Solaris Volume Manager keeps track of all
+writes to the mirror. The writes are written to the submirror when it is brought back
+online. By performing an optimized resynchronization, Solaris Volume Manager only has to
+resynchronize data that has changed, not the entire submirror. When you detach a submirror,
+you sever its logical association to the mirror. Typically, you place a submirror
+offline to perform maintenance. You detach a submirror to remove it.</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="about-metadevices-13"></a>About RAID-1 Volume Options</h3></div></div></div>
+
+<a class="indexterm" name="about-metadevices-ix121"></a>
+<p>The following options are available to optimize mirror performance:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Mirror read policy</p>
+</li><li>
+<p>Mirror write policy</p>
+</li><li>
+<p>The order in which mirrors are resynchronized (pass number)</p>
+</li></ul></div>
+<p>You can define mirror options when you initially create the mirror. You can
+also change mirror options after a mirror has been set up and is running. For tasks
+related to changing these options, see  <span class="olink">How to Change RAID-1 Volume Options</span>.</p>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="about-metadevices-17"></a>RAID-1 Volume Read-and-Write Policies</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="about-metadevices-ix129"></a>
+<a class="indexterm" name="indexterm-65"></a>
+<a class="indexterm" name="indexterm-66"></a>
+<a class="indexterm" name="indexterm-67"></a>
+<a class="indexterm" name="indexterm-68"></a>
+<a class="indexterm" name="indexterm-69"></a>Solaris Volume Manager enables different read-and-write policies to be configured
+for a RAID-1 volume. Properly set read-and-write policies can improve performance
+for a given configuration.</p>
+<div class="table"><a name="about-metadevices-tbl-18"></a><p class="title"><b>Table 10.1. RAID-1 Volume Read Policies</b></p>
+
+
+<table summary="RAID-1 Volume Read Policies" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Read Policy</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>Round-Robin (Default)</p>
+</td><td>
+<p>Attempts to balance the load across the submirrors. All reads are made in a
+round-robin order (one after another) from all submirrors in a mirror.</p>
+</td></tr><tr><td>
+<p>Geometric</p>
+</td><td>
+<p>Enables reads to be divided among submirrors on the basis of a logical disk
+block address. For example, with a two-way submirror, the disk space on the mirror
+is divided into two equally-sized logical address ranges. Reads from one submirror
+are restricted to one half of the logical range. Reads from the other submirror are
+restricted to the other half. The geometric read policy effectively reduces the seek
+time that is necessary for reads. The performance gained by this read policy depends
+on the system I/O load and the access patterns of the applications.</p>
+</td></tr><tr><td>
+<p>First</p>
+</td><td>
+<p>Directs all reads to the first submirror. This policy should be used only when
+the device or devices that comprise the first submirror are substantially faster than
+the devices of the second submirror.</p>
+</td></tr></tbody></table>
+</div>
+<div class="table"><a name="about-metadevices-tbl-19"></a><p class="title"><b>Table 10.2. RAID-1 Volume Write Policies</b></p>
+
+
+<table summary="RAID-1 Volume Write Policies" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Write Policy</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>Parallel (Default)</p>
+</td><td>
+<p>Performs writes to a mirror that are replicated and dispatched to all of the
+submirrors simultaneously.</p>
+</td></tr><tr><td>
+<p>Serial</p>
+</td><td>
+<p>Performs writes to submirrors serially (that is, the first submirror write completes
+before the second submirror write is started). This policy specifies that writes to
+one submirror must be completed before the next submirror write is initiated. This
+policy is provided in case a submirror becomes unreadable, for example, due to a power
+failure.</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="eyasy"></a>Pass Number</h4></div></div></div>
+
+<a class="indexterm" name="eyass"></a>
+<a class="indexterm" name="indexterm-70"></a>
+<p>The pass number, a number in the range 0&#8211;9, determines the order in which
+a particular mirror is resynchronized during a system reboot. The default pass number
+is 1. The lower pass numbers are resynchronized first. If zero is used, the mirror
+resynchronization is skipped. A pass number of zero should be used only for mirrors
+that are mounted as read-only. Mirrors with the same pass number are resynchronized
+at the same time.</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="eyhxl"></a>Understanding Submirror Status to Determine Maintenance Actions</h3></div></div></div>
+
+<p>The <span><strong class="command">metastat</strong></span> command of Solaris Volume Manager reports status information
+on RAID 1 volumes and submirrors. The status information helps you to determine if
+maintenance action is required on a RAID-1 volume. The following table explains submirror
+states shown when you run the metastat command on a RAID-1 volume.</p>
+<div class="table"><a name="fpkae"></a><p class="title"><b>Table 10.3. Submirror
+States</b></p>
+
+
+<table summary="Submirror
+States" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>State</p>
+</th><th>
+<p>Meaning</p>
+</th></tr></thead><tbody><tr><td>
+<p>Okay</p>
+</td><td>
+<p>The submirror has no errors and is functioning correctly.</p>
+</td></tr><tr><td>
+<p>Resyncing</p>
+</td><td>
+<p>The submirror is actively being resynchronized. An error has occurred and has
+been corrected, the submirror has just been brought back online, or a new submirror
+has been added.</p>
+</td></tr><tr><td>
+<p>Resync canceled</p>
+</td><td>
+<p>The resynchronization process on the submirror has been canceled using the <span><strong class="command">metasync</strong></span> command.</p>
+</td></tr><tr><td>
+<p>Needs Maintenance</p>
+</td><td>
+<p>A slice (or slices) in the submirror has encountered an I/O error or an open
+error. All reads and writes to and from this slice in the submirror have been discontinued.</p>
+</td></tr></tbody></table>
+</div>
+<p>Additionally, for each slice in a submirror, the <span><strong class="command">metastat</strong></span> command
+shows the following:</p>
+<div class="variablelist"><dl><dt><span class="term">Device</span></dt><dd>
+<p>Indicates the device name of the slice in the stripe</p>
+</dd><dt><span class="term">Start Block</span></dt><dd>
+<p>Indicates the block on which the slice begins</p>
+</dd><dt><span class="term">Dbase</span></dt><dd>
+<p>Indicates if the slice contains a state database replica</p>
+</dd><dt><span class="term">State</span></dt><dd>
+<p>Indicates the state of the slice</p>
+</dd><dt><span class="term">Hot Spare</span></dt><dd>
+<p>Indicates that a slice is being used as a hot spare for a failed slice</p>
+</dd></dl></div>
+<p>The submirror state only provides general information on the status of the submirror.
+The slice state is perhaps the most important information to review when you are troubleshooting
+mirror errors. If the submirror reports a &#8220;Needs Maintenance&#8221; state, you
+must refer to the slice state for more information.</p>
+<p>You take a different recovery action depending on if the slice is in the &#8220;Maintenance&#8221;
+state or in the &#8220;Last Erred&#8221; state. If you only have slices in the &#8220;Maintenance&#8221;
+state, they can be repaired in any order. If you have slices both in the &#8220;Maintenance&#8221;
+state and in the &#8220;Last Erred&#8221; state, you must fix the slices in the &#8220;Maintenance&#8221;
+state first. Once the slices in the &#8220;Maintenance&#8221; state have been fixed,
+then fix the slices in the &#8220;Last Erred&#8221; state. For more information, see <span class="olink">Overview of Replacing and Enabling Components in RAID-1 and RAID-5 Volumes</span>.</p>
+<p>The following table explains the slice states for submirrors and possible actions
+to take.</p>
+<div class="table"><a name="maintaintasksnew-10722"></a><p class="title"><b>Table 10.4. Submirror Slice States</b></p>
+
+
+<table summary="Submirror Slice States" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>State</p>
+</th><th>
+<p>Meaning</p>
+</th><th>
+<p>Action</p>
+</th></tr></thead><tbody><tr><td>
+<p>Okay</p>
+</td><td>
+<p>The slice has no errors and is functioning correctly.</p>
+</td><td>
+<p>None.</p>
+</td></tr><tr><td>
+<p>Resyncing</p>
+</td><td>
+<p>The slice is actively being resynchronized. An error has occurred and been corrected,
+the submirror has just been brought back online, or a new submirror has been added.</p>
+</td><td>
+<p>If desired, monitor the submirror status until the resynchronization is done.</p>
+</td></tr><tr><td>
+<p>Maintenance</p>
+</td><td>
+<p>The slice has encountered an I/O error or an open error. All reads and writes
+to and from this component have been discontinued.</p>
+</td><td>
+<p>Enable or replace the failed slice. See <span class="olink">How to Enable a Slice in a Submirror</span>, or <span class="olink">How to Replace a Slice in a Submirror</span>. The <span><strong class="command">metastat</strong></span> command
+will show an <code class="literal">invoke</code> recovery message with the appropriate action
+to take with the <span><strong class="command">metareplace</strong></span> command. You can also use the <span><strong class="command">metareplace <code class="option">
+e</code>
+</strong></span> command.</p>
+</td></tr><tr><td>
+<p>Last Erred</p>
+</td><td>
+<p>The slice has encountered an I/O error or an open error. However, the data is
+not replicated elsewhere due to another slice failure. I/O is still performed on the
+slice. If I/O errors result, the mirror I/O fails.</p>
+</td><td>
+<p>First, enable or replace slices in the &#8220;Maintenance&#8221; state. See <span class="olink">How to Enable a Slice in a Submirror</span>, or <span class="olink">How to Replace a Slice in a Submirror</span>.
+Usually, this error results in some data loss, so validate the mirror after it is
+fixed. For a file system, use the <span><strong class="command">fsck</strong></span> command, then check the
+data. An application or database must have its own method of validating the device.</p>
+</td></tr></tbody></table>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch10.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch10s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">RAID-1 Volume (Mirror) Resynchronization </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> The Affect of Booting Into Single-User Mode on
+RAID-1 Volumes</td></tr></table></div></body></html>

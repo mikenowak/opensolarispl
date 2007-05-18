@@ -1,0 +1,275 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Working With Submirrors</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch11.html" title="Chapter 11. RAID-1
+(Mirror) Volumes (Tasks)"><link rel="prev" href="ch11s02.html" title="Creating a RAID-1 Volume"><link rel="next" href="ch11s04.html" title="Maintaining RAID-1 Volumes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Working With Submirrors</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch11s02.html">Prev</a> </td><th width="60%" align="center">Chapter 11. RAID-1
+(Mirror) Volumes (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch11s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-mirrors-23"></a>Working With Submirrors</h2></div></div></div>
+
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1744772"></a></h3></div></div></div>
+
+<div class="task"><a name="tasks-mirrors-8"></a><p class="title"><b>How to Attach a Submirror</b></p><div class="tasksummary">
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>An error message stating &#8220;<code class="literal">can't attach labeled
+submirror to an unlabeled mirror</code>&#8221; indicates that you unsuccessfully
+attempted to attach a RAID-0 volume to a mirror. A labeled volume (submirror)
+is a volume whose first component starts at cylinder 0, while an unlabeled
+volume's first component starts at cylinder 1. To prevent the labeled submirror's
+label from being corrupted, Solaris Volume Manager does not allow labeled submirrors
+to be attached to unlabeled mirrors.</p>
+</div>
+</div><div class="taskprerequisites">
+
+<p>Read <span class="olink">Creating and Maintaining RAID-1 Volumes</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-mirrors-step-76"></a>
+<p>Identify the component (concatenation
+or stripe) to be used as a submirror. </p>
+<p>The component must be the
+same size as, or larger than the existing submirror in the mirror. If you
+have not yet created a volume to be a submirror, see <span class="olink">Creating RAID-0 (Stripe) Volumes</span> or <span class="olink">Creating RAID-0 (Concatenation) Volumes</span>.</p>
+</li><li><a name="tasks-mirrors-step-141"></a>
+<p>Make sure that you have root privilege
+and that you have a current backup of all data.</p>
+</li><li>
+<p>Verify that the status of the mirror you want to work with is
+in an &#8220;Okay&#8221; state using the <span><strong class="command">metastat</strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metastat <em class="replaceable"><code>mirror</code></em>
+</code></strong>
+</pre>
+</li><li><a name="tasks-mirrors-step-78"></a>
+<p>Use one of the following methods to
+attach a submirror. </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node. Choose the mirror.
+Then, choose Action&#8658;Properties and click the Submirror tab. Follow the
+onscreen instructions. For more information, see the online help.</p>
+</li><li>
+<p>Use the <span><strong class="command">metattach <em class="replaceable"><code>mirror</code></em> <em class="replaceable"><code>submirror</code></em>
+</strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metattach <em class="replaceable"><code>mirror</code></em> <em class="replaceable"><code>submirror</code></em>
+</code></strong>
+</pre>
+</li></ul></div>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metattach</span>
+(
+1M
+)
+</span>
+</span> man
+page for more information.</p>
+</li><li>
+<p>View the status of the mirror using the <span><strong class="command">metastat</strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metastat <em class="replaceable"><code>mirror</code></em>
+</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="egjxs"></a><p class="title"><b>Example 11.7. Attaching a Submirror</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metastat d30</code></strong>
+d30: mirror
+    Submirror 0: d60
+      State: Okay   
+...
+# <strong class="userinput"><code>metattach d30 d70</code></strong>
+d30: submirror d70 is attached
+# <strong class="userinput"><code>metastat d30</code></strong>
+d30: mirror
+    Submirror 0: d60
+      State: Okay        
+    Submirror 1: d70
+      State: Resyncing
+    Resync in progress: 41 % done
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: parallel (default)
+    Size: 2006130 blocks
+...</pre>
+<p>
+<a class="indexterm" name="indexterm-77"></a>
+<a class="indexterm" name="indexterm-78"></a>This example shows the attaching of a submirror, <code class="filename">d70</code>,
+to a one-way mirror, <code class="filename">d30</code>. You create a two-way mirror
+when your attach the submirror to the mirror. The mirror <code class="filename">d30</code> initially
+consists of submirror <code class="filename">d60</code>. The submirror <code class="filename">d70</code> is
+a RAID-0 volume. You verify that the status of the mirror is &#8220;Okay&#8221;
+with the <span><strong class="command">metastat</strong></span> command, then attach the submirror. When
+the <span><strong class="command">metattach</strong></span> command is run, the new submirror is resynchronized
+with the existing mirror. When you attach an additional submirror to the mirror,
+the system displays a message. To verify that the mirror is resynchronizing,
+use the <span><strong class="command">metastat</strong></span> command.  </p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1745164"></a></h3></div></div></div>
+
+<div class="task"><a name="tasks-mirrors-10"></a><p class="title"><b>How to Detach a Submirror</b></p><div class="taskprerequisites">
+
+<p>Read <span class="olink">Creating and Maintaining RAID-1 Volumes</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-mirrors-step-142"></a>
+<p>Make sure that you have root privilege.
+Make sure that you have a current backup of all data.</p>
+</li><li>
+<p>Verify that the status of the mirror you want to work with is
+in an &#8220;Okay&#8221; state using the <span><strong class="command">metastat</strong></span> command.</p>
+</li><li><a name="tasks-mirrors-step-82"></a>
+<p>Use one of the following methods to
+detach a submirror. </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node. Choose the mirror.
+Then, choose Action&#8658;Properties and click the Submirror tab. Follow the
+onscreen instructions. For more information, see the online help.</p>
+</li><li>
+<p>Use the <span><strong class="command">metadetach</strong></span> command to detach a
+submirror from a mirror. </p>
+<pre class="screen"># <strong class="userinput"><code>metadetach <em class="replaceable"><code>mirror</code></em> <em class="replaceable"><code>submirror</code></em>
+</code></strong>
+</pre>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metadetach</span>
+(
+1M
+)
+</span>
+</span> man page for more information.</p>
+</li></ul></div>
+</li></ol></div><div class="example"><a name="egjxr"></a><p class="title"><b>Example 11.8. Detaching a Submirror</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metastat</code></strong>
+d5: mirror
+    Submirror 0: d50
+...
+# <strong class="userinput"><code>metadetach d5 d50</code></strong>
+d5: submirror d50 is detached</pre>
+<p>
+<a class="indexterm" name="indexterm-79"></a>In this example, mirror <code class="filename">d5</code> has a submirror, <code class="filename">d50</code>. You detach the submirror with the <span><strong class="command">metadetach</strong></span> command.
+The underlying slices from <code class="filename">d50</code> can be reused elsewhere.
+After the submirror is detached from the mirror, the system displays a confirmation
+message.</p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1745448"></a></h3></div></div></div>
+
+<div class="task"><a name="tasks-mirrors-12"></a><p class="title"><b>How to Place a Submirror Offline and Online</b></p><div class="tasksummary">
+<p>The <span><strong class="command">metaonline</strong></span> command can only be used when a submirror
+was taken offline by the <span><strong class="command">metaoffline</strong></span> command. After the <span><strong class="command">metaonline</strong></span> command runs, Solaris Volume Manager automatically begins resynchronizing
+the submirror with the mirror. </p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The <span><strong class="command">metaoffline</strong></span> command's capabilities are
+similar to the capabilities offered by the <span><strong class="command">metadetach</strong></span> command.
+However, the <span><strong class="command">metaoffline</strong></span> command does not sever the logical
+association between the submirror and the mirror.</p>
+</div>
+</div><div class="taskprerequisites">
+
+<p>Read <span class="olink">Creating and Maintaining RAID-1 Volumes</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-mirrors-step-143"></a>
+<p>Make sure that you have root privilege
+and that you have a current backup of all data.</p>
+</li><li><a name="tasks-mirrors-step-85"></a>
+<p>Use one of the following methods to
+place a submirror online or offline.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node. Choose the mirror.
+Then, choose Action&#8658;Properties and click the Submirror tab. Follow the
+onscreen instructions . For more information, see the online help.</p>
+</li><li>
+<p>Use the <span><strong class="command">metaoffline</strong></span> command to a submirror
+offline.</p>
+<pre class="screen"># <strong class="userinput"><code>metaoffline <em class="replaceable"><code>mirror</code></em> <em class="replaceable"><code>submirror</code></em>
+</code></strong>
+</pre>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metaoffline</span>
+(
+1M
+)
+</span>
+</span> man page for more information.</p>
+</li><li>
+<p>Use the <span><strong class="command">metaonline</strong></span> command to place a submirror
+online. </p>
+<pre class="screen"># <strong class="userinput"><code>metaonline <em class="replaceable"><code>mirror</code></em> <em class="replaceable"><code>submirror</code></em>
+</code></strong>
+</pre>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metaonline</span>
+(
+1M
+)
+</span>
+</span> man page for more information.</p>
+</li></ul></div>
+</li></ol></div><div class="example"><a name="egjye"></a><p class="title"><b>Example 11.9. Placing a Submirror Offline</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metaoffline d10 d11</code></strong>
+d10: submirror d11 is offlined</pre>
+<p>
+<a class="indexterm" name="indexterm-80"></a>In this example, submirror <code class="filename">d11</code> is taken offline
+from mirror <code class="filename">d10</code>. Reads continue to be made from the other
+submirror. The mirror is out of sync as soon as the first write is made. This
+inconsistency is corrected when the offlined submirror is brought back online. </p>
+</div><div class="example"><a name="egjyx"></a><p class="title"><b>Example 11.10. Placing a Submirror Online</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metaonline d10 d11</code></strong>d10: submirror d11 is onlined</pre>
+<p>In this example, submirror <code class="filename">d11</code> is brought back
+online in mirror <code class="filename">d10</code>.</p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1745794"></a></h3></div></div></div>
+
+<div class="task"><a name="maintaintasksnew-14061"></a><p class="title"><b>How to Enable a Slice in a Submirror</b></p><div class="taskprerequisites">
+
+<p>Read <span class="olink">Overview of Replacing and Enabling Components in RAID-1 and RAID-5 Volumes</span> and <span class="olink">Creating and Maintaining RAID-1 Volumes</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-mirrors-step-144"></a>
+<p>Make sure that you have root privilege
+and that you have a current backup of all data.</p>
+</li><li><a name="tasks-mirrors-step-89"></a>
+<p>Use one of the following methods to
+enable a slice in a submirror.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node. Choose the mirror.
+Then, choose Action&#8658;Properties and click the Submirror tab. Follow the
+onscreen instructions. For more information, see the online help.</p>
+</li><li>
+<p>Use the <span><strong class="command">metareplace</strong></span> command to enable a
+failed slice in a submirror. </p>
+<pre class="screen"># <strong class="userinput"><code>metareplace -e <em class="replaceable"><code>mirror</code></em> <em class="replaceable"><code>failed-slice</code></em>
+</code></strong> </pre>
+<p>
+<a class="indexterm" name="maintaintasksnew-ix232"></a>The <span><strong class="command">metareplace</strong></span> command automatically starts
+a resynchronization to  synchronize the repaired or replaced slice with the
+rest of the mirror. </p>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metareplace</span>
+(
+1M
+)
+</span>
+</span> man page for more information.</p>
+</li></ul></div>
+</li></ol></div><div class="example"><a name="egjyv"></a><p class="title"><b>Example 11.11. Enabling a Slice in a Submirror</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metareplace -e d11 c1t4d0s7</code></strong>
+d11: device c1t4d0s7 is enabled</pre>
+<p>
+<a class="indexterm" name="maintaintasksnew-ix233"></a>In this example, the mirror <code class="filename">d11</code> has a submirror
+that contains slice, <code class="filename">c1t4d0s7</code>, which had a soft error.
+The <span><strong class="command">metareplace</strong></span> command with the <code class="option">
+e</code> option
+enables the failed slice. </p>
+<p>
+<a class="indexterm" name="maintaintasksnew-ix234"></a>If a physical disk is defective, you can replace it with another
+available disk (and its slices) on the system as documented in <span class="olink">How to Replace a Slice in a Submirror</span>.
+Alternatively, you can repair or replace the disk, format it, and then run
+the <span><strong class="command">metareplace</strong></span> command with the <code class="option">
+e</code> option
+as shown in this example. </p>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch11s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch11.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch11s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Creating a RAID-1 Volume </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Maintaining RAID-1 Volumes</td></tr></table></div></body></html>

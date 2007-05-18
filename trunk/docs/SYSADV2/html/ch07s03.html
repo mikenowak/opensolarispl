@@ -1,0 +1,832 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Structure of the LP Print Service</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch07.html" title="Chapter 7. LP Print Service (Reference)"><link rel="prev" href="ch07s02.html" title="Definition of the LP Print Service"><link rel="next" href="ch07s04.html" title="LP Print Service Commands"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Structure of the LP Print Service</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch07s02.html">Prev</a> </td><th width="60%" align="center">Chapter 7. LP Print Service (Reference)</th><td width="20%" align="right"> <a accesskey="n" href="ch07s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printref-18623"></a>Structure of the LP Print Service</h2></div></div></div>
+
+<a class="indexterm" name="printref-ix164"></a>
+<p>This section describes the directory structure, files and logs of the
+LP print service.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printref-32"></a>LP Print Service Directories</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="printref-ix166"></a>The files of the LP print service are distributed among the directories
+that are shown in the following table.</p>
+<div class="table"><a name="printref-64046"></a><p class="title"><b>Table 7.1. Directories for the LP Print
+Service</b></p>
+
+
+<table summary="Directories for the LP Print
+Service" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Directory</p>
+</th><th>
+<p>Contents</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="filename">/usr/bin</code>
+</p>
+</td><td>
+<p>The LP print service user commands.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/etc/lp</code>
+</p>
+</td><td>
+<p>A hierarchy of LP server configuration files.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/usr/share/lib</code>
+</p>
+</td><td>
+<p>The <code class="filename">terminfo</code> database directory.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/usr/lib/print</code>
+</p>
+</td><td>
+<p>The <span><strong class="command">lp</strong></span> conversion scripts, <span><strong class="command">in.lpd</strong></span> daemon,
+and the <span><strong class="command">printd</strong></span> daemon. The <span><strong class="command">printd</strong></span> daemon
+transfers all pending jobs in the<code class="filename">/var/spool/print</code> directory
+once per minute. When no jobs are remaining to transfer, the <span><strong class="command">printd</strong></span> daemon
+exits.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/usr/sbin</code>
+</p>
+</td><td>
+<p>The LP print service administrative commands</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/usr/lib/lp</code>
+</p>
+</td><td>
+<p>The <span><strong class="command">lpsched</strong></span> program, binary files, PostScript filters,
+and the <code class="filename">model</code> directory, which contains the standard
+printer interface program.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/var/lp/logs</code>
+</p>
+</td><td>
+<p>LP log files such as <code class="filename">lpsched.</code>
+<em class="replaceable"><code>n</code></em> (which
+includes messages from <code class="literal">lpsched</code>) and <code class="filename">requests.</code>
+<em class="replaceable"><code>n</code></em> (which includes information about completed print requests).</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/var/spool/lp</code>
+</p>
+</td><td>
+<p>The spooling directory where files are queued for printing.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/var/spool/print</code>
+</p>
+</td><td>
+<p>The staging area for LP print service client-side requests.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/etc/lp/model/uri</code>
+</p>
+</td><td>
+<p>The location of the interface script that process <em class="replaceable"><code>device-uri</code></em> information.</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printref-11882"></a>LP Print Service Configuration Files</h3></div></div></div>
+
+<a class="indexterm" name="printref-ix167"></a>
+<p>The <span><strong class="command">lpsched</strong></span> daemon stores configuration information
+ in the <code class="filename">/etc/lp</code> directory, as described in the following
+table.</p>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>
+<a class="indexterm" name="printref-ix168"></a>
+<a class="indexterm" name="indexterm-124"></a>
+<a class="indexterm" name="printref-ix169"></a>The configuration files listed in this table are private interfaces.
+These files are subject to change in future releases. You should not build
+software that relies on these files being in their current locations or that
+relies on the data being in the format currently used. </p>
+</div>
+<div class="table"><a name="printref-69325"></a><p class="title"><b>Table 7.2. Contents of the <code class="filename">/etc/lp</code> Directory</b></p>
+
+
+<table summary="Contents of the /etc/lp Directory" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>File</p>
+</th><th>
+<p>Type</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="filename">classes</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Files identifying classes provided by the <span><strong class="command">lpadmin -c</strong></span> command.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">fd</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Description of existing filters.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">filter.table</code>
+</p>
+</td><td>
+<p>File</p>
+</td><td>
+<p>Print filter look-up table.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">forms</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Location to put files for each form. Initially, this directory is empty.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">interfaces</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Printer interface program files.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">logs</code>
+</p>
+</td><td>
+<p>Link to <code class="filename">/var/lp/logs</code>
+</p>
+</td><td>
+<p>Log files of printing activities.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">model</code>
+</p>
+</td><td>
+<p>Link to <code class="filename">/usr/lib/lp/model</code>
+</p>
+</td><td>
+<p>The standard printer interface program.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">printers</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Directories for each local printer. Each directory contains configuration
+information and alert files for an individual printer.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">pwheels</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Print wheel files or cartridge files.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">ppd</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Each local queue that is configured with a PPD file has a copy of the
+PPD file placed here.</p>
+</td></tr></tbody></table>
+</div>
+<p>
+<a class="indexterm" name="printref-ix171"></a>These configuration files serve a function similar to the <code class="filename">/etc/printcap</code> file on <span><strong class="command">lpd</strong></span>-based print servers. </p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>You can check the contents of the configuration files, but you
+should not edit these files directly. Instead, use the <span><strong class="command">lpadmin</strong></span> command
+to make configuration changes. Your changes are written to the configuration
+files in the <code class="filename">/etc/lp</code> directory. The <code class="filename">lpsched</code> daemon
+administers and updates the configuration files.</p>
+</div>
+<p>
+<a class="indexterm" name="printref-ix172"></a>The <code class="filename">/etc/lp/printers</code> directory has a subdirectory
+for each local printer that is known to the system. The following example
+shows the <code class="filename">/etc/lp/printers</code> subdirectories of printers <code class="literal">sparc1</code> and <code class="literal">luna</code>. </p>
+<pre class="screen">$ <strong class="userinput"><code>ls -l /etc/lp/printers</code></strong>
+drwxrwxr-x 2 lp lp 512 Jan 23 23:53 luna
+drwxrwxr-x 2 lp lp 512 Jan 11 17:50 sparc1</pre>
+<p>The following table describes the files within each printer-specific
+directory.</p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>File Name</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="filename">alert.sh</code>
+</p>
+</td><td>
+<p>Shell to execute in response to alerts</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">alert.vars</code>
+</p>
+</td><td>
+<p>Alert variables</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">configuration</code>
+</p>
+</td><td>
+<p>Configuration file</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">users.deny</code>
+</p>
+</td><td>
+<p>List of users to whom printer access is denied</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">comment</code>
+</p>
+</td><td>
+<p>Printer description</p>
+</td></tr></tbody></table>
+</div>
+<p>The configuration file for the printer <span><strong class="command">luna</strong></span>, <code class="filename">/etc/lp/printers/luna/configuration</code>, would typically appear as follows:</p>
+<pre class="screen">Banner: on: Always
+Content types: PS
+Device: /dev/term/b
+Interface: /usr/lib/lp/model/standard
+Printer type: PS
+Modules: default</pre>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printref-33"></a>The <code class="filename">terminfo</code> Database</h3></div></div></div>
+
+<a class="indexterm" name="printref-ix173"></a>
+<p>The <code class="filename">/usr/share/lib</code> directory contains the <code class="filename">terminfo</code> database directory. This directory contains definitions for many
+types of terminals and printers. The LP print service uses information in
+the <code class="filename">terminfo</code> database to perform the following tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Initializes a printer</p>
+</li><li>
+<p>Establishes a selected page size, character pitch, line pitch,
+and character set</p>
+</li><li>
+<p>Communicates the sequence of codes to a printer</p>
+</li></ul></div>
+<p>Each printer is identified in the <code class="filename">terminfo</code> database
+with a short name. For a description of the structure of the <code class="filename">terminfo</code> database,
+see <span class="olink">Printer Type</span>. If necessary, you
+can add entries to the <code class="filename">terminfo</code> database, but doing so
+is tedious and time-consuming For more information, see <span class="olink">Adding a <code class="literal">terminfo</code> Entry for an Unsupported Printer</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printref-34"></a>Daemons and LP Internal Files</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="printref-ix174"></a>
+<a class="indexterm" name="printref-ix175"></a>
+<a class="indexterm" name="printref-ix177"></a>
+<a class="indexterm" name="printref-ix179"></a>
+<a class="indexterm" name="printref-ix180"></a>The <code class="filename">/usr/lib/lp</code> directory contains daemons
+and files used by the LP print service, as described in the following table.
+      </p>
+<div class="table"><a name="printref-86958"></a><p class="title"><b>Table 7.3. Contents of the <code class="filename">/usr/lib/lp</code> Directory</b></p>
+
+
+<table summary="Contents of the /usr/lib/lp Directory" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>File</p>
+</th><th>
+<p>Type</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="filename">bin</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Contains files for generating printing alerts, slow filters, and queue
+management programs.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">model</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Contains the standard printer interface program.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">postscript</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Contains all PostScript filter programs provided by the LP print service.
+These filters come with descriptor files in the <code class="filename">/etc/lp/fd</code> directory.
+These files tell the LP print service the characteristics of the filters and
+where to locate them.</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printref-22672"></a>LP Print Service Log Files</h3></div></div></div>
+
+<a class="indexterm" name="printref-ix181"></a>
+<p>
+<a class="indexterm" name="printref-ix182"></a>The LP print service maintains two sets of log files that are
+described in the following table.</p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Log File Name</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<span><strong class="command">syslogd</strong></span>
+</p>
+</td><td>
+<p>Set <code class="literal">lpr.debug</code> in <code class="filename">/etc/syslog.conf</code> to
+enable LP print service logging</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/var/spool/lp</code>
+</p>
+</td><td>
+<p>A list of current requests that are in the print queue</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/var/lp/logs/requests</code>
+</p>
+</td><td>
+<p>An ongoing history of print requests</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printref-35"></a>Print Queue Logs</h3></div></div></div>
+
+<a class="indexterm" name="printref-ix183"></a>
+<a class="indexterm" name="printref-ix184"></a>
+<p>
+<a class="indexterm" name="printref-ix185"></a>
+<a class="indexterm" name="printref-ix186"></a>The scheduler for each system keeps a log of print requests in
+the <code class="filename">/var/spool/lp/tmp/</code>
+<em class="replaceable"><code>system</code></em> and <code class="filename">/var/spool/lp/requests/</code>
+<em class="replaceable"><code>system</code></em> directories.
+Each print request has two files, one file in each directory, that contain
+information about the request. The information in the <code class="filename">/var/spool/lp/requests/</code>
+<em class="replaceable"><code>system</code></em> directory can be accessed only
+by superuser or <code class="literal">lp</code>. The information in the <code class="filename">/var/spool/lp/tmp/</code>
+<em class="replaceable"><code>system</code></em> directory can be accessed only
+by the user who submitted the request, superuser, or <code class="literal">lp</code>.</p>
+<p>The following example shows the contents of the <code class="filename">/var/spool/lp/tmp/starbug</code> directory:</p>
+<pre class="screen">$ <strong class="userinput"><code>ls /var/spool/lp/tmp/starbug</code></strong>
+5     5-0
+# <strong class="userinput"><code>cat 5-0</code></strong>
+C 1
+D print1
+F /etc/profile
+P 20
+T /etc/profile
+t simple
+U root
+s 0000
+v 2</pre>
+<p>These files remain in their directories only as long as the print request
+is in the queue. Once the print request is finished, the information in the
+files is combined and appended to the <code class="filename">/var/lp/logs/requests</code> file.
+This file is described in the next section.</p>
+<p>Use the information in the <code class="filename">/var/spool/lp/logs</code> directory
+if you need to track the status of a print request that is currently in the
+queue.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printref-36"></a>History Log Files</h3></div></div></div>
+
+<a class="indexterm" name="printref-ix187"></a>
+<a class="indexterm" name="printref-ix188"></a>
+<p>The LP print service records a history of printing services in two log
+files, <code class="filename">lpsched</code> and <code class="filename">requests</code>. These
+log files are located in the <code class="filename">/var/lp/logs</code> directory.
+You can use the information in these log files to diagnose and troubleshoot
+printing problems. An example of the contents of the <code class="filename">/var/lp/logs</code> directory
+is as follows:</p>
+<pre class="screen"># <strong class="userinput"><code>cd /var/lp/logs</code></strong>
+# <strong class="userinput"><code>ls</code></strong>
+lpsched.1    requests    requests.2
+lpsched      lpsched.2   requests.1
+# </pre>
+<p>The two most important log files for troubleshooting are the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The <code class="filename">lpsched</code> log file &#8212; Contains
+information about local printing requests.</p>
+</li><li>
+<p>The <code class="filename">requests</code> log file &#8212; Contains
+information about print requests that are completed and no longer in the print
+queue.</p>
+</li></ul></div>
+<p>The <code class="filename">requests</code> log file has a simple structure so
+that you can extract data using common UNIX shell commands. Requests are listed
+in the order they are printed. They are also separated by lines showing their
+request IDs. Each line below the separator line, the line that starts with
+=, is marked with a single letter that identifies the kind of information
+contained in that line. Each letter is separated from the data by a single
+space.</p>
+<p>The following example shows the contents of a <code class="filename">requests</code> log
+file:</p>
+<pre class="screen"># <strong class="userinput"><code>pwd</code></strong>
+/var/lp/logs
+# <strong class="userinput"><code>tail requests.2</code></strong>
+= print1-3, uid 0, gid 1, size 206662, Wed Mar 14 08:56:30 MST 2003
+z print1
+C 1
+D print1
+F /usr/dict/words
+P 20
+T /usr/dict/words
+t simple
+U root
+s 0x0014
+v 2
+#</pre>
+<p>
+<a class="indexterm" name="printref-ix189"></a>
+<a class="indexterm" name="printref-ix190"></a>The following table shows the letter codes and the content of
+their corresponding lines in the <code class="filename">requests</code> log file.  </p>
+<div class="table"><a name="printref-68125"></a><p class="title"><b>Table 7.4. Codes in the <code class="filename">requests</code> Log
+File</b></p>
+
+
+<table summary="Codes in the requests Log
+File" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Letter</p>
+</th><th>
+<p>Content of Line</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">=</code>
+</p>
+</td><td>
+<p>The separator line, which contains the following items: request ID,
+user ID (UID), and group IDs (GIDs) of the user, the total number of bytes
+in the original (unfiltered) file size, and the time when the request was
+queued.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">z</code>
+</p>
+</td><td>
+<p>The name of the printer.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">C</code>
+</p>
+</td><td>
+<p>The number of copies printed.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">D</code>
+</p>
+</td><td>
+<p>The printer or class destination, or the word <code class="literal">any</code>.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">F</code>
+</p>
+</td><td>
+<p>The name of the file printed. The line is repeated for each file printed.
+Files were printed in the order shown.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">f</code>
+</p>
+</td><td>
+<p>(Optional) The name of the form used.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">H</code>
+</p>
+</td><td>
+<p>(Optional) One of three types of special handling: resume, hold, and
+immediate. </p>
+</td></tr><tr><td>
+<p>
+<code class="literal">N</code>
+</p>
+</td><td>
+<p>(Optional) The type of alert used when the print request was successfully
+completed. The type is the letter <code class="literal">M</code> if the user was notified
+by email or <code class="literal">W</code> if the user was notified by a message to
+the terminal.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">O</code>
+</p>
+</td><td>
+<p>(Optional) The printer-dependent <code class="option">
+o</code> options. For example, <code class="literal">nobanner</code>.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">P</code>
+</p>
+</td><td>
+<p>The priority of the print request.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">p</code>
+</p>
+</td><td>
+<p>The list of pages printed.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">r</code>
+</p>
+</td><td>
+<p>(Optional) A single-letter line that is included if the user asked for &#8220;raw&#8221;
+processing of the files with the <span><strong class="command">lp -r</strong></span> command.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">S</code>
+</p>
+</td><td>
+<p>(Optional) The character set, print wheel, or cartridge used.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">T</code>
+</p>
+</td><td>
+<p>The title placed on the banner page.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">t</code>
+</p>
+</td><td>
+<p>The type of content found in the files.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">U</code>
+</p>
+</td><td>
+<p>The name of the user who submitted the print request.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">s</code>
+</p>
+</td><td>
+<p>The outcome of the request, shown as a combination of individual bits
+expressed in hexadecimal format. Several bits are used internally by the print
+service. The bits and what they mean are described in the following table.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">v</code>
+</p>
+</td><td>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>0 &#8212; Identifies that the print job originated from the <span><strong class="command">in.1pd</strong></span> print daemon or another system on the network.</p>
+</li><li>
+<p>2 &#8212; Identifies that the print job originated from the <span><strong class="command">/usr/bin/lp</strong></span> or <span><strong class="command">/usr/ucb/lpr</strong></span> commands.</p>
+</li><li>
+<p>1 &#8212; Identifies that the print job originated from an
+older version of the print software.</p>
+</li></ul></div>
+</td></tr><tr><td>
+<p>
+<code class="literal">x</code>
+</p>
+</td><td>
+<p>(Optional) The slow filter used for the print request.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">Y</code>
+</p>
+</td><td>
+<p>(Optional) The list of special modes for the print filters used to print
+the request.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">z</code>
+</p>
+</td><td>
+<p>(Optional) The printer used for the request. This printer differs from
+the destination (the <code class="literal">D</code> line) if the request was queued
+for any printer or a class of printers, or if the request was moved to another
+destination.</p>
+</td></tr></tbody></table>
+</div>
+<p>The following table shows the outcome codes in the LP <code class="filename">requests</code> log
+file and their descriptions.</p>
+<div class="table"><a name="printref-25174"></a><p class="title"><b>Table 7.5. Outcome Codes in the <code class="filename">requests</code> Log File</b></p>
+
+
+<table summary="Outcome Codes in the requests Log File" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Outcome Code</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">0x0001</code>
+</p>
+</td><td>
+<p>The request was held pending resume.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x0002</code>
+</p>
+</td><td>
+<p>Slow filtering is running.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x0004</code>
+</p>
+</td><td>
+<p>Slow filtering finished successfully.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x0008</code>
+</p>
+</td><td>
+<p>The request is on the printer.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x0010</code>
+</p>
+</td><td>
+<p>Printing finished successfully.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x0020</code>
+</p>
+</td><td>
+<p>The request was held pending user change.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x0040</code>
+</p>
+</td><td>
+<p>The request was canceled.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x0080</code>
+</p>
+</td><td>
+<p>The request will print next.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x0100</code>
+</p>
+</td><td>
+<p>The request failed filtering or printing.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x0200</code>
+</p>
+</td><td>
+<p>The request is in transit to a remote printer (obsolete).</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x0400</code>
+</p>
+</td><td>
+<p>The user will be notified.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x0800</code>
+</p>
+</td><td>
+<p>A notification is running.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x1000</code>
+</p>
+</td><td>
+<p>A remote system has accepted the request (obsolete).</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x2000</code>
+</p>
+</td><td>
+<p>The administrator placed a hold on the request.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x4000</code>
+</p>
+</td><td>
+<p>The printer had to change filters.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0x8000</code>
+</p>
+</td><td>
+<p>The request is temporarily stopped.</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printref-15219"></a>Spooling Directories</h3></div></div></div>
+
+<a class="indexterm" name="printref-ix191"></a>
+<a class="indexterm" name="printref-ix192"></a>
+<p>
+<a class="indexterm" name="printref-ix193"></a>Files queued for printing are stored in the <code class="filename">/var/spool/lp</code> directory
+until they are printed, which might be only seconds. The following table shows
+the contents of the <code class="filename">/var/spool/lp</code> directory. </p>
+<div class="table"><a name="printref-74445"></a><p class="title"><b>Table 7.6. Contents of the <code class="filename">/var/spool/lp</code> Directory</b></p>
+
+
+<table summary="Contents of the /var/spool/lp Directory" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>File</p>
+</th><th>
+<p>Type</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="filename">SCHEDLOCK</code>
+</p>
+</td><td>
+<p>File</p>
+</td><td>
+<p>Lock file for the scheduler. Check for this file if the scheduler terminates
+and will not restart.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">admins</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Link to <code class="filename">/etc/lp</code>
+<span><strong class="command">.</strong></span>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">bin</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Link to <code class="filename">/usr/lib/lp/bin</code>
+<span><strong class="command">.</strong></span>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">logs</code>
+</p>
+</td><td>
+<p>Link</p>
+</td><td>
+<p>Link to <code class="filename">../lp/logs</code> where completed print requests
+are logged.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">model</code>
+</p>
+</td><td>
+<p>Link</p>
+</td><td>
+<p>Link to <code class="filename">/usr/lib/lp/model</code>
+<span><strong class="command">.</strong></span>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">requests</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Directory that contains subdirectories for each configured printer where
+print requests are logged until printed. Users cannot access this log.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">system</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>A print status file for the system.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">temp</code>
+</p>
+</td><td>
+<p>Link</p>
+</td><td>
+<p>Link to <code class="filename">/var/spool/lp/tmp/</code>
+<em class="replaceable"><code>hostname</code></em>,
+which contains the spooled requests.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">tmp</code>
+</p>
+</td><td>
+<p>Directory</p>
+</td><td>
+<p>Directory for each configured printer where print requests are logged
+until printed. Changes to existing print requests are also recorded in this
+directory.</p>
+</td></tr></tbody></table>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch07s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch07.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch07s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Definition of the LP Print Service </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> LP Print Service Commands</td></tr></table></div></body></html>

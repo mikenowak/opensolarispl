@@ -1,0 +1,259 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Creating Volumes Automatically</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch23.html" title="Chapter 23. Top-Down
+Volume Creation (Tasks)"><link rel="prev" href="ch23s02.html" title="Prerequisites for Top-Down Volume Creation"><link rel="next" href="ch23s04.html" title="Working With File-Based Data Using the metassist Command"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Creating Volumes Automatically</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch23s02.html">Prev</a> </td><th width="60%" align="center">Chapter 23. Top-Down
+Volume Creation (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch23s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ewaus"></a>Creating Volumes Automatically</h2></div></div></div>
+
+<p>The <span><strong class="command">metassist</strong></span> command enables you to create Solaris Volume Manager volumes,
+as well as sets of volumes, based on quality-of-service criteria. The <span><strong class="command">metassist</strong></span> command creates volumes for you with one command, rather than the
+series of commands that Solaris Volume Manager traditionally requires to create volumes.</p>
+<p>You can use the <span><strong class="command">metassist</strong></span> command to create RAID-1
+(mirror) volumes directly. Thus, you do not have to first create the submirrors
+(concatenations or stripes) that are used as components of the RAID-1 (mirror)
+volume.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ewaut"></a>Analyzing Volume Creation by Specifying Output Verbosity</h3></div></div></div>
+
+<p>When you run the <span><strong class="command">metassist</strong></span> command, you can specify
+the level of verbose output. More verbose output can help diagnose problems,
+such as determining why disks were or were not selected for use in a volume,
+or to determine why a specific attempted command failed. Less verbose output
+can reduce the amount of extraneous information that you must review. </p>
+<p>When you specify output verbosity, you can learn what the <span><strong class="command">metassist</strong></span> command does and how it makes its decisions. This information is
+useful for troubleshooting some of the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Why a volume was created in a certain way</p>
+</li><li>
+<p>Why a volume was not created</p>
+</li><li>
+<p>What volumes the <span><strong class="command">metassist</strong></span> command would
+create, without actually creating the volumes</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1774863"></a></h3></div></div></div>
+
+<div class="task"><a name="exlvu"></a><p class="title"><b>How to Create RAID-1 (mirror) Volumes Using the <span><strong class="command">metassist</strong></span> Command</b></p><a class="indexterm" name="indexterm-218"></a><div class="taskprerequisites">
+
+<p>Check <span class="olink">Prerequisites for Top-Down Volume Creation</span>.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Identify the available storage on which to create the volume.</p>
+<p>If you do not explicitly specify storage, Solaris Volume Manager identifies unused
+storage on the system and uses it, as appropriate. If you choose to specify
+storage, either broadly (for example, all storage on controller 1) or specifically
+(for example, use <code class="literal">c1t4d2</code>, but do not use <code class="literal">c1t4d1</code>), Solaris Volume Manager uses
+the storage you specify.</p>
+</li><li>
+<p>Use the <span><strong class="command">metassist</strong></span> command and the appropriate
+options for your task.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>To create volumes from the command line, use the following
+form of the <span><strong class="command">metassist</strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metassist create -s <em class="replaceable"><code>diskset-name</code></em> -f -r <em class="replaceable"><code>redundancy</code></em> -a <em class="replaceable"><code>device1, device2...</code></em> -S <em class="replaceable"><code>size</code></em> -v <em class="replaceable"><code>verbosity</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<span><strong class="command">create</strong></span>
+</span></dt><dd>
+<p>Is the subcommand used to create volumes.</p>
+</dd><dt><span class="term">
+<code class="option">
+s</code> <em class="replaceable"><code>diskset-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the disk set to use for the volume.</p>
+</dd><dt><span class="term">
+<code class="option">
+f</code>
+</span></dt><dd>
+<p>Specifies that the volume be associated with a hot spare.</p>
+</dd><dt><span class="term">
+<code class="option">
+r</code> <em class="replaceable"><code>redundancy</code></em>
+</span></dt><dd>
+<p>Specifies the level of redundancy (number of data copies)
+to create.</p>
+</dd><dt><span class="term">
+<code class="option">
+a</code> <em class="replaceable"><code>device1, device2...</code></em>
+</span></dt><dd>
+<p>Specifies the devices that are available for creating the
+volume.</p>
+</dd><dt><span class="term">
+<code class="option">
+S</code> <em class="replaceable"><code>size</code></em>
+</span></dt><dd>
+<p>Specifies the size of the volume to create in <code class="literal">KB</code>, <code class="literal">MB</code>, <code class="literal">GB</code>, or <code class="literal">TB</code>, for kilobytes,
+megabytes, gigabytes, and terabytes, respectively.</p>
+</dd><dt><span class="term">
+<code class="option">
+v</code> <em class="replaceable"><code>verbosity</code></em>
+</span></dt><dd>
+<p>Specifies how verbose the output should be. Allowable values
+range from <code class="literal">0</code> (nearly silent output) to <code class="literal">2</code> (significant
+output). The default level is <code class="literal">1</code> (moderate output).</p>
+</dd></dl></div>
+</li><li>
+<p>To create volumes using an input file to specify volume characteristics,
+use one of the following forms of the <span><strong class="command">metassist</strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metassist create [-v n] [-c] -F <em class="replaceable"><code>config_file</code></em>
+</code></strong>
+# <strong class="userinput"><code>metassist create [-v n] [-c | -d] -F <em class="replaceable"><code>request_file</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+c</code>
+</span></dt><dd>
+<p>Specifies to output the command script that would implement
+the specified or generated volume configuration. The command script is not
+run, and processing stops at this stage.</p>
+</dd><dt><span class="term">
+<code class="option">
+d</code>
+</span></dt><dd>
+<p>Specifies to output the volume configuration that satisfies
+the specified or generated volume request. No command script is generated
+or executed, and processing stops at this stage.</p>
+</dd><dt><span class="term">
+<code class="option">
+F</code> <em class="replaceable"><code>config_file | request_file</code></em>
+</span></dt><dd>
+<p>Specifies the volume request or volume configuration file
+to process. If <em class="replaceable"><code>config_file</code></em> or <em class="replaceable"><code>request_file</code></em> is specified as a dash (-), it is read from standard input.
+The <code class="option">
+d</code> option cannot be specified when input file is a volume
+configuration file.</p>
+<p>A volume configuration file describes detailed configurations of the
+volumes to be created, while a volume request file provides characteristics
+for the volumes to be produced. For more information, see <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">volume-config</span>
+(
+4
+)
+</span>
+</span>
+<span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">volume-config</span>
+(
+4
+)
+</span>
+</span> and <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">volume-request</span>
+(
+4
+)
+</span>
+</span> man pages.</p>
+</dd><dt><span class="term">
+<code class="option">
+v</code> <em class="replaceable"><code>verbosity</code></em>
+</span></dt><dd>
+<p>Specifies how verbose the output should be. Allowable values
+range from <code class="literal">0</code> (nearly silent output) to <code class="literal">2</code> (significant
+output). The default level is <code class="literal">1</code> (moderate output).</p>
+</dd></dl></div>
+</li></ul></div>
+<p>See the following examples and the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metassist</span>
+(
+1M
+)
+</span>
+</span> man page for more information.</p>
+</li><li>
+<p>Once you have created the volumes, view the new volumes.</p>
+<pre class="screen"># <strong class="userinput"><code>metastat -s <em class="replaceable"><code>diskset-name</code></em>
+</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="ewaur"></a><p class="title"><b>Example 23.1. Creating a Two-Way Mirror Using the <span>metassist</span> Command</b></p>
+
+
+<p>The following example shows how to create a two-way mirror, 10 Mbytes
+in size. The <span><strong class="command">metassist</strong></span> command identifies unused disks
+and creates the best mirror possible using those disks. The <code class="option">
+s myset</code> argument
+specifies that the volumes will be created in the <code class="literal">myset</code> disk
+set. The disk set is created, if necessary.</p>
+<pre class="screen"># <strong class="userinput"><code>metassist create -s myset -r 2 -S 10mb</code></strong>
+</pre>
+</div><div class="example"><a name="esxkz"></a><p class="title"><b>Example 23.2. Creating a Two-Way Mirror and Hot Spare Using the <span>metassist</span> Command</b></p>
+
+
+<a class="indexterm" name="indexterm-219"></a>
+<p>The following example shows how to use the <span><strong class="command">metassist</strong></span> command
+to create a two-way mirror, 10 Mbytes in size, with a hot spare to provide
+additional fault tolerance. The <code class="option">
+f</code> option specifies the fault
+tolerance.</p>
+<pre class="screen"># <strong class="userinput"><code>metassist create -s myset -f -r 2 -S 10mb</code></strong>
+ </pre>
+</div><div class="example"><a name="eteru"></a><p class="title"><b>Example 23.3. Creating a Stripe With a Specific Controller Using the <span>metassist</span> Command</b></p>
+
+
+<a class="indexterm" name="indexterm-220"></a>
+<p>The following example shows how to use the <span><strong class="command">metassist</strong></span> command
+to create a stripe using disks available on controller 1. The <code class="option">
+a</code> option
+specifies the available controller.</p>
+<pre class="screen"># <strong class="userinput"><code>metassist create -s myset -a c1 -S 10mb</code></strong>
+</pre>
+</div><div class="example"><a name="ewauq"></a><p class="title"><b>Example 23.4. Specifying Output Verbosity From the <span>metassist</span> Command</b></p>
+
+
+<a class="indexterm" name="indexterm-221"></a>
+<p>The following example shows how to use the <span><strong class="command">metassist</strong></span> command
+to create a two-way mirror, 10 Mbytes in size, with a hot spare to provide
+additional fault tolerance. The <code class="option">
+f</code> option specifies fault
+tolerance. The final argument (<code class="option">
+v 2</code>) specifies a verbosity
+level of two, which is the maximum level and will provide the most information
+possible about how the <span><strong class="command">metassist</strong></span> command worked. </p>
+<pre class="screen"># <strong class="userinput"><code>metassist create -s myset -f -r 2 -S 10mb -v 2</code></strong>
+Scanning system physical device configuration...
+
+  These HBA/Controllers are known:.
+    c0                        /pci@1f,0/pci@1,1/ide@3
+    c1                        /pci@1f,0/pci@1/pci@2/SUNW,isptwo@4
+
+  These disks are known:
+
+    c0t0d0                    id1,dad@AST34342A=____________VGD97101
+    c1t1d0                    id1,sd@SSEAGATE_ST39204LCSUN9.0G3BV0L88P000021097XNL
+    c1t2d0                    id1,sd@SSEAGATE_ST39102LCSUN9.0GLJW22867000019171JDF
+    c1t3d0                    id1,sd@SSEAGATE_ST39204LCSUN9.0G3BV0L7RV00007108TG0H
+    c1t4d0                    id1,sd@SSEAGATE_ST39204LCSUN9.0G3BV0LDFR000021087R1T
+    c1t5d0                    id1,sd@SSEAGATE_ST39204LCSUN9.0G3BV0L0M200002109812L
+    c1t6d0                    id1,sd@SSEAGATE_ST39204LCSUN9.0G3BV0L8K8000021087R0Z
+.
+.
+.
+(output truncated)</pre>
+<p>The following example shows how to use the <span><strong class="command">metassist</strong></span> command
+to create a two-way mirror, 10 Mbytes in size, with a hot spare to provide
+additional fault tolerance. The <code class="option">
+f</code> option specifies fault
+tolerance. The final argument (<code class="option">
+v 0</code>) specifies a verbosity
+level of zero, which is the minimum level and will provide nearly silent output
+when the command runs. </p>
+<pre class="screen"># <strong class="userinput"><code>metassist create -s myset -f -r 2 -S 10mb -v 0</code></strong>
+myset/hsp000: Hotspare pool is setup
+myset/hsp000: Hotspare is added
+myset/d2: Concat/Stripe is setup
+myset/d1: Concat/Stripe is setup
+myset/d0: Mirror is setup
+myset/d0: submirror myset/d1 is attached</pre>
+</div><div class="example"><a name="ftytz"></a><p class="title"><b>Example 23.5. Creating a Volume Using an Input File</b></p>
+
+
+<p>The following example shows how to use the <span><strong class="command">metassist</strong></span> command
+to create a volume using an input file. </p>
+<pre class="screen"># <strong class="userinput"><code>metassist create -F request.xml</code></strong>
+</pre>
+<p>For more information on using input files with the <span><strong class="command">metassist</strong></span> command,
+see <span class="olink">Working With File-Based Data Using the <span><strong class="command">metassist</strong></span> Command</span>.</p>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch23s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch23.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch23s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Prerequisites for Top-Down Volume Creation </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Working With File-Based Data Using the <span><strong class="command">metassist</strong></span> Command</td></tr></table></div></body></html>

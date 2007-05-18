@@ -1,0 +1,117 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Monitoring SMF Services</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch15.html" title="Chapter 15. Managing Services (Tasks)"><link rel="prev" href="ch15.html" title="Chapter 15. Managing Services (Tasks)"><link rel="next" href="ch15s03.html" title="Managing SMF Services"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Monitoring SMF Services</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch15.html">Prev</a> </td><th width="60%" align="center">Chapter 15. Managing Services (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch15s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="dzhaq"></a>Monitoring SMF Services</h2></div></div></div>
+
+<p>The following tasks show how to monitor SMF services.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2099721"></a></h3></div></div></div>
+
+<div class="task"><a name="ecdne"></a><p class="title"><b>How to List the Status of a Service</b></p><div class="tasksummary">
+<p>This procedure can be used to show what services are running.</p>
+</div><div class="procedure"><ul><li>
+<p>Run the <span><strong class="command">svcs</strong></span> command.</p>
+<p>Running this
+command without any options displays a status report of the service specified
+by the FMRI.</p>
+<pre class="screen">% svcs -l <em class="replaceable"><code>FMRI</code></em>
+</pre>
+</li></ul></div><div class="example"><a name="eqbru"></a><p class="title"><b>Example 15.1. Showing the Status of the <span>rlogin</span> Service</b></p>
+
+
+<p>This example shows the status of a service that includes many contracts.</p>
+<pre class="screen">% <strong class="userinput"><code>svcs -l network/login:rlogin</code></strong>
+fmri         svc:/network/login:rlogin
+enabled      true
+state        online
+next_state   none
+restarter    svc:/network/inetd:/default
+contract_id  42325 41441 40776 40348 40282 40197 39025 38381 38053\
+ 33697 28625 24652 23689 15352 9889 7194 6576 6360 5387 1475 3015\
+ 6545 6612 9302 9662 10484 16254 19850 22512 23394 25876 26113 27326\
+ 34284 37939 38405 38972 39200 40503 40579 41129 41194</pre>
+</div><div class="example"><a name="fahoz"></a><p class="title"><b>Example 15.2. Showing the Status of the <span>sendmail</span> Service</b></p>
+
+
+<p>This example shows the status of a service that includes dependencies.</p>
+<pre class="screen">% <strong class="userinput"><code>svcs -l network/smtp:sendmail</code></strong>
+fmri         svc:/network/smtp:sendmail
+enabled      true
+state        online
+next_state   none
+restarter    svc:/system/svc/restarter:default
+contract_id  29462 
+dependency   require_all/refresh file://localhost/etc/nsswitch.conf (-)
+dependency   require_all/refresh file://localhost/etc/mail/sendmail.cf (-)
+dependency   optional_all/none svc:/system/system-log (online)
+dependency   require_all/refresh svc:/system/identity:domain (online)
+dependency   require_all/refresh svc:/milestone/name-services (online)
+dependency   require_all/none svc:/network/service (online)
+dependency   require_all/none svc:/system/filesystem/local (online)</pre>
+</div><div class="example"><a name="eqbrn"></a><p class="title"><b>Example 15.3. Showing the Status of all Services</b></p>
+
+
+<p>The following command lists all services that are installed on the system
+as well as the status of each service. The command displays those services
+that are disabled as well as those that are enabled.</p>
+<pre class="screen">% <strong class="userinput"><code>svcs -a</code></strong>
+</pre>
+</div><div class="example"><a name="euprl"></a><p class="title"><b>Example 15.4. Showing the Status of Services Controlled by <span>inetd</span>
+</b></p>
+
+
+<p>The following command lists services that are controlled by <span><strong class="command">inetd</strong></span>.
+Each service's FMRI is listed, along with the run state and whether the service
+is enabled or disabled.</p>
+<pre class="screen">% <strong class="userinput"><code>inetadm</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2099933"></a></h3></div></div></div>
+
+<div class="task"><a name="eqbse"></a><p class="title"><b>How to Show Which Services Are Dependent on a Service
+Instance</b></p><div class="tasksummary">
+<p>This procedure shows how to determine which service instances depend
+on the specified service.</p>
+</div><div class="procedure"><ul><li>
+<p>Display the service dependents.</p>
+<pre class="screen">% svcs -D <em class="replaceable"><code>FMRI</code></em>
+</pre>
+</li></ul></div><div class="example"><a name="eqbsg"></a><p class="title"><b>Example 15.5. Displaying the Service Instances That Are Dependent on the Multiuser
+Milestone</b></p>
+
+
+<p>The following example shows how to determine which service instances
+are dependent on the multiuser milestone.</p>
+<pre class="screen">% <strong class="userinput"><code>svcs -D milestone/multi-user</code></strong>
+STATE          STIME    FMRI
+online         Apr_08   svc:/milestone/multi-user-server:default</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2100022"></a></h3></div></div></div>
+
+<div class="task"><a name="eqbsf"></a><p class="title"><b>How to Show Which Services a Service Is Dependent
+On</b></p><div class="tasksummary">
+<p>This procedure shows how to determine which services a specified service
+instance is dependent on.</p>
+</div><div class="procedure"><ul><li>
+<p>Display the service dependencies.</p>
+<pre class="screen">% svcs -d <em class="replaceable"><code>FMRI</code></em>
+</pre>
+</li></ul></div><div class="example"><a name="eqqeb"></a><p class="title"><b>Example 15.6. Displaying the Service Instances That the Multiuser Milestone Is Dependent
+On</b></p>
+
+
+<p>The following example shows the services instances that the multiuser
+milestone is dependent on.</p>
+<pre class="screen">% <strong class="userinput"><code>svcs -d milestone/multi-user:default</code></strong>
+STATE          STIME    FMRI
+disabled       Aug_24   svc:/platform/sun4u/sf880drd:default
+online         Aug_24   svc:/milestone/single-user:default
+online         Aug_24   svc:/system/utmp:default
+online         Aug_24   svc:/system/system-log:default
+online         Aug_24   svc:/system/system-log:default
+online         Aug_24   svc:/system/rmtmpfiles:default
+online         Aug_24   svc:/network/rpc/bind:default
+online         Aug_24   svc:/milestone/name-services:default
+online         Aug_24   svc:/system/filesystem/local:default
+online         Aug_24   svc:/system/mdmonitor:default</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch15.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch15.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch15s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 15. Managing Services (Tasks) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Managing SMF Services</td></tr></table></div></body></html>

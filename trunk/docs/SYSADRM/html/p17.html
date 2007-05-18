@@ -1,0 +1,348 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Resource Control Values and Privilege Levels - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage> > <a href="p16.html">6.&nbsp;&nbsp;Resource Controls (Overview)</a> > <a href="p16.html#rmctrls-3">Configuring Resource Controls and Attributes</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p16.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p18.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="rmctrls-6"></a><h4>Resource Control Values and Privilege Levels</h4>
+<p><a name="indexterm-46"></a>A threshold value on a resource control constitutes an enforcement
+point where local actions can be triggered or global actions, such as logging,
+can occur.</p>
+<p><a name="indexterm-47"></a>Each threshold value on a resource control must be associated
+with a privilege level. The privilege level must be one of the following three
+types.</p>
+<ul><li><p>Basic, which can be modified by the owner of the calling process</p>
+</li>
+<li><p>Privileged, which can be modified only by privileged (superuser)
+callers</p>
+</li>
+<li><p>System, which is fixed for the duration of the operating system
+instance</p>
+</li>
+</ul>
+<p>A resource control is guaranteed to have one system value, which is
+defined by the system, or resource provider. The system value represents how
+much of the resource the current implementation of the operating system is
+capable of providing.</p>
+<p>Any number of privileged values can be defined, and only one basic value
+is allowed. Operations that are performed without specifying a privilege value
+are assigned a basic privilege by default.</p>
+<p>The privilege level for a resource control value is defined in the privilege
+field of the resource control block as RCTL_BASIC, RCTL_PRIVILEGED, or RCTL_SYSTEM.
+See <tt>setrctl</tt>(2) for
+more information. You can use the <tt>prctl</tt> command to modify
+values that are associated with basic and privileged levels.</p>
+<a name="rmctrls-7"></a><h4>Global and Local Actions on Resource Control
+Values</h4>
+<p><a name="indexterm-48"></a>There are two categories of actions on resource
+control values: global and local.</p>
+<a name="rmctrls-25"></a><h5>Global Actions on Resource Control Values</h5>
+<p><a name="indexterm-49"></a>Global actions apply to resource control values for every resource
+control on the system. You can use the <tt>rctladm</tt> command
+described in the <tt>rctladm</tt>(1M) man
+page to perform the following actions:</p>
+<ul><li><p>Display the global state of active system resource controls</p>
+</li>
+<li><p>Set global logging actions</p>
+</li>
+</ul>
+<p>You can disable or enable the global logging action on resource controls.
+You can set the <tt>syslog</tt> action to a specific degree by assigning
+a severity level, <tt>syslog=</tt><i>level</i>.
+The possible settings for <i>level</i> are as follows:</p>
+<ul><li><p><tt>debug</tt></p>
+</li>
+<li><p><tt>info</tt></p>
+</li>
+<li><p><tt>notice</tt></p>
+</li>
+<li><p><tt>warning</tt></p>
+</li>
+<li><p><tt>err</tt></p>
+</li>
+<li><p><tt>crit</tt></p>
+</li>
+<li><p><tt>alert</tt></p>
+</li>
+<li><p><tt>emerg</tt></p>
+</li>
+</ul>
+<p>By default, there is no global logging of resource control violations.</p>
+<a name="rmctrls-24"></a><h5>Local Actions on Resource Control Values</h5>
+<p><a name="indexterm-50"></a><a name="indexterm-51"></a>Local actions are taken on
+a process that attempts to exceed the control value. For each threshold value
+that is placed on a resource control, you can associate one or more actions.
+There are three types of local actions: <tt>none</tt>, <tt>deny</tt>,
+and <tt>signal=</tt>. These three actions are used as follows:</p>
+<dl><dt><tt>none</tt></dt>
+<dd><p>No action is taken on resource requests for an amount that
+is greater than the threshold. This action is useful for monitoring resource
+usage without affecting the progress of applications. You can also enable
+a global message that displays when the resource control is exceeded, although
+the process exceeding the threshhold is not affected.</p>
+</dd>
+<dt><tt>deny</tt></dt>
+<dd><p>You can deny resource requests for an amount that is greater
+than the threshold. For example, a <tt>task.max-lwps</tt> resource
+control with action <tt>deny</tt> causes a <tt>fork</tt> system
+call to fail if the new process would exceed the control value. See the <tt>fork</tt>(2) man page.</p>
+</dd>
+<dt><tt>signal=</tt></dt>
+<dd><p>You can enable a global signal message action when the resource
+control is exceeded. A signal is sent to the process when the threshold value
+is exceeded. Additional signals are not sent if the process consumes additional
+resources. Available signals are listed in <a href="p17.html#rmctrls-tbl-8">Table 6-3</a>.</p>
+</dd>
+</dl>
+<p>Not all of the actions can be applied to every resource control. For
+example, a process cannot exceed the number of CPU shares assigned to the
+project of which it is a member. Therefore, a deny action is not allowed on
+the <tt>project.cpu-shares</tt> resource control.</p>
+<p>Due to implementation restrictions, the global properties of each control
+can restrict the range of available actions that can be set on the threshold
+value. (See the <tt>rctladm</tt>(1M) man
+page.) A list of available signal actions is presented in the following table.
+For additional information about signals, see the <tt>signal</tt>(3HEAD) man page.</p>
+<a name="rmctrls-tbl-8"></a>Table 6-3 Signals Available to Resource
+Control Values<table><tr><th><p>Signal</p>
+</th><th><p>Description</p>
+</th><th><p>Notes</p>
+</th></tr>
+<tr><td><p>SIGABRT</p>
+</td><td><p>Terminate the process.</p>
+</td><td><p></p>
+</td></tr>
+<tr><td><p>SIGHUP</p>
+</td><td><p>Send a hangup signal. Occurs when carrier drops on an open line. Signal
+sent to the process group that controls the terminal.</p>
+</td><td><p></p>
+</td></tr>
+<tr><td><p>SIGTERM</p>
+</td><td><p>Terminate the process. Termination signal sent by software.</p>
+</td><td><p></p>
+</td></tr>
+<tr><td><p>SIGKILL</p>
+</td><td><p>Terminate the process and kill the program.</p>
+</td><td><p></p>
+</td></tr>
+<tr><td><p>SIGSTOP</p>
+</td><td><p>Stop the process. Job control signal.</p>
+</td><td><p></p>
+</td></tr>
+<tr><td><p>SIGXRES</p>
+</td><td><p>Resource control limit exceeded. Generated by resource control facility.</p>
+</td><td><p></p>
+</td></tr>
+<tr><td><p>SIGXFSZ</p>
+</td><td><p>Terminate the process. File size limit exceeded.</p>
+</td><td><p>Available only to resource controls with the RCTL_GLOBAL_FILE_SIZE property
+(<tt>process.max-file-size</tt>). See <tt>rctlblk_set_value</tt>(3C) for more information.</p>
+</td></tr>
+<tr><td><p>SIGXCPU</p>
+</td><td><p>Terminate the process. CPU time limit exceeded.</p>
+</td><td><p>Available only to resource controls with the RCTL_GLOBAL_CPUTIME property
+(<tt>process.max-cpu-time</tt>). See <tt>rctlblk_set_value</tt>(3C) for more information.</p>
+</td></tr>
+</table><a name="rmctrls-9"></a><h4>Resource Control Flags and Properties</h4>
+<p>Each resource control on the system has a certain set of associated
+properties. This set of properties is defined as a set of flags, which are
+associated with all controlled instances of that resource. Global flags cannot
+be modified, but the flags can be retrieved by using either <tt>rctladm</tt> or
+the <tt>getrctl</tt> system call.</p>
+<p>Local flags define the default behavior and configuration for a specific
+threshold value of that resource control on a specific process or process
+collective. The local flags for one threshold value do not affect the behavior
+of other defined threshold values for the same resource control. However,
+the global flags affect the behavior for every value associated with a particular
+control. Local flags can be modified, within the constraints supplied by their
+corresponding global flags, by the  <tt>prctl</tt> command or the <tt>setrctl</tt> system call. See <tt>setrctl</tt>(2).</p>
+<p>For the complete list of local flags, global flags, and their 	definitions,
+see <tt>rctlblk_set_value</tt>(3C).</p>
+<p>To determine system behavior when a threshold value for a particular
+resource control is reached, use <tt>rctladm</tt> to display the
+global flags for the resource control . For example, to display the values
+for <tt>process.max-cpu-time</tt>, type the following:</p>
+<pre>$ <tt><b>rctladm process.max-cpu-time</b></tt>
+	process.max-cpu-time  syslog=off  [ lowerable no-deny cpu-time inf seconds ]</pre><p>The global flags indicate the following.</p>
+<dl><dt><tt>lowerable</tt></dt>
+<dd><p>Superuser privileges are not required to lower the privileged
+values for this control.</p>
+</dd>
+<dt><tt>no-deny</tt></dt>
+<dd><p>Even when threshold values are exceeded, access to the resource
+is never denied.</p>
+</dd>
+<dt><tt>cpu-time</tt></dt>
+<dd><p>SIGXCPU is available to be sent when threshold values of this
+resource are reached.</p>
+</dd>
+<dt><tt>seconds</tt></dt>
+<dd><p>The time value for the resource control.</p>
+</dd>
+</dl>
+<p>Use the <tt>prctl</tt> command to display local values and
+actions for the resource control.</p>
+<pre>$ <tt><b>prctl -n process.max-cpu-time $$</b></tt>
+	process 353939: -ksh
+	NAME    PRIVILEGE    VALUE    FLAG   ACTION              RECIPIENT
+ process.max-cpu-time
+         privileged   18.4Es    inf   signal=XCPU                 -
+         system       18.4Es    inf   none </pre><p><a name="indexterm-52"></a>The <tt>max</tt> (RCTL_LOCAL_MAXIMAL) flag
+is set for both threshold values, and the <tt>inf</tt> (RCTL_GLOBAL_INFINITE)
+flag is defined for this resource control. An <tt>inf</tt> value
+has an infinite quantity. The value is never enforced. Hence, as configured,
+both threshold quantities represent infinite values that are never exceeded.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p16.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p18.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

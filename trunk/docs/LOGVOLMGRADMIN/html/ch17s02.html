@@ -1,0 +1,156 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Creating a Hot Spare Pool</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch17.html" title="Chapter 17. Hot Spare
+Pools (Tasks)"><link rel="prev" href="ch17.html" title="Chapter 17. Hot Spare
+Pools (Tasks)"><link rel="next" href="ch17s03.html" title="Associating a Hot Spare Pool With Volumes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Creating a Hot Spare Pool</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch17.html">Prev</a> </td><th width="60%" align="center">Chapter 17. Hot Spare
+Pools (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch17s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-hotspares-6"></a>Creating a Hot Spare Pool</h2></div></div></div>
+
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1758441"></a></h3></div></div></div>
+
+<div class="task"><a name="addtasks-14933"></a><p class="title"><b>How to Create a Hot Spare Pool</b></p><a class="indexterm" name="indexterm-119"></a><a class="indexterm" name="indexterm-120"></a><div class="tasksummary">
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>Do not create volumes or hot spares larger than 1 Tbyte if
+you expect to run the Solaris software with a 32&#8211;bit kernel or if you
+expect to use a version of the Solaris OS prior to the Solaris 9 4/03 release.
+See <span class="olink">Overview of Multi-Terabyte Support in Solaris Volume Manager</span> for more information about multiterabyte
+volume support in Solaris Volume Manager.</p>
+</div>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>Solaris Volume Manager does not warn you if you create a hot spare
+that is not large enough. If the hot spare is not equal to, or larger than,
+the volume to which it is attached, the hot spare will not work.</p>
+</div>
+</div><div class="taskprerequisites">
+
+<p>Check <span class="olink">Prerequisites for Creating Solaris Volume Manager Components</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-hotspares-step-10"></a>
+<p>Become superuser.</p>
+</li><li><a name="tasks-hotspares-step-11"></a>
+<p>To create a hot spare pool, use one
+of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Hot Spare Pools node. Then, choose
+Action&#8658;Create Hot Spare Pool. For more information, see the online help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>metainit <em class="replaceable"><code>hot-spare-pool-name</code></em> <em class="replaceable"><code>ctds-for-slice</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>hot-spare-pool-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the hot spare pool.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>ctds-for-slice</code></em>
+</span></dt><dd>
+<p>Specifies the slice being added to the hot spare pool. The
+option is repeated for each slice being added to the hot spare pool.</p>
+</dd></dl></div>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metainit</span>
+(
+1M
+)
+</span>
+</span> man
+page for more information.</p>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The <span><strong class="command">metahs</strong></span> command can also be used to create
+hot spare pools. </p>
+</div>
+</li></ol></div><div class="example"><a name="egjwr"></a><p class="title"><b>Example 17.1. Creating a Hot Spare Pool</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metainit hsp001 c2t2d0s2 c3t2d0s2</code></strong>
+hsp001: Hotspare pool is setup</pre>
+<p>In this example, the hot spare pool <code class="filename">hsp001</code> contains
+two disks as the hot spares. The system confirms that the hot spare pool has
+been set up.</p>
+</div><div class="taskrelated">
+
+<p>To add more hot spares to the hot spare pool, see <span class="olink">How to Add Additional Slices to a Hot Spare Pool</span>. After you create
+the hot spare pool, you need to associate it with a submirror or RAID-5 volume.
+See <span class="olink">How to Associate a Hot Spare Pool With a Volume</span>. </p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1758824"></a></h3></div></div></div>
+
+<div class="task"><a name="addtasks-42201"></a><p class="title"><b>How to Add Additional Slices to a Hot Spare
+Pool</b></p><a class="indexterm" name="indexterm-121"></a><a class="indexterm" name="indexterm-122"></a><div class="taskprerequisites">
+
+<p>Check <span class="olink">Prerequisites for Creating Solaris Volume Manager Components</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-hotspares-step-13"></a>
+<p>Become superuser.</p>
+</li><li><a name="tasks-hotspares-step-14"></a>
+<p>To add a slice to an existing hot
+spare pool, use one of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Hot Spare Pools node. Choose the
+hot spare pool you want to change. Choose Action&#8658;Properties. Then, choose
+the Hot Spares panel. For more information, see the online help.</p>
+</li><li>
+<p>Use one of the following forms of the <span><strong class="command">metahs</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>metahs -a <em class="replaceable"><code>hot-spare-pool-name</code></em> <em class="replaceable"><code>slice-to-add</code></em>
+</code></strong>
+</pre>
+<pre class="screen"># <strong class="userinput"><code>metahs -a -all <em class="replaceable"><code>hot-spare-pool-name</code></em> <em class="replaceable"><code>slice-to-add</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+a</code> <em class="replaceable"><code>hot-spare-pool-name</code></em>
+</span></dt><dd>
+<p>Specifies to add the slice to the specified hot spare pool.</p>
+</dd><dt><span class="term">
+<code class="option">
+a</code> <code class="literal">all</code>
+</span></dt><dd>
+<p>Specifies to add the slice to all hot spare pools.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>slice-to-add</code></em>
+</span></dt><dd>
+<p>Specifies the slice to add to the hot spare pool.</p>
+</dd></dl></div>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metahs</span>
+(
+1M
+)
+</span>
+</span> man
+page for more information.</p>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>You can add a hot spare to one or more hot spare pools. When you
+add a hot spare to a hot spare pool, the hot spare is added to the end of
+the list of slices in the hot spare pool.</p>
+</div>
+</li></ol></div><div class="example"><a name="egjwm"></a><p class="title"><b>Example 17.2. Adding a Hot Spare Slice to One Hot Spare Pool</b></p>
+
+
+<p>In this example, the <code class="option">
+a</code> option adds the slice <code class="filename">/dev/dsk/c3t0d0s2</code> to hot spare pool <code class="filename">hsp001</code>.
+The system verifies that the slice has been added to the hot spare pool.</p>
+<pre class="screen"># <strong class="userinput"><code>metahs -a hsp001 /dev/dsk/c3t0d0s2</code></strong>
+hsp001: Hotspare is added</pre>
+</div><div class="example"><a name="egjwt"></a><p class="title"><b>Example 17.3. Adding a Hot Spare Slice to All Hot Spare Pools</b></p>
+
+
+<p>
+<a class="indexterm" name="addtasks-ix145"></a>
+<a class="indexterm" name="addtasks-ix146"></a>In this example, the <code class="option">
+a</code> option used with <code class="literal">all</code> adds the slice <code class="filename">/dev/dsk/c3t0d0s2</code> to all hot spare pools configured on the system.
+The system verifies that the slice has been added to all hot spare pools.</p>
+<pre class="screen"># <strong class="userinput"><code>metahs -a -all /dev/dsk/c3t0d0s2</code></strong>
+hsp001: Hotspare is added
+hsp002: Hotspare is added
+hsp003: Hotspare is added</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch17.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch17.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch17s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 17. Hot Spare
+Pools (Tasks) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Associating a Hot Spare Pool With Volumes</td></tr></table></div></body></html>

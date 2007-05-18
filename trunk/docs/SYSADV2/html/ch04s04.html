@@ -1,0 +1,909 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Setting or Resetting Miscellaneous Printer
+Definitions</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch04.html" title="Chapter 4. Administering Printers (Tasks)"><link rel="prev" href="ch04s03.html" title="Setting or Resetting Miscellaneous Printer Definitions
+(Task Map)"><link rel="next" href="ch04s05.html" title="Managing Print Requests (Task Map)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Setting or Resetting Miscellaneous Printer
+Definitions</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s03.html">Prev</a> </td><th width="60%" align="center">Chapter 4. Administering Printers (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch04s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printadmin-27"></a>Setting or Resetting Miscellaneous Printer
+Definitions</h2></div></div></div>
+
+<p>The following procedures provide step-by-step instructions on setting
+or resetting printer definitions. Some of the following printer definitions
+can be set by using Solaris Print Manager. The following procedures show how
+to use the LP print service commands to quickly set or reset printer definitions.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2126537"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-51711"></a><p class="title"><b>How to Add a Printer Description</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-29"></a>
+<p>
+<a class="indexterm" name="printadmin-ix405"></a>
+<a class="indexterm" name="printadmin-ix406"></a>Log in as superuser, <code class="literal">lp</code>, or assume an equivalent
+role on the print server.</p>
+</li><li><a name="printadmin-step-30"></a>
+<p>
+<a class="indexterm" name="printadmin-ix408"></a>Add a printer description.  </p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-D</code></strong> "<em class="replaceable"><code>comment</code></em>"</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code> <em class="replaceable"><code>printer-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the printer for which you are adding
+a description.</p>
+</dd><dt><span class="term">
+<code class="option">
+D</code> <em class="replaceable"><code>"comment"</code></em>
+</span></dt><dd>
+<p>Specifies the characteristics of the printer, such as the
+location or administrative contact. Enclose characters that the shell might
+interpret, such as <code class="literal">*</code>, <code class="literal">?</code>, <code class="literal">\</code>, <code class="literal">!</code>, <code class="literal">^</code>, in single quotation marks.</p>
+</dd></dl></div>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">lpadmin</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+<p>The
+printer description is added in the print server's <code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/comment</code> file. </p>
+</li><li><a name="printadmin-step-110"></a>
+<p>Verify that the <code class="literal">Description</code> information
+is correct.</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="emjgf"></a><p class="title"><b>Example 4.6. Adding a Printer Description</b></p>
+
+
+<p>The following example shows how to add a printer description for the
+printer <code class="literal">luna</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p luna -D "Nathans office"</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printplan-24"></a>Setting Up a Default Printer Destination</h3></div></div></div>
+
+<a class="indexterm" name="printconcept-ix103"></a>
+<a class="indexterm" name="printconcept-ix104"></a>
+<p>You can specify a default printer destination for a user so that the
+user does not need to type the printer name when using the print commands.
+Before you can designate a printer as the default, the printer must be known
+to the print service on the system. You can set a user's default printer destination
+by setting any of the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="literal">LPDEST</code> environment variable</p>
+</li><li>
+<p>
+<code class="literal">PRINTER</code> environment variable</p>
+</li><li>
+<p>The <code class="literal">_default</code> variable in the user's <code class="filename">.PRINTERS</code> file</p>
+</li><li>
+<p>The system's default printer by using the <span><strong class="command">lpadmin</strong></span> <code class="option">
+d</code> command or Solaris Print Manager</p>
+</li></ul></div>
+<p>When an application provides a printer destination, that destination
+is used by the print service, regardless of whether you have set a system's
+default printer destination. If an application doesn't provide a printer destination
+or if you don't provide a printer name when using a print command, the print
+command searches for the default printer in a specific order. The following
+table shows the search order for a system's default printer destination.</p>
+<div class="table"><a name="printplan-25"></a><p class="title"><b>Table 4.1. Search Order for Default Printer
+Destinations</b></p>
+
+
+<table summary="Search Order for Default Printer
+Destinations" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>Search Order</p>
+</th><th>
+<p>Using <span><strong class="command">/usr/bin/lp</strong></span> Command</p>
+</th><th>
+<p>Using <span><strong class="command">lpd</strong></span>-Based Compatibility Commands (<span><strong class="command">lpr</strong></span>, <span><strong class="command">lpq</strong></span>, and <span><strong class="command">lprm</strong></span>)</p>
+</th></tr></thead><tbody><tr><td>
+<p>First</p>
+</td><td>
+<p>
+<code class="literal">LPDEST</code> variable</p>
+</td><td>
+<p>
+<code class="literal">PRINTER</code> variable</p>
+</td></tr><tr><td>
+<p>Second</p>
+</td><td>
+<p>
+<code class="literal">PRINTER</code> variable</p>
+</td><td>
+<p>
+<code class="literal">LPDEST</code> variable</p>
+</td></tr><tr><td>
+<p>Third</p>
+</td><td>
+<p>System's default printer</p>
+</td><td>
+<p>System's default printer</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2127241"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-55845"></a><p class="title"><b>How to Set a System's Default Printer Destination</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-34"></a>
+<p>
+<a class="indexterm" name="printadmin-ix411"></a>Log in as superuser, <code class="literal">lp</code>, or assume an equivalent
+role on the system where you want to set a default printer.</p>
+</li><li><a name="printadmin-step-35"></a>
+<p>
+<a class="indexterm" name="printadmin-ix412"></a>Set the system's default printer.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -d</code></strong> [<em class="replaceable"><code>printer-name</code></em>]</pre>
+<p>
+<span><strong class="command">-d</strong></span> <em class="replaceable"><code>printer-name</code></em> specifies
+the name of the printer you are assigning as the system's default printer.
+If you don't specify <em class="replaceable"><code>printer-name</code></em>, the system is
+set up with no default printer.</p>
+<p>
+<a class="indexterm" name="printadmin-ix413"></a>
+<a class="indexterm" name="printadmin-ix414"></a>The default printer name is specififed in the system's <code class="filename">/etc/lp/default</code> file.  </p>
+</li><li><a name="printadmin-step-111"></a>
+<p>Check the system's default printer.</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -d</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="emjfs"></a><p class="title"><b>Example 4.7. Setting a System's Default Printer Destination</b></p>
+
+
+<p>
+<a class="indexterm" name="printadmin-ix415"></a>
+<a class="indexterm" name="printadmin-ix416"></a>
+<a class="indexterm" name="printadmin-ix417"></a>
+<a class="indexterm" name="printadmin-ix418"></a>The following example shows how to set the printer <code class="literal">luna</code> as
+the system's default printer. The printer <code class="literal">luna</code> is used
+as the system's default printer if the <code class="literal">LPDEST</code> or the <code class="literal">PRINTER</code> environment variables are not set.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -d luna</code></strong>
+# <strong class="userinput"><code>lpstat -d</code></strong>
+system default destination: luna</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printconcept-12"></a>Printing Banner Pages</h3></div></div></div>
+
+<a class="indexterm" name="printconcept-ix109"></a>
+<a class="indexterm" name="printconcept-ix110"></a>
+<p>
+<a class="indexterm" name="printconcept-ix111"></a>A banner page identifies who submitted the print request, the
+print request ID, and when the request was printed. A banner page also has
+a modifiable title to help users identify their printouts.  </p>
+<p>
+<a class="indexterm" name="printconcept-ix113"></a>Banner pages make identifying the owner of a print job easy, which
+is especially helpful when many users submit jobs to the same printer. However,
+printing banner pages uses more paper and might be unnecessary if a printer
+has only a few users. In some cases, printing banner pages is undesirable.
+For example, if a printer has special paper or forms mounted, such as paycheck
+forms, printing banner pages might cause problems. </p>
+<p>By default, the print service forces banner pages to be printed. However,
+you can give users a choice to turn off printing of a banner page when they
+submit a print request. You can set this choice through the <span><strong class="command">lpadmin</strong></span> command
+or through Solaris Print Manager. If you give the users a choice, they have
+to use the <code class="option">
+o banner</code> option to turn off banner page printing. </p>
+<p>Also, if you don't need or want banner pages, you can turn off banner
+pages so that they are never printed. You can turn off banner page printing
+by using the <span><strong class="command">lpadmin</strong></span> command or through Solaris Print Manager.</p>
+<div class="table"><a name="printadmin-tbl-123"></a><p class="title"><b>Table 4.2. Banner Page Printing</b></p>
+
+
+<table summary="Banner Page Printing" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>Command Used</p>
+</th><th>
+<p>Banner Page Printing</p>
+</th><th>
+<p>Override?</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<span><strong class="command">lpadmin -p</strong></span> <em class="replaceable"><code>printer</code></em> <code class="option">
+o
+banner</code> OR</p>
+<p>
+<span><strong class="command">lpadmin -p</strong></span> <em class="replaceable"><code>printer</code></em> <code class="option">
+o
+banner=always</code>
+</p>
+</td><td>
+<p>Required and printed</p>
+</td><td>
+<p>If you are a regular user and use <span><strong class="command">p -o nobanner</strong></span>,
+the request is printed. However, the <code class="literal">nobanner</code> argument
+is ignored.</p>
+<p>If you are superuser (<code class="literal">root</code>), or another privileged
+user, the <code class="literal">nobanner</code> argument is honored.</p>
+</td></tr><tr><td>
+<p>
+<span><strong class="command">lpadmin -p</strong></span> <em class="replaceable"><code>printer</code></em> <code class="option">
+o
+nobanner</code>
+</p>
+<p>
+<span><strong class="command">lpadmin -p</strong></span> <em class="replaceable"><code>printer</code></em> <code class="option">
+o
+banner=optional</code>
+</p>
+</td><td>
+<p>On by default, but can be disabled on a per request basis with the <span><strong class="command">lp -o nobanner</strong></span> command</p>
+</td><td>
+<p>Not applicable.</p>
+</td></tr><tr><td>
+<p>
+<span><strong class="command">lpadmin -p</strong></span> <em class="replaceable"><code>printer</code></em> <code class="option">
+o
+banner=never</code>
+</p>
+</td><td>
+<p>Disabled</p>
+</td><td>
+<p>No.</p>
+</td></tr></tbody></table>
+</div>
+<p>For step-by-step command-line instructions, see <span class="olink">How to Turn Off Banner Pages</span> and <span class="olink">How to Make Banner Pages Optional</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2128024"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-63541"></a><p class="title"><b>How to Make Banner Pages Optional</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-39"></a>
+<p>
+<a class="indexterm" name="printadmin-ix419"></a>Log in as superuser, <code class="literal">lp</code>, or assume an equivalent
+role on the print server.</p>
+</li><li><a name="printadmin-step-40"></a>
+<p>
+<a class="indexterm" name="printadmin-ix421"></a>
+<a class="indexterm" name="printadmin-ix422"></a>Make banner pages optional.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-o banner=optional</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code> <em class="replaceable"><code>printer-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the printer for which you are making
+banner pages optional.</p>
+</dd><dt><span class="term">
+<code class="option">
+o banner=optional</code>
+</span></dt><dd>
+<p>Enables users to specify no banner page when they submit a
+print request.</p>
+</dd></dl></div>
+<p>
+<a class="indexterm" name="printadmin-ix423"></a>If you want to force a banner page to print with every print request,
+specify the <code class="option">
+o banner=always</code> option. The banner page setting
+is specified in the print server's <code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/configuration</code> file.</p>
+</li><li><a name="printadmin-step-112"></a>
+<p>Verify that the banner page is optional.
+The command output contains the line <code class="literal">Banner not required</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="emjfl"></a><p class="title"><b>Example 4.8. Making Banner Pages Optional</b></p>
+
+
+<p>The following example shows how to make the banner page optional on
+the printer <code class="literal">luna</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p luna -o banner=optional</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2128324"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-55007"></a><p class="title"><b>How to Turn Off Banner Pages</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-44"></a>
+<p>
+<a class="indexterm" name="printadmin-ix425"></a>Log in as superuser, <code class="literal">lp</code>, or assume an equivalent
+role on the print server.</p>
+</li><li><a name="printadmin-step-45"></a>
+<p>Turn off banner printing.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-o banner=never</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code> <em class="replaceable"><code>printer-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the printer for which you are turning
+off banner pages.</p>
+</dd><dt><span class="term">
+<code class="option">
+o banner=never</code>
+</span></dt><dd>
+<p>Disables banner page printing under all circumstances.</p>
+</dd></dl></div>
+<p>The banner page setting is specified in the print server's <code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/configuration</code> file. </p>
+</li><li><a name="printadmin-step-47"></a>
+<p>Verify that banner printing is turned
+off. </p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+<p>The command output contains the line <code class="literal">Banner not printed</code>.</p>
+</li><li><a name="printadmin-step-113"></a>
+<p>Submit a print request to the printer
+to ensure that a banner page does not print.</p>
+</li></ol></div><div class="example"><a name="emjgi"></a><p class="title"><b>Example 4.9. Turning Off Printing Banner Pages</b></p>
+
+
+<p>The following example shows how to disable the printing of banner pages
+on the printer <code class="literal">luna</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p luna -o banner=never</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printplan-27"></a>Setting Up Printer Classes</h3></div></div></div>
+
+<a class="indexterm" name="printconcept-ix117"></a>
+<a class="indexterm" name="printconcept-ix118"></a>
+<p>The LP print service enables you to group several locally attached printers
+into one class. You can perform this task only by using the <span><strong class="command">lpadmin</strong></span> <code class="option">
+c</code> command.</p>
+<p>After you set up a printer class, users can then specify that class,
+rather than individual printers, as the destination for a print request. The
+first printer in the class that is available to print is used. The result
+is faster turnaround because printers are kept as busy as possible.</p>
+<p>No default printer classes are known to the print service. Printer classes
+exist only if you define them. Here are some ways you could define printer
+classes:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="strong"><strong>By printer type</strong></span> &#8211;
+For example, a PostScript printer.</p>
+</li><li>
+<p>
+<span class="strong"><strong>By location</strong></span> &#8211; For
+example, a printer located on the 5th floor.</p>
+</li><li>
+<p>
+<span class="strong"><strong>By work group or department</strong></span> &#8211;
+For example, the accounting department.</p>
+</li></ul></div>
+<p>Alternatively, a class might contain several printers that are used
+in a particular order. The LP print service always checks for an available
+printer in the order in which printers were added to a class. Therefore, if
+you want a high-speed printer to be accessed first, add the high-speed printer
+to the class before you add a low-speed printer. As a result, the high-speed
+printer handles as many print requests as possible. The low-speed printer
+is reserved as a backup printer when the high-speed printer is in use.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Print requests are balanced between printers in a class only for
+local printers.</p>
+</div>
+<p>Class names, similar to printer names, must be unique and can contain
+a maximum of 14 alphanumeric characters and underscores.</p>
+<p>You are not obligated to define printer classes. You should add printer
+classesonly if you determine that using them would benefit users on the network. </p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2128711"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-63006"></a><p class="title"><b>How to Define a Class of Printers</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-50"></a>
+<p>
+<a class="indexterm" name="printadmin-ix430"></a>
+<a class="indexterm" name="printadmin-ix431"></a>Log in as superuser, <code class="literal">lp</code>, or assume an equivalent
+role on the print server.</p>
+</li><li><a name="printadmin-step-51"></a>
+<p>
+<a class="indexterm" name="printadmin-ix432"></a>Define a class of printers. </p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-c</code></strong> <em class="replaceable"><code>printer-class</code></em>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code> <em class="replaceable"><code>printer-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the printer you are adding to a class
+of printers.</p>
+</dd><dt><span class="term">
+<code class="option">
+c</code> <em class="replaceable"><code>printer-class</code></em>
+</span></dt><dd>
+<p>Specifies the name of a class of printers.</p>
+</dd></dl></div>
+<p>
+<a class="indexterm" name="printadmin-ix433"></a>The specified printer is added to the end of the class list in
+the print server's <code class="filename">/etc/lp/classes/</code>
+<em class="replaceable"><code>printer-class</code></em> file. If the printer class does not exist, it is created.</p>
+</li><li><a name="printadmin-step-114"></a>
+<p>Verify that the printers are in a printer
+class.</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -c</code></strong> <em class="replaceable"><code>printer-class</code></em>
+</pre>
+</li></ol></div><div class="example"><a name="emjfp"></a><p class="title"><b>Example 4.10. Defining a Class of Printers</b></p>
+
+
+<p>The following example shows how to add the printer <code class="literal">luna</code> in
+the printer class <code class="literal">roughdrafts</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p luna -c roughdrafts</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printplan-23"></a>Setting Up Printer Fault Alerts</h3></div></div></div>
+
+<a class="indexterm" name="printconcept-ix101"></a>
+<a class="indexterm" name="printconcept-ix102"></a>
+<p>If you choose, the LP print service can notify you when it detects a
+printer fault. With the <span><strong class="command">lpadmin</strong></span> <code class="option">
+A</code> command
+or with Solaris Print Manager, you can select any of the following methods
+to receive printer fault notification:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>A message to the terminal on which <code class="literal">root</code> is
+logged in</p>
+</li><li>
+<p>Electronic mail to <code class="literal">root</code>
+</p>
+</li><li>
+<p>No notification</p>
+</li></ul></div>
+<p>However, the <span><strong class="command">lpadmin</strong></span> <code class="option">
+A</code> command offers
+you an additional option of receiving a message specified by the program of
+your choice. The <span><strong class="command">lpadmin</strong></span> <code class="option">
+A</code> command also
+enables you to selectively turn off notification for an error that you already
+know about.</p>
+<p>Unless you specify a program to deliver fault notification, the content
+of the fault alert is a predefined message that states that the printer has
+stopped printing and needs to be fixed.</p>
+<p>
+<a class="indexterm" name="printadmin-ix399"></a>The following table lists the alert values that you can set for
+a printer with the <span><strong class="command">lpadmin</strong></span> <code class="option">
+A</code> command.
+These alert values can also be set for print wheels, font cartridges, and
+forms. </p>
+<div class="table"><a name="printadmin-97091"></a><p class="title"><b>Table 4.3. Values for Printer Fault
+Alerts</b></p>
+
+
+<table summary="Values for Printer Fault
+Alerts" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Value for <code class="option">
+A</code> <code class="literal">alert</code>
+</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>'<code class="literal">mail</code> [<em class="replaceable"><code>username</code></em>]'</p>
+</td><td>
+<p>Sends the alert message by email to <code class="literal">root</code> or <code class="literal">lp</code> on
+the print server, or the specified <em class="replaceable"><code>username</code></em>, which
+is a name of a user.</p>
+</td></tr><tr><td>
+<p>'<code class="literal">write</code> [<em class="replaceable"><code>user-name</code></em>]'</p>
+</td><td>
+<p>Sends the alert message to the <code class="literal">root</code> or <code class="literal">lp</code> console
+window on the print server, or to the console window of the specified <em class="replaceable"><code>username</code></em>, which is a name of a user. The specified user must
+be logged in to the print server to get the alert message.</p>
+</td></tr><tr><td>
+<p>'<em class="replaceable"><code>command</code></em>'</p>
+</td><td>
+<p>Runs the specified <em class="replaceable"><code>command</code></em> file for each
+alert. The environment variables and current directory are saved and restored
+when the file is executed.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">quiet</code>
+</p>
+</td><td>
+<p>Stops alerts until the fault is fixed. Use this valve when you, <code class="literal">root</code> or a specified user, receive repeated alerts.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">none</code>
+</p>
+</td><td>
+<p>Does not send any alerts. This value is the default if you don't specify
+fault alerts for a printer.</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2129488"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-22606"></a><p class="title"><b>How to Set Fault Alerts for a Printer</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-60"></a>
+<p>
+<a class="indexterm" name="printadmin-ix436"></a>Log in as superuser, <code class="literal">lp</code>, or assume an equivalent
+role on the print server.</p>
+</li><li><a name="printadmin-step-61"></a>
+<p>
+<a class="indexterm" name="printadmin-ix438"></a>Set fault alerts for a printer. </p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-A</code></strong> <em class="replaceable"><code>alert</code></em> [<strong class="userinput"><code>-W</code></strong> <em class="replaceable"><code>minutes</code></em>]</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code> <em class="replaceable"><code>printer-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the printer for which you are specifying
+an alert for printer faults.</p>
+</dd><dt><span class="term">
+<code class="option">
+A</code> <em class="replaceable"><code>alert</code></em>
+</span></dt><dd>
+<p>
+<a class="indexterm" name="printadmin-ix439"></a>Specifies what kind of alert occurs when the printer faults. For
+detailed information about the valid values for <em class="replaceable"><code>alert</code></em>,
+see <span class="olink">Table 4&#8211;3</span>. Some valid
+values are <code class="literal">mail</code>, <code class="literal">write</code>, and <code class="literal">quiet</code>. </p>
+</dd><dt><span class="term">
+<code class="option">
+W</code> <em class="replaceable"><code>minutes</code></em>
+</span></dt><dd>
+<p>Specifies how often, in minutes, the fault alert occurs. If
+you don't specify this option, the alert is sent one time.</p>
+</dd></dl></div>
+<p>The fault alert setting is specified in the print server's <code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/alert.sh</code> file.</p>
+</li><li><a name="printadmin-step-116"></a>
+<p>Verify that the fault alert has been
+sent properly.</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="emjfn"></a><p class="title"><b>Example 4.11. Setting Fault Alerts for a Printer</b></p>
+
+
+<p>The following example shows how to set up the printer <code class="literal">mars</code> to
+send fault alerts by email to a user named <code class="literal">joe</code>. A reminder
+is sent every 5 minutes.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p mars -A 'mail joe' -W 5</code></strong>
+</pre>
+<p>The following example shows how to set up the printer <code class="literal">venus</code> to
+send fault alerts to the console window. A reminder i sent every 10 minutes.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p venus -A write -W 10</code></strong>
+</pre>
+<p>The following example shows how to stop fault alerts for the printer <code class="literal">mercury</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p mercury -A none</code></strong>
+</pre>
+<p>The following example shows how to stop fault alerts until the printer <code class="literal">venus</code> has been fixed.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p venus -A quiet</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printadmin-107"></a>Setting Up Printer Fault Recovery</h3></div></div></div>
+
+<p>If you choose not to send any fault notification, you can still find
+out about printer faults so that you can correct the problem. The LP print
+service will not continue to use a printer that has a fault. In addition to
+alerts for printer faults, you can also provide alerts that instruct you to
+mount print wheels, font cartridges, and forms when print requests require
+them.</p>
+<p>You can define the fault recovery options for a printer only by using
+the <span><strong class="command">lpadmin</strong></span> <code class="option">
+F</code> command. This task is not
+available in Solaris Print Manager.</p>
+<p>Printer faults can be as simple as running out of paper or needing to
+replace a toner cartridge. Other more serious problems can include complete
+printer failure or power failure. After you fix a printer fault, the print
+request that was active when the fault occurred begins printing in one of
+three ways: </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Starts printing from the beginning</p>
+</li><li>
+<p>Continues printing from the top of the page where printing
+stopped</p>
+</li><li>
+<p>After you enable the printer, continues printing from the
+top of the page where the printing stopped</p>
+</li></ul></div>
+<p>The LP print service requires a separate print filter to continue printing
+from the top of a page where the printing stopped. This print filter records
+the control sequences set by the default print filters. The printer uses these
+control sequences to track page boundaries. You will be notified by the LP
+print service if recovery cannot proceed with the specified print filter.
+For information about writing filters, see <span class="olink">How to Create a New Print Filter</span>. </p>
+<p>If you want printing to resume immediately after a printer fault is
+fixed, enable the printer by using the <span><strong class="command">enable</strong></span> command. </p>
+<p>
+<a class="indexterm" name="printadmin-ix397"></a>The following table lists the fault recovery values that you can
+set for a printer by using the <span><strong class="command">lpadmin</strong></span> <code class="option">
+F</code> command. </p>
+<div class="table"><a name="printadmin-90766"></a><p class="title"><b>Table 4.4. Values for Printer Fault
+Recovery</b></p>
+
+
+<table summary="Values for Printer Fault
+Recovery" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Value for <code class="option">
+F</code> <em class="replaceable"><code>recover-options</code></em>
+</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">beginning</code>
+</p>
+</td><td>
+<p>After a fault recovery, printing restarts from the beginning of the
+file.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">continue</code>
+</p>
+</td><td>
+<p>
+<a class="indexterm" name="printadmin-ix398"></a>After a fault recovery, printing starts at the top of the page
+where the printing stopped. This recovery option requires a print filter. </p>
+</td></tr><tr><td>
+<p>
+<code class="literal">wait</code>
+</p>
+</td><td>
+<p>After a fault recovery, printing stops until you enable the printer.
+After you enable the printer by using the <span><strong class="command">enable</strong></span> command,
+printing starts at the top of the page where printing stopped. This recovery
+option requires a print filter.</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2130242"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-10528"></a><p class="title"><b>How to Set Printer Fault Recovery</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-55"></a>
+<p>Log in as superuser, <code class="literal">lp</code>,
+or assume an equivalent role on the print server.</p>
+</li><li><a name="printadmin-step-56"></a>
+<p>
+<a class="indexterm" name="printadmin-ix434"></a>Set up fault recovery for the printer. </p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-F</code></strong> <em class="replaceable"><code>recovery-options</code></em>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code> <em class="replaceable"><code>printer-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the printer for which you are specifying
+fault recovery.</p>
+</dd><dt><span class="term">
+<code class="option">
+F</code> <em class="replaceable"><code>recovery-options</code></em>
+</span></dt><dd>
+<p>Specifies one of the three valid recovery options: <code class="literal">beginning</code>, <code class="literal">continue</code>, or <code class="literal">wait</code>. </p>
+<p>For detailed information about the valid values for <em class="replaceable"><code>recovery-options</code></em>, see <span class="olink">Table 4&#8211;4</span>.</p>
+</dd></dl></div>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">lpadmin</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+<p>The
+fault recovery setting is specified in the print server's <code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/configuration</code> file. </p>
+</li><li><a name="printadmin-step-115"></a>
+<p>Verify that printer fault recovery has
+been set up properly.</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="emjfw"></a><p class="title"><b>Example 4.12. Setting Printer Fault Recovery</b></p>
+
+
+<p>The following example shows how to set up the printer <code class="literal">luna</code> to
+continue printing at the top of the page where printing stopped.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p luna -F continue</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printplan-26"></a>Limiting User Access to a Printer</h3></div></div></div>
+
+<a class="indexterm" name="printconcept-ix115"></a>
+<a class="indexterm" name="printconcept-ix116"></a>
+<p>You can control which users can access some printers or all of the available
+printers. For example, you can prevent some users from printing on a high-quality
+printer to minimize expense. To restrict user access to printers, you create <code class="filename">allow</code> and <code class="filename">deny</code> lists by using the <span><strong class="command">lpadmin</strong></span> <code class="option">
+u</code> command on the print server. Solaris Print Manager
+enables you to create only <code class="filename">allow</code> lists. If you create
+neither list, a printer is available to all users who can access the printer.</p>
+<p>An <code class="filename">allow</code> list contains the names of users who are
+allowed access to the specified printer. A <code class="filename">deny</code> list
+contains the names of users denied access to the specified printer.</p>
+<p>The rules for <code class="filename">allow</code> and <code class="filename">deny</code> lists
+are explained in the following table:</p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Allow and Deny List Rule</p>
+</th><th>
+<p>User Consequence</p>
+</th></tr></thead><tbody><tr><td>
+<p>Do not create <code class="filename">allow</code> and <code class="filename">deny</code> lists.
+Or, if you leave both lists empty.</p>
+</td><td>
+<p>All users can access the printer.</p>
+</td></tr><tr><td>
+<p>Specify <code class="literal">all</code> in the <code class="filename">allow</code> list.</p>
+</td><td>
+<p>All users can access the printer.</p>
+</td></tr><tr><td>
+<p>Specify <code class="literal">all</code> in the <code class="filename">deny</code> list</p>
+</td><td>
+<p>All users, except <code class="literal">root</code> and <code class="literal">lp</code> user
+on the server, are denied access to the printer.</p>
+</td></tr><tr><td>
+<p>Make any entry in the <code class="filename">allow</code> list.</p>
+</td><td>
+<p>The <code class="filename">deny</code> list is ignored. Only users who are listed
+can access the printer.</p>
+</td></tr><tr><td>
+<p>Create a deny list, but you do not create an <code class="filename">allow</code> list
+or you leave the <code class="filename">allow</code> list empty.</p>
+</td><td>
+<p>Users who are listed in the <code class="filename">deny</code> list are denied
+access to the printer.</p>
+</td></tr></tbody></table>
+</div>
+<p>Because the print server is responsible for controlling access to the
+printer, <code class="filename">allow</code> and <code class="filename">deny</code> lists can
+only be created on the print server. If you create <code class="filename">allow</code> and <code class="filename">deny</code> lists, the print server will exclusively control user access
+to printers.</p>
+<p>
+<a class="indexterm" name="printadmin-ix400"></a>
+<a class="indexterm" name="printadmin-ix401"></a>
+<a class="indexterm" name="printadmin-ix402"></a>
+<a class="indexterm" name="printadmin-ix403"></a>The following table lists the values that you can add to an <code class="filename">allow</code> list or a <code class="filename">deny</code> list to limit user access
+to a printer.    </p>
+<div class="table"><a name="printadmin-55566"></a><p class="title"><b>Table 4.5. Values for Allow and Deny
+Lists</b></p>
+
+
+<table summary="Values for Allow and Deny
+Lists" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Value for <em class="replaceable"><code>user-list</code></em> </p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<em class="replaceable"><code>user</code></em>
+</p>
+</td><td>
+<p>
+<em class="replaceable"><code>User</code></em> on any system</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">all</code>
+</p>
+</td><td>
+<p>All users on all systems</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">none</code>
+</p>
+</td><td>
+<p>No user on any system</p>
+</td></tr><tr><td>
+<p>
+<em class="replaceable"><code>system</code></em>
+<code class="literal">!</code>
+<em class="replaceable"><code>user</code></em>
+</p>
+</td><td>
+<p>
+<em class="replaceable"><code>User</code></em> on <em class="replaceable"><code>system</code></em> only</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">!</code>
+<em class="replaceable"><code>user</code></em>
+</p>
+</td><td>
+<p>
+<em class="replaceable"><code>User</code></em> on local system only</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">all!</code>
+<em class="replaceable"><code>user</code></em>
+</p>
+</td><td>
+<p>
+<em class="replaceable"><code>User</code></em> on any system</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">all!all</code>
+</p>
+</td><td>
+<p>All users on all systems</p>
+</td></tr><tr><td>
+<p>
+<em class="replaceable"><code>system</code></em>
+<code class="literal">!all</code>
+</p>
+</td><td>
+<p>All users on <em class="replaceable"><code>system</code></em>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">!all</code>
+</p>
+</td><td>
+<p>All users on local system</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2131388"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-73366"></a><p class="title"><b>How to Limit User Access to a Printer</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-65"></a>
+<p>
+<a class="indexterm" name="printadmin-ix441"></a>
+<a class="indexterm" name="printadmin-ix442"></a>Log in as superuser, <code class="literal">lp</code>, or assume an equivalent
+role on the print server.</p>
+</li><li><a name="printadmin-step-66"></a>
+<p>
+<a class="indexterm" name="printadmin-ix443"></a>Allow or deny users access to a printer. </p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-u allow</code></strong>:<em class="replaceable"><code>user-list</code></em> [<strong class="userinput"><code>deny</code></strong>:<em class="replaceable"><code>user-list</code></em>]</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code> <em class="replaceable"><code>printer-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the printer to which the <code class="filename">allow</code> or <code class="filename">deny</code> access list applies.</p>
+</dd><dt><span class="term">
+<code class="option">
+u allow:</code>
+<em class="replaceable"><code>user-list</code></em>
+</span></dt><dd>
+<p>Specifies the user names to be added to the <code class="filename">allow</code> access
+list. You can specify multiple user names with this command. Use a space or
+a comma to separate names. If you use spaces, enclose the list of names in
+quotation marks.</p>
+<p>
+<span class="olink">Table 4&#8211;5</span> provides
+the valid values for <em class="replaceable"><code>user-list</code></em>.</p>
+</dd><dt><span class="term">
+<code class="option">
+u deny:</code>
+<em class="replaceable"><code>user-list</code></em>
+</span></dt><dd>
+<p>Specifies user names to be added to the deny user access list.
+You can specify multiple user names with this command. Use a space or a comma
+to separate names. If you use spaces, enclose the list of names in quotation
+marks.</p>
+<p>
+<span class="olink">Table 4&#8211;5</span> provides
+the valid values for <em class="replaceable"><code>user-list</code></em>.</p>
+</dd></dl></div>
+<p>The specified users are added to the <code class="filename">allow</code> or <code class="filename">deny</code> list for the printer in one of the following files on the
+print server:</p>
+<p>
+<code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/users.allow</code>
+</p>
+<p>
+<code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/users.deny</code> </p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>If you specify <code class="literal">none</code> as the value for <em class="replaceable"><code>user-list</code></em> in the <code class="filename">allow</code> list, the following
+files are not created on the print server:</p>
+<p>
+<code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/alert.sh</code>
+</p>
+<p>
+<code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/alert.var</code>
+</p>
+<p>
+<code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/users.allow</code>
+</p>
+<p>
+<code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/users.deny</code>
+</p>
+</div>
+</li><li><a name="printadmin-step-117"></a>
+<p>Verify that information is correct under
+the <code class="literal">Users allowed</code> or the <code class="literal">Users denied</code> heading
+in the following command output:</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="emjfx"></a><p class="title"><b>Example 4.13. Limiting User Access to a Printer</b></p>
+
+
+<p>The following example shows how to allow only the users <code class="literal">nathan</code> and <code class="literal">george</code> access to the printer <code class="literal">luna</code>. </p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p luna -u allow:nathan,george</code></strong>
+</pre>
+<p>The following example shows how to deny the users <code class="literal">nathan</code> and <code class="literal">george</code> access to the printer <code class="literal">asteroid</code>. </p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p asteroid -u deny:"nathan george"</code></strong>
+</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Setting or Resetting Miscellaneous Printer Definitions
+(Task Map) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Managing Print Requests (Task Map)</td></tr></table></div></body></html>

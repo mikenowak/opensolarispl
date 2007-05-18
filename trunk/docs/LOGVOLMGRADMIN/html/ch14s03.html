@@ -1,0 +1,119 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Overview of Checking Status of RAID-5 Volumes</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch14.html" title="Chapter 14. RAID-5
+Volumes (Overview)"><link rel="prev" href="ch14s02.html" title="Background Information for Creating RAID-5
+Volumes"><link rel="next" href="ch14s04.html" title="Overview of Replacing and Enabling Slices
+in RAID-5 Volumes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Overview of Checking Status of RAID-5 Volumes</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch14s02.html">Prev</a> </td><th width="60%" align="center">Chapter 14. RAID-5
+Volumes (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch14s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="egcls"></a>Overview of Checking Status of RAID-5 Volumes</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-108"></a>
+<a class="indexterm" name="indexterm-109"></a>
+<p>You can check the status of RAID-5 volumes by looking at the volume
+states and the slice states for the volume. The slice state provides the most
+specific information when you are troubleshooting RAID-5 volume errors. The
+RAID-5 volume state only provides general status information, such as &#8220;Okay&#8221;
+or &#8220;Maintenance.&#8221;</p>
+<p>If the RAID-5 volume state reports a &#8220;Maintenance&#8221; state,
+refer to the slice state. The slice state specifically reports if the slice
+is in the &#8220;Maintenance&#8221; state or the &#8220;Last Erred&#8221;
+state. You take a different recovery action depending on if the the slice
+is in the &#8220;Maintenance&#8221; state or the &#8220;Last Erred&#8221;
+state. If you only have a slice in the &#8220;Maintenance&#8221; state, it
+can be repaired without loss of data. If you have a slice in the &#8220;Maintenance&#8221;
+state and a slice in the &#8220;Last Erred&#8221; state, data has probably
+been corrupted. You must fix the slice in the &#8220;Maintenance&#8221; state
+first, then fix the &#8220;Last Erred&#8221; slice.</p>
+<p>The following table explains RAID-5 volume states.</p>
+<div class="table"><a name="egclo"></a><p class="title"><b>Table 14.1. RAID-5 Volume States</b></p>
+
+
+<table summary="RAID-5 Volume States" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>State</p>
+</th><th>
+<p>Meaning</p>
+</th></tr></thead><tbody><tr><td>
+<p>Initializing</p>
+</td><td>
+<p>Slices are in the process of having all disk blocks zeroed. This process
+is necessary due to the nature of RAID-5 volumes with respect to data and
+parity interlace striping. </p>
+<p>Once the state changes to &#8220;Okay,&#8221; the initialization process
+is complete and you are able to open the device. Until then, applications
+receive error messages.</p>
+</td></tr><tr><td>
+<p>Okay</p>
+</td><td>
+<p>The device is ready for use and is currently free from errors. </p>
+</td></tr><tr><td>
+<p>Maintenance</p>
+</td><td>
+<p>A slice has been marked as failed due to I/O or open errors. These errors
+were encountered during a read or write operation.</p>
+</td></tr></tbody></table>
+</div>
+<p>The following table explains the slice states for a RAID-5 volume and
+possible actions to take.</p>
+<div class="table"><a name="egclk"></a><p class="title"><b>Table 14.2. RAID-5 Slice States</b></p>
+
+
+<table summary="RAID-5 Slice States" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>State</p>
+</th><th>
+<p>Meaning</p>
+</th><th>
+<p>Action</p>
+</th></tr></thead><tbody><tr><td>
+<p>Initializing</p>
+</td><td>
+<p>Slices are in the process of having all disk blocks zeroed. This process
+is necessary due to the nature of RAID-5 volumes with respect to data and
+parity interlace striping. </p>
+</td><td>
+<p>Normally, none. If an I/O error occurs during this process, the device
+goes into the &#8220;Maintenance&#8221; state. If the initialization fails,
+the volume is in the &#8220;Initialization Failed&#8221; state, and the slice
+is in the &#8220;Maintenance&#8221; state. If this happens, clear the volume
+and recreate it.</p>
+</td></tr><tr><td>
+<p>Okay</p>
+</td><td>
+<p>The device is ready for use and is currently free from errors. </p>
+</td><td>
+<p>None. Slices can be added or replaced, if necessary.</p>
+</td></tr><tr><td>
+<p>Resyncing</p>
+</td><td>
+<p>The slice is actively being resynchronized. An error has occurred and
+been corrected, a slice has been enabled, or a slice has been added.</p>
+</td><td>
+<p>If desired, monitor the RAID-5 volume status until the resynchronization
+is done.</p>
+</td></tr><tr><td>
+<p>Maintenance</p>
+</td><td>
+<p>A single slice has been marked as failed due to I/O or open errors.
+These errors were encountered during a read or write operation.</p>
+</td><td>
+<p>Enable or replace the failed slice. See <span class="olink">How to Enable a Component in a RAID-5 Volume</span>,
+or <span class="olink">How to Replace a Component in a RAID-5 Volume</span>. The <span><strong class="command">metastat</strong></span> command will show
+an <code class="literal">invoke</code> recovery message with the appropriate action
+to take with the <span><strong class="command">metareplace</strong></span> command.</p>
+</td></tr><tr><td>
+<p>Maintenance/Last Erred</p>
+</td><td>
+<p>Multiple slices have encountered errors. The state of the failed slices
+is either &#8220;Maintenance&#8221; or &#8220;Last Erred.&#8221; In this state,
+no I/O is attempted on the slice that is in the &#8220;Maintenance&#8221;
+state. However, I/O is attempted on the slice marked &#8220;Last Erred&#8221;
+with the outcome being the overall status of the I/O request.</p>
+</td><td>
+<p>Enable or replace the failed slices. See <span class="olink">How to Enable a Component in a RAID-5 Volume</span>,
+or <span class="olink">How to Replace a Component in a RAID-5 Volume</span>. The <span><strong class="command">metastat</strong></span> command will show
+an <code class="literal">invoke</code> recovery message with the appropriate action
+to take with the <span><strong class="command">metareplace</strong></span> command. This command must
+be run with the <code class="option">
+f</code> flag. This state indicates that data might
+be fabricated due to multiple failed slices.</p>
+</td></tr></tbody></table>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch14s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch14.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch14s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Background Information for Creating RAID-5
+Volumes </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Overview of Replacing and Enabling Slices
+in RAID-5 Volumes</td></tr></table></div></body></html>

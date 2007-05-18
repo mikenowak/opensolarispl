@@ -1,0 +1,388 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>1.3 Quick Start</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="OpenSolaris Developer's Reference"><link rel="up" href="ch01.html" title="Chapter 1. Introduction"><link rel="prev" href="ch01s02.html" title="1.2 Getting Help"><link rel="next" href="ch01s04.html" title="1.4 Conventions"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">1.3 Quick Start</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01s02.html">Prev</a> </td><th width="60%" align="center">Chapter 1. Introduction</th><td width="20%" align="right"> <a accesskey="n" href="ch01s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="_1_3_Quick_Start"></a>1.3 Quick Start</h2></div></div></div><p>
+This section bypasses most of the important material you'll find later
+in this document and makes a lot of assumptions about your development
+and build environment.  The intent is to offer a set of step-by-step
+instructions that will help you begin development in less than an hour,
+even if you have no previous Solaris development experience.  Although
+this procedure will work for most people, it cannot work for all.  There
+are dozens of tools and utilities used in developing OpenSolaris, and
+most have at least a few options and arguments.  This tremendous
+flexibility exists for a reason: each developer has unique needs.  If
+you encounter difficulty in following these instructions, don't give up!
+Each instruction lists the relevant sections you can read to learn more
+about the commands and procedures used in that step.  If all else fails,
+please see <a href="ch01s02.html">1.2 Getting Help</a> to learn about the many resources
+available to the OpenSolaris developer community.
+</p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_1_3_1_Example_Environment"></a>1.3.1 Example Environment</h3></div></div></div><p>
+The instructions in the remainder of section 1.3 cover building and
+installing on both x86 (32-bit only or 64-bit capable; there are no
+differences) and SPARC environments.  They have been tested and verified
+to work.  Because it is impossible to test on every imaginable hardware,
+software, and policy configuration, our testing was limited to the
+environments described here.  While we expect these instructions will be
+broadly applicable, the more similar your environment is, the more
+likely you will be able to use them without modification.
+</p><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="_1_3_1_1_x86_Environment"></a>1.3.1.1 x86 Environment</h4></div></div></div><p>
+We assume that the entire system is dedicated to an OpenSolaris-based
+distribution, such as Solaris Express.  Our test machine is a dual Intel
+Pentium 4 Xeon 2.8 GHz with hyperthreading enabled, 512MB memory, a
+standard ATA controller, and a Broadcom 57xx ethernet adapter.  The
+machine has 2 40GB ATA disks, partitioned as follows:
+</p><p>
+Both c0d0p0 and c1d0p0 have a fdisk single partition which assigns the
+entire disk to Solaris.
+</p><pre class="programlisting">
+c0d0s0 contains a 35GB UFS filesystem mounted on /.
+c0d0s1 contains a 2GB swap space.
+c0d0s8 is a 1MB boot slice.
+</pre><pre class="programlisting">
+c1d0s0 contains a 37GB UFS filesystem mounted on /aux0.
+</pre><p>
+Your system does not need to be identical or even similar to this one in
+order for it to work; this configuration is merely an example of a
+supported system.  Please see <a href="ch02.html">Prerequisites</a> for more information
+about the requirements for installing, developing, and building parts of
+OpenSolaris.  Some consolidations may have additional requirements, so
+be sure to consult the latest release notes.
+</p></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="_1_3_1_2_SPARC_Environment"></a>1.3.1.2 SPARC Environment</h4></div></div></div><p>
+Our SPARC test environment is a Sun Fire V210 server with 2 1.0 GHz
+UltraSPARC-IIIi CPUs and 2 GB memory.  The machine has two 36GB SCSI
+disks, partitioned as follows:
+</p><pre class="programlisting">
+c1t0d0s0 contains a 8GB UFS filesystem mounted on /.
+c1t0d0s1 contains a 4GB swap space.
+c1t0d0s3 contains a 22GB UFS filesystem mounted on /export1.
+</pre><pre class="programlisting">
+c1t1d0s0 contains a 35GB UFS filesystem mounted on /export2.
+</pre><p>
+Your system does not need to be identical or even similar to this one in
+order for it to work; this configuration is merely an example of a
+supported system.  Please see <a href="ch02.html">Prerequisites</a> for more information
+about the requirements for installing, developing, and building
+OpenSolaris.
+</p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_1_3_2_Installing_a_Binary_Dist"></a>1.3.2 Installing a Binary Distribution</h3></div></div></div><p>
+Before building your own source or installing the provided binary
+archives, you will have to install a complete OpenSolaris-based
+distribution.  This is because you most likely will need drivers,
+packaging tools, and other components that aren't in the Operating
+System and Networking components released with OpenSolaris.  As of this
+writing, the only distribution on which OpenSolaris binaries can be
+built or installed is Solaris Express, build 22 or newer.
+</p><p>
+If you are an ON developer and want to run the very latest bits or have
+made changes to the kernel or core libraries, you will also need to
+update your system to a set of binaries newer than the latest available
+build of your distribution.  The process for doing this is called
+<a href="apa.html#_BFU">BFU</a> and is described in detail below.  The BFU process uses CPIO
+<a href="apa.html#_archives">archives</a> containing the binaries built from ON; you can download
+these archives at <a href="http://opensolaris.org/os/downloads/on/" target="_top">http://opensolaris.org/os/downloads/on/</a> or you
+can build them yourself (if you have made large changes to the system,
+you will be install those you built yourself).  If your interest in
+making changes is limited to simple user-level applications, you can
+usually get by by building those applications individually and copying
+them over the system's existing binaries rather than BFUing.
+</p><p>
+Both parts of this process - the initial system install (sometimes
+referred to as <a href="apa.html#_suninstall">suninstall</a> to distinguish it from <a href="apa.html#_BFU">BFU</a> and
+especially ???) and BFUing are documented here; all users and
+developers will need to perform the steps described in <a href="ch01s03.html#_1_3_2_1_Installing_an_OpenSola">1.3.2.1 Installing an OpenSolaris-based Distribution (Solaris Express)</a>, while
+only developers interested in using the very latest ON bits or making
+significant modifications to core system components will need to read
+???.
+</p><p>
+As new distributions are created which can be used as a base for
+building and installing OpenSolaris bits, each will have its own section
+below similar to 1.3.2.1.  If your favorite distribution isn't mentioned
+here, please contribute a section explaining how to install it.
+</p><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="_1_3_2_1_Installing_an_OpenSola"></a>1.3.2.1 Installing an OpenSolaris-based Distribution (Solaris Express)</h4></div></div></div><p>
+The Solaris installation procedure is well documented at
+<a href="http://docs.sun.com/app/docs/coll/1236.1" target="_top">http://docs.sun.com/app/docs/coll/1236.1</a>.  While most of the
+default options presented in the interactive installation procedure are
+acceptable for creating a development or build system, you should take
+note of the following:
+</p><div class="itemizedlist"><ul type="disc"><li><p>Locales are not needed.</p><p>
+You do not need to install any locales unless you need them for other
+reasons.  Selecting the C (POSIX) locale as default is recommended.
+</p></li><li><p>Follow local policies,</p><p>
+Network configuration, time zone, use of IPv6 and Kerberos, name
+service, and other environment-specific parameters must be set according
+to local policy.  OpenSolaris development is not directly affected by
+them.
+</p></li><li><p>Reserve space for sources (and optionally builds).</p><p>
+To install the sources, you will need at least 300MB of free space (more
+is recommended).  If you also wish to build OpenON, you will need
+several GB.  It is recommended that you create a separate local
+filesystem to store these sources and objects as well as user home
+directories and other standalone data if appropriate to your
+configuration; our example system mounts this filesystem at /aux0.  See
+<a href="ch02.html#_2_1_Hardware">2.1 Hardware</a> for more detailed information.
+</p></li><li><p>Install the Entire Distribution package cluster.</p><p>
+If you do not have enough disk space to install the Entire Distribution,
+you will need to upgrade to a disk at least 9GB in size.  You may also
+be able to install the Developer package metacluster instead, but this
+has not been tested and may not be sufficient to build successfully.
+See <a href="ch02s02.html">2.2 Operating Environment Packages</a> for more information on
+software requirements.
+</p></li></ul></div></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="_1_3_2_2_Installing_Required_To"></a>1.3.2.2 Installing Required Tools</h4></div></div></div><p>
+There are two sets of tools required to build OpenON: compilers and
+ON-specific build tools.  See <a href="ch02s03.html">2.3 Obtaining and Installing Compilers</a>
+and <a href="ch02s04.html">2.4 Obtaining and Installing Custom Tools</a> for detailed
+information.  Here we assume you want to use the Studio 10 compiler (you
+cannot yet use Studio 11 to build OpenON).  Note that many of the ON
+build tools are also used by other consolidations, including SFW and
+Network Storage (NWS).
+</p><p>
+Download the installed image (not the full product) into a scratch area,
+such as <code class="code">/var/tmp</code>.  The file is normally called
+<code class="code">sunstudio10-DATE.PLATFORM.tar.bz2</code>.  Before you start, be sure you
+have at least 900MB free in <code class="code">/opt</code>.  You can do this by examining the
+output of:
+</p><pre class="programlisting">
+$ df -klh /opt
+Filesystem             size   used  avail capacity  Mounted on
+/dev/dsk/c1t0d0s0      7.9G   3.8G   4.0G    50%    /
+</pre><p>
+If the 'avail' field is 900M or larger, you have enough space to
+continue.
+</p><pre class="programlisting">
+$ su
+Password:
+# cd /opt
+# bzip2 -dc /var/tmp/sunstudio10-20050614.sparc.tar.bz2 | tar xf -
+</pre><p>
+Note that your filename may differ slightly depending on your platform
+and future compiler releases.
+</p><p>
+Next, download the ON-specific build tools.  This file is normally
+called <code class="code">SUNWonbld-DATE.PLATFORM.tar.bz2</code> and contains a SVR4 package.
+Assuming you downloaded it to <code class="code">/var/tmp</code>, you'll now want to do:
+</p><pre class="programlisting">
+$ cd /var/tmp
+$ bzip2 -dc SUNWonbld-DATE.PLATFORM.tar.bz2 | tar xf -
+$ su
+Password:
+# pkgadd -d onbld SUNWonbld
+</pre><p>
+Note that if you have installed a previous version of the tools, you
+will need to use pkgrm(1m) to remove them first.
+</p><p>
+Once you have installed your distribution, the compilers, and
+ON-specific build tools, you're ready to build from source or install
+from binaries.  If you're building from source, continue on to the next
+section.  Otherwise, skip ahead to <a href="ch01s03.html#_1_3_4_Upgrading_to_the_Latest_">1.3.4 Upgrading to the Latest ON Bits</a>.
+</p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_1_3_3_Building_ON_from_Source"></a>1.3.3 Building ON from Source</h3></div></div></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="_1_3_3_1_Creating_a_Source_Work"></a>1.3.3.1 Creating a Source Workspace</h4></div></div></div><p>
+Suppose you are using <code class="code">/aux0/testws</code> as your <a href="apa.html#_workspace">workspace</a>.
+</p><p>
+First, cd to <code class="code">/aux0/testws</code> and unpack the sources and closed binaries,
+e.g.,
+</p><pre class="programlisting">
+$ mkdir /aux0/testws
+$ cd /aux0/testws
+$ bzip2 -dc opensolaris-src-DATE.tar.bz2 | tar xf -
+$ bzip2 -dc opensolaris-closed-bins-DATE.PLATFORM.tar.gz | tar xf -
+</pre><p>
+The sources will unpack into <code class="code">usr/src</code> and the binaries will unpack
+into <code class="code">closed/root_PLATFORM</code> (i.e., <code class="code">closed/root_i386</code> or
+<code class="code">closed/root_sparc</code>).
+</p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_1_3_3_2_Performing_a_Basic_Bui"></a>1.3.3.2 Performing a Basic Build</h3></div></div></div><p>
+First, Create an environment file to guide tools like nightly(1) and
+bldenv(1).
+</p><div class="itemizedlist"><ul type="disc"><li><p>Copy in the template environment file</p><p>
+Copy <code class="code">/aux0/testws/usr/src/tools/env/opensolaris.sh</code> to /aux0/testws.
+It doesn't have to go in /aux0/testws, but that's a convenient place to
+put it.  Nor do you have to keep the name opensolaris.sh, but that's the
+name we'll use in these notes.
+</p><pre class="programlisting">
+$ cp /aux0/testws/usr/src/tools/env/opensolaris.sh /aux0/testws
+</pre></li><li><p>Make required changes</p><p>
+First, add <code class="code">/opt/onbld/bin</code> to your PATH environment variable.  You may
+wish to make this change permanent by editing your <code class="code">.login</code> or
+<code class="code">.profile</code> files (as appropriate for your shell).
+</p><p>
+Then, using your favorite text editor, make the following changes to
+<code class="code">opensolaris.sh</code>:
+</p><p>
+Change GATE to the name of the top-level directory (e.g., <code class="code">testws</code>).
+</p><p>
+Change CODEMGR_WS to the top-level path (e.g., <code class="code">/aux0/testws</code>).
+</p><p>
+Change STAFFER to your login.
+</p></li><li><p>(optional) Customize VERSION.</p><p>
+VERSION is the string that "uname -v" will print.
+</p></li></ul></div><p>
+Then, To build a complete set of BFU archives, cd to <code class="code">/aux0/testws</code>,
+utter
+</p><pre class="programlisting">
+$ nightly ./opensolaris.sh &amp;
+</pre><p>
+and find something else to work on for a few hours.  You can monitor the
+build's progress using ptree(1).  nightly(1) will send mail to $MAILTO
+when it has finished.  The mail will have an overview of the build
+results. A copy of the mail text and a more detailed log file will be
+available in the <a href="apa.html#_workspace">workspace</a> (e.g.,
+<code class="code">/aux0/testws/log/log.MMDD/nightly.log</code>, where MMDD is the build date).
+The log file is also available (in a slightly different location) during
+the build; to monitor the progress of your build in real time, you can
+do:
+</p><pre class="programlisting">
+$ tail -f /aux0/testws/log/nightly.log
+</pre><p>
+The location of the log is controlled by the LOGFILE and ATLOG
+variables; see nightly(1) for more details.
+</p><p>
+If your build fails, you can correct the problem, then use the '-i'
+option to nightly to run an incremental build, bypassing the initial
+clobber.  See the nightly(1) manual and <a href="ch04.html">Building OpenSolaris</a> for
+more information.
+</p><p>
+To build a specific component, first use bldenv(1) to set up various
+environment variables, then cd to the subtree that you want to build.
+For example:
+</p><pre class="programlisting">
+$ cd /aux0/testws
+$ bldenv ./opensolaris.sh
+[status information from bldenv]
+$ cd usr/src/cmd/vi
+$ dmake all
+</pre><p>
+To build the kernel, run dmake(1) from <code class="code">usr/src/uts</code>.
+</p><p>
+See <a href="ch04.html">Building OpenSolaris</a> for more information on the build process
+and tools.  Once you have successfully completed a build, see <a href="ch05.html">Installing and Testing ON</a> for more information on what to do with it.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_1_3_4_Upgrading_to_the_Latest_"></a>1.3.4 Upgrading to the Latest ON Bits</h3></div></div></div><p>
+<span class="bold"><strong>WARNING!</strong></span>  The steps described in this section are optional for
+advanced developers only and are not required to view and edit the
+sources.  Performing this process unnecessarily will result in reduced
+system manageability and exposes you to the greater risks associated
+with the use of development software.  <span class="bold"><strong>If in doubt, SKIP THIS STEP.</strong></span>
+See <a href="ch05s03.html">5.3 Using BFU to Install ON</a> for more details on the risks and
+benefits of this process.
+</p><p>
+If you wish to build one or more OpenSolaris consolidations, you may in
+some cases be required to update all or part of your system's software
+before doing so.  Such requirements are listed for each build in the
+relevant consolidation's release notes; in most cases your existing
+installation will be sufficient to build and use the latest sources.  In
+general, it is both safer and more effective to use the official
+suninstall, upgrade, or LiveUpgrade process to install a more recent
+Solaris Express build than to use the BFU process; the official upgrade
+upgrades all of your system software, while BFU upgrades only a few
+parts.  Unless you need to use the very latest ON bits, you should skip
+this step.
+</p><p>
+Before proceeding, please read <a href="ch05s03.html">5.3 Using BFU to Install ON</a> in its
+entirety.  The remainder of this section provides an example usage of
+bfu(1), but you must understand how BFU works, what BFU conflicts are,
+and how to resolve them before you can successfully use BFU.  It's
+impossible to overemphasize this: <span class="bold"><strong>You almost certainly want to let
+acr(1) resolve conflicts for you</strong></span>.  Resolving conflicts by hand can be
+difficult, time-consuming, and error-prone.  Errors in conflict
+resolution will often leave your machine in a nonworking state.  We
+assume here that you will be resolving conflicts automatically.
+</p><p>
+First, download the BFU archives for your system architecture from
+<a href="http://opensolaris.org/os/downloads/on/" target="_top">http://opensolaris.org/os/downloads/on/</a>.  Then, unpack the archives
+into a temporary directory of your choice.  In this example, we will use
+<code class="code">/var/tmp/bfu</code> to store the archives and LATEST to be the build you
+want to install.
+</p><pre class="programlisting">
+# mkdir /var/tmp/bfu
+# cd /var/tmp/bfu
+# bzip2 -dc /path/to/opensolaris-bfu-LATEST.sparc.tar.bz2 | tar xf -
+</pre><p>
+This will create the directory and
+<code class="code">/var/tmp/bfu/archives-LATEST/sparc</code>.  In it will be a set of CPIO
+archives; these are used by bfu(1) to overwrite your system binaries.
+Next, exit the window system, log in on the console as root, and issue
+the command:
+</p><pre class="programlisting">
+# /opt/onbld/bin/bfu /var/tmp/bfu/archives-LATEST/sparc
+</pre><p>
+You may see warnings about upgrading non-ON packages; if you have not
+already done so, you will need to upgrade these before you can safely
+use BFU.  If BFU fails because it tries to upgrade a package that is not
+available, please check the release notes for your build for information
+on the cause and solution to the problem.  If you don't find what you
+need, send a message to <a href="mailto:opensolaris-help@opensolaris.org" target="_top">mailto:opensolaris-help@opensolaris.org</a>
+describing the messages and the circumstances.
+</p><p>
+After BFU completes, you must resolve conflicts in configuration files
+The BFU will complete, and if successful will leave you with some
+warnings and a <code class="code">bfu#</code> prompt.  <span class="bold"><strong>YOU ARE NOT DONE!</strong></span>  You must now
+resolve conflicts and reboot:
+</p><pre class="programlisting">
+bfu# acr
+</pre><p>
+If <code class="code">acr</code> fails or prints out warnings or errors, you will need to
+resolve conflicts manually before rebooting.  See &lt;5.3 Using BFU to
+Install ON&gt; for full details.  Otherwise, reboot:
+</p><pre class="programlisting">
+bfu# reboot
+</pre><p>
+As your system comes up, note the new kernel version.  The ON bits on
+your system have been upgraded.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_1_3_5_Mini_Projects"></a>1.3.5 Mini-Projects</h3></div></div></div><p>
+These activities are intended to help developers gain familiarity with
+the OpenSolaris tools and environment while at the same time making
+useful contributions toward meeting their own needs and those of the
+community.  We hope that by engaging in some of these mini-projects, new
+developers will be exposed to OpenSolaris from a variety of directions
+and will find inspiration for new improvements in the large body of
+existing work.  The project suggestions are roughly ordered from
+simplest to most complex; less experienced developers should find the
+first several projects to be a good introduction to OpenSolaris, while
+more experienced developers may wish to take on some of the more
+challenging tasks.  Of course, all of these are only suggestions; you
+are always free to work on any part of the system you wish.  We ask only
+that you utilize the mailing lists to coordinate your activities with
+others to reduce duplication of effort.
+</p><div class="itemizedlist"><ul type="disc"><li><p>1 Start a blog</p><p>
+Many developers keep notes, bookmarks, pointers to useful documentation,
+and other historical materials in a notebook or journal.  As you become
+more familiar with OpenSolaris, your notes and experiences along the way
+will be valuable to you and to others in the community.  You can create
+your own blog at any of a number of free blogging sites.  Suggestions
+for topics include any observations you make, difficulties you
+encounter, or ideas you dream up for improving OpenSolaris.  Writing
+about your ideas and experiences in your blog forms a focal point for
+wider community involvement and discussion, filing of bugs or RFEs, or
+the creation of a new development project.
+</p></li><li><p>2 Fix a simple bug</p><p>
+Many bugs we track in OpenSolaris are low-priority issues that have
+remained unfixed over a long period of time; they are not especially
+difficult to fix, and their effects tend to be annoying rather than
+catastrophic.  We have also identified bugs which are easily fixed with
+the 'oss-bite-size' keyword, so that new developers can obtain up to
+date starting points.
+</p><p>
+You can view information about these bugs and search for bite-sized bugs
+at <a href="http://bugs.opensolaris.org" target="_top">http://bugs.opensolaris.org</a>.
+</p></li><li><p>3 Enhance cstyle(1)</p><p>
+Improve the automated C/C++ style checking tools cstyle(1) and hdrchk(1)
+to implement more of the style guide requirements.  For example,
+cstyle(1) could be improved to detect poor declarations of initialized
+variables.  See <a href="ch07s02.html#_7_2_1_Automated_Style_Tools">7.2.1 Automated Style Tools</a> for more information.
+</p></li><li><p>4 Clean up and modernize code</p><p>
+Make more commands and libraries <a href="apa.html#_lint">lint</a>-clean.  Although the entire
+kernel (uts/...) lints without warnings, many commands and libraries are
+excluded from linting because they contain lint errors.  Correcting
+these errors is usually not difficult; start by enabling lint (see
+<a href="ch03s03.html#_3_3_3_Modifying_the_ON_Build_S">3.3.3 Modifying the ON Build System</a>) and re-linting the command or
+library in question.  In some cases it may be difficult or impossible to
+fix a particular lint error, and that error must be disabled instead.
+You can discuss such situations on the relevant mailing list.
+</p></li><li><p>5 Simplify Install(1) usage</p><p>
+Improve Install(1)'s '-i' option to use official platform names in
+addition to code names when building kernel packages for specific
+platforms.  See <a href="ch05s02.html">5.2 Using Cap-Eye-Install to Install Kernels</a> for more
+information.
+</p></li><li><p>6 Fix something that bothers you</p><p>
+Search for and fix a bug in a program you use frequently, or that you
+have noticed yourself.  You can search for bugs at
+<a href="http://bugs.opensolaris.org" target="_top">http://bugs.opensolaris.org</a>.  Many bugs may already be undergoing
+fixes, so you should avoid duplication of effort by mailing
+<a href="mailto:request-sponsor@opensolaris.org" target="_top">mailto:request-sponsor@opensolaris.org</a> when you start working on a
+bug fix.  The sponsors make sure nobody else is working on the bug, and
+help you make sure you follow the right process to get your fix
+integrated.
+</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch01.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch01s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">1.2 Getting Help </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 1.4 Conventions</td></tr></table></div></body></html>

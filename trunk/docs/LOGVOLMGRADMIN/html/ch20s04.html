@@ -1,0 +1,177 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Working With Configuration Files</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch20.html" title="Chapter 20. Maintaining Solaris Volume Manager (Tasks)"><link rel="prev" href="ch20s03.html" title="Renaming Volumes"><link rel="next" href="ch20s05.html" title="Changing Solaris Volume Manager Default Values"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Working With Configuration Files</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch20s03.html">Prev</a> </td><th width="60%" align="center">Chapter 20. Maintaining Solaris Volume Manager (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch20s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-basics-6"></a>Working With Configuration Files</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-200"></a>
+<a class="indexterm" name="indexterm-201"></a>
+<p>Solaris Volume Manager configuration files contain basic Solaris Volume Manager information,
+as well as most of the data that is necessary to reconstruct a configuration.
+The following procedures illustrate how to work with these files. </p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1770626"></a></h3></div></div></div>
+
+<div class="task"><a name="tasks-basics-1"></a><p class="title"><b>How to Create Configuration Files</b></p><div class="procedure"><ul><li><a name="tasks-basics-step-17"></a>
+<p>Once you have defined all appropriate
+parameters for the Solaris Volume Manager environment, use the <span><strong class="command">metastat <code class="option">
+p</code>
+</strong></span> command to create the <code class="filename">/etc/lvm/md.tab</code> file. </p>
+<pre class="screen"># <strong class="userinput"><code>metastat -p &gt; /etc/lvm/md.tab</code></strong>
+</pre>
+<p>This file contains all parameters for use by the <span><strong class="command">metainit</strong></span> command
+and <span><strong class="command">metahs</strong></span> command. Use this file if you need to set up
+several similar environments or if you need to recreate the configuration
+after a system failure.</p>
+<p>For more information about the <code class="filename">md.tab</code> file, see <span class="olink">Overview of the <code class="filename">md.tab</code> File</span> and the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">md.tab</span>
+(
+4
+)
+</span>
+</span> man
+page.</p>
+</li></ul></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1770784"></a></h3></div></div></div>
+
+<div class="task"><a name="troubleshoottasks-23827"></a><p class="title"><b>How to Initialize Solaris Volume Manager From
+a Configuration File</b></p><div class="tasksummary">
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>
+<a class="indexterm" name="troubleshoottasks-ix430"></a>
+<a class="indexterm" name="troubleshoottasks-ix431"></a>Use this procedure in the following circumstances:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>If you have experienced a complete loss of your Solaris Volume Manager configuration</p>
+</li><li>
+<p>If you have no configuration yet, and you want to create a
+configuration from a saved configuration file</p>
+</li></ul></div>
+</div>
+<p>On occasion, your system loses the information maintained in the state
+database. For example, this loss might occur if the system was rebooted after
+all of the state database replicas were deleted. As long as no volumes were
+created after the state database was lost, you can use the <code class="filename">md.cf</code> or <code class="filename">md.tab</code> files to recover your Solaris Volume Manager configuration.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The <code class="filename">md.cf</code> file does not maintain information
+on active hot spares. Thus, if hot spares were in use when the Solaris Volume Manager configuration
+was lost, those volumes that were using active hot spares are likely corrupted.</p>
+</div>
+<p>For more information about these files, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">md.cf</span>
+(
+4
+)
+</span>
+</span> and the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">md.tab</span>
+(
+4
+)
+</span>
+</span> man pages.</p>
+</div><div class="procedure"><ol type="1"><li><a name="troubleshoottasks-step-5"></a>
+<p>Create state database replicas.</p>
+<p>See <span class="olink">Creating State Database Replicas</span> for more information.</p>
+</li><li><a name="troubleshoottasks-step-6"></a>
+<p>
+<a class="indexterm" name="troubleshoottasks-ix432"></a>Create or update the <code class="filename">/etc/lvm/md.tab</code> file.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>If you are attempting to recover the last known Solaris Volume Manager configuration,
+copy the <code class="filename">md.cf</code> file into the <code class="filename">/etc/lvm/md.tab</code> file.</p>
+</li><li>
+<p>If you are creating a new Solaris Volume Manager configuration based
+on a copy of the <code class="filename">md.tab</code> file that have you preserved,
+copy the preserved file into the <code class="filename">/etc/lvm/md.tab</code> file.</p>
+</li></ul></div>
+</li><li><a name="troubleshoottasks-step-8"></a>
+<p>Edit the &#8220;new&#8221; <code class="filename">/etc/lvm/md.tab</code> file and do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>If you are creating a new configuration or recovering a configuration
+after a crash, configure the mirrors as one-way mirrors. For example:</p>
+<pre class="screen">d80 -m d81 1
+d81 1 1 c1t6d0s3</pre>
+<p>If the submirrors of a mirror are not the same size, be sure to use
+the smallest submirror for this one-way mirror. Otherwise, data could be lost.</p>
+</li><li>
+<p>If you are recovering an existing configuration and Solaris Volume Manager was
+cleanly stopped, leave the mirror configuration as multi-way mirrors. For
+example:</p>
+<pre class="screen">d70 -m d71 d72 1
+d71 1 1 c1t6d0s2
+d72 1 1 c1t5d0s0</pre>
+</li><li>
+<p>Specify RAID-5 volumes with the <code class="option">
+k</code> option,
+to prevent reinitialization of the device. For example:</p>
+<pre class="screen">d45 -r c1t3d0s5 c1t3d0s3 c1t3d0s4 -k -i 32b</pre>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metainit</span>
+(
+1M
+)
+</span>
+</span> man
+page for more information.</p>
+</li></ul></div>
+</li><li><a name="troubleshoottasks-step-9"></a>
+<p>
+<a class="indexterm" name="troubleshoottasks-ix433"></a>Check the syntax of the <code class="filename">/etc/lvm/md.tab</code> file
+entries without committing changes by using one of the following forms of
+the <span><strong class="command">metainit </strong></span>command: </p>
+<pre class="screen"># <strong class="userinput"><code>metainit -n <em class="replaceable"><code>md.tab-entry</code></em>
+</code></strong>
+</pre>
+<pre class="screen"># <strong class="userinput"><code>metainit -n -a</code></strong>
+</pre>
+<p>The <span><strong class="command">metainit</strong></span> command does not maintain a hypothetical
+state of the devices that might have been created while running with the <code class="option">
+n</code>, so creating volumes that rely on other, nonexistent volumes will
+result in errors with the <code class="option">
+n</code> even though the command may succeed
+without the <code class="option">
+n</code> option.</p>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+n</code>
+</span></dt><dd>
+<p>Specifies not to actually create the devices. Use this option
+to verify that the results are as you expected.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>md.tab-entry</code></em>
+</span></dt><dd>
+<p>Specifies the name of the component to initialize.</p>
+</dd><dt><span class="term">
+<code class="option">
+a</code>
+</span></dt><dd>
+<p>Specifies to check all components.</p>
+</dd></dl></div>
+</li><li><a name="troubleshoottasks-step-10"></a>
+<p>If no problems were apparent from
+the previous step, recreate the volumes and hot spare pools from the <code class="filename">md.tab</code> file:</p>
+<pre class="screen"># <strong class="userinput"><code>metainit -a</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+a</code>
+</span></dt><dd>
+<p>Specifies to activate the entries in the <code class="filename">/etc/lvm/md.tab
+file</code>.</p>
+</dd></dl></div>
+</li><li><a name="troubleshoottasks-step-11"></a>
+<p>
+<a class="indexterm" name="troubleshoottasks-ix434"></a>As needed, make the one-way mirrors into multi-way mirrors by
+using the <span><strong class="command">metattach</strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>mettach <em class="replaceable"><code>mirror</code></em> <em class="replaceable"><code>submirror</code></em>
+</code></strong>
+</pre>
+</li><li><a name="troubleshoottasks-step-12"></a>
+<p>Validate the data on the volumes
+to confirm that the configuration has been reconstructed accurately.</p>
+<pre class="screen"># <strong class="userinput"><code>metastat</code></strong>
+</pre>
+</li></ol></div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch20s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch20.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch20s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Renaming Volumes </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Changing Solaris Volume Manager Default Values</td></tr></table></div></body></html>

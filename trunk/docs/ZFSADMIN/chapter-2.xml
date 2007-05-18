@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="setup-1">
+
+
+
+<title>Rozpoczęcie pracy z ZFS-em</title>
+<toc>
+<para>W tym rozdziale przedstawiono krok po kroku tworzenie prostych konfiguracji ZFS-a. Po zakończeniu tego rozdziału czytelnik powinien mieć podstawowe pojęcie o komendach ZFS-a, a także powininen umieć tworzyć proste pule i systemy plików. Rozdział ten nie jest wyczerpującym przeglądem i odsyła do następnych rozdziałów w celu uzyskania dokładniejszych informacji.</para>
+<para>Rozdział składa się z następujących podrozdziałów:</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink targetdoc="" remap="internal" targetptr="gbgxg">Zalecenia sprzętowe i programowe odnośnie ZFS-a</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink targetdoc="" remap="internal" targetptr="gaypm">Tworzenie podstawowego systemu plików ZFS-a</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink targetdoc="" remap="internal" targetptr="gayob">Tworzenie puli ZFS-a</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink targetdoc="" remap="internal" targetptr="gaypa">Tworzenie hierarchii systemów plików ZFS-a</olink>
+</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="gbgxg">
+<title>Zalecenia sprzętowe i programowe odnośnie ZFS-a</title>
+<para>Przed rozpoczęciem pracy z ZFS-em należy upewnić się, że spełnione są następujące wymagania sprzętowe i programowe:<indexterm xml:id="indexterm-46">
+<primary>wymagania sprzętowe i programowe</primary>
+</indexterm>
+</para>
+<itemizedlist>
+<listitem>
+<para>System oparty na architekturze <trademark>SPARC</trademark> lub x86, pracujący pod kontrolą systemu operacyjnego <trademark>Solaris</trademark> wydanie Nevada, budowa 27 lub późniejsza.</para>
+</listitem>
+<listitem>
+<para>Minimalny rozmiar dysku to 128 MB. Minimalna ilość miejsca na dysku dla puli to około 64 MB.</para>
+</listitem>
+<listitem>
+<para>Obecnie minimalna zalecana ilość pamięci operacyjnej do instalacji systemu Solaris to 512 MB. Dla systemu plików ZFS zaleca się jednak przynajmniej 1 GB, ze względów wydajnościowych.</para>
+</listitem>
+<listitem>
+<para>Przy tworzeniu konfiguracji z odbiciami lustrzanymi zaleca się kilka kontrolerów dysków.</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="gaypm">
+<title>Tworzenie podstawowego systemu plików ZFS-a</title>
+<para>Zarządzanie ZFS-em zostało zaprojektowane z założeniem prostoty. Wśród celów projektowych ZFS-a było zredukowanie ilości komend, które trzeba wpisać, aby stworzyć użyteczny system plików. Przy tworzeniu nowej puli, automatycznie tworzony jest i montowany nowy system plików ZFS-a.</para>
+<para>Poniższy przykład ilustruje tworzenie nowej puli nazwanej <literal>tank</literal> i system plików ZFS nazwany <filename>tank</filename> przy użyciu jednej komendy. Zakładamy, że cały dysk <filename>/dev/dsk/c1t0d0</filename> jest dostępny do użycia.</para>
+<screen># <userinput>zpool create tank c1t0d0</userinput>
+</screen>
+<para>Nowy system plików ZFS, <filename>tank</filename>, może używać tyle miejsca na dysku <systemitem>c1t0d0</systemitem>, ile tylko potrzebuje i jest automatycznie zamontowany w katalogu <filename>/tank</filename>.</para>
+<screen># <userinput>mkfile 100m /tank/foo</userinput>
+# <userinput>df -h /tank</userinput>
+Filesystem             size   used  avail capacity  Mounted on
+tank                   80G   100M    80G     1%    /tank</screen>
+<para>Prawdopodobnie zajdzie potrzeba utworzenia większej ilośi systemów plików wewnątrz puli. Systemy plików są punktami administracyjnymi pozwalającymi na zarządzanie różnymi zestawami danych w tej samej puli.</para>
+<para>Poniższy przykład ilustruje tworzenie nowego systemu plików nazwanego <literal>fs</literal> w puli <literal>tank</literal>. Zakładamy, że cały dysk <filename>/dev/dsk/c1t0d0</filename> jest dostępny do użytku.</para>
+<screen># <userinput>zpool create tank c1t0d0</userinput>
+# <userinput>zfs create tank/fs</userinput>
+</screen>
+<para>Nowy system plików ZFS, <filename>tank/fs</filename>, może użyć tyle miejsca na dysku <systemitem>c1t0d0</systemitem>, ile tylko potrzebuje i jest automatycznie zamontowany w katalogu <filename>/tank/fs</filename>.<indexterm xml:id="indexterm-47">
+<primary>
+<command>zpool create</command>
+</primary>
+<secondary>(przykład)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-48">
+<primary>tworzenie</primary>
+<secondary>podstawowego systemu plików ZFS (<command>zpool create</command>)</secondary>
+<tertiary>(przykład)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-49">
+<primary>tworzenie</primary>
+<secondary>puli ZFS (<command>zpool create</command>)</secondary>
+<tertiary>(przykład)</tertiary>
+</indexterm>
+</para>
+<screen># <userinput>mkfile 100m /tank/fs/foo</userinput>
+# <userinput>df -h /tank/fs</userinput>
+Filesystem             size   used  avail capacity  Mounted on
+tank/fs                 80G   100M    80G     1%    /tank/fs</screen>
+<para>W więszkości przypadków prawdopodobnie należy stworzyć hierarchię systemów plików odzwierciedlającą potrzeby organizacyjne. Więcej informacji o tworzeniu hierarchii systemów plików ZFS w <olink targetdoc="" remap="internal" targetptr="gaypa">Hierarchiczna organizacja systemów plików ZFS</olink>.</para>
+</sect1>
+<sect1 xml:id="gayob">
+<title>Tworzenie puli ZFS</title>
+<para>Poprzedni przykład ilustrował prostotę ZFS-a. Pozostała część rozdziału demonstruje kompletniejsze przykłady, podobne do zadań w prawdziwym świecie. Pierwszym zadaniem jest zidentyfikowanie wymagań i stworzenie puli. Pula określa fizyczne właściwości nośników danych i musi zostać utworzona przed wszelkimi systemami plików.</para>
+<task xml:id="gayol">
+<title>Identyfikowanie wymagań</title>
+<procedure>
+<step>
+<para>Określenie dostępnych urządzeń.</para>
+<para>Zanim utworzona zostanie pula, należy ustalić, które urządzenia będą przechowywać dane. To muszą być dyski o pojemności przynajmniej 128 MB i nie mogą być używane przez inne elementy systemu operacyjnego. Mogą to być pojedyncze segmenty (ang. slice) na preformatowanym dysku, bądź całe dyski, które ZFS sformatuje jako pojedyncze segmenty.<indexterm xml:id="indexterm-50">
+<primary>identyfikowanie</primary>
+<secondary>wymagań</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-51">
+<primary>wymagania</primary>
+<secondary>identyfikowanie</secondary>
+</indexterm>
+</para>
+<para>Przyjmijmy, że w przykładzie z <olink targetdoc="" remap="internal" targetptr="gayok">tworzenia puli ZFS</olink> całe dwa dyski <filename>/dev/dsk/c1t0d0</filename> i <filename>/dev/dsk/c1t0d0</filename> są dostępne do użytku.</para>
+<para>Więcej informacji o dyskach oraz o sposobie ich użytkowania i etykietowania w <olink targetdoc="" remap="internal" targetptr="gazdp">używaniu dysków w puli ZFS</olink>.</para>
+</step>
+<step>
+<para>Wybór sposobu replikacji danych.</para>
+<para>ZFS obsługuje wiele typów replikacji danych determinujących, które rodzaje awarii sprzętu pula przetrzyma. ZFS obsługuje zarówno konfiguracje nienadmiarowe (striped), jak i mirroring i RAID-Z (rodzaj RAID-5).</para>
+<para>W przykładzie użytym w <olink targetdoc="" remap="internal" targetptr="gayok">tworzeniu puli ZFS</olink>, żyto prostego mirrorowania dwóch dostępnych dysków.</para>
+<para>Więcej informacji o opcjach replikacji w ZFS-ie w <olink targetdoc="" remap="internal" targetptr="gcfof">opcje replikacji w pulach ZFS-a</olink>.</para>
+</step>
+</procedure>
+</task>
+<task xml:id="gayok">
+<title>Tworzenie puli ZFS</title>
+<procedure>
+<step>
+<para>Należy zalogować się jako root bądź użyć roli z odpowiednimi prawami do ZFS-a.</para>
+<para>Więcej informacji o profilach praw do ZFS-a w <olink targetdoc="" remap="internal" targetptr="gbfvq">profilach praw do ZFS-a</olink>.</para>
+</step>
+<step>
+<para>Wybór nazwy dla puli.</para>
+<para>The pool name is used to identify
+the storage pool when you are using the <command>zpool</command> or <command>zfs</command> commands.
+Most systems require only a single pool, so you can pick any name that you
+prefer, provided it satisfies the naming requirements outlined in <olink targetdoc="" remap="internal" targetptr="gbcpt">ZFS Component Naming Requirements</olink>. </para>
+</step>
+<step>
+<para>Create the pool.</para>
+<para>For example, create a mirrored pool
+that is named <literal>tank</literal>.<indexterm xml:id="indexterm-52">
+<primary>
+<command>zpool create</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+</para>
+<screen># <userinput>zpool create tank mirror c1t0d0 c1t1d0</userinput>
+</screen>
+<para>If one or more devices contains another file system or is otherwise
+in use, the command cannot create the pool.</para>
+<para>For more information
+about creating storage pools, see <olink targetdoc="" remap="internal" targetptr="gaynr">Creating a ZFS Storage Pool</olink>.</para>
+<para>For more information about how device usage
+is determined, see <olink targetdoc="" remap="internal" targetptr="gazht">Detecting in Use Devices</olink>.</para>
+</step>
+<step>
+<para>View the results.</para>
+<para>You can determine if your pool was
+successfully created by using the <command>zpool list</command> command.<indexterm xml:id="indexterm-53">
+<primary>
+<command>zpool list</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-54">
+<primary>listing</primary>
+<secondary>ZFS pool information</secondary>
+</indexterm>
+</para>
+<screen># <userinput>zpool list</userinput>
+NAME                    SIZE    USED   AVAIL    CAP  HEALTH     ALTROOT
+tank                     80G    137K     80G     0%  ONLINE     -</screen>
+<para>For more information about viewing pool status, see <olink targetdoc="" remap="internal" targetptr="gaynp">Querying ZFS Storage Pool Status</olink>.</para>
+</step>
+</procedure>
+</task>
+</sect1>
+<sect1 xml:id="gaypa">
+<title>Creating a ZFS File System Hierarchy</title>
+<para>After creating a storage pool to store your data, you can create your
+file system hierarchy. Hierarchies are simple yet powerful mechanisms for
+organizing information. They are also very familiar to anyone who has used
+a file system.<indexterm xml:id="indexterm-55">
+<primary>creating</primary>
+<secondary>ZFS file system hierarchy</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-56">
+<primary>file system hierarchy</primary>
+<secondary>creating</secondary>
+</indexterm>
+</para>
+<para>ZFS allows file systems to be organized into arbitrary hierarchies,
+where each file system has only a single parent. The root of the hierarchy
+is always the pool name. ZFS leverages this hierarchy by supporting property
+inheritance so that common properties can be set quickly and easily on entire
+trees of file systems.</para>
+<task xml:id="gaypd">
+<title>Determining the ZFS File System Hierarchy</title>
+<procedure>
+<step>
+<para>Pick the file system granularity.</para>
+<para>ZFS file systems
+are the central point of administration. They are lightweight and can be created
+easily. A good model to use is a file system per user or project, as this
+model allows properties, snapshots, and backups to be controlled on a per-user
+or per-project basis. </para>
+<para>Two ZFS file systems, <filename>bonwick</filename> and <filename>billm</filename>, are created in <olink targetdoc="" remap="internal" targetptr="gayog">Creating ZFS File Systems</olink>.</para>
+<para>For more information on managing file systems,
+see <olink targetdoc="" remap="internal" targetptr="gavwq">Chapter 5, Managing ZFS File Systems</olink>.</para>
+</step>
+<step>
+<para>Group similar file systems.</para>
+<para>ZFS allows file systems
+to be organized into hierarchies so that similar file systems can be grouped.
+This model provides a central point of administration for controlling properties
+and administering file systems. Similar file systems should be created under
+a common name.</para>
+<para>For the example in <olink targetdoc="" remap="internal" targetptr="gayog">Creating ZFS File Systems</olink>, the two file systems are placed under a file system
+named <filename>home</filename>. </para>
+</step>
+<step>
+<para>Choose the file system properties.</para>
+<para>Most file system
+characteristics are controlled by using simple properties. These properties
+control a variety of behavior, including where the file systems are mounted,
+how they are shared, if they use compression, and if any quotas are in effect. </para>
+<para>For the example in <olink targetdoc="" remap="internal" targetptr="gayog">Creating ZFS File Systems</olink>,
+all home directories are mounted at <filename>/export/zfs/</filename>
+<replaceable>user</replaceable>, are shared by using NFS, and with compression enabled.
+In addition, a quota of 10 Gbytes on <filename>bonwick</filename> is enforced.</para>
+<para>For more information about properties, see <olink targetdoc="" remap="internal" targetptr="gazss">ZFS Properties</olink>.</para>
+</step>
+</procedure>
+</task>
+<task xml:id="gayog">
+<title>Creating ZFS File Systems</title>
+<procedure>
+<step>
+<para>Become root or assume an equivalent role with the appropriate
+ZFS rights profile.</para>
+<para>For more information about the ZFS rights
+profiles, see <olink targetdoc="" remap="internal" targetptr="gbfvq">ZFS Rights Profiles</olink>.</para>
+</step>
+<step>
+<para>Create the desired hierarchy.</para>
+<para>In this example, a file
+system that acts as a container for individual file systems is created.<indexterm xml:id="indexterm-57">
+<primary>
+<command>zfs create</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-58">
+<primary>creating</primary>
+<secondary>ZFS file system</secondary>
+</indexterm>
+</para>
+<screen># <userinput>zfs create tank/home</userinput>
+</screen>
+<para>Next, individual file systems are grouped under the <filename>home</filename> file
+system in the pool <filename>tank</filename>.</para>
+</step>
+<step>
+<para>Set the inherited properties.</para>
+<para>After the file system
+hierarchy is established, set up any properties that should be shared among
+all users:</para>
+<screen># <userinput>zfs set mountpoint=/export/zfs tank/home</userinput>
+# <userinput>zfs set sharenfs=on tank/home</userinput>
+# <userinput>zfs set compression=on tank/home</userinput>
+# <userinput>zfs get compression tank/home</userinput>
+NAME             PROPERTY       VALUE                      SOURCE
+tank/home        compression    on                         local</screen>
+<para>For more information about properties and property inheritance,
+see <olink targetdoc="" remap="internal" targetptr="gazss">ZFS Properties</olink>.<indexterm xml:id="indexterm-59">
+<primary>
+<command>zfs set mountpoint</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-60">
+<primary>
+<command>zfs set sharenfs</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-61">
+<primary>
+<command>zfs set compression</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-62">
+<primary>setting</primary>
+<secondary>
+<property>mountpoint</property> property</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-63">
+<primary>setting</primary>
+<secondary>
+<property>sharenfs</property> property</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-64">
+<primary>setting</primary>
+<secondary>
+<property>compression</property> property</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+</step>
+<step>
+<para>Create the individual file systems.</para>
+<para>Note that the
+file systems could have been created and then the properties could have been
+changed at the <filename>home</filename> level. All properties can be changed
+dynamically while file systems are in use.</para>
+<screen># <userinput>zfs create tank/home/bonwick</userinput>
+# <userinput>zfs create tank/home/billm</userinput>
+</screen>
+<para>These file systems inherit their property settings from their parent,
+so they are automatically mounted at <filename>/export/zfs/</filename>
+<replaceable>user</replaceable> and are NFS shared. You do not need to edit the <filename>/etc/vfstab</filename> or <filename>/etc/dfs/dfstab</filename> file.</para>
+<para>For
+more information about creating file systems, see <olink targetdoc="" remap="internal" targetptr="gazsf">Creating a ZFS File System</olink>.</para>
+<para>For more information about mounting
+and sharing file systems, see <olink targetdoc="" remap="internal" targetptr="gaynd">Mounting and Sharing ZFS File Systems</olink>.</para>
+</step>
+<step>
+<para>Set the file system-specific properties.</para>
+<para>In this example,
+user <filename>bonwick</filename> is assigned a quota of 10 Gbytes. This property
+places a limit on the amount of space he can consume, regardless of how much
+space is available in the pool.<indexterm xml:id="indexterm-65">
+<primary>
+<command>zfs set quota</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-66">
+<primary>setting</primary>
+<secondary>
+<property>quota</property> property (example of)</secondary>
+</indexterm>
+</para>
+<screen># <userinput>zfs set quota=10G tank/home/bonwick</userinput>
+</screen>
+</step>
+<step>
+<para>View the results.</para>
+<para>View available file system information
+by using the <command>zfs list</command> command:</para>
+<screen># <userinput>zfs list</userinput>
+NAME                   USED  AVAIL  REFER  MOUNTPOINT
+tank                  92.0K  67.0G   9.5K  /tank
+tank/home             24.0K  67.0G     8K  /export/zfs
+tank/home/billm          8K  67.0G     8K  /export/zfs/billm
+tank/home/bonwick        8K  10.0G     8K  /export/zfs/bonwick</screen>
+<para>Note that the user <filename>bonwick</filename> only has 10 Gbytes of
+space available, while the user <filename>billm</filename> can use the full
+pool (67 Gbytes).<indexterm xml:id="indexterm-67">
+<primary>
+<command>zfs list</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-68">
+<primary>listing</primary>
+<secondary>ZFS file systems (<command>zfs list</command>)</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<para>For more information about viewing file system status,
+see <olink targetdoc="" remap="internal" targetptr="gazsu">Querying ZFS File System Information</olink>. </para>
+<para>For more information about how space is used and calculated, see <olink targetdoc="" remap="internal" targetptr="gbchp">ZFS Space Accounting</olink>.</para>
+</step>
+</procedure>
+</task>
+</sect1>
+</chapter>

@@ -1,0 +1,833 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="secreq-1">
+
+
+
+<title>Security Requirements on a Trusted Extensions System</title>
+<toc>
+<para>This chapter describes configurable security features on a system that
+is configured with Trusted Extensions.</para>
+<itemizedlist remap="jumplist">
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="secreq-2">Configurable Solaris Security
+Features</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="commontasks-11">Security Requirements Enforcement</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="commontasks-7">Rules When Changing the Level
+of Security for Data</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="commontasks-25">Customization of Solaris
+Trusted Extensions (CDE)</olink>
+</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="secreq-2">
+<title>Configurable Solaris Security Features</title>
+<para>Trusted Extensions uses the same security features that the Solaris OS provides,
+and adds some features. For example, the Solaris OS provides <command>eeprom</command> protection,
+password requirements, system protection by locking out a user, protection
+from keyboard shutdown, and strong password algorithms.</para>
+<para>Trusted Extensions differs from the Solaris OS in the actual procedures to
+modify these security defaults. In Trusted Extensions, you typically administer
+in a role. Local settings are modified by using the Admin Editor, a trusted
+editor. Changes that affect the network of users, roles, and hosts are made
+in the Solaris Management Console.</para>
+<sect2 xml:id="secreq-3">
+<title>Trusted Extensions Interfaces for Configuring Security
+Features</title>
+<para>Where Trusted Extensions requires a particular interface to modify security
+settings, and that interface is optional in the Solaris OS, procedures are provided
+in this book. Where Trusted Extensions requires the use of the Admin Editor to
+edit local files, no separate procedures are provided in this book. For example,
+the procedure, <olink remap="external" targetdoc="chapter-7.xml" targetptr="commontasks-29">How to Prevent Account Locking
+for Individuals</olink>, describes how to update a user's account by using
+the Solaris Management Console to prevent the account from being locked. However, the procedure
+for setting a system-wide password lock policy is not provided in this book.
+You follow the Solaris instructions, except that in Trusted Extensions,
+you use the Admin Editor to modify the system file.</para>
+</sect2>
+<sect2 xml:id="commontasks-13">
+<title>Extension of Solaris Security Mechanisms</title>
+<indexterm xml:id="indexterm-249">
+<primary>security mechanisms</primary>
+<secondary>extensible</secondary>
+</indexterm>
+<itemizedlist>
+<para>The following Solaris security mechanisms are extensible in Trusted Extensions as
+they are in the Solaris OS.</para>
+<listitem>
+<para>
+<emphasis role="strong">Audit events and classes –</emphasis> Adding
+audit events and audit classes is described in <olink remap="external" targetdoc="819-3321" targetptr="audittask-1">Chapter 28, <citetitle remap="chapter">Managing Solaris Auditing (Tasks),</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Rights profiles –</emphasis> Adding
+rights profiles is described in <olink remap="external" targetdoc="819-3321" targetptr="prbactm-1">Part III, <citetitle remap="chapter">Roles, Rights Profiles, and Privileges,</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Roles –</emphasis> Adding roles
+is described in <olink remap="external" targetdoc="819-3321" targetptr="prbactm-1">Part III, <citetitle remap="chapter">Roles, Rights Profiles, and Privileges,</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Authorizations –</emphasis> For
+an example of adding a new authorization, see <olink remap="external" targetdoc="chapter-17.xml" targetptr="managedev-16">Customizing
+Device Authorizations in Trusted Extensions (Tasks)</olink>.</para>
+</listitem>
+</itemizedlist>
+<para>As in the Solaris OS, privileges cannot be extended.</para>
+</sect2>
+<sect2 xml:id="secreq-5">
+<title>Trusted Extensions Security Features</title>
+<itemizedlist>
+<para>Trusted Extensions provides unique security features.</para>
+<listitem>
+<para>Labels – Subjects and objects are labeled. Processes
+are labeled. Zones and the network are labeled.</para>
+</listitem>
+<listitem>
+<para>Device Allocation Manager – By default, devices are
+protected by allocation requirements. A Device Allocation Manager GUI is the
+interface for administrators and for ordinary users.</para>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-250">
+<primary>Change Password menu item</primary>
+<secondary>description</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-251">
+<primary>passwords</primary>
+<secondary>Change Password menu item</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-252">
+<primary>passwords</primary>
+<secondary>changing user passwords</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-253">
+<primary>users</primary>
+<secondary>Change Password menu item</secondary>
+</indexterm>Change Password menu item – The Trusted Path menu enables
+you to change your user password, and the password of the role that you have
+assumed.</para>
+</listitem>
+</itemizedlist>
+</sect2>
+</sect1>
+<sect1 xml:id="commontasks-11">
+<title>Security Requirements Enforcement</title>
+<para>
+<indexterm xml:id="indexterm-254">
+<primary>users</primary>
+<secondary>security training</secondary>
+</indexterm>To ensure that the security of the system is not compromised,
+administrators need to protect passwords, files and audit data. Computer users
+need to be trained to do their part. To be consistent with the requirements
+for an evaluated configuration, follow the guidelines in this section.</para>
+<sect2 xml:id="commontasks-16">
+<title>Users and Security Requirements</title>
+<indexterm xml:id="indexterm-255">
+<primary>security policy</primary>
+<secondary>training users</secondary>
+</indexterm>
+<itemizedlist>
+<para>Each site's security administrator ensures that users are trained. The
+security administrator should hand off the following rules to new employees
+and remind existing employees of these rules on a regular basis.</para>
+<listitem>
+<para>Anyone who knows your password can access the same information
+that you can without being identified and therefore without being accountable.</para>
+</listitem>
+<listitem>
+<para>Do not tell anyone else the password.</para>
+</listitem>
+<listitem>
+<para>Do not write the password down or include it in an email message.</para>
+</listitem>
+<listitem>
+<para>Choose passwords that are hard to guess.</para>
+</listitem>
+<listitem>
+<para>Do not leave your computer unattended without locking the
+screen or logging off.</para>
+</listitem>
+<listitem>
+<para>Be aware that sender information in email can be forged.</para>
+</listitem>
+<listitem>
+<para>Remember that administrators do not rely on email to send
+instructions to users. Do not ever follow emailed instructions from an administrator
+without first double-checking with the administrator.</para>
+</listitem>
+<listitem>
+<para>Do not send your password to anyone by email.</para>
+</listitem>
+<listitem>
+<para>Because you are responsible for the access permissions on
+files and directories that you create, make sure that the permissions on your
+files and directories are set appropriately. Do not allow unauthorized users
+to read a file, to change a file, to list the contents of a directory, or
+to add to a directory.</para>
+</listitem>
+</itemizedlist>
+<para>Your organization might want to provide additional suggestions beyond
+the suggestions that are listed in this section.</para>
+</sect2>
+<sect2 xml:id="commontasks-4">
+<title>Email Usage</title>
+<para>It is poor practice to use email to instruct users to take an action.</para>
+<para>Tell users not to trust email with instructions that purport to come
+from an administrator. This prevents the possibility that spoofed email messages
+could be used to fool users into changing a password to a certain value or
+divulging the password, which could subsequently be used to log in and compromise
+the system.</para>
+</sect2>
+<sect2 xml:id="commontasks-2">
+<title>Password Enforcement</title>
+<para>The System Administrator role must specify a unique user name and a
+unique user ID when creating a new account. When choosing the name and ID
+for a new account, the administrator must ensure that both the user name and
+associated UID are not duplicated anywhere on the network and have not been
+previously used.</para>
+<itemizedlist>
+<para>The Security Administrator role is responsible for specifying the original
+password for each account and for handing off the passwords to new accounts.
+This administrator should take into account the following information when
+administering passwords:</para>
+<listitem>
+<para>Make sure that the accounts for users who are able to assume
+the Security Administrator role are configured so that the account cannot
+be locked. This ensures that at least one account can always log in and assume
+the Security Administrator role to reopen everyone's account if it ever happens
+that all other accounts are locked.</para>
+</listitem>
+<listitem>
+<para>Hand over the password to an account in such a way that the
+password cannot be eavesdropped by anyone else.</para>
+</listitem>
+<listitem>
+<para>Change an account's password if there is any suspicion that
+the password has been discovered by anyone who should not know it.</para>
+</listitem>
+<listitem>
+<para>Never reuse user names or UIDs over the lifetime of the system.</para>
+<itemizedlist>
+<para>Ensuring that user names and UIDs are not reused prevents possible confusion
+about the following:</para>
+<listitem>
+<para>Which actions were performed by which user when audit records
+are analyzed</para>
+</listitem>
+<listitem>
+<para>Which user owns which files when archived files are restored</para>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</sect2>
+<sect2 xml:id="commontasks-3">
+<title>Information Protection</title>
+<indexterm xml:id="indexterm-256">
+<primary>computer access</primary>
+<secondary>administrator responsibilities</secondary>
+</indexterm>
+<para>Administrators are responsible for correctly setting up and maintaining
+DAC and MAC protections for security-critical files. Critical files include
+the <olink remap="external" targetdoc="819-2251" targetptr="shadow-4">
+<citerefentry>
+<refentrytitle>shadow</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> file
+containing encrypted passwords, the local <olink remap="external" targetdoc="819-2251" targetptr="prof-attr-4">
+<citerefentry>
+<refentrytitle>prof_attr</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="819-2251" targetptr="exec-attr-4">
+<citerefentry>
+<refentrytitle>exec_attr</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink>, and <olink remap="external" targetdoc="819-2251" targetptr="user-attr-4">
+<citerefentry>
+<refentrytitle>user_attr</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> databases, and the audit trail.</para>
+<caution>
+
+<para>Because the protection mechanisms for LDAP entries are not
+subject to the access control policy enforced by the Trusted Extensions software,
+the default LDAP entries should not be extended, and their access rules should
+not be modified.</para>
+</caution>
+</sect2>
+<sect2 xml:id="commontasks-22">
+<title>Password Protection</title>
+<para>
+<indexterm xml:id="indexterm-257">
+<primary>passwords</primary>
+<secondary>storage</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-258">
+<primary>
+<constant>ADMIN_LOW</constant> label</primary>
+<secondary>protecting administrative files</secondary>
+</indexterm>In local files, passwords are protected from viewing by DAC and
+from modifications by both DAC and MAC. Passwords for local accounts are maintained
+in the <filename>/etc/shadow</filename> file, that is readable only by root.
+For more information, see the <olink remap="external" targetdoc="819-2251" targetptr="shadow-4">
+<citerefentry>
+<refentrytitle>shadow</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+</sect2>
+<sect2 xml:id="commontasks-5">
+<title>Group Administration</title>
+<indexterm xml:id="indexterm-259">
+<primary>groups</primary>
+<secondary>security requirements</secondary>
+</indexterm>
+<para>The System Administrator role needs to verify on the local system and
+on the network that all groups have a unique group ID (GID).</para>
+<itemizedlist>
+<para>
+<indexterm xml:id="indexterm-260">
+<primary>groups</primary>
+<secondary>deletion precautions</secondary>
+</indexterm>When a local group is deleted from the system, the System Administrator
+role must ensure the following:</para>
+<listitem>
+<para>All objects with the GID of the deleted group must be deleted
+or be assigned to another group.</para>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-261">
+<primary>users</primary>
+<secondary>security training</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-262">
+<primary>users</primary>
+<secondary>security precautions</secondary>
+</indexterm>All users who have the deleted group as their primary group must
+be reassigned to another primary group.</para>
+</listitem>
+</itemizedlist>
+</sect2>
+<sect2 xml:id="commontasks-6">
+<title>User Deletion Practices</title>
+<indexterm xml:id="indexterm-263">
+<primary>users</primary>
+<secondary>deletion precautions</secondary>
+</indexterm>
+<itemizedlist>
+<para>When an account is deleted from the system, the System Administrator
+role and the Security Administrator role must take the following actions:</para>
+<listitem>
+<para>The account's home directory must be deleted.</para>
+</listitem>
+<listitem>
+<para>Any processes or jobs belonging to the deleted account must
+be removed:</para>
+<itemizedlist>
+<listitem>
+<para>Any objects owned by the account must be deleted or the ownership
+must be assigned to another user.</para>
+</listitem>
+<listitem>
+<para>Any <command>at</command> or <command>batch</command> jobs
+scheduled on behalf of the user must be deleted. For details, see the <olink remap="external" targetdoc="819-2239" targetptr="at-1">
+<citerefentry>
+<refentrytitle>at</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> and <olink remap="external" targetdoc="819-2239" targetptr="crontab-1">
+<citerefentry>
+<refentrytitle>crontab</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> man pages.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<para>The user (account) name and UID must be retired and not reused.</para>
+</listitem>
+</itemizedlist>
+</sect2>
+</sect1>
+<sect1 xml:id="commontasks-7">
+<title>Rules When Changing the Level of Security
+for Data</title>
+<indexterm xml:id="indexterm-264">
+<primary>cut and paste</primary>
+<secondary>and labels</secondary>
+</indexterm>
+<para>By default, ordinary users can perform cut and paste, copy and paste,
+and drag and drop operations on both files and selections. The source and
+target must be at the same label.</para>
+<para>To change the label of files or of information within files requires
+authorization. When users are authorized to change the security level of data,
+a Selection Manager mediates the transfer. The <filename>sel_config</filename> file
+controls file relabeling actions, and cutting and copying information to a
+different label. The <filename>/usr/dt/bin/sel_mgr</filename> application
+controls dragging and dropping between windows. As the following tables illustrate,
+the <filename>sel_mgr</filename> is more restrictive than the <filename>sel_config</filename> file.</para>
+<para>The following table summarizes the rules for file relabeling. The rules
+cover copying, cutting, pasting, dragging, and dropping files.</para>
+<table frame="topbot" xml:id="commontasks-tbl-1" pgwide="1">
+
+<title>Conditions
+for Moving Files to a New Label</title>
+<tgroup cols="4" colsep="0" rowsep="0">
+<colspec colname="column1" colsep="1" colwidth="117.81*"/>
+<colspec colname="column2" colwidth="65.77*"/>
+<colspec colname="column3" colwidth="87.00*"/>
+<colspec colname="column4" colwidth="125.42*"/>
+<thead>
+<row rowsep="1">
+<entry align="left" valign="bottom">
+<para>Transaction Description</para>
+</entry>
+<entry align="left" valign="bottom">
+<para>Label Relationship</para>
+</entry>
+<entry align="left" valign="bottom">
+<para>Owner Relationship</para>
+</entry>
+<entry align="left" valign="bottom">
+<para>Required Authorization</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="left" morerows="4" valign="top">
+<para>Copy/Cut and paste, or drag and drop of files between File Managers</para>
+</entry>
+<entry align="left" valign="top">
+<para>Same label</para>
+</entry>
+<entry align="left" valign="top">
+<para>Same UID</para>
+</entry>
+<entry align="left" valign="top">
+<para>None</para>
+</entry>
+</row>
+<row>
+<entry align="left" valign="top">
+<para>Downgrade</para>
+</entry>
+<entry align="left" valign="top">
+<para>Same UID</para>
+</entry>
+<entry align="left" valign="top">
+<para>
+<constant>solaris.label.file.downgrade</constant>
+</para>
+</entry>
+</row>
+<row>
+<entry align="left" valign="top">
+<para>Upgrade</para>
+</entry>
+<entry align="left" valign="top">
+<para>Same UID</para>
+</entry>
+<entry align="left" valign="top">
+<para>
+<constant>solaris.label.file.upgrade</constant>
+</para>
+</entry>
+</row>
+<row>
+<entry align="left" valign="top">
+<para>Downgrade</para>
+</entry>
+<entry align="left" valign="top">
+<para>Different UIDs</para>
+</entry>
+<entry align="left" valign="top">
+<para>
+<constant>solaris.label.file.downgrade</constant>
+</para>
+</entry>
+</row>
+<row>
+<entry align="left" valign="top">
+<para>Upgrade</para>
+</entry>
+<entry align="left" valign="top">
+<para>Different UIDs</para>
+</entry>
+<entry align="left" valign="top">
+<para>
+<constant>solaris.label.file.upgrade</constant>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>Different rules apply to selections within a window or file. Drag and
+drop of <emphasis>selections</emphasis> always requires equality of labels
+and ownership. Drag and drop between windows is mediated by the <filename>/usr/dt/bin/sel_mgr</filename> application, not by the <filename>sel_config</filename> file.</para>
+<para>The rules for changing the label of selections are summarized in the
+following table.</para>
+<table frame="topbot" xml:id="commontasks-tbl-2" pgwide="1">
+
+<title>Conditions
+for Moving Selections to a New Label</title>
+<tgroup cols="4" colsep="0" rowsep="0">
+<colspec colname="column1" colsep="1" colwidth="96.13*"/>
+<colspec colname="column2" colwidth="78.91*"/>
+<colspec colname="column3" colwidth="106.95*"/>
+<colspec colname="column4" colwidth="113.98*"/>
+<thead>
+<row rowsep="1">
+<entry align="left" valign="bottom">
+<para>Transaction Description</para>
+</entry>
+<entry align="left" valign="bottom">
+<para>Label Relationship</para>
+</entry>
+<entry align="left" valign="bottom">
+<para>Owner Relationship</para>
+</entry>
+<entry align="left" valign="bottom">
+<para>Required Authorization</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="left" morerows="4" valign="top">
+<para>Copy/Cut and paste of selections between windows</para>
+</entry>
+<entry align="left" valign="top">
+<para>Same label</para>
+</entry>
+<entry align="left" valign="top">
+<para>Same UID</para>
+</entry>
+<entry align="left" valign="top">
+<para>None</para>
+</entry>
+</row>
+<row>
+<entry align="left" valign="top">
+<para>Downgrade</para>
+</entry>
+<entry align="left" valign="top">
+<para>Same UID</para>
+</entry>
+<entry align="left" valign="top">
+<para>
+<constant>solaris.label.win.downgrade</constant>
+</para>
+</entry>
+</row>
+<row>
+<entry align="left" valign="top">
+<para>Upgrade</para>
+</entry>
+<entry align="left" valign="top">
+<para>Same UID</para>
+</entry>
+<entry align="left" valign="top">
+<para>
+<constant>solaris.label.win.upgrade</constant>
+</para>
+</entry>
+</row>
+<row>
+<entry align="left" valign="top">
+<para>Downgrade</para>
+</entry>
+<entry align="left" valign="top">
+<para>Different UIDs</para>
+</entry>
+<entry align="left" valign="top">
+<para>
+<constant>solaris.label.win.downgrade</constant>
+</para>
+</entry>
+</row>
+<row>
+<entry align="left" valign="top">
+<para>Upgrade</para>
+</entry>
+<entry align="left" valign="top">
+<para>Different UIDs</para>
+</entry>
+<entry align="left" valign="top">
+<para>
+<constant>solaris.label.win.upgrade</constant>
+</para>
+</entry>
+</row>
+<row>
+<entry align="left" valign="top">
+<para>Drag and drop of selections between windows</para>
+</entry>
+<entry align="left" valign="top">
+<para>Same label always required</para>
+</entry>
+<entry align="left" valign="top">
+<para>Same UID always required</para>
+</entry>
+<entry align="left" valign="top">
+<para>None applicable</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>Trusted Extensions provides a selection confirmer to mediate label changes.
+This window appears when an authorized user attempts to change the label of
+a file or selection. The user has 120 seconds to confirm the operation. To
+change the security level of data without the selection confirmer requires
+the <constant>solaris.label.win.noview</constant> authorization, in addition
+to the relabeling authorizations.</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="figures/selmgr.gif"/>
+</imageobject>
+<textobject>
+<simpara>The illustrations shows the Selection Confirmer.</simpara>
+</textobject>
+</mediaobject>
+<para>By default, the selection confirmer displays whenever data is being
+transferred to a different label. If a selection requires several transfer
+decisions, the automatic reply mechanism provides a way to reply once to the
+several transfers. For more information, see the <olink remap="external" targetdoc="819-7307" targetptr="sel-config-4">
+<citerefentry>
+<refentrytitle>sel_config</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> man page, and the following
+section.</para>
+<sect2 xml:id="commontasks-34">
+<title>
+<filename>sel_config</filename> File</title>
+<para>
+<indexterm xml:id="indexterm-265">
+<primary>
+<filename>sel_config</filename> file</primary>
+<secondary>configuring selection transfer rules</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-266">
+<primary>
+<filename>/usr/dt/config/sel_config</filename> file</primary>
+</indexterm>
+<indexterm xml:id="indexterm-267">
+<primary>
+<filename>/etc/dt/config/sel_config</filename> file</primary>
+</indexterm>
+<indexterm xml:id="indexterm-268">
+<primary>cutting and pasting</primary>
+<secondary>configuring rules for label changes</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-269">
+<primary>files</primary>
+<secondary>
+<filename>sel_config</filename> file</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-270">
+<primary>changing</primary>
+<secondary>rules for label changes</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-271">
+<primary>downgrading labels</primary>
+<secondary>configuring rules for selection confirmer</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-272">
+<primary>upgrading labels</primary>
+<secondary>configuring rules for selection confirmer</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-273">
+<primary>labels</primary>
+<secondary>configuring rules for label changes</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-274">
+<primary>labels</primary>
+<secondary>downgrading and upgrading</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-275">
+<primary>Selection Manager</primary>
+<secondary>configuring rules for selection confirmer</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-276">
+<primary>files</primary>
+<secondary>
+<filename>/usr/dt/config/sel_config</filename>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-277">
+<primary>files</primary>
+<secondary>
+<filename>/etc/dt/config/sel_config</filename>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-278">
+<primary>
+<filename>/etc/dt/config/sel_config</filename> file</primary>
+</indexterm>
+<indexterm xml:id="indexterm-279">
+<primary>
+<filename>/usr/dt/config/sel_config</filename> file</primary>
+</indexterm>
+<indexterm xml:id="indexterm-280">
+<primary>
+<filename>sel_config</filename> file</primary>
+</indexterm>
+<indexterm xml:id="indexterm-281">
+<primary>system files</primary>
+<secondary>Trusted Extensions <filename>sel_config</filename>
+</secondary>
+</indexterm>The  <filename>sel_config</filename> file is consulted to determine
+the behavior of the selection confirmer when an operation would upgrade or
+downgrade a label.</para>
+<itemizedlist>
+<para>The <filename>/usr/dt/config/sel_config</filename> file defines the
+following:</para>
+<listitem>
+<para>A list of selection types to which automatic replies are given</para>
+</listitem>
+<listitem>
+<para>Whether certain types of operation should be automatically
+confirmed</para>
+</listitem>
+<listitem>
+<para>Whether a selection confirmer dialog should be displayed</para>
+</listitem>
+</itemizedlist>
+<para>
+<indexterm xml:id="indexterm-282">
+<primary>changing</primary>
+<secondary>Selection Confirmer defaults</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-283">
+<primary>modifying</primary>
+<secondary>
+<filename>sel_config</filename> file</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-284">
+<primary>Selection Confirmer</primary>
+<secondary>changing defaults</secondary>
+</indexterm>In CDE, the Security Administrator role can change the defaults
+by using the Configure Selection Confirmation action in the Trusted_Extensions
+folder. The new settings become effective at the next login. If you are in Java DS when
+modifying the file, do not use the CDE action. Copy the <filename>sel_config</filename> file
+to the <filename>/etc/dt/config</filename> directory. Then, customize that
+copy as you would customize any other CDE configuration file.</para>
+</sect2>
+</sect1>
+<sect1 xml:id="commontasks-25">
+<title>Customization of Solaris Trusted Extensions (CDE)</title>
+<para>In Solaris Trusted Extensions (CDE), users can add actions to the Front Panel and customize the
+Workspace menu. Trusted Extensions software limits users' ability to add programs
+and commands to CDE.</para>
+<sect2 xml:id="commontasks-10">
+<title>Workspace Menu Customization</title>
+<para>The Workspace Menu is the menu that appears when you click mouse button
+3 on the background of the workspace. Ordinary users can customize the menu,
+and add items to the menu.</para>
+<itemizedlist>
+<para>The following conditions apply when a user is allowed to work at multiple
+labels:</para>
+<listitem>
+<para>The user must have a home directory in the global zone.</para>
+</listitem>
+<listitem>
+<para>The user must use the Customize Menu and Add Item to Menu
+options in an ordinary user workspace. The user can create a different customization
+per label.</para>
+</listitem>
+<listitem>
+<para>When the user assumes a role, changes to the Workspace Menu
+persist.</para>
+</listitem>
+<listitem>
+<para>Changes that are made to the Workspace Menu are stored in
+the user's home directory at the current label. The customized menu file is <filename class="directory">.dt/wsmenu</filename>.</para>
+</listitem>
+<listitem>
+<para>The user's rights profile must enable the user to run the
+action.</para>
+<para>Any option that is added to the Workspace Menu must be
+handled by one of the user's rights profiles. Otherwise, the option will fail
+when invoked and an error message is displayed.</para>
+<para>For example, anyone
+with the Run action can double-click the icon for any executable and run it,
+even if the action or any commands that the action invokes are not in one
+of the account's rights profiles. By default, roles do not have the Run action.
+Therefore, any item that requires the Run action fails when executed by a
+role.</para>
+</listitem>
+</itemizedlist>
+</sect2>
+<sect2 xml:id="commontasks-14">
+<title>Front Panel Customization</title>
+<para>Anyone can drag and drop a pre-existing action from the Application
+Manager to the Front Panel as long as the account doing the modification has
+the action in its profile. Actions in the <filename class="directory">/usr/dt/</filename> or <filename class="directory">/etc/dt/</filename>  directories can be added to the Front
+Panel, but applications in the  <filename class="directory">$HOME/.dt/appconfig</filename> directories
+cannot. While users can use the Create Action action, they cannot write into
+any of the directories where the system-wide actions are stored, so they cannot
+use the actions.</para>
+<para>In Trusted Extensions, the actions' search path has been changed. Actions
+in any individual's home directory are processed last instead of first. Therefore,
+no one can customize existing actions.</para>
+<para>
+<indexterm xml:id="indexterm-285">
+<primary>security administrators</primary>
+<secondary>modifying window configuration files</secondary>
+</indexterm>The Security Administrator role has the Admin Editor action, so
+can make any needed modifications to the <filename>/usr/dt/appconfig/types/C/dtwm.fp</filename> file and the other configuration files for the Front Panel subpanels.</para>
+</sect2>
+</sect1>
+</chapter>

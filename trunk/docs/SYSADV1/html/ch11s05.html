@@ -1,0 +1,359 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>
+The GRUB Based Boot Process (Reference)</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch11.html" title="Chapter 11. 
+GRUB Based Booting (Tasks)"><link rel="prev" href="ch11s04.html" title="
+Booting a System in the GRUB Based Boot
+Environment"><link rel="next" href="ch12.html" title="Chapter 12. 
+Booting a System (Tasks)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">
+The GRUB Based Boot Process (Reference)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch11s04.html">Prev</a> </td><th width="60%" align="center">Chapter 11. 
+GRUB Based Booting (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch12.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="fwamf"></a>
+The GRUB Based Boot Process (Reference)</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-204"></a>
+<a class="indexterm" name="indexterm-205"></a>
+<a class="indexterm" name="indexterm-206"></a>
+<p>This section includes the following reference information:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="olink">
+System BIOS in the GRUB Boot Environment</span>
+</p>
+</li><li>
+<p>
+<span class="olink">
+Boot Subsystem in the GRUB Boot Environment</span>
+</p>
+</li><li>
+<p>
+<span class="olink">
+Solaris Kernel Initialization Process in the GRUB Boot Environment</span>
+</p>
+</li><li>
+<p>
+<span class="olink">
+How Multiple Operating Systems Are Supported in the GRUB Boot Environment</span>
+</p>
+</li><li>
+<p>
+<span class="olink">
+Management of the GRUB Boot Archive</span>
+</p>
+</li><li>
+<p>
+<span class="olink">GRUB Boot Archives</span>
+</p>
+</li></ul></div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fwaze"></a>
+System BIOS in the GRUB Boot Environment</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-207"></a>
+<a class="indexterm" name="indexterm-208"></a>
+<p>When a system is powered on, the system is controlled by the read-only-memory
+(ROM) Basic Input/Output System (BIOS). The BIOS is the firmware interface
+on Solaris Operating Systems that have 64-bit and 32-bit x86 support.</p>
+<p>Hardware adapters usually have an on-board BIOS that displays the physical
+characteristics of the device. The BIOS is used to access the device. During
+the startup process, the system BIOS checks for the presence of any adapter
+BIOS. If any adapters are found, the system then loads and executes each adapter
+BIOS. Each adapter's BIOS runs self-test diagnostics and then displays device
+information.</p>
+<p>The BIOS on most systems has a user interface, where you can select
+an ordered list of boot devices that consists of the following selections:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Diskette</p>
+</li><li>
+<p>CD or DVD</p>
+</li><li>
+<p>Hard disk</p>
+</li><li>
+<p>Network</p>
+</li></ul></div>
+<p>The BIOS attempts to boot from each device, in turn, until a valid device
+with a bootable program is found.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fwazo"></a>
+Boot Subsystem in the GRUB Boot Environment</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-209"></a>
+<p>Boot devices are either local media or network devices. When you boot
+from local media, the BIOS loads, then executes a 512-byte program that is
+located in the first physical sector of the media. This program is supplied
+by the operating system vendor. The program is then installed on the disk
+as part of the normal Solaris software installation or upgrade process. After
+the BIOS transfers control to this program, the OS takes over the system.</p>
+<p>To boot a system from a network interface, a DHCP server is required.
+A boot file server is also required. These servers can reside on the same
+machine or on separate machines.  The de facto boot protocol for an x86 network
+is PXE, which works in conjunction with DHCP. The BIOS boots the system from
+a network interface. The BIOS then issues a DHCP request for the name of the
+boot program and the IP address of the server that the program is to be downloaded
+from. After the BIOS receives the DHCP response, the BIOS downloads the program
+by using the TFTP protocol and executes the program. The boot program is supplied
+by the OS vendor. You install the boot program on the boot file server.</p>
+<p>Current operation system kernels are too large for the BIOS to load
+directly. Therefore, the OS needs a boot subsystem to bootstrap the kernel
+into existence. This process involves several stages, whereby a small program
+loads and executes a larger program. Eventually, control is handed over to
+the Solaris OS kernel. On x86 based systems, the Solaris OS uses the open
+source GRUB program to bootstrap the kernel.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fwazd"></a>
+Solaris Kernel Initialization Process
+in the GRUB Boot Environment</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-210"></a>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>This section includes Solaris implementation details that are
+subject to change in a future Solaris release or a future Solaris patch without
+notice. You should not build procedures that rely on the details that are
+described in this section.</p>
+</div>
+<p>The <span><strong class="command">/platform/i86pc/multiboot</strong></span> program is an <code class="literal">ELF32</code> executable that contains a header which is defined in the Multiboot
+Specification. The multiboot program is responsible for performing the following
+tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Interpreting the content of boot archive</p>
+</li><li>
+<p>Autodetecting whether the system is 64-bit capable</p>
+</li><li>
+<p>Selecting the best kernel mode for booting the system</p>
+</li><li>
+<p>Assembling core kernel modules in memory</p>
+</li><li>
+<p>Handing control of the system to the Solaris kernel</p>
+</li></ul></div>
+<p>After the kernel gains control of the system, the kernel initializes
+the CPU, memory, and device subsystems. The kernel then mounts the root device,
+which corresponds  to the <code class="literal">bootpath</code> and <code class="literal">fstype</code> properties
+that are specified in the <code class="filename">/boot/solaris/bootenv.rc</code> file.
+This file is part of the boot archive. If these properties are not specified
+in the <code class="filename">bootenv.rc</code> file, or on the GRUB command line,
+the root (<code class="filename">/</code>) file system defaults to UFS on <code class="filename">/devices/ramdisk:a</code>. The root (<code class="filename">/</code>) file system defaults to UFS
+when you boot the installation miniroot. After the root device is mounted,
+the kernel initializes the <span><strong class="command">sched</strong></span> and <span><strong class="command">init</strong></span> commands.
+These commands start the Service Management Facility (SMF) services.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fxjig"></a>
+How Multiple Operating Systems Are Supported
+in the GRUB Boot Environment</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-211"></a>
+<p>This section describes multiple operating systems that are supported
+on the same disk with GRUB. The following is an example of an x86 based system
+that has the Solaris Express 6/05 OS, the Solaris 9 OS, Linux, and Microsoft Windows installed on the
+same disk.</p>
+<div class="table"><a name="gbgfd"></a><p class="title"><b>Table 11.2. Sample GRUB Menu Configuration</b></p>
+
+
+<table summary="Sample GRUB Menu Configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Operating System</p>
+</th><th>
+<p>Location on Disk</p>
+</th></tr></thead><tbody><tr><td>
+<p>Microsoft Windows</p>
+</td><td>
+<p>
+<code class="literal">fdisk</code> partition 0:</p>
+</td></tr><tr><td>
+<p>Linux</p>
+</td><td>
+<p>
+<code class="literal">fdisk</code> partition 1:</p>
+</td></tr><tr><td>
+</td><td>
+<p>
+<code class="literal">fdisk</code> partition 2:</p>
+</td></tr><tr><td>
+<p>slice 0</p>
+</td><td>
+<p>Solaris 9 OS</p>
+</td></tr><tr><td>
+<p>slice 3</p>
+</td><td>
+<p>Solaris Express 6/05 OS</p>
+</td></tr></tbody></table>
+</div>
+<p>Based on the preceding information, the  GRUB menu appears as follows:</p>
+<pre class="screen">title Solaris 6/05 Express
+			root (hd0,2,d)
+			kernel /platform/i86pc/multiboot
+			module /platform/i86pc/boot_archive
+title Solaris 9
+			root (hd0,2,a)
+			chainloader +1
+			makeactivetitle Linux
+			root (hd0,1)
+			kernel &lt;from Linux GRUB menu...&gt;
+			initrd &lt;from Linux GRUB menu...&gt;
+title Windows
+			root (hd0,0)
+			chainloader +1</pre>
+<p>The Solaris partition must be the active partition. Also, do not indicate <code class="literal">makeactive</code> under the Microsoft Windows menu. Doing so causes the
+system to boot Microsoft Windows every time. Note that if Linux installed
+GRUB on the master boot block, you cannot access the Solaris boot option.
+The inability to access the Solaris boot option occurs whether or not you
+designate it as the active partition. In this case, you can do one of the
+following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Chain-load from the Linux GRUB by modifying the menu on Linux.</p>
+<p>
+<span class="emphasis"><em>Chain-loading</em></span> is a mechanism for loading unsupported
+operating systems by using another boot loader.</p>
+</li><li>
+<p>Replace the master boot sector with the Solaris GRUB by running
+the <span><strong class="command">installgrub</strong></span> command with the <code class="option">
+m</code> option:</p>
+<pre class="screen"># <strong class="userinput"><code>installgrub -m /boot/grub/stage1 /boot/grub/stage2 /dev/rdsk/<em class="replaceable"><code>root-slice</code></em>
+</code></strong>
+</pre>
+<p>See <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">installgrub</span>
+(
+1M
+)
+</span>
+</span> for more information.</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fwazj"></a>
+Management of the GRUB Boot Archive</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-212"></a>
+<a class="indexterm" name="indexterm-213"></a>
+<a class="indexterm" name="indexterm-214"></a>
+<a class="indexterm" name="indexterm-215"></a>
+<p>The boot archive contains core kernel modules, including drivers and
+configuration files, that are needed to initialize the OS kernel. After the
+I/O subsystem is initialized, the kernel mounts the root (<code class="filename">/</code>)
+file system on the real root device. The Solaris OS updates the boot archive
+from files on the root (<code class="filename">/</code>) file system whenever necessary.
+This update typically occurs when a kernel patch is applied or when a driver
+package is added. To detect any file updates that were performed manually,
+the boot archive might also be updated during system shutdown.</p>
+<p>If a system failure, a power failure, or a kernel panic occurs, immediately
+following a kernel file update, the boot archive and the root (<code class="filename">/</code>)
+file system might not be synchronized. Although the system might still boot
+with the old boot archive, you should boot the system in the failsafe archive
+to rebuild the boot archive. On mission critical systems, where system availability
+is essential, you might choose to set up a <span><strong class="command">cron</strong></span> job to
+run the <span><strong class="command">bootadm</strong></span> command on a regular basis. If the boot
+archive does not need to be updated, this process uses very little resources
+and usually takes only 0.1 to 0.2 seconds to complete.</p>
+<p>The boot archive is updated by using the <span><strong class="command">bootadm</strong></span> command.
+Immediately after you perform a system upgrade or apply a patch, manually
+rebuild the boot archive by running the following command as superuser:</p>
+<pre class="screen"># <strong class="userinput"><code>bootadm update-archive</code></strong>
+</pre>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">bootadm</span>
+(
+1M
+)
+</span>
+</span> man page. For step-by-step
+instructions, see <span class="olink">
+How to Boot the Failsafe Archive to Forcibly Update a Corrupt Boot Archive</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fwbow"></a>GRUB Boot Archives</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-216"></a>
+<a class="indexterm" name="indexterm-217"></a>
+<a class="indexterm" name="indexterm-218"></a>
+<a class="indexterm" name="indexterm-219"></a>
+<p>GRUB has two kinds of boot archives:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Failsafe boot archive</p>
+</li><li>
+<p>Primary boot archive</p>
+</li></ul></div>
+<p>A failsafe boot archive has the following benefits and characteristics:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Is self-sufficient</p>
+</li><li>
+<p>Can boot on its own</p>
+</li><li>
+<p>Is created by default during installation of the OS</p>
+</li><li>
+<p>Requires no maintenance</p>
+</li></ul></div>
+<p>A primary boot archive shadows a root (<code class="filename">/</code>) file
+system. This boot archive contains all of the kernel modules, <code class="filename">driver.conf</code> files, plus a few configuration files. These files are located
+in the <code class="filename">/etc</code> directory. The files in the boot archive
+are read by the kernel before the root (<code class="filename">/</code>) file system
+is mounted. After the root (<code class="filename">/</code>) file system is mounted,
+the boot archive is discarded by the kernel from memory. Then, file I/O is
+performed against the root device.</p>
+<p>By default, the primary boot archive contains the following files:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="filename">boot/solaris/bootenv.rc</code>
+</p>
+</li><li>
+<p>
+<code class="filename">boot/solaris.xpm</code>
+</p>
+</li><li>
+<p>
+<code class="filename">etc/dacf.conf</code>
+</p>
+</li><li>
+<p>
+<code class="filename">etc/devices</code>
+</p>
+</li><li>
+<p>
+<code class="filename">etc/driver_aliases</code>
+</p>
+</li><li>
+<p>
+<code class="filename">etc/driver_classes</code>
+</p>
+</li><li>
+<p>
+<code class="filename">etc/mach</code>
+</p>
+</li><li>
+<p>
+<code class="filename">etc/name_to_sysnum</code>
+</p>
+</li><li>
+<p>
+<code class="filename">etc/path_to_inst</code>
+</p>
+</li><li>
+<p>
+<code class="filename">etc/rtc_config</code>
+</p>
+</li><li>
+<p>
+<code class="filename">etc/system</code>
+</p>
+</li><li>
+<p>
+<code class="filename">kernel</code>
+</p>
+</li><li>
+<p>
+<code class="filename">platform/i86pc/biosint</code>
+</p>
+</li><li>
+<p>
+<code class="filename">platform/i86pc/kernel</code>
+</p>
+</li></ul></div>
+<p>If any files in the archive are updated, the boot archive must be rebuilt.
+For modifications to take effect, the rebuild of the archive must take place
+before the next system reboot.</p>
+<p>To rebuild the boot archive manually, use the <span><strong class="command">bootadm</strong></span> command.
+You can also rebuild the boot archive by booting the system in the failsafe
+archive which is an available option in the GRUB main menu. During the failsafe
+boot procedure, when prompted by the system, type <span><strong class="command">y</strong></span> to
+rebuild the primary boot archive. For more information, see <span class="olink">
+How to Boot the Failsafe Archive for Recovery Purposes</span>.</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch11s04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch11.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch12.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">
+Booting a System in the GRUB Based Boot
+Environment </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 12. 
+Booting a System (Tasks)</td></tr></table></div></body></html>

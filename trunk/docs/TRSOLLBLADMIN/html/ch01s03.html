@@ -1,0 +1,73 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Administering Labels</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Trusted Extensions Label Administration"><link rel="up" href="ch01.html" title="Chapter 1. Labels in Trusted Extensions Software"><link rel="prev" href="ch01s02.html" title="Types of Labels, Their Components and Uses"><link rel="next" href="ch02.html" title="Chapter 2. Planning Labels (Tasks)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Administering Labels</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01s02.html">Prev</a> </td><th width="60%" align="center">Chapter 1. Labels in Trusted Extensions Software</th><td width="20%" align="right"> <a accesskey="n" href="ch02.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="overview-50"></a>Administering Labels</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-70"></a>
+<a class="indexterm" name="indexterm-71"></a>
+<p>Several aspects about how labels appear to users can be configured.
+Label visibility, label color, and labels on printed output can be configured.
+Some actions on labels require authorization or privilege. Upgrading or downgrading
+an object's label requires an authorization. Manipulating a label between
+its internal and its textual representation can require a privilege.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="overview-268"></a>Label Visibility</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-72"></a>
+<p>As described in <span class="olink">Labeled Workspaces</span>,
+labels appear on windows on the desktop. On a single-label system, you might
+not want labels to be visible. Label visibility is configurable in the <code class="filename">policy.conf</code> file for a system, and in the Solaris Management Console for individual
+users. For a pointer to the configuration procedures, 
+see <span class="olink">Managing Label Encodings (Task Map)</span>.</p>
+<p>Typically, the content of files at a lower label can be read by a user
+at a higher label. For example, system files and commonly-available executables
+are assigned an <code class="constant">ADMIN_LOW</code> label. According to the read
+down-read equal rule, accounts who work at any label can read <code class="constant">ADMIN_LOW</code> files. As in the Solaris OS, DAC permissions can prevent read access.
+Zones also protect files from being read. If a lower-level zone is not mounted,
+a user in a higher-level zone cannot access the files for reading.</p>
+<p>Files that contain data that should not be viewed by ordinary users,
+such as system log files and the <code class="filename">label_encodings</code> files,
+are maintained at <code class="constant">ADMIN_HIGH</code>. To allow administrators
+access to protected system files, the <code class="constant">ADMIN_LOW</code> and <code class="constant">ADMIN_HIGH</code> administrative labels are assigned as the minimum label
+and clearance for roles.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="overview-337"></a>Labels on Printed Output</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-73"></a>
+<a class="indexterm" name="indexterm-74"></a>
+<a class="indexterm" name="indexterm-75"></a>
+<p>The labels that are printed on banner, trailer and body pages of print
+jobs can be customized. Also, accompanying text that appears on the banner
+and trailer pages can be customized. For more information, see <span class="olink">Chapter 4, Labeling Printer Output (Tasks)</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="overview-21"></a>Authorizations for Relabeling Information</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-76"></a>
+<a class="indexterm" name="indexterm-77"></a>
+<a class="indexterm" name="indexterm-78"></a>
+<a class="indexterm" name="indexterm-79"></a>
+<a class="indexterm" name="indexterm-80"></a>
+<a class="indexterm" name="indexterm-81"></a>
+<p>The authorization to upgrade information to a label that dominates the
+label of the current information is called the <code class="literal">Upgrade File Label</code> authorization.
+The authorization to downgrade information to a label that is lower than the
+the label of the current information is called the <code class="literal">Downgrade File
+Label</code> authorization. For definitions for these authorizations, see <code class="filename">/etc/security/auth_attr</code>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcrth"></a>Privileges for Translating Labels</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-82"></a>
+<a class="indexterm" name="indexterm-83"></a>
+<a class="indexterm" name="indexterm-84"></a>
+<a class="indexterm" name="indexterm-85"></a>
+<a class="indexterm" name="indexterm-86"></a>
+<a class="indexterm" name="indexterm-87"></a>
+<a class="indexterm" name="indexterm-88"></a>
+<p>Label translation occurs whenever programs manipulate labels. Labels
+are translated to and from the textual strings to the internal representation.
+For example, when a program such as <span><strong class="command">getlabel</strong></span> gets the label
+of a file, before the label can display to the user, the internal representation
+of the label is translated into readable output. When the <span><strong class="command">setlabel</strong></span> program
+sets a label specified on the command line, the textual string, that is, the
+label's name, is translated into the label's internal representation. Trusted Extensions permits
+label translations only if the calling process's label dominates the label
+that is to be translated. If a process attempts to translate a label that
+the process's label does not dominate, the translation is disallowed. The <code class="constant">sys_trans_label</code> privilege is required to override this restriction.</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch01.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Types of Labels, Their Components and Uses </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 2. Planning Labels (Tasks)</td></tr></table></div></body></html>

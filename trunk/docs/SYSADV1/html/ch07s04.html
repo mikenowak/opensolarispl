@@ -1,0 +1,425 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Troubleshooting Diskless Client Problems</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch07.html" title="Chapter 7. Managing Diskless Clients (Tasks)"><link rel="prev" href="ch07s03.html" title="Patching Diskless Client OS Services"><link rel="next" href="ch08.html" title="Chapter 8. Shutting Down and Booting a System (Overview)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Troubleshooting Diskless Client Problems</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch07s03.html">Prev</a> </td><th width="60%" align="center">Chapter 7. Managing Diskless Clients (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch08.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gcezq"></a>Troubleshooting Diskless Client Problems</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-101"></a>
+<a class="indexterm" name="indexterm-102"></a>
+<a class="indexterm" name="indexterm-103"></a>
+<p>This section describes problems that are encountered when managing diskless
+clients and possible solutions.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcfab"></a>Troubleshooting Diskless Client Installation Problems</h3></div></div></div>
+
+<p>The <span><strong class="command">smosservice add</strong></span> command does not install any
+packages that are designated <code class="literal">ARCH=all</code> in the root (<code class="filename">/</code>) or <code class="filename">/usr</code> file systems. As a result, these
+packages are skipped. No warning or error messages are displayed. You must
+add these packages to the newly-created Solaris OS service manually. This behavior has existed since the Solaris 2.1 OS.
+The behavior applies to both SPARC based and x86 based clients.
+Note that the list of missing packages varies, depending on which Solaris
+OS you are running.</p>
+<div class="task"><a name="archall-1"></a><p class="title"><b>How to Locate and Install Missing <code class="literal">ARCH=all</code> Packages</b></p><div class="tasksummary">
+<p>This procedure shows you how to locate and install missing <code class="literal">ARCH=all</code> packages after you have created the Solaris OS service on the server.
+Examples that are provided in this procedure apply to the Solaris 10 6/06
+OS.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Locate all the packages with the <code class="literal">ARCH=all</code> parameter.</p>
+<ol type="a">
+<li>
+<p>Change directories to the <code class="filename">Product</code> directory
+of the media for the Solaris 10 image. For example:</p>
+<pre class="screen">% <strong class="userinput"><code>cd /net/server/export/Solaris/s10u2/combined.s10s_u2wos/latest/Solaris_10/Product</code></strong>
+</pre>
+</li>
+<li>
+<p>List all the packages in the <code class="filename">pkginfo</code> file
+that have the <code class="literal">ARCH=all</code> parameter.</p>
+<pre class="screen">% <strong class="userinput"><code>grep -w ARCH=all */pkginfo</code></strong>
+</pre>
+<p>If an error message indicating the arguments list is too long is displayed,
+you can alternately run the following command to generate the list:</p>
+<pre class="screen">% <strong class="userinput"><code>find . -name pkginfo -exec grep -w ARCH=all {} /dev/null \;</code></strong>
+</pre>
+<p>Note that running this command takes longer to produce results.</p>
+<p>The output is similar to the following:</p>
+<pre class="programlisting">./SUNWjdmk-base/pkginfo:ARCH=all
+./SUNWjhdev/pkginfo:ARCH=all
+./SUNWjhrt/pkginfo:ARCH=all
+./SUNWjhdem/pkginfo:ARCH=all
+./SUNWjhdoc/pkginfo:ARCH=all
+./SUNWmlibk/pkginfo:ARCH=all</pre>
+<p>The information that is provided in this list enables you to determine
+which packages are installed in the <code class="filename">/usr</code> file system
+and which packages are installed in the root (<code class="filename">/</code>) file
+system.</p>
+</li>
+<li>
+<p>Check the value of the <code class="literal">SUNW_PKGTYPE</code> parameter
+in the package list you generated.</p>
+<p>Packages that belong in the <code class="filename">/usr</code> file system are designated as <code class="literal">SUNW_PKGTYPE=usr</code> in
+the <code class="filename">pkginfo</code> file. Packages that belong in the root (<code class="filename">/</code>) file system are designated as <code class="literal">SUNW_PKGTYPE=root</code> in
+the <code class="filename">pkginfo</code> file. In the preceding output, all the packages
+belong in the <code class="filename">/usr</code> file system.</p>
+</li>
+</ol>
+</li><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Create the temporary installation administration files.</p>
+<p>You
+must create a separate installation administration file for packages that
+are installed in the root (<code class="filename">/</code>) file system and a separate
+installation administration file for packages that are installed in the <code class="filename">/usr</code> file system.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>For <code class="literal">ARCH=all</code> packages that are installed
+in the <code class="filename">/usr</code> file system, create the following  temporary
+installation administration file:</p>
+<pre class="screen"># cat &gt;/tmp/admin_usr &lt;&lt;EOF
+mail=
+instance=unique
+partial=nocheck
+runlevel=nocheck
+idepend=nocheck
+rdepend=nocheck
+space=nocheck
+setuid=nocheck
+conflict=nocheck
+action=nocheck
+basedir=/usr_sparc.all
+EOF
+#</pre>
+</li><li>
+<p>For <code class="filename">ARCH=all</code> packages that are installed
+in the root (<code class="filename">/)</code> file system, if any exist, create the
+following  temporary installation administration file:</p>
+<pre class="screen"># cat &gt;/tmp/admin_root &lt;&lt;EOF
+mail=
+instance=unique
+partial=nocheck
+runlevel=nocheck
+idepend=nocheck
+rdepend=nocheck
+space=nocheck
+setuid=nocheck
+conflict=nocheck
+action=nocheck
+EOF
+#</pre>
+</li></ul></div>
+</li><li>
+<p>Install the missing <code class="literal">ARCH=all</code> packages.</p>
+<ol type="a">
+<li>
+<p>If the current directory is not the Product directory of the media
+for the Solaris 10 image, change directories to that directory. For example:</p>
+<pre class="screen"># <strong class="userinput"><code>cd /net/<em class="replaceable"><code>server</code></em>/export/Solaris/s10u2/combined.s10s_u2wos/latest/Solaris_10/Product</code></strong>
+</pre>
+<p>You can run the <span><strong class="command">pwd</strong></span> command to determine the current
+directory.</p>
+</li>
+<li>
+<p>Install the missing <code class="literal">ARCH=all</code> packages in the <code class="filename">/usr</code> file system.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgadd -R /export/Solaris_10 -a /tmp/admin_usr -d `pwd` [<em class="replaceable"><code>package-A</code></em> <em class="replaceable"><code>package-B</code></em> ...]</code></strong>
+</pre>
+<p>Multiple packages can be listed when you running the <span><strong class="command">pkgadd</strong></span> command.</p>
+</li>
+<li>
+<p>Check that the <code class="literal">ARCH=all</code> packages were installed.</p>
+<pre class="screen"># <strong class="userinput"><code>pkginfo  -R /export/Solaris_10  [<em class="replaceable"><code>package-A</code></em> <em class="replaceable"><code>package-B</code></em> ...]</code></strong>
+</pre>
+</li>
+<li>
+<p>Install the missing <code class="literal">ARCH=all</code> packages that
+in the root (<code class="filename">/</code>) file system.</p>
+<p>Note that it
+is possible that none of these packages exist.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgadd  -R /export/root/clone/Solaris_10/sun4u  -a /tmp/admin_root -d `pwd`  [<em class="replaceable"><code>package-X</code></em> <em class="replaceable"><code>package-Y</code></em> ...]</code></strong>
+</pre>
+</li>
+<li>
+<p>Check that the <code class="literal">ARCH=all</code> packages were installed.</p>
+<pre class="screen"># <strong class="userinput"><code>pkginfo  -R /export/root/clone/Solaris_10/sun4u [<em class="replaceable"><code>package-X</code></em> <em class="replaceable"><code>package-</code></em> ...]</code></strong>
+</pre>
+</li>
+</ol>
+</li><li>
+<p>After you have finished adding the missing <code class="literal">ARCH=all</code> packages,
+remove the temporary installation administration file.</p>
+<pre class="screen"># <strong class="userinput"><code>rm /tmp/<em class="replaceable"><code>administration-file</code></em>
+</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="id2060095"></a><p class="title"><b>Example 7.10. Locating and Installing Missing <code class="literal">ARCH=all</code>Packages</b></p>
+
+
+<a class="indexterm" name="indexterm-104"></a>
+<p>This example shows how to install the missing <code class="literal">ARCH=all</code> package, <code class="literal">SUNWjdmk-base</code>, in the <code class="filename">/usr</code> file system.</p>
+<pre class="screen">% <strong class="userinput"><code>uname -a</code></strong>
+SunOS t1fac46 5.10 Generic_118833-02 sun4u sparc SUNW,UltraSPARC-IIi-cEngine
+
+% <strong class="userinput"><code>cat /etc/release</code></strong>
+                       Solaris 10 6/06 s10s_u2wos_03 SPARC
+           Copyright 2006 Sun Microsystems, Inc.  All Rights Reserved.
+                        Use is subject to license terms.
+                           Assembled 06 February 2006
+
+% <strong class="userinput"><code>cd /net/ventor/export/Solaris/s10u2/combined.s10s_u2wos/latest/Solaris_10/Product</code></strong>
+
+% <strong class="userinput"><code>grep -w ARCH=all */pkginfo</code></strong>
+Arguments too long
+
+% <strong class="userinput"><code>find . -name pkginfo -exec grep -w ARCH=all {} /dev/null \;</code></strong>
+./SUNWjdmk-base/pkginfo:ARCH=all
+./SUNWjhdev/pkginfo:ARCH=all
+./SUNWjhrt/pkginfo:ARCH=all
+./SUNWjhdem/pkginfo:ARCH=all
+./SUNWjhdoc/pkginfo:ARCH=all
+./SUNWmlibk/pkginfo:ARCH=all
+
+% <strong class="userinput"><code>grep -w SUNW_PKGTYPE=usr ./SUNWjdmk-base/pkginfo ./SUNWjhdev/pkginfo ...</code></strong>
+./SUNWjdmk-base/pkginfo:SUNW_PKGTYPE=usr
+./SUNWjhdev/pkginfo:SUNW_PKGTYPE=usr
+./SUNWjhrt/pkginfo:SUNW_PKGTYPE=usr
+./SUNWjhdem/pkginfo:SUNW_PKGTYPE=usr
+./SUNWjhdoc/pkginfo:SUNW_PKGTYPE=usr
+
+% <strong class="userinput"><code>grep -w SUNW_PKGTYPE=root ./SUNWjdmk-base/pkginfo ./SUNWjhdev/pkginfo ...</code></strong>
+
+% <strong class="userinput"><code>su</code></strong>
+Password: <strong class="userinput"><code>xxxxxx
+
+# cat &gt;/tmp/admin_usr &lt;&lt;EOF
+mail=
+instance=unique
+partial=nocheck
+runlevel=nocheck
+idepend=nochec&gt; k
+rdepend=nocheck
+space=nocheck
+setuid=nocheck
+conflict=nocheck
+action=nocheck
+basedir=/usr_sparc.all
+EOF</code></strong>
+
+# <strong class="userinput"><code>pwd</code></strong>
+/net/ventor/export/Solaris/s10u2/combined.s10s_u2wos/latest/Solaris_10/Product
+
+# <strong class="userinput"><code>pkginfo  -R /export/Solaris_10  SUNWjdmk-base</code></strong> 
+ERROR: information for "SUNWjdmk-base" was not found
+
+# <strong class="userinput"><code>pkgadd  -R /export/Solaris_10  -a /tmp/admin_usr  -d `pwd`  SUNWjdmk-base</code></strong>
+
+Processing package instance &lt;SUNWjdmk-base&gt; &lt;/net/ventor/export/Solaris/s10u2/combined.s10s_u2wos...
+
+
+Java DMK 5.1 minimal subset(all) 5.1,REV=34.20060120
+Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
+Use is subject to license terms.
+Using &lt;/export/Solaris_10/usr_sparc.all&gt;
+## Processing package information.
+## Processing system information.
+
+Installing Java DMK 5.1 minimal subset as &lt;SUNWjdmk-base&gt;
+
+## Installing part 1 of 1.
+2438 blocks
+
+Installation of &lt;SUNWjdmk-base&gt; was successful.
+
+# <strong class="userinput"><code>pkginfo -R /export/Solaris_10 SUNWjdmk-base</code></strong>
+application SUNWjdmk-base Java DMK 5.1 minimal subset
+
+# <strong class="userinput"><code>rm /tmp/admin_usr</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="clientsetup-16"></a>Troubleshooting General Diskless Client
+Problems</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-105"></a>This section lists some common problems with diskless clients
+that you might encounter and possible solutions.</p>
+<div class="qandaset"><dl><dt> <a href="ch07s04.html#id2060279">Diskless client reports Owner of the module /usr/lib/security/pam_unix_session.so.1
+is not root, when attempting to log in, the /usr file
+system is owned by nobody.</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody>
+<tr class="question"><td align="left" valign="top"><a name="id2060279"></a><a name="id2060282"></a><b></b></td><td align="left" valign="top"><p>Diskless client reports <code class="literal">Owner of the module /usr/lib/security/pam_unix_session.so.1
+is not root</code>, when attempting to log in, the <code class="filename">/usr</code> file
+system is owned by <code class="literal">nobody</code>.</p></td></tr>
+<tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>To correct the problem, follow
+this workaround:</p><div class="orderedlist"><ol type="1"><li>
+<p>Using a text editor, modify the diskless client's <code class="filename">server:/export/root/client/etc/default/nfs</code> file.</p>
+</li><li>
+<p>Change the <code class="literal">#NFSMAPID_DOMAIN=domain</code> line
+to the following:</p>
+<pre class="screen">NFSMAPID_DOMAIN=the_same_value_as_in_server's_/var/run/nfs4_domain</pre>
+</li><li>
+<p>Ensure that the OS server and the diskless client have the
+same <code class="literal">nfsmapid</code> domain. To verify this information, check
+the <code class="filename">/var/run/nfs4_domain</code> file.</p>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>If the diskless client's <code class="filename">nfs4_domain</code> file
+contains a different value than the OS server's <code class="filename">/var/run/nfs4_domain</code> file,
+you will not be able to log in to the system after the diskless client boots.</p>
+</div>
+</li><li>
+<p>Reboot the diskless client.</p>
+</li></ol></div><p>For more information, see <span class="olink">Chapter 3, <em class="citetitle">NFS Tunable Parameters,</em> in <em class="citetitle">Solaris Tunable Parameters Reference Manual</em>
+</span> and <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">nfsmapid</span>
+(
+1M
+)
+</span>
+</span>.</p></td></tr>
+</tbody></table></div>
+<div class="qandaset"><dl><dt> <a href="ch07s04.html#id2060481">The OS server fails to do the following:</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody>
+<tr class="question"><td align="left" valign="top"><a name="id2060481"></a><a name="id2060483"></a><b></b></td><td align="left" valign="top"><p>The OS server fails to do the following:</p><div class="itemizedlist"><ul type="disc"><li>
+<p>Respond to client Reverse Address Resolution Protocol (RARP)
+requests</p>
+</li><li>
+<p>Respond to client <span><strong class="command">bootparam</strong></span> requests</p>
+</li><li>
+<p>Mount a diskless client root (<code class="filename">/</code>) file
+system</p>
+</li></ul></div></td></tr>
+<tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>The following solutions apply in a files environment.</p><div class="itemizedlist"><ul type="disc"><li>
+<p>Verify that <code class="filename">files</code> is listed as the first
+source for <code class="filename">hosts</code>, <code class="filename">ethers</code>, and <code class="filename">bootparams</code> in the <code class="filename">/etc/nsswitch.conf</code> file
+on the OS server.</p>
+</li><li>
+<p>Verify that the client's IP address appears in the <code class="filename">/etc/inet/hosts</code> and <code class="filename">/etc/inet/ipnodes</code> files.</p>
+</li><li>
+<p>Verify that the client's Ethernet address appears in the <code class="filename">/etc/ethers</code> file.</p>
+</li><li>
+<p>Verify that the <code class="filename">/etc/bootparams</code> file
+contains the following paths to the client's root (<code class="filename">/</code>)
+directory and swap areas.</p>
+<pre class="screen">
+<em class="replaceable"><code>client</code></em> root=<em class="replaceable"><code>os-server</code></em>:/export/root/<em class="replaceable"><code>client</code></em> swap=<em class="replaceable"><code>os-server</code></em>:
+/export/swap/<em class="replaceable"><code>client</code></em> </pre>
+<p>The swap size varies depending on whether you specify the <code class="option">
+x</code> <em class="replaceable"><code>swapsize</code></em> option when you add the diskless client. If you specify
+the <code class="option">
+x</code> <em class="replaceable"><code>dump</code></em> option when you add
+the diskless client, the following line is present.</p>
+<pre class="screen">dump=<em class="replaceable"><code>os-server</code></em>:/export/dump/<em class="replaceable"><code>client</code></em> dumpsize=512</pre>
+<p>The dump size varies depending on whether you specify the <code class="option">
+x</code> <em class="replaceable"><code>dumpsize</code></em> option when you add the diskless client.</p>
+</li><li>
+<p>Verify that the OS server's IP address appears in the <code class="filename">/export/root/<em class="replaceable"><code>client</code></em>/etc/inet/hosts</code> file.</p>
+</li></ul></div></td></tr>
+</tbody></table></div>
+<div class="qandaset"><dl><dt> <a href="ch07s04.html#id2060756">The OS server fails to do the following:</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody>
+<tr class="question"><td align="left" valign="top"><a name="id2060756"></a><a name="id2060759"></a><b></b></td><td align="left" valign="top"><p>The OS server fails to do the following:</p><div class="itemizedlist"><ul type="disc"><li>
+<p>Respond to client RARP requests</p>
+</li><li>
+<p>Respond to client <span><strong class="command">bootparam</strong></span> requests</p>
+</li><li>
+<p>Mount a diskless client root (<code class="filename">/</code>) file
+system</p>
+</li></ul></div></td></tr>
+<tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>The following solutions apply in a name service environment.</p><div class="itemizedlist"><ul type="disc"><li>
+<p>Verify that both the OS server's and the client's Ethernet
+address and IP address are correctly mapped. </p>
+</li><li>
+<p>Verify that the <code class="filename">/etc/bootparams</code> file
+contains the paths to the client's root (<code class="filename">/</code>) directory
+and swap areas.</p>
+<pre class="screen">
+<em class="replaceable"><code>client</code></em> root=<em class="replaceable"><code>os-server</code></em>:/export/
+root/<em class="replaceable"><code>client</code></em> swap=<em class="replaceable"><code>os-server</code></em>:/export/
+swap/<em class="replaceable"><code>client</code></em> swapsize=24</pre>
+<p>The swap size varies depending on whether you specify the <code class="option">
+x</code> <em class="replaceable"><code>swapsize</code></em> option when you add the diskless client. If you specify
+the <code class="option">
+x</code> <em class="replaceable"><code>dump</code></em> option when you add
+the diskless client, the following line is present:</p>
+<pre class="screen">dump=<em class="replaceable"><code>os-server</code></em>:/export/dump/<em class="replaceable"><code>client</code></em> dumpsize=24</pre>
+<p>The dump size varies depending on whether you specify the <code class="option">
+x</code> <em class="replaceable"><code>dumpsize</code></em> option when you add the diskless client.</p>
+</li></ul></div></td></tr>
+</tbody></table></div>
+<div class="qandaset"><dl><dt> <a href="ch07s04.html#id2060932">Diskless client panics</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody>
+<tr class="question"><td align="left" valign="top"><a name="id2060932"></a><a name="id2060934"></a><b></b></td><td align="left" valign="top"><p>Diskless client panics</p></td></tr>
+<tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>Verify the following:</p><div class="itemizedlist"><ul type="disc"><li>
+<p>The OS server's Ethernet address is correctly mapped to its
+IP address. If you physically moved a system from one network to another,
+you might have forgotten to remap the system's new IP address.</p>
+</li><li>
+<p>The client's host name, IP address, and Ethernet address do
+not exist in the database of another server <span class="emphasis"><em>on the same subnet</em></span> that
+responds to the client's RARP, Trivial File Transfer Protocol (TFTP), or <code class="filename">bootparam</code> requests. Often, test systems are set up to install their
+OS from an install server. In these cases, the install server answers the
+client's RARP or <code class="filename">bootparam</code> request, returning an incorrect
+IP address. This incorrect address might result in the download of a boot
+program for the wrong architecture, or a failure to mount the client's root
+(<code class="filename">/</code>) file system.</p>
+</li><li>
+<p>The diskless client's TFTP requests are not answered by an
+install server (or previous OS server) that transfers an incorrect boot program.
+If the boot program is of a different architecture, the client immediately
+panics. If the boot program loads from a non-OS server, the client might obtain
+its root partition from the non-OS server and its <code class="filename">/usr</code> partition
+from the OS server. In this situation, the client panics if the root and <code class="filename">/usr</code> partitions are of conflicting architectures or versions. </p>
+</li><li>
+<p>If you are using both an install server and an OS server,
+verify that the following entry exists in the <code class="filename">/etc/dfs/dfstab</code> file.</p>
+<pre class="screen">share <code class="option">
+F</code> nfs <code class="option">
+o</code> <code class="option">
+ro</code> <code class="filename">/export/exec/Solaris_<em class="replaceable"><code>version</code></em>-<em class="replaceable"><code>instruction-set</code></em>.all/usr</code>
+</pre>
+<p>where <em class="replaceable"><code>version</code></em>= <code class="literal">2.7</code>, <code class="literal">8</code>, <code class="literal">9</code>,<code class="literal">10</code>, 11, and <em class="replaceable"><code>instruction-set</code></em>=<code class="literal">sparc</code> or <code class="literal">i386</code>.</p>
+</li><li>
+<p>Verify that the diskless client's root (<code class="filename">/</code>), <code class="filename">/swap</code>, and <code class="filename">/dump</code> (if specified) partitions
+have share entries:  </p>
+<pre class="screen">share -F nfs -o rw=<em class="replaceable"><code>client</code></em>,root=<em class="replaceable"><code>client</code></em> /export/root/<em class="replaceable"><code>client</code></em> 
+share -F nfs -o rw=<em class="replaceable"><code>client</code></em>,root=<em class="replaceable"><code>client</code></em> /export/swap/<em class="replaceable"><code>client</code></em> 
+share -F nfs -o rw=<em class="replaceable"><code>client</code></em>,root=<em class="replaceable"><code>client</code></em> /export/dump/<em class="replaceable"><code>client</code></em>
+</pre>
+</li><li>
+<p>On the OS server, type the following command to check which
+files are shared:</p>
+<pre class="screen">% <strong class="userinput"><code>share</code></strong>
+</pre>
+<p>The OS server must share <code class="filename">/export/root/</code>
+<em class="replaceable"><code>client</code></em> and <code class="filename">/export/swap/</code>
+<em class="replaceable"><code>client-name</code></em> (defaults),
+or the root, <code class="filename">/swap</code>, and <code class="filename">/dump</code> partitions
+that you specified when you added the diskless client.</p>
+<p>Verify
+that the following entries exist in the <code class="filename">/etc/dfs/dfstab</code> file:</p>
+<pre class="screen">share -F nfs -o ro /export/exec/Solaris_<em class="replaceable"><code>version</code></em>-<em class="replaceable"><code>instruction-set</code></em>.all/usr
+share -F nfs -o rw=<em class="replaceable"><code>client</code></em>,root=<em class="replaceable"><code>client</code></em> /export/root/<em class="replaceable"><code>client</code></em>
+share -F nfs -o rw=<em class="replaceable"><code>client</code></em>,root=<em class="replaceable"><code>client</code></em> /export/swap/<em class="replaceable"><code>client</code></em>
+</pre>
+</li></ul></div></td></tr>
+</tbody></table></div>
+<div class="qandaset"><dl><dt> <a href="ch07s04.html#id2061294">OS server is not responding to diskless client's RARP request</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody>
+<tr class="question"><td align="left" valign="top"><a name="id2061294"></a><a name="id2061322"></a><b></b></td><td align="left" valign="top"><p>OS server is not responding to diskless client's RARP request</p></td></tr>
+<tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>From the client's intended OS server, run the <span><strong class="command">snoop</strong></span> command
+as superuser (<code class="literal">root</code>) by using the client's Ethernet address:</p><pre class="screen"># <strong class="userinput"><code>snoop xx:xx:xx:xx:xx:xx</code></strong>
+</pre></td></tr>
+</tbody></table></div>
+<div class="qandaset"><dl><dt> <a href="ch07s04.html#id2061361">Boot program downloads but panics early in the process</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody>
+<tr class="question"><td align="left" valign="top"><a name="id2061361"></a><a name="id2061364"></a><b></b></td><td align="left" valign="top"><p>Boot program downloads but panics early in the process</p></td></tr>
+<tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>Use the <span><strong class="command">snoop</strong></span> command to verify that the
+intended OS server is answering the client's TFTP and NFS requests.</p></td></tr>
+</tbody></table></div>
+<div class="qandaset"><dl><dt> <a href="ch07s04.html#id2061391">Diskless client hangs.</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody>
+<tr class="question"><td align="left" valign="top"><a name="id2061391"></a><a name="id2061394"></a><b></b></td><td align="left" valign="top"><p>Diskless client hangs.</p></td></tr>
+<tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>Restart the following daemons on the OS server:</p><pre class="screen"># <strong class="userinput"><code>/usr/sbin/rpc.bootparamd</code></strong>
+# <strong class="userinput"><code>/usr/sbin/in.rarpd -a</code></strong>
+</pre></td></tr>
+</tbody></table></div>
+<div class="qandaset"><dl><dt> <a href="ch07s04.html#id2061444">Incorrect server responds to diskless client's RARP request</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody>
+<tr class="question"><td align="left" valign="top"><a name="id2061444"></a><a name="id2061446"></a><b></b></td><td align="left" valign="top"><p>Incorrect server responds to diskless client's RARP request</p></td></tr>
+<tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>Restart the following daemons on the OS server:</p><pre class="screen"># <strong class="userinput"><code>/usr/sbin/rpc.bootparamd</code></strong>
+# <strong class="userinput"><code>svcadm enable network/rarp</code></strong>
+</pre></td></tr>
+</tbody></table></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch07s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch07.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch08.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Patching Diskless Client OS Services </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 8. Shutting Down and Booting a System (Overview)</td></tr></table></div></body></html>

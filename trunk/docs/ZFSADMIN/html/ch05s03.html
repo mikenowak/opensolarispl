@@ -1,0 +1,164 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Querying ZFS File System Information</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="up" href="ch05.html" title="Chapter 5. Managing ZFS File Systems"><link rel="prev" href="ch05s02.html" title="ZFS Properties"><link rel="next" href="ch05s04.html" title="Managing ZFS Properties"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Querying ZFS File System Information</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch05s02.html">Prev</a> </td><th width="60%" align="center">Chapter 5. Managing ZFS File Systems</th><td width="20%" align="right"> <a accesskey="n" href="ch05s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gazsu"></a>Querying ZFS File System Information</h2></div></div></div>
+
+<p>The <span><strong class="command">zfs list</strong></span> command provides an extensible mechanism
+for viewing and querying dataset information. Both basic and complex queries
+are explained in this section.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gaztd"></a>Listing Basic ZFS Information</h3></div></div></div>
+
+<p>You can list basic dataset information by using the <span><strong class="command">zfs list</strong></span> command
+with no options. This command displays the names of all datasets on the system
+including their <span class="property">used</span>, <span class="property">available</span>, <span class="property">referenced</span>, and <span class="property">mountpoint</span> properties. For
+more information about these properties, see <span class="olink">ZFS Properties</span>.<a class="indexterm" name="indexterm-311"></a>
+<a class="indexterm" name="indexterm-312"></a>
+<a class="indexterm" name="indexterm-313"></a>
+</p>
+<p>For example:</p>
+<pre class="screen"># <strong class="userinput"><code>zfs list</code></strong>
+NAME                   USED  AVAIL  REFER  MOUNTPOINT
+pool                  84.0K  33.5G      -  /pool
+pool/clone                0  33.5G  8.50K  /pool/clone
+pool/test                8K  33.5G     8K  /test
+pool/home             17.5K  33.5G  9.00K  /pool/home
+pool/home/marks       8.50K  33.5G  8.50K  /pool/home/marks
+pool/home/marks@snap      0      -  8.50K  /pool/home/marks@snap</pre>
+<p>You can also use this command to display specific datasets by providing
+the dataset name on the command line. Additionally, use the the <code class="option">
+r</code> option
+to recursively display all descendants of that dataset.</p>
+<p>The following example shows how to display <code class="filename">tank/home/chua</code> and
+all of its descendant datasets.<a class="indexterm" name="indexterm-314"></a>
+<a class="indexterm" name="indexterm-315"></a>
+<a class="indexterm" name="indexterm-316"></a>
+</p>
+<pre class="screen"># <strong class="userinput"><code>zfs list -r tank/home/chua</code></strong>
+NAME                        USED  AVAIL  REFER  MOUNTPOINT 
+tank/home/chua		        26.0K  4.81G  10.0K  /tank/home/chua 
+tank/home/chua/projects       16K  4.81G   9.0K  /tank/home/chua/projects
+tank/home/chua/projects/fs1    8K  4.81G     8K  /tank/home/chua/projects/fs1 
+tank/home/chua/projects/fs2    8K  4.81G     8K  /tank/home/chua/projects/fs2</pre>
+<p>For additional information about the <span><strong class="command">zfs list</strong></span> command,
+see <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">zfs</span>
+(
+1M
+)
+</span>
+</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gazsh"></a>Creating Complex ZFS Queries</h3></div></div></div>
+
+<p>The <span><strong class="command">zfs list</strong></span> output can be customized by using of
+the <code class="option">
+o</code>, <code class="option">
+f</code>, and <code class="option">
+H</code> options.</p>
+<p>You can customize property value output by using the <code class="option">
+o</code> option
+and a comma-separated list of desired properties. Supply any dataset property
+as a valid value.  For a list of all supported dataset properties, see <span class="olink">ZFS Properties</span>. In addition to the properties defined
+there, the <code class="option">
+o</code> option list can also contain the literal <code class="literal">name</code> to indicate that the output should include the name of the dataset. </p>
+<p>The following example uses <span><strong class="command">zfs list</strong></span> to display the
+dataset name, along with the <span class="property">sharenfs</span> and <span class="property">mountpoint</span> properties.</p>
+<pre class="screen"># <strong class="userinput"><code>zfs list -o name,sharenfs,mountpoint</code></strong> 
+NAME                  SHARENFS         MOUNTPOINT
+tank                  rw               /export
+tank/archives         rw               /export/archives
+tank/archives/zfs     rw               /export/archives/zfs
+tank/calendar         off              /var/spool/calendar
+tank/cores            rw               /cores
+tank/dumps            rw               /export/dumps
+tank/home             rw               /export/home
+tank/home/ahl         rw               /export/home/ahl
+tank/home/ahrens      rw               /export/home/ahrens
+tank/home/andrei      rw               /export/home/andrei
+tank/home/barts       rw               /export/home/barts
+tank/home/billm       rw               /export/home/billm
+tank/home/bjw         rw               /export/home/bjw
+tank/home/bmc         rw               /export/home/bmc
+tank/home/bonwick     rw               /export/home/bonwick
+tank/home/brent       rw               /export/home/brent
+tank/home/dilpreet    rw               /export/home/dilpreet
+tank/home/dp          rw               /export/home/dp
+tank/home/eschrock    rw               /export/home/eschrock
+tank/home/fredz       rw               /export/home/fredz
+tank/home/johansen    rw               /export/home/johansen
+tank/home/jwadams     rw               /export/home/jwadams
+tank/home/lling       rw               /export/home/lling
+tank/home/mws         rw               /export/home/mws
+tank/home/rab         rw               /export/home/rab
+tank/home/sch         rw               /export/home/sch
+tank/home/tabriz      rw               /export/home/tabriz
+tank/home/tomee       rw               /export/home/tomee</pre>
+<p>You can use the <code class="option">
+t</code> option to specify the types of datasets
+to display. The valid types are described in the following table.<a class="indexterm" name="indexterm-317"></a>
+<a class="indexterm" name="indexterm-318"></a>
+</p>
+<div class="table"><a name="gbaje"></a><p class="title"><b>Table 5.2. Types of ZFS Datasets</b></p>
+
+
+<table summary="Types of ZFS Datasets" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Type</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">filesystem</code>
+</p>
+</td><td>
+<p>File systems and clones</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">volume</code>
+</p>
+</td><td>
+<p>Volumes</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">snapshot</code>
+</p>
+</td><td>
+<p>Snapshots</p>
+</td></tr></tbody></table>
+</div>
+<p>The <code class="option">
+t</code> options takes a comma-separated list of the types
+of datasets to be displayed. The following example uses the <code class="option">
+t</code> and <code class="option">
+o</code> options simultaneously to show the name and <span class="property">used</span> property
+for all file systems:<a class="indexterm" name="indexterm-319"></a>
+<a class="indexterm" name="indexterm-320"></a>
+<a class="indexterm" name="indexterm-321"></a>
+</p>
+<pre class="screen"># <strong class="userinput"><code>zfs list -t filesystem -o name,used</code></strong>
+NAME                  USED
+pool                  105K
+pool/container        0
+pool/home             26.0K
+pool/home/tabriz      26.0K
+pool/home/tabriz_clone  0</pre>
+<p>You can use the <code class="option">
+H</code> option to omit the <span><strong class="command">zfs list</strong></span> header
+from the generated output. With the <code class="option">
+H</code> option, all white space
+is output as tabs. This option can be useful when you need parseable output,
+for example, when scripting. The following example shows the output generated
+from using the <span><strong class="command">zfs list</strong></span> command with the <code class="option">
+H</code> option:<a class="indexterm" name="indexterm-322"></a>
+<a class="indexterm" name="indexterm-323"></a>
+<a class="indexterm" name="indexterm-324"></a>
+</p>
+<pre class="screen"># <strong class="userinput"><code>zfs list -H -o name</code></strong>
+pool
+pool/container
+pool/home
+pool/home/tabriz
+pool/home/tabriz@now
+pool/home/tabriz/container
+pool/home/tabriz/container/fs1
+pool/home/tabriz/container/fs2
+pool/home/tabriz_clone</pre>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch05s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch05.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch05s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">ZFS Properties </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Managing ZFS Properties</td></tr></table></div></body></html>

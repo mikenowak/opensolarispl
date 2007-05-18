@@ -1,0 +1,148 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Solaris ZFS Administration Guide</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><meta name="description" content="This book is intended for anyone responsible for setting up and administering
+ZFS file systems. Topics are described for both SPARC and x86 based systems, where appropriate."><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="next" href="pr01.html" title="Preface"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Solaris ZFS Administration Guide</th></tr><tr><td width="20%" align="left"> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="pr01.html">Next</a></td></tr></table><hr></div><div class="book" lang="en"><div class="titlepage"><div><div><h1 class="title"><a name="id1474157"></a>Solaris ZFS Administration Guide</h1></div><div><div class="authorgroup">
+<div class="author"><h3 class="author"></h3></div>
+</div></div><div><p class="releaseinfo">
+</p></div><div><p class="copyright">Copyright © 2006 Sun Microsystems, Inc.</p></div><div><div class="legalnotice"><a name="id1636382"></a>
+<p>The contents of this Documentation are subject to the Public Documentation License Version 1.01 (the "License"); you may only use this Documentation if you comply with the terms of this License. A copy of the License is available at http://www.opensolaris.org/os/community/documentation/license.</p>
+<p>Sun Microsystems, Inc. has intellectual property rights relating to technology embodied in the product that is described in this document. In particular, and without limitation, these intellectual
+property rights may include one or more U.S. patents or pending patent applications in the U.S. and in other countries.</p>
+<p>U.S. Government Rights &#8211; Commercial software.  Government users are subject to the Sun Microsystems, Inc. standard license agreement and applicable provisions of the FAR and its supplements.</p>
+<p>This distribution may include materials developed by third parties.</p>
+<p>Parts of the product may be derived from Berkeley BSD systems, licensed from the University of California. UNIX is a registered trademark in the U.S. and other countries, exclusively
+licensed through X/Open Company, Ltd.</p>
+<p>Sun, Sun Microsystems, the Sun logo,
+the Solaris logo, the Java Coffee Cup logo, docs.sun.com, 
+Java, and
+Solaris are trademarks or registered trademarks of Sun Microsystems, Inc. in the U.S.
+and other countries. All SPARC trademarks are used under license and are trademarks
+or registered trademarks of SPARC International, Inc. in the U.S. and other countries.
+Products bearing SPARC trademarks are based upon an architecture developed by Sun
+Microsystems, Inc. 
+Legato
+NetWorker is a trademark or registered trademark of Legato Systems, Inc.</p>
+<p>The OPEN LOOK and <span class="trademark">Sun</span>&#8482; Graphical User Interface was developed by Sun Microsystems, Inc. for
+its users and licensees. Sun acknowledges the pioneering efforts of Xerox in researching
+and developing the concept of visual or graphical user interfaces for the computer
+industry. Sun holds a non-exclusive license from Xerox to the Xerox Graphical User
+Interface, which license also covers Sun's licensees who implement OPEN LOOK GUIs
+and otherwise comply with Sun's written license agreements.</p>
+<p>Products covered by and information contained in this publication are controlled by U.S. Export Control
+laws and may be subject to the export or import laws in other countries. Nuclear,
+missile, chemical or biological weapons or nuclear maritime end uses or end users,
+whether direct or indirect, are strictly prohibited. Export or reexport to countries
+subject to U.S. embargo or to entities identified on U.S. export exclusion lists,
+including, but not limited to, the denied persons and specially designated nationals
+lists is strictly prohibited.</p>
+<p>DOCUMENTATION IS PROVIDED &#8220;AS IS&#8221; AND ALL EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING ANY
+IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT,
+ARE DISCLAIMED, EXCEPT TO THE EXTENT THAT SUCH DISCLAIMERS ARE HELD TO BE LEGALLY INVALID.</p>
+<p>
+</p>
+<p>Sun Microsystems, Inc. détient les droits de propriété
+intellectuelle relatifs à la technologie incorporée dans
+le produit qui est
+décrit dans ce document. En particulier, et ce sans limitation,
+ces droits de
+propriété intellectuelle peuvent inclure un ou plusieurs
+brevets américains ou des
+applications de brevet en attente aux Etats-Unis et dans d'autres
+pays.</p>
+<p>Cette distribution peut comprendre des composants
+développés par des tierces personnes.</p>
+<p>Certaines composants de ce produit peuvent être
+dérivées du logiciel Berkeley BSD, licenciés par
+l'Université de
+Californie. UNIX est une marque déposée aux Etats-Unis et
+dans d'autres pays; elle est
+licenciée exclusivement par X/Open Company, Ltd. </p>
+<p>Sun, Sun Microsystems, le logo Sun, le logo Solaris, le logo Java
+Coffee Cup, docs.sun.com, 
+ Java et Solaris sont des
+marques de fabrique ou des marques déposées
+de Sun Microsystems, Inc. aux Etats-Unis et dans d'autres pays. Toutes
+les marques
+SPARC sont utilisées sous licence et sont des marques de fabrique
+ou des
+marques déposées de SPARC International, Inc. aux
+Etats-Unis et dans
+d'autres pays. Les produits portant les marques SPARC sont basés
+sur une
+architecture développée par Sun Microsystems, Inc.
+Legato
+NetWorker is a trademark or registered trademark of Legato Systems, Inc.</p>
+<p>L'interface d'utilisation graphique OPEN LOOK et
+Sun a été
+développée par Sun Microsystems, Inc. pour ses
+utilisateurs et
+licenciés. Sun reconnaît les efforts de pionniers de Xerox
+pour la
+recherche et le développement du concept des interfaces
+d'utilisation
+visuelle ou graphique pour l'industrie de l'informatique. Sun
+détient une licence non exclusive de Xerox sur
+l'interface d'utilisation graphique Xerox, cette licence couvrant
+également les
+licenciés de Sun qui mettent en place l'interface d'utilisation
+graphique OPEN LOOK et
+qui, en outre, se conforment aux licences écrites de Sun.</p>
+<p>Les produits qui font l'objet de cette publication et les
+informations qu'il contient sont régis par la legislation
+américaine en matière de contrôle des exportations et peuvent être soumis au droit
+d'autres pays dans le domaine des exportations et importations. Les utilisations finales, ou
+utilisateurs finaux, pour des armes nucléaires, des missiles, des armes
+chimiques ou biologiques ou pour le nucléaire maritime, directement ou
+indirectement, sont strictement interdites. Les exportations ou réexportations vers
+des pays sous embargo des Etats-Unis, ou vers des entités figurant sur les
+listes d'exclusion d'exportation américaines, y compris, mais de manière non
+exclusive, la liste de personnes qui font objet d'un ordre de ne pas participer, d'une façon
+directe ou
+indirecte, aux exportations des produits ou des services qui sont
+régis par la
+legislation américaine en matière de contrôle des
+exportations et la
+liste de ressortissants spécifiquement designés, sont
+rigoureusement interdites.</p>
+<p>LA DOCUMENTATION EST FOURNIE "EN L'ETAT" ET TOUTES AUTRES CONDITIONS,
+DECLARATIONS ET GARANTIES EXPRESSES OU TACITES SONT FORMELLEMENT EXCLUES,
+DANS LA MESURE AUTORISEE PAR LA LOI APPLICABLE, Y COMPRIS NOTAMMENT
+TOUTE GARANTIE IMPLICITE RELATIVE A LA QUALITE MARCHANDE, A L'APTITUDE A UNE
+UTILISATION PARTICULIERE OU A L'ABSENCE DE CONTREFACON. </p>
+</div></div><div><p class="pubdate">May 2006</p></div><div><div class="abstract"><p class="title"><b>Abstract</b></p>
+<p>This book is intended for anyone responsible for setting up and administering
+ZFS file systems. Topics are described for both <span class="trademark">SPARC</span>&#8482; and x86 based systems, where appropriate.</p>
+</div></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="preface"><a href="pr01.html">Preface</a></span></dt><dd><dl><dt><span class="sect1"><a href="pr01.html#preface-9">Who Should Use This Book</a></span></dt><dt><span class="sect1"><a href="pr01s02.html">How This Book Is Organized</a></span></dt><dt><span class="sect1"><a href="pr01s03.html">Related Books</a></span></dt><dt><span class="sect1"><a href="pr01s04.html">Documentation, Support,
+and Training</a></span></dt><dt><span class="sect1"><a href="pr01s05.html">Typographic
+Conventions</a></span></dt><dt><span class="sect1"><a href="pr01s06.html">Shell Prompts
+in Command Examples</a></span></dt></dl></dd><dt><span class="chapter"><a href="ch01.html">1. Solaris ZFS File System (Introduction)</a></span></dt><dd><dl><dt><span class="sect1"><a href="ch01.html#gbscy">What's New in ZFS?</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch01.html#gcsxk">Using
+ZFS to Clone Non-Global Zones and Other Enhancements</a></span></dt><dt><span class="sect2"><a href="ch01.html#gciui">ZFS Backup and Restore Commands are Renamed</a></span></dt><dt><span class="sect2"><a href="ch01.html#gcitn">Recovering Destroyed Storage Pools</a></span></dt><dt><span class="sect2"><a href="ch01.html#gcfhy">ZFS is Integrated With Fault Manager</a></span></dt><dt><span class="sect2"><a href="ch01.html#gcfiw">New <span><strong class="command">zpool clear</strong></span> Command</a></span></dt><dt><span class="sect2"><a href="ch01.html#gcajn">Compact NFSv4 ACL Format</a></span></dt><dt><span class="sect2"><a href="ch01.html#gcakl">File System Monitoring Tool (<span><strong class="command">fsstat</strong></span>)</a></span></dt><dt><span class="sect2"><a href="ch01.html#gbsbp">ZFS Web-Based Management</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch01s02.html">What Is ZFS?</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch01s02.html#gaypk">ZFS Pooled Storage</a></span></dt><dt><span class="sect2"><a href="ch01s02.html#gaypi">Transactional Semantics</a></span></dt><dt><span class="sect2"><a href="ch01s02.html#gaypb">Checksums and Self-Healing Data</a></span></dt><dt><span class="sect2"><a href="ch01s02.html#gayou">Unparalleled Scalability</a></span></dt><dt><span class="sect2"><a href="ch01s02.html#gbcbn">ZFS Snapshots</a></span></dt><dt><span class="sect2"><a href="ch01s02.html#gayoc">Simplified Administration</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch01s03.html">ZFS Terminology</a></span></dt><dt><span class="sect1"><a href="ch01s04.html">ZFS Component Naming Requirements</a></span></dt></dl></dd><dt><span class="chapter"><a href="ch02.html">2. Getting Started With ZFS</a></span></dt><dd><dl><dt><span class="sect1"><a href="ch02.html#gbgxg">ZFS Hardware and Software Requirements and Recommendations</a></span></dt><dt><span class="sect1"><a href="ch02s02.html">Creating a Basic ZFS File System</a></span></dt><dt><span class="sect1"><a href="ch02s03.html">Creating a ZFS Storage Pool</a></span></dt><dt><span class="sect1"><a href="ch02s04.html">Creating a ZFS File System Hierarchy</a></span></dt></dl></dd><dt><span class="chapter"><a href="ch03.html">3. ZFS and Traditional File System Differences</a></span></dt><dd><dl><dt><span class="sect1"><a href="ch03.html#gbcby">ZFS File System Granularity</a></span></dt><dt><span class="sect1"><a href="ch03s02.html">ZFS Space Accounting</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch03s02.html#gayra">Out of Space Behavior</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch03s03.html">Mounting ZFS File Systems</a></span></dt><dt><span class="sect1"><a href="ch03s04.html">Traditional Volume Management</a></span></dt><dt><span class="sect1"><a href="ch03s05.html">New Solaris ACL Model</a></span></dt></dl></dd><dt><span class="chapter"><a href="ch04.html">4. Managing ZFS Storage Pools</a></span></dt><dd><dl><dt><span class="sect1"><a href="ch04.html#gcfog">Components of a ZFS Storage Pool</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch04.html#gazdp">Using Disks in a ZFS Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch04.html#gazcr">Using Files in a ZFS Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch04.html#gazca">Virtual Devices in a Storage Pool</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch04s02.html">Replication Features of a ZFS Storage Pool</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch04s02.html#gamss">Mirrored Storage Pool Configuration</a></span></dt><dt><span class="sect2"><a href="ch04s02.html#gamtu">RAID-Z Storage Pool Configuration</a></span></dt><dt><span class="sect2"><a href="ch04s02.html#gazch">Self-Healing Data in a Replicated Configuration</a></span></dt><dt><span class="sect2"><a href="ch04s02.html#gazdd">Dynamic Striping in a Storage Pool</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch04s03.html">Creating and Destroying ZFS Storage Pools</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch04s03.html#gaynr">Creating a ZFS Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch04s03.html#gazhs">Handling ZFS Storage Pool Creation Errors</a></span></dt><dt><span class="sect2"><a href="ch04s03.html#gammr">Destroying ZFS Storage Pools</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch04s04.html">Managing Devices in ZFS Storage Pools</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch04s04.html#gazgw">Adding Devices to a Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch04s04.html#gcfhe">Attaching and Detaching Devices in a Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch04s04.html#gazgm">Onlining and Offlining Devices in a Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch04s04.html#gazge">Clearing Storage Pool Devices</a></span></dt><dt><span class="sect2"><a href="ch04s04.html#gazgd">Replacing Devices in a Storage Pool</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch04s05.html">Querying ZFS Storage Pool Status</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch04s05.html#gamml">Basic ZFS Storage Pool Information</a></span></dt><dt><span class="sect2"><a href="ch04s05.html#gammt">ZFS Storage Pool I/O Statistics</a></span></dt><dt><span class="sect2"><a href="ch04s05.html#gamno">Health Status of ZFS Storage Pools</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch04s06.html">Migrating ZFS Storage Pools</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch04s06.html#gazre">Preparing for ZFS Storage Pool Migration</a></span></dt><dt><span class="sect2"><a href="ch04s06.html#gazqr">Exporting a ZFS Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch04s06.html#gazru">Determining Available Storage Pools to Import</a></span></dt><dt><span class="sect2"><a href="ch04s06.html#gaztk">Finding ZFS Storage Pools From Alternate Directories</a></span></dt><dt><span class="sect2"><a href="ch04s06.html#gazuf">Importing ZFS Storage Pools</a></span></dt><dt><span class="sect2"><a href="ch04s06.html#gcfhw">Recovering Destroyed ZFS Storage Pools</a></span></dt><dt><span class="sect2"><a href="ch04s06.html#gcikw">Upgrading ZFS Storage Pools</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="ch05.html">5. Managing ZFS File Systems</a></span></dt><dd><dl><dt><span class="sect1"><a href="ch05.html#gamnq">Creating and Destroying ZFS File Systems</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch05.html#gazsf">Creating a ZFS File System</a></span></dt><dt><span class="sect2"><a href="ch05.html#gammq">Destroying a ZFS File System</a></span></dt><dt><span class="sect2"><a href="ch05.html#gamnn">Renaming a ZFS File System</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch05s02.html">ZFS Properties</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch05s02.html#gazsy">Read-Only ZFS Properties</a></span></dt><dt><span class="sect2"><a href="ch05s02.html#gazsd">Settable ZFS Properties</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch05s03.html">Querying ZFS File System Information</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch05s03.html#gaztd">Listing Basic ZFS Information</a></span></dt><dt><span class="sect2"><a href="ch05s03.html#gazsh">Creating Complex ZFS Queries</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch05s04.html">Managing ZFS Properties</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch05s04.html#gazsp">Setting ZFS Properties</a></span></dt><dt><span class="sect2"><a href="ch05s04.html#gazup">Inheriting ZFS Properties</a></span></dt><dt><span class="sect2"><a href="ch05s04.html#gazuk">Querying ZFS Properties</a></span></dt><dt><span class="sect2"><a href="ch05s04.html#gazum">Querying ZFS Properties for Scripting</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch05s05.html">Mounting and Sharing ZFS File Systems</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch05s05.html#gaztn">Managing ZFS Mount Points</a></span></dt><dt><span class="sect2"><a href="ch05s05.html#gamns">Mounting ZFS File Systems</a></span></dt><dt><span class="sect2"><a href="ch05s05.html#gamnt">Temporary Mount Properties</a></span></dt><dt><span class="sect2"><a href="ch05s05.html#gamnr">Unmounting ZFS File Systems</a></span></dt><dt><span class="sect2"><a href="ch05s05.html#gamnd">Sharing ZFS File Systems</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch05s06.html">ZFS Quotas and Reservations</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch05s06.html#gazud">Setting Quotas on ZFS File Systems</a></span></dt><dt><span class="sect2"><a href="ch05s06.html#gbdbb">Setting Reservations on ZFS File Systems</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="ch06.html">6. Working With ZFS Snapshots and Clones</a></span></dt><dd><dl><dt><span class="sect1"><a href="ch06.html#gbciq">ZFS Snapshots</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch06.html#gbcya">Creating and Destroying ZFS Snapshots</a></span></dt><dt><span class="sect2"><a href="ch06.html#gbiqe">Displaying and Accessing ZFS Snapshots</a></span></dt><dt><span class="sect2"><a href="ch06.html#gbcxk">Rolling Back to a ZFS Snapshot</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch06s02.html">ZFS Clones</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch06s02.html#gbcyg">Creating a ZFS Clone</a></span></dt><dt><span class="sect2"><a href="ch06s02.html#gbiob">Destroying a ZFS Clone</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch06s03.html">Saving and Restoring ZFS Data</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch06s03.html#gbscu">Saving ZFS Data With Other Backup Products</a></span></dt><dt><span class="sect2"><a href="ch06s03.html#gbinw">Saving a ZFS Snapshot</a></span></dt><dt><span class="sect2"><a href="ch06s03.html#gbimy">Restoring a ZFS Snapshot</a></span></dt><dt><span class="sect2"><a href="ch06s03.html#gbinz">Remote Replication of ZFS Data</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="ch07.html">7. Using ACLs to Protect ZFS Files</a></span></dt><dd><dl><dt><span class="sect1"><a href="ch07.html#gbacb">New Solaris ACL Model</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch07.html#gbaay">Syntax Descriptions for Setting ACLs</a></span></dt><dt><span class="sect2"><a href="ch07.html#gbaax">ACL Inheritance</a></span></dt><dt><span class="sect2"><a href="ch07.html#gbaaz">ACL Property Modes</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch07s02.html">Setting ACLs on ZFS Files</a></span></dt><dt><span class="sect1"><a href="ch07s03.html">Setting and Displaying ACLs on ZFS Files in Verbose
+Format</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch07s03.html#gbabx">Setting ACL Inheritance on ZFS Files in Verbose Format</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch07s04.html">Setting and Displaying ACLs on ZFS Files in Compact
+Format</a></span></dt></dl></dd><dt><span class="chapter"><a href="ch08.html">8. ZFS Advanced Topics</a></span></dt><dd><dl><dt><span class="sect1"><a href="ch08.html#gaypf">Emulated Volumes</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch08.html#gbfvg">Emulated Volumes as Swap or Dump Devices</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch08s02.html">Using ZFS on a Solaris System With Zones Installed</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch08s02.html#gbbrq">Adding ZFS File Systems to a Non-Global Zone</a></span></dt><dt><span class="sect2"><a href="ch08s02.html#gbbst">Delegating Datasets to a Non-Global Zone</a></span></dt><dt><span class="sect2"><a href="ch08s02.html#gbebi">Adding ZFS Volumes to a Non-Global Zone</a></span></dt><dt><span class="sect2"><a href="ch08s02.html#gbbso">Using ZFS Storage Pools Within a Zone</a></span></dt><dt><span class="sect2"><a href="ch08s02.html#gbbsn">Property Management Within a Zone</a></span></dt><dt><span class="sect2"><a href="ch08s02.html#gbbre">Understanding the <span class="property">zoned</span> Property</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch08s03.html">ZFS Alternate Root Pools</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch08s03.html#gbdaw">Creating ZFS Alternate Root Pools</a></span></dt><dt><span class="sect2"><a href="ch08s03.html#gbdbj">Importing Alternate Root Pools</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch08s04.html">ZFS Rights Profiles</a></span></dt></dl></dd><dt><span class="chapter"><a href="ch09.html">9. ZFS Troubleshooting and Data Recovery</a></span></dt><dd><dl><dt><span class="sect1"><a href="ch09.html#gbbth">ZFS Failure Modes</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch09.html#gbbxj">Missing Devices in a ZFS Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch09.html#gbbym">Damaged Devices in a ZFS Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch09.html#gbbwx">Corrupted ZFS Data</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch09s02.html">Checking ZFS Data Integrity</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch09s02.html#gbbyc">Data Repair</a></span></dt><dt><span class="sect2"><a href="ch09s02.html#gbbyd">Data Validation</a></span></dt><dt><span class="sect2"><a href="ch09s02.html#gbbxi">Controlling ZFS Data Scrubbing</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch09s03.html">Identifying Problems in ZFS</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch09s03.html#gbcwb">Determining if Problems Exist in a ZFS Storage Pool</a></span></dt><dt><span class="sect2"><a href="ch09s03.html#gbcve">Understanding <span><strong class="command">zpool status</strong></span> Output</a></span></dt><dt><span class="sect2"><a href="ch09s03.html#gbcvk">System Reporting of ZFS Error Messages</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch09s04.html">Repairing a Damaged ZFS Configuration</a></span></dt><dt><span class="sect1"><a href="ch09s05.html">Repairing a Missing Device</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch09s05.html#gbbxn">Physically Reattaching the Device</a></span></dt><dt><span class="sect2"><a href="ch09s05.html#gbbyi">Notifying ZFS of Device Availability</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch09s06.html">Repairing a Damaged Device</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch09s06.html#gbbzs">Determining the Type of Device Failure</a></span></dt><dt><span class="sect2"><a href="ch09s06.html#gbbzv">Clearing Transient Errors</a></span></dt><dt><span class="sect2"><a href="ch09s06.html#gbbzy">Replacing a Device in a ZFS Storage Pool</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch09s07.html">Repairing Damaged Data</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch09s07.html#gbcuz">Identifying the Type of Data Corruption</a></span></dt><dt><span class="sect2"><a href="ch09s07.html#gbctx">Repairing a Corrupted File or Directory</a></span></dt><dt><span class="sect2"><a href="ch09s07.html#gbctt">Repairing ZFS Storage Pool-Wide Damage</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch09s08.html">Repairing an Unbootable System</a></span></dt></dl></dd><dt><span class="index"><a href="ix01.html">Index</a></span></dt></dl></div><div class="list-of-tables"><p><b>List of Tables</b></p><dl><dt>1. <a href="pr01s05.html#fwbjp">Typographic
+Conventions</a></dt><dt>2. <a href="pr01s06.html#fwbsz">Shell
+Prompts</a></dt><dt>5.1. <a href="ch05s02.html#gcfgr">ZFS Property Descriptions</a></dt><dt>5.2. <a href="ch05s03.html#gbaje">Types of ZFS Datasets</a></dt><dt>5.3. <a href="ch05s04.html#gbavh">Possible <code class="literal">SOURCE</code> Values
+(<span>zfs get</span>)</a></dt><dt>7.1. <a href="ch07.html#gbbhr">ACL Entry Types</a></dt><dt>7.2. <a href="ch07.html#gbbht">ACL Access Privileges</a></dt><dt>7.3. <a href="ch07.html#gbbhx">ACL Inheritance Flags</a></dt></dl></div><div class="list-of-examples"><p><b>List of Examples</b></p><dl><dt>7.1. <a href="ch07s03.html#gbsdc">Modifying Trivial ACLs on ZFS Files</a></dt><dt>7.2. <a href="ch07s03.html#gcpsk">Setting Explicit ACLs on ZFS Files</a></dt><dt>7.3. <a href="ch07s03.html#gbsby">ACL Interaction With Permissions on ZFS Files</a></dt><dt>7.4. <a href="ch07s03.html#gbsdg">Restoring Trivial ACLs on ZFS Files</a></dt><dt>7.5. <a href="ch07s03.html#gcakr">Default ACL Inheritance</a></dt><dt>7.6. <a href="ch07s03.html#gcale">Granting ACL Inheritance on Files and Directories</a></dt><dt>7.7. <a href="ch07s03.html#gbcid">ACL Inheritance With ACL Mode Set to Passthrough</a></dt><dt>7.8. <a href="ch07s03.html#gbchq">ACL Inheritance With ACL Mode Set to Discard</a></dt><dt>7.9. <a href="ch07s03.html#gbche">ACL Inheritance With ACL Inherit Mode Set to Noallow</a></dt><dt>7.10. <a href="ch07s04.html#gcfhr">Setting and Displaying ACLs in Compact Format</a></dt></dl></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="pr01.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top"> </td><td width="20%" align="center"> </td><td width="40%" align="right" valign="top"> Preface</td></tr></table></div></body></html>

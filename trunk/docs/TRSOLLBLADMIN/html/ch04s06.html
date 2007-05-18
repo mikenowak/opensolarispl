@@ -1,0 +1,170 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Configuring Security Text on Print Jobs (Task
+Map)</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Trusted Extensions Label Administration"><link rel="up" href="ch04.html" title="Chapter 4. Labeling Printer Output (Tasks)"><link rel="prev" href="ch04s05.html" title="Specifying Channels"><link rel="next" href="ch05.html" title="Chapter 5. Customizing LOCAL DEFINITIONS
+"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuring Security Text on Print Jobs (Task
+Map)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s05.html">Prev</a> </td><th width="60%" align="center">Chapter 4. Labeling Printer Output (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printl-8"></a>Configuring Security Text on Print Jobs (Task
+Map)</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-237"></a>
+<a class="indexterm" name="indexterm-238"></a>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Task</p>
+</th><th>
+<p>For Instructions</p>
+</th></tr></thead><tbody><tr><td>
+<p>Print wording on the front page of a printout</p>
+</td><td>
+<p>
+<span class="olink">How to Specify the Words in <code class="literal">PRINTER BANNERS</code>
+</span>
+</p>
+</td></tr><tr><td>
+<p>Print handling instructions</p>
+</td><td>
+<p>
+<span class="olink">How to Specify Handling Instructions in <code class="literal">CHANNELS</code>
+</span>
+</p>
+</td></tr><tr><td>
+<p>Protect printouts at a higher label than the print job</p>
+</td><td>
+<p>
+<span class="olink">How to Set a Minimum Protect As Classification</span>
+</p>
+</td></tr><tr><td>
+<p>Configure printers to label output</p>
+</td><td>
+<p>
+<span class="olink">
+<em class="citetitle">Configuring Labeled Printing (Task Map)</em> in <em class="citetitle">Solaris Trusted Extensions Administrator&#8217;s Procedures</em>
+</span>
+</p>
+</td></tr></tbody></table>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1631964"></a></h3></div></div></div>
+
+<div class="task"><a name="printl-3"></a><p class="title"><b>How to Specify the Words in <code class="literal">PRINTER BANNERS</code>
+</b></p><div class="tasksummary">
+<p>Create the strings that appear at the top of the banner page, and at
+the start of the handling instructions on the bottom of the page.</p>
+</div><div class="taskprerequisites">
+
+<p>You must be in the Security Administrator role in the global zone.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Plan the printer banners.</p>
+<p>For background information,
+see <span class="olink">Specifying Printer Banners</span>.</p>
+<p>For
+assistance, use <span class="olink">Planning the Printer Banners in a Worksheet</span>.</p>
+</li><li>
+<p>Edit the <code class="filename">label_encodings</code> file.</p>
+<p>Use
+the Edit Encodings action.</p>
+</li><li>
+<p>Modify the <code class="literal">PRINTER BANNERS</code> section of the file.</p>
+<ol type="a">
+<li>
+<p>Create prefixes and suffixes.</p>
+<p>These strings are associated
+with the <code class="literal">WORDS</code> in the printer banner lines of banner and
+trailer pages.</p>
+<pre class="screen">PRINTER BANNERS:
+
+WORDS:
+
+name= ORCON;                    prefix;</pre>
+</li>
+<li>
+<p>Enter the names of words to associate with any already-defined
+compartments in sensitivity labels.</p>
+<p>You can associate compartments
+with particular prefixes and suffixes.</p>
+<pre class="screen">name= (FULL SB NAME);            compartments= 3;
+name= (FULL SA NAME);            compartments= 2;</pre>
+</li>
+</ol>
+</li><li>
+<p>Continue with <span class="olink">How to Analyze and Verify the <code class="filename">label_encodings</code> File</span>.</p>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1632175"></a></h3></div></div></div>
+
+<div class="task"><a name="printl-5"></a><p class="title"><b>How to Specify Handling Instructions
+in <code class="literal">CHANNELS</code>
+</b></p><a class="indexterm" name="indexterm-239"></a><a class="indexterm" name="indexterm-240"></a><div class="tasksummary">
+<p>Create the strings that state handling instructions on printer banner
+pages.</p>
+</div><div class="taskprerequisites">
+
+<p>You must be in the Security Administrator role in the global zone.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Plan the prefixes and suffixes.</p>
+<p>For assistance, use <span class="olink">Planning the Channels in a Worksheet</span>.</p>
+</li><li>
+<p>Edit the <code class="filename">label_encodings</code> file.</p>
+<p>Use
+the Edit Encodings action.</p>
+</li><li>
+<p>Modify the <code class="literal">CHANNELS</code> section of the file.</p>
+<pre class="screen">CHANNELS:
+
+WORDS:</pre>
+<ol type="a">
+<li>
+<p>Enter the prefixes or suffixes.</p>
+<p>The <code class="literal">WORDS</code> in
+the <code class="literal">CHANNELS</code> lines of banner and trailer pages become prefixes
+or suffixes.</p>
+<pre class="screen">CHANNELS:
+
+WORDS:
+name= CHANNELS JOINTLY;         suffix;
+name= CHANNELS ONLY;            suffix;
+name= HANDLE VIA;               prefix;</pre>
+</li>
+<li>
+<p>Enter the names of words to associate with already-defined compartments
+in sensitivity labels.</p>
+<p>You can use the defined prefixes and suffixes.</p>
+<pre class="screen">name= (CH C);   prefix= HANDLE VIA; suffix= CHANNELS JOINTLY;
+compartments= 6;
+name= (CH B);   prefix= HANDLE VIA; suffix= CHANNELS JOINTLY;
+compartments= 1;
+name= (CH A);   prefix= HANDLE VIA; suffix= CHANNELS JOINTLY;
+compartments= 0;</pre>
+</li>
+</ol>
+</li><li>
+<p>Continue with <span class="olink">How to Analyze and Verify the <code class="filename">label_encodings</code> File</span>.</p>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1632398"></a></h3></div></div></div>
+
+<div class="task"><a name="printl-17"></a><p class="title"><b>How to Set a Minimum Protect As Classification</b></p><a class="indexterm" name="indexterm-241"></a><a class="indexterm" name="indexterm-242"></a><a class="indexterm" name="indexterm-243"></a><div class="tasksummary">
+<p>The <code class="literal">minimum protect as</code> classification protects all
+printer output at the specified minimum classification or above. Site security
+policy might require this setting if lower-level information must be protected
+at a higher label.</p>
+</div><div class="taskprerequisites">
+
+<p>You must be in the Security Administrator role in the global zone.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>
+<a class="indexterm" name="indexterm-244"></a>Set a minimum protect as classification.</p>
+<p>This classification
+is defined in the <code class="literal">ACCREDITATION RANGE</code> section of an encodings
+file.</p>
+</li><li>
+<p>Continue with <span class="olink">How to Analyze and Verify the <code class="filename">label_encodings</code> File</span>.</p>
+</li></ol></div><div class="example"><a name="printl-ex-4"></a><p class="title"><b>Example 4.9. Minimum Protect As Classification From a <code class="filename">label_encodings</code> File</b></p>
+
+
+<p>This example shows a minimum protect as classification. This classification
+is defined in the <code class="literal">ACCREDITATION RANGE</code> section of the <code class="filename">label_encodings.simple</code> file. With this setting, files that are
+labeled <code class="literal">INTERNAL</code> print with <code class="literal">NEED_TO_KNOW</code> on
+the banner and trailer pages.</p>
+<pre class="screen">minimum protect as classification= NEED_TO_KNOW;</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04s05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Specifying Channels </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 5. Customizing <code class="literal">LOCAL DEFINITIONS</code>
+</td></tr></table></div></body></html>

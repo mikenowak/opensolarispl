@@ -1,0 +1,207 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Setting Up System Accounting</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch16.html" title="Chapter 16. Managing System
+Accounting (Tasks)"><link rel="prev" href="ch16s03.html" title="System Accounting (Task Map)"><link rel="next" href="ch16s05.html" title="Billing Users"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Setting Up System Accounting</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch16s03.html">Prev</a> </td><th width="60%" align="center">Chapter 16. Managing System
+Accounting (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch16s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sysresacctsetup-1"></a>Setting Up System Accounting</h2></div></div></div>
+
+<p>You can set up system accounting to run while the system is in multiuser
+mode (Run Level 2). Generally, this task involves these steps:</p>
+<div class="orderedlist"><ol type="1"><li>
+<p>Creating the <code class="filename">/etc/rc0.d/K22acct</code> and <code class="filename">/etc/rc2.d/S22acct</code> startup scripts</p>
+</li><li>
+<p>Modifying the <code class="filename">/var/spool/cron/crontabs/adm</code> and <code class="filename">/var/spool/cron/crontabs/root</code> <code class="filename">crontab</code> files</p>
+</li></ol></div>
+<p>
+<a class="indexterm" name="sysresacctsetup-ix2676"></a>
+<a class="indexterm" name="sysresacctsetup-ix2677"></a>
+<a class="indexterm" name="sysresacctsetup-ix2678"></a>
+<a class="indexterm" name="sysresacctsetup-ix2679"></a>The following table describes the default accounting scripts.
+   </p>
+<div class="table"><a name="sysresacctsetup-tbl-2"></a><p class="title"><b>Table 16.1. Default Accounting
+Scripts</b></p>
+
+
+<table summary="Default Accounting
+Scripts" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>
+<p>Purpose</p>
+</th><th>
+<p>Accounting Script</p>
+</th><th>
+<p>Man Page</p>
+</th><th>
+<p>Run Frequency</p>
+</th></tr></thead><tbody><tr><td>
+<p>Checks the size of the <code class="filename">/usr/adm/pacct</code> log file
+and makes sure that it does not get too large.</p>
+</td><td>
+<p>
+<code class="filename">ckpacct</code>
+</p>
+</td><td>
+<p>
+<span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">acctsh</span>
+(
+1M
+)
+</span>
+</span>
+</p>
+</td><td>
+<p>Periodically</p>
+</td></tr><tr><td>
+<p>Processes connect, disk, and fee accounting information. You can remove
+from this script the commands for the accounting features you do not want
+processed.</p>
+</td><td>
+<p>
+<span><strong class="command">runacct</strong></span>
+</p>
+</td><td>
+<p>
+<span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">runacct</span>
+(
+1M
+)
+</span>
+</span>
+</p>
+</td><td>
+<p>Daily</p>
+</td></tr><tr><td>
+<p>Generates fiscal accounting summary reports on a monthly basis. You
+can determine how often this script is run. You can remove from this script
+the commands for the accounting features you do not want to use.</p>
+</td><td>
+<p>
+<code class="filename">monacct</code>
+</p>
+</td><td>
+<p>
+<span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">acctsh</span>
+(
+1M
+)
+</span>
+</span>
+</p>
+</td><td>
+<p>On a fiscal basis</p>
+</td></tr></tbody></table>
+</div>
+<p>You can choose which accounting scripts run by default. After these
+entries have been added to the <code class="filename">crontab</code> files, system
+accounting should run automatically. </p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2212987"></a></h3></div></div></div>
+
+<div class="task"><a name="sysresacctsetup-41702"></a><p class="title"><b>How to Set Up System Accounting</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li><a name="sysresacctsetup-step-5"></a>
+<p>
+<a class="indexterm" name="sysresacctsetup-ix2681"></a>If necessary, install the <code class="literal">SUNWaccr</code> and <code class="literal">SUNWaccu</code> packages on your system by using the <span><strong class="command">pkgadd</strong></span> command.</p>
+</li><li><a name="sysresacctsetup-step-6"></a>
+<p>
+<a class="indexterm" name="sysresacctsetup-ix2682"></a>Install <code class="filename">/etc/init.d/acct</code> as the startup script
+for Run Level 2.  </p>
+<pre class="screen"># <strong class="userinput"><code>ln /etc/init.d/acct /etc/rc2.d/S22acct</code></strong>
+</pre>
+</li><li><a name="sysresacctsetup-step-7"></a>
+<p>Install <code class="filename">/etc/init.d/acct</code> as
+the stop script for Run Level 0.</p>
+<pre class="screen"># <strong class="userinput"><code>ln /etc/init.d/acct /etc/rc0.d/K22acct</code></strong>
+</pre>
+</li><li><a name="sysresacctsetup-step-8"></a>
+<p>Add the following lines to the <code class="literal">adm</code> <code class="filename">crontab</code> file to start the <span><strong class="command">ckpacct</strong></span>, <span><strong class="command">runacct</strong></span>, and <span><strong class="command">monacct</strong></span> scripts automatically.</p>
+<pre class="screen"># <strong class="userinput"><code>EDITOR=vi; export EDITOR</code></strong>
+# <strong class="userinput"><code>crontab -e adm</code></strong>
+0 * * * * /usr/lib/acct/ckpacct
+30 2 * * * /usr/lib/acct/runacct 2&gt; /var/adm/acct/nite/fd2log
+30 7 1 * * /usr/lib/acct/monacct</pre>
+</li><li><a name="sysresacctsetup-step-9"></a>
+<p>Add the following line to the <code class="literal">root</code> <code class="filename">crontab</code> file to start the <span><strong class="command">dodisk</strong></span> script
+automatically.</p>
+<pre class="screen"># <strong class="userinput"><code>crontab -e</code></strong>
+30 22 * * 4 /usr/lib/acct/dodisk</pre>
+</li><li><a name="sysresacctsetup-step-10"></a>
+<p>
+<a class="indexterm" name="sysresacctsetup-ix2688"></a>Edit <code class="filename">/etc/acct/holidays</code> to include national
+holidays and local holidays.</p>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">holidays</span>
+(
+4
+)
+</span>
+</span> man page and the example that
+follows.</p>
+</li><li><a name="sysresacctsetup-step-29"></a>
+<p>
+<a class="indexterm" name="indexterm-207"></a>Reboot the system, or start system accounting manually by typing:</p>
+<pre class="screen"># <strong class="userinput"><code>/etc/init.d/acct start</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="emjgh"></a><p class="title"><b>Example 16.1. Setting Up Accounting (<span>adm crontab</span>)</b></p>
+
+
+<p>
+<a class="indexterm" name="sysresacctsetup-ix2689"></a>
+<a class="indexterm" name="sysresacctsetup-ix2690"></a>This modified <span><strong class="command">adm crontab</strong></span> contains entries
+for the <code class="filename">ckpacct</code>, <code class="filename">runacct</code>, and <code class="filename">monacct</code> scripts. </p>
+<pre class="screen">#ident  "@(#)adm        1.5     92/07/14 SMI"    /* SVr4.0 1.2   */
+#
+# The adm crontab file should contain startup of performance 
+# collection if the profiling and performance feature has been 
+# installed.
+0 * * * * /usr/lib/acct/ckpacct
+30 2 * * * /usr/lib/acct/runacct 2&gt; /var/adm/acct/nite/fd2log
+30 7 1 * * /usr/lib/acct/monacct</pre>
+</div><div class="example"><a name="enmzp"></a><p class="title"><b>Example 16.2. Setting Up Accounting (<span>root crontab</span>)</b></p>
+
+
+<p>
+<a class="indexterm" name="sysresacctsetup-ix2693"></a>
+<a class="indexterm" name="sysresacctsetup-ix2694"></a>This modified <span><strong class="command">root crontab</strong></span> contains entries
+for the <code class="filename">dodisk</code> program.</p>
+<pre class="screen">#ident  "@(#)root       1.19    98/07/06 SMI"   /* SVr4.0 1.1.3.1       */
+#
+# The root crontab should be used to perform accounting data collection.
+#
+#
+10 3 * * * /usr/sbin/logadm
+15 3 * * 0 /usr/lib/fs/nfs/nfsfind
+30 3 * * * [ -x /usr/lib/gss/gsscred_clean ] &amp;&amp; /usr/lib/gss/gsscred_clean
+30 22 * * 4 /usr/lib/acct/dodisk</pre>
+</div><div class="example"><a name="enmzr"></a><p class="title"><b>Example 16.3. Setting Up Accounting (<code class="filename">/etc/acct/holidays</code>)</b></p>
+
+
+<p>
+<a class="indexterm" name="sysresacctsetup-ix2695"></a>
+<a class="indexterm" name="sysresacctsetup-ix2696"></a>The following example shows a sample <code class="filename">/etc/acct/holidays</code> file.
+ </p>
+<pre class="screen">* @(#)holidays	January 1, 2004
+*
+* Prime/Nonprime Table for UNIX Accounting System
+*
+* Curr	Prime	Non-Prime
+* Year	Start	Start
+*
+  2004	0800	1800
+*
+* only the first column (month/day) is significant.
+*
+* month/day	Company
+* 		Holiday
+*
+1/1		New Years Day
+7/4		Indep. Day
+12/25		Christmas</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch16s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch16.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch16s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">System Accounting (Task Map) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Billing Users</td></tr></table></div></body></html>

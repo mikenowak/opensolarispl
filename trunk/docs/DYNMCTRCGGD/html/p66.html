@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Translators - Solaris Dynamic Tracing Guide</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2005-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >Solaris Dynamic Tracing Guide<?GenHTML /ReferencePage>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p65.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p67.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="chp-xlate"></a>Chapter&nbsp;40<h3>Translators</h3><p>In <a href="p64.html">Chapter&nbsp;39, Stability</a>, we learned about how DTrace computes and reports program stability attributes. Ideally, we would like to construct our DTrace programs by consuming only Stable or Evolving interfaces. Unfortunately, when debugging a low-level problem or measuring system performance, you may need to enable probes that are associated with internal operating system routines such as functions in the kernel, rather than probes associated with more stable interfaces such as system calls. The data available at probe locations deep within the software stack is often a collection of implementation artifacts rather than more stable data structures such as those associated with the Solaris system call interfaces. In order to aid you in writing stable D programs, DTrace provides a facility to translate implementation artifacts into stable data structures accessible from your D program statements.</p>
+<a name="chp-xlate-1"></a><h3>Translator Declarations</h3>
+<p>A translator is a collection of D assignment statements provided by the supplier of an interface that can be used to translate an input expression into an object of struct type. To understand the need for and use of translators, we'll consider as an example the ANSI-C standard library routines defined in <tt>stdio.h</tt>. These routines operate on a data structure named <tt>FILE</tt> whose implementation artifacts are abstracted away from C programmers. A standard technique for creating a data structure abstraction is to provide only a forward declaration of a data structure in public header files, while keeping the corresponding struct definition in a separate private header file.</p>
+<p>If you are writing a C program and wish to know the file descriptor corresponding to a <tt>FILE</tt> struct, you can use the <tt>fileno</tt>(3C) function to obtain the descriptor rather than dereferencing a member of the FILE struct directly. The Solaris header files enforce this rule by defining FILE as an opaque forward declaration tag so it cannot be dereferenced directly by C programs that include <tt>&lt;stdio.h></tt>. Inside the <tt>libc.so.1</tt> library, you can imagine that <tt>fileno()</tt> is implemented in C something like this:</p>
+<pre>int
+fileno(FILE *fp)
+{
+	struct file_impl *ip = (struct file_impl *)fp;
+
+	return (ip->fd);
+}</pre><p>Our hypothetical <tt>fileno()</tt> takes a <tt>FILE</tt> pointer as an argument and casts it to a pointer to a corresponding internal <tt>libc</tt> structure, <tt>struct file_impl</tt>, and then returns the value of the <tt>fd</tt> member of the implementation structure. Why does Solaris implement interfaces like this? By abstracting the details of the current <tt>libc</tt> implementation away from client programs, Sun is able to maintain a commitment to strong binary compatibility while continuing to evolve and change the internal implementation details of <tt>libc</tt>. In our example, the <tt>fd</tt> member could change size or position within <tt>struct file_impl</tt>, even in a patch, and existing binaries calling <tt>fileno</tt>(3C) would not be affected by this change because they do not depend on these artifacts.</p>
+<p>Unfortunately, observability software such as DTrace has the need to peer inside the implementation in order to provide useful results, and does not have the luxury of calling arbitrary C functions defined in Solaris libraries or in the kernel. You could declare a copy of <tt>struct file_impl</tt> in your D program in order to instrument the routines declared in <tt>stdio.h</tt>, but then your D program would rely on Private implementation artifacts of the library that might break in a future micro or minor release, or even in a patch. Ideally, we want to provide a construct for use in D programs that is bound to the implementation of the library and is updated accordingly, but still provides an additional layer of abstraction associated with greater stability.</p>
+<p>A new translator is created using a declaration of the form:</p>
+<pre>translator <i>output-type</i> &lt; <i>input-type</i> <i>input-identifier</i> > {
+	<i>member-name</i> = <i>expression</i> ;
+	<i>member-name</i> = <i>expression</i> ;
+	...
+};	</pre><p>The <i>output-type</i> names a struct that will be the result type for the translation. The <i>input-type</i> specifies the type of the input expression, and is surrounded in angle brackets <tt>&lt; ></tt> and followed by an <i>input-identifier</i> that can be used in the translator expressions as an alias for the input expression. The body of the translator is surrounded in braces <tt>{ }</tt> and terminated with a semicolon (<tt>;</tt>), and consists of a list of <i>member-name</i> and identifiers corresponding translation expressions. Each member declaration must name a unique member of the <i>output-type</i> and must be assigned an expression of a type compatible with the member type, according to the rules for the D assignment (<tt>=</tt>) operator.</p>
+<p>For example, we could define a struct of stable information about <tt>stdio</tt> files based on some of the available <tt>libc</tt> interfaces:</p>
+<pre>struct file_info {
+	int file_fd;   /* file descriptor from fileno(3C) */
+	int file_eof;  /* eof flag from feof(3C) */
+};</pre><p>A hypothetical D translator from <tt>FILE</tt> to <tt>file_info</tt> could then be declared in D as follows:</p>
+<pre>translator struct file_info &lt; FILE *F > {
+	file_fd = ((struct file_impl *)F)->fd;
+	file_eof = ((struct file_impl *)F)->eof;
+};</pre><p>In our hypothetical translator, the input expression is of type <tt>FILE *</tt> and is assigned the <i>input-identifier</i> <tt>F</tt>. The identifier <tt>F</tt> can then be used in the translator member expressions as a variable of type <tt>FILE *</tt> that is only visible within the body of the translator declaration. To determine the value of the output <tt>file_fd</tt> member, the translator performs a cast and dereference similar to the hypothetical implementation of <tt>fileno</tt>(3C) shown above. A similar translation is performed to obtain the value of the EOF indicator.</p>
+<p>Sun provides a set of translators for use with Solaris interfaces that you can invoke from your D programs, and promises to maintain these translators according to the rules for interface stability defined earlier as the implementation of the corresponding interface changes. We'll learn about these translators later in the chapter, after we learn how to invoke translators from D. The translator facility itself is also provided for use by application and library developers who wish to offer their own translators that D programmers can use to observe the state of their software packages.</p>
+<a name="chp-xlate-2"></a><h3>Translate Operator</h3>
+<p>The D operator <tt>xlate</tt> is used to perform a translation from an input expression to one of the defined translation output structures. The <tt>xlate</tt> operator is used in an expression of the form:</p>
+<pre>xlate &lt; <i>output-type</i> > ( <i>input-expression</i> )</pre><p>For example, to invoke the hypothetical translator for FILE structs defined above and access the <tt>file_fd</tt> member, you would write the expression:</p>
+<pre>xlate &lt;struct file_info *>(f)->file_fd;</pre><p>where <tt>f</tt> is a D variable of type <tt>FILE *</tt>. The <tt>xlate</tt> expression itself is assigned the type defined by the <i>output-type</i>. Once a translator is defined, it can be used to translate input expressions to either the translator output struct type, or to a pointer to that struct.</p>
+<p>If you translate an input expression to a struct, you can either dereference a particular member of the output immediately using the &ldquo;<tt>.</tt>&rdquo; operator, or you can assign the entire translated struct to another D variable to make a copy of the values of all the members. If you dereference a single member, the D compiler will only generate code corresponding to the expression for that member. You may not apply the <tt>&amp;</tt> operator to a translated struct to obtain its address, as the data object itself does not exist until it is copied or one of its members is referenced.</p>
+<p>If you translate an input expression to a pointer to a struct, you can either dereference a particular member of the output immediately using the <tt>-></tt> operator, or you can dereference the pointer using the unary <tt>*</tt> operator, in which case the result behaves as if you translated the expression to a struct. If you dereference a single member, the D compiler will only generate code corresponding to the expression for that member. You may not assign a translated pointer to another D variable as the data object itself does not exist until it is copied or one of its members is referenced, and therefore cannot be addressed.</p>
+<p>A translator declaration may omit expressions for one or more members of the output type. If an <tt>xlate</tt> expression is used to access a member for which no translation expression is defined, the D compiler will produce an appropriate error message and abort the program compilation. If the entire output type is copied by means of a structure assignment, any members for which no translation expressions are defined will be filled with zeroes.</p>
+<p>In order to find a matching translator for an <tt>xlate</tt> operation, the D compiler examines the set of available translators in the following order:</p>
+<ul><li><p>First, the compiler looks for a translation from the exact input expression type to the exact output type.</p>
+</li>
+<li><p>Second, the compiler resolves the input and output types by following any typedef aliases to the underlying type names, and then looks for a translation from the resolved input type to the resolved output type.</p>
+</li>
+<li><p>Third, the compiler looks for a translation from a compatible input type to the resolved output type. The compiler uses the same rules as it does for determining compatibility of function call arguments with function prototypes in order to determine if an input expression type is compatible with a translator's input type.</p>
+</li>
+</ul>
+<p>If no matching translator can be found according to these rules, the D compiler produces an appropriate error message and program compilation fails.</p>
+<a name="chp-xlate-3"></a><h3>Process Model Translators</h3>
+<p>The DTrace library file <tt>/usr/lib/dtrace/procfs.d</tt> provides a set of translators for use in your D programs to translate from the operating system kernel implementation structures for processes and threads to the stable <tt>proc</tt>(4) structures <tt>psinfo</tt> and <tt>lwpsinfo</tt>. These structures are also used in the Solaris <tt>/proc</tt> filesystem files <tt>/proc/</tt><i>pid</i><tt>/psinfo</tt> and <tt>/proc/</tt><i>pid</i><tt>/lwps/</tt><i>lwpid</i><tt>/lwpsinfo</tt>, and are defined in the system header file <tt>/usr/include/sys/procfs.h</tt>. These structures define useful Stable information about processes and threads such as the process ID, LWP ID, initial arguments, and other data displayed by the <tt>ps</tt>(1) command. Refer to <tt>proc</tt>(4) for a complete description of the struct members and semantics.</p>
+<a name="tbl-proc-xlate"></a>Table 40-1 <tt>procfs.d</tt> Translators<table><tr><th><p>Input Type</p>
+</th><th><p>Input Type Attributes</p>
+</th><th><p>Output Type</p>
+</th><th><p>Output Type Attributes</p>
+</th></tr>
+<tr><td><p><tt>proc_t *</tt></p>
+</td><td><p>Private/Private/Common</p>
+</td><td><p><tt>psinfo_t *</tt></p>
+</td><td><p>Stable/Stable/Common</p>
+</td></tr>
+<tr><td><p><tt>kthread_t *</tt></p>
+</td><td><p>Private/Private/Common</p>
+</td><td><p><tt>lwpsinfo_t *</tt></p>
+</td><td><p>Stable/Stable/Common</p>
+</td></tr>
+</table><a name="chp-xlate-4"></a><h3>Stable Translations</h3>
+<p>While a translator provides the ability to convert information into a stable data structure, it does not necessarily resolve all stability issues that can arise in translating data. For example, if the input expression for an xlate operation itself references Unstable data, the resulting D program is also Unstable because program stability is always computed as the minimum stability of the accumulated D program statements and expressions. Therefore, it is sometimes necessary to define a specific stable input expression for a translator in order to permit stable programs to be constructed. The D inline mechanism can be used to facilitate such stable translations.</p>
+<p>The DTrace <tt>procfs.d</tt> library provides the <tt>curlwpsinfo</tt> and <tt>curpsinfo</tt> variables described earlier as stable translations. For example, the <tt>curlwpsinfo</tt> variable is actually an <tt>inline</tt> declared as follows:</p>
+<pre>inline lwpsinfo_t *curlwpsinfo = xlate &lt;lwpsinfo_t *> (curthread);
+#pragma D attributes Stable/Stable/Common curlwpsinfo</pre><p>The <tt>curlwpsinfo</tt> variable is defined as an inlined translation from the <tt>curthread</tt> variable, a pointer to the kernel's Private data structure representing a thread, to the Stable <tt>lwpsinfo_t</tt> type. The D compiler processes this library file and caches the <tt>inline</tt> declaration, making <tt>curlwpsinfo</tt> appear as any other D variable. The <tt>#pragma</tt> statement following the declaration is used to explicitly reset the attributes of the <tt>curlwpsinfo</tt> identifier to Stable/Stable/Common, masking the reference to <tt>curthread</tt> in the inlined expression. This combination of D features permits D programmers to use curthread as the source of a translation in a safe fashion that can be updated by Sun coincident to corresponding changes in the Solaris implementation.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p65.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p67.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

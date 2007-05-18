@@ -1,0 +1,301 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Accessing NFS File Systems Using CacheFS - System Administration Guide: Network Services</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-02-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Network Services<?GenHTML /ReferencePage> > <a href="p15.html">5.&nbsp;&nbsp;Network File System Administration (Tasks)</a> > <a href="p22.html#rfsadmin-127">Task Overview for Autofs Administration</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p23.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p25.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="rfsadmin-155"></a><h4>Accessing NFS File Systems Using CacheFS</h4>
+<p><a name="indexterm-334"></a><a name="indexterm-335"></a>The cache file system (CacheFS) is a generic nonvolatile caching
+mechanism. CacheFS improves the performance of certain file systems by utilizing
+a small, fast local disk. For example, you can improve the performance of
+the NFS environment by using CacheFS.</p>
+<p>CacheFS works differently with different versions of NFS. For example,
+if both the client and the back file system are running NFS version 2 or version
+3, the files are cached in the front file system for access by the client.
+However, if both the client and the server are running NFS version 4, the
+functionality is as follows. When the client makes the initial request to
+access a file from a CacheFS file system, the request bypasses the front (or
+cached) file system and goes directly to the back file system. With NFS version
+4, files are no longer cached in a front file system.  All file access is
+provided by the back file system.  Also, since no files are being cached in
+the front file system, CacheFS-specific mount options, which are meant to
+affect the front file system, are ignored.  CacheFS-specific mount options
+do not apply to the back file system.</p>
+<hr>
+<p><b>Note - </b>The first time you configure your system for NFS version 4, a
+warning appears on the console to indicate that caching is no longer performed.</p>
+<hr>
+<a name="rfsadmin-156"></a><h4><img src="graphics/procedure.gif"> How to Access NFS File Systems by Using CacheFS</h4>
+<ol><li><b>Become superuser or assume an equivalent role.</b><p>Roles contain authorizations and privileged commands. For more information
+about roles, see Configuring RBAC (Task Map) in <i>System Administration Guide: Security Services</i>. To configure
+a role with the Primary Administrator profile, see Chapter 2, Working With the Solaris Management Console (Tasks), in <i>System Administration Guide: Basic Administration</i>.</p></li><li><a name="rfsadmin-step-158"></a><b><a name="indexterm-336"></a>Run the <tt>cfsadmin</tt> command to create a cache
+directory on the local disk. </b><pre># <tt><b>cfsadmin -c /var/cache</b></tt></pre></li><li><a name="rfsadmin-step-159"></a><b>Add the <tt>cachefs</tt> entry
+to the appropriate automounter map.</b><p><a name="indexterm-337"></a><a name="indexterm-338"></a><a name="indexterm-339"></a><a name="indexterm-340"></a>For example, adding this entry to the master map caches all home
+directories:</p><pre>/home auto_home -fstype=cachefs,cachedir=/var/cache,backfstype=nfs</pre><p>Adding this entry to the <tt>auto_home</tt> map only caches
+the home directory for the user who is named <tt>rich</tt>:</p><pre>rich -fstype=cachefs,cachedir=/var/cache,backfstype=nfs dragon:/export/home1/rich</pre><hr>
+<p><b>Note - </b><a name="indexterm-341"></a>Options that are included in maps that are searched later override
+options which are set in maps that are searched earlier. The last options
+that are found are the ones that are used. In the previous example, an additional
+entry to the <tt>auto_home</tt> map only needs to include the
+options in the master maps if some options required changes. </p>
+<hr>
+</li></ol><a name="rfsadmin-160"></a><h4>Customizing the Automounter</h4>
+<p>You can set up the automounter maps in several ways. The following tasks
+give details about how to customize the automounter maps to provide an easy-to-use
+directory structure.</p>
+<a name="rfsadmin-161"></a><h4>Setting Up a Common View of <tt>/home</tt></h4>
+<p><a name="indexterm-342"></a><a name="indexterm-343"></a>The ideal is for all network users to be able to locate their
+own or anyone's home directory under <tt>/home</tt>. This view
+should be common across all computers, whether client or server.   </p>
+<p><a name="indexterm-344"></a>Every Solaris installation comes with a master map: <tt>/etc/auto_master</tt>. </p>
+<pre># Master map for autofs
+#
++auto_master
+/net     -hosts     -nosuid,nobrowse
+/home    auto_home  -nobrowse</pre><p>A map for <tt>auto_home</tt> is also installed under <tt>/etc</tt>. </p>
+<pre># Home directory map for autofs
+#
++auto_home</pre><p>Except for a reference to an external <tt>auto_home</tt> map,
+this map is empty. If the directories under <tt>/home</tt> are to
+be common to all computers, do not modify this <tt>/etc/auto_home</tt> map.
+All home directory entries should appear in the name service files, either
+NIS or NIS+.</p>
+<hr>
+<p><b>Note - </b>Users should not be permitted to run <tt>setuid</tt> executables
+from their home directories. Without this restriction, any user could have
+superuser privileges on any computer.</p>
+<hr>
+<a name="rfsadmin-162"></a><h4><img src="graphics/procedure.gif"> How to Set Up <tt>/home</tt> With
+Multiple Home Directory File Systems</h4>
+<ol><li><b>Become superuser or assume an equivalent role.</b><p>Roles contain authorizations and privileged commands. For more information
+about roles, see Configuring RBAC (Task Map) in <i>System Administration Guide: Security Services</i>. To configure
+a role with the Primary Administrator profile, see Chapter 2, Working With the Solaris Management Console (Tasks), in <i>System Administration Guide: Basic Administration</i>.</p></li><li><a name="rfsadmin-step-164"></a><b><a name="indexterm-345"></a><a name="indexterm-346"></a><a name="indexterm-347"></a><a name="indexterm-348"></a>Install home directory partitions under <tt>/export/home</tt>.
+   </b><p>If the system has several partitions, install the partitions
+under separate directories, for example, <tt>/export/home1</tt> and <tt>/export/home2</tt>. </p></li><li><a name="rfsadmin-step-165"></a><b>Use the Solaris Management Console tools
+to create and maintain the <tt>auto_home</tt> map. </b><p>Whenever
+you create a new user account, type the location of the user's home directory
+in the <tt>auto_home</tt> map. Map entries can be simple, for
+example: </p><pre>rusty        dragon:/export/home1/&amp;
+gwenda       dragon:/export/home1/&amp;
+charles      sundog:/export/home2/&amp;
+rich         dragon:/export/home3/&amp;</pre><p>Notice the use of the <tt>&amp;</tt> (ampersand) to substitute
+the map key. The ampersand is an abbreviation for the second occurrence of <tt>rusty</tt> in the following example. </p><pre>rusty     	dragon:/export/home1/rusty</pre><p>With the <tt>auto_home</tt> map in place, users can refer
+to any home directory (including their own) with the path <tt>/home/</tt><i>user</i>. <i>user</i> is their login name and
+the key in the map. This common view of all home directories is valuable when
+logging in to another user's computer. Autofs mounts your home directory for
+you. Similarly, if you run a remote windowing system client on another computer,
+the client program has the same view of the <tt>/home</tt> directory. </p><p>This common view also extends to the server. Using the previous
+example, if <tt>rusty</tt> logs in to the server <tt>dragon</tt>,
+autofs there provides direct access to the local disk by loopback-mounting <tt>/export/home1/rusty</tt> onto <tt>/home/rusty</tt>. </p><p>Users do not need to be aware of the real location of their home directories.
+If <tt>rusty</tt> needs more disk space and needs to have his home
+directory relocated to another server, a simple change is sufficient. You
+need only change <tt>rusty</tt>'s entry in the <tt>auto_home</tt> map
+to reflect the new location. Other users can continue to use the <tt>/home/rusty</tt> path.</p></li></ol><a name="rfsadmin-166"></a><h4><img src="graphics/procedure.gif"> How to Consolidate Project-Related Files Under <tt>/ws</tt></h4>
+<p><a name="indexterm-349"></a><a name="indexterm-350"></a><a name="indexterm-351"></a><a name="indexterm-352"></a>Assume that you are the administrator of a large software development
+project. You plan to make all project-related files available under a directory
+that is called <tt>/ws</tt>. This directory is to be common across
+all workstations at the site.    </p>
+<ol><li><a name="rfsadmin-step-168"></a><b>Add an entry for the <tt>/ws</tt> directory
+to the site <tt>auto_master</tt> map, either NIS or NIS+. </b><pre>/ws     auto_ws     -nosuid </pre><p>The <tt>auto_ws</tt> map determines the contents of the <tt>/ws</tt> directory. </p></li><li><a name="rfsadmin-step-269"></a><b>Add the <tt>-nosuid</tt> option
+as a precaution. </b><p>This option prevents users from running setuid
+programs that might exist in any workspaces. </p></li><li><a name="rfsadmin-step-270"></a><b>Add entries to the <tt>auto_ws</tt> map.</b><p>The <tt>auto_ws</tt> map is organized so that each
+entry describes a subproject. Your first attempt yields a map that resembles
+the following: </p><pre>compiler   alpha:/export/ws/&amp;
+windows    alpha:/export/ws/&amp;
+files      bravo:/export/ws/&amp;
+drivers    alpha:/export/ws/&amp;
+man        bravo:/export/ws/&amp;
+tools      delta:/export/ws/&amp;</pre><p>The ampersand (<tt>&amp;</tt>) at the end of each entry is
+an abbreviation for the entry key. For instance, the first entry is equivalent
+to the following: </p><pre>compiler		alpha:/export/ws/compiler </pre><p>This first attempt provides a map that appears simple, but the map is
+inadequate. The project organizer decides that the documentation in the <tt>man</tt> entry should be provided as a subdirectory under each subproject.
+Also, each subproject requires subdirectories to describe several versions
+of the software. You must assign each of these subdirectories to an entire
+disk partition on the server. </p><p>Modify the entries in the map as
+follows:</p><pre>compiler \
+    /vers1.0    alpha:/export/ws/&amp;/vers1.0 \
+    /vers2.0    bravo:/export/ws/&amp;/vers2.0 \
+    /man        bravo:/export/ws/&amp;/man
+windows \
+    /vers1.0    alpha:/export/ws/&amp;/vers1.0 \
+    /man        bravo:/export/ws/&amp;/man
+files \
+    /vers1.0    alpha:/export/ws/&amp;/vers1.0 \
+    /vers2.0    bravo:/export/ws/&amp;/vers2.0 \
+    /vers3.0    bravo:/export/ws/&amp;/vers3.0 \
+    /man        bravo:/export/ws/&amp;/man
+drivers \
+    /vers1.0    alpha:/export/ws/&amp;/vers1.0 \
+    /man        bravo:/export/ws/&amp;/man
+tools \
+    /           delta:/export/ws/&amp;</pre><p>Although the map now appears to be much larger, the map still contains
+only the five entries. Each entry is larger because each entry contains multiple
+mounts. For instance, a reference to <tt>/ws/compiler</tt> requires
+three mounts for the <tt>vers1.0</tt>, <tt>vers2.0</tt>,
+and <tt>man</tt> directories. The backslash at the end of each
+line informs autofs that the entry is continued onto the next line. Effectively,
+the entry is one long line, though line breaks and some indenting have been
+used to make the entry more readable. The <tt>tools</tt> directory
+contains software development tools for all subprojects, so this directory
+is not subject to the same subdirectory structure. The <tt>tools</tt> directory
+continues to be a single mount. </p><p>This arrangement provides the
+administrator with much flexibility. Software projects typically consume substantial
+amounts of disk space. Through the life of the project, you might be required
+to relocate and expand various disk partitions. If these changes are reflected
+in the <tt>auto_ws</tt> map, the users do not need to be notified,
+as the directory hierarchy under <tt>/ws</tt> is not changed. </p><p>Because the servers <tt>alpha</tt> and <tt>bravo</tt> view
+the same autofs map, any users who log in to these computers can find the <tt>/ws</tt> namespace as expected. These users are provided with direct
+access to local files through loopback mounts instead of NFS mounts. </p></li></ol>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p23.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p25.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

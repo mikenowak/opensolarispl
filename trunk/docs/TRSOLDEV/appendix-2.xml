@@ -1,0 +1,1871 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<appendix xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="appb-1">
+
+
+
+<title>Solaris Trusted Extensions API Reference</title>
+<indexterm xml:id="indexterm-512">
+<primary>APIs</primary>
+<secondary>declarations</secondary>
+</indexterm>
+<toc>
+<para>This appendix provides application programming interface (API) listings and cross-references to their use. Declarations are grouped by security topic.</para>
+<itemizedlist>
+<para>This appendix covers the following topics:</para>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="appendix-2.xml" targetptr="appb-11">Process Security Attribute Flags APIs</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="appendix-2.xml" targetptr="appb-12">Label APIs</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="appendix-2.xml" targetptr="appb-9">Label-Clipping APIs</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="appendix-2.xml" targetptr="appb-15">RPC APIs</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="appendix-2.xml" targetptr="appb-16">Label Builder APIs</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="appendix-2.xml" targetptr="appb-17">Trusted X Window System APIs</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="appendix-2.xml" targetptr="appb-14">Solaris Library Routines and System Calls That Use Trusted Extensions Parameters</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="appendix-2.xml" targetptr="appb-20">System Calls and Library Routines in Trusted Extensions</olink>
+</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="appb-11">
+<title>Process Security Attribute Flags APIs</title>
+<indexterm xml:id="indexterm-513">
+<primary>security attribute flags</primary>
+<secondary>API declarations</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-514">
+<primary>APIs</primary>
+<secondary>process security attribute flags</secondary>
+</indexterm>
+<itemizedlist>
+<para>The following Solaris APIs accept Trusted Extensions parameters:</para>
+<listitem>
+<para>
+<literal>uint_t getpflags(uint_t flag);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int setpflags(uint_t flag, uint_t value);</literal>
+</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="appb-12">
+<title>Label APIs</title>
+<indexterm xml:id="indexterm-515">
+<primary>APIs</primary>
+<secondary>labels</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-516">
+<primary>label APIs</primary>
+<secondary>list of</secondary>
+</indexterm>
+<para>The label APIs are introduced in <olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-1">Chapter 2, Labels and Clearances</olink>. Sample code is provided in <olink remap="external" targetdoc="chapter-3.xml" targetptr="labelcode-1">Chapter 3, Label Code Examples</olink>. A fully described example is provided in <olink remap="external" targetdoc="chapter-4.xml" targetptr="labelprint-1">Chapter 4, Printing and the Label APIs</olink>.</para>
+<itemizedlist>
+<para>The following lists the types of label-related APIs and shows the prototype declarations of the routines and system calls for each type:</para>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-517">
+<primary>labels</primary>
+<secondary>API declarations</secondary>
+<tertiary>
+<filename>label_encodings</filename> file</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-518">
+<primary>
+<filename>label_encodings</filename> file</primary>
+<secondary>API declarations</secondary>
+</indexterm>
+<emphasis role="strong">Accessing the</emphasis> <filename>label_encodings</filename> <emphasis role="strong">file</emphasis>
+</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>m_label_t *m_label_alloc(const m_label_type_t label_type);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int m_label_dup(m_label_t **dst, const m_label_t *src);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>void m_label_free(m_label_t *label);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int label_to_str(const m_label_t *label, char **string, const m_label_str_t conversion_type, uint_t flags);</literal>
+</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-519">
+<primary>labels</primary>
+<secondary>API declarations</secondary>
+<tertiary>levels</tertiary>
+</indexterm>
+<emphasis role="strong">Comparing level relationships</emphasis>
+</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>int blequal(const m_label_t *level1, const m_label_t *level2);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int bldominates(const m_label_t *level1, const m_label_t *level2);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int blstrictdom(const m_label_t *level1, const m_label_t *level2);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int blinrange(const m_label_t *level, const brange_t *range);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>void blmaximum(m_label_t *maximum_label, const m_label_t *bounding_label);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>void blminimum(m_label_t *minimum_label, const m_label_t *bounding_label);</literal>
+</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-520">
+<primary>labels</primary>
+<secondary>API declarations</secondary>
+<tertiary>ranges</tertiary>
+</indexterm>
+<emphasis role="strong">Accessing label ranges</emphasis>
+</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>m_range_t *getuserrange(const char *username);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>blrange_t *getdevicerange(const char *device);</literal>
+</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-521">
+<primary>labels</primary>
+<secondary>API declarations</secondary>
+<tertiary>zones</tertiary>
+</indexterm>
+<emphasis role="strong">Accessing labels in zones</emphasis>
+</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>char *getpathbylabel(const char *path, char *resolved_path, size_t bufsize, const m_label_t *sl);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>m_label_t *getzonelabelbyid(zoneid_t zoneid);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>m_label_t *getzonelabelbyname(const char *zonename);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>zoneid_t *getzoneidbylabel(const m_label_t *label);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>char *getzonerootbyid(zoneid_t zoneid);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>char *getzonerootbylabel(const m_label_t *label);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>char *getzonerootbyname(const char *zonename);</literal>
+</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-522">
+<primary>labels</primary>
+<secondary>API declarations</secondary>
+<tertiary>network databases</tertiary>
+</indexterm>
+<emphasis role="strong">Obtaining the remote host type</emphasis>
+</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>tsol_host_type_t tsol_getrhtype(char *hostname);</literal>
+</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-523">
+<primary>labels</primary>
+<secondary>API declarations</secondary>
+<tertiary>labels</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-524">
+<primary>labels</primary>
+<secondary>API declarations</secondary>
+</indexterm>
+<emphasis role="strong">Accessing and modifying sensitivity labels</emphasis>
+</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>int fgetlabel(int fd, m_label_t *label_p);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int getlabel(const char *path, m_label_t *label_p);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int setflabel(const char *path, const m_label_t *label_p);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int getplabel(m_label_t *label_p);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int label_to_str(const m_label_t *label, char **string, const m_label_str_t conversion_type, uint_t flags);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int str_to_label(const char *string, m_label_t **label, const m_label_type_t label_type, uint_t flags, int *error);</literal>
+</para>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="appb-9">
+<title>Label-Clipping APIs</title>
+<indexterm xml:id="indexterm-525">
+<primary>APIs</primary>
+<secondary>label clipping</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-526">
+<primary>label APIs</primary>
+<secondary>label clipping</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-527">
+<primary>labels</primary>
+<secondary>API declarations</secondary>
+<tertiary>label clipping</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-528">
+<primary>label clipping</primary>
+<secondary>API declaration</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-529">
+<primary>Trusted X Window System</primary>
+<secondary>label-clipping API declaration</secondary>
+</indexterm>
+<para>For information about this label-clipping API, see <olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-1">Chapter 6, Trusted X Window System</olink>.</para>
+<programlisting>int label_to_str(const m_label_t *label, char **string,
+	const m_label_str_t conversion_type, uint_t flags);</programlisting>
+</sect1>
+<sect1 xml:id="appb-15">
+<title>RPC APIs</title>
+<indexterm xml:id="indexterm-530">
+<primary>APIs</primary>
+<secondary>RPC</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-531">
+<primary>label APIs</primary>
+<secondary>RPC</secondary>
+</indexterm>
+<para>Trusted Extensions does not provide interfaces for remote procedure calls (RPC). RPC interfaces have been modified to work with Trusted Extensions. For conceptual information, see <olink remap="external" targetdoc="chapter-5.xml" targetptr="ipcapi-1">Chapter 5, Interprocess Communications</olink>. For an example that uses the <function>getpeerucred
+</function> and <function>ucred_getlabel
+</function> routines, see <olink remap="external" targetdoc="chapter-4.xml" targetptr="labelprint-1">Chapter 4, Printing and the Label APIs</olink>.</para>
+</sect1>
+<sect1 xml:id="appb-16">
+<title>Label Builder APIs</title>
+<indexterm xml:id="indexterm-532">
+<primary>APIs</primary>
+<secondary>Label Builder</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-533">
+<primary>label APIs</primary>
+<secondary>Label Builder</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-534">
+<primary>builders</primary>
+<secondary>API declarations for GUI</secondary>
+</indexterm>
+<para>For information about the Label Builder user interface, see <olink remap="external" targetdoc="chapter-7.xml" targetptr="lbuilder-1">Chapter 7, Label Builder APIs</olink>.</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>ModLabelData *tsol_lbuild_create(Widget widget, void (*event_handler)() ok_callback, lbuild_attributes extended_operation, ..., NULL);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>void tsol_lbuild_destroy(ModLabelData *lbdata);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>void *tsol_lbuild_get(ModLabelData *lbdata, lbuild_attributes extended_operation);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>void tsol_lbuild_set(ModLabelData *lbdata, lbuild_attributes extended_operation, ..., NULL);</literal>
+</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="appb-17">
+<title>Trusted X Window System APIs</title>
+<indexterm xml:id="indexterm-535">
+<primary>APIs</primary>
+<secondary>Trusted X Window System</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-536">
+<primary>label APIs</primary>
+<secondary>Trusted X Window System</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-537">
+<primary>Trusted X Window System</primary>
+<secondary>API declarations</secondary>
+</indexterm>
+<para>For information about the Trusted X Window System APIs, see <olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-1">Chapter 6, Trusted X Window System</olink>.</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>Status XTSOLgetResAttributes(Display *display, XID object, ResourceType type, XTSOLResAttributes *winattrp);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLgetPropAttributes(Display *display, Window window, Atom property, XTSOLPropAttributes *propattrp);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLgetClientAttributes(Display *display, XID windowid, XTsolClientAttributes *clientattrp);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLgetResLabel(Display *display, XID object, ResourceType type, m_label_t *sl);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLsetResLabel(Display *display, XID object, ResourceType type, m_label_t *sl);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLgetResUID(Display *display, XID object, ResourceType type, uid_t *uidp);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLsetResUID(Display *display, XID object, ResourceType type, uid_t *uidp);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLgetPropLabel(Display *display, Window window, Atom property, m_label_t *sl);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLsetPropLabel(Display *display, Window window, Atom property, m_label_t *sl);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLgetPropUID(Display *display, Window window, Atom property, uid_t *uidp);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLsetPropUID(Display *display, Window window, Atom property, uid_t *uidp);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLgetWorkstationOwner(Display *display, uid_t *uidp);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLsetWorkstationOwner(Display *display, uid_t *uidp);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLsetSessionHI(Display *display, m_label_t *sl);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLsetSessionLO(Display *display, m_label_t *sl);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLMakeTPWindow(Display *display, Window *w);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Bool XTSOLIsWindowTrusted(Display *display, Window *window);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLgetSSHeight(Display *display, int screen_num, int *newheight);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLsetSSHeight(Display *display, int screen_num, int newheight);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Status XTSOLsetPolyInstInfo(Display *display, m_label_t sl, uid_t *uidp, int enabled);</literal>
+</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="appb-14">
+<title>Solaris Library Routines and System Calls That Use Trusted Extensions Parameters</title>
+<indexterm xml:id="indexterm-538">
+<primary>APIs</primary>
+<secondary>for Solaris that use Trusted Extensions parameters</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-539">
+<primary>Solaris</primary>
+<secondary>interfaces, API declarations</secondary>
+</indexterm>
+<itemizedlist>
+<para>The following Solaris interfaces either include Trusted Extensions parameters or are used in this guide with Trusted Extensions interfaces:</para>
+<listitem>
+<para>
+<literal>int auditon(int cmd, caddr_t data, int length);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>void free(void *ptr);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int getpeerucred(int fd, ucred_t **ucred);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>uint_t getpflags(uint_t flag);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int is_system_labeled(void);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int setpflags(uint_t flag, uint_t value);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int getsockopt(int s, int level, int optname, void *optval, int *optlen);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int setsockopt(int s, int level, int optname, const void *optval, int optlen);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>int socket(int domain, int type, int protocol);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>ucred_t *ucred_get(pid_t pid);</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>m_label_t *ucred_getlabel(const ucred_t *uc);</literal>
+</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="appb-20">
+<title>System Calls and Library Routines in Trusted Extensions</title>
+<indexterm xml:id="indexterm-540">
+<primary>system calls</primary>
+<secondary>API declarations</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-541">
+<primary>library routines</primary>
+<secondary>API declarations</secondary>
+</indexterm>
+<para>The following table lists the Trusted Extensions system calls and routines. The table also provides references to descriptions and declarations of the interface and to examples of the interface that appear in this guide. The man page section is included as part of the name of each system call and routine.</para>
+<table frame="topbot" xml:id="appb-tbl-2" pgwide="1">
+
+<title>System Calls and Library Routines That Are Used in Trusted Extensions</title>
+<tgroup cols="3" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="187.49*"/>
+<colspec colname="column2" colwidth="222.62*"/>
+<colspec colname="colspec0" colwidth="172.90*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>System Call or Library Routine</para>
+</entry>
+<entry>
+<para>Cross-Reference to Description</para>
+</entry>
+<entry>
+<para>Cross-Reference to Example</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="bldominates-3tsol">
+<citerefentry>
+<refentrytitle>bldominates</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-1.xml" targetptr="labelrelationships">Label Relationships</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-38">Comparing Labels</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-3.xml" targetptr="labelcode-8">Determining the Relationship Between Two Labels</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="blequal-3tsol">
+<citerefentry>
+<refentrytitle>blequal</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-38">Comparing Labels</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-3.xml" targetptr="labelcode-8">Determining the Relationship Between Two Labels</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="blinrange-3tsol">
+<citerefentry>
+<refentrytitle>blinrange</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-1.xml" targetptr="labelrelationships">Label Relationships</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-4.xml" targetptr="labelprint-15">Validating the Label Request Against the Printer's Label Range</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="blmaximum-3tsol">
+<citerefentry>
+<refentrytitle>blmaximum</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-38">Comparing Labels</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="blminimum-3tsol">
+<citerefentry>
+<refentrytitle>blminimum</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-38">Comparing Labels</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="blstrictdom-3tsol">
+<citerefentry>
+<refentrytitle>blstrictdom</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-38">Comparing Labels</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="fgetlabel-2">
+<citerefentry>
+<refentrytitle>fgetlabel</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-1.xml" targetptr="api-intro-3">Labeled Zones</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-29">Obtaining and Setting the Label of a File</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2243" targetptr="free-3c">
+<citerefentry>
+<refentrytitle>free</refentrytitle>
+<manvolnum>
+3C
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="gdayc">Translating Between Labels and Strings</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="getdevicerange-3tsol">
+<citerefentry>
+<refentrytitle>getdevicerange</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="obtaininglabelranges">Obtaining Label Ranges</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-4.xml" targetptr="labelprint-15">Validating the Label Request Against the Printer's Label Range</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="getlabel-2">
+<citerefentry>
+<refentrytitle>getlabel</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-1.xml" targetptr="api-intro-3">Labeled Zones</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-29">Obtaining and Setting the Label of a File</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-3.xml" targetptr="labelcode-11">Obtaining a File Label</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="getpathbylabel-3tsol">
+<citerefentry>
+<refentrytitle>getpathbylabel</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="accessinglabelsinzones">Accessing Labels in Zones</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2243" targetptr="getpeerucred-3c">
+<citerefentry>
+<refentrytitle>getpeerucred</refentrytitle>
+<manvolnum>
+3C
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-4.xml" targetptr="labelprint-5">get_peer_label Label-Aware Function</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-4.xml" targetptr="labelprint-9">Obtaining the Credential and Remote Host Label</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2241" targetptr="getpflags-2">
+<citerefentry>
+<refentrytitle>getpflags</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-1.xml" targetptr="api-intro-11">MAC-Exempt Sockets</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="getplabel-3tsol">
+<citerefentry>
+<refentrytitle>getplabel</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-30">Accessing the Process Sensitivity Label</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-40">Translating the Window Label With the Font List</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="getuserrange-3tsol">
+<citerefentry>
+<refentrytitle>getuserrange</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="obtaininglabelranges">Obtaining Label Ranges</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="getzoneidbylabel-3tsol">
+<citerefentry>
+<refentrytitle>getzoneidbylabel</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="accessinglabelsinzones">Accessing Labels in Zones</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="getzonelabelbyid-3tsol">
+<citerefentry>
+<refentrytitle>getzonelabelbyid</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="accessinglabelsinzones">Accessing Labels in Zones</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="getzonelabelbyname-3tsol">
+<citerefentry>
+<refentrytitle>getzonelabelbyname</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="accessinglabelsinzones">Accessing Labels in Zones</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="getzonerootbyid-3tsol">
+<citerefentry>
+<refentrytitle>getzonerootbyid</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="accessinglabelsinzones">Accessing Labels in Zones</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="getzonerootbylabel-3tsol">
+<citerefentry>
+<refentrytitle>getzonerootbylabel</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="accessinglabelsinzones">Accessing Labels in Zones</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="getzonerootbyname-3tsol">
+<citerefentry>
+<refentrytitle>getzonerootbyname</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="accessinglabelsinzones">Accessing Labels in Zones</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2243" targetptr="is-system-labeled-3c">
+<citerefentry>
+<refentrytitle>is_system_labeled</refentrytitle>
+<manvolnum>
+3C
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-4.xml" targetptr="labelprint-5">get_peer_label Label-Aware Function</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-4.xml" targetptr="labelprint-7">Determining Whether the Printing Service Is Running in a Labeled Environment</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="labelbuilder-3tsol">
+<citerefentry>
+<refentrytitle>labelbuilder</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-7.xml" targetptr="lbuilder-1">Chapter 7, Label Builder APIs</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-7.xml" targetptr="lbuilder-6">Creating an Interactive User Interface</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="label-to-str-3tsol">
+<citerefentry>
+<refentrytitle>label_to_str</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="gdayc">Translating Between Labels and Strings</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-3.xml" targetptr="labelcode-9">Obtaining a Process Label</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="m-label-alloc-3tsol">
+<citerefentry>
+<refentrytitle>m_label_alloc</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-36">Allocating and Freeing Memory for Labels</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-3.xml" targetptr="labelcode-9">Obtaining a Process Label</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="chapter-3.xml" targetptr="labelcode-11">Obtaining a File Label</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="m-label-dup-3tsol">
+<citerefentry>
+<refentrytitle>m_label_dup</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-36">Allocating and Freeing Memory for Labels</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="m-label-free-3tsol">
+<citerefentry>
+<refentrytitle>m_label_free</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-36">Allocating and Freeing Memory for Labels</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-4.xml" targetptr="labelprint-15">Validating the Label Request Against the Printer's Label Range</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="chapter-3.xml" targetptr="labelcode-9">Obtaining a Process Label</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="setflabel-3tsol">
+<citerefentry>
+<refentrytitle>setflabel</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-29">Obtaining and Setting the Label of a File</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="labelapi-29">Obtaining and Setting the Label of a File</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2241" targetptr="setpflags-2">
+<citerefentry>
+<refentrytitle>setpflags</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-1.xml" targetptr="api-intro-11">MAC-Exempt Sockets</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="str-to-label-3tsol">
+<citerefentry>
+<refentrytitle>str_to_label</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="gdayc">Translating Between Labels and Strings</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-4.xml" targetptr="labelprint-15">Validating the Label Request Against the Printer's Label Range</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="chapter-3.xml" targetptr="labelcode-11">Obtaining a File Label</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="tsol-getrhtype-3tsol">
+<citerefentry>
+<refentrytitle>tsol_getrhtype</refentrytitle>
+<manvolnum>
+3TSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="accessingnetworkdbentries">Obtaining the Remote Host Type</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2243" targetptr="ucred-get-3c">
+<citerefentry>
+<refentrytitle>ucred_get</refentrytitle>
+<manvolnum>
+3C
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-1.xml" targetptr="api-intro-9">Multilevel Ports</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2243" targetptr="ucred-getlabel-3c">
+<citerefentry>
+<refentrytitle>ucred_getlabel</refentrytitle>
+<manvolnum>
+3C
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-1.xml" targetptr="api-intro-9">Multilevel Ports</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolgetclientattributes-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLgetClientAttributes</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-47">Accessing Attributes</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolgetpropattributes-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLgetPropAttributes</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-47">Accessing Attributes</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolgetproplabel-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLgetPropLabel</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-20">Accessing and Setting a Window Property Label</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolgetpropuid-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLgetPropUID</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-20">Accessing and Setting a Window Property Label</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolgetresattributes-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLgetResAttributes</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-39">Obtaining Window Attributes</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolgetreslabel-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLgetResLabel</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-41">Obtaining a Window Label</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolgetresuid-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLgetResUID</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-43">Obtaining the Window User ID</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-52">Accessing and Setting a Window User ID</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolgetssheight-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLgetSSHeight</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-25">Accessing and Setting the Screen Stripe Height</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolgetworkstationowner-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLgetWorkstationOwner</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-22">Accessing and Setting a Workstation Owner ID</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsoliswindowtrusted-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLIsWindowTrusted</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-24">Working With the Trusted Path Window</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolmaketpwindow-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLMakeTPWindow</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-24">Working With the Trusted Path Window</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolsetpolyinstinfo-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLsetPolyInstInfo</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-1">Chapter 6, Trusted X Window System</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolsetproplabel-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLsetPropLabel</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-20">Accessing and Setting a Window Property Label</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolsetpropuid-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLsetPropUID</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-20">Accessing and Setting a Window Property Label</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolsetreslabel-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLsetResLabel</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-42">Setting a Window Label</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolsetresuid-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLsetResUID</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-52">Accessing and Setting a Window User ID</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolsetsessionhi-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLsetSessionHI</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-23">Setting the X Window Server Clearance and Minimum Label</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolsetsessionlo-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLsetSessionLO</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-23">Setting the X Window Server Clearance and Minimum Label</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolsetssheight-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLsetSSHeight</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-25">Accessing and Setting the Screen Stripe Height</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7307" targetptr="xtsolsetworkstationowner-3xtsol">
+<citerefentry>
+<refentrytitle>XTSOLsetWorkstationOwner</refentrytitle>
+<manvolnum>
+3XTSOL
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="windowapi-22">Accessing and Setting a Workstation Owner ID</olink>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</sect1>
+</appendix>

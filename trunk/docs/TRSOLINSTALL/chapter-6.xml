@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="headl-1">
+
+
+
+<title>Configuring a Headless
+System With Trusted Extensions</title>
+<indexterm xml:id="indexterm-298">
+<primary>Trusted Extensions configuration</primary>
+<secondary>headless systems</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-299">
+<primary>Trusted Extensions installation</primary>
+<secondary>headless systems</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-300">
+<primary>headless systems</primary>
+<secondary>configuring with Trusted Extensions</secondary>
+</indexterm>
+<toc>
+<para>Configuring and administering Trusted Extensions software on headless systems
+like the <trademark>Netra</trademark> series require different procedures
+than the same tasks on systems that have monitors. Trusted Extensions software
+divides administrative responsibilities into roles, which cannot be assumed
+remotely. The software also provides an administrative tool GUI. The GUI does
+not display on a serial line.</para>
+<note>
+
+<para>The configuration methods that headless systems require do not
+satisfy the criteria for an evaluated configuration. For more information,
+see <olink remap="external" targetdoc="chapter-1.xml" targetptr="ovw-14">Understanding Your Site's Security Policy</olink>.</para>
+</note>
+</toc>
+<sect1 xml:id="headl-2">
+<title>Headless System Configuration (Task Map)</title>
+<para>On headless systems, a console is connected by means of a serial line
+to a terminal emulator window. The line is typically secured by the <command>tip</command> command.
+Depending on what type of second system is available, you can use one of four
+methods. The methods are listed from most desirable to least desirable in
+the following table.</para>
+<informaltable frame="topbot">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec0" colwidth="20.21*"/>
+<colspec colname="colspec2" colwidth="26.29*"/>
+<colspec colname="colspec1" colwidth="39.72*"/>
+<thead>
+<row>
+<entry>
+<para>Tasks</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>1. Identify the headless system as a CIPSO system.</para>
+</entry>
+<entry>
+<para>On the desktop system where you are going to configure the headless
+system, make the headless system of host type CIPSO.</para>
+</entry>
+<entry>
+<para>If you have not already made the headless system part of the trusted
+network, assign to it the appropriate security template in <olink remap="external" targetdoc="chapter-4.xml" targetptr="txconf-19">Specify Labels for Network Interfaces</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>2. Enable remote login.</para>
+</entry>
+<entry>
+<para>As root, enable remote logins to the headless system.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="headl-6">Enable Remote Login</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry morerows="3">
+<para>3. Choose a configuration and administration method to set up the headless
+system.</para>
+<para>The choice is based on available hardware and software on a second system
+that communicates with the headless system. The choices are listed in descending
+order of ease and security.</para>
+</entry>
+<entry>
+<para>You can remotely display the Application Manager by using <command>dtappsession</command>.</para>
+</entry>
+<entry>
+<para>If you have a desktop system that is running Trusted Extensions, go to <olink remap="internal" targetdoc="chapter-6.xml" targetptr="headl-3">Use dtappsession to Log In to a Headless System</olink>.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>You can remotely display the Solaris Management Console. In this method, the CDE actions
+are reached through Legacy Applications.</para>
+</entry>
+<entry colname="colspec1">
+<para>If you have a desktop system that is running Solaris Management Console 2.1 client software,
+go to <olink remap="internal" targetdoc="chapter-6.xml" targetptr="headl-4">Set Up Remote Solaris Management Console
+Login to a Headless System</olink>.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>You can use <command>rlogin</command>, then administer on the command
+line.</para>
+</entry>
+<entry>
+<para>If you are logging in remotely using the <command>rlogin</command> command,
+go to <olink remap="internal" targetdoc="chapter-6.xml" targetptr="headl-6">Enable Remote Login</olink>.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>If you have no windowing system, you can use serial login. This procedure
+is insecure.</para>
+</entry>
+<entry>
+<para>If you do not have a desktop system, and must use serial login to configure
+and administer the headless system, go to <olink remap="internal" targetdoc="chapter-6.xml" targetptr="headl-5">Set Up
+Administration by Serial Login</olink> .</para>
+</entry>
+</row>
+<row>
+<entry colname="colspec0">
+<para>4. Configure Trusted Extensions on the headless system.</para>
+</entry>
+<entry>
+<para>Having logged in, continue configuration.</para>
+</entry>
+<entry colname="colspec1">
+<para>See <olink remap="external" targetdoc="chapter-4.xml" targetptr="txconf-1">Chapter 4, Configuring Trusted
+Extensions</olink>, and use the methods that are possible given your login
+method.</para>
+</entry>
+</row>
+<row>
+<entry colname="colspec0">
+<para>5. Administer the headless system.</para>
+</entry>
+<entry>
+<para>Remotely log in to administer the system.</para>
+</entry>
+<entry colname="colspec1">
+<para>See <olink remap="external" targetdoc="819-7309">
+<citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>, and
+use the methods that are possible given your login method.</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<sect2>
+<title/>
+<task id="headl-6">
+
+<title>Enable Remote Login</title>
+<tasksummary>
+<para>Follow this procedure <emphasis>only if</emphasis> you do not have a
+desktop system with which to configure the headless system and you plan to
+administer the headless system by using <command>rlogin</command> or <command>ssh</command>. This procedure is not secure.</para>
+<para>Configuration errors can be debugged remotely.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>Consult your security policy for which methods of remote login are permissible
+at your site.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Launch a terminal.</para>
+<para>Bring up the Workspace Menu by
+clicking with mouse button 3 on the screen background. Select Tools -&gt;
+Terminal.</para>
+</step>
+<step>
+<para>Choose one or more of the following methods of remote entry.</para>
+<stepalternatives>
+<step>
+<para>Enable remote login by the <literal>root</literal> user.</para>
+<substeps>
+<step>
+<para>Comment out the <literal>CONSOLE=</literal> line in the <filename>/etc/default/login</filename> file.</para>
+<screen>
+<userinput>#</userinput>CONSOLE=/dev/console</screen>
+</step>
+<step>
+<para>Permit root logins for the <command>ssh</command> service.</para>
+<para>Modify the <filename>/etc/ssh/sshd_config</filename> file. By default, <command>ssh</command> is enabled on a Solaris system.</para>
+<screen>PermitRootLogin <userinput>yes</userinput>
+</screen>
+</step>
+</substeps>
+</step>
+<step>
+<para>Enable roles to log in remotely.</para>
+<para>If <literal>root</literal> is
+a role, this modification is required for remote logins by the <literal>root</literal> role.</para>
+<substeps>
+<step>
+<para>Open the <filename>pam.conf</filename> file in an editor.</para>
+<screen># vi <userinput>/etc/pam.conf</userinput>
+</screen>
+</step>
+<step>
+<para>Find <literal>other account requisite</literal> toward the end
+of the file.</para>
+</step>
+<step>
+<para>Add <literal>allow_remote</literal> to the roles module.</para>
+<para>Use the <keysym>TAB</keysym> key between fields.</para>
+<screen>other account requisite  pam_roles.so.1 <userinput>allow_remote</userinput>
+</screen>
+<para>After your edits, this section looks similar to the following:</para>
+<screen>other account requisite  pam_roles.so.1        allow_remote
+other account required       pam_unix_account.so.1
+other account required       pam_tsol_account.so.1</screen>
+</step>
+</substeps>
+</step>
+<step>
+<para>Allow remote entry from an unlabeled host.</para>
+<substeps>
+<step>
+<para>Open the <filename>pam.conf</filename> file in an editor.</para>
+<screen># vi <userinput>/etc/pam.conf</userinput>
+</screen>
+</step>
+<step>
+<para>Find <literal>other account requisite</literal> toward the end
+of the file.</para>
+</step>
+<step>
+<para>Add <literal>allow_unlabeled</literal> to the <literal>tsol_account</literal> module.</para>
+<para>Use the <keysym>TAB</keysym> key between fields.</para>
+<screen>other account required   pam_tsol_account.so.1 <userinput>allow_unlabeled</userinput>
+</screen>
+<para>After your edits, this section looks similar to the following:</para>
+<screen>other account requisite  pam_roles.so.1        allow_remote
+other account required       pam_unix_account.so.1
+other account required       pam_tsol_account.so.1 allow_unlabeled</screen>
+</step>
+</substeps>
+</step>
+<step>
+<para>Allow specific users to log in to the global zone.</para>
+<para>Assign
+to these users an administrative label range in the <filename>user_attr</filename> file.</para>
+<screen>
+<replaceable>username</replaceable>::::idlecmd=lock;lock_after_retries=yes;idletime=5;\
+type=normal;labelview=showsl;\
+clearance=<userinput>ADMIN_HIGH</userinput>;min_label=<userinput>ADMIN_LOW</userinput>
+</screen>
+<para>The backslashes are for purposes of display only. The entry should be
+on one line.</para>
+</step>
+<step>
+<para>Enable remote login from other labels.</para>
+<substeps>
+<step>
+<para>Enable remote login to the global zone.</para>
+<para>Add port 513
+as a multilevel port (MLP). Port 513 enables remote login.</para>
+<screen># cat /etc/security/tsol/tnzonecfg
+...
+global:ADMIN_LOW:1:111/tcp;111/udp;<userinput>513/tcp;</userinput>...</screen>
+</step>
+<step>
+<para>Verify the syntactic accuracy of the <filename>tnzonecfg</filename> file.</para>
+<screen># <userinput>tnchkdb</userinput>
+</screen>
+<para>Fix any errors before continuing.</para>
+</step>
+<step>
+<para>Read the <filename>tnzonecfg</filename> changes into the kernel.</para>
+<screen># <userinput>tnctl -fz /etc/security/tsol/tnzonecfg</userinput>
+</screen>
+</step>
+<step>
+<para>Restart the remote login service.</para>
+<screen># <userinput>svcadm restart svc:/network/login:rlogin</userinput>
+</screen>
+</step>
+</substeps>
+</step>
+</stepalternatives>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="headl-3">
+
+<title>Use <command>dtappsession</command> to Log In to
+a Headless System</title>
+<tasksummary>
+<para>This procedure enables you to use Trusted Extensions GUIs to administer
+a headless system.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>The headless system must have enough memory to use the Solaris Management Console. The requirements
+are the same as for the Solaris OS. For details, see <olink remap="external" targetdoc="819-2393" targetptr="webstart-83">
+<citetitle remap="section">System Requirements and Recommendations</citetitle> in <citetitle remap="book">Solaris 10 11/06 Installation Guide: Basic Installations</citetitle>
+</olink>.</para>
+<para>The headless system is identified as a CIPSO system on the administrator's
+desktop host. For details, see <olink remap="external" targetdoc="chapter-4.xml" targetptr="txconf-19">Specify Labels
+for Network Interfaces</olink>.</para>
+<para>You have completed <olink remap="internal" targetdoc="chapter-6.xml" targetptr="headl-6">Enable Remote Login</olink>.</para>
+<para>You are a user who is enabled to log in to the headless system.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>On a Trusted Extensions desktop host, remotely log in to the headless
+system.</para>
+<screen>
+<replaceable>admin-host</replaceable> $ rlogin <replaceable>headless-host</replaceable>
+     Password: /*type the remote password*/</screen>
+</step>
+<step>
+<para>Assume a role.</para>
+<para>If you are not in the global zone on
+the headless system, assume a role in the same terminal:</para>
+<screen>
+<replaceable>headless-host</replaceable> # su <replaceable>role-name</replaceable>
+     Password: <lineannotation>Type the role password</lineannotation>
+</screen>
+<para>You are now in the global zone.</para>
+</step>
+<step>
+<para>Display the Application Manager on the administrator's desktop.</para>
+<para>In the same terminal, use the <command>dtappsession</command> command.</para>
+<screen>
+<replaceable>headless-host</replaceable> # dtappsession <replaceable>admin-host</replaceable>
+     Password: <lineannotation>Type the remote password</lineannotation>
+</screen>
+<para>You can now administer the headless system by using CDE actions and
+the Solaris Management Console.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="headl-4">
+
+<title>Set Up Remote Solaris Management Console Login to a Headless System</title>
+<tasksummary>
+<para>This procedure enables you to use the Solaris Management Console to administer the headless
+system. Terminals and the Application Manager are available through Legacy
+Applications on the Solaris Management Console.</para>
+</tasksummary>
+<taskprerequisites>
+
+<itemizedlist>
+<para>For this procedure to work, one of the following systems must be available:</para>
+<listitem>
+<para>A Solaris desktop system that is configured to run the Solaris Management Console 2.1 client
+process</para>
+</listitem>
+<listitem>
+<para>A Microsoft Windows client that is running the Solaris release and can
+run the Solaris Management Console 2.1 client process</para>
+</listitem>
+</itemizedlist>
+</taskprerequisites>
+<procedure>
+<step>
+<para>After installation, boot the headless system into single-user
+mode.</para>
+</step>
+<step>
+<para>Add the Solaris desktop machine with Solaris Management Console 2.1  running on
+it, to the headless system's <filename>/etc/hosts</filename> file.</para>
+<para>For
+example,</para>
+<screen>192.168.168.77   soldesktop77</screen>
+</step>
+<step>
+<para>On the Microsoft Windows client or Solaris desktop system, add the headless
+system's address to the <filename>c:\windows\system\hosts</filename> or <filename>/etc/hosts</filename> file, respectively.</para>
+<para>For example,</para>
+<screen>192.168.168.111  headless1</screen>
+</step>
+<step>
+<para>Modify the <filename>/usr/sadm/lib/smc/bin/smcwbemserver</filename> file
+on the headless system to include the <option>
+u</option> option.</para>
+<para>Follow
+the procedure, To Enable Remote Role Assumption From Untrusted Systems under <olink remap="external" targetdoc="819-7309" targetptr="remotead-21">
+<citetitle remap="section">Administering Remotely (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>, then return here.</para>
+</step>
+<step>
+<para>On the headless system, exit single-user mode and let the system
+complete the boot process.</para>
+</step>
+<step>
+<para>On the Microsoft Windows client or Solaris desktop system, start the Solaris Management Console server
+process.</para>
+<screen># <userinput>/usr/sbin/smc &amp;</userinput>
+</screen>
+</step>
+<step>
+<para>In the Solaris Management Console Console menu, select the Preferences dialog box.</para>
+</step>
+<step>
+<para>Click the Authentication tab, and click Enable advanced login,
+then OK.</para>
+</step>
+<step>
+<para>Open the Files toolbox of the headless system, and log in specifying
+an administrative role. </para>
+<para>Provide the role password.</para>
+</step>
+<step>
+<para>Bring up a Terminal or the Application Manager window from the
+Legacy tools set in the Navigation Pane.</para>
+</step>
+<step>
+<para>Configure the headless system.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="headl-5">
+
+<title>Set Up Administration by Serial Login</title>
+<tasksummary>
+<para>Follow this procedure <emphasis>only if</emphasis> you do not have a
+desktop system with which to configure the headless system. This procedure
+is not secure.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>The serial port must be allocated before the port can be used. For details,
+see the serial login procedure in <olink remap="external" targetdoc="819-7309" targetptr="managedev-33">
+<citetitle remap="section">Managing Devices in Trusted Extensions (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>.</para>
+<para>You must be root in single user mode on the headless system.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Modify the <filename>/etc/inittab</filename> file to spawn a console
+login on the serial console.</para>
+<para>Use the <command>vi</command> command
+to change the last line of <filename>/etc/inittab</filename> to:</para>
+<screen>co:<userinput>23</userinput>4:respawn:/usr/lib/saf/ttymon -g -h -p "`uname -n` console login: " \
+ -T sun -d  /dev/console -l console -m ldterm,ttcompat</screen>
+<para>The preceding line is broken with a backslash for display purposes.
+You should not break the line in the <filename>/etc/inittab</filename> file.</para>
+</step>
+<step>
+<para>You can administer the system as root or by assuming a role.</para>
+<para>Modify the <filename>/etc/security/user_attr</filename> entry for the
+install user, as in:</para>
+<screen>install…;profiles=…<userinput>,Primary Administrator</userinput>;</screen>
+<para>The Primary Administrator profile includes privileged shells. The install
+user can now run privileged commands.</para>
+<stepalternatives>
+<step>
+<para>Create a user and a role.</para>
+<para>The user <literal>install</literal> is
+a conventional name.</para>
+<screen># grep install /etc/passwd
+install:x:111:111:Headless Configuration:/:/sbin/sh</screen>
+<substeps>
+<step>
+<para>Supply a user password for the user.</para>
+<screen># grep install /etc/shadow
+install:wqI2HKYC2t41E:6445::::::</screen>
+</step>
+<step>
+<para>Create the Primary Administrator role and supply a role password.</para>
+<para>The Primary Administrator role includes the Primary Administrator profile.</para>
+<screen># grep primadmin /etc/passwd
+primadmin:x:101:101:Primary Administrator:/:/sbin/sh
+
+# grep primadmin /etc/shadow
+primadmin:q64IHHW297x9e:6445::::::
+
+# grep primadmin /etc/user_attr
+primadmin::::profiles=Primary Administrator</screen>
+</step>
+<step>
+<para>Assign the role to the user.</para>
+<screen># grep install /etc/user_attr
+install::::roles=primadmin</screen>
+</step>
+</substeps>
+<para>You can now configure the system by logging in as the install user,
+and assuming the Primary Administrator role.</para>
+</step>
+<step>
+<para>Administer the system as root.</para>
+<para>This method of configuration
+is insecure. For a modicum of security, two people should be present while
+the system is being configured.</para>
+</step>
+</stepalternatives>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+</chapter>

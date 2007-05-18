@@ -1,0 +1,607 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 2. Solaris Flash (Planning)</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Express Installation Guide: Solaris Flash Archives (Creation and Installation)"><link rel="up" href="index.html" title="Solaris Express Installation Guide: Solaris Flash Archives (Creation and Installation)"><link rel="prev" href="ch01.html" title="Chapter 1. Solaris Flash (Overview)"><link rel="next" href="ch03.html" title="Chapter 3. Creating Solaris Flash Archives
+(Tasks)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 2. Solaris Flash (Planning)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch03.html">Next</a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="flash-240"></a>Chapter 2. Solaris Flash (Planning)</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="ch02.html#flashoverview-1">Planning Your Solaris Flash Installation</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch02.html#flashplan-16">Designing an Initial Installation of the Master System</a></span></dt><dt><span class="sect2"><a href="ch02.html#flash-30">Planning the Creation of a Solaris Flash Archive</a></span></dt><dt><span class="sect2"><a href="ch02.html#flash-34">Planning the Installation of Solaris Flash Archives</a></span></dt></dl></dd></dl></div>
+
+
+
+
+
+<div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="flashoverview-1"></a>Planning Your Solaris Flash Installation</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-14"></a>Before you create and install a Solaris Flash archive, you must make
+some decisions about how you want to install the Solaris OS on your systems. The first
+time that you install a system, you install with a full archive that is an initial
+installation. After a system has been installed with an archive, the system can be
+updated with a differential archive. The differential archive installs only the differences
+between two archives. </p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="flashplan-16"></a>Designing an Initial Installation of the Master System</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-15"></a>
+<a class="indexterm" name="indexterm-16"></a>
+<a class="indexterm" name="indexterm-17"></a>
+<p>The first task in the Solaris Flash installation process is to install
+a system, the master system, with the configuration that you want each of the clone
+systems to have. You can use any of the Solaris installation methods to install an
+archive on the master system. The installation can be a subset or a complete installation
+of the Solaris OS. After you complete the installation, you can add or remove software
+or modify any configuration files. Some limitations to installing the master system
+are the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The master system and the clone systems must have the same kernel
+architectures. For example, you  can only  use an archive that was created from a
+master system that has a <code class="literal">sun4u</code> architecture  to install clones
+with a <code class="literal">sun4u</code> architecture. </p>
+</li><li>
+<p>You must install the master system with the exact configuration that
+you want on each of the clone systems. The decisions that you make when you design
+the installation of the master system depend on the following:</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>The software that you want to install on the clone systems</p>
+</li><li>
+<p>Peripheral devices that are connected to the master system and the
+clone systems</p>
+</li><li>
+<p>The architecture of the master system and the clone systems</p>
+</li></ul></div>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>If you already have installed clone systems and want to update these systems
+with a new configuration, see <span class="olink">Planning to Create the Solaris Flash Differential Archive for an Update</span>.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="flash-25"></a>Customizing the Solaris Installation on the Master System</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-18"></a>
+<a class="indexterm" name="indexterm-19"></a>After you install the Solaris OS on the master system by using any of
+the Solaris installation methods, you can add or delete software and modify system
+configuration information as necessary. To customize the master system's software,
+you can do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Delete software. You can remove software that you determine is not
+necessary to install on the clone systems. To see a list of software that is installed
+on the master system, use the Product Registry. For detailed instructions, refer to <span class="olink">
+<em class="citetitle">System Administration Guide: Basic Administration</em>
+</span>.</p>
+</li><li>
+<p>Add software. You can install software that is included in the Solaris
+release. You can also add software that is not delivered as part of the Solaris OS.
+All of the software that you install on the master system is included in the Solaris Flash archive
+and is installed on the clone systems.</p>
+</li><li>
+<p>Modify configuration files. You can alter configuration files on the
+master system.  For example, you can modify the <code class="filename">/etc/inet/inetd.conf</code> file
+to restrict the daemons that the system runs. All of the modifications that you make
+are saved as part of the Solaris Flash archive and are installed on the clone
+systems.</p>
+</li><li>
+<p>Further customization can be done when creating the archive. For example,
+you can exclude large data files that you might not want in the archive. For an overview,
+see <span class="olink">Customizing an Archive's Files and Directories</span>.</p>
+</li></ul></div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="flash-26"></a>Creating Archives for SPARC and x86 Systems</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-20"></a>
+<a class="indexterm" name="indexterm-21"></a>If you want to install Solaris software by using a Solaris Flash archive
+on both SPARC and x86 systems, you must create a separate Solaris Flash archive
+for each platform. Use the Solaris Flash archive that was created from the SPARC
+master system to install SPARC systems. Use the Solaris Flash archive that was
+created from the x86 master system to install x86 systems.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="flash-27"></a>
+Supporting Peripheral Devices Not Found on
+the Master System</h4></div></div></div>
+
+<a class="indexterm" name="indexterm-22"></a>
+<p>Choosing the drivers to install on the master system has the following dependencies.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The type of peripheral devices attached to both the master system
+and the clone system. </p>
+</li><li>
+<p>The type of software group installed. </p>
+</li></ul></div>
+<p>The Entire Plus OEM Software Group installs all drivers regardless of the hardware
+that is present on the system. Other software groups provide limited support. If you
+install another software group and the clone systems have different peripheral devices
+than the master system, you need to install the appropriate drivers on the master
+system before you create the archive.</p>
+<div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="etfbm"></a>How to Get the Support for Peripherals That You Need</h5></div></div></div>
+
+<p>You can install support for peripherals on clone systems that are different
+from the master system in by installing the Entire Plus OEM Software Group or installing
+selected packages.</p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Type of Installation</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>Install the Entire Plus OEM Software Group</p>
+</td><td>
+<p>The Entire Plus OEM Software Group is the largest Software Group available.
+This  group  contains every package that is found in the Solaris OS. The Entire Plus
+OEM Software Group installs all drivers regardless of the hardware that is present
+on the system. A Solaris Flash archive that is created with the Entire Plus OEM
+Software Group works on any clone system that has peripheral devices supported by
+the installed release of the Solaris OS.</p>
+<p>Installing master systems with the Entire Plus OEM Software Group guarantees
+compatibility with other peripheral configurations. However, the Entire Plus OEM Software
+Group requires at least 2.9 Gbytes of disk space.  The clone systems might not have
+the space that is required to install the Entire Plus OEM Software Group.</p>
+</td></tr><tr><td>
+<p>Install other software groups</p>
+</td><td>
+<p>If you install the master system with the following software groups, you are
+limiting the support for peripherals. The master system supports only the peripheral
+devices that are attached to the master system at the time of installation. </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Reduced Networking Software Group</p>
+</li><li>
+<p>Core Software Group</p>
+</li><li>
+<p>End User Software Group</p>
+</li><li>
+<p>Developer Software Group</p>
+</li><li>
+<p>Entire Software Group</p>
+</li></ul></div>
+<p>Installing these software groups could result in your clone systems failing
+to have all the drivers needed. For example, if you install the Entire Software Group
+on a master system that has a GX CG6 frame buffer, only the GX CG6 frame buffer driver
+is installed. This situation is not a problem if all the clone systems that you want
+to install have the GX CG6 frame buffer or no frame buffer.</p>
+</td></tr><tr><td>
+<p>Install selected packages</p>
+</td><td>
+<p>When you install the master system, you can install only the packages that you
+need for the master system and the clone systems. By selecting specific packages,
+you can install only support for the peripherals that you know exist on the master
+system or clone systems.</p>
+</td></tr></tbody></table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="flash-30"></a>Planning the Creation of a Solaris Flash Archive</h3></div></div></div>
+
+<p>You can create an archive from the master system for an initial installation.
+Or, if you have already installed an archive on clone systems, you can create a differential
+archive from two system images. The differential archive installs only the differences
+between the two images. </p>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="flashoverview-46"></a>Planning to Create the Solaris Flash Archive
+for an Initial Installation</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-23"></a>
+<a class="indexterm" name="indexterm-24"></a>After you install the master system, the next task in the Solaris Flash installation
+process is to create a Solaris Flash archive. Files on the master system are
+copied to a Solaris Flash archive along with various pieces of identification
+information. You can create a Solaris Flash archive while the master system is
+running in multiuser mode or single-user mode. You can also create a Solaris Flash archive
+after you boot from one of the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Solaris Operating System DVD</p>
+</li><li>
+<p>Solaris Software - 1  CD</p>
+</li><li>
+<p>An image of the Solaris Software CDs and the Solaris Languages CD</p>
+</li></ul></div>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>A Solaris Flash archive cannot be properly created when a non-global
+zone is installed. The Solaris Flash feature is not compatible  with the Solaris Zones
+partitioning technology. If you create a Solaris Flash archive, the resulting  archive
+is not installed properly when the archive is deployed under these conditions:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The archive is created in a non-global zone</p>
+</li><li>
+<p>The archive is created in a global zone that has non-global zones
+installed</p>
+</li></ul></div>
+</div>
+<div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="id1560551"></a>Creating Solaris Flash Archives With RAID-1 Volumes</h5></div></div></div>
+
+<p>Starting in the Solaris 9 9/04 release, you can create and install Solaris Flash archives
+created from a master system that has RAID-1 volumes configured.  With the Solaris
+9 12/03 and Solaris 9 4/04 release, you must install a patch.  To get a the patch
+that fixes CR 4838219, see <a href="http://sunsolve.sun.com" target="_top">sunsolve.sun.com</a>.</p>
+<p>You can create a Solaris Flash archive when you have Solaris Volume Manager RAID-1
+volumes configured.  The Solaris Flash creation software removes all RAID-1 volume
+information from the archive to keep the integrity of the clone system.  With custom
+JumpStart you can rebuild the RAID-1 volumes by using a JumpStart profile.  With Solaris
+Live Upgrade, you create a boot environment with RAID-1 volumes configured and install
+the archive.  The Solaris installation program cannot be used to install RAID-1 volumes
+with a Solaris Flash archive.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>For examples of RAID-1 volumes in JumpStart profiles, see <span class="olink">
+<em class="citetitle">Profile Examples</em> in <em class="citetitle">Solaris Express Installation Guide: Custom JumpStart and Advanced Installations</em>
+</span>.</p>
+</li><li>
+<p>For examples of Solaris Live Upgrade boot environments configured
+with RAID-1 volumes, see <span class="olink">
+<em class="citetitle">Creating a New Boot Environment</em> in <em class="citetitle">Solaris Express Installation Guide:  Solaris Live Upgrade and Upgrade Planning</em>
+</span>.</p>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Veritas VxVM stores configuration information in areas not available to Solaris Flash.
+ If Veritas VxVm file systems have been configured, you should not create a Solaris Flash archive.
+ Also, Solaris install, including JumpStart and Solaris Live Upgrade do not support
+rebuilding VxVM volumes at installation time. Therefore, if you are planning to deploy
+Veritas VxVM software using a Solaris Flash archive, the archive must be created
+prior to configuring the VxVM file systems.  The clone systems must be then configured
+individually after the archive has been applied and the system rebooted.</p>
+</div>
+</div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gbwbm"></a>Creating
+an Archive That Contains Large Files</h4></div></div></div>
+
+<p>The default
+copy method that is used when you create a Solaris Flash archive is the <span><strong class="command">pax</strong></span> utility. The <span><strong class="command">flarcreate</strong></span> command uses the <span><strong class="command">pax</strong></span> utility to create an archive without size limitations on individual
+files. Individual file sizes can be over 4 Gbytes. </p>
+<p>The <span><strong class="command">flarcreate</strong></span> command with the <code class="option">
+L cpio</code> option creates a <span><strong class="command">cpio</strong></span> archive. This option is useful for backward compatibility</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="flashoverview-47"></a>Planning to Create the Solaris Flash Differential
+Archive for an Update</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-25"></a>
+<a class="indexterm" name="indexterm-26"></a>If you have a clone system that is already installed with an archive and
+want to update it, you can create a differential archive that contains only the differences
+between two images, the unchanged master image and an updated master image. The differences
+between these two images is the differential archive. </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>One image is running on the master system that was the original software
+installed on the clone system. This image might need be installed on the master system
+if it was saved in a directory for future use.</p>
+</li><li>
+<p>Another image is to be accessed and used for comparison. This image
+contains the new additions or deletions that will be installed on the clone systems. </p>
+</li></ul></div>
+<p>After you update a clone system with a differential archive, only the files
+that are in the differential archive are changed on the clone system. Scripts can
+be used to customize the archive before or after installation, which is especially
+helpful for reconfiguration. </p>
+<p>You can install a Solaris Flash differential archive with the custom JumpStart
+installation method. Or, you can use Solaris Live Upgrade to install a differential
+archive on an inactive boot environment. </p>
+<p>An unchanged master image should be saved after the initial installation so
+this image can be accessed by any of the following methods.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>A Solaris Live Upgrade boot environment, mounted on some directory
+that uses the <span><strong class="command">lumount</strong></span> command. For a description of a Solaris Live
+Upgrade boot environment, see <span class="olink">Chapter 4, <em class="citetitle">Solaris Live Upgrade (Overview),</em> in <em class="citetitle">Solaris Express Installation Guide:  Solaris Live Upgrade and Upgrade Planning</em>
+</span>.</p>
+</li><li>
+<p>A clone system that is mounted over Network File System (NFS) with
+root permissions. </p>
+</li><li>
+<p>A system backup that can be restored with the <span><strong class="command">ufsdump</strong></span> command.</p>
+</li></ul></div>
+<p>For step-by-step instructions, see <span class="olink">To Create a Solaris Flash Differential Archive With an Updated Master Image</span>.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="flashoverview-35"></a>Customizing an Archive's Files and Directories</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-27"></a>
+<a class="indexterm" name="indexterm-28"></a>When you create a Solaris Flash archive, some files and directories
+that are to be copied from the master system can be excluded. If you have excluded
+a directory, you can also restore specified files or subdirectories under that directory.
+For example, you could create an archive that excludes all files and directories in <code class="filename">/a/aa/bb/c</code>. The  content of the <code class="filename">bb</code> subdirectory could
+be included. The only content would  then be in the <code class="filename">bb</code> subdirectory.</p>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>Use the <span><strong class="command">flarcreate</strong></span> file-exclusion options with caution. If you exclude some directories, others
+that you were unaware of might be left in the archive, such as system configuration
+files. The system would then be inconsistent and the installation would not work.
+Excluding directories and files is best used with data that can easily be removed
+without disrupting the system, such as large data files.</p>
+</div>
+<p>The following table lists the <span><strong class="command">flarcreate</strong></span> command options that can exclude files and directories and restore files
+and subdirectories.</p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>How Specified?</p>
+</th><th>
+<p>Options That Exclude</p>
+</th><th>
+<p>Options That Include</p>
+</th></tr></thead><tbody><tr><td>
+<p>Specify the name of the directory or file</p>
+</td><td>
+<p>
+<code class="option">
+x</code> <em class="replaceable"><code>exclude_dir/filename</code></em>
+</p>
+</td><td>
+<p>
+<code class="option">
+y</code> <em class="replaceable"><code>include_dir/filename</code></em>
+</p>
+</td></tr><tr><td>
+<p>Use a file that contains a list</p>
+</td><td>
+<p>
+<code class="option">
+X</code> <em class="replaceable"><code>list_filename</code></em>
+</p>
+<p>
+<code class="option">
+z</code> <em class="replaceable"><code>list_filename</code></em>
+</p>
+</td><td>
+<p>
+<code class="option">
+f</code>  <em class="replaceable"><code>list_filename</code></em>
+</p>
+<p>
+<code class="option">
+z</code>  <em class="replaceable"><code>list_filename</code></em>
+</p>
+</td></tr></tbody></table>
+</div>
+<p>For descriptions of these options, see <span class="olink">Table 5&#8211;7</span>.</p>
+<p>For examples of customizing an archive, see <span class="olink">Creating a Solaris Flash Archive and Customizing Files (Examples)</span>.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="flashoverview-42"></a>Customizing an Archive With Scripts</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-29"></a>
+<a class="indexterm" name="indexterm-30"></a>
+<a class="indexterm" name="indexterm-31"></a>After the software is installed on the master system, special scripts
+can be run during creation, installation, postinstallation and first reboot. These
+scripts enable you to do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Configure applications on clone systems. You can use a custom JumpStart
+script for some uncomplicated configurations. For more complicated configurations,
+special configuration-file processing might be necessary on the master system or before
+or after installation on the clone system. </p>
+</li><li>
+<p>Protect local customizations on clone systems. Local preinstallation
+and postinstallation scripts reside on the clone. These scripts protect local customizations
+from being overwritten by the Solaris Flash software.</p>
+</li><li>
+<p>Identify nonclonable, host-dependent data that enables you to make
+the archive host independent. Host independence is enabled by modifying such data
+or excluding it from the archive. An example of host-dependent data is a log file.</p>
+</li><li>
+<p>Validate software integrity in the archive during creation.</p>
+</li><li>
+<p>Validate the installation on the clone system.</p>
+</li></ul></div>
+<div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="flashoverview-48"></a>Guidelines for Creating a Custom Script</h5></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-32"></a>
+<a class="indexterm" name="indexterm-33"></a>When creating scripts other than the reboot
+script, following these guidelines to assure the script does not corrupt the OS or
+otherwise disrupt the system. These guidelines enable the use of Solaris Live Upgrade,
+which creates a new boot environment for installation of the OS. The new boot environment
+can be installed with an archive while the current system is running. </p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>These guidelines are not for reboot scripts that are allowed to run daemons
+or make other types of modification to the root (<code class="filename">/</code>) file system.</p>
+</div>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Scripts must not affect the currently running system. The currently
+running OS might not be the one running when the Solaris Flash archive is installed.</p>
+</li><li>
+<p>Scripts must not start or stop any daemon processes.</p>
+</li><li>
+<p>Scripts must not depend on the output of commands such as <span><strong class="command">ps</strong></span>, <span><strong class="command">truss</strong></span>, or <span><strong class="command">uname</strong></span>, which are dependent
+on the OS. These commands report information about the currently running system.</p>
+</li><li>
+<p>Scripts must not send any signals or otherwise affect any currently
+running processes.</p>
+</li><li>
+<p>Scripts can use standard UNIX commands that facilitate shell scripting
+such as <span><strong class="command">expr</strong></span>, <span><strong class="command">cp</strong></span>, and <span><strong class="command">ls</strong></span>. </p>
+</li></ul></div>
+<p>For an overview of Solaris Live Upgrade, see <span class="olink">Chapter 4, <em class="citetitle">Solaris Live Upgrade (Overview),</em> in <em class="citetitle">Solaris Express Installation Guide:  Solaris Live Upgrade and Upgrade Planning</em>
+</span>.</p>
+</div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="flash-31"></a>Solaris Flash Archive Sections</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-34"></a>Solaris Flash archives contain the following sections. Some sections
+can be used by you to identify and customize the archive and view status information
+on the installation. For a further description of each section, see <span class="olink">Chapter 5, Solaris Flash (Reference)</span>.</p>
+<div class="table"><a name="flashref-tbl-73"></a><p class="title"><b>Table 2.1. Flash Archive Sections</b></p>
+
+
+<table summary="Flash Archive Sections" width="100%" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>Section Name</p>
+</th><th>
+<p>Informational Only</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>Archive cookie </p>
+</td><td>
+<p>X</p>
+</td><td>
+<p>The first section contains a <code class="filename">cookie</code> that identifies the
+file as a Solaris Flash archive. </p>
+</td></tr><tr><td>
+<p>Archive identification </p>
+</td><td>
+<p>
+</p>
+</td><td>
+<p>The second section contains keywords with values that provide identification
+information about the archive. Some identification information is supplied by the
+archive software. Other specific identification information can be added by you by
+using options to the <span><strong class="command">flarcreate</strong></span> command. </p>
+</td></tr><tr><td>
+<p>User-defined </p>
+</td><td>
+<p>
+</p>
+</td><td>
+<p>This section follows the archive identification section.
+You can define and insert these sections to customize the archive. The Solaris Flash archive
+does not process any sections that you insert. For example, a section could contain
+a description of the archive or perhaps a script to check the integrity of an application.</p>
+</td></tr><tr><td>
+<p>Manifest </p>
+</td><td>
+<p>X</p>
+</td><td>
+<p>This section is produced for a Solaris Flash differential archive and is
+used for validating a clone system. The manifest section lists the files on a system
+to be retained, added to, or deleted from the clone system. This section is informational
+only, lists the files in an internal format, and cannot be used for scripting.</p>
+</td></tr><tr><td>
+<p>Predeployment, Postdeployment, Reboot</p>
+</td><td>
+<p>X</p>
+</td><td>
+<p>This section contains internal information that the flash software uses before
+and after installing an OS image.  Any scripts that you have provided are included
+in this section. </p>
+</td></tr><tr><td>
+<p>Summary </p>
+</td><td>
+<p>
+</p>
+</td><td>
+<p>This section contains messages about the archive creation. The section also
+records the activities of predeployment and postdeployment scripts. You can view the
+success of the installation in this section by writing a script to send output to
+this section.</p>
+</td></tr><tr><td>
+<p>Archive files</p>
+</td><td>
+<p>X</p>
+</td><td>
+<p>The archive files section contains the files that have been gathered from the
+ master system.</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="flashoverview-40"></a>When to Create the Archive for an Initial Installation</h4></div></div></div>
+
+<p>Create the archive when the system is in as static a state as possible. Create
+the archive after software is installed on the master system and before software is
+configured. </p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="flash-32"></a>Where to Store the Solaris Flash Archive</h4></div></div></div>
+
+<p>After you create the Solaris Flash archive, you can save the archive on
+the hard disk of the master system or on a tape. After you save the archive, you can
+copy this archive to any file system or media that you choose.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Network File System (NFS) server</p>
+</li><li>
+<p>HTTP or HTTPS server</p>
+</li><li>
+<p>FTP server</p>
+</li><li>
+<p>Tape</p>
+</li><li>
+<p>CD, DVD</p>
+</li><li>
+<p>Diskette</p>
+</li><li>
+<p>Local drive of clone system that you want to install</p>
+</li></ul></div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="flash-33"></a>Compressing the Archive</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-35"></a>When you create the Solaris Flash archive, you can specify that the
+archive be saved as a compressed file by using the <span><strong class="command">compress(1)</strong></span> utility.
+An archive that is compressed requires less disk storage space and creates less congestion
+when you install the archive over a network.</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="flash-34"></a>Planning the Installation of Solaris Flash Archives</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-36"></a>
+<a class="indexterm" name="indexterm-37"></a>
+<p>The final task in the Solaris Flash installation process is to install Solaris Flash archives
+on clone systems. You can use any of the Solaris installation methods to install Solaris Flash archives
+on clone systems.</p>
+<div class="informaltable">
+<table width="100%" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>Installation Program</p>
+</th><th>
+<p>Archives Storable on This Media</p>
+</th><th>
+<p>For Step-by-Step Instructions</p>
+</th></tr></thead><tbody><tr><td>
+<p>Solaris installation program</p>
+</td><td>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>NFS server</p>
+</li><li>
+<p>HTTP server</p>
+</li><li>
+<p>FTP server</p>
+</li><li>
+<p>Local tape</p>
+</li><li>
+<p>Local device, including DVD or CD</p>
+</li><li>
+<p>Local file</p>
+</li></ul></div>
+</td><td>
+<p>
+<span class="olink">Installing a Solaris Flash Archive With the Solaris Installation Program</span>
+</p>
+</td></tr><tr><td>
+<p>Custom JumpStart installation program</p>
+</td><td>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>NFS server</p>
+</li><li>
+<p>HTTP or HTTPS server</p>
+</li><li>
+<p>FTP server</p>
+</li><li>
+<p>Local tape</p>
+</li><li>
+<p>Local device, including DVD or CD</p>
+</li><li>
+<p>Local file</p>
+</li></ul></div>
+</td><td>
+<p>
+<span class="olink">
+<em class="citetitle">To Prepare to Install a Solaris Flash Archive With a Custom JumpStart Installation</em> in <em class="citetitle">Solaris Express Installation Guide: Custom JumpStart and Advanced Installations</em>
+</span>
+</p>
+</td></tr><tr><td>
+<p>Solaris Live Upgrade</p>
+</td><td>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>NFS server</p>
+</li><li>
+<p>HTTP server</p>
+</li><li>
+<p>FTP server</p>
+</li><li>
+<p>Local tape</p>
+</li><li>
+<p>Local device, including DVD or CD</p>
+</li><li>
+<p>Local file</p>
+</li></ul></div>
+</td><td>
+<p>
+<span class="olink">
+<em class="citetitle">Installing Solaris Flash Archives on a Boot Environment</em> in <em class="citetitle">Solaris Express Installation Guide:  Solaris Live Upgrade and Upgrade Planning</em>
+</span>
+</p>
+</td></tr></tbody></table>
+</div>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01.html">Prev</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="ch03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 1. Solaris Flash (Overview) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 3. Creating Solaris Flash Archives
+(Tasks)</td></tr></table></div></body></html>

@@ -1,0 +1,137 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Cleaning Out Log Files</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch07.html" title="Chapter 7. LP Print Service (Reference)"><link rel="prev" href="ch07s10.html" title="How the lpsched Daemon Tracks
+the Status of Print Requests"><link rel="next" href="ch08.html" title="Chapter 8. Managing Terminals and Modems (Overview)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Cleaning Out Log Files</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch07s10.html">Prev</a> </td><th width="60%" align="center">Chapter 7. LP Print Service (Reference)</th><td width="20%" align="right"> <a accesskey="n" href="ch08.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printref-46"></a>Cleaning Out Log Files</h2></div></div></div>
+
+<a class="indexterm" name="printref-ix217"></a>
+<a class="indexterm" name="printref-ix218"></a>
+<p>
+<a class="indexterm" name="printref-ix219"></a>
+<a class="indexterm" name="printref-ix220"></a>
+<a class="indexterm" name="printref-ix222"></a>
+<a class="indexterm" name="printref-ix223"></a>
+<a class="indexterm" name="printref-ix224"></a>
+<a class="indexterm" name="printref-ix225"></a>
+<a class="indexterm" name="printref-ix226"></a>The <code class="filename">lpsched</code> and <code class="filename">requests</code> log
+files in the <code class="filename">/var/lp/logs</code> directory grow as information
+is appended. The LP print service uses a default  <span><strong class="command">cron</strong></span> job
+to clean out the log files. The <span><strong class="command">lp</strong></span> <span><strong class="command">cron</strong></span> job
+is located in the <code class="filename">/var/spool/cron/crontabs/lp</code> file. The <span><strong class="command">cron</strong></span> job periodically moves the contents of the log files. The contents
+of <em class="replaceable"><code>log</code></em> are moved to <em class="replaceable"><code>log</code></em>.<code class="filename">1</code>, and the contents of <em class="replaceable"><code>log</code></em>.<code class="filename">1</code> are
+moved to <em class="replaceable"><code>log</code></em>.<code class="filename">2</code>. The contents
+of <em class="replaceable"><code>log</code></em>.<code class="filename">2</code> are lost (that is,
+replaced by the former contents of <em class="replaceable"><code>log</code></em>.<code class="filename">1</code>)
+when <em class="replaceable"><code>log</code></em>.<code class="filename">2</code> gets overwritten.
+      </p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2164894"></a></h3></div></div></div>
+
+<div class="task"><a name="printref-55"></a><p class="title"><b>How to Change Frequency of Printer Request Log
+Rotation</b></p><div class="tasksummary">
+<p>The <code class="filename">requests</code> log file on the printer server is
+rotated weekly rather than daily. You can change the rotation interval back
+to daily if the printer server is busy.</p>
+</div><div class="procedure"><ol type="1"><li><a name="printref-step-61"></a>
+<p>Become superuser or <code class="literal">lp</code>,
+or assume an equivalent role on the print server.</p>
+</li><li><a name="printref-step-57"></a>
+<p>Set the <code class="literal">EDITOR</code> environment
+variable.</p>
+<pre class="screen"># <strong class="userinput"><code>EDITOR=vi</code></strong>
+# <strong class="userinput"><code>export EDITOR</code></strong>
+</pre>
+</li><li><a name="printref-step-58"></a>
+<p>Edit the <code class="filename">lp</code> <code class="filename">crontab</code> file.</p>
+<pre class="screen"># <strong class="userinput"><code>crontab -e lp</code></strong>
+</pre>
+</li><li><a name="printref-step-59"></a>
+<p>Change the first line of the file that rotates
+the <code class="filename">requests</code> log files every Sunday (<code class="literal">0</code>)
+to an asterisk (<code class="literal">*</code>) for daily rotation:</p>
+<pre class="screen">13 3 * * <strong class="userinput"><code>*</code></strong> cd /var/lp/logs; if [ -f requests ]; then if
+[ -f requests.1 ]; then /bin/mv requests.1 requests.2; fi; /usr/bin/cp 
+requests requests.1; &gt;requests; fi</pre>
+</li><li><a name="printref-step-60"></a>
+<p>Save the file and exit.</p>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printref-47"></a>How Local Printing Works</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="printref-ix227"></a>
+<a class="indexterm" name="printref-ix228"></a>The print request follows the same path it would if the client
+and server were separate systems. Requests always flow from client to server
+following the same path. </p>
+<p>The following figure shows what happens when a user submits a request
+to print a PostScript file on a <span class="emphasis"><em>local</em></span> printer, which
+is a printer connected to the user's system. The <span><strong class="command">lpsched</strong></span> daemon
+on the local system does all processing. This processing might include the
+following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Matching the printer and content type</p>
+</li><li>
+<p>Identifying the default printer, filtering the request</p>
+</li><li>
+<p>Starting the specified printer interface program</p>
+</li></ul></div>
+<p>The printer interface program does the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Prints the banner page.</p>
+</li><li>
+<p>Catches printer faults.</p>
+</li><li>
+<p>Determines the printer fault policy to either reset, continue,
+or begin the print job over again.</p>
+</li><li>
+<p>Finally, the interface program uses the <span><strong class="command">lpcat</strong></span> program
+to download the print request to the local printer's serial port.</p>
+</li></ul></div>
+<div class="figure"><a name="printref-fig-48"></a><p class="title"><b>Figure 7.2. The Local Printing
+Process</b></p>
+
+
+<div class="mediaobject"><img src="../figures/print4.gif" alt="The Local Printing Process" longdesc="ld-id2165226.html"><div class="longdesc-link" align="right"><br clear="all"><span class="longdesc-link">[<a href="ld-id2165226.html" target="longdesc">D</a>]</span></div></div>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printref-49"></a>How Remote Printing Works</h3></div></div></div>
+
+<a class="indexterm" name="printref-ix230"></a>
+<a class="indexterm" name="printref-ix231"></a>
+<a class="indexterm" name="printref-ix232"></a>
+<p>The following figure shows what happens when a user on a Solaris print
+client submits a print request to an lpd-based print server. The command opens
+a connection and handles its own communications with the print server directly.</p>
+<div class="figure"><a name="printref-fig-50"></a><p class="title"><b>Figure 7.3. Printing Between a
+Solaris Print Client and a <span>lpd</span>-based Print Server</b></p>
+
+
+<div class="mediaobject"><img src="../figures/print5.gif" alt="Printing Between a Solaris Print Client and a lpd-based Print Server" longdesc="ld-id2165335.html"><div class="longdesc-link" align="right"><br clear="all"><span class="longdesc-link">[<a href="ld-id2165335.html" target="longdesc">D</a>]</span></div></div>
+</div>
+<p>The following figure shows an <span><strong class="command">lpd</strong></span>-based print client
+submitting a print request to a Solaris print server. The <code class="literal">lpd</code> daemon
+handles the local part of the print request and the connection to the print
+server. On the print server, the <code class="literal">inetd</code> process waits for
+network printing requests and starts a protocol adaptor to service the request.
+The protocol adaptor communicates with the <code class="literal">lpsched</code> daemon,
+which processes the request on the print server.</p>
+<div class="figure"><a name="printref-fig-51"></a><p class="title"><b>Figure 7.4. Printing Between an <span>lpd</span>-based Print Client and a Solaris Print Server</b></p>
+
+
+<div class="mediaobject"><img src="../figures/print6.gif" alt="Printing Between an lpd-based Print Client and a Solaris Print Server" longdesc="ld-id2165415.html"><div class="longdesc-link" align="right"><br clear="all"><span class="longdesc-link">[<a href="ld-id2165415.html" target="longdesc">D</a>]</span></div></div>
+</div>
+<p>The following figure shows what happens when a user on a Solaris print
+client submits a print request to a Solaris print server. The print command
+on the print client handles the local part of each print request by communicating
+directly with the print server.</p>
+<p>
+<a class="indexterm" name="printref-ix233"></a>
+<a class="indexterm" name="printref-ix234"></a>The <span><strong class="command">inetd</strong></span> process on the print server monitors
+network printing requests and starts a protocol adaptor to communicate with
+the <span><strong class="command">lpsched</strong></span> daemon on the print server, which processes
+the print request.  </p>
+<div class="figure"><a name="printref-fig-52"></a><p class="title"><b>Figure 7.5. Printing Between a
+Solaris Print Client and a Solaris Print Server</b></p>
+
+
+<div class="mediaobject"><img src="../figures/print7.gif" alt="Printing Between a Solaris Print Client and a Solaris Print Server" longdesc="ld-id2165503.html"><div class="longdesc-link" align="right"><br clear="all"><span class="longdesc-link">[<a href="ld-id2165503.html" target="longdesc">D</a>]</span></div></div>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch07s10.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch07.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch08.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">How the <span><strong class="command">lpsched</strong></span> Daemon Tracks
+the Status of Print Requests </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 8. Managing Terminals and Modems (Overview)</td></tr></table></div></body></html>

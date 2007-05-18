@@ -1,0 +1,661 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Managing Print Requests</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch04.html" title="Chapter 4. Administering Printers (Tasks)"><link rel="prev" href="ch04s05.html" title="Managing Print Requests (Task Map)"><link rel="next" href="ch05.html" title="Chapter 5. Managing Character Sets, Filters,
+Forms, and Fonts (Tasks)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Managing Print Requests</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s05.html">Prev</a> </td><th width="60%" align="center">Chapter 4. Administering Printers (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printadmin-95646"></a>Managing Print Requests</h2></div></div></div>
+
+<p>When a user submits a print request from a print client, the print request
+is added to a queue on the print server before it is sent to the printer.
+While a print request is in the queue, you can cancel or gain status information
+on the request from a client system. You must log in to the print server to
+move, hold, resume, or change the priorities of print requests with LP print
+service commands. These actions can help you keep printing services operating
+smoothly.</p>
+<p>
+<a class="indexterm" name="printadmin-ix448"></a>
+<a class="indexterm" name="printadmin-ix449"></a>
+<a class="indexterm" name="printadmin-ix450"></a>The following table lists the values for changing the priority
+of a print request by using the <span><strong class="command">lp</strong></span> <code class="option">
+H</code> command.
+   </p>
+<div class="table"><a name="printadmin-71857"></a><p class="title"><b>Table 4.6. Values for Changing the
+Priority of a Print Request</b></p>
+
+
+<table summary="Values for Changing the
+Priority of a Print Request" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Value for <code class="option">
+H</code> <em class="replaceable"><code>change-priority</code></em>
+</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">hold</code>
+</p>
+</td><td>
+<p>Places the print request on hold until you cancel the request or instruct
+the LP print service to resume printing the request.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">resume</code>
+</p>
+</td><td>
+<p>Places a print request that has been on hold back in the queue. The
+request is printed according to its priority and placement in the queue. If
+you place on hold a print job that is already printing, <code class="literal">resume</code> places
+the print request at the head of the queue so that it becomes the next request
+printed.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">immediate</code>
+</p>
+</td><td>
+<p>Places a print request at the head of the queue. If a request is already
+printing, you can put the request on hold to allow the next request to print
+immediately.</p>
+</td></tr></tbody></table>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2132715"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-93252"></a><p class="title"><b>How to Check the Status of Print Requests</b></p><a class="indexterm" name="indexterm-60"></a><a class="indexterm" name="indexterm-61"></a><div class="procedure"><ol type="1"><li><a name="printadmin-step-70"></a>
+<p>Log in on any system on the network.</p>
+</li><li><a name="printadmin-step-71"></a>
+<p>Check the status of printers and print
+requests.</p>
+<p>Only the most commonly used options are shown here.
+For other valid options, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">lpstat</span>
+(
+1
+)
+</span>
+</span> man
+page.</p>
+<pre class="screen">$ <strong class="userinput"><code>lpstat -o</code></strong> [<em class="replaceable"><code>list</code></em>] | <strong class="userinput"><code>-u</code></strong> [<em class="replaceable"><code>user-list</code></em>]</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+o</code> <em class="replaceable"><code>list</code></em>
+</span></dt><dd>
+<p>
+<a class="indexterm" name="printadmin-ix455"></a>
+<a class="indexterm" name="printadmin-ix456"></a>
+<a class="indexterm" name="printadmin-ix457"></a>Shows the status of print requests on a specific printer. <em class="replaceable"><code>list</code></em> can be one or more printer names, printer class names,
+or print request IDs.</p>
+<p>To specify multiple printer names, class names, and IDs for <em class="replaceable"><code>list</code></em>, use a space or a comma to separate values. If you use spaces,
+enclose the list of values in quotation marks.</p>
+<p>If you don't specify <em class="replaceable"><code>list</code></em>, the status of
+print requests sent to all printers is displayed.</p>
+</dd><dt><span class="term">
+<code class="option">
+u</code> <em class="replaceable"><code>user-list</code></em>
+</span></dt><dd>
+<p>Shows the status of print requests for a specific user. <em class="replaceable"><code>user-list</code></em> can be one or more user names. </p>
+<p>To specify multiple users with this command, use a space or a comma
+to separate user names. If you use spaces, enclose the list of names in quotation
+marks.</p>
+<p>If you don't specify <em class="replaceable"><code>user-list</code></em>, the status
+of print requests for all users is displayed.</p>
+</dd></dl></div>
+<p>
+<a class="indexterm" name="printadmin-ix459"></a>When used to check the status of print requests, the <span><strong class="command">lpstat</strong></span> command
+displays one line for each print request. From left to right, the line shows
+the following information.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Request ID</p>
+</li><li>
+<p>User</p>
+</li><li>
+<p>Output size in bytes</p>
+</li><li>
+<p>Date and time of the request,</p>
+</li><li>
+<p>Information about the request, such as &#8220;being filtered.&#8221;</p>
+</li></ul></div>
+</li></ol></div><div class="example"><a name="emjfb"></a><p class="title"><b>Example 4.14. Checking the Status of Print Requests</b></p>
+
+
+<p>The following example shows that user <code class="literal">fred</code> has one
+print request queued on the printer <code class="literal">luna</code>.</p>
+<pre class="screen">$ <strong class="userinput"><code>lpstat</code></strong>
+luna-1    fred     1261    Jul 12 17:34</pre>
+<p>The following example shows that the user <code class="literal">paul</code> currently
+has no print requests in queue.</p>
+<pre class="screen">$ <strong class="userinput"><code>lpstat -u paul</code></strong>
+</pre>
+<p>The following example shows that  two print requests are queued on the
+printer <code class="literal">moon</code>.</p>
+<pre class="screen">$ <strong class="userinput"><code>lpstat -o moon</code></strong>
+moon-78    root     1024   Jul 14 09:07
+moon-79    root     1024   Jul 14 09:08</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printconcept-19168"></a>Enabling or Disabling a Printer From
+Printing</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="printconcept-ix151"></a>
+<a class="indexterm" name="printconcept-ix152"></a>
+<a class="indexterm" name="printconcept-ix153"></a>The <span><strong class="command">enable</strong></span> and <span><strong class="command">disable</strong></span> commands
+control whether a printer prints or stops printing requests that are in the
+print queue. When you disable a printer, the printer stops printing requests
+in the queue. However, requests are still added to the queue. You must set
+the printer to reject print requests so that requests are not added to the
+queue. For information about rejecting print requests, see <span class="olink">Accepting or Rejecting Print Requests</span>. </p>
+<p>A printer is enabled to print and accepts print requests when the printer
+is added by using Solaris Print Manager. Solaris Print Manager doesn't provide
+any additional printer processing management.</p>
+<p>You must enable the printer whenever it has been disabled, which can
+happen when a printer fault occurs. When you enable a printer, it prints requests
+from the print queue until the queue is empty, even if the print service rejects
+additional requests for the print queue. </p>
+<p>The following figure shows the point at which the processing of print
+requests is interrupted when a printer is disabled.</p>
+<div class="figure"><a name="printconcept-fig-31"></a><p class="title"><b>Figure 4.1. What Happens
+When a Printer Is Enabled or Disabled</b></p>
+
+
+<div class="mediaobject"><img src="../figures/print_concept.fig116.gif" alt="What Happens When a Printer Is Enabled or Disabled" longdesc="ld-id2133290.html"><div class="longdesc-link" align="right"><br clear="all"><span class="longdesc-link">[<a href="ld-id2133290.html" target="longdesc">D</a>]</span></div></div>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2133314"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-22348"></a><p class="title"><b>How to Enable or Disable a Printer</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-80"></a>
+<p>
+<a class="indexterm" name="printadmin-ix464"></a>
+<a class="indexterm" name="printadmin-ix465"></a>
+<a class="indexterm" name="printadmin-ix466"></a>
+<a class="indexterm" name="printadmin-ix467"></a>Log in as superuser, <code class="literal">lp</code>, or assume an equivalent
+role on the print server.</p>
+</li><li><a name="printadmin-step-81"></a>
+<p>
+<a class="indexterm" name="printadmin-ix473"></a>Stop printing print requests.</p>
+<pre class="screen"># <strong class="userinput"><code>disable</code></strong> [<strong class="userinput"><code>-c</code></strong> | <strong class="userinput"><code>-W</code></strong>] [<strong class="userinput"><code>-r "</code></strong>
+<em class="replaceable"><code>reason</code></em>
+<strong class="userinput"><code>"</code></strong>] <em class="replaceable"><code>printer-name</code></em>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<span><strong class="command">disable</strong></span>
+</span></dt><dd>
+<p>
+<a class="indexterm" name="printadmin-ix468"></a>
+<a class="indexterm" name="printadmin-ix469"></a>Cancels the current job, then disables the printer. The current
+job is saved to reprint when the printer is enabled.  </p>
+</dd><dt><span class="term">
+<code class="option">
+c</code>
+</span></dt><dd>
+<p>Cancels the current job, then disables the printer. The current
+job is not printed later.</p>
+</dd><dt><span class="term">
+<code class="option">
+W</code>
+</span></dt><dd>
+<p>Waits until the current job is finished before disabling the
+printer.</p>
+</dd><dt><span class="term">
+<code class="option">
+r</code> <em class="replaceable"><code>"reason"</code></em>
+</span></dt><dd>
+<p>Provides users with a reason why the printer is disabled.
+The reason is stored and displayed whenever a user checks on the status of
+the printer by using the <span><strong class="command">lpstat -p</strong></span> command.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>printer-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the printer that will stop printing
+print requests.</p>
+</dd></dl></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>
+<a class="indexterm" name="printadmin-ix470"></a>
+<a class="indexterm" name="printadmin-ix471"></a>You cannot enable or disable classes of printers. Only individual
+printers can be enabled or disabled.  </p>
+</div>
+</li><li><a name="printadmin-step-82"></a>
+<p>
+<a class="indexterm" name="indexterm-62"></a>Start printing print requests.  </p>
+<pre class="screen"># <strong class="userinput"><code>enable</code></strong> <em class="replaceable"><code>printer-name</code></em>
+</pre>
+</li><li><a name="printadmin-step-119"></a>
+<p>Verify that the printer is enabled.</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -p</code></strong> <em class="replaceable"><code>printer-name</code></em>
+</pre>
+</li></ol></div><div class="example"><a name="emjfj"></a><p class="title"><b>Example 4.15. Enabling or Disabling a Printer</b></p>
+
+
+<p>The following example shows how to stop the current job on the printer <code class="literal">luna</code>, save the job to print later, and provide a reason why the
+printer has stopped printing print requests.</p>
+<pre class="screen"># <strong class="userinput"><code>disable -r "changing the form" luna</code></strong>
+</pre>
+<p>The following example shows how to start printing print requests on
+the printer <code class="literal">luna</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>enable luna</code></strong>
+printer "luna" enabled</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printconcept-43797"></a>Accepting or Rejecting Print Requests</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="printconcept-ix142"></a>
+<a class="indexterm" name="printconcept-ix143"></a>
+<a class="indexterm" name="printconcept-ix145"></a>
+<a class="indexterm" name="printconcept-ix146"></a>The <span><strong class="command">accept</strong></span> and <span><strong class="command">reject</strong></span> commands
+enable you to turn on or turn off a print queue that stores requests to be
+printed.  </p>
+<p>When you use the <span><strong class="command">reject</strong></span> command, the print queue
+for a specified printer is turned off. No new print requests can enter the
+queue on the print server. However, all print requests that are in the queue
+are still printed. You must disable the printer if you want it to stop printing
+requests that are already in the queue. The following table compares the functions
+of the <span><strong class="command">accept</strong></span>, <span><strong class="command">reject</strong></span>, <span><strong class="command">enable</strong></span>,
+and <span><strong class="command">disable</strong></span> commands.</p>
+<div class="table"><a name="printconcept-22101"></a><p class="title"><b>Table 4.7. Functions of <span>accept</span>, <span>reject</span>, <span>enable</span>, and <span>disable</span> Print Commands</b></p>
+
+
+<a class="indexterm" name="printconcept-ix148"></a>
+<a class="indexterm" name="printconcept-ix149"></a>
+<table summary="Functions of accept, reject, enable, and disable Print Commands" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Command</p>
+</th><th>
+<p>Function</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<span><strong class="command">accept</strong></span>
+</p>
+</td><td>
+<p>Accepts print requests that are sent to the print queue.</p>
+</td></tr><tr><td>
+<p>
+<span><strong class="command">disable</strong></span>
+</p>
+</td><td>
+<p>Stops printing requests that are currently in the print queue.</p>
+</td></tr><tr><td>
+<p>
+<span><strong class="command">enable</strong></span>
+</p>
+</td><td>
+<p>Prints the requests that are in the print queue.</p>
+</td></tr><tr><td>
+<p>
+<span><strong class="command">reject</strong></span>
+</p>
+</td><td>
+<p>Rejects print requests that are sent to the print queue.</p>
+</td></tr></tbody></table>
+</div>
+<p>If a print request is rejected, the LP print service writes or mails
+a message to the user who submitted the request. the message states that print
+requests are not being accepted for the specified printer.</p>
+<p>You can also specify a reason for not accepting requests through the
+command line. The reason is displayed on a user's system when a user tries
+to check the printer's queue. The following figure shows the point at which
+the processing of print requests is interrupted when a print queue rejects
+print requests. </p>
+<div class="figure"><a name="printconcept-fig-30"></a><p class="title"><b>Figure 4.2. What Happens
+When a Print Queue Accepts or Rejects Requests</b></p>
+
+
+<div class="mediaobject"><img src="../figures/print_concept.fig110.gif" alt="What Happens When a Print Queue Accepts or Rejects Requests" longdesc="ld-id2134238.html"><div class="longdesc-link" align="right"><br clear="all"><span class="longdesc-link">[<a href="ld-id2134238.html" target="longdesc">D</a>]</span></div></div>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2134280"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-73033"></a><p class="title"><b>How to Accept or Reject Print Requests
+for a Printer</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-74"></a>
+<p>
+<a class="indexterm" name="printadmin-ix460"></a>
+<a class="indexterm" name="printadmin-ix461"></a>
+<a class="indexterm" name="printadmin-ix462"></a>
+<a class="indexterm" name="printadmin-ix463"></a>Log in as superuser, <code class="literal">lp</code>, or assume an equivalent
+role on the print server.</p>
+</li><li><a name="printadmin-step-75"></a>
+<p>Stop accepting print requests for the
+printer.</p>
+<pre class="screen"># <strong class="userinput"><code>reject</code></strong> [<strong class="userinput"><code>-r</code></strong> "<em class="replaceable"><code>reason</code></em>"] <em class="replaceable"><code>printer-name</code></em>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+r</code> <em class="replaceable"><code>"reason"</code></em>
+</span></dt><dd>
+<p>Provides users with a reason why the printer is rejecting
+print requests. The reason is stored and displayed whenever a user checks
+on the status of the printer by using the <span><strong class="command">lpstat -p</strong></span> command.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>printer-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the printer that will stop accepting
+print requests.</p>
+</dd></dl></div>
+<p>The queued requests continue printing as long as the printer is enabled.
+For instructions on disabling a printer so that it stops printing, see <span class="olink">How to Enable or Disable a Printer</span>.</p>
+</li><li><a name="printadmin-step-76"></a>
+<p>Start accepting print requests for the
+printer.</p>
+<pre class="screen"># <strong class="userinput"><code>accept</code></strong> <em class="replaceable"><code>printer-name</code></em>
+</pre>
+</li><li><a name="printadmin-step-118"></a>
+<p>Check that the status of the printer
+to see whether it is accepting or rejecting print requests.</p>
+<pre class="screen">$ <strong class="userinput"><code>lpstat -p</code></strong> <em class="replaceable"><code>printer-name</code></em>
+</pre>
+</li></ol></div><div class="example"><a name="emjge"></a><p class="title"><b>Example 4.16. Accepting or Rejecting Print Requests for a Printer</b></p>
+
+
+<p>The following example shows how to stop the printer <code class="literal">luna</code> from
+accepting print requests.</p>
+<pre class="screen"># <strong class="userinput"><code>reject -r "luna is down for repairs" luna</code></strong>
+destination "luna" will no longer accept requests</pre>
+<p>The following example shows how to set the printer <code class="literal">luna</code> to
+accept print requests.</p>
+<pre class="screen"># <strong class="userinput"><code>accept luna</code></strong>
+destination "luna" now accepting requests</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printconcept-22518"></a>Canceling a Print Request</h3></div></div></div>
+
+<a class="indexterm" name="printconcept-ix131"></a>
+<a class="indexterm" name="printconcept-ix132"></a>
+<p>
+<a class="indexterm" name="printconcept-ix133"></a>You can use the <span><strong class="command">cancel</strong></span> command to cancel print
+requests in printer queues or to cancel jobs that are printing. Three are
+three ways to use the <span><strong class="command">cancel</strong></span> command.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<a class="indexterm" name="printconcept-ix134"></a>Cancel requests by request identification number (request ID)</p>
+</li><li>
+<p>Cancel requests from a specific user on all printers or specific
+printers</p>
+</li><li>
+<p>Cancel the job currently printing</p>
+</li></ul></div>
+<p>When you use the <span><strong class="command">cancel</strong></span> command, a message tells
+you the request or requests are canceled, and the next request in queue is
+being printed. You can cancel a print request only under the following conditions.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>You are the user who submitted the request and you are logged
+in on the system from which you submitted the request.</p>
+</li><li>
+<p>You are the user who submitted the request on any client system
+and the print server has the &#8220;user-equivalence&#8221; option configured
+for the printer in its <code class="filename">/etc/printers.conf</code> file.</p>
+</li><li>
+<p>You are logged in as superuser, <code class="literal">lp</code>, or
+have assumed an equivalent role on the print server.</p>
+</li></ul></div>
+<p>To cancel a specific request, you need to know its request ID. The request
+ID contains the name of the printer, a dash, and the number of the print request.
+For example, <code class="literal">luna-185</code>.</p>
+<p>
+<a class="indexterm" name="printconcept-ix135"></a>When you submit the print request, the request ID is displayed.
+If you do not remember the print request ID, you can find it by using the <span><strong class="command">lpstat</strong></span> command with the <code class="option">
+o printer</code> option.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2134818"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-82243"></a><p class="title"><b>How to Cancel a Print Request</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-86"></a>
+<p>
+<a class="indexterm" name="printadmin-ix474"></a>
+<a class="indexterm" name="printadmin-ix475"></a>If you are going to cancel the print requests of other users,
+then become superuser, <code class="literal">lp</code>, or assume an equivalent role.</p>
+</li><li><a name="printadmin-step-87"></a>
+<p>Determine the request IDs of the print
+requests to cancel. </p>
+<pre class="screen"># <strong class="userinput"><code>lpstat</code></strong> </pre>
+<p>For more details, see <span class="olink">How to Check the Status of Print Requests</span>.</p>
+</li><li><a name="printadmin-step-88"></a>
+<p>Cancel the print request.</p>
+<pre class="screen"># <strong class="userinput"><code>cancel</code></strong> <em class="replaceable"><code>request-id</code></em> | <em class="replaceable"><code>printer-name</code></em>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>request-id</code></em>
+</span></dt><dd>
+<p>
+<a class="indexterm" name="printadmin-ix477"></a>Specifies the request ID of a print request to be canceled. You
+can specify multiple request IDs with this command. Use a space or a comma
+to separate request IDs. If you use spaces, enclose the list of request IDs
+in quotation marks.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>printer-name</code></em>
+</span></dt><dd>
+<p>Specifies the printer for which you want to cancel the currently
+printing print request.</p>
+<p>You can specify multiple printer names with this command. Use a space
+or a comma to separate printer names. If you use spaces, enclose the list
+of printer names in quotation marks.</p>
+</dd></dl></div>
+</li><li><a name="printadmin-step-120"></a>
+<p>Verify that the print requests are canceled.</p>
+<pre class="screen">$ <strong class="userinput"><code>lpstat -o</code></strong> <em class="replaceable"><code>printer-name</code></em>
+</pre>
+</li></ol></div><div class="example"><a name="emjfh"></a><p class="title"><b>Example 4.17. Canceling a Print Request</b></p>
+
+
+<p>The following example shows how to cancel the <code class="literal">luna-3</code> and <code class="literal">luna-4</code> print requests.</p>
+<pre class="screen">$ <strong class="userinput"><code>cancel luna-3 luna-4</code></strong>
+request "luna-3" cancelled
+request "luna-4" cancelled</pre>
+<p>The following example shows how to cancel the print request that is
+currently printing on the printer <code class="literal">luna</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>cancel luna</code></strong>
+request "luna-9" cancelled</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2135104"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-14973"></a><p class="title"><b>How to Cancel a Print Request From a Specific
+User</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-91"></a>
+<p>
+<a class="indexterm" name="printadmin-ix478"></a>
+<a class="indexterm" name="printadmin-ix479"></a>(Optional) Become superuser, <code class="literal">lp</code>, or assume
+an equivalent role if you are going to cancel the print requests of other
+users.</p>
+</li><li><a name="printadmin-step-92"></a>
+<p>Cancel a print request from a specific
+user.</p>
+<pre class="screen">$ <strong class="userinput"><code>cancel -u</code></strong> <em class="replaceable"><code>user-list</code></em> [<em class="replaceable"><code>printer-name</code></em>]</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+u</code> <em class="replaceable"><code>user-list</code></em>
+</span></dt><dd>
+<p>Cancels the print request for a specified user. </p>
+<p>
+<a class="indexterm" name="printadmin-ix480"></a>
+<em class="replaceable"><code>user-list</code></em> can be one or more user names.
+Use a space or a comma to separate user names. If you use spaces, enclose
+the list of names in quotation marks</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>printer-name</code></em>
+</span></dt><dd>
+<p>Specifies the printer for which you want to cancel the print
+requests for a specified user.</p>
+<p>
+<em class="replaceable"><code>printer-name</code></em> can be one or more printer names.
+Use a space or a comma to separate printer names. If you use spaces, enclose
+the list of printer names in quotation marks.</p>
+<p>If you don't specify the <em class="replaceable"><code>printer-name</code></em>, the
+user's print requests will be canceled on all printers.</p>
+</dd></dl></div>
+</li></ol></div><div class="example"><a name="emjfy"></a><p class="title"><b>Example 4.18. Canceling a Print Request From a Specific User</b></p>
+
+
+<p>The following example shows how to cancel all the print requests submitted
+by the user <code class="literal">george</code> on the printer <code class="literal">luna</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>cancel -u george luna</code></strong>
+request "luna-23" cancelled</pre>
+<p>The following example shows how to cancel all the print requests submitted
+by the user <code class="literal">george</code> on all printers.</p>
+<pre class="screen"># <strong class="userinput"><code>cancel -u george</code></strong>
+request "asteroid-3" cancelled
+request "luna-8" cancelled</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printconcept-36709"></a>Moving a Print Request</h3></div></div></div>
+
+<a class="indexterm" name="printconcept-ix136"></a>
+<a class="indexterm" name="printconcept-ix137"></a>
+<p>If you plan to change the way a printer is used or decide to take a
+printer out of service, you should set up the LP print service to reject additional
+print requests. Then, move or cancel any requests that are currently queued
+to the printer. You can use the <span><strong class="command">lpmove</strong></span> command to move
+individual or all print requests to another local printer.</p>
+<p>Request IDs are not changed when you move print requests, so users can
+still find their requests. Print requests that have requirements, such as
+a specific file content type or form, that cannot be met by the newly specified
+printer cannot be moved. These print requests must be canceled.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2135482"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-22663"></a><p class="title"><b>How to Move Print Requests to Another Printer</b></p><a class="indexterm" name="indexterm-63"></a><a class="indexterm" name="indexterm-64"></a><div class="tasksummary">
+<p>To move all print requests from one printer to another printer, you
+do not need to know the request IDs. However, first determine how many print
+requests are affected before you move them.</p>
+</div><div class="procedure"><ol type="1"><li><a name="printadmin-step-95"></a>
+<p>Log in as superuser, <code class="literal">lp</code>,
+or assume an equivalent role on the print server.</p>
+</li><li><a name="printadmin-step-96"></a>
+<p>
+<a class="indexterm" name="printadmin-ix483"></a>(Optional) Determine if the request IDs of the print requests
+on the original printer. </p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -o</code></strong> <em class="replaceable"><code>printer-name1</code></em>
+</pre>
+</li><li><a name="printadmin-step-97"></a>
+<p>(Optional) Check to see if the destination
+printer is accepting print requests.</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -p</code></strong> <em class="replaceable"><code>printer-name2</code></em>
+</pre>
+<p>
+<code class="option">
+p</code> <em class="replaceable"><code>printer-name2</code></em> specifies
+the name of the printer to which you are moving the print requests.</p>
+</li><li><a name="printadmin-step-98"></a>
+<p>Move all the print requests from the original
+printer to the destination printer.</p>
+<pre class="screen"># <strong class="userinput"><code>lpmove</code></strong> <em class="replaceable"><code>printer-name1 printer-name2</code></em>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>printer-name1</code></em>
+</span></dt><dd>
+<p>Specifies the name of the printer from which all print requests
+will be moved. </p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>printer-name2</code></em>
+</span></dt><dd>
+<p>Specifies the name of the printer to which all print requests
+will be moved.</p>
+</dd></dl></div>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">lpmove</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+<p>If
+some requests cannot be printed on the destination printer, the requests 
+are left in the original printer's queue. By using request IDs, you can also
+move specific print requests to another printer by using the <span><strong class="command">lpmove</strong></span> command. </p>
+</li><li><a name="printadmin-step-99"></a>
+<p>(Optional) Start accepting print requests
+on the original printer.</p>
+<p>If you move all the print requests to
+another printer, the <span><strong class="command">lpmove</strong></span> command automatically stops
+accepting print requests for the printer. This step is necessary if you want
+to begin accepting new print requests for the printer.</p>
+<pre class="screen"># <strong class="userinput"><code>accept</code></strong> <em class="replaceable"><code>printer-name1</code></em>
+</pre>
+</li><li><a name="printadmin-step-121"></a>
+<p>Check for any remaining print requests
+in the original printer's queue.</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -o</code></strong> <em class="replaceable"><code>printer-name1</code></em>
+</pre>
+<p>Ensure that all specified print requests were moved to the destination
+printer's queue.</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -o</code></strong> <em class="replaceable"><code>printer-name2</code></em>
+</pre>
+</li></ol></div><div class="example"><a name="emjfm"></a><p class="title"><b>Example 4.19. Moving Print Requests to Another Printer</b></p>
+
+
+<p>The following example shows how to move print requests from the printer <code class="literal">luna</code> to the printer <code class="literal">terra</code>. Then, the original
+printer, <code class="literal">luna</code>, is instructed to resume accepting print
+requests. </p>
+<pre class="screen"># <strong class="userinput"><code>lpmove luna terra</code></strong>
+# <strong class="userinput"><code>accept luna</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printconcept-96948"></a>Changing the Priority of Print Requests</h3></div></div></div>
+
+<a class="indexterm" name="printconcept-ix138"></a>
+<a class="indexterm" name="printconcept-ix139"></a>
+<p>After a user has submitted a print request, you can change its priority
+in the print server's queue by doing any of the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<a class="indexterm" name="printconcept-ix140"></a>Putting any print request on hold if it has not finished printing.
+Putting a request on hold stops the request, if it is currently printing,
+and keeps it from printing until you resume printing it. Other print requests
+go ahead of the on-hold request. </p>
+</li><li>
+<p>
+<a class="indexterm" name="printconcept-ix141"></a>Moving any print request to the head of the queue, where it will
+become the next job eligible for printing. If you want a job to start printing
+immediately, you can interrupt the job that is currently printing by putting
+it on hold. </p>
+</li><li>
+<p>Changing the priority of a job still waiting to be printed
+or moving the job in the queue. Doing so will move the job ahead of lower
+priority requests and behind other requests that are the same priority or
+higher priority.</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2136022"></a></h3></div></div></div>
+
+<div class="task"><a name="printadmin-30451"></a><p class="title"><b>How to Change the Priority of a Print Request</b></p><div class="procedure"><ol type="1"><li><a name="printadmin-step-103"></a>
+<p>
+<a class="indexterm" name="printadmin-ix484"></a>
+<a class="indexterm" name="printadmin-ix486"></a>Log in as superuser, <code class="literal">lp</code>, or assume an equivalent
+role on the print server that is holding the print request.</p>
+</li><li><a name="printadmin-step-104"></a>
+<p>Determine the request IDs of the print
+requests whose priority you want to change. </p>
+<pre class="screen"># <strong class="userinput"><code>lpstat</code></strong>
+</pre>
+<p>For more information, see <span class="olink">How to Check the Status of Print Requests</span>.</p>
+</li><li><a name="printadmin-step-105"></a>
+<p>Change the priority of a print request.</p>
+<pre class="screen"># <strong class="userinput"><code>lp -i</code></strong> <em class="replaceable"><code>request-id</code></em> <strong class="userinput"><code>-H</code></strong> <em class="replaceable"><code>change-priority</code></em>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+i</code> <em class="replaceable"><code>request-id</code></em>
+</span></dt><dd>
+<p>
+<a class="indexterm" name="printadmin-ix487"></a>Specifies the request ID of a print request you want to change. </p>
+<p>You can specify multiple request IDs with this command. Use a space
+or a comma to separate request IDs. If you use spaces, enclose the list of
+request IDs in quotation marks.</p>
+</dd><dt><span class="term">
+<code class="option">
+H</code> <em class="replaceable"><code>change-priority</code></em>
+</span></dt><dd>
+<p>Specifies one of the three ways to change the priority of
+a print request: <code class="literal">hold</code>, <code class="literal">resume</code>, <code class="literal">immediate</code>. </p>
+<p>For detailed information about valid values for <em class="replaceable"><code>change-priority</code></em>, see <span class="olink">Table 4&#8211;6</span>.</p>
+</dd></dl></div>
+<p>You can also use the <span><strong class="command">lp</strong></span> <code class="option">
+q</code> command
+to change the priority level of a specified print request. You can change
+the priority level from 0, the highest priority, to 39, the lowest priority.</p>
+</li></ol></div><div class="example"><a name="emjga"></a><p class="title"><b>Example 4.20. Changing the Priority of a Print Request</b></p>
+
+
+<p>The following example shows how to change a print request with the request
+ID <code class="literal">asteroid-79</code>, to priority level 1. </p>
+<pre class="screen"># <strong class="userinput"><code>lp -i asteroid-79 -q 1</code></strong>
+</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04s05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Managing Print Requests (Task Map) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 5. Managing Character Sets, Filters,
+Forms, and Fonts (Tasks)</td></tr></table></div></body></html>

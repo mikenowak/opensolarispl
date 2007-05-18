@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Using the Fair Share Scheduler on a Solaris
+System With Zones Installed - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage> > <a href="p104.html">27.&nbsp;&nbsp;Administering Solaris Zones (Tasks)</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p109.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p111.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="z.admin.task-71"></a><h3>Using the Fair Share Scheduler on a Solaris
+System With Zones Installed</h3>
+<p>Limits specified through the <tt>prctl</tt> command are not
+persistent. The limits are only in effect until the system is rebooted. To
+set shares in a zone permanently, see <a href="p63.html#z.conf.start-29">How to Configure the Zone</a> and <a href="p65.html#gejpu">How to Set <tt>zone.cpu-shares</tt> in the Global Zone</a>.</p>
+<a name="z.admin.task-76"></a><h4><img src="graphics/procedure.gif"> How to Set FSS Shares in the Global Zone
+Using the <tt>prctl</tt> Command</h4>
+<p>The global zone is given one share by default. You can use this procedure
+to change the default allocation. Note that you must reset shares allocated
+through the <tt>prctl</tt> command whenever you reboot the system.</p>
+<p>You must be the global administrator in the global zone to perform this
+procedure.</p>
+<ol><li><a name="z.admin.task-step-79"></a><b>Become superuser, or assume the Primary
+Administrator role.</b><p>To create the role and assign the role to
+a user, see Using the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i>.</p></li><li><a name="z.admin.task-step-80"></a><b>Use the <tt>prctl</tt> utility
+to assign two shares to the global zone:</b><pre># <tt><b>prctl -n zone.cpu-shares -v 2 -r -i zone global</b></tt></pre></li><li><a name="z.admin.task-step-81"></a><b>(Optional) To verify the number of shares
+assigned to the global zone, type:</b><pre># <tt><b>prctl -n zone.cpu-shares -i zone global</b></tt></pre></li></ol><h6>See Also</h6><p>For more information on the <tt>prctl</tt> utility, see the <tt>prctl</tt>(1) man page.</p>
+<a name="fiouo"></a><h4><img src="graphics/procedure.gif"> How to Change the <tt>zone.cpu-shares</tt> Value
+in a Zone Dynamically</h4>
+<p>You must be the global administrator in the global zone to perform this
+procedure.</p>
+<ol><li><b>Become superuser, or assume the Primary Administrator role.</b><p>To create the role and assign the role to a user, see Using
+the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i></p></li><li><b>Use the <tt>prctl</tt> command to specify a new value
+for <tt>cpu-shares</tt>. </b><pre># <tt><b>prctl -i </tt><i>idtype</i><tt> -n zone.cpu-shares -r -v value</b></tt></pre><p><i>idtype</i> is either the <i>zonename</i> or
+the <i>zoneid</i>. <i>value</i> is
+the new value.</p></li></ol><a name="z.admin.task-21"></a><h3>Using Rights Profiles in Zone Administration</h3>
+<p><a name="indexterm-333"></a>This
+section covers tasks associated with using rights profiles in non-global zones.</p>
+<a name="z.admin.task-22"></a><h4><img src="graphics/procedure.gif"> How to Assign the Zone Management Profile</h4>
+<p>The Zone Management profile grants the power to manage all of the non-global
+zones on the system to a user.</p>
+<p>You must be the global administrator in the global zone to perform this
+procedure.</p>
+<ol><li><a name="z.admin.task-step-24"></a><b>Become superuser, or assume the Primary
+Administrator role.</b><p>To create the role and assign the role to
+a user, see Using the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i>.</p></li><li><a name="z.admin.task-step-25"></a><b>Create a role that includes the Zone
+Management rights profile, and assign the  role to a user.</b><ul><li><p>To create and assign the role by using the Solaris Management
+Console, see Configuring RBAC (Task Map) in <i>System Administration Guide: Security Services</i>.
+Refer to the task &ldquo;How to Create and Assign a Role By Using the  GUI.&rdquo;</p>
+</li>
+<li><p>To create and assign the role on the command line, see Managing
+RBAC in <i>System Administration Guide: Security
+Services</i>. Refer to the task &ldquo;How to Create a Role
+From the Command Line.&rdquo;</p>
+</li>
+</ul>
+</li></ol><a name="z.admin.task-26"></a><h4>Example&mdash;Using Profile Shells With
+Zone Commands</h4>
+<p>You can execute zone commands in a profile using the <tt>pfexec</tt> program.
+The program executes commands with the attributes specified by the user's
+profiles in the <tt>exec_attr</tt> database. The program is invoked
+by the profile shells <tt>pfksh</tt>, <tt>pfcsh</tt>,
+and <tt>pfsh</tt>.</p>
+<p>Use the <tt>pfexec</tt> program to log in to a zone, for example, <tt>my-zone</tt>.</p>
+<pre>machine$ <tt><b>pfexec zlogin my-zone</b></tt></pre>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p109.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p111.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="gaufd">
+
+
+
+<title>What's New in Solaris Installation</title>
+<toc>
+<para>
+<indexterm xml:id="indexterm-1">
+<primary>what's new in Solaris installation</primary>
+</indexterm>This chapter describes new features in the Solaris installation
+programs. To view features for all of the Solaris OS, see <olink remap="external" targetdoc="817-0547">
+<citetitle remap="book">Solaris 10 What’s New</citetitle>
+</olink>.
+This chapter describes the following sections.</para>
+</toc>
+<sect1 xml:id="gdlfa">
+<title>What's New in the Solaris Express Release
+for Installation</title>
+<sect2 arch="sparc" xml:id="gdxvc">
+<title>
+New <command>sysidkdb</command> Tool
+Prevents Having to Configure Your Keyboard </title>
+<para>This installation enhancement is new in the Solaris Express
+10/06 release. </para>
+<para> For SPARC based platforms, a new <command>sysidtool</command>, <command>sysidkdb</command>, configures your USB keyboard layout during system installation. </para>
+<note>
+
+<para>Previously, the USB keyboard attached on the SPARC platform always
+assumed a self-identifying value of one during the installation.  Therefore,
+all of the keyboards that were not self-identifying always configured for
+a U.S.  English keyboard during installation.</para>
+</note>
+<para>With the new <command>sysidkbd</command> tool, the following procedure
+occurs:</para>
+<itemizedlist>
+<listitem>
+<para>If the keyboard is self-identifying, the keyboard layout automatically
+configures during installation. </para>
+</listitem>
+<listitem>
+<para>If the
+keyboard is not self-identifying, the <command>sysidkdb</command> tool provides
+you with a list of supported keyboard layouts during installation, so that
+you can select a layout for keyboard configuration.</para>
+<para>If the keyboard
+is not self-identifying and you want to prevent being prompted during your
+JumpStart installation, select the keyboard language in your JumpStart script.
+ For JumpStart installation, the default is for a U.S.  English keyboard layout.
+ To select another language, set the keyboard entry in your JumpStart script
+as in this example: </para>
+<para>
+<literal>keyboard=German</literal>
+</para>
+<note>
+
+<para>The value provided for <command>sysidcfg</command> must be a valid
+value.   Otherwise, an interactive response is required during installation.
+ Valid keyboard strings are defined in a file which is referenced in the <command>sysidcfg(4)</command> man page.</para>
+</note>
+</listitem>
+</itemizedlist>
+<para> For more information, see the <olink remap="external" targetdoc="819-2240" targetptr="sysidtool-1m">
+<citerefentry>
+<refentrytitle>sysidtool</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man page and the <olink remap="external" targetdoc="819-2251" targetptr="sysidcfg-4">
+<citerefentry>
+<refentrytitle>sysidcfg</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> man page.</para>
+</sect2>
+<sect2 xml:id="gdaun">
+<title>Enhanced Security Using the Restricted Networking
+Profile</title>
+<para>
+<emphasis role="strong">Starting with
+the Solaris Express 7/06</emphasis>, the generic installation has been changed
+so that all network services, except Secure Shell,  are disabled or restricted
+to respond to local requests only. This change minimizes the potential vulnerabilities
+a remote attacker might try to exploit. In addition, the change provides a
+base for customers to enable only the services they require.</para>
+<para>For
+Solaris Express releases, the hardening changes are automatically applied
+whenever a fresh install is performed. This effect is achieved by invoking
+the <command>netservices</command> command from the SMF upgrade file found
+in <filename>/var/svc/profile</filename>. Behavior is unchanged if the system
+is upgraded.</para>
+<para>All of the affected services are controlled by the
+Service Management Framework (SMF). Any individual service can be enabled
+by using the <citerefentry>
+<refentrytitle>svsadm</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry> and <citerefentry>
+<refentrytitle>svccfg</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry> commands. The <citerefentry>
+<refentrytitle>netservices</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry> command can be used to switch the service startup behavior.</para>
+</sect2>
+<sect2 xml:id="gdoki">
+<title>Installing Solaris Trusted Extensions</title>
+<para>
+<emphasis role="strong">Starting with the Solaris Express
+7/06 release</emphasis>, Solaris Trusted Extensions
+provides multilevel security for the Solaris OS. This feature enables you
+to control information in a flexible but highly secure manner. You can now
+enforce strict access controls to your data based on data sensitivity, not
+just data ownership.</para>
+<para>An installation that accesses Solaris Trusted Extensions differs from
+a standard installation. For a list of these installation differences and
+further information about Solaris Trusted Extensions, see <olink remap="external" targetdoc="819-7314" targetptr="startinst-4">
+<citetitle remap="section">Installing or Upgrading the Solaris OS for Trusted Extensions (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Installation and Configuration</citetitle>
+</olink>.</para>
+</sect2>
+<sect2 xml:id="gcimd">
+<title>NFSv4 Domain Name Configurable During Installation</title>
+<para>
+<emphasis role="strong">Starting with the Solaris Express
+5/06 release</emphasis>, the NFS version 4 domain
+name can now be defined during the installation of the OS. To facilitate this
+new functionality, the <command>sysidnfs4</command> program runs during the
+installation process to determine whether an NFSv4 domain name has been configured
+for the network. In previous Solaris 10 releases, the NFS domain name was
+defined during the first system reboot after installation.</para>
+<itemizedlist>
+<para>The NFSv4 domain can now be defined as follows:</para>
+<listitem>
+<para>During a Solaris interactive installation, you can select
+the default domain name. Or, you can specify a custom NFSv4 domain name.</para>
+</listitem>
+<listitem>
+<para>To preconfigure the NFSv4 domain name in the <filename>sysidcfg</filename> file,
+see <olink remap="external" targetdoc="819-2394" targetptr="gciml">
+<citetitle remap="section">nfs4_domain Keyword</citetitle> in <citetitle remap="book">Solaris Express Installation Guide: Network-Based Installations</citetitle>
+</olink>.</para>
+</listitem>
+</itemizedlist>
+<informaltable frame="topbot">
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colwidth="50*"/>
+<colspec colwidth="50*"/>
+<tbody>
+<row>
+<entry>
+<para>For information about the NFSv4 domain name configuration</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-1634">
+<citetitle remap="book">System Administration Guide: Network Services</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>For information about Solaris interactive installations</para>
+</entry>
+<entry>
+<para>
+<citetitle>Solaris 10 11/06 Installation Guide: Basic Installations</citetitle>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>For information about Solaris network installations</para>
+</entry>
+<entry>
+<para>
+<citetitle>Solaris 10 11/06 Installation Guide: Network-Based Installations</citetitle>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>For information about Custom JumpStart installations</para>
+</entry>
+<entry>
+<para>
+<citetitle>Solaris 10 11/06 Installation Guide: Custom JumpStart and
+Advanced Installations</citetitle>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>For information about the <literal>sysid</literal> command tools</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2240" targetptr="sysidtool-1m">
+<citerefentry>
+<refentrytitle>sysidtool</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> and <olink remap="external" targetdoc="819-2240" targetptr="sysidnfs4-1m">
+<citerefentry>
+<refentrytitle>sysidnfs4</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man pages</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect2>
+<sect2 xml:id="gbwij">
+<title>Solaris Flash Can Create an Archive That Includes Large Files</title>
+<para>
+<indexterm xml:id="indexterm-2">
+<primary>large file handling, Solaris Flash archives</primary>
+</indexterm>
+<indexterm xml:id="indexterm-3">
+<primary>archives</primary>
+<secondary>large file handling</secondary>
+</indexterm>The <command>flarcreate</command> command no longer has size limitations
+on individual files. You can create a Solaris Flash archive that contains
+individual files over 4 Gbytes. The following two archive utilities are available
+for use: </para>
+<itemizedlist>
+<listitem>
+<para>The portable archive interchange utility, <command>pax</command>,
+is the default. The archive can be created without size limitations on individual
+files.</para>
+</listitem>
+<listitem>
+<para>The <command>cpio</command> archive utility is invoked with <option>
+L cpio</option> option.  Individual files cannot be greater than 2 or 4 Gbytes.
+ The size limitation depends  on the version of <command>cpio</command> used.
+This option is useful for backward compatibility issues.</para>
+</listitem>
+</itemizedlist>
+<para>For more information, see <olink remap="external" targetdoc="chapter-4.xml" targetptr="gbwbm">Creating an Archive That Contains Large Files</olink>
+</para>
+</sect2>
+</sect1>
+<sect1 xml:id="s10206">
+<title>What's New in the Solaris Express Release
+for Solaris Installation</title>
+<para>This section describes the following new installation features in the
+Solaris Express release.</para>
+<sect2 arch="x86" xml:id="fwfdg">
+<title>
+GRUB Based Booting</title>
+<para>
+<emphasis role="strong">Starting with the Solaris 10 1/06 release</emphasis>,
+the open source GNU GRand Unified Boot Loader (GRUB) has been adopted in the
+Solaris OS for x86 based systems. GRUB is responsible for loading  a boot
+archive into the system's memory. A boot archive is a collection of critical
+files that is needed during system startup before the root (<filename>/</filename>)
+file system is mounted. The boot archive is used to boot the Solaris OS.</para>
+<para>The most notable change is the replacement of the Solaris Device Configuration Assistant with
+the GRUB menu. The GRUB menu facilitates booting the different operating systems
+that are installed on your system. The GRUB menu is displayed when you boot
+an x86 based system. From the GRUB menu, you can select an OS instance to
+install by using the arrow keys. If you do not make a selection, the default
+OS instance is booted. </para>
+<para>The GRUB based boot feature provides the following improvements:</para>
+<itemizedlist>
+<listitem>
+<para>Faster boot times</para>
+</listitem>
+<listitem>
+<para>Installation from USB CD or DVD drives</para>
+</listitem>
+<listitem>
+<para>Ability to boot from USB storage devices</para>
+</listitem>
+<listitem>
+<para>Simplified DHCP setup for PXE boot (no vendor-specific options)</para>
+</listitem>
+<listitem>
+<para>Elimination of all realmode drivers</para>
+</listitem>
+<listitem>
+<para>Ability to use Solaris Live Upgrade and the GRUB menu to quickly
+activate and fall back to boot environments</para>
+</listitem>
+</itemizedlist>
+<para>For more information about GRUB refer to the following sections.</para>
+<informaltable frame="topbot" pgwide="1">
+<tgroup cols="3" colsep="0" rowsep="0">
+<colspec colname="colspec0" colwidth="30.14*"/>
+<colspec colwidth="52.68*"/>
+<colspec colwidth="67.17*"/>
+<thead>
+<row>
+<entry rowsep="1">
+<para>Task</para>
+</entry>
+<entry rowsep="1" valign="top">
+<para>GRUB Task</para>
+</entry>
+<entry rowsep="1" valign="top">
+<para>For More Information</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry morerows="5">
+<para>Installation</para>
+</entry>
+<entry>
+<para>Overview information about GRUB based booting</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="fxivs">GRUB Based Booting (Overview)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Installation planning for GRUB based booting</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="gavdl">GRUB Based Booting (Planning)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>How to boot and install over the network with the GRUB menu</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2394" targetptr="eyaup">
+<citetitle remap="section">Installing the System From the Network With a DVD Image</citetitle> in <citetitle remap="book">Solaris Express Installation Guide: Network-Based Installations</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>How to boot and install with the GRUB menu and the Custom JumpStart
+installation method</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2396" targetptr="customjump-3">
+<citetitle remap="section">Performing a Custom JumpStart Installation</citetitle> in <citetitle remap="book">Solaris Express Installation Guide: Custom JumpStart and Advanced Installations</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>How to use the GRUB menu and Solaris Live Upgrade to activate and fall
+back to boot environments </para>
+</entry>
+<entry>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="external" targetdoc="819-2395" targetptr="luupgrade-84">
+<citetitle remap="section">Activating a Boot Environment</citetitle> in <citetitle remap="book">Solaris Express Installation Guide:  Solaris Live Upgrade and Upgrade Planning</citetitle>
+</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="external" targetdoc="819-2395" targetptr="luupgrade-85">Chapter 6, <citetitle remap="chapter">Failure Recovery: Falling Back to the Original Boot Environment (Tasks),</citetitle> in <citetitle remap="book">Solaris Express Installation Guide:  Solaris Live Upgrade and Upgrade Planning</citetitle>
+</olink>
+</para>
+</listitem>
+</itemizedlist>
+</entry>
+</row>
+<row>
+<entry>
+<para>Locating the GRUB menu's <filename>menu.lst</filename> file</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2395" targetptr="gbdfr">
+<citetitle remap="section">Locating the GRUB Menu’s menu.lst File (Tasks)</citetitle> in <citetitle remap="book">Solaris Express Installation Guide:  Solaris Live Upgrade and Upgrade Planning</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>System Administration</para>
+</entry>
+<entry>
+<para>How to perform system administration tasks with the GRUB menu</para>
+</entry>
+<entry>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="external" targetdoc="819-2379">
+<citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="external" targetdoc="819-2723">
+<citetitle remap="book">System Administration Guide: Devices and File Systems</citetitle>
+</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="external" targetdoc="819-2240" targetptr="bootadm-1m">
+<citerefentry>
+<refentrytitle>bootadm</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="external" targetdoc="819-2240" targetptr="installgrub-1m">
+<citerefentry>
+<refentrytitle>installgrub</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</listitem>
+</itemizedlist>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<note>
+
+<para>GNU is a recursive acronym for “GNU's Not UNIX.” For
+more information, go to <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://www.gnu.org">http://www.gnu.org</link>.</para>
+</note>
+</sect2>
+</sect1>
+</chapter>

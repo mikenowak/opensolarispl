@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="manageldap-1">
+
+
+
+<title>Trusted Extensions and LDAP</title>
+<indexterm xml:id="indexterm-499">
+<primary>administering</primary>
+<secondary>LDAP</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-500">
+<primary>naming services</primary>
+<secondary>LDAP</secondary>
+</indexterm>
+<toc>
+<para>This chapter describes the use of the Sun Java System Directory Server (LDAP service) for a system
+that is configured with Trusted Extensions.</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-9.xml" targetptr="manageldap-5">Using a Naming Service</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-9.xml" targetptr="managens-3">Using the LDAP Naming Service</olink>
+</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="manageldap-5">
+<title>Using a Naming Service</title>
+<indexterm xml:id="indexterm-501">
+<primary>LDAP</primary>
+<secondary>naming service for Trusted Extensions</secondary>
+</indexterm>
+<para>
+<indexterm xml:id="indexterm-502">
+<primary>LDAP</primary>
+<secondary>Trusted Extensions databases</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-503">
+<primary>databases</primary>
+<secondary>in LDAP</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-504">
+<primary>network databases</primary>
+<secondary>in LDAP</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-505">
+<primary>naming services</primary>
+<secondary>databases unique to Trusted Extensions</secondary>
+</indexterm>To achieve uniformity of user, host, and network attributes within
+a security domain with multiple Trusted Extensions computers, a naming service
+is used for distributing most configuration information. LDAP is an example
+of a naming services. The <filename>nsswitch.conf</filename> file determines
+which naming service is used. LDAP is the recommended naming service for  Trusted Extensions.</para>
+<para>The  Sun Java System Directory Server can provide the LDAP naming service for Trusted Extensions and Solaris clients.
+The server must include Trusted Extensions network databases, and the Trusted Extensions clients
+must connect to the server over a multilevel port. The security administrator
+specifies the multilevel port when configuring Trusted Extensions.</para>
+<itemizedlist>
+<para>Trusted Extensions adds two trusted network databases to the LDAP server: <filename>tnrhdb</filename> and <filename>tnrhtp</filename>. They are administered by
+using Security Templates tool in the Solaris Management Console.</para>
+<listitem>
+<para>For information about the use of the LDAP naming  service
+in the Solaris Operating System, see <olink remap="external" targetdoc="819-3194">
+<citetitle remap="book">System Administration Guide: Naming and Directory Services (DNS, NIS, and LDAP)</citetitle>
+</olink>.</para>
+</listitem>
+<listitem>
+<para>Setting up the Sun Java System Directory Server for Trusted Extensions clients is described
+in <olink remap="external" targetdoc="819-7314">
+<citetitle remap="book">Solaris Trusted Extensions Installation and Configuration</citetitle>
+</olink>. Trusted Extensions computers
+can be clients of a Solaris LDAP server by using an LDAP proxy server
+that is configured with Trusted Extensions.</para>
+</listitem>
+</itemizedlist>
+<note>
+
+<para>Systems that are configured with Trusted Extensions cannot be clients
+of NIS or NIS+ masters.</para>
+</note>
+<sect2 xml:id="manageldap-2">
+<title>Non-Networked Trusted Extensions Computers</title>
+<para>If a naming service is not used at a site, administrators have the responsibility
+to ensure that configuration information for users, hosts, and networks is
+identical on all hosts. A change that is made on one host must be made on
+all hosts.</para>
+<para>On a non-networked Trusted Extensions computer, configuration information
+is maintained in the <filename>/etc</filename>, <filename>/etc/security</filename>,
+and <filename>/etc/security/tsol</filename> directories. Actions in the Trusted_Extensions
+folder enable you to modify some configuration information. The Security Templates
+tool in the Solaris Management Console enables you to modify network database parameters. Users,
+roles, and rights are modified in the User Accounts, Administrative Roles,
+and Rights tools. A toolbox on This Computer with <literal>Scope=Files, Policy=TSOL</literal> stores configuration changes locally.</para>
+</sect2>
+<sect2 xml:id="manageldap-8">
+<title>Trusted Extensions LDAP Databases</title>
+<para>Trusted Extensions extends the directory server's schema to accommodate
+the <filename>tnrhdb</filename> and <filename>tnrhtp</filename> databases. Trusted Extensions defines
+two new attributes, <literal>ipTnetNumber</literal> and <literal>ipTnetTemplateName</literal>, and two new object classes, <literal>ipTnetHost</literal> and <literal>ipTnetTemplate.</literal>
+</para>
+<para>The attribute definitions are as follows:</para>
+<screen>ipTnetNumber
+   ( 1.3.6.1.1.1.1.34 NAME 'ipTnetNumber'
+     DESC 'Trusted network host or subnet address'
+     EQUALITY caseExactIA5Match
+     SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+     SINGLE-VALUE )</screen>
+<screen>ipTnetTemplateName
+   ( 1.3.6.1.1.1.1.35 NAME 'ipTnetTemplateName'
+     DESC 'Trusted network template name'
+     EQUALITY caseExactIA5Match
+     SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+     SINGLE-VALUE )</screen>
+<para>The object class definitions are as follows:</para>
+<screen>ipTnetTemplate
+   ( 1.3.6.1.1.1.2.18 NAME 'ipTnetTemplate' SUP top STRUCTURAL
+     DESC 'Object class for Trusted network host templates'
+     MUST ( ipTnetTemplateName )
+     MAY ( SolarisAttrKeyValue ) )
+
+ipTnetHost
+   ( 1.3.6.1.1.1.2.19 NAME 'ipTnetHost' SUP top AUXILIARY
+     DESC 'Object class for Trusted network host/subnet address
+           to template mapping'
+     MUST ( ipTnetNumber $ ipTnetTemplateName ) )</screen>
+<para>The <literal>cipso</literal> template definition in LDAP is similar
+to the following:</para>
+<screen>ou=ipTnet,dc=example,dc=example1,dc=exampleco,dc=com
+ objectClass=top
+ objectClass=organizationalUnit
+ ou=ipTnet
+
+ ipTnetTemplateName=cipso,ou=ipTnet,dc=example,dc=example1,dc=exampleco,dc=com
+ objectClass=top
+ objectClass=ipTnetTemplate
+ ipTnetTemplateName=cipso
+ SolarisAttrKeyValue=host_type=cipso;doi=1;min_sl=ADMIN_LOW;max_sl=ADMIN_HIGH;
+
+ ipTnetNumber=0.0.0.0,ou=ipTnet,dc=example,dc=example1,dc=exampleco,dc=com
+ objectClass=top
+ objectClass=ipTnetTemplate
+ objectClass=ipTnetHost
+ ipTnetNumber=0.0.0.0
+ ipTnetTemplateName=internal</screen>
+</sect2>
+</sect1>
+<sect1 xml:id="managens-3">
+<title>Using the LDAP Naming Service</title>
+<indexterm xml:id="indexterm-506">
+<primary>naming services</primary>
+<secondary>actions for managing</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-507">
+<primary>administrative actions</primary>
+<secondary>naming services</secondary>
+</indexterm>
+<para>The LDAP naming service is managed in Trusted Extensions as it is managed
+in the Solaris OS. the following is a sample of useful commands, and references
+to more detailed information.</para>
+<itemizedlist>
+<listitem>
+<para>For strategies to solve LDAP configuration problems, see <olink remap="external" targetdoc="819-3194" targetptr="setupproblems-1">Chapter 13, <citetitle remap="chapter">LDAP Troubleshooting (Reference),</citetitle> in <citetitle remap="book">System Administration Guide: Naming and Directory Services (DNS, NIS, and LDAP)</citetitle>
+</olink>.</para>
+</listitem>
+<listitem>
+<para>To troubleshoot client-to-server LDAP connection problems
+that are affected by labels, see <olink remap="external" targetdoc="chapter-13.xml" targetptr="manageldap-4">How to Debug
+a Client Connection to the LDAP Server</olink>.</para>
+</listitem>
+<listitem>
+<para>To troubleshoot other client-to-server LDAP connection problems,
+see <olink remap="external" targetdoc="819-3194" targetptr="setupproblems-1">Chapter 13, <citetitle remap="chapter">LDAP Troubleshooting (Reference),</citetitle> in <citetitle remap="book">System Administration Guide: Naming and Directory Services (DNS, NIS, and LDAP)</citetitle>
+</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-508">
+<primary>LDAP</primary>
+<secondary>displaying entries</secondary>
+</indexterm>To display LDAP entries from an LDAP client:</para>
+<screen>$ ldaplist -l
+$ ldap_cachemgr -g</screen>
+</listitem>
+<listitem>
+<para>To display LDAP entries from an LDAP server:</para>
+<screen>$ ldap_cachemgr -g
+$ idsconfig -v</screen>
+</listitem>
+<listitem>
+<para>To list the hosts that LDAP manages:</para>
+<screen>$ ldaplist -l hosts <lineannotation>Long listing</lineannotation>
+$ ldaplist hosts <lineannotation>One-line listing</lineannotation>
+</screen>
+</listitem>
+<listitem>
+<para>To list information in the Directory Information Tree (DIT)
+on LDAP:</para>
+<screen>$ <userinput>ldaplist -l services | more</userinput>
+dn: cn=apocd+ipServiceProtocol=udp,ou=Services,dc=exampleco,dc=com
+  objectClass: ipService
+  objectClass: top
+  cn: apocd
+  ipServicePort: 38900
+  ipServiceProtocol: udp
+
+...
+$ <userinput>ldaplist services name</userinput>
+dn=cn=name+ipServiceProtocol=udp,ou=Services,dc=exampleco,dc=com</screen>
+</listitem>
+<listitem>
+<para>To display the status of the LDAP service on the client:</para>
+<screen># <userinput>svcs -xv network/ldap/client</userinput>
+svc:/network/ldap/client:default (LDAP client)
+ State: online since <replaceable>date</replaceable>
+   See: man -M /usr/share/man -s 1M ldap_cachemgr
+   See: /var/svc/log/network-ldap-client:default.log
+Impact: None.</screen>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-509">
+<primary>LDAP</primary>
+<secondary>starting</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-510">
+<primary>LDAP</primary>
+<secondary>stopping</secondary>
+</indexterm>To start and stop the LDAP client:</para>
+<screen># svcadm enable network/ldap/client</screen>
+<screen># svcadm disable network/ldap/client</screen>
+</listitem>
+<listitem>
+<para>To start and stop the LDAP server:</para>
+<screen># <replaceable>installation-directory</replaceable>/slap-<replaceable>LDAP-server-hostname</replaceable>/start-slapd</screen>
+<screen># <replaceable>installation-directory</replaceable>/slap-<replaceable>LDAP-server-hostname</replaceable>/stop-slapd</screen>
+</listitem>
+</itemizedlist>
+</sect1>
+</chapter>

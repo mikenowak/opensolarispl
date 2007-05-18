@@ -1,0 +1,966 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="pam-1">
+
+
+
+<title>Using PAM</title>
+<toc>
+<para>This chapter covers the Pluggable Authentication Module (PAM) framework. PAM
+provides a method to “plug in” authentication services into the Solaris
+Operating System (Solaris OS). PAM provides support for multiple authentication services
+when accessing a system.</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-15.xml" targetptr="pam-2">PAM (Overview)</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-15.xml" targetptr="pam-11">PAM (Tasks)</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-15.xml" targetptr="pam-32">PAM Configuration File (Reference)</olink>
+</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="pam-2">
+<title>PAM (Overview)</title>
+<para>
+<indexterm xml:id="indexterm-1843">
+<primary>pluggable authentication module</primary>
+<see>
+PAM</see>
+</indexterm>
+<indexterm xml:id="indexterm-1844">
+<primary>PAM</primary>
+<secondary>overview</secondary>
+</indexterm>The
+Pluggable Authentication Module (PAM) framework lets you “plug in” new
+authentication services without changing system entry services, such as <command>login</command>, <command>ftp</command>, and <command>telnet</command>. You can also
+use PAM to integrate UNIX login with other security mechanisms such as Kerberos. 
+Mechanisms for account, credential, session, and password management can also be “plugged
+in” by using this framework.</para>
+<sect2 xml:id="pam-3">
+<title>Benefits of Using PAM</title>
+<para>The PAM framework enables you to configure the use of system entry services
+(such as, <command>ftp</command>, <command>login</command>, <command>telnet</command>,
+or <command>rsh</command>)  for user authentication. Some benefits that PAM provides
+are as follows:</para>
+<itemizedlist>
+<listitem>
+<para>Flexible configuration policy</para>
+<itemizedlist>
+<listitem>
+<para>Per-application authentication policy</para>
+</listitem>
+<listitem>
+<para>The ability to choose a default authentication mechanism</para>
+</listitem>
+<listitem>
+<para>The ability to require multiple passwords on high-security systems</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<para>Ease of use for the end user</para>
+<itemizedlist>
+<listitem>
+<para>No retyping of passwords if the passwords are the same for different
+authentication services</para>
+</listitem>
+<listitem>
+<para>The ability to prompt the user for passwords for multiple authentication
+services without requiring the user to type multiple commands</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<para>The ability to pass optional options to the user authentication services</para>
+</listitem>
+<listitem>
+<para>The ability to implement a site-specific security policy without having
+to change the system entry services</para>
+</listitem>
+</itemizedlist>
+</sect2>
+<sect2 xml:id="etfam">
+<title>PAM Components</title>
+<para>The PAM software consists of a library, various service modules, and a configuration
+file. Solaris commands or daemons that take advantage of these PAM interfaces are
+also included.</para>
+<para>The following figure illustrates the relationship between the system entry applications,
+the PAM library, the <filename>pam.conf</filename> file, and the PAM service modules.</para>
+<figure xml:id="etfaq">
+
+<title>How PAM Works</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="figures/secauth1.gif"/>
+</imageobject>
+<textobject>
+<simpara>Diagram shows how the PAM library is situated between the PAM
+modules and the applications that use the modules.</simpara>
+</textobject>
+</mediaobject>
+</figure>
+<para>The system entry applications, such as <command>ftp</command>, <command>telnet</command>, and <command>login</command>, use the PAM library to call the configuration
+policy. The configuration policy is defined in the <filename>pam.conf</filename> file.
+The <filename>pam.conf</filename> file defines which modules to use, and in what order
+the modules are to be used with each application. Results from the modules are based
+on the module responses and the configured control flags. These results are passed
+back through the library to the application. </para>
+<sect3 xml:id="pam-6">
+<title>PAM Framework</title>
+<para>
+<indexterm xml:id="indexterm-1845">
+<primary>PAM</primary>
+<secondary>stacking</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1846">
+<primary>stacking</primary>
+<secondary>in PAM</secondary>
+</indexterm>The PAM framework
+provides a method for authenticating users with multiple services by using <emphasis>stacking</emphasis>. Depending on the configuration, the user can be prompted for
+passwords for each authentication method. The order in which the authentication services
+are used is determined through the PAM configuration file. </para>
+<para>The PAM library provides the framework to load the appropriate modules and to
+manage the stacking process. The PAM library provides a generic structure to which
+all of the modules can plug in. See the <olink remap="external" targetdoc="819-2246" targetptr="pam-sm-3pam">
+<citerefentry>
+<refentrytitle>pam_sm</refentrytitle>
+<manvolnum>
+3PAM
+</manvolnum>
+</citerefentry>
+</olink> man
+page for more information.</para>
+</sect3>
+</sect2>
+<sect2 xml:id="pam-38">
+<title>Changes to PAM for the Solaris 10 Release</title>
+<indexterm xml:id="indexterm-1847">
+<primary>new features</primary>
+<secondary>PAM enhancements</secondary>
+</indexterm>
+<para>The Solaris 10 release includes the following changes to the Pluggable Authentication
+Module (PAM) framework:</para>
+<itemizedlist>
+<listitem>
+<para>The <literal>pam_authtok_check</literal> module now allows for strict
+password checking using new tunable parameters in the <filename>/etc/default/passwd</filename> file. The new parameters define:</para>
+<itemizedlist>
+<listitem>
+<para>A list of comma separated dictionary files used for checking common
+dictionary words in a password</para>
+</listitem>
+<listitem>
+<para>The minimum differences required between a new password and an old
+password</para>
+</listitem>
+<listitem>
+<para>The minimum number of alphabetic or nonalphabetic characters that
+must be used in a new password</para>
+</listitem>
+<listitem>
+<para>The minimum number of uppercase or lowercase letters that must be
+used in a new password</para>
+</listitem>
+<listitem>
+<para>The number of allowable consecutive repeating characters</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<para>The <literal>pam_unix_auth</literal> module implements account locking
+for local users. Account locking is enabled by the <literal>LOCK_AFTER_RETRIES</literal> parameter
+in <filename>/etc/security/policy.conf</filename> and the <literal>lock_after-retries</literal> key in <filename>/etc/user_attr</filename>. See the <olink remap="external" targetdoc="819-2251" targetptr="policy.conf-4">
+<citerefentry>
+<refentrytitle>policy.conf</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> and the <olink remap="external" targetdoc="819-2251" targetptr="user-attr-4">
+<citerefentry>
+<refentrytitle>user_attr</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> man pages for more information.</para>
+</listitem>
+<listitem>
+<para>A new <literal>binding</literal> control flag has been defined. This
+control flag is documented in the <olink remap="external" targetdoc="819-2251" targetptr="pam.conf-4">
+<citerefentry>
+<refentrytitle>pam.conf</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> man
+page and in <olink remap="internal" targetdoc="chapter-15.xml" targetptr="pam-36">PAM Control Flags</olink>.</para>
+</listitem>
+<listitem>
+<para>The <literal>pam_unix</literal> module has been removed and replaced
+by a set of service modules of equivalent or greater functionality. Many of these
+modules were introduced in the Solaris 9 release. Here is a list of the replacement
+modules:</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>pam_authtok_check</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>pam_authtok_get</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>pam_authtok_store</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>pam_dhkeys</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>pam_passwd_auth</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>pam_unix_account</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>pam_unix_auth</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>pam_unix_cred</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>pam_unix_session</literal>
+</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<para>The functionality of the <literal>pam_unix_auth</literal> module has
+been split into two modules. The <literal>pam_unix_auth</literal> module now verifies
+that the password is correct for the user. The new <literal>pam_unix_cred</literal> module
+provides functions that establish user credential information.</para>
+</listitem>
+<listitem>
+<para>Additions to the <literal>pam_krb5</literal> module have been made
+to manage the Kerberos credentials cache using the PAM framework.</para>
+</listitem>
+<listitem>
+<para>A new <literal>pam_deny</literal> module has been added. The module
+can be used to deny access to services. By default, the <literal>pam_deny</literal> module
+is not used. For more information, see the <olink remap="external" targetdoc="819-2252" targetptr="pam-deny-5">
+<citerefentry>
+<refentrytitle>pam_deny</refentrytitle>
+<manvolnum>
+5
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+</listitem>
+</itemizedlist>
+</sect2>
+</sect1>
+<sect1 xml:id="pam-11">
+<title>PAM (Tasks)</title>
+<para>
+<indexterm xml:id="indexterm-1848">
+<primary>task maps</primary>
+<secondary>PAM</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1849">
+<primary>PAM</primary>
+<secondary>task map</secondary>
+</indexterm>This section discusses
+some tasks that might be required to make the PAM framework use a particular security
+policy. You should be aware of some security issues that are associated with the PAM
+configuration file. For information about the security issues, see <olink remap="internal" targetdoc="chapter-15.xml" targetptr="pam-13">Planning for Your PAM Implementation</olink>.</para>
+<sect2 xml:id="esqbh">
+<title>PAM (Task Map)</title>
+<informaltable frame="all" pgwide="1">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colwidth="110*"/>
+<colspec colname="col2" colwidth="167*"/>
+<colspec colwidth="119*"/>
+<thead>
+<row>
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Plan for your PAM installation.</para>
+</entry>
+<entry>
+<para>Consider configuration issues and make decisions about them before you start
+the software configuration process.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-15.xml" targetptr="pam-13">Planning for Your PAM Implementation</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Add new PAM modules.</para>
+</entry>
+<entry>
+<para>Sometimes, site-specific modules must be written and installed to cover requirements
+that are not part of the generic software. This procedure explains how to install
+these new PAM modules.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-15.xml" targetptr="pam-14">How to Add a PAM Module</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Block access through <filename>~/.rhosts</filename>.</para>
+</entry>
+<entry>
+<para>Further increase security by preventing access through <filename>~/.rhosts</filename>.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-15.xml" targetptr="ewaws">How to Prevent Rhost-Style Access From Remote Systems
+With PAM</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Initiate error logging.</para>
+</entry>
+<entry>
+<para>Start the logging of PAM error messages through <command>syslog</command>.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-15.xml" targetptr="pam-23">How to Log PAM Error Reports</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect2>
+<sect2 xml:id="pam-13">
+<title>Planning for Your PAM Implementation</title>
+<para>
+<indexterm xml:id="indexterm-1850">
+<primary>PAM</primary>
+<secondary>planning</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1851">
+<primary>planning</primary>
+<secondary>PAM</secondary>
+</indexterm>As delivered, the <filename>pam.conf</filename> configuration file implements the standard Solaris security policy.
+This policy should work in many situations. If you need to implement a different security
+policy, here are the issues that you should focus on:</para>
+<itemizedlist>
+<listitem>
+<para>Determine what your needs are, especially which PAM service modules
+you should select.</para>
+</listitem>
+<listitem>
+<para>Identify the services that need special configuration options. Use <literal>other</literal> if appropriate.</para>
+</listitem>
+<listitem>
+<para>Decide the order in which the modules should be run.</para>
+</listitem>
+<listitem>
+<para>Select the control flag for each module. See <olink remap="internal" targetdoc="chapter-15.xml" targetptr="pam-36">PAM Control Flags</olink> for more information about all of the control flags.</para>
+</listitem>
+<listitem>
+<para>Choose any options that are necessary for each module. The man page
+for each module should list any special options.</para>
+</listitem>
+</itemizedlist>
+<para>Here are some suggestions to consider before you change the PAM configuration
+file:</para>
+<itemizedlist>
+<listitem>
+<para>Use <literal>other</literal> entries for each module type so that
+every application does not have to be included in <filename>/etc/pam.conf</filename>.</para>
+</listitem>
+<listitem>
+<para>Make sure to consider the security implications of the <literal>binding</literal>, <literal>sufficient</literal>, and <literal>optional</literal> control
+flags.</para>
+</listitem>
+<listitem>
+<para>Review the man pages that are associated with the modules. These man
+pages can help you understand how each module functions, what options are available,
+and the interactions between stacked modules.</para>
+<caution>
+
+<para>If the PAM configuration file is misconfigured or the file becomes
+corrupted, no user might be able to log in. Because the <command>sulogin</command> command
+does not use PAM, the root password would then be required to boot the machine into
+single-user mode and fix the problem.</para>
+</caution>
+<para>After you change the <filename>/etc/pam.conf</filename> file, review the file
+as much as possible while you still have system access to correct problems. Test all
+the commands that might have been affected by your changes. An example is adding a
+new module to the <command>telnet</command> service. In this example, you would use
+the <command>telnet</command> command and verify that your changes make the service
+behave as expected.</para>
+</listitem>
+</itemizedlist>
+</sect2>
+<sect2>
+<title/>
+<task id="pam-14">
+
+<title>How to Add a PAM Module</title>
+<indexterm xml:id="indexterm-1852">
+<primary>PAM</primary>
+<secondary>adding a module</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1853">
+<primary>adding</primary>
+<secondary>PAM modules</secondary>
+</indexterm>
+<tasksummary>
+<para>This procedure shows how to add a new PAM module. New modules can be created
+to cover site-specific security policies or to support third party applications.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Become superuser or assume an equivalent role.</para>
+<para>Roles contain authorizations and privileged commands. For more information about
+roles, see <olink remap="external" targetdoc="chapter-8.xml" targetptr="rbactask-15">Configuring RBAC (Task Map)</olink>.</para>
+</step>
+<step xml:id="pam-step-17">
+<para>Determine which control flags and which other options
+should be used.</para>
+<para>Refer to <olink remap="internal" targetdoc="chapter-15.xml" targetptr="pam-29">PAM Modules</olink> for
+information on the modules.</para>
+</step>
+<step xml:id="pam-step-19">
+<para>Ensure that the ownership and permissions are set so
+that the module file is owned by <literal>root</literal> and the permissions are <literal>555</literal>.</para>
+</step>
+<step xml:id="pam-step-20">
+<para>Edit the PAM configuration file, <filename>/etc/pam.conf</filename>, and add this module to the appropriate services.</para>
+</step>
+<step>
+<para>Verify that the module has been added properly.</para>
+<para>You must test <emphasis>before</emphasis> the system is rebooted in case the configuration file is misconfigured.
+Login using a direct service, such as <command>rlogin</command> or <command>telnet</command>, and run the <command>su</command> command, before you reboot the system.
+The service might be a daemon that is spawned only once when the system is booted.
+Then, you must reboot the system before you can verify that the module has been added.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="ewaws">
+
+<title>How to Prevent Rhost-Style Access From Remote Systems With
+PAM</title>
+<procedure>
+<step>
+<para>Become superuser or assume an equivalent role.</para>
+<para>Roles contain authorizations and privileged commands. For more information about
+roles, see <olink remap="external" targetdoc="chapter-8.xml" targetptr="rbactask-15">Configuring RBAC (Task Map)</olink>.</para>
+</step>
+<step>
+<para>Remove all of the lines that include <literal>rhosts_auth.so.1</literal> from
+the PAM configuration file.</para>
+<para>This step prevents the reading of the <filename>~/.rhosts</filename> files during an <command>rlogin</command> session. Therefore,
+this step prevents unauthenticated access to the local system from remote systems.
+All <command>rlogin</command> access requires a password, regardless of the presence
+or contents of any <filename>~/.rhosts</filename> or <filename>/etc/hosts.equiv</filename> files.</para>
+</step>
+<step>
+<para>Disable the <command>rsh</command> service.</para>
+<para>To prevent other
+unauthenticated access to the <filename>~/.rhosts</filename> files, remember to disable
+the <command>rsh</command> service. </para>
+<screen># <userinput>svcadm disable network/shell</userinput>
+</screen>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="pam-23">
+
+<title>How to Log PAM Error Reports</title>
+<procedure>
+<step>
+<para>Become superuser or assume an equivalent role.</para>
+<para>Roles contain authorizations and privileged commands. For more information about
+roles, see <olink remap="external" targetdoc="chapter-8.xml" targetptr="rbactask-15">Configuring RBAC (Task Map)</olink>.</para>
+</step>
+<step xml:id="pam-step-25">
+<para>
+<indexterm xml:id="indexterm-1854">
+<primary>PAM</primary>
+<secondary>
+<filename>/etc/syslog.conf</filename> file</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1855">
+<primary>
+<filename>/etc/syslog.conf</filename> file</primary>
+<secondary>PAM and</secondary>
+</indexterm>Configure
+the <filename>/etc/syslog.conf</filename> file for the level of logging that you need.</para>
+<para>See the <olink remap="external" targetdoc="819-2251" targetptr="syslog.conf-4">
+<citerefentry>
+<refentrytitle>syslog.conf</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> for
+more information about the logging levels.</para>
+</step>
+<step xml:id="pam-step-26">
+<para>Refresh the configuration information for the <command>syslog</command> daemon.</para>
+<screen># <userinput>svcadm refresh system/system-log</userinput>
+</screen>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="pam-32">
+<title>PAM Configuration File (Reference)</title>
+<para>
+<indexterm xml:id="indexterm-1856">
+<primary>PAM</primary>
+<secondary>configuration file</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1857">
+<primary>configuration files</primary>
+<secondary>
+<filename>pam.conf</filename> file</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1858">
+<primary>
+<filename>/etc/pam.conf</filename> file</primary>
+<secondary>description</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1859">
+<primary>
+<filename>pam.conf</filename> file</primary>
+<secondary>description</secondary>
+</indexterm>The
+PAM configuration file, <filename>pam.conf</filename>, determines the authentication
+service modules to be used, and the order in which the modules are used. This file
+can be modified to select authentication modules for each system entry application.</para>
+<sect2 xml:id="pam-33">
+<title>PAM Configuration File Syntax</title>
+<para>The PAM configuration file consists of entries with the following syntax:</para>
+<screen>
+<replaceable>service-name</replaceable> <replaceable>module-type</replaceable> <replaceable>control-flag</replaceable> <replaceable>module-path</replaceable> <replaceable>module-options</replaceable>
+</screen>
+<variablelist>
+<varlistentry>
+<term>
+<replaceable>service-name</replaceable>
+</term>
+<listitem>
+<para>Is the name of the system entry service, for example, <command>ftp</command>, <command>login</command>, <command>telnet</command>.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<replaceable>module-type</replaceable>
+</term>
+<listitem>
+<para>Is the module type for the service. For more information, see <olink remap="internal" targetdoc="chapter-15.xml" targetptr="pam-31">PAM Module Types</olink>.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<replaceable>control-flag</replaceable>
+</term>
+<listitem>
+<para>Determines the continuation or failure behavior for the module.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<replaceable>module-path</replaceable>
+</term>
+<listitem>
+<para>Specifies the path to the library object that implements the security
+policy.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<replaceable>module-options</replaceable>
+</term>
+<listitem>
+<para>Specifies the options that are passed to the service modules.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+<para>You can add comments to the <filename>pam.conf</filename> file by starting the
+line with a <literal>#</literal> (pound sign). Use white spaces or tabs to delimit
+the fields.</para>
+<note>
+
+<para>If an error is found in an entry in the PAM configuration file, a <filename>syslog</filename> error message is generated. If the error is in an entry for a requested
+service, then the service might return an error.</para>
+</note>
+</sect2>
+<sect2 xml:id="pam-34">
+<title>Service Names for PAM</title>
+<para>
+<indexterm xml:id="indexterm-1860">
+<primary>PAM</primary>
+<secondary>service names</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1861">
+<primary>service names</primary>
+<secondary>PAM</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1862">
+<primary>
+<filename>/etc/pam.conf</filename> file</primary>
+<secondary>service names</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1863">
+<primary>
+<filename>pam.conf</filename> file</primary>
+<secondary>service names</secondary>
+</indexterm>The specific service names for each
+service should be documented in the man page for that service. For instance the <olink remap="external" targetdoc="819-2240" targetptr="sshd-1m">
+<citerefentry>
+<refentrytitle>sshd</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man page lists all of the PAM service
+names for the <command>sshd</command> command.</para>
+</sect2>
+<sect2 xml:id="pam-31">
+<title>PAM Module Types</title>
+<para>
+<indexterm xml:id="indexterm-1864">
+<primary>PAM</primary>
+<secondary>module types</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1865">
+<primary>modules</primary>
+<secondary>types in PAM</secondary>
+</indexterm>You need
+to understand the PAM module types because the types define the interface to the module.
+Here are the types of PAM modules:</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis>Account modules</emphasis> check for password aging, account
+expiration, and access restrictions. After the user's identity is authenticated through
+the authentication modules, the account modules determine if the user should be given
+access to the system.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis>Authentication modules</emphasis> provide authentication
+for the users. The modules also allow for credentials to be set, refreshed, or destroyed.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis>Password modules</emphasis> allow for changes to the user's
+password.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis>Session modules</emphasis> manage the opening and the closing
+of a login session. These modules also can log activity or provide cleanup after the
+session is over.</para>
+</listitem>
+</itemizedlist>
+</sect2>
+<sect2 xml:id="pam-36">
+<title>PAM Control Flags</title>
+<para>A request using a PAM service module returns one of three states:</para>
+<itemizedlist>
+<listitem>
+<para>success – my security policy has been met</para>
+</listitem>
+<listitem>
+<para>failure – my security policy has not been met</para>
+</listitem>
+<listitem>
+<para>ignore – this request is not participating in the policy request</para>
+</listitem>
+</itemizedlist>
+<para>Each module in a stack can determine the success or failure of a request. To
+determine the continuation or failure behavior for a module, you must select a <replaceable>control flag</replaceable> for each entry in the PAM configuration file.</para>
+<para>
+<emphasis>Continuation behavior</emphasis> defines if any following modules
+are checked. Depending on the response from a particular module, you can decide to
+skip any additional modules.</para>
+<para>
+<emphasis>Failure behavior</emphasis> defines how error messages are logged
+or reported. Failures are either optional or required. A <emphasis>required failure</emphasis> causes that request to fail, even if other modules succeed. An <emphasis>optional failure</emphasis> does not always cause the request to fail.</para>
+<para>
+<indexterm xml:id="indexterm-1866">
+<primary>PAM</primary>
+<secondary>control flags</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1867">
+<primary>
+<filename>/etc/pam.conf</filename> file</primary>
+<secondary>control flags</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1868">
+<primary>
+<filename>pam.conf</filename> file</primary>
+<secondary>control flags</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1869">
+<primary>control flags</primary>
+<secondary>PAM</secondary>
+</indexterm>The control flags are as follows:</para>
+<itemizedlist>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-1870">
+<primary>
+<literal>binding</literal> control flag</primary>
+<secondary>PAM</secondary>
+</indexterm>
+<literal>binding</literal> – With this
+control flag, if the module is successful and no preceding modules that are flagged
+as <literal>required</literal> have failed, then PAM skips the remaining modules and
+returns success. If a failure is returned, PAM records a required failure and then
+continues processing the stack.</para>
+<para>The <literal>binding</literal> control
+flag is similar to the <literal>required</literal> control flag, except that no additional
+module checking is done if the module is successful. A failure in a module that uses
+this flag prevents the request from being successful, regardless of the response of
+any other modules. A success in a module that uses this flag makes the request successful
+if no preceding required modules failed.</para>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-1871">
+<primary>
+<literal>required</literal> control flag</primary>
+<secondary>PAM</secondary>
+</indexterm>
+<literal>required</literal> – With this
+control flag, if the module is successful, PAM records a required success and continues
+checking any following modules. If the module fails, and if this failure is the first
+required failure, PAM saves the error message and continues checking the stack. If
+this failure is not the first failure, PAM just continues checking the stack. This
+flag allows for the entire sequence to be processed, so that information that could
+assist an attacker is not disclosed. All the attacker can find out is that the request
+failed.</para>
+<para>The <literal>required</literal> control flag should be used when
+a particular module must succeed for the request to be successful. A failure in a
+module that uses this flag prevents the request from being successful, regardless
+of the response of any other modules. A success in a module that uses this flag does
+not mean that the request is successful. All of the responses from the other modules
+in the stack with <literal>required</literal>, <literal>requisite</literal>, or <literal>binding</literal> control flags must be successful for the request to succeed.</para>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-1872">
+<primary>
+<literal>requisite</literal> control flag</primary>
+<secondary>PAM</secondary>
+</indexterm>
+<literal>requisite</literal> – With this
+control flag, if the module is successful, PAM records a required success and continues
+checking any following modules. If the module fails, PAM records a required failure,
+returns the error message of the first required failure, and then skips any additional
+checking.</para>
+<para>The <literal>requisite</literal> control flag is similar to
+the <literal>required</literal> control flag, except that no additional module checking
+is done if the module fails. A failure in a module that uses this flag prevents the
+request from being successful, regardless of the response of any other modules. A
+success in a module that uses this flag does not mean that the request is successful.
+All of the responses from the other modules in the stack with <literal>required</literal>, <literal>requisite</literal>, or <literal>binding</literal> control flags must be successful
+for the request to succeed.</para>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-1873">
+<primary>
+<literal>optional</literal> control flag</primary>
+<secondary>PAM</secondary>
+</indexterm>
+<literal>optional</literal> – With this
+control flag, if the module is successful, PAM records an optional success and continues
+checking the stack. If the module fails, PAM records an optional failure and continues
+checking the stack.</para>
+<para>The <literal>optional</literal> control flag should
+be used when successful authentication in the stack is adequate for a user to be authenticated.
+This flag should only be used if this particular service does not need to succeed.
+The success or failure of the request is determined by any required failures or successes.</para>
+<para>If your users need to have permissions associated with a specific service
+to get their work done, then you should not label the module as <literal>optional</literal>.</para>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-1874">
+<primary>
+<literal>sufficient</literal> control flag</primary>
+<secondary>PAM</secondary>
+</indexterm>
+<literal>sufficient</literal> – With this
+control flag, if the module is successful, and no preceding modules that are flagged
+as <literal>required</literal> have failed, then PAM skips the remaining modules and
+returns success. If the module fails, PAM records an optional failure and continues
+checking the stack. </para>
+<para>The <literal>sufficient</literal> control flag is
+similar to the <literal>optional</literal> control flag, except that no additional
+module checking is done if the module succeeds. A success in a module that uses this
+flag makes the request successful if no preceding <literal>required</literal> modules
+failed. A failure in a module that uses this flag causes the request to fail if no
+other modules succeeded.</para>
+</listitem>
+</itemizedlist>
+<para>More information about these control flags is provided in the following section,
+which describes a generic <filename>/etc/pam.conf</filename> file.</para>
+</sect2>
+<sect2 xml:id="pam-29">
+<title>PAM Modules</title>
+<para>
+<indexterm xml:id="indexterm-1875">
+<primary>PAM</primary>
+<secondary>modules</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1876">
+<primary>modules</primary>
+<secondary>PAM</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1877">
+<primary>
+<filename>pam_*.so.1</filename> files</primary>
+<secondary>description</secondary>
+</indexterm>Every
+PAM module implements a specific function. When you set up PAM authentication, you
+need to specify both the module and the module type, which defines what the module
+does. More than one module type, such as <literal>auth</literal>, <literal>account</literal>, <literal>session</literal>, or <literal>password</literal>, can be implemented
+by a single module.</para>
+<para>The path of each module is determined by the instruction set that is available
+in the installed Solaris release. For 32-bit modules, the path to the modules is <filename>/usr/lib/security</filename>. For 64-bit modules, the path is <filename>/usr/lib/security/<replaceable>$ISA</replaceable>
+</filename>.  See the <olink remap="external" targetdoc="819-2252" targetptr="isalist-5">
+<citerefentry>
+<refentrytitle>isalist</refentrytitle>
+<manvolnum>
+5
+</manvolnum>
+</citerefentry>
+</olink> man
+page for more information.</para>
+<para>A complete list of the Solaris PAM modules can be found by looking in <filename>/usr/lib/security/<replaceable>$ISA</replaceable>
+</filename>. Each module has an associated
+man page which describes the module types that apply. The man page also describes
+any special options.</para>
+<para>For security reasons, these module files must be owned by <literal>root</literal> and
+must not be writable through <literal>group</literal> or <literal>other</literal> permissions.
+If the file is not owned by <literal>root</literal>, PAM does not load the module.</para>
+</sect2>
+<sect2 xml:id="ekqvf">
+<title>Examples From the Generic <filename>pam.conf</filename> File</title>
+<para>
+<indexterm xml:id="indexterm-1878">
+<primary>PAM</primary>
+<secondary>configuration file</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1879">
+<primary>configuration files</primary>
+<secondary>
+<filename>pam.conf</filename> file</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1880">
+<primary>
+<filename>/etc/pam.conf</filename> file</primary>
+<secondary>examples</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-1881">
+<primary>
+<filename>pam.conf</filename> file</primary>
+<secondary>examples</secondary>
+</indexterm>The generic <filename>/etc/pam.conf</filename> file includes the following entries:</para>
+<screen>login   auth requisite          pam_authtok_get.so.1
+login   auth required           pam_dhkeys.so.1
+login   auth required           pam_unix_cred.so.1
+login   auth required           pam_unix_auth.so.1
+login   auth required           pam_dial_auth.so.1</screen>
+<para>When the <command>login</command> command is run, authentication must succeed
+for the <literal>pam_authtok_get</literal>, <literal>pam_dhkeys</literal>, <literal>pam_auth_cred</literal>, <literal>pam_auth_unix</literal>, and <literal>pam_dial_auth</literal> modules. The <literal>requisite</literal> flag on the <literal>pam_authtok_get</literal> entry means that if this module fails, no additional module checking is
+done. However, if the module is successful, then the rest of the modules are checked.
+If authentication for any of the modules fails, then the request for authentication
+also fails.</para>
+<screen>rlogin  auth sufficient         pam_rhosts_auth.so.1
+rlogin  auth requisite          pam_authtok_get.so.1
+rlogin  auth required           pam_dhkeys.so.1
+rlogin  auth required           pam_unix_cred.so.1
+rlogin  auth required           pam_unix_auth.so.1</screen>
+<para>For the <command>rlogin</command> command, the <literal>sufficient</literal> control
+flag indicates that authentication through the <literal>pam_rhosts_auth</literal> module
+is adequate for the authentication request to succeed. No additional checking needs
+to be done. Authentication through the <literal>pam_authtok_get</literal>, <literal>pam_dhkeys</literal>, <literal>pam_auth_cred</literal>,  and <literal>pam_unix_auth</literal> modules must succeed if authentication through <literal>pam_rhosts_auth</literal> fails. A failure in the <literal>pam_rhosts_auth</literal> module does
+not prevent successful authentication, although a failure in the other modules would.
+Also, as in the entries for <command>login</command>, the <literal>requisite</literal> control
+flag on the <literal>pam_authtok_get</literal> entry means that if this module fails,
+the authentication request fails and no additional module checking is done.</para>
+<screen>other   session required        pam_unix_session.so.1</screen>
+<para>The <literal>other</literal> service name allows a default service to be set
+for any other commands that are not included in the <filename>pam.conf</filename> file.
+The <literal>other</literal> service name simplifies administration of the file, because
+many services that are using the same module can be covered by only one entry. Also,
+the <literal>other</literal> service name, when used as a “catch-all,”
+can ensure that each access is covered by one module. </para>
+<para>The entry for the <replaceable>module-path</replaceable> is “root-relative.”
+If the file name that you specify for <replaceable>module-path</replaceable> does
+not begin with a slash (<literal>/</literal>), the path <literal>/usr/lib/security/$ISA</literal> precedes the file name. A full path name must be used for modules that
+are located in other directories. The values for the <replaceable>module-options</replaceable> can
+be found in the man page for each module. </para>
+</sect2>
+</sect1>
+</chapter>

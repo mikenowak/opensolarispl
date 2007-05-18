@@ -1,0 +1,282 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Collecting System Activity Data Automatically
+(sar)</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch20.html" title="Chapter 20. Monitoring System Performance (Tasks)"><link rel="prev" href="ch20s06.html" title="Monitoring System Activities (sar)"><link rel="next" href="ch21.html" title="Chapter 21. Troubleshooting Software Problems (Overview)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Collecting System Activity Data Automatically
+(<span><strong class="command">sar</strong></span>)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch20s06.html">Prev</a> </td><th width="60%" align="center">Chapter 20. Monitoring System Performance (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch21.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="spconcepts-60676"></a>Collecting System Activity Data Automatically
+(<span><strong class="command">sar</strong></span>)</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="spconcepts-ix3903"></a>
+<a class="indexterm" name="spconcepts-ix3904"></a>
+<a class="indexterm" name="spconcepts-ix3905"></a>
+<a class="indexterm" name="spconcepts-ix3906"></a>
+<a class="indexterm" name="spconcepts-ix3907"></a>
+<a class="indexterm" name="spconcepts-ix3908"></a>
+<a class="indexterm" name="spconcepts-ix3909"></a>
+<a class="indexterm" name="spconcepts-ix3910"></a>Three commands are involved in the automatic collection of system
+activity data: <span><strong class="command">sadc</strong></span>, <span><strong class="command">sa1</strong></span>, and <span><strong class="command">sa2</strong></span>. </p>
+<p>The <span><strong class="command">sadc</strong></span> data collection utility periodically collects
+data on system activity and saves the data in a file in binary format, one
+file for each 24-hour period. You can set up the <span><strong class="command">sadc</strong></span> command
+to run periodically (usually once each hour), and whenever the system boots
+to multiuser mode. The data files are placed in the <code class="filename">/var/adm/sa</code> directory.
+Each file is named <code class="filename">sa</code>
+<em class="replaceable"><code>dd</code></em>, where <em class="replaceable"><code>dd</code></em> is the current date. The format of the command is as follows: </p>
+<pre class="screen">/usr/lib/sa/sadc [<em class="replaceable"><code>t</code></em> <em class="replaceable"><code>n</code></em>] [<em class="replaceable"><code>ofile</code></em>]</pre>
+<p>The command samples <em class="replaceable"><code>n</code></em> times with an interval
+of <em class="replaceable"><code>t</code></em> seconds, which should be greater than five
+seconds between samples. This command then writes to the binary <em class="replaceable"><code>ofile</code></em> file, or to standard output.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="spconcepts-22"></a>Running the <span><strong class="command">sadc</strong></span> Command
+When Booting</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-233"></a>
+<p>
+<a class="indexterm" name="spconcepts-ix3916"></a>
+<a class="indexterm" name="spconcepts-ix3917"></a>
+<a class="indexterm" name="spconcepts-ix3918"></a>The <span><strong class="command">sadc</strong></span> command should be run at system boot
+time to record the statistics from when the counters are reset to zero. To
+make sure that the <span><strong class="command">sadc</strong></span> command is run at boot time, the <span><strong class="command">svcadm enable system/sar:default</strong></span> command writes a record to the
+daily data file.   </p>
+<p>
+<a class="indexterm" name="spconcepts-ix3920"></a>
+<a class="indexterm" name="spconcepts-ix3921"></a>
+<a class="indexterm" name="spconcepts-ix3922"></a>
+<a class="indexterm" name="spconcepts-ix3923"></a>The command entry has the following format:</p>
+<pre class="screen">/usr/bin/su sys -c "/usr/lib/sa/sadc /var/adm/sa/sa`date +%d`"</pre>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="spconcepts-50595"></a>Running the <span><strong class="command">sadc</strong></span> Command
+Periodically With the <span><strong class="command">sa1</strong></span> Script</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="spconcepts-ix3924"></a>
+<a class="indexterm" name="spconcepts-ix3926"></a>
+<a class="indexterm" name="spconcepts-ix3928"></a>
+<a class="indexterm" name="spconcepts-ix3932"></a>To generate periodic records, you need to run the <span><strong class="command">sadc</strong></span> command
+regularly. The simplest way to do so is to uncomment the following lines in
+the <code class="filename">/var/spool/cron/crontabs/sys</code> file:   </p>
+<pre class="screen"># 0 * * * 0-6 /usr/lib/sa/sa1
+# 20,40 8-17 * * 1-5 /usr/lib/sa/sa1
+# 5 18 * * 1-5 /usr/lib/sa/sa2 -s 8:00 -e 18:01 -i 1200 -A</pre>
+<p>The <code class="filename">sys</code> <code class="filename">crontab</code> entries do
+the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The first two <code class="filename">crontab</code> entries cause a
+record to be written to the <code class="filename">/var/adm/sa/sa</code>
+<em class="replaceable"><code>dd</code></em> file
+every 20 minutes from 8 a.m. to 5 p.m., Monday through Friday, and every hour
+on the hour otherwise.</p>
+</li><li>
+<p>The third entry writes a record to the <code class="filename">/var/adm/sa/sar</code>
+<em class="replaceable"><code>dd</code></em> file hourly, Monday through Friday, and includes all <span><strong class="command">sar</strong></span> options.</p>
+</li></ul></div>
+<p>You can change these defaults to meet your needs.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="spconcepts-23"></a>Producing Reports With the <span><strong class="command">sa2</strong></span> Shell
+Script</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="spconcepts-ix3934"></a>
+<a class="indexterm" name="spconcepts-ix3935"></a>Another shell script, <span><strong class="command">sa2</strong></span>, produces reports
+rather than binary data files. The <span><strong class="command">sa2</strong></span> command invokes
+the <span><strong class="command">sar</strong></span> command and writes the ASCII output to a report
+file.   </p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="spconcepts-13828"></a>Setting Up Automatic Data Collection (<span><strong class="command">sar</strong></span>)</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="spconcepts-ix3937"></a>
+<a class="indexterm" name="spconcepts-ix3938"></a>
+<a class="indexterm" name="spconcepts-ix3939"></a>
+<a class="indexterm" name="spconcepts-ix3940"></a>
+<a class="indexterm" name="spconcepts-ix3941"></a>
+<a class="indexterm" name="spconcepts-ix3942"></a>The <span><strong class="command">sar</strong></span> command can be used either to gather
+system activity data itself or to report what has been collected in the daily
+activity files that are created by the <span><strong class="command">sadc</strong></span> command. </p>
+<p>The <span><strong class="command">sar</strong></span> command has the following formats: </p>
+<pre class="screen">
+<span><strong class="command">sar</strong></span> [<span><strong class="command">-aAbcdgkmpqruvwy</strong></span>] [<span><strong class="command">-o</strong></span> <em class="replaceable"><code>file</code></em>] <em class="replaceable"><code>t</code></em> <em class="replaceable"><code>[n</code></em>] </pre>
+<pre class="screen">
+<span><strong class="command">sar</strong></span> [<span><strong class="command">-aAbcdgkmpqruvw</strong></span>y] [<span><strong class="command">-s</strong></span> <em class="replaceable"><code>time</code></em>] [<span><strong class="command">-e</strong></span> <em class="replaceable"><code>time</code></em>] [<span><strong class="command">-i</strong></span> <em class="replaceable"><code>sec</code></em>] [<span><strong class="command">-f</strong></span> <em class="replaceable"><code>file</code></em>]</pre>
+<p>The following <span><strong class="command">sar</strong></span> command samples cumulative activity
+counters in the operating system every <em class="replaceable"><code>t</code></em> seconds, <em class="replaceable"><code>n</code></em> times. The <em class="replaceable"><code>t</code></em> should be five seconds
+or greater. Otherwise, the command itself might affect the sample. You must
+specify a time interval in which to take the samples. Otherwise, the command
+operates according to the second format. The default value of <em class="replaceable"><code>n</code></em> is
+1. The following example takes two samples separated by 10 seconds. If the <code class="option">
+o</code> option were specified, samples are saved in binary format.</p>
+<pre class="screen">$ <strong class="userinput"><code>sar -u 10 2</code></strong>
+</pre>
+<p>Other important information about the <span><strong class="command">sar</strong></span> command
+includes the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<a class="indexterm" name="spconcepts-ix3944"></a>
+<a class="indexterm" name="spconcepts-ix3950"></a>With no sampling interval or number of samples specified, the <span><strong class="command">sar</strong></span> command extracts data from a previously recorded file. This
+file is either the file specified by the <code class="option">
+f</code> option or, by
+default, the standard daily activity file, <span><strong class="command">/var/adm/sa/sa</strong></span>
+<em class="replaceable"><code>dd</code></em>, for the most recent day.   </p>
+</li><li>
+<p>
+<a class="indexterm" name="spconcepts-ix3951"></a>
+<a class="indexterm" name="spconcepts-ix3952"></a>The <code class="option">
+s</code> and <code class="option">
+e</code> options define the
+starting time and the ending time for the report. Starting and ending times
+are of the form <em class="replaceable"><code>hh</code></em>[<em class="replaceable"><code>:mm</code></em>[<em class="replaceable"><code>:ss</code></em>]], where <em class="replaceable"><code>hh</code></em>, <em class="replaceable"><code>mm</code></em>,
+and <em class="replaceable"><code>ss</code></em> represent hours, minutes, and seconds. </p>
+</li><li>
+<p>
+<a class="indexterm" name="spconcepts-ix3953"></a>The <code class="option">
+i</code> option specifies, in seconds, the intervals
+between record selection. If the <code class="option">
+i</code> option is not included,
+all intervals that are found in the daily activity file are reported. </p>
+</li></ul></div>
+<p>
+<a class="indexterm" name="spconcepts-ix4009"></a>
+<a class="indexterm" name="indexterm-234"></a>The following table lists the <span><strong class="command">sar</strong></span> options and
+their actions.  </p>
+<div class="table"><a name="spconcepts-94222"></a><p class="title"><b>Table 20.2. Options for the <span>sar</span> Command</b></p>
+
+
+<table summary="Options for the sar Command" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Option</p>
+</th><th>
+<p>Actions</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="option">
+a</code> </p>
+</td><td>
+<p>Checks file access operations</p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+b</code> </p>
+</td><td>
+<p>Checks buffer activity </p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+c</code> </p>
+</td><td>
+<p>Checks system calls </p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+d</code> </p>
+</td><td>
+<p>Checks activity for each block device</p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+g</code>
+</p>
+</td><td>
+<p>Checks page-out and memory freeing </p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+k</code> </p>
+</td><td>
+<p>Checks kernel memory allocation </p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+m</code> </p>
+</td><td>
+<p>Checks interprocess communication </p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+nv</code> </p>
+</td><td>
+<p>Checks system table status </p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+p</code> </p>
+</td><td>
+<p>Checks swap and dispatch activity </p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+q</code> </p>
+</td><td>
+<p>Checks queue activity </p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+r</code> </p>
+</td><td>
+<p>Checks unused memory </p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+u</code> </p>
+</td><td>
+<p>Checks CPU utilization</p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+w</code> </p>
+</td><td>
+<p>Checks swapping and switching volume </p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+y</code> </p>
+</td><td>
+<p>Checks terminal activity </p>
+</td></tr><tr><td>
+<p>
+<code class="option">
+A</code> </p>
+</td><td>
+<p>Reports overall system performance, which is the same as entering all
+options.</p>
+</td></tr></tbody></table>
+</div>
+<p>Using no option is equivalent to calling the <span><strong class="command">sar</strong></span> command
+with the <code class="option">
+u</code> option.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2253470"></a></h3></div></div></div>
+
+<div class="task"><a name="spmonitor-96096"></a><p class="title"><b>How to Set Up Automatic Data Collection</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li><a name="spmonitor-step-24"></a>
+<p>Run the <span><strong class="command">svcadm enable system/sar:default</strong></span> command.</p>
+<p>This version of the <span><strong class="command">sadc</strong></span> command
+writes a special record that marks the time when the counters are reset to
+zero (boot time).</p>
+</li><li><a name="spmonitor-step-25"></a>
+<p>Edit the <code class="filename">/var/spool/cron/crontabs/sys</code> <code class="filename">crontab</code> file.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Do not edit a <code class="filename">crontab</code> file directly. Instead, use the <span><strong class="command">crontab</strong></span> <code class="option">
+e</code> command
+to make changes to an existing <code class="filename">crontab</code> file.</p>
+</div>
+<pre class="screen"># <strong class="userinput"><code>crontab -e sys</code></strong>
+</pre>
+<p>Uncomment the following lines:</p>
+<pre class="screen">0 * * * 0-6 /usr/lib/sa/sa1
+20,40 8-17 * * 1-5 /usr/lib/sa/sa1
+5 18 * * 1-5 /usr/lib/sa/sa2 -s 8:00 -e 18:01 -i 1200 -A</pre>
+<p>For more information,
+see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">crontab</span>
+(
+1
+)
+</span>
+</span> man
+page.</p>
+</li></ol></div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch20s06.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch20.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch21.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Monitoring System Activities (<span><strong class="command">sar</strong></span>) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 21. Troubleshooting Software Problems (Overview)</td></tr></table></div></body></html>

@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>D Program Structure - Solaris Dynamic Tracing Guide</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2005-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >Solaris Dynamic Tracing Guide<?GenHTML /ReferencePage>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p11.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p13.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="chp-prog"></a>Chapter&nbsp;4<h3>D Program Structure</h3><p>D programs consist of a set of clauses that describe probes to enable and predicates and actions to bind to these probes. D programs can also contain declarations of variables, as described in <a href="p10.html">Chapter&nbsp;3, Variables</a>, and definitions of new types, described in <a href="p18.html">Chapter&nbsp;8, Type and Constant Definitions</a>. This chapter formally describes the overall structure of a D program and features for constructing probe descriptions that match more than one probe. We'll also discuss the use of the C preprocessor, <tt>cpp</tt>, with D programs.</p>
+<a name="chp-prog-1"></a><h3>Probe Clauses and Declarations</h3>
+<p><a name="indexterm-84"></a>As shown in our examples so far, a D program source file consists of one or more probe clauses that describe the instrumentation to be enabled by DTrace. Each probe clause has the general form:</p>
+<i>probe descriptions</i>
+<tt>/</tt> <i>predicate</i> <tt>/</tt>
+<tt>{</tt>
+	<i>action statements</i>
+<tt>}</tt><p><a name="indexterm-85"></a>The predicate and list of action statements may be omitted. Any directives found outside probe clauses are referred to as declarations. Declarations may only be used outside of probe clauses. No declarations inside of the enclosing <tt>{ }</tt> are permitted and declarations may not be interspersed between the elements of the probe clause shown above. Whitespace can be used to separate any D program elements and to indent action statements.</p>
+<p><a name="indexterm-86"></a>Declarations can be used to declare D variables and external C symbols as discussed in <a href="p10.html">Chapter&nbsp;3, Variables</a>, or to define new types for use in D, as described in <a href="p18.html">Chapter&nbsp;8, Type and Constant Definitions</a>. Special D compiler directives called pragmas may also appear anywhere in a D program, including outside of probe clauses. D pragmas are specified on lines beginning with a <tt>#</tt> character. D pragmas are used, for example, to set run-time DTrace options; see <a href="p35.html">Chapter&nbsp;16, Options and Tunables</a> for details.</p>
+<a name="chp-prog-2"></a><h3>Probe Descriptions</h3>
+<p><a name="indexterm-87"></a>Every D program clause begins with a list of one or more probe descriptions, each taking the usual form:</p>
+<p><i>provider</i>:<i>module</i>:<i>function</i>:<i>name</i></p>
+<p>If one or more fields of the probe description are omitted, the specified fields are interpreted from right to left by the D compiler. For example, the probe description <tt>foo:bar</tt> would match a probe with function <tt>foo</tt> and name <tt>bar</tt> regardless of the value of the probe's provider and module fields. Therefore, a probe description is really more accurately viewed as a pattern that can be used to match one or more probes based on their names.</p>
+<p><a name="indexterm-88"></a>You should write your D probe descriptions specifying all four field delimiters so that you can specify the desired provider on the left-hand side. If you don't specify the provider, you might obtain unexpected results if multiple providers publish probes with the same name. Similarly, future versions of DTrace might include new providers whose probes unintentionally match your partially specified probe descriptions. You can specify a provider but match any of its probes by leaving any of the module, function, and name fields blank. For example, the description <tt>syscall:::</tt> can be used to match every probe published by the DTrace <tt>syscall</tt> provider.</p>
+<p><a name="indexterm-89"></a>Probe descriptions also support a pattern matching syntax similar to the shell globbing pattern matching syntax described in <tt>sh</tt>(1). Before matching a probe to a description, DTrace scans each description field for the characters <tt>*</tt>, <tt>?</tt>, and <tt>[</tt>. If one of these characters appears in a probe description field and is not preceded by a <tt>\</tt>, the field is regarded as a pattern. The description pattern must match the entire corresponding field of a given probe. The complete probe description must match on every field in order to successfully match and enable a probe. A probe description field that is not a pattern must exactly match the corresponding field of the probe. A description field that is empty matches any probe.</p>
+<p>The special characters in the following table are recognized in probe name patterns:</p>
+<a name="tbl-glob"></a>Table 4-1 Probe Name Pattern Matching Characters<table><tr><th valign="top"><p>Symbol</p>
+</th><th valign="top"><p>Description</p>
+</th></tr>
+<tr><td><p><tt>*</tt></p>
+</td><td><p>Matches any string, including the null string.</p>
+</td></tr>
+<tr><td><p><tt>?</tt></p>
+</td><td><p>Matches any single character.</p>
+</td></tr>
+<tr><td><p><tt>[ ... ]</tt></p>
+</td><td><p>Matches any one of the enclosed characters. A pair of characters separated by <tt>-</tt> matches any character between the pair, inclusive. If the first character after the <tt>[</tt> is <tt>!</tt>, any character not enclosed in the set is matched.</p>
+</td></tr>
+<tr><td><p><tt>\</tt></p>
+</td><td><p>Interpret the next character as itself, without any special meaning.</p>
+</td></tr>
+</table><p>Pattern match characters can be used in any or all of the four fields of your probe descriptions. You can also use patterns to list matching probes by using the patterns on the command line with <tt>dtrace</tt> <tt>-l</tt>. For example, the command <tt>dtrace -l -f kmem_*</tt> lists all DTrace probes in functions whose names begin with the prefix <tt>kmem_</tt>.</p>
+<p>If you want to specify the same predicate and actions for more than one probe description or description pattern, you can place the descriptions in a comma-separated list. For example, the following D program would trace a timestamp each time probes associated with entry to system calls containing the words &ldquo;<tt>lwp</tt>&rdquo; or &ldquo;<tt>sock</tt>&rdquo; fire:</p>
+<pre>syscall::*lwp*:entry, syscall::*sock*:entry
+{
+	trace(timestamp);
+}</pre><p>A probe description may also specify a probe using its integer probe ID. For example, the clause:</p>
+<pre>12345
+{
+	trace(timestamp);
+}</pre><p>could be used to enable probe ID 12345, as reported by <tt>dtrace -l -i 12345</tt>. You should always write your D programs using human-readable probe descriptions. Integer probe IDs are not guaranteed to remain consistent as DTrace provider kernel modules are loaded and unloaded or following a reboot.</p>
+<a name="chp-prog-pred"></a><h3>Predicates</h3>
+<p><a name="indexterm-90"></a>Predicates are expressions enclosed in slashes <tt>/ /</tt> that are evaluated at probe firing time to determine whether the associated actions should be executed. Predicates are the primary conditional construct used for building more complex control flow in a D program. You can omit the predicate section of the probe clause entirely for any probe, in which case the actions are always executed when the probe fires.</p>
+<p>Predicate expressions can use any of the previously described D operators and may refer to any D data objects such as variables and constants. The predicate expression must evaluate to a value of integer or pointer type so that it can be considered as true or false. As with all D expressions, a zero value is interpreted as false and any non-zero value is interpreted as true.</p>
+<a name="chp-prog-4"></a><h3>Actions</h3>
+<p><a name="indexterm-91"></a>Probe actions are described by a list of statements separated by semicolons (<tt>;</tt>) and enclosed in braces <tt>{ }</tt>. If you only want to note that a particular probe fired on a particular CPU without tracing any data or performing any additional actions, you can specify an empty set of braces with no statements inside.</p>
+<a name="chp-prog-5"></a><h3>Use of the C Preprocessor</h3>
+<p><a name="indexterm-92"></a><a name="indexterm-93"></a>The C programming language used for defining Solaris system interfaces includes a preprocessor that performs a set of initial steps in C program compilation. The C preprocessor is commonly used to define macro substitutions where one token in a C program is replaced with another predefined set of tokens, or to include copies of system header files. You can use the C preprocessor in conjunction with your D programs by specifying the <tt>dtrace</tt> <tt>-C</tt> option. This option causes <tt>dtrace</tt> to first execute the <tt>cpp</tt>(1) preprocessor on your program source file and then pass the results to the D compiler. The C preprocessor is described in more detail in <i>The C Programming Language</i>.</p>
+<p>The D compiler automatically loads the set of C type descriptions associated with the operating system implementation, but you can use the preprocessor to include other type definitions such as types used in your own C programs. You can also use the preprocessor to perform other tasks such as creating macros that expand to chunks of D code and other program elements. If you use the preprocessor with your D program, you may only include files that contain valid D declarations. Typical C header files include only external declarations of types and symbols, which will be correctly interpreted by the D compiler. The D compiler cannot parse C header files that include additional program elements like C function source code and will produce an appropriate error message.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p11.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p13.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

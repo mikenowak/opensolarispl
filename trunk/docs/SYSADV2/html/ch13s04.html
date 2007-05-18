@@ -1,0 +1,185 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Checking the Size of Directories</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch13.html" title="Chapter 13. Managing Disk Use (Tasks)"><link rel="prev" href="ch13s03.html" title="Checking the Size of Files"><link rel="next" href="ch13s05.html" title="Finding and Removing Old or Inactive Files"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Checking the Size of Directories</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch13s03.html">Prev</a> </td><th width="60%" align="center">Chapter 13. Managing Disk Use (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch13s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sysresdiskuse-13"></a>Checking the Size of Directories</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="sysresdiskuse-ix2238"></a>
+<a class="indexterm" name="sysresdiskuse-ix2239"></a>
+<a class="indexterm" name="sysresdiskuse-ix2240"></a>
+<a class="indexterm" name="sysresdiskuse-ix2241"></a>
+<a class="indexterm" name="sysresdiskuse-ix2242"></a>
+<a class="indexterm" name="sysresdiskuse-ix2243"></a>
+<a class="indexterm" name="sysresdiskuse-ix2244"></a>
+<a class="indexterm" name="sysresdiskuse-ix2245"></a>
+<a class="indexterm" name="sysresdiskuse-ix2246"></a>
+<a class="indexterm" name="sysresdiskuse-ix2247"></a>
+<a class="indexterm" name="sysresdiskuse-ix2248"></a>You can display the size of directories by using the <span><strong class="command">du</strong></span> command
+and options. Additionally, you can find the amount of disk space used by user
+accounts on local UFS file systems by using the <span><strong class="command">quot</strong></span> command.
+For more information about these commands, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">du</span>
+(
+1
+)
+</span>
+</span> and <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">quot</span>
+(
+1M
+)
+</span>
+</span> man
+pages.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2190067"></a></h3></div></div></div>
+
+<div class="task"><a name="enmwv"></a><p class="title"><b>How to Display the Size of Directories, Subdirectories,
+and Files</b></p><div class="procedure"><ul><li>
+<p>Display the size of one or more directories, subdirectories, and
+files by using the <span><strong class="command">du</strong></span> command. Sizes are displayed in 512-byte
+blocks.</p>
+<pre class="screen">$ <strong class="userinput"><code>du</code></strong> [<strong class="userinput"><code>-as</code></strong>] [<em class="replaceable"><code>directory ...</code></em>]</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<span><strong class="command">du</strong></span>
+</span></dt><dd>
+<p>Displays the size of each directory that you specify, including
+each subdirectory beneath it.</p>
+</dd><dt><span class="term">
+<code class="option">
+a</code>
+</span></dt><dd>
+<p>Displays the size of each file and subdirectory, and the total
+number of blocks that are contained in the specified directory.</p>
+</dd><dt><span class="term">
+<code class="option">
+s</code>
+</span></dt><dd>
+<p>Displays the total number of blocks that are contained in
+the specified directory.</p>
+</dd><dt><span class="term">
+<code class="option">
+h</code>
+</span></dt><dd>
+<p>Displays the size of each directory in 1024&#8211;byte blocks.</p>
+</dd><dt><span class="term">
+<code class="option">
+H</code>
+</span></dt><dd>
+<p>Displays the size of each directory in 1000&#8211;byte blocks.</p>
+</dd><dt><span class="term">[<em class="replaceable"><code>directory ...</code></em>]</span></dt><dd>
+<p>Identifies one or more directories that you want to check.
+Separate multiple directories in the command-line syntax with spaces.</p>
+</dd></dl></div>
+</li></ul></div><div class="example"><a name="sysresdiskuse-14"></a><p class="title"><b>Example 13.8. Displaying the Size of Directories, Subdirectories, and Files</b></p>
+
+
+<p>The following example shows the sizes of two directories.   </p>
+<pre class="screen">$ <strong class="userinput"><code>du -s /var/adm /var/spool/lp</code></strong>
+130     /var/adm
+40      /var/spool/lp</pre>
+<p>The following example shows the sizes of two directories and includes
+the sizes of all the subdirectories and files that are contained within each
+directory. The total number of blocks that are contained in each directory
+is also displayed.</p>
+<pre class="screen">$ <strong class="userinput"><code>du /var/adm /var/spool/lp</code></strong>
+2       /var/adm/exacct
+2       /var/adm/log
+2       /var/adm/streams
+2       /var/adm/acct/fiscal
+2       /var/adm/acct/nite
+2       /var/adm/acct/sum
+8       /var/adm/acct
+2       /var/adm/sa
+2       /var/adm/sm.bin
+258     /var/adm
+4       /var/spool/lp/admins
+2       /var/spool/lp/requests/printing.Eng.Sun.COM
+4       /var/spool/lp/requests
+4       /var/spool/lp/system
+2       /var/spool/lp/fifos
+24      /var/spool/lp</pre>
+<p>The following example shows directory sizes in 1024&#8211;byte blocks.</p>
+<pre class="screen">$ <strong class="userinput"><code>du -h /usr/share/audio</code></strong>
+ 796K   /usr/share/audio/samples/au
+ 797K   /usr/share/audio/samples
+ 798K   /usr/share/audio</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2190334"></a></h3></div></div></div>
+
+<div class="task"><a name="sysresdiskuse-87953"></a><p class="title"><b>How to Display the User Ownership of
+Local UFS File Systems</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li><a name="sysresdiskuse-step-17"></a>
+<p>Display users, directories, or file
+systems, and the number of 1024-byte blocks used.</p>
+<pre class="screen"># <strong class="userinput"><code>quot</code></strong> [<strong class="userinput"><code>-a</code></strong>] [<em class="replaceable"><code>filesystem ...</code></em>]</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+a</code>
+</span></dt><dd>
+<p>Lists all users of each mounted UFS file system and the number
+of 1024-byte blocks used.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>filesystem</code></em>
+</span></dt><dd>
+<p>Identifies a UFS file system. Users and the number of blocks
+used are displayed for that file system.</p>
+</dd></dl></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The <span><strong class="command">quot</strong></span> command works only on local UFS file
+systems.</p>
+</div>
+</li></ol></div><div class="example"><a name="emjen"></a><p class="title"><b>Example 13.9. Displaying the User Ownership of Local UFS File Systems</b></p>
+
+
+<p>
+<a class="indexterm" name="sysresdiskuse-ix2253"></a>
+<a class="indexterm" name="sysresdiskuse-ix2254"></a>
+<a class="indexterm" name="sysresdiskuse-ix2255"></a>
+<a class="indexterm" name="sysresdiskuse-ix2256"></a>
+<a class="indexterm" name="sysresdiskuse-ix2257"></a>
+<a class="indexterm" name="sysresdiskuse-ix2258"></a>
+<a class="indexterm" name="sysresdiskuse-ix2259"></a>
+<a class="indexterm" name="sysresdiskuse-ix2260"></a>
+<a class="indexterm" name="sysresdiskuse-ix2261"></a>
+<a class="indexterm" name="sysresdiskuse-ix2262"></a>
+<a class="indexterm" name="sysresdiskuse-ix2263"></a>
+<a class="indexterm" name="sysresdiskuse-ix2266"></a>
+<a class="indexterm" name="sysresdiskuse-ix2267"></a>In the following example, users of the root (<code class="filename">/</code>)
+file system are displayed. In the subsequent example, users of all mounted
+UFS file systems are displayed.</p>
+<pre class="screen"># <strong class="userinput"><code>quot /</code></strong>
+/dev/rdsk/c0t0d0s0:
+43340   root    
+ 3142   rimmer   
+   47   uucp    
+   35   lp      
+   30   adm     
+    4   bin     
+    4   daemon  </pre>
+<pre class="screen"># <strong class="userinput"><code>quot -a</code></strong>
+/dev/rdsk/c0t0d0s0 (/):
+43340   root    
+ 3150   rimmer  
+   47   uucp    
+   35   lp      
+   30   adm     
+    4   bin     
+    4   daemon  
+/dev/rdsk/c0t0d0s6 (/usr):
+460651  root    
+206632  bin     
+  791   uucp    
+   46   lp      
+    4   daemon  
+    1   adm     
+/dev/rdsk/c0t0d0s7 (/export/home):
+    9   root</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch13s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch13.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch13s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Checking the Size of Files </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Finding and Removing Old or Inactive Files</td></tr></table></div></body></html>

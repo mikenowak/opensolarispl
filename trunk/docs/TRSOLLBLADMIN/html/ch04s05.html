@@ -1,0 +1,242 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Specifying Channels</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Trusted Extensions Label Administration"><link rel="up" href="ch04.html" title="Chapter 4. Labeling Printer Output (Tasks)"><link rel="prev" href="ch04s04.html" title="Specifying Printer Banners"><link rel="next" href="ch04s06.html" title="Configuring Security Text on Print Jobs (Task
+Map)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Specifying Channels</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s04.html">Prev</a> </td><th width="60%" align="center">Chapter 4. Labeling Printer Output (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch04s06.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printl-4"></a>Specifying Channels</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-228"></a>
+<a class="indexterm" name="indexterm-229"></a>The <code class="literal">CHANNELS</code> section in the <code class="filename">label_encodings</code> file defines the lines that can appear below the <code class="literal">PRINTER
+BANNER</code> lines on the lower third of the banner and trailer pages.
+The <code class="literal">CHANNELS</code> section can be specified to print a string
+whenever the label of a print job contains a certain compartment.</p>
+<p>Commercial sites can customize the text in the <code class="literal">CHANNELS</code> section
+with any compartment bit. <span class="olink">Figure 4&#8211;7</span> shows
+a <code class="literal">CHANNELS</code> warning on a print job's banner page at a commercial
+site. </p>
+<div class="figure"><a name="printl-fig-16"></a><p class="title"><b>Figure 4.7. Commercial Use of <code class="literal">CHANNELS</code> on
+Banner Page</b></p>
+
+
+<div class="mediaobject"><img src="../figures/PrintBanrBotmChannels.gif" alt="Commercial Use of CHANNELS on Banner Page" longdesc="ld-id1630546.html"><div class="longdesc-link" align="right"><br clear="all"><span class="longdesc-link">[<a href="ld-id1630546.html" target="longdesc">D</a>]</span></div></div>
+</div>
+<p>In U.S. government installations, the channels lines of the banner page
+conventionally show the warnings that are associated with the <span class="emphasis"><em>compartments</em></span> of the job's label. <span class="olink">Figure 4&#8211;8</span> shows a typical <code class="literal">CHANNELS</code> warning on a print job's
+banner page at a government installation: <code class="literal">HANDLE VIA (CH B)/(CH A)
+CHANNELS JOINTLY</code>.</p>
+<p>The following discussion shows how the <code class="literal">CHANNELS</code> string <code class="literal">HANDLE VIA (CH B)/(CH A) CHANNELS JOINTLY</code> is specified for a job
+whose label includes the compartment words <code class="literal">A</code> and <code class="literal">B</code>.
+For the purpose of the example, only <code class="literal">(CH A)</code> and <code class="literal">(CH
+B)</code> apply. However, since the compartment bit for a third channel <code class="literal">(CH C)</code> is included in their definitions, <code class="literal">(CH C)</code> is
+also mentioned in this discussion.</p>
+<div class="itemizedlist"><p>
+<a class="indexterm" name="indexterm-230"></a>The example illustrates these features:</p><ul type="disc"><li>
+<p>Two compartment bits are associated individually with one
+set of words and together with another set of words</p>
+</li><li>
+<p>A third compartment bit is included with the encodings for
+the first two bits</p>
+</li><li>
+<p>One suffix is defined for whenever <span class="emphasis"><em>any combination
+of one or more</em></span> channel words is in the label</p>
+</li><li>
+<p>Another suffix is defined for when a <span class="emphasis"><em>single</em></span> channel
+word is in the label</p>
+</li><li>
+<p>A third suffix is defined for when more than one channel word
+is in the print job's label</p>
+</li></ul></div>
+<div class="figure"><a name="printl-fig-17"></a><p class="title"><b>Figure 4.8. U.S. Government Use of <code class="literal">CHANNELS</code> Specification
+on Banner Page</b></p>
+
+
+<div class="mediaobject"><img src="../figures/la3-15.gif" alt="U.S. Government Use of CHANNELS Specification on Banner Page" longdesc="ld-id1630736.html"><div class="longdesc-link" align="right"><br clear="all"><span class="longdesc-link">[<a href="ld-id1630736.html" target="longdesc">D</a>]</span></div></div>
+</div>
+<p>
+<a class="indexterm" name="indexterm-231"></a>
+<a class="indexterm" name="indexterm-232"></a>As shown in the following example, two suffixes <code class="literal">CHANNELS
+JOINTLY</code> and <code class="literal">CHANNELS ONLY</code> and a prefix <code class="literal">HANDLE
+VIA</code> are defined.</p>
+<div class="example"><a name="printl-ex-18"></a><p class="title"><b>Example 4.3. Suffixes and Prefixes in the <code class="literal">CHANNELS</code> Section
+in a Government <code class="filename">label_encodings</code> File</b></p>
+
+
+<pre class="screen">CHANNELS:
+
+WORDS:
+name= CHANNELS JOINTLY;         suffix;
+name= CHANNELS ONLY;            suffix;
+name= HANDLE VIA;               prefix;</pre>
+</div>
+<div class="itemizedlist"><p>
+<a class="indexterm" name="indexterm-233"></a>
+<a class="indexterm" name="indexterm-234"></a>After the prefixes and suffixes are defined as in <span class="olink">Example 4&#8211;3</span>, the channel names <code class="literal">(CH
+A)</code>, <code class="literal">(CH B)</code>, and <code class="literal">(CH C)</code> are
+specified in two different ways to achieve the following results:</p><ul type="disc"><li>
+<p>Whenever any one of the three compartment bits associated
+with channels is in the label, the <code class="literal">HANDLE VIA:</code> prefix is
+printed.</p>
+</li><li>
+<p>When only one of the three compartment bits associated with
+channels is in the label, the <code class="literal">CHANNELS ONLY</code> suffix is printed
+after the channel name <code class="literal">(CH A)</code>, <code class="literal">(CH B)</code>,
+or <code class="literal">(CH C)</code>.</p>
+</li><li>
+<p>When more than one compartment bit that is associated with
+channels is in the label, the prefix is followed by the channel names separated
+by a slash (/). This channel name is then followed by the <code class="literal">CHANNELS
+JOINTLY</code> suffix.</p>
+<p>The first three lines that define <code class="literal">CHANNELS</code> words in <span class="olink">Example 4&#8211;3</span> are
+repeated in <span class="olink">Example 4&#8211;4</span>. The
+second examples focuses on how <code class="literal">(CH A)</code>, <code class="literal">(CH B)</code>,
+and <code class="literal">(CH C)</code> are encoded to appear with the <code class="literal">CHANNELS
+ONLY</code> suffix:</p>
+</li><li>
+<p>
+<code class="literal">(CH A)</code> is encoded with bit 0 on and bits
+1 and 6 explicitly set to off using the tilde (~): 0 ~1 ~6</p>
+</li><li>
+<p>
+<code class="literal">(CH B)</code> is encoded with bit 1 on and bits
+0 and 6 explicitly set to off using the tilde (~): ~0 1 ~6</p>
+</li><li>
+<p>
+<code class="literal">(CH C)</code> is encoded with bit 6 on and bits
+0 and 1 explicitly set to off using the tilde (~): ~0 ~1 6</p>
+</li></ul></div>
+<div class="example"><a name="printl-ex-19"></a><p class="title"><b>Example 4.4. 
+<code class="literal">CHANNELS ONLY</code> Suffix
+That Appears Alone with Individual Channels</b></p>
+
+
+<pre class="screen">CHANNELS:
+
+WORDS:
+
+name= CHANNELS JOINTLY;         suffix;
+name= CHANNELS ONLY;            suffix;
+name= HANDLE VIA;               prefix;
+name= (CH A);   prefix= HANDLE VIA; suffix= CHANNELS ONLY;
+compartments= 0 ~1 ~6;
+name= (CH B);   prefix= HANDLE VIA; suffix= CHANNELS ONLY;
+compartments= ~0 1 ~6;
+name= (CH C);   prefix= HANDLE VIA; suffix= CHANNELS ONLY;
+compartments= ~0 ~1 6;</pre>
+</div>
+<div class="itemizedlist"><p>The first three lines of channel name definitions in the <code class="literal">CHANNELS</code> section
+that is shown in <span class="olink">Example 4&#8211;4</span> have
+the following results:</p><ul type="disc"><li>
+<p>The <code class="literal">HANDLE VIA</code> prefix and the <code class="literal">CHANNELS
+ONLY</code> suffix are printed when <span class="emphasis"><em>one</em></span> of the words
+that is associated with bits 0, 1, and 6 elsewhere in the <code class="filename">label_encodings</code> is in the job's label</p>
+</li><li>
+<div class="itemizedlist"><p>The <code class="literal">HANDLE VIA</code> prefix and <code class="literal">CHANNELS ONLY</code> suffix
+are printed:</p><ul type="circle"><li>
+<p>With <code class="literal">(CH A)</code> when compartment bit 0 is turned
+on in the label and compartment bits 1 and 6 are off</p>
+</li><li>
+<p>With <code class="literal">(CH B)</code> when compartment bit 1 is turned
+on in the label and compartment bits 0 and 6 are off</p>
+</li><li>
+<p>With (CH C) when compartment bit 6 is turned on in the label
+and compartment bits 0 and 1 are off</p>
+<p>The last three lines that
+define <code class="literal">CHANNELS WORDS</code> in <span class="olink">Example 4&#8211;4</span> are repeated in <span class="olink">Example 4&#8211;5</span>. The repetition shows how <code class="literal">(CH A)</code>, <code class="literal">(CH
+B)</code>, and <code class="literal">(CH C)</code> are encoded to appear with the <code class="literal">CHANNELS JOINTLY</code> suffix when more than one of the words associated
+with bits 0, 1, and 6 is in the job's label. A slash is inserted between the
+channels names when more than one of the bits defined in the channels section
+is in the job's label.</p>
+</li></ul></div>
+</li></ul></div>
+<div class="example"><a name="printl-ex-20"></a><p class="title"><b>Example 4.5. Encodings for More Than One Channel in <code class="literal">CHANNELS</code> Section in Government Encodings File</b></p>
+
+
+<pre class="screen">name= (CH A);   prefix= HANDLE VIA; suffix= CHANNELS ONLY; compartments= 0 ~1 ~6;
+name= (CH B);   prefix= HANDLE VIA; suffix= CHANNELS ONLY; compartments= ~0 1 ~6;
+name= (CH C);   prefix= HANDLE VIA; suffix= CHANNELS ONLY; compartments= ~0 ~1 6;
+
+name= (CH C);   prefix= HANDLE VIA; suffix= CHANNELS JOINTLY; compartments= 6;
+name= (CH B);   prefix= HANDLE VIA; suffix= CHANNELS JOINTLY; compartments= 1;
+name= (CH A);   prefix= HANDLE VIA; suffix= CHANNELS JOINTLY; compartments= 0;</pre>
+</div>
+<p>The <code class="literal">CHANNELS</code> specification in <span class="olink">Example 4&#8211;5</span> illustrates the importance
+of order when compartments are being encoded. The first three lines handle
+the cases when only one of the channels compartment bits is turned on, so
+the last three lines can handle cases when more than one bit is turned. Therefore,
+none of the last three lines need to have any compartment bits explicitly
+set to 0. The result of these last three lines is that the suffix <code class="literal">CHANNELS
+JOINTLY</code> is always printed when any of two or more of the three compartment
+words that are associated with the channels is in the label.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="literal">(CH C)</code> is printed with <code class="literal">CHANNELS
+JOINTLY</code> when bit 6 is turned on, and either of bit 0 or 1 or both
+are also turned on.</p>
+</li><li>
+<p>
+<code class="literal">(CH B)</code> is printed with <code class="literal">CHANNELS
+JOINTLY</code> when bit 1 is turned on, and either of bit 0 or 6 or both
+are also turned on.</p>
+</li><li>
+<p>
+<code class="literal">(CH A)</code> is printed with <code class="literal">CHANNELS
+JOINTLY</code> when compartment 0 is turned on, and either of bit 6 or
+1 or both are also turned on.</p>
+</li></ul></div>
+<p>The following example shows that compartment bit 6 is associated with
+the label word <code class="literal">CC</code>.</p>
+<div class="example"><a name="printl-ex-21"></a><p class="title"><b>Example 4.6. Label <code class="literal">WORDS</code> Associated
+With Compartment Bit 6</b></p>
+
+
+<pre class="screen">SENSITIVITY LABELS:
+
+
+WORDS:
+  .
+  .
+  .
+name= CC;                       minclass= TS; compartments= 6;</pre>
+</div>
+<p>
+<span class="olink">Example 4&#8211;7</span> shows that
+compartment bit 1 is associated with the sensitivity label word <code class="literal">B</code>.</p>
+<div class="example"><a name="printl-ex-22"></a><p class="title"><b>Example 4.7. Label <code class="literal">WORDS</code> Associated
+With Compartment Bit 1</b></p>
+
+
+<pre class="screen">SENSITIVITY LABELS:
+
+WORDS:
+  .  .  .
+name= B;                        minclass=  C; compartments= 1;</pre>
+</div>
+<p>
+<span class="olink">Example 4&#8211;8</span> shows that
+compartment bit 0 is associated with sensitivity label word <code class="literal">A</code>.</p>
+<div class="example"><a name="printl-ex-23"></a><p class="title"><b>Example 4.8. Label <code class="literal">WORDS</code> Associated
+With Compartment Bit 0</b></p>
+
+
+<pre class="screen">SENSITIVITY LABELS:
+
+WORDS:
+   .   .   .
+name= A;                        minclass=  C; compartments= 0;</pre>
+</div>
+<div class="itemizedlist"><p>To sum up, the channels line prints as <code class="literal">HANDLE VIA (CH B)/(CH
+A) CHANNELS JOINTLY</code> because of the following specifications:</p><ul type="disc"><li>
+<p>
+<code class="literal">HANDLE VIA</code> is defined to always appear
+with any <code class="literal">CHANNELS</code> word</p>
+</li><li>
+<p>The sensitivity label has two access-related words, <code class="literal">A</code> and <code class="literal">B</code>, that are associated with two compartment bits, 0 and 1.</p>
+</li><li>
+<p>Because two of the bits that are defined for <code class="literal">CHANNELS</code> words
+appear in the job's label, the <code class="literal">CHANNELS WORDS (CH A)</code> and <code class="literal">(CH B)</code> are followed by <code class="literal">CHANNELS JOINTLY</code>.</p>
+<p>
+<a class="indexterm" name="indexterm-235"></a>
+<a class="indexterm" name="indexterm-236"></a>Any string that should print before the channel name is specified
+as a <span class="emphasis"><em>prefix</em></span>. Any string that should print after the channel
+name is specified as a <span class="emphasis"><em>suffix</em></span>.</p>
+</li></ul></div>
+<p>For a sample <code class="literal">CHANNELS</code> planner, see <span class="olink">Planning the Channels in a Worksheet</span>.</p>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04s04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04s06.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Specifying Printer Banners </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Configuring Security Text on Print Jobs (Task
+Map)</td></tr></table></div></body></html>

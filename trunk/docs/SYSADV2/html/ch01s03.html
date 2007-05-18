@@ -1,0 +1,238 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Printing in the Solaris Operating System</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch01.html" title="Chapter 1. Managing Printing Services (Overview)"><link rel="prev" href="ch01s02.html" title="Where to Find Printer Tasks"><link rel="next" href="ch01s04.html" title="The LP Print Service"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Printing in the Solaris Operating System</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01s02.html">Prev</a> </td><th width="60%" align="center">Chapter 1. Managing Printing Services (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch01s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printconcept-40"></a>Printing in the Solaris Operating System</h2></div></div></div>
+
+<p>The Solaris printing software provides an environment for setting up
+and managing client access to printers on a network.</p>
+<p>The Solaris printing software contains these tools:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Solaris Print Manager &#8211; A graphical user interface (GUI)
+that provides the ability to manage printing configuration on a local system
+or in a name service.</p>
+</li><li>
+<p>The LP print service commands &#8211; A command-line interface
+(CLI) that is used to set up and manage printers on a local system or in a
+name service. These commands also provide functionality that extend beyond
+the other print management tools.</p>
+</li></ul></div>
+<p>Even if you do use Solaris Print Manager to set up printing, you will
+have to use some of the <span><strong class="command">lp</strong></span> print service commands to completely
+manage printing on the Solaris Operating System. For more information, see <span class="olink">Chapter 4, Administering Printers (Tasks)</span>.</p>
+<p>The limitations of Solaris print software include the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>No support for print servers defined as <code class="literal">s5</code> (the
+System V print protocol) in previous Solaris releases</p>
+</li><li>
+<p>No print filtering on print clients</p>
+</li></ul></div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printconcept-86"></a>Solaris Print Manager</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-3"></a>
+<p>Solaris Print Manager is a Java technology-based GUI that enables you
+to manage local and remote printer configuration. This tool can be used in
+the following name service environments: LDAP, NIS, NIS+,  and files. You must be logged in as superuser or assume an equivalent
+role to use this tool.</p>
+<p>Solaris Printer Manager  centralizes printer information when
+used in conjunction with a name service. Using a name service for storing
+printer configuration information is desirable because a name service makes
+printer information available to all systems on the network. This method provides
+easier  printing administration.</p>
+<p>Solaris Print Manager recognizes existing printer information on the
+printer servers, print clients, and in the name service databases.  No conversion
+tasks are required to use Solaris Print Manager as long as the print clients
+are running either the  Solaris 2.6, 7,
+8, 9, 10, or Solaris Express  releases.</p>
+<p>The Solaris Print Manager package is <code class="literal">SUNWppm</code>.</p>
+<p>For step-by-step instructions on setting up new printers with Solaris
+Print Manager, see <span class="olink">Chapter 3, Setting Up Printers (Tasks)</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printconcept-85"></a>Printing Support in the Name Service Switch</h3></div></div></div>
+
+<p>The <code class="literal">printers</code> database in <code class="filename">/etc/nsswitch.conf</code>,
+the name service switch file, provides centralized printer configuration information
+to print clients on the network. </p>
+<p>By including the <code class="literal">printers</code> database and corresponding
+sources of information in the name service switch file, print clients automatically
+have access to printer configuration information without having to add it
+to their own systems.</p>
+<p>The default printers entry in the <code class="filename">/etc/nsswitch.conf</code> file
+for files, LDAP, NIS, and NIS+ environments are described in the following
+table. The <code class="literal">nisplus</code> keyword represents the <code class="filename">printers.org_dir</code> table. </p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Name Service Type</p>
+</th><th>
+<p>Default <code class="literal">printers</code> Entry</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">files</code>
+</p>
+</td><td>
+<p>
+<code class="literal">printers:	user files</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">ldap</code>
+</p>
+</td><td>
+<p>
+<code class="literal">printers:	user files ldap</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">nis</code>
+</p>
+</td><td>
+<p>
+<code class="literal">printers:	user files nis</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">nis+</code>
+</p>
+</td><td>
+<p>
+<code class="literal">printers:	user nisplus files</code>
+</p>
+</td></tr></tbody></table>
+</div>
+<p>For example, if your name service is NIS, printer configuration information
+on print clients is searched for in the following sources in this order:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="literal">user</code> &#8211; Represents the user's <code class="filename">$HOME/.printers</code> file</p>
+</li><li>
+<p>
+<code class="literal">files</code> &#8211; Represents the <code class="filename">/etc/printers.conf</code> file</p>
+</li><li>
+<p>
+<code class="literal">nis</code> &#8211; Represents the <code class="filename">printers.conf.byname</code> table</p>
+</li></ul></div>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">nsswitch.conf</span>
+(
+4
+)
+</span>
+</span> man page and <span class="olink">
+<em class="citetitle">System Administration Guide: Naming
+and Directory Services (DNS, NIS, and LDAP)</em>
+</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="eekes"></a>LDAP Print Support Guidelines</h3></div></div></div>
+
+<p>Keep the following in mind when you manage printer information in the
+LDAP name service:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Solaris Print Manager uses the <span><strong class="command">ldapclient</strong></span> command
+to determine the default LDAP server name. If more than one server is specified,
+the first server is automatically selected. For more information, see <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">ldapclient</span>
+(
+1M
+)
+</span>
+</span>.</p>
+</li><li>
+<p>Solaris Print Manager always displays printer entries from
+the current LDAP server. If the current LDAP server is not the domain's LDAP
+master server, the list of printers displayed might not be the current list
+of printers. The LDAP replica server might not have been updated by the master
+server, and as a result, is out of sync with the master. Replica servers can
+have various update replication agreements. For example, a change is made
+on the master, and the replica servers can be updated immediately or once
+a day.</p>
+</li><li>
+<p>If the selected LDAP server is an LDAP replica server, any
+updates are referred to the master server and are done there. This situation
+again means that the printer list could be out of sync with the master server.
+For example, a deleted printer might still appear in the displayed printer
+list until the replica is updated from the master server.</p>
+</li><li>
+<p>Users can use the LDAP command-line utilities, <span><strong class="command">ldapadd</strong></span> and <span><strong class="command">ldapmodify</strong></span>, to update printer entries in the directory. However,
+this method is not recommended. If these utilities are used, the user must
+ensure that the <em class="replaceable"><code>printer-name</code></em> attribute value is
+unique within the <code class="literal">ou=printers</code> container. If the <em class="replaceable"><code>printer-name</code></em> attribute value is not unique, the result of modifications
+done by Solaris Print Manager, or by the <span><strong class="command">lpset</strong></span> command,
+might not be predictable.</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printconcept-68"></a>Choosing a Method to Manage Printers</h3></div></div></div>
+
+<p>Adding printer information to a name service makes access to printers
+available to all systems on the network. Generally, doing so makes printer
+administration easier because all the information about printers is centralized.</p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Name Service Configuration</p>
+</th><th>
+<p>Actions to Centralize Printer Information</p>
+</th></tr></thead><tbody><tr><td>
+<p>Use a name service</p>
+</td><td>
+</td></tr><tr><td>
+<p>Do not use a name service</p>
+</td><td>
+<p>Adding the printer adds the printer information to the printer server's
+configuration files only. Print clients will not automatically know about
+the printer.</p>
+<p>You will have to add the printer information to every print client that
+needs to use the printer.</p>
+</td></tr></tbody></table>
+</div>
+<p>The following table describes the major printer-related tasks and the
+tools available to perform the printing tasks.</p>
+<div class="table"><a name="edhix"></a><p class="title"><b>Table 1.1. Solaris Printing Tools and Their Features</b></p>
+
+
+<table summary="Solaris Printing Tools and Their Features" border="1"><colgroup><col><col><col><col><col><col></colgroup><thead><tr><th>
+<p>Printing Tool</p>
+</th><th>
+<p>Availability</p>
+</th><th>
+<p>Graphical User Interface?</p>
+</th><th>
+<p>Configures Network Printers?</p>
+</th><th>
+<p>Manages Print Clients and Servers?</p>
+</th><th>
+<p>Uses LDAP, NIS, or NIS+?</p>
+</th></tr></thead><tbody><tr><td>
+<p>Solaris Print Manager</p>
+</td><td>
+<p>Solaris Express, Solaris 10, and compatible
+versions and Solaris Easy Access Server 3.0</p>
+</td><td>
+<p>Available</p>
+</td><td>
+<p>Available</p>
+</td><td>
+<p>Available</p>
+</td><td>
+<p>Available</p>
+</td></tr><tr><td>
+<p>
+<span><strong class="command">lp</strong></span> commands </p>
+</td><td>
+<p>Solaris Express, Solaris 10, and compatible
+versions</p>
+</td><td>
+<p>Not available</p>
+</td><td>
+<p>Available</p>
+</td><td>
+<p>Available</p>
+</td><td>
+<p>Available</p>
+</td></tr></tbody></table>
+</div>
+<p>After using the preceding table to determine which printing tool is
+best for your network environment, see <span class="olink">Chapter 3, Setting Up Printers (Tasks)</span> for printer setup information.</p>
+<p>Most printing configuration tasks can be accomplished with Solaris Print
+Manager. However, if you need to write interface scripts or add your own filters,
+you need to use the LP print service commands. These  commands underlie Solaris
+Print Manager. Performing printing administration tasks with LP print service
+commands is described in <span class="olink">Chapter 4, Administering Printers (Tasks)</span>. </p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch01.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch01s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Where to Find Printer Tasks </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> The LP Print Service</td></tr></table></div></body></html>

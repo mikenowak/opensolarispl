@@ -1,0 +1,89 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2.3 Obtaining and Installing Compilers</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="OpenSolaris Developer's Reference"><link rel="up" href="ch02.html" title="Chapter 2. Prerequisites"><link rel="prev" href="ch02s02.html" title="2.2 Operating Environment Packages"><link rel="next" href="ch02s04.html" title="2.4 Obtaining and Installing Custom Tools"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2.3 Obtaining and Installing Compilers</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s02.html">Prev</a> </td><th width="60%" align="center">Chapter 2. Prerequisites</th><td width="20%" align="right"> <a accesskey="n" href="ch02s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="_2_3_Obtaining_and_Installing_C"></a>2.3 Obtaining and Installing Compilers</h2></div></div></div><p>
+The compilers needed may depend on the consolidation you are building
+and the platform(s) on which you wish to build.  Prior to build 19, an
+x86 build of ON used both the Sun One Studio 8 and GNU compilers by
+default.  This is because 32-bit objects are built with cc and CC, while
+gcc is used for 64-bit objects.  As of build 19, Sun Studio 10 compilers
+are used by default for all objects.  And effective beginning in build
+38, all ON builds on all platforms require both Sun Studio 10 and a
+recent version of gcc (from /usr/sfw in Solaris Express).  Other
+consolidations may require slightly different compilers and/or compiler
+patches, so always check the latest release notes.
+</p><p>
+Because compilers used to build OpenSolaris may require special patches,
+links to current Studio compiler binaries will always be maintained at
+the OpenSolaris web site.  Using other versions of compilers,
+assemblers, linkers, make(1), or dmake(1) is not supported and may fail
+to build or create binaries that do not function correctly.  Therefore,
+you must use the compilers listed in your consolidation's release notes
+to ensure a successful build.  From time to time the required tools will
+be updated; notices will be posted and newer versions made available as
+appropriate.
+</p><p>
+The only compilers that can be used to build the mainline OpenSolaris
+sources are the Sun Studio 10 tools available at
+<a href="http://opensolaris.org/os/community/tools/sun_studio_tools/" target="_top">http://opensolaris.org/os/community/tools/sun_studio_tools/</a> and the
+GNU Compiler Collection shipped with Solaris Express build 22 and later.
+If you wish to use gcc as your primary compiler (that is, if you wish
+the archives to contain objects built with gcc), see
+<a href="http://opensolaris.org/os/community/tools/gcc/" target="_top">http://opensolaris.org/os/community/tools/gcc/</a>.  Regardless of the
+compiler you use, you will need a set of ON-specific build tools
+(onbld).  You can find these tools for both SPARC and x86 platforms at
+<a href="http://opensolaris.org/os/downloads/on/" target="_top">http://opensolaris.org/os/downloads/on/</a>.
+</p><p>
+The Studio 10 compilers can be installed in two ways: from an installed
+image, or as a complete product.  The installed image is simply a
+compressed tar file containing many, but not all, of the contents of the
+Studio 10 product, with patches already applied and a valid license key.
+The contents are sufficient to build <a href="apa.html#_ON">ON</a>; you can learn more about
+exactly what's included at
+<a href="http://opensolaris.org/os/community/tools/sun_studio_tools/faqs/" target="_top">http://opensolaris.org/os/community/tools/sun_studio_tools/faqs/</a>.
+The installed image will be extracted to <code class="code">opt/SUNWspro</code> beneath the
+directory in which you extract it; if you extract it in the root
+directory as described below, which is recommended, it will install in
+the same location as the full product would.  Please note that there is
+no way to apply additional patches to the installed image.
+</p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_Example_1__Installing_Studio_1"></a>Example 1: Installing Studio 10 compilers, installed image</h3></div></div></div><div class="itemizedlist"><p>
+Suppose you have downloaded the installed image into
+<code class="code">/var/tmp/sunstudio10-sparc.tar.bz2</code>, and want to install it into
+<code class="code">/opt/SUNWspro</code> (recommended).  You could install as follows:
+</p><pre class="programlisting">
+$ su
+Password:
+# cd /
+# bzip2 -dc /var/tmp/sunstudio10-sparc.tar.bz2 | tar xf -
+</pre><ul type="disc"></ul></div><p>
+The complete product install has its own installer and a complete manual
+that includes installation instructions.  See
+<a href="http://docs.sun.com/app/docs/doc/819-0485" target="_top">http://docs.sun.com/app/docs/doc/819-0485</a> for detailed installation
+instructions, including how to use the graphical and text installation
+methods.  You will need to install the required patches before you can
+build OpenSolaris components if you use the full product; normally these
+are included with the product download.  See
+<a href="http://opensolaris.org/os/community/tools/sun_studio_tools/" target="_top">http://opensolaris.org/os/community/tools/sun_studio_tools/</a> for
+more information on required patches.  By default, the Studio 10 product
+installs into <code class="code">/opt/SUNWspro</code>.  You should not change this unless you
+have an existing installation of Sun Workshop/Forte/Studio that you need
+to preserve.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_Example_2__Installing_Studio_1"></a>Example 2: Installing Studio 10 compilers, full product</h3></div></div></div><div class="itemizedlist"><p>
+Suppose you have downloaded the product into
+<code class="code">/var/tmp/sunstudio10-x86.tar</code>, you wish to unpack it in
+<code class="code">/var/tmp/studio-install</code>, and you received a license key 'ABC123'.
+You could install as follows:
+</p><pre class="programlisting">
+$ mkdir /var/tmp/studioinstall
+$ cd /var/tmp/studioinstall
+$ tar xf /var/tmp/sunstudio10-x86.tar
+$ su
+Password:
+# ./batch_installer -s ABC123
+...
+# cd patches
+# patchadd -M . patchlist
+...
+</pre><ul type="disc"></ul></div><p>
+The version of gcc needed is installed by default as part of Solaris
+Express builds 22 and later.  If using a different distribution, consult
+your vendor's documentation to determine whether your version of gcc is
+sufficient.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">2.2 Operating Environment Packages </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 2.4 Obtaining and Installing Custom Tools</td></tr></table></div></body></html>
