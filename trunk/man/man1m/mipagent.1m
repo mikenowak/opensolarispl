@@ -1,0 +1,178 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (C) 2001, Sun Microsystems, Inc. All Rights Reserved
+.TH mipagent 1M "11 Dec 2001" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+mipagent \- Mobile IP agent
+.SH SYNOPSIS
+.LP
+.nf
+\fB/usr/lib/inet/mipagent\fR 
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBmipagent\fR utility implements the Mobile IP home agent and foreign agent functionality described in \fIRFC 2002, IP Mobility Support\fR. The term "mobility agent" is used to refer to the home agent and foreign agent functionality collectively. \fBmipagent\fR responds to Mobile IP registration and deregistration requests and router discovery solicitation messages from a mobile node. Besides responding to external messages, the \fBmipagent\fR utility also tasks on a periodic basis, such as aging the mobility bindings and visitor
+entries and sending agent advertisements. The mobility agent can also handle direct delivery style reverse tunneling as specified in \fIRFC 2344, Reverse Tunneling for Mobile IP\fR. Limited private address support for mobile nodes is also available. In addition, separate IPsec policies
+for registration requests, replies, and tunnel traffic can be configured to protect the datagrams associated with these between two mobility agents.
+.LP
+Run the \fBmipagent\fR daemon as root using the start-up script, which has the following syntax:
+.sp
+.in +2
+.nf
+example# \fB/etc/init.d/mipagent [start|stop]\fR
+.fi
+.in -2
+.sp
+
+.LP
+\fB/etc/inet/mipagent.conf\fR must be present before you start-up the \fBmipagent\fR daemon. See \fBmipagent.conf\fR(4). At start
+up, \fBmipagent\fR reads the configuration information from \fB/etc/inet/mipagent.conf\fR. The \fBmipagent\fR daemon records a continuous log of its activities by means of \fBsyslog()\fR. See \fBsyslog\fR(3C). You can use the \fILogVerbosity\fR parameter in \fB/etc/inet/mipagent.conf\fR to control the verbosity level of the log. 
+.LP
+The \fBmipagent\fR daemon can be terminated either by the script:
+.sp
+.in +2
+.nf
+example# \fB/etc/init.d/mipagent stop\fR
+.fi
+.in -2
+.sp
+
+.LP
+or by the \fBkill\fR command.
+.LP
+Periodically while running, or if terminated or shutdown, the \fBmipagent\fR daemon stores the following internal state information in \fB/var/inet/mipagent_state\fR:
+.RS +4
+.TP
+.ie t \(bu
+.el o
+a list of the mobile nodes supported as home agents;
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+their current care-of addresses; and 
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+the remaining registration lifetimes.
+.RE
+.LP
+If the \fBmipagent\fR utility is terminated for maintenance and restarted, \fBmipagent_state\fR is used to recreate as much of the mobility agent's internal state as possible. This minimizes service disruption for mobile nodes that may be visiting other networks.
+If \fBmipagent_state\fR exists, it is read immediately after \fBmipagent.conf\fR when \fBmipagent\fR is restarted. The format of \fBmipagent_state\fR is undocumented since it is likely to change and programs other than \fBmipagent\fR
+should not use it for any purpose. A separate utility program \fBmipagentstat\fR is provided for monitoring \fBmipagent\fR. 
+.SH EXIT STATUS
+.LP
+The following exit values are returned:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB0\fR\fR
+.ad
+.RS 6n
+.rt  
+The daemon started successfully.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-1\fR\fR
+.ad
+.RS 6n
+.rt  
+The daemon failed to start.
+.RE
+
+.SH FILES
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/inet/mipagent.conf\fR\fR
+.ad
+.sp .6
+.RS 4n
+Configuration file for Mobile IP mobility agent.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/var/inet/mipagent_state\fR\fR
+.ad
+.sp .6
+.RS 4n
+File where private state information from \fBmipagent\fR is stored.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/init.d/mipagent [start|stop]\fR\fR
+.ad
+.sp .6
+.RS 4n
+\fBmipagent\fR start-up script.
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWmipu
+.TE
+
+.SH SEE ALSO
+.LP
+\fBmipagentstat\fR(1M), \fBmipagentconfig\fR(1M), \fBsyslog\fR(3C), \fBmipagent.conf\fR(4), \fBattributes\fR(5)
+.LP
+Montenegro, G., editor.\fIRFC 2344, Reverse Tunneling for Mobile IP\fR. Network Working Group. May 1998.
+.LP
+Perkins, C. \fIRFC 2002, IP Mobility Support\fR. Network Working Group. October 1996.
+.SH DIAGNOSTICS
+.LP
+The \fBmipagent\fR utility exits with an error if the configuration file, \fBmipagent.conf\fR, cannot be read successfully. Upon receiving a \fBSIGTERM\fR or \fBSIGINT\fR signal, \fBmipagent\fR cleans its internal state, including
+any changes to the routing and \fBARP\fR tables, and exits. 
+.SH NOTES
+.LP
+The foreign agent adds host- specific local routes to its routing table for visiting mobile nodes after they are successfully registered. If a visiting mobile node departs without sending a de-registration message through the foreign agent, these routing entries persist until the mobile node's
+previous registration expires. Any packets that arrive at the foreign agent for the departed mobile node during this time, for example because the foreign agent is also a router for the foreign network, will be lost. System administrators can configure foreign agents to accept only short registration
+lifetimes. This will automatically restrict the maximum duration for which a departed mobile node will be temporarily unreachable. 
+.LP
+ Home and foreign agents dynamically add and delete IPsec policies configured with a mobility agent peer. Those pertaining to the tunnel are only added when the tunnel is plumbed. At this time, IPsec tunnel policies must be identical in the forward and  reverse direction. IPsec policies pertaining
+to permiting registration requests on the home agent are added to the IPsec policy file at init time as it must be ready to receive these at any time. Otherwise, IPsec policies pertaining to registration request and reply messages with a mobility agent peer are added as soon as they are needed, and are
+not removed until all mobile nodes are no longer registered with the mobility agent peer, at which point the tunnels are torn down. 

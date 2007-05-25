@@ -1,0 +1,717 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) David L. Mills 1992, 1993, 1994, 1995, 1996, 1997
+.\" Portions Copyright (c) 1999 Sun Microsystems, Inc. All Rights Reserved.
+.TH xntpdc 1M "12 July 2004" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+xntpdc \- special NTP query program
+.SH SYNOPSIS
+.LP
+.nf
+\fBxntpdc\fR [\fB-ilnps\fR] [\fB-c\fR \fIcommand\fR] [\fIhost\fR] [...]
+.fi
+
+.SH DESCRIPTION
+.LP
+\fBxntpdc\fR queries the \fBxntpd\fR daemon about its current state and requests changes in that state. You can run \fBxntpdc\fR in interactive mode or in controlled using command line arguments. 
+.LP
+Extensive state and statistics information is available through the \fBxntpdc\fR interface. In addition, nearly all the configuration options which can be specified at start up using \fBxntpd\fR's configuration file may also be specified at run time using \fBxntpdc\fR. 
+.LP
+If one or more request options is included on the command line when \fBxntpdc\fR is executed, each of the requests is sent to the \fBNTP\fR servers running on each of the hosts given as command line arguments, or on the local host by default. If no request options
+are given, \fBxntpdc\fR attempts to read commands from the standard input and execute these on the \fBNTP\fR server running on the first host specified on the command line, again defaulting to the local host when no other host is specified. \fBxntpdc\fR prompts
+for commands if the standard input is a terminal device.
+.LP
+\fBxntpdc\fR uses \fBNTP\fR \fBmode 7\fR packets to communicate with the \fBNTP\fR server, and can be used to query any compatable server on the network which permits it. As \fBNTP\fR is a \fBUDP\fR protocol, this
+communication is somewhat unreliable, especially over large distances. \fBxntpdc\fR does not attempt to re-transmit requests, and times requests out if the remote host is not heard from within a suitable timeout time.
+.LP
+The operation of \fBxntpdc\fR is specific to the particular implementation of the \fBxntpd\fR daemon. You can expect \fBxntpdc\fR to work only with this and maybe some previous versions of the daemon. Requests from a remote \fBxntpdc\fR program
+that affect the state of the local server must be authenticated. This requires that both the remote program and local server share a common key and key identifier. 
+.SH OPTIONS
+.LP
+\fBxntpdc\fR reads interactive format commands from the standard input. If you specify the \fB-c\fR, \fB-l\fR, \fB-p\fR or \fB-s\fR option, the specified queries are sent to the hosts immediately.
+.LP
+The following command line options are supported: 
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-c\fR \fIcommand\fR\fB-...\fR\fR
+.ad
+.RS 18n
+.rt  
+Add \fIcommand\fR to the list of commands to execute on the specified hosts. \fIcommand\fR is interpreted as an interactive format command. 
+.sp
+Multiple \fB-c\fR options may be specified.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-i\fR\fR
+.ad
+.RS 18n
+.rt  
+Force \fBxntpdc\fR to operate in interactive mode. 
+.sp
+Prompts are written to the standard output. Commands are read from the standard input. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-l\fR\fR
+.ad
+.RS 18n
+.rt  
+Obtain a list of peers which are known to the servers. 
+.sp
+This option is equivalent to \fB\fR\fB-c\fR \fBlistpeers\fR. See \fBlistpeers\fR in \fBControl Message Commands\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-n\fR\fR
+.ad
+.RS 18n
+.rt  
+Output all host addresses in dotted-quad numeric format rather than converting to the canonical host names. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR\fR
+.ad
+.RS 18n
+.rt  
+Print a list of the peers known to the server as well as a summary of their state. 
+.sp
+This option is equivalent to \fB-c peers\fR. See \fBpeers\fR in \fBControl Message Commands\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-s\fR\fR
+.ad
+.RS 18n
+.rt  
+Print a list of the peers known to the server as well as a summary of their state, but in a slightly different format than the \fB-p\fR option. This option is equivalent to \fB\fR\fB-c\fR \fBdmpeers\fR. See \fBdmpeers\fR in \fBControl Message Commands\fR.
+.RE
+
+.SH USAGE
+.SS "Interactive Commands"
+.LP
+The interactive commands consist of a keyword (\fIcommand_keyword\fR) followed by zero to four arguments. You need to entry only enough characters of the \fIcommand_keyword\fR to uniquely identify it. The output of an interactive command is sent
+to the standard output by default. You can send the output of an interactive command to a file by appending a \fB<\fR, followed by a file name, to the command line. 
+.LP
+A number of interactive format commands are executed entirely within the \fBxntpdc\fR program itself and do not result in \fBNTP\fR mode.
+.LP
+The following interactive commands are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB? [ \fIcommand_keyword\fR]\fR
+.ad
+.RS 28n
+.rt  
+Without an argument, print a list of \fBntpq\fR command keywords. If \fIcommand_keyword\fR is specified, print function and usage information about the \fIcommand_keyword\fR. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBdelay \fImilliseconds\fR\fR
+.ad
+.RS 28n
+.rt  
+Specify a time interval to add to timestamps included in requests which require authentication. 
+.sp
+This enables (unreliable) server reconfiguration over long delay network paths or between machines whose clocks are unsynchronized. Because the server no longer requires timestamps in authenticated requests, this command may be obsolete.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBhelp [ \fIcommand_keyword\fR ]\fR
+.ad
+.RS 28n
+.rt  
+Without an argument, print a list of \fBntpq\fR command keywords. If \fIcommand_keyword\fR is specified, print function and usage information about the \fIcommand_keyword\fR. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBhost \fIhostname\fR\fR
+.ad
+.RS 28n
+.rt  
+Set the host (\fIhostname\fR) to which future queries are sent. Specify \fIhostname\fR as a host name or a numeric address.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBhostnames [ \fByes\fR | \fBno\fR ]\fR
+.ad
+.RS 28n
+.rt  
+Print hostnames or numeric addresses in information displays. 
+.sp
+Specify \fByes\fR to print host names. Specify \fBno\fR to print numeric addresses. 
+.sp
+The default is \fByes\fR, unless the \fB-n\fR command line option is specified.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBkeyid \fIkeyid\fR\fR
+.ad
+.RS 28n
+.rt  
+Enable specification of a key number (\fIkeyid\fR) to authenticate configuration requests. \fIkeyid\fR must correspond to a key number the server has been configured to use for this purpose.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBpasswd\fR
+.ad
+.RS 28n
+.rt  
+Allow the user to specify a password at the command line to authenticate configuration requests. 
+.sp
+The password is not displayed, and must correspond to the key configured for use by the \fBNTP\fR server for this purpose. If the password does not correspond to the key configured for use by the \fBNTP\fR server, requests are not successful.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBquit\fR
+.ad
+.RS 28n
+.rt  
+Exit \fBxntpdc\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBtimeout \fImillseconds\fR\fR
+.ad
+.RS 28n
+.rt  
+Specify a timeout period for responses to server queries. 
+.sp
+The default is approximately \fB8000\fR milliseconds. As \fBxntpdc\fR retries each query once after a timeout, the total waiting time for a timeout is twice the timeout value set.
+.RE
+
+.SS "Control Message Commands"
+.LP
+Query commands result in \fBNTP\fR mode 7 packets containing requests for information being sent to the server. These control message commands are read-only commands in that they make no modification of the server configuration state.
+.LP
+The following control message commands are supported: 
+.sp
+.ne 2
+.mk
+.na
+\fBclkbug\fR
+.ad
+.sp .6
+.RS 4n
+Obtain debugging information for a reference clock driver. This information is provided only by some clock drivers.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBclockinfo \fIclock_peer_address\fR [...]\fR
+.ad
+.sp .6
+.RS 4n
+Obtain and print information concerning a peer clock. 
+.sp
+The values obtained provide information on the setting of fudge factors and other clock performance information.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBdmpeers\fR
+.ad
+.sp .6
+.RS 4n
+Obtain a list of peers for which the sserver is maintaining state, along with a summary of that state. 
+.sp
+The peer summary list is identical to the output of the \fBpeers\fR command, except for the character in the leftmost column. Characters only appear beside peers which were included in the final stage of the clock selection algorithm. A \fB\&.\fR indicates that this
+peer was cast off in the falseticker detection, while a \fB+\fR indicates that the peer made it through. A \fB*\fR denotes the peer with which the server is currently synchronizing. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBiostats\fR
+.ad
+.sp .6
+.RS 4n
+Print statistics counters maintained in the input-output module.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBkerninfo\fR
+.ad
+.sp .6
+.RS 4n
+Obtain and print kernel phase-lock loop operating parameters. 
+.sp
+This information is available only if the kernel has been specially modified for a precision timekeeping function.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBlistpeers\fR
+.ad
+.sp .6
+.RS 4n
+Obtain and print a brief list of the peers for which the server is maintaining state. 
+.sp
+These should include all configured peer associations as well as those peers whose stratum is such that they are considered by the server to be possible future synchonization candidates. candidates.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBloopinfo [ oneline | multiline ]\fR
+.ad
+.sp .6
+.RS 4n
+Print the values of selected loop filter variables. 
+.sp
+The loop filter is the part of \fBNTP\fR which deals with adjusting the local system clock. 
+.sp
+The \fBoneline\fR and \fBmultiline\fR options specify the format in which this information is printed. \fBmultiline\fR is the default.
+.sp
+The offset is the last offset given to the loop filter by the packet processing code. The frequency is the frequency error of the local clock in parts-per-million (\fBppm\fR). The \fBtime_const\fR controls the stiffness of the phase-lock loop and thus the speed
+at which it can adapt to oscillator drift. The watchdog timer value is the number of seconds which have elapsed since the last sample offset was given to the loop filter. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBmemstats\fR
+.ad
+.sp .6
+.RS 4n
+Print statistics counters related to memory allocation code. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBmonlist [version]\fR
+.ad
+.sp .6
+.RS 4n
+Obtain and print traffic counts collected and maintained by the monitor facility. The version number should not normally need to be specified.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBpeers\fR
+.ad
+.sp .6
+.RS 4n
+Obtain a list of peers for which the server is maintaining state, along with a summary of that state. 
+.LP
+The following summary information is included: 
+.RS +4
+.TP
+.ie t \(bu
+.el o
+Address of the remote peer.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+Local interface address. If a local address has yet to be determined it is \fB0.0.0.0\fR.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+Stratum of the remote peer. A stratum of \fB16\fR indicates the remote peer is unsynchronized.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+Polling interval, in seconds.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+Reachability register, in octal.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+Current estimated delay, offset and dispersion of the peer, in seconds.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+Mode in which the peer entry is operating. 
+.sp
+This is represented by the character in the left margin. A \fB+\fR denotes symmetric active, a \fB-\fR indicates symmetric passive, a \fB=\fR means the remote server is being polled in
+client mode, a \fB^\fR indicates that the server is broadcasting to this address, a \fB~\fR denotes that the remote peer is sending broadcasts and a \fB*\fR marks the peer the server is currently synchonizing to.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+Host. 
+.sp
+This field may contain a host name, an \fBIP\fR address, a reference clock implementation name with its parameter or \fBREFCLK\fR (implementation number, parameter). On hostnames no only \fBIP\fR-addresses is displayed. 
+.RE
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBpstats \fIpeer_address\fR [...]\fR
+.ad
+.sp .6
+.RS 4n
+Show the per-peer statistic counters associated with the specified peers.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBreslist\fR
+.ad
+.sp .6
+.RS 4n
+Obtain and print the server's restriction list. 
+.sp
+Generally, this list is printed in sorted order.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBshowpeer \fIpeer_address\fR [...]\fR
+.ad
+.sp .6
+.RS 4n
+Show a detailed display of the current peer variables for one or more peers. Most of these values are described in the\fB NTP\fR Version 2 specification.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBsysinfo\fR
+.ad
+.sp .6
+.RS 4n
+Print a variety of system state variables that are related to the local server. 
+.sp
+The output from \fBsysinfo\fR is described in NTP Version 3 specification, RFC-1305. All except the last four lines are described in the NTP Version 3 specification, RFC-1305. 
+.sp
+The \fBsystem flags\fR show various system flags, some of which can be set and cleared by the \fBenable\fR and \fBdisable\fR configuration commands, respectively. These are the \fBauth\fR, \fBbclient\fR, \fBmonitor\fR, \fBpll\fR, \fBpps\fR and \fBstats\fR flags. See the xntpd documentation for the meaning of these flags. There are two additional flags which are read only, the \fBkernel_pll\fR and \fBkernel_pps\fR. These flags indicate the synchronization
+status when the precision time kernel modifications are in use. The \fBkernel_pll\fR indicates that the local clock is being disciplined by the kernel, while the \fBkernel_pps\fR indicates the kernel discipline is provided by the \fBPPS\fR signal. The stability
+is the residual frequency error remaining after the system frequency correction is applied and is intended for maintenance and debugging. In most architectures, this value initially decreases from as high as \fB500\fR \fBppm\fR to a nominal value in the range \fB\&.01\fR to \fB0.1\fR \fBppm\fR. If it remains high for some time after starting the daemon, something may be wrong with the local clock, or the value of the kernel variable tick may be incorrect. The \fBbroadcastdelay\fR shows the default broadcast delay, as set by the \fBbroadcastdelay\fR configuration command. The \fBauthdelay\fR shows the default authentication delay, as set by the \fBauthdelay\fR configuration command. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBsysstats\fR
+.ad
+.sp .6
+.RS 4n
+Print statistics counters maintained in the protocol module.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBtimerstats\fR
+.ad
+.sp .6
+.RS 4n
+Print statistics counters maintained in the timer/event queue support code. 
+.RE
+
+.SS "Runtime Configuration Requests"
+.LP
+The server authenticates all requests that cause state changes in the server. The server uses a configured \fBNTP\fR key to accomplish this. This facility can also be disabled by the server by not configuring a key). 
+.LP
+You must make the key number and the corresponding key known to \fBxtnpdc\fR. Use the \fBkeyid\fR or \fBpasswd\fR commands to do so. 
+.LP
+The \fBpasswd\fR command prompts users for a password to use as the encryption key. It also prompts automatically for both the key number and password the first time a command which would result in an authenticated request to the server is given. Authentication provides verification
+that the requester has permission to make such changes. It also gives an extra degree of protection against transmission errors. 
+.LP
+Authenticated requests always include a time stamp in the packet data. The time stamp is included in the computation of the authentication code. This timestamp is compared by the server to its receive time stamp. If the time stamps differ by more than a small amount the request is rejected. 
+.LP
+Time stamps are rejected for two reasons. First, it makes simple replay attacks on the server, by someone who might be able to overhear traffic on your \fBLAN\fR, much more difficult. Second, it makes it more difficult to request configuration changes to your server from topologically
+remote hosts.
+.LP
+While the reconfiguration facility works well with a server on the  local host, and may work adequately between time-synchronized hosts on the same \fBLAN\fR, it works very poorly for more distant hosts. If reasonable passwords are chosen, care is taken in the distribution and
+protection of keys and appropriate source address restrictions are applied, the run time reconfiguration facility should provide an adequate level of security. 
+.LP
+The following commands make authenticated requests.
+.sp
+.ne 2
+.mk
+.na
+\fBaddpeer \fIpeer_address\fR [ \fIkeyid\fR ] [ \fIversion\fR ] [ \fIprefer\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+Add a configured peer association at the given address and operating in symmetric active mode. An existing association with the same peer may be deleted when this command is executed, or may simply be converted to conform to the new configuration, as appropriate. 
+.sp
+If the optional \fIkeyid\fR is a non-zero integer, all outgoing packets to the remote server will have an authentication field attached encrypted with this key. If the \fIkeyid\fR is \fB0\fR or omitted, no authentication is done. 
+.sp
+Specify \fIversion\fR as \fB1\fR, \fB2\fR or \fB3\fR. The default is \fB3\fR. 
+.sp
+The \fIprefer\fR keyword indicates a preferred peer. This keyword is used primarily for clock synchronisation if possible. The preferred peer also determines the validity of the \fBPPS\fR signal - if the preferred peer is suitable for synchronisation so
+is the \fBPPS\fR signal.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBaddserver \fIpeer_address\fR [ \fIkeyid\fR ] [ \fIversion\fR ] [ \fIprefer\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+Identical to the \fBaddpeer\fR command, except that the operating mode is client.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBaddtrap [ \fIaddress\fR [ \fIport\fR ] [ \fIinterface\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+Set a trap for asynchronous messages. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBauthinfo\fR
+.ad
+.sp .6
+.RS 4n
+Return information concerning the authentication module, including known keys and counts of encryptions and decryptions which have been done. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBbroadcast \fIpeer_address\fR [ \fIkeyid\fR ] [ \fIversion\fR ] [ \fIprefer\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+Identical to the \fBaddpeer\fR command, except that the operating mode is \fBbroadcast\fR. In this case a valid key identifier and key are required. The \fBpeer_address\fR parameter can be the broadcast address of the local network or a multicast
+group address assigned to \fBNTP\fR. If a multicast address, a multicast-capable kernel is required.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBclrtrap [ \fIaddress\fR [ \fIport\fR ] [ \fIinterface\fR]\fR
+.ad
+.sp .6
+.RS 4n
+Clear a trap for asynchronous messages. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBdelrestrict \fIaddress\fR \fImask\fR [ \fIntpport\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+Delete the matching entry from the restrict list.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBfudge \fIpeer_address\fR [ \fItime1\fR ] [ \fItime2\fR ] [ \fIstratum\fR ] [ \fIrefid\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+Provide a way to set certain data for a reference clock. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBreadkeys\fR
+.ad
+.sp .6
+.RS 4n
+Cause the current set of authentication keys to be purged and a new set to be obtained by re-reading the \fBkeys\fR file. The \fBkeys\fR file must have been specified in the \fBxntpd\fR configuration file. This enables encryption keys
+to be changed without restarting the server. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBrestrict \fIaddress\fR \fImask\fR \fIflag\fR [ \fIflag\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+This command operates in the same way as the restrict configuration file commands of \fBxntpd\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBreset\fR
+.ad
+.sp .6
+.RS 4n
+Clear the statistics counters in various modules of the server. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBtraps\fR
+.ad
+.sp .6
+.RS 4n
+Display the traps set in the server. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBtrustkey \fIkeyid\fR [...]\fR
+.ad
+.br
+.na
+\fBuntrustkey \fIkeyid\fR [...]\fR
+.ad
+.sp .6
+.RS 4n
+These commands operate in the same way as the \fBtrustedkey\fR and \fBuntrustkey\fR configuration file commands of \fBxntpd\fR. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBunconfig \fIpeer_address\fR [...]\fR
+.ad
+.sp .6
+.RS 4n
+Cause the configured bit to be removed from the specified peers. In many cases this causes the peer association to be deleted. When appropriate, however, the association may persist in an unconfigured mode if the remote peer is willing to continue on in this fashion. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBunrestrict \fIaddress\fR \fImask\fR \fIflag\fR [ \fIflag\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+Unrestrict the matching entry from the restrict list. 
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+lw(2.75i) |lw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWntpu
+.TE
+
+.SH SEE ALSO
+.LP
+\fBntpdate\fR(1M), \fBntpq\fR(1M), \fBntptrace\fR(1M), \fBxntpd\fR(1M), \fBrename\fR(2), \fBattributes\fR(5)

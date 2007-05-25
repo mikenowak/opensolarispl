@@ -1,0 +1,128 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright 2000 by Sun Microsystems, Inc. All rights reserved. 
+.TH getdmapent 3BSM "11 Jan 2001" "SunOS 5.11" "Security and Auditing Library Functions"
+.SH NAME
+getdmapent, getdmapnam, getdmaptype, getdmaptdev, setdmapent, enddmapent, setdmapfile \- get device_maps entry
+.SH SYNOPSIS
+.LP
+.nf
+\fBcc \fR  [\fIflag\fR]... \fIfile\fR... \fB-lbsm\fR  [\fIlibrary\fR]...
+.fi
+
+.LP
+.nf
+#include <bsm/devices.h>
+
+\fBdevmap_t *\fR\fBgetdmapent\fR(\fBvoid\fR);
+.fi
+
+.LP
+.nf
+\fBdevmap_t *\fR\fBgetdmapnam\fR(\fBchar *\fR\fIname\fR);
+.fi
+
+.LP
+.nf
+\fBdevmap_t *\fR\fBgetdmapdev\fR(\fBchar *\fR\fIname\fR);
+.fi
+
+.LP
+.nf
+\fBdevmap_t *\fR\fBgetdmaptype\fR(\fBchar *\fR\fItype\fR);
+.fi
+
+.LP
+.nf
+\fBvoid\fR \fBsetdmapent\fR(\fBvoid\fR);
+.fi
+
+.LP
+.nf
+\fBvoid\fR \fBenddmapent\fR(\fBvoid\fR);
+.fi
+
+.LP
+.nf
+\fBvoid\fR \fBsetdmapfile\fR(\fBchar *\fR\fIfile\fR);
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBgetdmapent()\fR, \fBgetdmapnam()\fR, \fBgetdmapdev()\fR, and \fBgetdmaptype()\fR functions each return a \fBdevice_deallocate\fR entry. The \fBgetdmapent()\fR function enumerates all \fBdevice_maps\fR
+entries. The \fBgetdmaptype()\fR function enumerates \fBdevice_maps\fR entries with a given device type. Successive calls to these functions return either successive \fBdevice_maps\fR entries or \fINULL\fR. The \fBgetdmapnam()\fR
+function searches for a \fBdevice_maps\fR entry with a given device allocation name. The \fBgetdmapdev()\fR function searches for a \fBdevice_maps\fR entry containing a given device special file.
+.LP
+The internal representation of a \fBdevice_maps\fR entry is a \fBdevmap_t\fR structure defined in <\fBbsm/devices.h\fR> with the following members:
+.sp
+.in +2
+.nf
+char *dmap_devname;     /* device allocation name */
+char *dmap_devtype;     /* generic device type */
+char *dmap_devlist;     /* list of associated device special files */
+.fi
+.in -2
+
+.LP
+The \fBsetdmapent()\fR function "rewinds" to the beginning of the enumeration of \fBdevice_maps\fR entries. Calls to \fBgetdmapnam()\fR may leave the enumeration in an indeterminate state, so \fBsetdmapent()\fR should be called before
+the first call to \fBgetdmapent()\fR or \fBgetdmaptype()\fR.
+.LP
+The \fBenddmapent()\fR function can be called to indicate that \fBdevice_maps\fR processing is complete. The library can then close any open \fBdevice_maps\fR file, deallocate any internal storage, and so forth. 
+.LP
+The \fBsetdmapfile()\fR function changes the pathname used by the other functions for opening the \fBdevice_maps\fR file, allowing use of \fBdevice_maps\fR files other than the default file, \fB/etc/security/device_maps\fR.
+.SH RETURN VALUES
+.LP
+The \fBgetdmapent()\fR and \fBgetdmaptype()\fR functions return a pointer to a \fBdevmap_t\fR if they successfully enumerate an entry. Otherwise they return \fINULL\fR, indicating the end of the enumeration.
+.LP
+The \fBgetdmapnam()\fR function returns a pointer to a \fBdevmap_t\fR if it successfully locates the requested entry. Otherwise it returns \fINULL\fR.
+.SH FILES
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/security/device_maps\fR\fR
+.ad
+.RS 29n
+.rt  
+Administrative file defining the mapping of device special files to allocatable device names.
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+MT-LevelUnsafe
+.TE
+
+.SH SEE ALSO
+.LP
+\fBallocate\fR(1), \fBfree\fR(3C), \fBdevice_maps\fR(4), \fBattributes\fR(5)
+.SH NOTES
+.LP
+The \fBgetdmapent()\fR, \fBgetdmapnam()\fR, \fBgetdmapdev()\fR, and \fBgetdmaptype()\fR functions allocate memory for the pointers they return. This memory can be deallocated with the \fBfree\fR(3C) function.

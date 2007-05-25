@@ -1,0 +1,220 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2006 Sun Microsystems, Inc.  All rights reserved. 
+.TH audioixp 7D "16 Feb 20062" "SunOS 5.11" "Devices"
+.SH NAME
+audioixp \- ATI IXP400  south bridge  audio  digital controller interface
+.SH DESCRIPTION
+.LP
+The \fBaudioixp\fR device uses the IXP400 south bridge audio digital controller
+and a AC-97 Codec to implement the audio device interface. 
+.SH API
+.LP
+This interface is described in the \fBmixer\fR(7I) and \fBaudio\fR(7I) man pages.
+.SS "Driver Versions"
+.LP
+Applications that open \fB/dev/audio\fR may use the \fBAUDIO_GETDEV\fR \fBioctl\fR(2) to determine which audio device is being used. The \fBaudioixp\fR driver returns the string \fBSUNW,audioixp\fR in the \fBname\fR field
+of the \fBaudio_device\fR structure. The \fBversion\fR field contains the letter "a" and the config field contains the string onboard1.
+.sp
+
+.sp
+.TS
+tab();
+lw(1.83i) lw(0i) lw(0i) lw(1.83i) lw(0i) lw(0i) lw(0i) lw(1.83i) 
+lw(1.83i) lw(0i) lw(0i) lw(1.83i) lw(0i) lw(0i) lw(0i) lw(1.83i) 
+.
+Platform Ver.OutH. Phone Spkr.InMic.CD
+x86 w/
+IXP400
+s.  bridgeaYYYYYY
+.TE
+
+.LP
+Key to the above table: Ver. = Version. Out = Line Out. H. Phone = Head Phone. Spkr = Internal Speaker. In = Line In. Mic. = Microphone. CD = CD=ROM
+.LP
+The \fBaudioixp\fR device provides support for the internal speaker, headphone, line out, line in, and microphone. The \fBplay.mod_ports\fR and \fBrecord.mod_ports\fR fields of the audio_info structure (see \fBaudio\fR(7I)) indicate which ports may be manipulated.
+.SS "Audio Mixer Mode"
+.LP
+You use the \fB/kernel/drv/audioixp.conf\fR file to configure the \fBaudioixp\fR driver and enable or disable the audio mixer.
+See the \fBmixer\fR(7I) manual page for details. You can change the audio mixer mode at any time using the \fBsdtaudiocontrol(1)\fR or \fBmixerctl\fR(1) commands. Note that some systems support 48K sample rates only. On these systems, the compatible mode may not work and the mixer mode should be used.
+.SS "Audio Data Formats"
+.LP
+The \fBaudioixp\fR device supports 8-bit and 16-bit linear encoding in mono and stereo. With the mixer enabled, a continuous range of sample
+rates from 5510 to 48000 Hz is supported. With the mixer disabled, the following sample rates may be supported, depending on Codec capability:  5510, 6620, 8000, 9600, 11025, 16000, 18900, 22050, 27420, 32000, 33075, 37800, 4410, and 48000 Hz. Whether the mixer is enabled or not, the  device can be opened
+for simultaneous playing and recording.
+.SS "Sample Granularity"
+.LP
+Because the \fBaudioixp\fR device manipulates buffers of audio data, the reported input and output
+sample counts will vary at any given time from the actual sample count by no more than the size of the buffers the \fBaudioixp\fR driver is transferring. In general, programs should not rely on the absolute accuracy of the \fBplay.samples\fR and \fBrecord.samples\fR fields of the \fBaudio_info\fR structure.
+.SS "Interrupt Rate"
+.LP
+The driver determines how often play and record interrupts should take place. For playing audio, this determines how often and how much  audio is requested from the audio mixer. The impact of interrupts on recording is minimal. However, if a very small read buffer size is set, the record interrupt
+rate should be increased to prevent the buffer from overflowing. The play and record interrupt rates are tunable in the \fB/kernel/drv/audioixp.conf\fR file.
+.SS "Audio Status Change Notification"
+.LP
+As described in the \fBaudio\fR(7I) and \fBmixer\fR(7I) man pages, it is possible to request asynchronous notification of changes in the state of an audio device. 
+.SH ERRORS
+.LP
+See the \fBaudio\fR(7I) manpage for \fBaudioixp\fR errors.
+.SH FILES
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/dev/audio\fR \fR
+.ad
+.RS 30n
+.rt  
+Symbolic link to the system's primary audio device. (Not necessarily an \fBaudioixp\fR audio device).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/dev/audioctl\fR \fR
+.ad
+.RS 30n
+.rt  
+Control device for the primary audio device. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/dev/sound/0\fR \fR
+.ad
+.RS 30n
+.rt  
+Represents the first audio device on the system. (Not necessarily an \fBaudioixp\fR audio device).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/dev/sound/0ctl\fR \fR
+.ad
+.RS 30n
+.rt  
+Audio control for \fB/dev/sound/0\fR. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/usr/share/audio/samples\fR \fR
+.ad
+.RS 30n
+.rt  
+Audio sample files.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/kernel/drv/audioixp.conf\fR \fR
+.ad
+.RS 30n
+.rt  
+Driver configuration file.
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for a descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(1.83i) |cw(3.67i) 
+lw(1.83i) |lw(3.67i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+ArchitecturePC-based system
+_
+AvailabilitySUNWaudd,  SUNWauda
+_
+Stability levelEvolving
+.TE
+
+.SH SEE ALSO
+.LP
+\fBmixerctl\fR(1), \fBioctl\fR(2), \fBattributes\fR(5), \fBaudio\fR(7I), \fBmixer\fR(7I), \fBstreamio\fR(7I)
+.LP
+\fIATI IXP400 South Bridge Data Sheet\fR
+.LP
+http://\fIwww.sun.com/io\fR
+.SH DIAGNOSTICS
+.LP
+In addition to being logged, the following messages may appear on the system console:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBinit_state() play interrupt rate set too low\fR \fR
+.ad
+.sp .6
+.RS 4n
+The play interrupt rate in \fBaudioixp.conf\fR is set too low. It has been reset to the rate specified in the message. Update \fBaudioixp.conf\fR to a higher
+play interrupt rate.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBinit_state() play interrupt rate set too high\fR \fR
+.ad
+.sp .6
+.RS 4n
+The play interrupt rate set in \fBaudioixp.conf\fR is set too high. It has been reset to the rate specified in the message. Update \fBaudioixp.conf\fR  to a lower play
+interrupt rate.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBinit_state() record interrupt rate set too low\fR \fR
+.ad
+.sp .6
+.RS 4n
+The record interrupt rate in \fBaudioixp.conf\fR is set too low. It has been reset to the rate specified in the message. Update \fBaudioixp.conf\fR to a higher record
+interrupt rate.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB \fBinit_state() record interrupt rate set too high\fR \fR
+.ad
+.sp .6
+.RS 4n
+The record interrupt rate in  \fBaudioixp.conf\fR is set too high. It has been reset to the rate specified in the message. Update \fBaudioixp.conf\fR  to a lower
+record interrupt rate.
+.RE
+

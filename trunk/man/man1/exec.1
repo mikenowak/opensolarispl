@@ -1,0 +1,138 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright 1989 AT&T  Copyright (c) 2002 Sun Microsystems, Inc. - All Rights Reserved.
+.TH exec 1 "17 Jul 2002" "SunOS 5.11" "User Commands"
+.SH NAME
+exec, eval, source \- shell built-in functions to execute other commands 
+.SH SYNOPSIS
+.SS "sh"
+.LP
+.nf
+\fBexec\fR [\fIargument\fR]...
+.fi
+
+.LP
+.nf
+\fBeval\fR [\fIargument\fR]...
+.fi
+
+.SS "csh"
+.LP
+.nf
+\fBexec\fR \fIcommand\fR
+.fi
+
+.LP
+.nf
+\fBeval\fR \fIargument\fR...
+.fi
+
+.LP
+.nf
+\fBsource\fR [\fB-h\fR] \fIname\fR
+.fi
+
+.SS "ksh"
+.LP
+.nf
+\fB*exec\fR [\fIarg\fR]...
+.fi
+
+.LP
+.nf
+\fB*eval\fR [\fIarg\fR]...
+.fi
+
+.SH DESCRIPTION
+.SS "sh"
+.LP
+The \fBexec\fR command specified by the arguments is executed in place of this shell without creating a new process. Input/output arguments may appear and, if no other arguments are given, cause the shell input/output to be modified.
+.LP
+The \fIargument\fRs to the \fBeval\fR built-in are read as input to the shell and the resulting command(s) executed.
+.SS "csh"
+.LP
+\fBexec\fR executes \fBcommand\fR in place of the current shell, which terminates.
+.LP
+\fBeval\fR reads its \fIargument\fRs as input to the shell and executes the resulting command(s). This is usually used to execute commands generated as the result of command or variable substitution.
+.LP
+\fBsource\fR reads commands from \fIname\fR. \fBsource\fR commands may be nested, but if they are nested too deeply the shell may run out of file descriptors. An error in a sourced file at any level terminates all nested \fBsource\fR commands.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-h\fR \fR
+.ad
+.RS 7n
+.rt  
+Place commands from the file \fIname\fR on the history list without executing them.
+.RE
+
+.SS "ksh"
+.LP
+With the \fBexec\fR built-in, if \fIarg\fR is given, the command specified by the arguments is executed in place of this shell without creating a new process. Input/output arguments may appear and affect the current process. If no arguments are given the effect of this command is to modify file descriptors as prescribed by the input/output redirection list.  In this case, any file descriptor numbers greater than 2 that are opened with this mechanism are closed
+when invoking another program.
+.LP
+The arguments to \fBeval\fR are read as input to the shell and the resulting command(s) executed.
+.LP
+On this man page, \fBksh\fR(1) commands that are preceded by one or two * (asterisks) are treated specially in the following ways:
+.RS +4
+.TP
+1.
+Variable assignment lists preceding the command remain in effect when the command completes.
+.RE
+.RS +4
+.TP
+2.
+\fBI/O\fR redirections are processed after variable assignments.
+.RE
+.RS +4
+.TP
+3.
+Errors cause a script that contains them to abort.
+.RE
+.RS +4
+.TP
+4.
+Words, following a command preceded by ** that are in the format of a variable assignment, are expanded with the same rules as a variable assignment. This means that tilde substitution is performed after the \fB=\fR sign and word splitting and file name generation are not performed.
+.RE
+.SH EXIT STATUS
+.LP
+For \fBksh\fR:
+.LP
+If \fIcommand\fR is not found, the exit status is \fB127\fR. If \fIcommand\fR is found, but is not an executable utility, the exit status is \fB126\fR. If a redirection error occurs, the shell exits with a value in the range \fB1-125\fR. Otherwise, \fBexec\fR returns a zero exit status.
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWcsu
+.TE
+
+.SH SEE ALSO
+.LP
+\fBcsh\fR(1), \fBksh\fR(1), \fBsh\fR(1), \fBattributes\fR(5)
