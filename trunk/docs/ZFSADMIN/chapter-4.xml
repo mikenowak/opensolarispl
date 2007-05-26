@@ -61,24 +61,16 @@
 </itemizedlist>
 <sect2 xml:id="gazdp">
 <title>Używanie dysków w puli nośników danych ZFS</title>
-<para>The most basic element of a storage pool is a piece of physical storage.
-Physical storage can be any block device of at least 128 Mbytes in size. Typically,
-this device is a hard drive that is visible to the system in the <filename>/dev/dsk</filename> directory.<indexterm xml:id="indexterm-81">
-<primary>ZFS storage pools</primary>
-<secondary>components</secondary>
+<para>Najbardziej podstawowym elementem puli nośników danych jest fizyczny nośnik danych. Może nim być urządzenie blokowe o pojemności nie mniejszej niż 128 MB. Najczęściej urządzeniem tym jest dysk twardy widoczny dla systemu w katalogu <filename>/dev/dsk</filename>.<indexterm xml:id="indexterm-81">
+<primary>Pule nośników danych ZFS</primary>
+<secondary>komponenty</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-82">
-<primary>components of</primary>
-<secondary>ZFS storage pool</secondary>
+<primary>komponenty</primary>
+<secondary>pul nośników danych ZFS</secondary>
 </indexterm>
 </para>
-<para>A storage device can be a whole disk (<filename>c1t0d0</filename>) or
-an individual slice (<filename>c0t0d0s7</filename>). The recommended mode
-of operation is to use an entire disk, in which case the disk does not need
-to be specially formatted. ZFS formats the disk using an EFI label to contain
-a single, large slice. When used in this way, the partition table that is
-displayed by the <command>format</command> command appears similar to the
-following:</para>
+<para>Nośnikiem danych może być cały dysk (<filename>c1t0d0</filename>), lub pojedynczy blok (ang. slice), (<filename>c0t0d0s7</filename>). Zaleca się używania całych dysków, w którym to przypadku dysk nie wymaga specjalnego formatowania. ZFS formatuje dysk używają etykiet EFI do przechowywania jednego bloku. W takim przyadku tablica partycji wyświetlana przez komendę <command>format</command> wygląda podobnie:</para>
 <screen>Current partition table (original):
 Total disk sectors available: 71670953 + 16384 (reserved sectors)
 
@@ -92,47 +84,39 @@ Part      Tag    Flag     First Sector        Size        Last Sector
   6 unassigned    wm                 0          0              0    
   7 unassigned    wm                 0          0              0    
   8   reserved    wm          71670954       8.00MB         71687337</screen>
-<para>To use whole disks, the disks must be named using the standard Solaris
-convention, such as <filename>/dev/dsk/cXtXdXsX</filename>. Some third-party
-drivers use a different naming convention or place disks in a location other
-than the <filename>/dev/dsk</filename> directory. To use these disks, you
-must manually label the disk and provide a slice to ZFS. <indexterm xml:id="indexterm-83">
-<primary>EFI label</primary>
-<secondary>description</secondary>
+<para>Aby użyć całego dysku, musi być nazwany zgodnie z konwencją Solarisa, na przykład <filename>/dev/dsk/cXtXdXsX</filename>. Niektóre sterowniki od niezależnych dostawców używają innych konwencji nazewniczych lub umieszczają dyski w innych katalogach, niż <filename>/dev/dsk</filename>. Aby użyć tych dysków, należy ręcznie je etykietować i udostępnić blok ZFS-owi.<indexterm xml:id="indexterm-83">
+<primary>Etykiety EFI</primary>
+<secondary>opis</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-84">
-<primary>EFI label</primary>
-<secondary>interaction with ZFS</secondary>
+<primary>Etykiety EFI</primary>
+<secondary>współpraca z ZFS</secondary>
 </indexterm>
 </para>
-<para>ZFS applies an EFI label when you create a storage pool with whole disks.
-Disks can be labeled with a traditional Solaris VTOC label when you create
-a storage pool with a disk slice.</para>
-<para>Slices should only be used under the following conditions:</para>
+<para>ZFS nadaje etykietę EFI w momencie tworzenia puli przy użyciu całego dysku. Można też etykietować dyski tadycyjnym Solarisowym VTOC przy tworzeniu puli z użyciek bloku.</para>
+<para>Bloki powinny być używane tylko w poniższych wrunkach:</para>
 <itemizedlist>
 <listitem>
-<para>The device name is nonstandard.</para>
+<para>Nazwa urządzenia jest niestandardowa.</para>
 </listitem>
 <listitem>
-<para>A single disk is shared between ZFS and another file system,
-such as UFS.</para>
+<para>Pojedynczy dysk jest wpółdzielony między system plików ZFS oraz inny system plików, na przykład UFS.</para>
 </listitem>
 <listitem>
-<para>A disk is used as a swap or a dump device.</para>
+<para>Dysk jest używany na potrzeby swap bądź zrzutów (dump).</para>
 </listitem>
 </itemizedlist>
-<para>Disks can be specified by using either the full path, such as <filename>/dev/dsk/c1t0d0</filename>, or a shorthand name that consists of the device name within the <filename>/dev/dsk</filename> directory, such as <filename>c1t0d0</filename>. For example,
-the following are valid disk names:<indexterm xml:id="indexterm-85">
-<primary>ZFS storage pools</primary>
-<secondary>using whole disks</secondary>
+<para>Dyski można wskazać zarówno poprzez użycie pełnej ścieżki, na przykład <filename>/dev/dsk/c1t0d0</filename>, lub przez nazwę urządzenia znajdującego się w katalogu<filename>/dev/dsk</filename>, na przykład <filename>c1t0d0</filename>. Poniższe są prawidłowymi nazwami dysków:<indexterm xml:id="indexterm-85">
+<primary>pule nośników danych ZFS</primary>
+<secondary>używanie całego dysku</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-86">
-<primary>whole disks</primary>
-<secondary>as components of ZFS storage pools</secondary>
+<primary>całe dyski</primary>
+<secondary>jako komponenty pul nośników danych ZFS</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-87">
-<primary>disks</primary>
-<secondary>as components of ZFS storage pools</secondary>
+<primary>dyski</primary>
+<secondary>jako komponenty pul nośników danych ZFS</secondary>
 </indexterm>
 </para>
 <itemizedlist>
@@ -157,24 +141,11 @@ the following are valid disk names:<indexterm xml:id="indexterm-85">
 </para>
 </listitem>
 </itemizedlist>
-<para>ZFS works best when given whole physical disks. Although constructing
-logical devices using a volume manager, such as Solaris Volume Manager (SVM),
-Veritas Volume Manager (VxVM), or a hardware volume manager (LUNs or hardware
-RAID) is possible, these configurations are not recommended. While ZFS functions
-properly on such devices, less-than-optimal performance might be the result.</para>
-<para>Disks are identified both by their path and by their device ID, if available.
-This method allows devices to be reconfigured on a system without having to
-update any ZFS state. If a disk is switched between controller 1 and controller
-2, ZFS uses the device ID to detect that the disk has moved and should now
-be accessed using controller 2. The device ID is unique to the drive's firmware.
-While unlikely, some firmware updates have been known to change device IDs.
-If this situation happens, ZFS can still access the device by path and update
-the stored device ID automatically. If you inadvertently change both the path
-and the ID of the device, then export and re-import the pool in order to use
-it.</para>
+<para>ZFS działa najlepiej przy użyciu całych dysków. Wprawdzie tworzenie dysków logicznych przy użyciu zarządców woluminów jest możliwe, na przykład Solaris Volume Manager (SVM), Veritas Volume Manager (VxVM), bądź sprzętowych zarządców woluminów (LUN-y lub sprzętowe RAID-Y), konfiguracje takie nie są zalecane. O ile ZFS działa z takimi urządzeniami prawidłowo, wynikiem może być nieoptymalna wydajność.</para>
+<para>Dyski identyfikuje się za równo za pomocą ścieżki, jak i ich ID, jeśli jest dotępne. Metoda ta pozwala na rekonfigurowanie urządzeń w systemie bez uaktualniania stanu ZFS. Jesli dysk zostanie przeniesiony z kontrolera 1., do kontrolera 2., ZFS użyje ID urządzenia do wykrycia go i ustalenia, że powinno być teraz używane za pośrednictwem kontrolera 2. ID urządzenia jest unikalne dla firmware'u. Wprawdzie mało prawdopodobna jest zmiana ID urządzenia, jednak niektóre uaktualnienia firmware'u dokonywały takich zmian. W takiej sytuacji, ZFS może użyć urządzenia za pośrednictwem jego ścieżki systemowej i automatycznie uaktualnić przechowywane ID urządzenia. Jeśli dokonano zarówno zmiany ścieżki jak i ID urządzenia, aby możliwe było użycie puli, należy wyeksportować pulę, a później ją zaimportować.</para>
 </sect2>
 <sect2 xml:id="gazcr">
-<title>Using Files in a ZFS Storage Pool</title>
+<title>Używanie plików w pulach ZFS</title>
 <para>ZFS also allows you to use UFS files as virtual devices in your storage
 pool. This feature is aimed primarily at testing and enabling simple experimentation,
 not for production use. The reason is that <emphasis role="strong">any use
