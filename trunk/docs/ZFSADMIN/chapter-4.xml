@@ -146,60 +146,42 @@ Part      Tag    Flag     First Sector        Size        Last Sector
 </sect2>
 <sect2 xml:id="gazcr">
 <title>Używanie plików w pulach ZFS</title>
-<para>ZFS also allows you to use UFS files as virtual devices in your storage
-pool. This feature is aimed primarily at testing and enabling simple experimentation,
-not for production use. The reason is that <emphasis role="strong">any use
-of files relies on the underlying file system for consistency</emphasis>.
-If you create a ZFS pool backed by files on a UFS file system, then you are
-implicitly relying on UFS to guarantee correctness and synchronous semantics.<indexterm xml:id="indexterm-88">
-<primary>ZFS storage pools</primary>
-<secondary>using files</secondary>
+<para>ZFS umożliwia korzystanie z plików UFS jako urządzeń w puli. Opcja ta jest pomyślana głównie w celach testowych i do prostych eksperymentów, nie zaś do użycia w środowisku produkcyjnym. Powodem jest to, że <emphasis role="strong">spójność plików zależy od systemu plików, na których pliki są przechowywane.</emphasis>. Jeśli zostanie utworzona pula ZFS na bazie plików przechowywanych na systemie plików UFS, wtedy pośrednio żąda się gwarancji semantyki synchornicznej oraz poprawności od systemu plików UFS.<indexterm xml:id="indexterm-88">
+<primary>Pule nośników danych ZFS</primary>
+<secondary>używanie plików</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-89">
-<primary>files</primary>
-<secondary>as components of ZFS storage pools</secondary>
+<primary>pliki</primary>
+<secondary>jako komponenty pul nośników danych ZFS</secondary>
 </indexterm>
 </para>
-<para>However, files can be quite useful when you are first trying out ZFS
-or experimenting with more complicated layouts when not enough physical devices
-are present. All files must be specified as complete paths and must be at
-least 128 Mbytes in size. If a file is moved or renamed, the pool must be
-exported and re-imported in order to use it, as no device ID is associated
-with files by which they can be located.</para>
+<para>Pliki mogą się jednak okazać przydatne przy pierwszych próbach z ZFS-em, bądź przy eksperymentowaniu z bardziej skomplikowanymi układami, kiedy nie ma wystarczającej ilości prawdziwych nośników. Wszystkie pliki należy wskazywać za pomocą pełnej ścieżki dostępu i muszą mieć przynajmniej 128MB. Jeśli plik zostanie przeniesiony bądź zmieniona będzie jego nazwa, pula musi zostać wyeksoprtowana i zaimportowana, ponieważ plikom nie przypisuje się żadnego unikalnego ID, po którym mogłyby być znów odnaleznione.</para>
 </sect2>
 <sect2 xml:id="gazca">
-<title>Virtual Devices in a Storage Pool</title>
-<para>Each storage pool is comprised of one or more virtual devices. A <emphasis>virtual device</emphasis> is an internal representation of the storage pool
-that describes the layout of physical storage and its fault characteristics.
-As such, a virtual device represents the disk devices or files that are used
-to create the storage pool. <indexterm xml:id="indexterm-90">
-<primary>ZFS storage pools</primary>
-<secondary>virtual devices</secondary>
+<title>Urządzenia wirtualne w pulach nośników danych</title>
+<para>Każda pula nośników składa się z jednego lub więcej wirtualnych urządzeń. <emphasis>Urządzenie wirtualne</emphasis> to wewnętrzna reprezentacja puli nośników, opisująca układ fizycznych nośników i ich charakterystyki awaryjności. Wirtualne urządzenie jako takie reprezentuje urządzenia dyskowe lub pliki, używane do tworzenia puli. <indexterm xml:id="indexterm-90">
+<primary>Pule nośników danych ZFS</primary>
+<secondary>urządzenia wirtualne</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-91">
-<primary>virtual devices</primary>
-<secondary>as components of ZFS storage pools</secondary>
+<primary>urządzenia wirtualne</primary>
+<secondary>jako komponenty pul nośników danych ZFS</secondary>
 </indexterm>
 </para>
-<para>Two top-level virtual devices provide data redundancy: mirror and RAID-Z
-virtual devices. These virtual devices consist of disks, disk slices, or files.</para>
-<para>Disks, disk slices, or files that are used in pools outside of mirrors
-and RAID-Z virtual devices, function as top-level virtual devices themselves.</para>
-<para>Storage pools typically contain multiple top-level virtual devices.
-ZFS dynamically stripes data among all of the top-level virtual devices in
-a pool.</para>
+<para>Dwa urządzenia wirtualne najwyższego poziomu (top level) zapewniają redundancję danych: mirror i RAID-Z. Urządzenia te składają się z dysków, bloków dysków lub plików. </para>
+<para>Dyski, bloki dysków i pliki używane w pulach poza mirrorami i RAID-Z same funkcjonują jako urządzenia wirtualne najwyższego poziomu. </para>
+<para>Pule nośników danych zawierają zazwyczaj wiele urządzeń wirtualnych najwyższego poziomu. ZFS dynamicznie rozdziela dane pomiędzy wszystkie urządzenia najwyższego poziomu w puli.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gcfof">
-<title>Replication Features of a ZFS Storage Pool</title>
-<para>ZFS provides two levels of data redundancy in a mirrored and a RAID-Z
-configuration.<indexterm xml:id="indexterm-92">
-<primary>replication features of ZFS</primary>
-<secondary>mirrored or RAID-Z</secondary>
+<title>Opcje replikacji danych w pulach ZFS</title>
+<para>ZFS zapewnia dwa poziomy reduncjanji danych w konfiguracji mirror i RAID-Z.<indexterm xml:id="indexterm-92">
+<primary>opcje replikacji danych w ZFS</primary>
+<secondary>mirror lub RAID-Z</secondary>
 </indexterm>
 </para>
 <sect2 xml:id="gamss">
-<title>Mirrored Storage Pool Configuration</title>
+<title>Konfiguracja puli nośników danych: mirror</title>
 <para>A mirrored storage pool configuration requires at least two disks, preferrably
 on separate controllers. Many disks can be used in a mirrored configuration.
 In addition, you can create more than one mirror in each pool. Conceptually,
