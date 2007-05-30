@@ -182,55 +182,48 @@ Part      Tag    Flag     First Sector        Size        Last Sector
 </para>
 <sect2 xml:id="gamss">
 <title>Konfiguracja puli nośników danych: mirror</title>
-<para>A mirrored storage pool configuration requires at least two disks, preferrably
-on separate controllers. Many disks can be used in a mirrored configuration.
-In addition, you can create more than one mirror in each pool. Conceptually,
-a simple mirrored configuration would look similar to the following:<indexterm xml:id="indexterm-93">
-<primary>mirrored configuration</primary>
-<secondary>description</secondary>
+<para>Konfiguracja lustrzana (mirrored) puli nośników danych wymaga użycia przynajmniej dwóch dysków, najlepiej na osobnych kontrolerach. W konfiguracji lustrzanej można używać wielu dysków. Dodatkowo można stworzyć więcej niż jedno lustro w puli. Prosta konfiguracja lustrzana wygląda podobnie do poniższej:<indexterm xml:id="indexterm-93">
+<primary>konfiguracja lustrzana</primary>
+<secondary>opis</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-94">
-<primary>mirrored configuration</primary>
-<secondary>replication feature</secondary>
+<primary>konfiguracja lustrzana</primary>
+<secondary>opcja replikacji</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-95">
-<primary>mirrored configuration</primary>
-<secondary>conceptual view</secondary>
+<primary>konfiguracja lustrzana</primary>
+<secondary>koncepcja</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-96">
-<primary>ZFS storage pools</primary>
-<secondary>mirrored configuration, description of</secondary>
+<primary>pule nośników danych ZFS</primary>
+<secondary>konfiguracja lustrzana, opis</secondary>
 </indexterm>
 </para>
 <screen>mirror c1t0d0 c2t0d0</screen>
-<para>Conceptually, a more complex mirrored configuration would look similar
-to the following:</para>
+<para>Bardziej skomplikowana konfiguracja będzie podobna do poniższej:</para>
 <screen>mirror c1t0d0 c2t0d0 c3t0d0 mirror c4t0d0 c5t0d0 c6t0d0</screen>
-<para>For information about creating a mirrored storage pool, see <olink targetdoc="" remap="internal" targetptr="gazhv">Creating a Mirrored Storage Pool</olink>.</para>
+<para>Więcej inforomacji o tworzeniu lustrzanej konfiguracji puli nośników danych w <olink targetdoc="" remap="internal" targetptr="gazhv">tworzeniu lustrzanych pul nośników danych</olink>.</para>
 </sect2>
 <sect2 xml:id="gamtu">
-<title>RAID-Z Storage Pool Configuration</title>
-<para>In addition to a mirrored storage pool configuration, ZFS provides a
-RAID-Z configuration. RAID-Z is similar to RAID-5.<indexterm xml:id="indexterm-97">
-<primary>RAID-Z configuration</primary>
-<secondary>description</secondary>
+<title>Konfiguracja puli nośników danych RAID-Z</title>
+<para>Oprócz konfiguracji lustrzanej puli nośników danych, ZFS umożliwia konfigurację RAID-Z. RAID-Z  jest podobne do RAID-5.<indexterm xml:id="indexterm-97">
+<primary>konfiguracja RAID-Z</primary>
+<secondary>opis</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-98">
-<primary>RAID-Z configuration</primary>
-<secondary>replication feature</secondary>
+<primary>konfiguracja RAID-Z</primary>
+<secondary>opcja replikacji</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-99">
-<primary>RAID-Z configuration</primary>
-<secondary>conceptual view</secondary>
+<primary>konfiguracja RAID-Z</primary>
+<secondary>koncepcja</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-100">
-<primary>ZFS storage pools</primary>
-<secondary>RAID-Z configuration, description of</secondary>
+<primary>pule nośników danych ZFS</primary>
+<secondary>konfiguracja RAID-Z, opis</secondary>
 </indexterm>
 </para>
-<para>All traditional RAID-5-like algorithms (RAID-4. RAID-5. RAID-6, RDP,
-and EVEN-ODD, for example) suffer from a problem known as the “RAID-5
-write hole.” If only part of a RAID-5 stripe is written, and power is
+<para>Wszystkie tradycyjne algorytmy RAID-5 i podobne (RAID-4. RAID-5. RAID-6, RDP i PARZYSTE-NIEPARZYSTE na przykład) obarczone są problemem tak zwanej "dziury zapisu RAID-5". Jeśli tylko fragment bloku danych RAID-5 zostanie zapisany i nastąpi awaria zasilania zanim wszystkie bloki zostaną zapisane na dysk, przystość i dane będą rozsynchronizowane, a przez to bezużyteczne na zawsze, chyba że następny zapis pełnego bloku nadpisze ten fragment. If only part of a RAID-5 stripe is written, and power is
 lost before all blocks have made it to disk, the parity will remain out of
 sync with the data, and therefore useless, forever (unless a subsequent full-stripe
 write overwrites it). In RAID-Z, ZFS uses variable-width RAID stripes so that
