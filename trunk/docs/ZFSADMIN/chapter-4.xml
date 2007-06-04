@@ -223,206 +223,154 @@ Part      Tag    Flag     First Sector        Size        Last Sector
 <secondary>konfiguracja RAID-Z, opis</secondary>
 </indexterm>
 </para>
-<para>Wszystkie tradycyjne algorytmy RAID-5 i podobne (RAID-4. RAID-5. RAID-6, RDP i PARZYSTE-NIEPARZYSTE na przykład) obarczone są problemem tak zwanej "dziury zapisu RAID-5". Jeśli tylko fragment bloku danych RAID-5 zostanie zapisany i nastąpi awaria zasilania zanim wszystkie bloki zostaną zapisane na dysk, przystość i dane będą rozsynchronizowane, a przez to bezużyteczne na zawsze, chyba że następny zapis pełnego bloku nadpisze ten fragment. If only part of a RAID-5 stripe is written, and power is
-lost before all blocks have made it to disk, the parity will remain out of
-sync with the data, and therefore useless, forever (unless a subsequent full-stripe
-write overwrites it). In RAID-Z, ZFS uses variable-width RAID stripes so that
-all writes are full-stripe writes. This design is only possible because ZFS
-integrates file system and device management in such a way that the file system's
-metadata has enough information about the underlying data replication model
-to handle variable-width RAID stripes. RAID-Z is the world's first software-only
-solution to the RAID-5 write hole.</para>
-<para>You need at least two disks for a RAID-Z configuration. Otherwise, no
-special hardware is required to create a RAID-Z configuration. Currently,
-RAID-Z provides single parity. For example, if you have three disks in a RAID-Z
-configuration, parity data occupies space equal to one of the three disks.</para>
-<para>Conceptually, RAID-Z configuration with three disks would look similar
-to the following:</para>
+<para>Wszystkie tradycyjne algorytmy RAID-5 i podobne (RAID-4. RAID-5. RAID-6, RDP i PARZYSTE-NIEPARZYSTE na przykład) obarczone są problemem tak zwanej "luki zapisu RAID-5". Jeśli tylko fragment bloku danych RAID-5 zostanie zapisany i nastąpi awaria zasilania zanim wszystkie bloki zostaną zapisane na dysk, przystość i dane będą rozsynchronizowane, a przez to bezużyteczne na zawsze, chyba że następny zapis pełnego bloku nadpisze ten fragment. W RAID-Z ZFS używa bloków o zmiennej długości, zatem każdy zapis zapis jest zapisem pełnego bloku. Jest to możliwe tylko dlatego, że ZFS integruje system plików i zarządzanie urządzeniami w taki sposób, że metadane systemu plików zawierają wystarczająco dużo informacji o modelu replikacji w niższej warstwie, aby poradzić sobie z blokami RAID o zmiennej długości. RAID-Z to pierwszy to pierwsze na świecie czysto programowe rozwiązanie problemu luki zapisu RAID-5.</para>
+<para>Do konfiguracji RAID-Z wymagane są co najmniej dwa dyski. Obecnie RAID-Z zapewnia pojedyczną parzystość. Na przykład, jeśli w puli RAID-Z są trzy dyski, dane parzystości zajmują miejsce równe pojemności jednego z dysków.</para>
+<para>Koncepcyjnie, konfiguracja RAID-Z z trzema dyskami wygląda jak poniżej:</para>
 <screen>raidz c1t0d0 c2t0d0 c3t0d0</screen>
-<para>A more complex conceptual RAID-Z configuration would look similar to
-the following:</para>
+<para>Bardziej skomplikowana konfiguracja RAID-Z wygląda podobnie do poniższej:</para>
 <screen>raidz c1t0d0 c2t0d0 c3t0d0 c4t0d0 c5t0d0 c6t0d0 c7t0d0 raidz c8t0d0 c9t0d0 c10t0d0 c11t0d0 c12t0d0 c13t0d0 c14t0d0</screen>
-<para>If you are creating a RAID-Z configuration with many disks, as in this
-example, a RAID-Z configuration with 14 disks is better split into a two 7-disk
-groupings. RAID-Z configurations with single-digit groupings of disks should
-perform better.</para>
-<para>For information about creating a RAID-Z storage pool, see <olink targetdoc="" remap="internal" targetptr="gazhe">Creating a RAID-Z Storage Pool</olink>.</para>
+<para>Jeśli tworzona jest konfiguracja z wieloma dyskami, jak w powyższym przykładzie, konfiguracja RAID-Z z 14 dosyami sprawdza się lepiej jako dwie konfiguracje RAID-Z z 7 dyskami każda. Konfiguracje RAID-Z grupami o jednocyfrowej liczbie dysków powinny mieć lepszą wydajność.</para>
+<para>Więcej informacji o tworzeniu pul RAID-Z w <olink targetdoc="" remap="internal" targetptr="gazhe">Tworzenie pul RAID-Z</olink>.</para>
 </sect2>
 <sect2 xml:id="gazch">
-<title>Self-Healing Data in a Replicated Configuration</title>
-<para>ZFS provides for self-healing data in a mirrored or RAID-Z configuration.</para>
-<para>When a bad data block is detected, not only does ZFS fetch the correct
-data from another replicated copy, but it also repairs the bad data by replacing
-it with the good copy.<indexterm xml:id="indexterm-101">
-<primary>self-healing data</primary>
-<secondary>description</secondary>
+<title>Samonaprawiające się dane w konfiguracjach z replikacją</title>
+<para>W konfiguracji lustrzanej lub RAID-Z ZFS zapewnia samonaprawianie się danych.</para>
+<para>Kiedy wykryty zostanie blok z uszkodzonymi danymi, ZFS nie tylko pobiera poprawne dane z innej kopii, ale również naprawia uszkodzone dane zastępując je poprawną kopią.<indexterm xml:id="indexterm-101">
+<primary>samonaprawiające się dane</primary>
+<secondary>opis</secondary>
 </indexterm>
 </para>
 </sect2>
 <sect2 xml:id="gazdd">
-<title>Dynamic Striping in a Storage Pool</title>
-<para>For each virtual device that is added to the pool, ZFS dynamically stripes
-data across all available devices. The decision about where to place data
-is done at write time, so no fixed width stripes are created at allocation
-time.<indexterm xml:id="indexterm-102">
-<primary>dynamic striping</primary>
-<secondary>description</secondary>
+<title>Dynamiczny striping w pulach danych</title>
+<para>Dla każdego urządzenia wirtualnego dodanego do puli, ZFS dynamicznie zapisuje dane równomiernie na wszystkich dostępnych dyskach (stripe). Decyzja o tym, gdzie zapisać dane podejmowana jest w momencie zapisu, nie pojawiają się zatem bloki o stałej wielkości w momencie alokacji.<indexterm xml:id="indexterm-102">
+<primary>dynamiczny striping</primary>
+<secondary>opis</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-103">
-<primary>dynamic striping</primary>
-<secondary>storage pool feature</secondary>
+<primary>dynamiczny striping</primary>
+<secondary>możliwości puli nośników danych</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-104">
-<primary>ZFS storage pools</primary>
-<secondary>dynamic striping</secondary>
+<primary>Pule nośników danych ZFS</primary>
+<secondary>dynamiczny striping</secondary>
 </indexterm>
 </para>
-<para>When virtual devices are added to a pool, ZFS gradually allocates data
-to the new device in order to maintain performance and space allocation policies.
-Each virtual device can also be a mirror or a RAID-Z device that contains
-other disk devices or files. This configuration allows for flexibility in
-controlling the fault characteristics of your pool. For example, you could
-create the following configurations out of 4 disks:</para>
+<para>Kiedy urządzenia wirtualne dodawane są do pui. ZFS stopniowo zapisuje dane na dwym urządzeniu w celu zapewnienia wydajności i zgodności z regułami alokacji przestrzeni dyskowej. Każde urządzenie wirtualne może być także lustrem lub urządzeniem RAID-Z zawierającym inne urządzenia dyskowe lub pliki. Konfiguracja taka pozwala na elastyczność w kontrolowaniu charakterystyk awaryjności w puli. Na przykład, można utworzyć następującą puę z 4 dysków:</para>
 <itemizedlist>
 <listitem>
-<para>Four disks using dynamic striping</para>
+<para>Cztery dyski używające dynamicznego stripingu</para>
 </listitem>
 <listitem>
-<para>One four-way RAID-Z configuration</para>
+<para>Jedna konfiguracja RAID-Z z czterema urządzeniami</para>
 </listitem>
 <listitem>
-<para>Two two-way mirrors using dynamic striping</para>
+<para>Dwuurządzeniowy mirror z użyciem dynamicznego stripingu</para>
 </listitem>
 </itemizedlist>
-<para>While ZFS supports combining different types of virtual devices within
-the same pool, this practice is not recommended. For example, you can create
-a pool with a two-way mirror and a three-way RAID-Z configuration. However,
-your fault tolerance is as good as your worst virtual device, RAID-Z in this
-case. The recommended practice is to use top-level virtual devices of the
-same type with the same replication level in each device.</para>
+<para>Wprawdzie ZFS umożliwia kombinowanie różnych typów urządzeń wirtualnych w jednej puli, jednak praktyka taka jest niezalecana. Można, na przykład, utworzyć pulę z dwuurządzeniowym mirrorerm i trzyurządzeniowym RAID-Z. Odporność na awarie jest jednak tak dobra, jak dobre jest najgorsze urządzenie wirtualne, w tym przypadku RAID-Z. Zalecaną praktyką jest stosowanie takich samych urządzeń na tym samym poziomie replikacji w każdym urządzeniu.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gaypw">
-<title>Creating and Destroying ZFS Storage Pools</title>
-<para>By design, creating and destroying pools is fast and easy. However,
-be cautious when doing these operations. Although checks are performed to
-prevent using devices known to be in use in a new pool, ZFS cannot always
-know when a device is already in use. Destroying a pool is even easier. Use <command>zpool destroy</command> with caution. This is a simple command with significant
-consequences. For information about destroy pools, see <olink targetdoc="" remap="internal" targetptr="gammr">Destroying ZFS Storage Pools</olink>.<indexterm xml:id="indexterm-105">
-<primary>creating</primary>
-<secondary>ZFS storage pool</secondary>
-<tertiary>description</tertiary>
+<title>Tworzenie i usuwanie pul nośników danych ZFS</title>
+<para>Zgodnie z założeniami projektowymi, tworzenie i usuwanie pul jest proste i szybkie. Należy jednak zachować ostrożność przy wykonywaniu tych operacji. Wprawdzie ZFS stara się uniemożliwić włączenie już używanych urządzeń do nowej puli, nie zawsze jednak może wiedzieć, kiedy urządzenie jest już wykorzystywane w jakiejś puli. Usuwanie puli jest jeszcze prostsze. Komendy <command>zpool destroy</command> należy używać ostrożnie. To prosta komenda o poważnych konsekwencjach. Więcej informacji o usuwaniu pul w <olink targetdoc="" remap="internal" targetptr="gammr">Usuwaniu pul nosników danych ZFS</olink>.<indexterm xml:id="indexterm-105">
+<primary>tworzenie</primary>
+<secondary>pul nośników danych ZFS</secondary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-106">
-<primary>destroying</primary>
-<secondary>ZFS storage pool</secondary>
-<tertiary>description</tertiary>
+<primary>usuwanie</primary>
+<secondary>pul nośników danych ZFS</secondary>
+<tertiary>opis</tertiary>
 </indexterm>
 </para>
 <sect2 xml:id="gaynr">
-<title>Creating a ZFS Storage Pool</title>
-<para>To create a storage pool, use the <command>zpool create</command> command.
-This command takes a pool name and any number of virtual devices as arguments.
-The pool name must satisfy the naming conventions outlined in <olink targetdoc="" remap="internal" targetptr="gbcpt">ZFS Component Naming Requirements</olink>.<indexterm xml:id="indexterm-107">
-<primary>creating</primary>
-<secondary>ZFS storage pool (<command>zpool create</command>)</secondary>
-<tertiary>(example of)</tertiary>
+<title>Tworzenie puli nośników danych ZFS</title>
+<para>Do tworzenie puli nośników danych służy komenda <command>zpool create</command>. Argumentami są: nazwa puli i dowolna liczba urządzeń wirtualnych. Nazwa puli musi spełniać wymogi nazewnicze wyjaśnione w <olink targetdoc="" remap="internal" targetptr="gbcpt">Wymogi nazewnicze komponentów ZFS</olink>.<indexterm xml:id="indexterm-107">
+<primary>tworzenie</primary>
+<secondary>Puli nośników danych ZFS (<command>zpool create</command>)</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-108">
 <primary>
 <command>zpool create</command>
 </primary>
-<secondary>basic pool</secondary>
-<tertiary>(example of)</tertiary>
+<secondary>prosta pula</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-109">
-<primary>ZFS storage pools</primary>
-<secondary>creating (<command>zpool create</command>)</secondary>
-<tertiary>(example of)</tertiary>
+<primary>Pule nośników danych ZFS</primary>
+<secondary>tworzenie (<command>zpool create</command>)</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <sect3 xml:id="gazgt">
-<title>Creating a Basic Storage Pool</title>
-<para>The following command creates a new pool named <filename>tank</filename> that
-consists of the disks <filename>c1t0d0</filename> and <filename>c1t1d0</filename>:</para>
+<title>Tworzenie prostej puli nośników danych</title>
+<para>Poniższa komenda tworzy nową pulę o nazwie <filename>tank</filename> składającą się z dysków <filename>c1t0d0</filename> i <filename>c1t1d0</filename>:</para>
 <screen># <userinput>zpool create tank c1t0d0 c1t1d0</userinput>
 </screen>
-<para>These whole disks are found in the <filename>/dev/dsk</filename> directory
-and are labelled appropriately by ZFS to contain a single, large slice. Data
-is dynamically striped across both disks.</para>
+<para>Dyski te znajdują się w katalogu <filename>/dev/dsk</filename> i zostaną zaetykietowane przez ZFS tak, aby zawierały jeden duży blok. Dane będą dynamicznie stripowane po wszystkich dyskach.</para>
 </sect3>
 <sect3 xml:id="gazhv">
-<title>Creating a Mirrored Storage Pool</title>
-<para>To create a mirrored pool, use the <literal>mirror</literal> keyword,
-followed by any number of storage devices that will comprise the mirror. Multiple
-mirrors can be specified by repeating the <literal>mirror</literal> keyword
-on the command line. The following command creates a pool with two, two-way
-mirrors:</para>
+<title>Tworzenie lustrzanej konfiguracji puli nośników danych</title>
+<para>Do stworzenia lustrzanej puli służy słowo kluczowe <literal>mirror</literal>, po którym następuje dowolna liczba dysków, z których będzie się skłądało lustro. Poprzez powtarzanie słowa kluczowego <literal>mirror</literal> można stworzyć wiele luster. Poniższa komenda tworzy pulę z dwoma dwuurządzeniowymi lustrami:</para>
 <screen># <userinput>zpool create tank mirror c1d0 c2d0 mirror c3d0 c4d0</userinput>
 </screen>
-<para>The second <literal>mirror</literal> keyword indicates that a new top-level
-virtual device is being specified. Data is dynamically striped across both
-mirrors, with data being replicated between each disk appropriately.<indexterm xml:id="indexterm-110">
-<primary>creating</primary>
-<secondary>mirrored ZFS storage pool (<command>zpool create</command>)</secondary>
-<tertiary>(example of)</tertiary>
+<para>Drugie słowo kluczowe <literal>mirror</literal> wskazuje, że konfigurowane jest nowe urządzenie wirtualne najwyższej warstwy. Dane są dynamicznie stripowane na oba lustra z replikacją pomiędzy odpowiednimi dyskami.<indexterm xml:id="indexterm-110">
+<primary>tworzenie</primary>
+<secondary>lustrzanej puli nośników danych ZFS (<command>zpool create</command>)</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-111">
 <primary>
 <command>zpool create</command>
 </primary>
-<secondary>mirrored storage pool</secondary>
-<tertiary>(example of)</tertiary>
+<secondary>lustrzana konfiguracja puli nośników danych</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-112">
-<primary>mirrored storage pool (<command>zpool create</command>)</primary>
-<secondary>(example of)</secondary>
+<primary>lustrzana konfiguracja puli nośników danych (<command>zpool create</command>)</primary>
+<secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-113">
-<primary>ZFS storage pools</primary>
-<secondary>creating mirrored configuration (<command>zpool create</command>)</secondary>
-<tertiary>(example of)</tertiary>
+<primary>Pule nośników danych ZFS</primary>
+<secondary>tworzenie konfiguracji lustrzanej (<command>zpool create</command>)</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 </sect3>
 <sect3 xml:id="gazhe">
-<title>Creating a RAID-Z Storage Pool</title>
-<para>Creating a RAID-Z pool is identical to creating a mirrored pool, except
-that the <literal>raidz</literal> keyword is used instead of <literal>mirror</literal>.
-The following example shows how to create a pool with a single RAID-Z device
-that consists of five disks:<indexterm xml:id="indexterm-114">
-<primary>creating</primary>
-<secondary>RAID-Z storage pool (<command>zpool create</command>)</secondary>
-<tertiary>(example of)</tertiary>
+<title>Tworzenie pul nośników danych RAID-Z</title>
+<para>Tworzenie puli RAID-Z jest identyczne jak tworzenie puli lustrzanej, z wyjątkiem słowa kluczowego <literal>raidz</literal> zamiast <literal>mirror</literal>. Poniższy przykład pokazuje, jak stworzyć pulę z pojedynczym urządzeniem RAID-Z składającym się z pięciu dysków:<indexterm xml:id="indexterm-114">
+<primary>tworzenie</primary>
+<secondary>pule nośników danych RAID-Z (<command>zpool create</command>)</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-115">
-<primary>RAID-Z configuration</primary>
-<secondary>(example of)</secondary>
+<primary>konfiguracja RAID-Z</primary>
+<secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-116">
 <primary>
 <command>zpool create</command>
 </primary>
-<secondary>RAID-Z storage pool</secondary>
-<tertiary>(example of)</tertiary>
+<secondary>pula nośników danych RAID-Z</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-117">
-<primary>ZFS storage pools</primary>
-<secondary>creating a RAID-Z configuration (<command>zpool create</command>)</secondary>
-<tertiary>(example of)</tertiary>
+<primary>Pule nośników danych ZFS</primary>
+<secondary>tworzenie konfiguracji RAID-Z (<command>zpool create</command>)</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool create tank raidz c1t0d0 c2t0d0 c3t0d0 c4t0d0 /dev/dsk/c5t0d0</userinput>
 </screen>
-<para>This example demonstrates that disks can be specified by using their
-full paths. The <filename>/dev/dsk/c5t0d0</filename> device is identical to
-the <filename>c5t0d0</filename> device.</para>
-<para>A similar configuration could be created with disk slices. For example:</para>
+<para>Przykłąd ten pokazuje, że dyski można wskazywać ich pełnymi scieżkami. Urządzenie <filename>/dev/dsk/c5t0d0</filename> jest identyczne z urządzeniem <filename>c5t0d0</filename>.</para>
+<para>Podobna konfiguracja może zostać stworzona przy pomocy bloków dysków. Na przykład:</para>
 <screen># <userinput>zpool create tank raidz c1t0d0s0 c2t0d0s0 c3t0d0s0 c4t0d0s0 c5t0d0s0</userinput>
 </screen>
-<para>However, the disks must be preformatted to have an appropriately sized
-slice zero.</para>
-<para>For more information about a RAID-Z configuration, see <olink targetdoc="" remap="internal" targetptr="gamtu">RAID-Z Storage Pool Configuration</olink>.</para>
+<para>Dyski te muszą jednak być odpowiednio sformatowane, aby mieć właściwą wielkość bloku zero.</para>
+<para>Więcej informacji o konfiguracji RAID-Z w <olink targetdoc="" remap="internal" targetptr="gamtu">Konfiguracji RAID-Z pul nośników danych</olink>.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gazhs">
