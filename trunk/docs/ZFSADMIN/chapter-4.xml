@@ -256,7 +256,7 @@ Part      Tag    Flag     First Sector        Size        Last Sector
 <secondary>dynamiczny striping</secondary>
 </indexterm>
 </para>
-<para>Kiedy urządzenia wirtualne dodawane są do pui. ZFS stopniowo zapisuje dane na dwym urządzeniu w celu zapewnienia wydajności i zgodności z regułami alokacji przestrzeni dyskowej. Każde urządzenie wirtualne może być także lustrem lub urządzeniem RAID-Z zawierającym inne urządzenia dyskowe lub pliki. Konfiguracja taka pozwala na elastyczność w kontrolowaniu charakterystyk awaryjności w puli. Na przykład, można utworzyć następującą puę z 4 dysków:</para>
+<para>Kiedy urządzenia wirtualne dodawane są do puli. ZFS stopniowo zapisuje dane na dwym urządzeniu w celu zapewnienia wydajności i zgodności z regułami alokacji przestrzeni dyskowej. Każde urządzenie wirtualne może być także lustrem lub urządzeniem RAID-Z zawierającym inne urządzenia dyskowe lub pliki. Konfiguracja taka pozwala na elastyczność w kontrolowaniu charakterystyk awaryjności w puli. Na przykład, można utworzyć następującą puę z 4 dysków:</para>
 <itemizedlist>
 <listitem>
 <para>Cztery dyski używające dynamicznego stripingu</para>
@@ -374,15 +374,11 @@ Part      Tag    Flag     First Sector        Size        Last Sector
 </sect3>
 </sect2>
 <sect2 xml:id="gazhs">
-<title>Handling ZFS Storage Pool Creation Errors</title>
-<para>Pool creation errors can occur for many reasons. Some of these reasons
-are obvious, such as when a specified device doesn't exist, while other reasons
-are more subtle.</para>
+<title>Obsługa błedów przy tworzeniu pul nośników danych ZFS</title>
+<para>Błędy przy tworzeniu puli nośników mogą wystąpić z wielu powodów. Część z nich jest oczywista, na przykład brak urządzenia, jednak inne błędy są bardziej subtelne.</para>
 <sect3 xml:id="gazht">
-<title>Detecting in Use Devices</title>
-<para>Before formatting a device, ZFS first determines if the disk is in use
-by ZFS or some other part of the operating system. If the disk is in use,
-you might see errors such as the following:</para>
+<title>Wykrywanie używanych urządzeń</title>
+<para>Przed sformatowaniem dysku, ZFS sprawdza, czy dysk jest używany przez ZFS lub inną część systemu operacyjnego. Jeśli dysk jest używany, może wystąpić błąd podobny do poniższego:</para>
 <screen># <userinput>zpool create tank c1t0d0 c1t1d0</userinput>
 invalid vdev specification
 use '-f' to override the following errors:
@@ -390,78 +386,70 @@ use '-f' to override the following errors:
 /dev/dsk/c1t0d0s1 is currently mounted on swap
 /dev/dsk/c1t1d0s0 is part of active ZFS pool 'zeepool'
 Please see zpool(1M)</screen>
-<para>Some of these errors can be overridden by using the <option>
-f</option> option,
-but most errors cannot. The following uses cannot be overridden by using the <option>
-f</option> option, and you must manually correct them:<indexterm xml:id="indexterm-118">
-<primary>detecting</primary>
-<secondary>in-use devices</secondary>
-<tertiary>(example of)</tertiary>
+<para>Niektóre z tych błędów można obejść przy użyciu opcji <option>
+f</option>, ale większości się nie da. Poniższych użyć nie uda się obejść za pomocą opcji <option>
+f</option> i należy usunąć je ręcznie:<indexterm xml:id="indexterm-118">
+<primary>wykrywanie</primary>
+<secondary>używanych urządzeń</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-119">
-<primary>in-use devices</primary>
-<secondary>detecting</secondary>
-<tertiary>(example of)</tertiary>
+<primary>używane urządzenia</primary>
+<secondary>wykrywanie</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <variablelist>
 <varlistentry>
 <term>
-<emphasis role="strong">Mounted file system</emphasis>
+<emphasis role="strong">Zamontowane systemy plików</emphasis>
 </term>
 <listitem>
-<para>The disk or one of its slices contains a file system that
-is currently mounted. To correct this error, use the <command>umount</command> command.</para>
+<para>Dysk lub jeden z bloków zawiera system plików zamontowany w systemie. Błąd ten należy poprawić komendą <command>umount</command>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>
-<emphasis role="strong">File system in /etc/vfstab</emphasis>
+<emphasis role="strong">System plików w /etc/vfstab</emphasis>
 </term>
 <listitem>
-<para>The disk contains a file system that is listed in the <filename>/etc/vfstab</filename> file, but the file system is not currently mounted. To correct
-this error, remove or comment out the line in the <filename>/etc/vfstab</filename> file.</para>
+<para>Dysk zawiera system plików obecny w pliku <filename>/etc/vfstab</filename>, ale nie jest on zamontowany. Błąd ten można poprawić usuwając lub oznaczjąć jako komentarz linię w pliku <filename>/etc/vfstab</filename>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>
-<emphasis role="strong">Dedicated dump device</emphasis>
+<emphasis role="strong">Urządzenie przeznaczone na zrzuty pamięci (dump)</emphasis>
 </term>
 <listitem>
-<para>The disk is in use as the dedicated dump device for the system.
-To correct this error, use the <command>dumpadm</command> command.</para>
+<para>Dysk jest używany jako urządzenie przeznaczone na zrzuty pamięci (dump). Błąd ten można poprawić komendą <command>dumpadm</command>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>
-<emphasis role="strong">Part of a ZFS pool</emphasis>
+<emphasis role="strong">Część puli ZFS</emphasis>
 </term>
 <listitem>
-<para>The disk or file is part of an active ZFS storage pool. To
-correct this error, use the <command>zpool</command> command to destroy the
-pool.</para>
+<para>Dysk lub plik jest częścią puli ZFS. Błąd ten można naprawić niszcząc pulę przy użyciu komendy <command>zpool</command>.</para>
 </listitem>
 </varlistentry>
 </variablelist>
-<para>The following in-use checks serve as helpful warnings and can be overridden
-by using the <option>
-f</option> option to create the pool:</para>
+<para>Następujące testy na użycie urządzeń służą tylko jako pomocne ostrzeżenia i można je obejść opcją <option>
+f</option> przy tworzeniu puli:</para>
 <variablelist>
 <varlistentry>
 <term>
-<emphasis role="strong">Contains a file system</emphasis>
+<emphasis role="strong">Zawiera system plików</emphasis>
 </term>
 <listitem>
-<para>The disk contains a known file system, though it is not mounted
-and doesn't appear to be in use.</para>
+<para>Dysk zawiera system plików, ale nie jest zamontowany i wydaje się być nieużywany.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>
-<emphasis role="strong">Part of volume</emphasis>
+<emphasis role="strong">Część woluminu</emphasis>
 </term>
 <listitem>
-<para>The disk is part of an SVM volume.</para>
+<para>Dysk jest częścią woluminu SVM.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -469,96 +457,70 @@ and doesn't appear to be in use.</para>
 <emphasis role="strong">Live upgrade</emphasis>
 </term>
 <listitem>
-<para>The disk is in use as an alternate boot environment for Solaris
-Live Upgrade.</para>
+<para>Dysk jest używany jako alternatywne otoczenie startowe dla Solaris Live Upgrade.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>
-<emphasis role="strong">Part of exported ZFS pool</emphasis>
+<emphasis role="strong">Część wyeksportowanej puli ZFS</emphasis>
 </term>
 <listitem>
-<para>The disk is part of a storage pool that has been exported
-or manually removed from a system. In the latter case, the pool is reported
-as <literal>potentially active</literal>, as the disk might or might not be
-a network-attached drive in use by another system. Be cautious when overriding
-a potentially active pool.</para>
+<para>Dysk jest częścią puli nośników wyeksportowanej lub ręcznie usuniętej z systemu. W drugim przypadku pulę przedstawia się jako <literal>potencjalnie aktywną</literal>, ponieważ dysk może, ale nie musi być dyskiem podłączonym przez sieć i używanym przez inny system. Obchodzenie potencjalnie aktywnej puli należy wykonywać bardzo ostrożnie.</para>
 </listitem>
 </varlistentry>
 </variablelist>
-<para>The following example demonstrates how the <option>
-f</option> option
-is used:</para>
+<para>Poniższy przykład demonstruje użycie opcji <option>f</option>:</para>
 <screen># <userinput>zpool create tank c1t0d0</userinput>
 invalid vdev specification
 use '-f' to override the following errors:
 /dev/dsk/c1t0d0s0 contains a ufs filesystem
 # <userinput>zpool create -f tank c1t0d0</userinput>
 </screen>
-<para>Ideally, correct the errors rather than use the <option>
-f</option> option.</para>
+<para>Najlepiej jest poprawiać błędy, niż je obchodzić przy pomocy opcji <option>f</option>.</para>
 </sect3>
 <sect3 xml:id="gazgc">
-<title>Mismatched Replication Levels</title>
-<para>Creating pools with virtual devices of different replication levels
-is not recommended. The <command>zpool</command> command tries to prevent
-you from accidentally creating a pool with mismatched replication levels.
-If you try to create a pool with such a configuration, you see errors similar
-to the following:<indexterm xml:id="indexterm-120">
-<primary>detecting</primary>
-<secondary>mismatched replication levels</secondary>
-<tertiary>(example of)</tertiary>
+<title>Niepasujące poziomy replikacji</title>
+<para>Tworzenie pul z urządzeniami wirtualnymi o różnych poziomach replikacji jets niezalecane. Komenda <command>zpool</command> próbuje zapobiec utworzeniu puli z niepasującymi poziomami replikacji. Przy próbie utworzenia takiej konfiguracji puli, pojawią się błedy podobne do poniższych:<indexterm xml:id="indexterm-120">
+<primary>wykrywanie</primary>
+<secondary>niepasujących pozniomów replikacji</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-121">
-<primary>mismatched replication levels</primary>
-<secondary>detecting</secondary>
-<tertiary>(example of)</tertiary>
+<primary>niepasujące poziomy replikacji</primary>
+<secondary>wykrywanie</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool create tank c1t0d0 mirror c2t0d0 c3t0d0</userinput>
-invalid vdev specification
+invalid vdev specification 
 use '-f' to override the following errors:
 mismatched replication level: both disk and mirror vdevs are present
 # <userinput>zpool create tank mirror c1t0d0 c2t0d0 mirror c3t0d0 c4t0d0 c5t0d0</userinput>
 invalid vdev specification
 use '-f' to override the following errors:
 mismatched replication level: 2-way mirror and 3-way mirror vdevs are present</screen>
-<para>You can override these errors with the <option>
-f</option> option, though
-this practice is not recommended. The command also warns you about creating
-a mirrored or RAID-Z pool using devices of different sizes. While this configuration
-is allowed, mismatched replication levels result in unused space on the larger
-device, and requires the <option>
-f</option> option to override the warning.</para>
+<para>Błędy te można obejść za pomocą opcji <option>f</option>, ale postępowanie takie jest niezalecane. Komenda ostrzeże również o tworzeniu puli mirror lub RAID-Z z użyciem urządzeń o różnych rozmiarach. Konfiguracja taka jest wprawdzie dozwolona, niepasujące poziomy replikacji powodują marnowanie przestrzeni na większym urządzeniu i wymaga użycia opcji <option>f</option>, aby wyłączyć ostrzeżenie.</para>
 </sect3>
 <sect3 xml:id="gazhd">
-<title>Doing a Dry Run of Storage Pool Creation</title>
-<para>Because creating a pool can fail unexpectedly in different ways, and
-because formatting disks is such a potentially harmful action, the <command>zfs
-create</command> command has an additional option, <option>
-n</option>, which
-simulates creating the pool without actually writing data to disk. This option
-performs the device in-use checking and replication level validation, and
-reports any errors in the process. If no errors are found, you see output
-similar to the following:<indexterm xml:id="indexterm-122">
-<primary>dry run</primary>
-<secondary>ZFS storage pool creation (<command>zpool create</command> <option>
-n</option>)</secondary>
-<tertiary>(example of)</tertiary>
+<title>Suchy przebieg tworzenia puli nośników danych</title>
+<para>Tworzenie puli może się niespodziewanie nie udać na wiele sposobów, a formatowanie dysków może być szkodliwą czynnością, komenda <command>zfs
+create</command> ma dodatkową opcję <option>
+n</option>, symulującą tworzenie puli bez zapisu danych na dysku. Opcja ta wykonuje testy na użyciu urządzeń i poprawność poziomów replikacji i info9rmuje o wszelkich błędach. Jeśli nie ma błędów, pojawi się wynik podobny do poniższego:<indexterm xml:id="indexterm-122">
+<primary>suchy przebieg</primary>
+<secondary>tworzenie puli nośników danych ZFS (<command>zpool create</command> <option>n</option>)</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-123">
 <primary>
-<command>zpool create</command> <option>
-n</option>
+<command>zpool create</command> <option>n</option>
 </primary>
-<secondary>dry run</secondary>
-<tertiary>(example of)</tertiary>
+<secondary>suchy przebieg</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-124">
-<primary>ZFS storage pools</primary>
-<secondary>doing a dry run (<command>zpool create</command> <option>
-n</option>)</secondary>
-<tertiary>(example of)</tertiary>
+<primary>Pue nośników danych ZFS</primary>
+<secondary>wykonywanie suchego przebiegu (<command>zpool create</command> <option>n</option>)</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool create -n tank mirror c1t0d0 c1t1d0</userinput>
@@ -568,27 +530,17 @@ would create 'tank' with the following layout:
           mirror
             c1t0d0
             c1t1d0</screen>
-<para>Some errors cannot be detected without actually creating the pool. The
-most common example is specifying the same device twice in the same configuration.
-This error cannot be reliably detected without writing the data itself, so
-the <command>create -n</command> command can report success and yet fail to
-create the pool when run for real.</para>
+<para>Niektórych błędów nie można wykryć bez rzeczywistego tworzenia puli. Najczęstszym przykłądem jest dwukrotne wskazanie tego samego urządzenia dwukrotnie w tej samej konfiguracji. Błędu tego nie można wykryć bez próby zapisu danych, dlatego komenda <command>create -n</command> może poinformowac o sukcesie, ale faktyczne utworznie puli może się nie udać.</para>
 </sect3>
 <sect3 xml:id="gbeef">
-<title>Default Mount Point for Storage Pools</title>
-<para>When a pool is created, the default mount point for the root dataset
-is <replaceable>/pool-name</replaceable> by default. This directory must either
-not exist or be empty. If the directory does not exist, it is automatically
-created. If the directory is empty, the root dataset is mounted on top of
-the existing directory. To create a pool with a different default mount point,
-use the <option>
-m</option> option of the <command>zpool create</command> command:<indexterm xml:id="indexterm-125">
-<primary>mountpoint</primary>
-<secondary>default for ZFS storage pools</secondary>
+<title>Domyślny punkt montowania pul</title>
+<para>Po utworzeniu puli, domyślnym punktem montowania datasetu jest katalog <replaceable>/nazwa-puli</replaceable>. Tego katalogu nie powinno być, a jeśli jest, powinien być pusty. Jeśli nnie istnieje, jest tworzony automatycznie. Jeśli istnieje, dataset jest automatycznie montowany w istniejącym katalogu. Aby utworzyć pulę z innym domyślnym punktem montowania należy użyć opcji <option>m</option> przy wykonywaniu komendy <command>zpool create</command>:<indexterm xml:id="indexterm-125">
+<primary>punkt montowania</primary>
+<secondary>domyślny dla puli nośników danych ZFS</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-126">
-<primary>ZFS storage pools</primary>
-<secondary>default mountpoint</secondary>
+<primary>pule nośników danych ZFS</primary>
+<secondary>domyślny punkt montowania</secondary>
 </indexterm>
 </para>
 <screen># <userinput>zpool create home c1t0d0</userinput>
