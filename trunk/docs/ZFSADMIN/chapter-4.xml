@@ -945,67 +945,65 @@ do wyłączonego urządzenia.<indexterm xml:id="indexterm-139">
 </indexterm>
 </para>
 <note>
-<para>Devices do not need to be taken offline in order to replace them.</para>
+<para>Nie trzeba wyłączać urządzeń, aby je wymienić.</para>
 </note>
-<para>You can use the <command>offline</command> command when you need to
-temporarily disconnect storage. For example, if you need to physically disconnect
-an array from one set of Fibre Channel switches and connect the array to a
-different set, you could take the LUNs offline from the array that was used
-in ZFS storage pools. After the array was reconnected and operational on the
-new set of switches, you could then bring the same LUNs online. Data that
-had been added to the storage pools while the LUNs were offline would resilver
-to the LUNs after they were brought back online.</para>
-<para>This scenario is possible assuming that the systems in question see
-the storage once it is attached to the new switches, possibly through different
-controllers than before, and your pools are set up as RAID-Z or mirrored configurations.</para>
+<para>Jeśli zachodzi konieczność tymczasowego odłączenia nośników, można 
+użyć komendy <command>offline</command>. Na przykład, jeśli zachodzi konieczność
+ odłączenia macierzy od układu przełączników Fibre Channel i podłączenia jej 
+do innego układu przełączników, można wyłączyć LUN-y z macierzy używanej 
+w pulach ZFS. Podłączoną i działającą już na nowych przełącznikach macież można 
+aktywować włączając te same LUN-y. Dane, które pojawiły się w puli w czasie, 
+kiedy LUN-y były wyłączone, automatycznie zaczną się resilverować, kiedy tylko 
+LUN-y zostaną włączone.</para>
+<para>Scenariusz taki jest możliwy przy założeniu, że omawiane systemy widzą 
+nośniki danych po podłączeniu ich do nowych przełączników, możliwe że przez 
+inne niż poprzednio kontrolery, oraz że pule są skonfigurowane jako RAID-Z 
+lub mirror.</para>
 <sect3 xml:id="gazfy">
-<title>Taking a Device Offline</title>
-<para>You can take a device offline by using the <command>zpool offline</command> command.
-The device can be specified by path or by short name, if the device is a disk.
-For example:</para>
+<title>Wyłączanie urządzenia</title>
+<para>Urządzenie można wyłączyć używając komendy <command>zpool offline
+</command>.
+Urządzenie można wskazać przez ścieżkę lub skrót, jeśli jest dyskiem. Na 
+przykład:</para>
 <screen># <userinput>zpool offline tank c1t0d0</userinput>
 bringing device c1t0d0 offline</screen>
-<para>You cannot take a pool offline to the point where it becomes faulted.
-For example, you cannot take offline two devices out of a RAID-Z configuration,
-nor can you take offline a top-level virtual device.<indexterm xml:id="indexterm-141">
-<primary>offlining a device (<command>zpool offline</command>)</primary>
-<secondary>ZFS storage pool</secondary>
-<tertiary>(example of)</tertiary>
+<para>Niemożliwe jest takie wyłączanie urządzeń, aby uszkodzić pulę. Nie można 
+na przykład wyłączyć dwóch urządzeń w RAID-Z ani wyłączyć wirtualnego urządzenia
+ najwyższego poziomu. <indexterm xml:id="indexterm-141">
+<primary>wyłączanie urządzenia (<command>zpool offline</command>)</primary>
+<secondary>pula nośników danych ZFS</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-142">
 <primary>
 <command>zpool offline</command>
 </primary>
-<secondary>(example of)</secondary>
+<secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-143">
-<primary>ZFS storage pools</primary>
-<secondary>offlining a device (<command>zpool offline</command>)</secondary>
-<tertiary>(example of)</tertiary>
+<primary>pule nośników danych ZFS</primary>
+<secondary>wyłączanie urządzenia (<command>zpool offline</command>)</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool offline tank c1t0d0</userinput>
 cannot offline c1t0d0: no valid replicas</screen>
 <note>
 
-<para>Currently, you cannot replace a device that has been taken offline.</para>
+<para>Nie można obecnie wymienić wyłączonego urządzenia.</para>
 </note>
-<para>Offlined devices show up in the <literal>OFFLINE</literal> state
-when you query pool status. For information about querying pool status, see <olink targetdoc="" remap="internal" targetptr="gaynp">Querying ZFS Storage Pool Status</olink>.</para>
-<para>By default, the offline state is persistent. The device remains offline
-when the system is rebooted. </para>
-<para>To temporarily take a device offline, use the <command>zpool offline</command> <option>
-t</option> option. For example:</para>
+<para>Wyłączone urządzenia raportowane są w statusie puli jako <literal>OFFLINE</literal>. Więcej informacji o sprawdzaniu statusu puli w <olink targetdoc="" remap="internal" targetptr="gaynp">Sprawdzanie statusu puli nośników danych ZFS</olink>.</para>
+<para>Domyślnie wyłączenie jest trwałe. Urządzenie pozostaje wyłączone po restarcie systemu.</para>
+<para>Tymczasowego wyłączenia można dokonać przy użyciu <command>zpool offline</command> <option>
+t</option>. Na przykład:</para>
 <screen># <userinput>zpool offline -t tank c1t0d0</userinput>
  bringing device 'c1t0d0' offline</screen>
-<para>When the system is rebooted, this device is automatically returned to
-the <literal>ONLINE</literal> state.</para>
-<para>For more information on device health, see <olink targetdoc="" remap="internal" targetptr="gamno">Health Status of ZFS Storage Pools</olink>.</para>
+<para>Po restarcie systemu urządzenie to zostanie automatycznie przywrócone do stanu online <literal>ONLINE</literal>.</para>
+<para>Więcej informacji o zdrowiu urządzeń w <olink targetdoc="" remap="internal" targetptr="gamno">Zdrowiu pul nośników danych ZFS</olink>.</para>
 </sect3>
 <sect3 xml:id="gazgk">
-<title>Bringing a Device Online</title>
-<para>Once a device is taken offline, it can be restored by using the <command>zpool
-online</command> command:</para>
+<title>Włączanie urządzenia</title>
+<para>Po wyłączeniu urządzenia można je włączyć komendą <command>zpool online</command>:</para>
 <screen># <userinput>zpool online tank c1t0d0</userinput>
 bringing device c1t0d0 online</screen>
 <para>When a device is brought online, any data that has been written to the
