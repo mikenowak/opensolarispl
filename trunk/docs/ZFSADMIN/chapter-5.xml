@@ -65,7 +65,7 @@ obrazu (snapshotu), klonu lub woluminu.<indexterm xml:id="indexterm-199">
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gaynd">Montowanie i udostępnianie systemów plików ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gaynd">Montowanie i współdzielenie systemów plików ZFS</olink>
 </para>
 </listitem>
 <listitem>
@@ -157,10 +157,12 @@ zobaczyć <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gammq">
-<title>Destroying a ZFS File System</title>
-<para>To destroy a ZFS file system, use the <command>zfs destroy</command> command.
-The destroyed file system is automatically unmounted and unshared. For more
-information about automanaged mounts or automanaged shares, see <olink targetdoc="" remap="internal" targetptr="gbala">Automatic Mount Points</olink>.<indexterm xml:id="indexterm-207">
+<title>Niszczenie systemu plików ZFS</title>
+<para>W celu zniszczenia systemu plików ZFS należy użyć polecenia <command>zfs destroy</command>.
+Zniszczony system plików jest automatycznie odmontowany i wyłączony ze współdzielenia.
+W celu uzyskania większej ilości informacji na temat automatyczne zarządzania montowaniem
+lub współdzieleniem systemów plików, proszę zobaczyć
+<olink targetdoc="" remap="internal" targetptr="gbala">Automatic Mount Points</olink>.<indexterm xml:id="indexterm-207">
 <primary>destroying</primary>
 <secondary>ZFS file system</secondary>
 <tertiary>(example of)</tertiary>
@@ -177,31 +179,31 @@ information about automanaged mounts or automanaged shares, see <olink targetdoc
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>In the following example, the <filename>tabriz</filename> file system
-is destroyed.</para>
+<para>W podanym przykładzie system plikówe <filename>tabriz</filename>
+zostanie zniszczony.</para>
 <screen># <userinput>zfs destroy tank/home/tabriz</userinput>
 </screen>
 <caution>
 
-<para>No confirmation prompt appears with the <command>destroy</command> subcommand.
-Use it with extreme caution.</para>
+<para>Po użyciu polecenia <command>destroy</command> nie ma żadnej prośby o potwierdzenie operacji.
+Proszę używać ze wzmożoną ostrożnością.</para>
 </caution>
-<para>If the file system to be destroyed is busy and so cannot be unmounted,
-the <command>zfs destroy</command> command fails. To destroy an active file
-system, use the <option>
-f</option> option. Use this option with caution as
-it can unmount, unshare, and destroy active file systems, causing unexpected
-application behavior.</para>
+<para>Jeśli system plików przeznaczony do zniszczenia jest zajęty i w związku z tym
+nie może zostać odmontowany, wykonanie polecenia <command>zfs destroy</command>
+nie powiedzie się. W celu zniszczenia aktywnego systemu plików, proszę użyć
+opcji <option>f</option>. Proszę używać tej opcji ostrożnie, ponieważ
+może ona odmontować, wyłączyć ze współdzielenia i zniszczyć aktywne systemy plików,
+co może spowodować nieoczekiwane zachowanie się aplikacji.</para>
 <screen># <userinput>zfs destroy tank/home/ahrens</userinput>
 cannot unmount 'tank/home/ahrens': Device busy
 
 # <userinput>zfs destroy -f tank/home/ahrens</userinput>
 </screen>
-<para>The <command>zfs destroy</command> command also fails if a file system
-has children. To recursively destroy a file system and all its descendants,
-use the <option>
-r</option> option. Note that a recursive destroy also destroys
-snapshots so use this option with caution.</para>
+<para>Wykonanie polecenia <command>zfs destroy</command> również nie powiedzie się,
+jeśli system plików ma dzieci. W celu rekursywnego zniszczenia systemu plików i wszystkich
+potomnych dla niego, proszę użyć opcji <option>r</option>. Proszę zauważyć,
+że rekursywne niszczenie systemów plików zniszczy również obrazy (snapshoty), więc
+należy używać tej opcji ostrożnie.</para>
 <screen># <userinput>zfs destroy tank/ws</userinput>
 cannot destroy 'tank/ws': filesystem has children
 use '-r' to destroy the following datasets:
@@ -211,12 +213,11 @@ tank/ws/maybee
 
 # <userinput>zfs destroy -r tank/ws</userinput>
 </screen>
-<para>If the file system to be destroyed has indirect dependents, even the
-recursive destroy command described above fails. To force the destruction
-of <emphasis>all</emphasis> dependents, including cloned file systems outside
-the target hierarchy, the <option>
-R</option> option must be used. Use extreme
-caution with this option.<indexterm xml:id="indexterm-210">
+<para>Jeśli system plików przeznaczony do zniszczenia ma pośrednie zależności,
+nawet próba rekursywnego zniszczenia opisana powyżej nie powiedzie się. Żeby wymusić
+zniszczenie <emphasis>wszystkich</emphasis> zależności, włącznie z klonami systemów plików
+poza docelową hierarchią, musi zostać użyta opcja <option>R</option>. Proszę używać
+tej opcji ze szczególną ostrożnością.<indexterm xml:id="indexterm-210">
 <primary>destroying</primary>
 <secondary>ZFS file system with dependents</secondary>
 <tertiary>(example of)</tertiary>
@@ -242,12 +243,11 @@ tank/clones/schrock-clone
 </screen>
 <caution>
 
-<para>No confirmation prompt appears with the <option>
-f</option>, <option>
-r</option>, or <option>
-R</option> options so use these options carefully.</para>
+<para>Po użyciu opcji <option>f</option>, <option>r</option>, lub <option>
+R</option> nie ma żadnej prośby o potwierdzenie operacji, więc proszę używać tych
+opcji ostrożnie.</para>
 </caution>
-<para>For more information about snapshots and clones, see <olink targetdoc="" remap="internal" targetptr="gavvx">Chapter 6, Working With ZFS Snapshots and Clones</olink>.</para>
+<para>W celu uzyskania większej ilości informacji o obrazach i klonach, proszę zajrzeć do <olink targetdoc="" remap="internal" targetptr="gavvx">Chapter 6, Working With ZFS Snapshots and Clones</olink>.</para>
 </sect2>
 <sect2 xml:id="gamnn">
 <title>Renaming a ZFS File System</title>
