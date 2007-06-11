@@ -308,10 +308,10 @@ potrzebne będzie wymuszenie odmontowania systemu plików.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gazss">
-<title>ZFS Properties</title>
-<para>Properties are the main mechanism that you use to control the behavior
-of file systems, volumes, snapshots, and clones. Unless stated otherwise,
-the properties defined in the section apply to all the dataset types.<indexterm xml:id="indexterm-216">
+<title>Parametry dla systemu plików ZFS</title>
+<para>Parametry są podstawowym mechanizmem, którego używa się w celu kontroli zachowania
+się systemów plików, woluminów, obrazów i klonów. O ile nie określono ineaczej, parametry
+opisane w tej sekcji odnoszą się do wszystkich typów datasetu.<indexterm xml:id="indexterm-216">
 <primary>ZFS properties</primary>
 <secondary>description</secondary>
 </indexterm>
@@ -320,12 +320,11 @@ the properties defined in the section apply to all the dataset types.<indexterm 
 <secondary>description</secondary>
 </indexterm>
 </para>
-<para>Properties are either read-only statistics or settable properties. Most
-settable properties are also inheritable. An inheritable property is a property
-that, when set on a parent, is propagated down to all of its descendants.</para>
-<para>All inheritable properties have an associated source. The source indicates
-how a property was obtained. The source of a property can have the following
-values:<indexterm xml:id="indexterm-218">
+<para>Parametry dzielą się na tylko do odczytu (statystyki) lub ustawiane. Większość
+parametrów przeznaczonych do ustawiania jest także dziedziczona. Dziedziczony parametr jest takim,
+którego ustawiona wartość na "rodzicu" jest dziedziczona na wszystkie potomne datasety.</para>
+<para>Wszystkie dziedziczone parametry mają przypisane źródło. Źródło określa, w jaki sposób
+parametr została przypisana. Źródło parametru może przyjmować następujące parametry:<indexterm xml:id="indexterm-218">
 <primary>ZFS properties</primary>
 <secondary>inheritable, description of</secondary>
 </indexterm>
@@ -340,9 +339,9 @@ values:<indexterm xml:id="indexterm-218">
 <literal>local</literal>
 </term>
 <listitem>
-<para>A <literal>local</literal> source indicates that the property
-was explicitly set on the dataset by using the <command>zfs set</command> command
-as described in <olink targetdoc="" remap="internal" targetptr="gazsp">Setting ZFS Properties</olink>.</para>
+<para>Źródło zdefiniowane jako <literal>local</literal> określa, że parametr został
+dokładnie określony na tym datasecie przy użyciu polecenia
+<command>zfs set</command>, tak jak to opisano w <olink targetdoc="" remap="internal" targetptr="gazsp">Setting ZFS Properties</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -350,7 +349,8 @@ as described in <olink targetdoc="" remap="internal" targetptr="gazsp">Setting Z
 <literal>inherited from</literal> <replaceable>dataset-name</replaceable>
 </term>
 <listitem>
-<para>A value of <literal>inherited from</literal> <replaceable>dataset-name</replaceable> means that the property was inherited from the named ancestor.</para>
+<para>Wartość <literal>inherited from</literal> <replaceable>dataset-name</replaceable> oznacza, że parametr został odziedziczony
+z podanego poprzednika.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -358,18 +358,19 @@ as described in <olink targetdoc="" remap="internal" targetptr="gazsp">Setting Z
 <literal>default</literal>
 </term>
 <listitem>
-<para>A value of <literal>default</literal> means that the property
-setting was not inherited or set locally. This source is a result of no ancestor
-having the property as source <literal>local</literal>.</para>
+<para>Wartość <literal>default</literal> (domyślny) oznacza, że parametr nie został
+ani odziedziczony, ani ustawiony lokalnie. To źródło jest wynikiem nie posiadania
+jakiegokolwiek przodka mającego ustawionego parametr ze źródłem zdefiniowanym jako
+<literal>local</literal>.</para>
 </listitem>
 </varlistentry>
 </variablelist>
-<para>The following table identifies both read-only and settable ZFS file
-system properties. Read-only properties are identified as such. All other
-properties are settable.</para>
+<para>Poniższa tabela zestawia wszystkie parametry (tylko do odczytu i ustawialne)
+systemu plików ZFS. Parametry tylko do odczytu są oznaczone. Wszystkie pozostałe
+są ustawiane.</para>
 <table frame="topbot" xml:id="gcfgr">
 
-<title>ZFS Property Descriptions</title>
+<title>Opisy parametrów dla ZFS</title>
 <tgroup cols="4" colsep="0" rowsep="0">
 <colspec colwidth="16.17*"/>
 <colspec colwidth="11.73*"/>
@@ -378,16 +379,16 @@ properties are settable.</para>
 <thead>
 <row rowsep="1">
 <entry>
-<para>Property Name</para>
+<para>Nazwa Parametru</para>
 </entry>
 <entry>
-<para>Type</para>
+<para>Typ</para>
 </entry>
 <entry>
-<para>Default Value</para>
+<para>Wartość domyślna</para>
 </entry>
 <entry>
-<para>Description</para>
+<para>Opis</para>
 </entry>
 </row>
 </thead>
@@ -399,7 +400,7 @@ properties are settable.</para>
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>String</para>
+<para>Łańcuch znaków</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>
@@ -407,9 +408,9 @@ properties are settable.</para>
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Controls how ACL entries are inherited when files and directories are
-created. The values are <literal>discard</literal>, <literal>noallow</literal>, <literal>secure</literal>, and <literal>passthrough</literal>. For a description of
-these values, see <olink targetdoc="" remap="internal" targetptr="gbaaz">ACL Property Modes</olink>.<indexterm xml:id="indexterm-220">
+<para>Kontroluje w jaki sposób wpisy ACL są dziedziczone, kiedy są tworzone pliki i katalogi.
+Dopuszczalne wartości to <literal>discard</literal>, <literal>noallow</literal>, <literal>secure</literal> oraz <literal>passthrough</literal>.
+Opis tych wartości znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbaaz">ACL Property Modes</olink>.<indexterm xml:id="indexterm-220">
 <primary>ZFS properties</primary>
 <secondary>
 <property>aclinherit</property>
@@ -437,7 +438,7 @@ these values, see <olink targetdoc="" remap="internal" targetptr="gbaaz">ACL Pro
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>String</para>
+<para>Łańcuch znaków</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>
@@ -445,8 +446,9 @@ these values, see <olink targetdoc="" remap="internal" targetptr="gbaaz">ACL Pro
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Controls how an ACL entry is modified during a <literal>chmod</literal> operation.
-The values are <literal>discard</literal>, <literal>groupmask</literal>, and <literal>passthrough</literal>. For a description of these values, see <olink targetdoc="" remap="internal" targetptr="gbaaz">ACL Property Modes</olink>.<indexterm xml:id="indexterm-223">
+<para>Kontroluje w jaki sposób wpis ACL jest zmieniany podczas operacji <literal>chmod</literal>.
+Dopuszczalne wartości to <literal>discard</literal>, <literal>groupmask</literal> oraz <literal>passthrough</literal>.
+Opis tych wartości znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbaaz">ACL Property Modes</olink>.<indexterm xml:id="indexterm-223">
 <primary>ZFS properties</primary>
 <secondary>
 <property>aclmode</property>
@@ -474,7 +476,7 @@ The values are <literal>discard</literal>, <literal>groupmask</literal>, and <li
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Boolean</para>
+<para>Logiczny</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>
@@ -482,10 +484,11 @@ The values are <literal>discard</literal>, <literal>groupmask</literal>, and <li
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Controls whether the access time for files is updated when they are
-read. Turning this property off avoids producing write traffic when reading
-files and can result in significant performance gains, though it might confuse
-mailers and other similar utilities.<indexterm xml:id="indexterm-226">
+<para>Kontroluje, czy czas dostępu do pliku jest aktualizowany za każdym razem,
+gdy ten jest czytany. Ustawienie tego parametru na "off" zapobiega generowaniu
+zapisów w czasie odczytu do pliku i może znacząco wpłynąć na podniesienie
+wydajności, ale jednocześnie spowodować problemy z programami do poczty
+elektronicznej i podobnymi narzędziami użytkowymi.<indexterm xml:id="indexterm-226">
 <primary>ZFS properties</primary>
 <secondary>
 <property>atime</property>
@@ -512,17 +515,17 @@ mailers and other similar utilities.<indexterm xml:id="indexterm-226">
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Number</para>
+<para>Liczba</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>N/A</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Read-only property that identifies the amount of space available to
-the dataset and all its children, assuming no other activity in the pool.
- Because space is shared within a pool, available space can be limited by
-various factors including physical pool size, quotas, reservations, or other
-datasets within the pool.<indexterm xml:id="indexterm-229">
+<para>Parametr tylko do odczytu, który określa dostępne miejsce dla datasetu
+i wszystkich jego dzieci, przy założeniu braku jakiejkolwiek innej aktywności w puli.
+Ponieważ miejsce jest współdzielone wewnątrz puli, dostępne miejsce może być
+ograniczone przez różne inne czynniki włączając w to fizyczny rozmiar puli, limity (quoty),
+rezerwacje lub inne datasety w puli.<indexterm xml:id="indexterm-229">
 <primary>ZFS properties</primary>
 <secondary>
 <property>available</property>
@@ -540,8 +543,8 @@ datasets within the pool.<indexterm xml:id="indexterm-229">
 <secondary>description</secondary>
 </indexterm>
 </para>
-<para>This property can also be referenced by its shortened column name, <literal>avail</literal>.</para>
-<para>For more information about space accounting, see <olink targetdoc="" remap="internal" targetptr="gbchp">ZFS Space Accounting</olink>.</para>
+<para>Do tego parametru można także odwołać się po skróconej nazwie, <literal>avail</literal>.</para>
+<para>Więcej informacji na temat liczenia miejsca w puli jest pod <olink targetdoc="" remap="internal" targetptr="gbchp">ZFS Space Accounting</olink>.</para>
 </entry>
 </row>
 <row>
@@ -551,7 +554,7 @@ datasets within the pool.<indexterm xml:id="indexterm-229">
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>String</para>
+<para>Łańcuch znaków</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>
@@ -559,11 +562,12 @@ datasets within the pool.<indexterm xml:id="indexterm-229">
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Controls the checksum used to verify data integrity. The default value
-is <literal>on</literal>, which automatically selects an appropriate algorithm,
-currently <literal>fletcher2</literal>. The values are <literal>on, off, fletcher2</literal>, <literal>fletcher4</literal>, and <literal>sha256</literal>. A
-value of <literal>off</literal> disables integrity checking on user data.
-A value of <literal>off</literal> is not recommended.<indexterm xml:id="indexterm-232">
+<para>Kontroluje sposób użycia sum kontrolnych do weryfikowania integralności danych.
+Domyślna wartość jest ustawiona na <literal>on</literal>, która automatycznie wybiera
+odpowiedni algorytm, aktualnie <literal>fletcher2</literal>.
+Dopuszczalne wartości to <literal>on, off, fletcher2</literal>, <literal>fletcher4</literal> oraz <literal>sha256</literal>.
+Wartość <literal>off</literal> wyłącza sprawdzanie integralności danych użytkownika.
+Wartość <literal>off</literal> nie jest polecane.<indexterm xml:id="indexterm-232">
 <primary>ZFS properties</primary>
 <secondary>
 <property>checksum</property>
@@ -590,7 +594,7 @@ A value of <literal>off</literal> is not recommended.<indexterm xml:id="indexter
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>String</para>
+<para>Łańcuch znaków</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>
@@ -598,8 +602,8 @@ A value of <literal>off</literal> is not recommended.<indexterm xml:id="indexter
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Controls the compression algorithm used for this dataset. Currently,
-only one algorithm, <literal>lzjb</literal>, exists.<indexterm xml:id="indexterm-235">
+<para>Kontroluje rodzaj użytego algorytmu kompresji dla tego datasetu. Aktualnie
+istnieje tylko jeden algorytm, <literal>lzjb</literal>.<indexterm xml:id="indexterm-235">
 <primary>ZFS properties</primary>
 <secondary>
 <property>compression</property>
@@ -617,7 +621,7 @@ only one algorithm, <literal>lzjb</literal>, exists.<indexterm xml:id="indexterm
 <secondary>description</secondary>
 </indexterm>
 </para>
-<para>This property can also be referred to by its shortened column name, <literal>compress</literal>.</para>
+<para>Do tego parametru można także odwołać się po skróconej nazwie, <literal>compress</literal>.</para>
 </entry>
 </row>
 <row>
