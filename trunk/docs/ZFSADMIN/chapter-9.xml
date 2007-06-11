@@ -36,7 +36,7 @@ Zawarto równierz informacje dotyczącą zapobieganiu powstawania błędow.</par
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbbvb">Naprawa brakujacego urządzenia</olink>
+<olink targetdoc="" remap="internal" targetptr="gbbvb">Naprawa brakującego urządzenia</olink>
 </para>
 </listitem>
 <listitem>
@@ -58,43 +58,45 @@ Zawarto równierz informacje dotyczącą zapobieganiu powstawania błędow.</par
 </toc>
 <sect1 xml:id="gbbth">
 <title>Rodzaje błędów w ZFS-ie</title>
-<para>As a combined file system and volume manager, ZFS can exhibit many different
-failure modes. This chapter begins by outlining the various failure modes,
-then discusses how to identify them on a running system. This chapter concludes
-by discussing how to repair the problems. ZFS can encounter three basic types
-of errors:<indexterm xml:id="indexterm-493">
-<primary>ZFS storage pools</primary>
-<secondary>failure modes</secondary>
+<para>Jako połączenie systemu plików oraz menedżera wolumenu, ZFS może zgłosić wiele
+rodzajów błędów. Niniejszy rozdział rozpoczyna się przeglądem rodzajów awarii,
+w późniejszej części opisuje w jaki sposób je identyfikować na działającym systemie
+Na koniec podjęta jest dyskusja na temat usuwania znalezionych błędów.
+ZFS może napotkać trzy podstawowe typy błędów:
+<indexterm xml:id="indexterm-493">
+<primary>Pula pamięci ZFS</primary>
+<secondary>rodzaje błędów</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-494">
-<primary>failure modes</primary>
+<primary>rodzaje błędów</primary>
 </indexterm>
 <indexterm xml:id="indexterm-495">
-<primary>troubleshooting</primary>
-<secondary>ZFS failure modes</secondary>
+<primary>usuwanie błędów</primary>
+<secondary>rodzaje błędów w ZFS-ie</secondary>
 </indexterm>
 </para>
 <itemizedlist>
 <listitem>
-<para>Missing devices</para>
+<para>Brakujące urządzenia</para>
 </listitem>
 <listitem>
-<para>Damaged devices</para>
+<para>Uszkodzone urządzenia</para>
 </listitem>
 <listitem>
-<para>Corrupted data</para>
+<para>Uszkodzone dane</para>
 </listitem>
 </itemizedlist>
-<para>Note that a single pool can experience all three errors, so a complete
-repair procedure involves finding and correcting one error, proceeding to
-the next error, and so on.</para>
+<para>Proszę zwrócić uwagę, że pojedyńcza pula może zawierać wszystkie trzy rodzaje
+błędów, dlatego pełna procedura naprawy pociąga za sobą znajdowanie i usuwanie
+wszystkich typów awarii.
+</para>
 <sect2 xml:id="gbbxj">
-<title>Missing Devices in a ZFS Storage Pool</title>
-<para>If a device is completely removed from the system, ZFS detects that
-the device cannot be opened and places it in the <literal>FAULTED</literal> state.
-Depending on the data replication level of the pool, this might or might not
-result in the entire pool becoming unavailable. If one disk in a mirrored
-or RAID-Z device is removed, the pool continues to be accessible. If all components
+<title>Brakujące urządzenie w puli pamięci ZFS</title>
+<para>Jeśli urządzenie zostało usunięte z systemu, ZFS odkrywa, że nie może
+być użyte i oznacza je stanem <literal>FAULTED</literal> .
+W zależności od poziomu replikacji puli, może to spowodować, że cała pula stanie się
+niedostępna. 
+If one disk in a mirrored or RAID-Z device is removed, the pool continues to be accessible. If all components
 of a mirror are removed, if more than one device in a RAID-Z device is removed,
 or if a single-disk, top-level device is removed, the pool becomes <literal>FAULTED</literal>. No data is accessible until the device is reattached.<indexterm xml:id="indexterm-496">
 <primary>ZFS storage pools</primary>
@@ -184,7 +186,7 @@ from the system.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gbbwa">
-<title>Checking ZFS Data Integrity</title>
+<title>Sprawdzanie integralności danych w ZFS-ie</title>
 <para>No <command>fsck</command> utility equivalent exists for ZFS. This utility
 has traditionally served two purposes, data repair and data validation.</para>
 <sect2 xml:id="gbbyc">
@@ -338,7 +340,7 @@ after the resilvering is complete.<indexterm xml:id="indexterm-516">
 </sect2>
 </sect1>
 <sect1 xml:id="gbbuw">
-<title>Identifying Problems in ZFS</title>
+<title>Identyfikowanie problemów w ZFS-ie</title>
 <para>All ZFS troubleshooting is centered around the <command>zpool status</command> command.
 This command analyzes the various failures in the system and identifies the
 most severe problem, presenting you with a suggested action and a link to
@@ -696,7 +698,7 @@ problem accompanied by its own set of error messages.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gbbve">
-<title>Repairing a Damaged ZFS Configuration</title>
+<title>Naprawa uszkodzonej konfiguracji ZFS</title>
 <para>ZFS maintains a cache of active pools and their configuration on the
 root file system. If this file is corrupted or somehow becomes out of sync
 with what is stored on disk, the pool can no longer be opened. ZFS tries to
@@ -723,7 +725,7 @@ at all), and re-importing it.<indexterm xml:id="indexterm-531">
 <para>For more information about importing and exporting pools, see <olink targetdoc="" remap="internal" targetptr="gbchy">Migrating ZFS Storage Pools</olink>.</para>
 </sect1>
 <sect1 xml:id="gbbvb">
-<title>Repairing a Missing Device</title>
+<title>Naprawa brakującego urządzenia</title>
 <para>If a device cannot be opened, it displays as <literal>UNAVAILABLE</literal> in
 the <command>zpool status</command> output. This status means that ZFS was
 unable to open the device when the pool was first accessed, or the device
@@ -795,7 +797,7 @@ controller should be replaced at which point the disks will again be available.
 Other pathologies can exist and depend on the type of hardware and its configuration.
 If a drive fails and it is no longer visible to the system (an unlikely event),
 the device should be treated as a damaged device. Follow the procedures outlined
-in <olink targetdoc="" remap="internal" targetptr="gbbvf">Repairing a Damaged Device</olink>.</para>
+in <olink targetdoc="" remap="internal" targetptr="gbbvf">Naprawa uszkodzonego urządzenia</olink>.</para>
 </sect2>
 <sect2 xml:id="gbbyi">
 <title>Notifying ZFS of Device Availability</title>
@@ -1149,7 +1151,7 @@ disk (<literal>c1t0d0</literal>) has been removed from the configuration.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gbbwl">
-<title>Repairing Damaged Data</title>
+<title>Naprawa uszkodzonych danych</title>
 <para>ZFS uses checksumming, replication, and self-healing data to minimize
 the chances of data corruption. Nonetheless, data corruption can occur if
 the pool isn't replicated, if corruption occurred while the pool was degraded,
@@ -1304,7 +1306,7 @@ you use.<indexterm xml:id="indexterm-561">
 </sect2>
 </sect1>
 <sect1 xml:id="gbbwc">
-<title>Repairing an Unbootable System</title>
+<title>Naprawa nie ładującego sie systemu</title>
 <para>ZFS is designed to be robust and stable despite errors. Even so, software
 bugs or certain unexpected pathologies might cause the system to panic when
 a pool is accessed. As part of the boot process, each pool must be opened,
