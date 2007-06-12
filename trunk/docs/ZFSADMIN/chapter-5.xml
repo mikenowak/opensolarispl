@@ -1256,7 +1256,7 @@ i wszystkie jego potomki.<indexterm xml:id="indexterm-286">
 <secondary>description</secondary>
 </indexterm>
 </para>
-<para>Dokładniejszy opis znajduje się pod <olink targetdoc="" remap="internal" targetptr="gcfgz">The <property>used</property> Property</olink>.</para>
+<para>Dokładniejszy opis znajduje się pod w sekcji opisującej <olink targetdoc="" remap="internal" targetptr="gcfgz">parametr <property>used</property></olink>.</para>
 </entry>
 </row>
 <row>
@@ -1425,14 +1425,21 @@ typ ten jest wspomniany w opisie parametru.<indexterm xml:id="indexterm-298">
 <para>
 <property>used</property>
 </para>
-<para>Więcej informacji znajduje się pod
-<olink targetdoc="" remap="internal" targetptr="gcfgz">The <property>used</property> Property</olink>.</para>
+<para>Więcej informacji znajduje się w sekcji opisującej
+<olink targetdoc="" remap="internal" targetptr="gcfgz">parametr <property>used</property></olink>.</para>
 </listitem>
 </itemizedlist>
 <para>Więcej informacji na temat zliczania miejsca włącznie z opisem parametrów <property>used</property>, <property>referenced</property> oraz <property>available</property> znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbchp">ZFS Space Accounting</olink>.</para>
 <sect3 xml:id="gcfgz">
-<title>The <property>used</property> Property</title>
-<para>The amount of space consumed by this dataset and all its descendants.
+<title>Parametr <property>used</property></title>
+<para>Ilość miejsca zajęta przez aktualny i jemu potomne datasety.
+Wartość ta jest sprawdzana z uwzględnieniem parametrów limitu i rezerwacji.
+Wartość ta nie uwzględnia rezerwacji bieżącego datasetu, ale uwzględnia
+rezerwacje wszystkich potomnych. Wielkość miejsca, jaką zużywa dataset
+od rodzica, jak również ilość miejsca, która jest zwalnia podczas
+rekursywnego niszczenia datasetu jest większa od aktualnie zużytego
+miejsca i jego rezerwacji (?!?! FIXIT, bo bełkot wyszedł).
+The amount of space consumed by this dataset and all its descendants.
 This value is checked against the dataset's quota and reservation. The space
 used does not include the dataset's reservation, but does consider the reservation
 of any descendant datasets. The amount of space that a dataset consumes from
@@ -1457,12 +1464,13 @@ recursively destroyed, is the greater of its space used and its reservation.<ind
 <secondary>detailed description</secondary>
 </indexterm>
 </para>
-<para>When snapshots are created, their space is initially shared between
-the snapshot and the file system, and possibly with previous snapshots. As
-the file system changes, space that was previously shared becomes unique to
-the snapshot, and counted in the snapshot's space used. Additionally, deleting
-snapshots can increase the amount of space unique to (and used by) other snapshots.
-For more information about snapshots and space issues, see <olink targetdoc="" remap="internal" targetptr="gayra">Out of Space Behavior</olink>.</para>
+<para>W momencie tworzenia obrazów (snapshotów) ich przestrzeń jest pierwotnie
+współdzielona między nimi a systemem plików, a także prawdopodobnie poprzednimi
+obrazami. W momencie zmiany danych w systemie plików, przestrzeń, która pierwotnie
+była współdzielona staje się unikalna dla obrazu i jest wliczana jako przestrzeń
+zużywana przez obraz. Dodatkowo usunięcie snapshotów może zwiększyć wielkośc przestrzeni
+unikalnej (i używanej przez) inne obrazy.
+Więcej informacji o obrazach i niuansach związanych z miejscem znajduje się pod <olink targetdoc="" remap="internal" targetptr="gayra">Out of Space Behavior</olink>.</para>
 <para>The amount of space used, available, or referenced does not take into
 account pending changes. Pending changes are generally accounted for within
 a few seconds. Committing a change to a disk using <literal>fsync(3c)</literal> or <literal>O_SYNC</literal> does not necessarily guarantee that the space usage information
