@@ -64,7 +64,7 @@ w późniejszej części opisuje w jaki sposób je identyfikować na działając
 Na koniec podjęta jest dyskusja na temat usuwania znalezionych błędów.
 ZFS może napotkać trzy podstawowe typy błędów:
 <indexterm xml:id="indexterm-493">
-<primary>Pula pamięci ZFS</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>rodzaje błędów</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-494">
@@ -92,42 +92,43 @@ wszystkich typów awarii.
 </para>
 <sect2 xml:id="gbbxj">
 <title>Brakujące urządzenie w puli pamięci ZFS</title>
-<para>Jeśli urządzenie zostało usunięte z systemu, ZFS odkrywa, że nie może
-być użyte i oznacza je stanem <literal>FAULTED</literal> .
-W zależności od poziomu replikacji puli, może to spowodować, że cała pula stanie się
-niedostępna. 
-If one disk in a mirrored or RAID-Z device is removed, the pool continues to be accessible. If all components
-of a mirror are removed, if more than one device in a RAID-Z device is removed,
-or if a single-disk, top-level device is removed, the pool becomes <literal>FAULTED</literal>. No data is accessible until the device is reattached.<indexterm xml:id="indexterm-496">
-<primary>ZFS storage pools</primary>
-<secondary>missing (faulted) devices</secondary>
-<tertiary>description</tertiary>
+<para>Jeśli z systemu usunięto urządzenie, ZFS odkrywa, że nie może być
+użyte i oznacza je stanem <literal>FAULTED</literal>. W zależności od poziomu 
+replikacji, może to spowodować niedostępność całej puli. W przypadku usunięcia z macierzy 
+RAID-Z lub mirrorowanego dysku jednego urządzenia, pula pozostaje dostępna. Jeżeli usunięto 
+wszystkie mirrorowane komponenty, jedno urządzenie z macierzy RAID-Z, lub pojedyńczy dysk 
+najwyższego poziomu, pula zostanie oznaczona stanem <literal>FAULTED</literal>. Do czasu 
+ponownegopodłączenia brakujących urządzeń, dostęp do danych z puli pozostaje 
+niedostępny.<indexterm xml:id="indexterm-496">
+<primary>Pule pamięci ZFS</primary>
+<secondary>brakujące (uszkodzone) urządzenia</secondary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-497">
-<primary>failure modes</primary>
-<secondary>missing (faulted) devices</secondary>
+<primary>rodzaje błędów</primary>
+<secondary>brakujące (uszkodzone) urządzenia</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-498">
-<primary>troubleshooting</primary>
-<secondary>missing (faulted) devices</secondary>
+<primary>usuwanie problemów</primary>
+<secondary>brakujące (uszkodzone) urządzenia</secondary>
 </indexterm>
 </para>
 </sect2>
 <sect2 xml:id="gbbym">
-<title>Damaged Devices in a ZFS Storage Pool</title>
-<para>The term “damaged” covers a wide variety of possible errors.
-Examples include the following errors:<indexterm xml:id="indexterm-499">
-<primary>ZFS storage pools</primary>
-<secondary>damaged devices</secondary>
-<tertiary>description</tertiary>
+<title>Uszkodzone urządzenia w puli pamięci ZFS</title>
+<para>Określenie “uszkodzone” dotyczy szeregu możliwych błędów, które
+przestawiono w poniższych przykładach:<indexterm xml:id="indexterm-499">
+<primary>Pule pamięci ZFS</primary>
+<secondary>uszkodzone urządzenia</secondary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-500">
-<primary>failure modes</primary>
-<secondary>damaged devices</secondary>
+<primary>rodzaje błędów</primary>
+<secondary>uszkodzone urządzenia</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-501">
-<primary>troubleshooting</primary>
-<secondary>damaged devices</secondary>
+<primary>usuwanie problemów</primary>
+<secondary>uszkodzone urządzenia</secondary>
 </indexterm>
 </para>
 <itemizedlist>
@@ -158,16 +159,16 @@ in a later section.</para>
 <sect2 xml:id="gbbwx">
 <title>Corrupted ZFS Data</title>
 <para>Data corruption occurs when one or more device errors (indicating missing
-or damaged devices) affects a top-level virtual device. For example, one half
+or damaged devices/uszkodzone urządzenia) affects a top-level virtual device. For example, one half
 of a mirror can experience thousands of device errors without ever causing
 data corruption. If an error is encountered on the other side of the mirror
 in the exact same location, corrupted data will be the result.<indexterm xml:id="indexterm-502">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>corrupted data</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-503">
-<primary>failure modes</primary>
+<primary>rodzaje błędów</primary>
 <secondary>corrupted data</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-504">
@@ -200,9 +201,9 @@ the log cannot be rolled back. With ZFS, none of these problems exist. The
 only way for inconsistent data to exist on disk is through hardware failure
 (in which case the pool should have been replicated) or a bug in the ZFS software
 exists.<indexterm xml:id="indexterm-505">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>data repair</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-506">
 <primary>checking</primary>
@@ -234,9 +235,9 @@ checking, ZFS provides a mechanism to perform regular checking of all data.
 This functionality, known as <emphasis>scrubbing</emphasis>, is commonly used
 in memory and other systems as a method of detecting and preventing errors
 before they result in hardware or software failure.<indexterm xml:id="indexterm-508">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>data validation</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-509">
 <primary>data</primary>
@@ -253,9 +254,9 @@ before they result in hardware or software failure.<indexterm xml:id="indexterm-
 <para>Whenever ZFS encounters an error, either through scrubbing or when accessing
 a file on demand, the error is logged internally so that you can get a quick
 overview of all known errors within the pool. <indexterm xml:id="indexterm-511">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>data scrubbing</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-512">
 <primary>controlling</primary>
@@ -272,7 +273,7 @@ that of normal operations. This operation might negatively impact performance,
 though the file system should remain usable and nearly as responsive while
 the scrubbing occurs. To initiate an explicit scrub, use the <command>zpool
 scrub</command> command. For example:<indexterm xml:id="indexterm-513">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>data scrubbing</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -321,18 +322,18 @@ scrubbing. Therefore, only one such action can happen at a given time in the
 pool. If a scrubbing operation  is
 in progress, a resilvering operation suspends the current scrubbing, and restarts
 after the resilvering is complete.<indexterm xml:id="indexterm-516">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>data scrubbing and resilvering</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-517">
 <primary>resilvering and data scrubbing</primary>
-<secondary>description</secondary>
+<secondary>opis</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-518">
 <primary>data</primary>
 <secondary>resilvering</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 </para>
 <para>For more information about resilvering, see <olink targetdoc="" remap="internal" targetptr="gbcus">Viewing Resilvering Status</olink>.</para>
@@ -355,12 +356,12 @@ reported by <command>fmd</command> are displayed on the console as well as
 the system messages file. In most cases, the <command>fmd</command> message
 directs you to the <command>zpool status</command> command for further recovery
 instructions.<indexterm xml:id="indexterm-519">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>identifying problems</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-520">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>identifying problems</secondary>
 </indexterm>
 </para>
@@ -411,13 +412,13 @@ all pools are healthy</screen>
 x</option> flag, the command displays the complete
 status for all pools (or the requested pool, if specified on the command line),
 even if the pools are otherwise healthy.<indexterm xml:id="indexterm-521">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>determining if problems exist (<command>zpool status</command> <option>
 x</option>)</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-522">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>determining if problems exist (<command>zpool status</command> <option>
 x</option>)</secondary>
 </indexterm>
@@ -453,14 +454,14 @@ errors: No known data errors</screen>
 <para>This header section in the <command>zpool status</command> output contains
 the following fields, some of which are only displayed for pools exhibiting
 problems:<indexterm xml:id="indexterm-523">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>overall pool status information for troubleshooting</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-524">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>overall pool status information</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 </para>
 <variablelist>
@@ -573,7 +574,7 @@ data and attempted to heal the damaged data from existing replicas.</para>
 failure, see <olink targetdoc="" remap="internal" targetptr="gbbzs">Determining the Type of Device Failure</olink>.</para>
 <para>Finally, additional auxiliary information is displayed in the last column
 of the <command>zpool status</command> output. This information expands on
-the <literal>state</literal> field, aiding in diagnosis of failure modes.
+the <literal>state</literal> field, aiding in diagnosis of failure modes/rodzaje błędów.
 If a device is <literal>FAULTED</literal>, this field indicates whether the
 device is inaccessible or whether the data on the device is corrupted. If
 the device is undergoing resilvering, this field displays the current progress.</para>
@@ -605,7 +606,7 @@ found is displayed. A complete list of errors and their specifics can be found
 by using the <command>zpool status</command> <option>
 v</option> option. For
 example:<indexterm xml:id="indexterm-525">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>data corruption identified (<command>zpool status</command> <option>
 v</option>)</secondary>
 <tertiary>(example of)</tertiary>
@@ -617,7 +618,7 @@ v</option>)</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-527">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>data corruption identified (<command>zpool status</command> <option>
 v</option>)</secondary>
 <tertiary>(example of)</tertiary>
@@ -655,17 +656,17 @@ messages can also be tracked by using the <command>fmdump</command> command.</pa
 <para>In addition to persistently keeping track of errors within the pool,
 ZFS also displays syslog messages when events of interest occur. The following
 scenarios generate events to notify the administrator:<indexterm xml:id="indexterm-528">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>system error messages</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-529">
 <primary>displaying</primary>
 <secondary>syslog reporting of ZFS error messages</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-530">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>syslog reporting of ZFS error messages</secondary>
 </indexterm>
 </para>
@@ -709,20 +710,20 @@ available. This situation can also manifest itself as a partial configuration
 that is missing an unknown number of top-level virtual devices. In either
 case, the configuration can be recovered by exporting the pool (if it is visible
 at all), and re-importing it.<indexterm xml:id="indexterm-531">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>repairing a damaged ZFS configuration</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-532">
 <primary>repairing</primary>
 <secondary>a damaged ZFS configuration</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-533">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>repairing a damaged ZFS configuration</secondary>
 </indexterm>
 </para>
-<para>For more information about importing and exporting pools, see <olink targetdoc="" remap="internal" targetptr="gbchy">Migrating ZFS Storage Pools</olink>.</para>
+<para>For more information about importing and exporting pools, see <olink targetdoc="" remap="internal" targetptr="gbchy">Migrating ZFS Storage Pools/Pule pamięci ZFS</olink>.</para>
 </sect1>
 <sect1 xml:id="gbbvb">
 <title>Naprawa brakującego urządzenia</title>
@@ -733,7 +734,7 @@ has since become unavailable. If the device causes a top-level virtual device
 to be unavailable, then nothing in the pool can be accessed. Otherwise, the
 fault tolerance of the pool might be compromised. In either case, the device
 simply needs to be reattached to the system to restore normal operation.<indexterm xml:id="indexterm-534">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>replacing a missing device</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -743,7 +744,7 @@ simply needs to be reattached to the system to restore normal operation.<indexte
 <tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-536">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>replacing a missing device</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -808,7 +809,7 @@ all devices when it tries to open the pool. If the pool was degraded and the
 device was replaced while the system was up, you must notify ZFS that the
 device is now available and ready to be reopened by using the <command>zpool
 online</command> command. For example:<indexterm xml:id="indexterm-537">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>notifying ZFS of reattached device (<command>zpool online</command>)</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -818,7 +819,7 @@ online</command> command. For example:<indexterm xml:id="indexterm-537">
 <tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-539">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>notifying ZFS of reattached device (<command>zpool online</command>)</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -836,19 +837,19 @@ transient errors, and replace a device.</para>
 <title>Determining the Type of Device Failure</title>
 <para>The term <emphasis>damaged device</emphasis> is rather vague, and can
 describe a number of possible situations:<indexterm xml:id="indexterm-540">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>determining type of device failure</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-541">
 <primary>determining</primary>
 <secondary>type of device failure</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-542">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>determining type of device failure</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 </para>
 <itemizedlist>
@@ -936,7 +937,7 @@ to effect the future health of the device, then the device errors can be safely
 cleared to indicate that no fatal error occurred. To clear error counters
 for RAID-Z or mirrored devices, use the <command>zpool clear</command> command.
 For example:<indexterm xml:id="indexterm-543">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>clearing device errors (<command>zpool clear</command>)</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -946,7 +947,7 @@ For example:<indexterm xml:id="indexterm-543">
 <tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-545">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>clear device errors (<command>zpool clear</command>)</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -980,19 +981,19 @@ replicas from which to retrieve data exist. If the device is damaged but otherwi
 online, it can be replaced as long as the pool is not in the <literal>FAULTED</literal> state.
 However, any bad data on the device is copied to the new device unless there
 are sufficient replicas with good data.<indexterm xml:id="indexterm-546">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>determining if a device can be replaced</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-547">
 <primary>determining</primary>
 <secondary>if a device can be replaced</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-548">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>determining if a device can be replaced</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 </para>
 <para>In the following configuration, the disk <literal>c1t1d0</literal> can
@@ -1032,7 +1033,7 @@ the process.</para>
 <para>Once you have determined that a device can be replaced, use the <command>zpool
 replace</command> command to replace the device. If you are replacing the
 damaged device with another different device, use the following command:<indexterm xml:id="indexterm-549">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>replacing a device (<command>zpool replace</command>)</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -1042,7 +1043,7 @@ damaged device with another different device, use the following command:<indexte
 <tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-551">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>replacing a device (<command>zpool replace</command>)</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -1081,7 +1082,7 @@ region” logging that some volume managers support. When an entire disk
 is replaced, the resilvering process takes time proportional to the amount
 of data used on disk. Replacing a 500-Gbyte disk can take seconds if only
 a few gigabytes of used space is in the pool.<indexterm xml:id="indexterm-552">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>viewing resilvering process</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -1091,7 +1092,7 @@ a few gigabytes of used space is in the pool.<indexterm xml:id="indexterm-552">
 <tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-554">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>replacing a device (<command>zpool replace</command>)</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -1180,7 +1181,7 @@ For more information about how to verify the integrity of pool data, see <olink 
 <title>Identifying the Type of Data Corruption</title>
 <para>By default, the <command>zpool status</command> command shows only that
 corruption has occurred, but not where this corruption occurred. For example:<indexterm xml:id="indexterm-555">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>identifying type of data corruption (<command>zpool status -v</command>)</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -1190,7 +1191,7 @@ corruption has occurred, but not where this corruption occurred. For example:<in
 <tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-557">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>determining type of data corruption (<command>zpool status -v</command>)</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
@@ -1231,7 +1232,7 @@ different. For example:</para>
     id: 1422736890544688191
  state: FAULTED
 status: The pool metadata is corrupted.
-action: The pool cannot be imported due to damaged devices or data.
+action: The pool cannot be imported due to damaged devices/uszkodzone urządzenia or data.
    see: http://www.sun.com/msg/ZFS-8000-72
 config:
 
@@ -1248,19 +1249,19 @@ unrecoverable. No good copies of the data exist anywhere on the system. If
 the data is valuable, you have no choice but to restore the affected data
 from backup. Even so, you might be able to recover from this corruption without
 restoring the entire pool.<indexterm xml:id="indexterm-558">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>repairing a corrupted file or directory</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-559">
 <primary>repairing</primary>
 <secondary>repairing a corrupted file or directory</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-560">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>repairing a corrupted file or directory</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 </para>
 <para>If the damage is within a file data block, then the file can safely
@@ -1288,19 +1289,19 @@ ever rendered inaccessible. With the pool configuration and dataset layout,
 you can reconstruct your complete configuration after destroying the pool.
 The data can then be populated by using whatever backup or restoration strategy
 you use.<indexterm xml:id="indexterm-561">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>repairing pool-wide damage</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-562">
 <primary>repairing</primary>
 <secondary>pool-wide damage</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-563">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>repairing pool-wide damage</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 </para>
 </sect2>
@@ -1313,19 +1314,19 @@ a pool is accessed. As part of the boot process, each pool must be opened,
 which means that such failures will cause a system to enter into a panic-reboot
 loop. In order to recover from this situation, ZFS must be informed not to
 look for any pools on startup.<indexterm xml:id="indexterm-564">
-<primary>ZFS storage pools</primary>
+<primary>Pule pamięci ZFS</primary>
 <secondary>repairing an unbootable system</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-565">
 <primary>repairing</primary>
 <secondary>an unbootable system</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-566">
-<primary>troubleshooting</primary>
+<primary>usuwanie problemów</primary>
 <secondary>repairing an unbootable system</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 </para>
 <para>ZFS maintains an internal cache of available pools and their configurations
