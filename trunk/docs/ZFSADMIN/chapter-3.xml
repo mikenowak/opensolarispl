@@ -58,12 +58,12 @@
 </para>
 <para>Systemy plików ZFS nie są ograniczone do konkretnych dysków, mogą zatem być tworzone szybko i łatwo, podobnie jak tworzy się katalogi. Systemy plików ZFS rosną automatycznie w granicach ich puli.</para>
 <para>Zamiast tworzyć jeden system plików, taki jak <filename>/export/home</filename>,
-aby zarządzać podkatalogami użytkowników, mozna stworzyć osobny system plików dla każdego użytkownika. Dodatkowo ZFS pozwala na tworznie hierarchii systemów plików, co pozwala na łatwe konfigurowanie wielu systemów plików, przez ustalenie własciwości, które mogą być dziedziczone w hierarchii.</para>
-<para>Przykład tworzenia hierarchii systemów plików w <olink targetdoc="" remap="internal" targetptr="gaypa">tworzeniu hierarchii systemów plików ZFS</olink>.</para>
+aby zarządzać podkatalogami użytkowników, mozna stworzyć osobny system plików dla każdego użytkownika. Dodatkowo ZFS pozwala na tworzenie hierarchii systemów plików, co pozwala na łatwe konfigurowanie wielu systemów plików, przez ustalenie własciwości, które mogą być dziedziczone w hierarchii.</para>
+<para>Przykład tworzenia hierarchii systemów plików w <olink targetdoc="" remap="internal" targetptr="gaypa">tworzenie hierarchii systemów plików ZFS</olink>.</para>
 </sect1>
 <sect1 xml:id="gbchp">
 <title>Śledzenie zużycia miejsca w ZFS</title>
-<para>ZFS opiera się na pomyśle pul z nośnikami danych. Inaczej niż tradycyjne systemy plików, które odwzorowane są na fizycznym nośniku, wsystkie systemy plików ZFS w puli współdzielą wszystkie dostępne w puli nośniki. Zatem wolne miejsce pokazywane przez narzędzia takie jak <command>df</command>, może zmieniać się nawet wtedy, gdy system plików jest nieaktywny, ponieważ pozostałe systemy plików w puli mogą zużywać bądź zwalniać miejce. Maksymalny obszar, który może zająć system plików może być ograniczony limitem (quota). Więcej informacji o limitach w <olink targetdoc="" remap="internal" targetptr="gazud">ustalaniu limitów w systemach plików ZFS</olink>.
+<para>ZFS opiera się na pomyśle pul z nośnikami danych. Inaczej niż tradycyjne systemy plików, które odwzorowane są na fizycznym nośniku, wsystkie systemy plików ZFS w puli współdzielą wszystkie dostępne w puli nośniki. Zatem wolne miejsce pokazywane przez narzędzia takie jak <command>df</command>, może zmieniać się nawet wtedy, gdy system plików jest nieaktywny, ponieważ pozostałe systemy plików w puli mogą zużywać bądź zwalniać miejce. Maksymalny obszar, który może zająć system plików może być ograniczony limitem (quota). Więcej informacji o limitach w <olink targetdoc="" remap="internal" targetptr="gazud">ustalanie limitów w systemach plików ZFS</olink>.
 Można zagwarantować systemowi plików miejsce za pomocą rezerwacji. Więcej informacji o rezerwacjach w <olink targetdoc="" remap="internal" targetptr="gbdbb">ustalanie rezerwacji w systemach plików ZFS</olink>. Jest to model podobny do tego z NFS, gdzie wiele katalogów jest montowanych z tego samego systemu plików (na przykład <filename>/home</filename>).<indexterm xml:id="indexterm-71">
 <primary>różnice między ZFS-em a tradycyjnymi systemami plików</primary>
 <secondary>śledzenie zużycia miejsca w ZFS</secondary>
@@ -74,12 +74,12 @@ Można zagwarantować systemowi plików miejsce za pomocą rezerwacji. Więcej i
 </indexterm>
 </para>
 <para>Wsystkie metadane alokowane są dynamicznie. Większość innych systemów plików prealokuje sporo swoich metadanych. Jako rezultat, konieczne jest zużycie miejsca na te dane już w trakcie utworzenia systemu plików. Oznacza to także, że całkowita liczba plików, którą może obsłużyć dany systm jest określona z góry. ZFS alokuje swoje metadane na żądanie, zatem nie ma początkowego zużycia miejsca a liczba plików, którą może obsłużyć jest ograniczony tylko i wyłącznie przez ilość wolnego miejsca. Dla systemu plików ZFS wynik polecenia <command>df -g</command> należy interpretowac inaczej, niż w innych systemach plików. Wartość <computeroutput>total files</computeroutput> jest zaledwie przybliżeniem opartym na ilości miejsca, które jest dostępne dla puli.</para>
-<para>ZFS jest transakcyjnym systemem plików.  Większość zmian w systemie plików jest powiązanych w grupy transakcji i zapisywanych na dysku asynchronicznie. Dopóki nie zostaną zatwierdzone, są oznaczone jako <emphasis>czekające zmiany (pending changes)</emphasis>. Ilość miejsca zużytego, dostępnego i do którego odwołuje się plik lub system plików nie bierze pod uwagę czekających zmian. Dolicza się je w okresie kilku sekund. Nawet zatwierdzenie zmiany na dysku przez użycie <command>fsync(3c)</command> lub <literal>O_SYNC</literal> nie gwarantuje, że informacje o zużyciu miejsca będzie uaktualniona natychmiast.</para>
+<para>ZFS jest transakcyjnym systemem plików.  Większość zmian w systemie plików jest powiązanych w grupy transakcji i zapisywanych na dysku asynchronicznie. Dopóki nie zostaną zatwierdzone, są oznaczone jako <emphasis>oczekujące zmiany (pending changes)</emphasis>. Ilość miejsca zużytego, dostępnego i do którego odwołuje się plik lub system plików nie bierze pod uwagę oczekujących zmian. Dolicza się je w okresie kilku sekund. Nawet zatwierdzenie zmiany na dysku przez użycie <command>fsync(3c)</command> lub <literal>O_SYNC</literal> nie gwarantuje, że informacje o zużyciu miejsca będzie uaktualniona natychmiast.</para>
 <sect2 xml:id="gayra">
 <title>Zachowanie przy braku miejsca</title>
-<para>Migawki systemu plików są w ZFS-ie mało kosztowne i łatwe do wykonania. Prawdopodobnie będą powszechne w większości systemów plików ZFS. Więcej informacji o migawkach ZFS w <olink targetdoc="" remap="internal" targetptr="gavvx">Rzodziale 6, praca z migawkami i klonami ZFS</olink>.</para>
-<para>Obecność migawki moe spowodować pewne nieoczekiwane zachowania przy próbie uwolnienia miejsca. W typowej sytuacji, przy właściwych prawach dostępu, można usunąć plik z pełnego systemu plików i spowoduje to zwiększenie ilości miejsca dostępnego w systemie plików. Jeśli jednak usuwany plik istnieje w migawce systemu plików, akcja ta nie spowoduje przyrostu wolnego miejsca. Do bloków używanych przez plik nadal będą odwołania z migawki.<indexterm xml:id="indexterm-73">
-<primary>różnice między ZFS a tradycyjnymi systemami plików</primary>
+<para>Migawki systemu plików są w ZFS-ie mało kosztowne i łatwe do wykonania. Prawdopodobnie będą powszechne w większości systemów plików ZFS. Więcej informacji o migawkach ZFS w <olink targetdoc="" remap="internal" targetptr="gavvx">Rozdziale 6, praca z migawkami i klonami ZFS</olink>.</para>
+<para>Obecność migawki może spowodować pewne nieoczekiwane zachowania przy próbie uwolnienia miejsca. W typowej sytuacji, przy właściwych prawach dostępu, można usunąć plik z pełnego systemu plików i spowoduje to zwiększenie ilości miejsca dostępnego w systemie plików. Jeśli jednak usuwany plik istnieje w migawce systemu plików, akcja ta nie spowoduje przyrostu wolnego miejsca. Do bloków używanych przez plik nadal będą odwołania z migawki.<indexterm xml:id="indexterm-73">
+<primary>różnice między ZFS-em a tradycyjnymi systemami plików</primary>
 <secondary>zachowanie przy braku miejsca</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-74">
@@ -101,12 +101,12 @@ Można zagwarantować systemowi plików miejsce za pomocą rezerwacji. Więcej i
 <secondary>różnice między ZFS-em a tradycyjnymi systemami plików</secondary>
 </indexterm>
 </para>
-<para>Więcej informacji o montowaniu i współdzieleniu systemów plików ZFS w <olink targetdoc="" remap="internal" targetptr="gaynd">montowaniu i współdzieleniu systemów plików ZFS</olink>.</para>
+<para>Więcej informacji o montowaniu i współdzieleniu systemów plików ZFS w <olink targetdoc="" remap="internal" targetptr="gaynd">montowanie i współdzielenie systemów plików ZFS</olink>.</para>
 </sect1>
 <sect1 xml:id="gazcc">
 <title>Tradycyjne zarządzanie woluminami</title>
 <para>Jak to opisano w <olink targetdoc="" remap="internal" targetptr="gaypk">pule nośników danych ZFS</olink>,
-ZFS eliminuje potrzebę odrębnego zarządcy woluminów. ZFS operuje na surowych nośnikach, jest więc możliwe stworzenie puli składającej się z woluminów logicznych, programowych lub sprzętowych. Konfiguracja taka jest jednak niezalecana, ponieważ ZFS najlepiej radzi sovie z surowymi fizycznymi nośnikami. Używanie nośników logicznych może obniżyć wydajność, stabilność lub oba i należy go unikać.<indexterm xml:id="indexterm-77">
+ZFS eliminuje potrzebę odrębnego zarządcy woluminów. ZFS operuje na surowych nośnikach, jest więc możliwe stworzenie puli składającej się z woluminów logicznych, programowych lub sprzętowych. Konfiguracja taka jest jednak niezalecana, ponieważ ZFS najlepiej radzi sobie z surowymi fizycznymi nośnikami. Używanie nośników logicznych może obniżyć wydajność, stabilność lub oba i należy go unikać.<indexterm xml:id="indexterm-77">
 <primary>różnice między ZFS-em a tradycyjnymi systemami plików</primary>
 <secondary>tradycyjne zarządzanie woluminami</secondary>
 </indexterm>
@@ -139,7 +139,7 @@ ZFS eliminuje potrzebę odrębnego zarządcy woluminów. ZFS operuje na surowych
 <para>Ustalane i wyświetlane za pomocą komend <command>chmod</command> i <command>ls</command>, nie zaś za pomocą <command>setfacl</command> i <command>getfacl</command>.</para>
 </listitem>
 <listitem>
-<para>Bogatsza semantyka dziedziczenia do okreslania, jak przenoszone są prawa dostępu z katalogu do podkatalogów itd.</para>
+<para>Bogatsza semantyka dziedziczenia do określania, jak przenoszone są prawa dostępu z katalogu do podkatalogów itd.</para>
 </listitem>
 </itemizedlist>
 <para>Więcej informacji o używaniu ACL-i z plikami ZFS w <olink targetdoc="" remap="internal" targetptr="ftyxi">Rozdziale 7, używanie ACL-i do ochrony plików ZFS</olink>.</para>
