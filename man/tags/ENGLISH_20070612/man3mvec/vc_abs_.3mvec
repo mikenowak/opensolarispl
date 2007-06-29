@@ -1,0 +1,142 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2004, Sun Microsystems, Inc. All Rights Reserved.
+.TH vc_abs_ 3MVEC "19 Nov 2004" "SunOS 5.11" "Vector Math Library Functions"
+.SH NAME
+vc_abs_, vz_abs_, vc_exp_, vz_exp_, vc_log_, vz_log_, vc_pow_, vz_pow_ \- vector versions of common complex mathematical functions
+.SH SYNOPSIS
+.LP
+.nf
+cc [ \fIflag\fR\&.\|.\|. ] \fIfile\fR\&.\|.\|. \fB-lmvec\fR [ \fIlibrary\fR\&.\|.\|. ]
+
+\fBvoid\fR \fBvc_abs_\fR(\fBint *\fR\fIn\fR, \fBfloat _Complex * restrict\fR \fIx\fR,
+    \fBint *\fR\fIstridex\fR, \fBfloat * restrict\fR \fIy\fR, \fBint *\fR\fIstridey\fR);
+.fi
+
+.LP
+.nf
+\fBvoid\fR \fBvz_abs_\fR(\fBint *\fR\fIn\fR, \fBdouble _Complex * restrict\fR \fIx\fR,
+    \fBint *\fR\fIstridex\fR, \fBdouble * restrict\fR \fIy\fR, \fBint *\fR\fIstridey\fR);
+.fi
+
+.LP
+.nf
+\fBvoid\fR \fBvc_exp_\fR(\fBint *\fR\fIn\fR, \fBfloat _Complex * restrict\fR \fIx\fR,
+    \fBint *\fR\fIstridex\fR, \fBfloat _Complex * restrict\fR \fIy\fR, \fBint *\fR\fIstridey\fR,
+    \fBfloat * restrict\fR \fItmp\fR);
+.fi
+
+.LP
+.nf
+\fBvoid\fR \fBvz_exp_\fR(\fBint *\fR\fIn\fR, \fBdouble _Complex * restrict\fR \fIx\fR,
+    \fBint *\fR\fIstridex\fR, \fBdouble  _Complex * restrict\fR \fIy\fR \fBint *\fR\fIstridey\fR,
+    \fBdouble * restrict\fR \fItmp\fR);
+.fi
+
+.LP
+.nf
+\fBvoid\fR \fBvc_log_\fR(\fBint *\fR\fIn\fR, \fBfloat _Complex * restrict\fR \fIx\fR,
+    \fBint *\fR\fIstridex\fR, \fBfloat _Complex * restrict\fR \fIy\fR, \fBint *\fR\fIstridey\fR);
+.fi
+
+.LP
+.nf
+\fBvoid\fR \fBvz_log_\fR(\fBint *\fR\fIn\fR, \fBdouble _Complex * restrict\fR \fIx\fR,
+    \fBint *\fR\fIstridex\fR, \fBdouble _Complex * restrict\fR \fIy\fR, \fBint *\fR\fIstridey\fR);
+.fi
+
+.LP
+.nf
+\fBvoid\fR \fBvc_pow_\fR(\fBint *\fR\fIn\fR, \fBfloat _Complex * restrict\fR \fIx\fR,
+    \fBint *\fR\fIstridex\fR, \fBfloat _Complex * restrict\fR \fIy\fR, \fBint *\fR\fIstridey\fR,
+    \fBfloat _Complex * restrict\fR \fIz\fR, \fBint *\fR\fIstridez\fR,
+    \fBfloat * restrict\fR \fItmp\fR);
+.fi
+
+.LP
+.nf
+\fBvoid\fR \fBvz_pow_\fR(\fBint *\fR\fIn\fR, \fBdouble _Complex * restrict\fR \fIx\fR,
+    \fBint *\fR\fIstridex\fR, \fBdouble _Complex * restrict\fR \fIy\fR, \fBint *\fR\fIstridey\fR,
+    \fBdouble _Complex * restrict\fR \fIz\fR, \fBint *\fR\fIstridez\fR,
+    \fBdouble * restrict\fR \fItmp\fR);
+.fi
+
+.SH DESCRIPTION
+.LP
+These functions evaluate common complex mathematical functions for an entire vector of values at once. The first parameter specifies the number of function values to compute and must be positive. Subsequent parameters specify vectors holding the argument and result values. Each vector is
+specified by a pointer to its first element and a stride, which is the increment between successive elements.
+.LP
+The call \fBvc_abs_(n, x, sx, y, sy)\fR sets \fBy[i * (*sy)]\fR to the magnitude (also called the modulus) of \fBx[i * (*sx)]\fR for each \fBi = 0, 1, ..., *n - 1\fR. The \fIx\fR argument is complex but \fIy\fR is
+real.
+.LP
+The call \fBvc_exp_(n, x, sx, y, sy, tmp)\fR sets \fBy[i * (*sy)] = exp(x[i * (*sx)])\fR. The \fItmp\fR array provides scratch space and must be at least *\fIn\fR elements in length.
+.LP
+The call \fBvc_log_(n, x, sx, y, sy)\fR sets \fBy[i * (*sy)] = log(x[i * (*sx)])\fR.
+.LP
+The call \fBvc_pow_(n, x, sx, y, sy, z, sz, tmp)\fR sets \fBz[i * (*sz)] = x[i * (*sx)] ** y[i * (*sy)]\fR. The \fItmp\fR array provides scratch space and must be at least 3 * (*\fIn\fR) elements in length.
+.LP
+The \fBvz_abs_()\fR, \fBvz_exp_()\fR, \fBvz_log_()\fR, and \fBvz_pow_()\fR functions are double precision versions of the single precision functions listed above.
+.LP
+For each function, the element count *\fIn\fR must be positive. The strides for the argument and result arrays can be arbitrary integers, but the arrays themselves must not be the same or overlap. For example, the results of the code fragment
+.sp
+.in +2
+.nf
+double _Complex x[100];
+int             n = 100, s = 1;
+
+vz_exp_(&n, x, &s, x, &s);
+.fi
+.in -2
+
+.LP
+are undefined. A stride can be zero, which effectively collapses the entire vector into a single element. For example, one can use \fBvc_pow_()\fR to compute values of \fIx\fR[\fIi\fR] ** \fIy\fR for a fixed value of \fIy\fR by
+specifying *\fIstridey\fR = 0. A stride can also be negative, but the corresponding pointer must still point to the first element of the vector to be used; if the stride is negative, this will be the highest-addressed element in memory. (This convention differs from the Level
+1 BLAS, in which array parameters always refer to the lowest-addressed element in memory even when negative increments are used.)
+.SH ERRORS
+.LP
+The vector functions listed above use textbook mathematical formulas such as \fBexp(\fIx\fR + \fIi\fR \fIy\fR) = exp \fIx\fR (cos \fIy\fR + \fIi\fR sin \fIy\fR)\fR to express complex functions in terms of real functions. They then use the real vector functions described in \fBvatan_\fR(3MVEC). These
+functions perform no special handling for exceptional cases. In particular, they need not deliver the same results as the C99 <\fBcomplex.h\fR> complex math functions.
+.SH USAGE
+.LP
+The vector functions assume that the round-to-nearest floating point rounding mode is in effect. If a program changes the rounding mode from the default round-to-nearest, it must reestablish that mode before calling any of these functions. The result of calling a vector function with a rounding
+mode other than round-to-nearest in effect is undefined.
+.LP
+The complex vector functions are not guaranteed to deliver results that are identical to the results of the corresponding C99 <\fBcomplex.h\fR> complex math functions given the same arguments.
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+Interface StabilityEvolving
+_
+MT-LevelMT-Safe
+.TE
+
+.SH SEE ALSO
+.LP
+\fBcomplex.h\fR(3HEAD), \fBvatan_\fR(3MVEC), \fBattributes\fR(5)

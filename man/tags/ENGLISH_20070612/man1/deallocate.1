@@ -1,0 +1,186 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright 2005 Sun Microsystems, Inc. All Rights Reserved
+.TH deallocate 1 "16 Mar 2006" "SunOS 5.11" "User Commands"
+.SH NAME
+deallocate \- device deallocation
+.SH SYNOPSIS
+.LP
+.nf
+\fBdeallocate\fR [\fB-s\fR] [\fB-w\fR] [\fB-F\fR] [\fB-z\fR \fIzonename\fR] \fIdevice\fR
+.fi
+
+.LP
+.nf
+\fBdeallocate\fR [\fB-s\fR] [\fB-w\fR] [\fB-F\fR] [\fB-z\fR \fIzonename\fR] \fB-g\fR \fIdev-type\fR
+.fi
+
+.LP
+.nf
+\fBdeallocate\fR [\fB-s\fR] [\fB-w\fR] [\fB-F\fR] [\fB-z\fR \fIzonename\fR] \fB-I\fR 
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBdeallocate\fR command frees an allocated device. It resets the ownership and permissions on all device special files associated with the device, disabling access to that device. \fBdeallocate\fR runs the device  cleaning program for that device as specified
+in \fBdevice_allocate\fR(4). 
+.LP
+The default \fBdeallocate\fR operation deallocates devices allocated to the user. 
+.SH OPTIONS
+.LP
+The following options are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-F\fR \fIdevice\fR\fR
+.ad
+.RS 13n
+.rt  
+Forces deallocation of the device associated with the file specified by \fIdevice\fR. Only a user with the \fBsolaris.device.revoke\fR authorization is permitted to use this
+option.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-I\fR\fR
+.ad
+.RS 13n
+.rt  
+Forces deallocation of all allocatable devices. Only a user with the \fBsolaris.device.revoke\fR authorization is permitted to use this option. This option should only be used at system initialization.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-s\fR\fR
+.ad
+.RS 13n
+.rt  
+Silent. Suppresses any diagnostic output.
+.RE
+
+.LP
+The following options are supported if the system is configured with Trusted Extensions:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-g\fR \fIdev-type\fR\fR
+.ad
+.RS 15n
+.rt  
+Deallocates a device of device type matching \fIdev-type\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-w\fR\fR
+.ad
+.RS 15n
+.rt  
+Runs the device cleaning program in a windowing environment. If a windowing version of the program exists, it is used. Otherwise, the standard version is run in a terminal window.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-z\fR \fIzonename\fR\fR
+.ad
+.RS 15n
+.rt  
+Deallocates device from the zone specified by \fIzonename\fR.
+.RE
+
+.SH OPERANDS
+.LP
+The following operands are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fIdevice\fR\fR
+.ad
+.RS 10n
+.rt  
+Deallocate the device associated with the device special file specified by \fIdevice\fR.
+.RE
+
+.SH EXIT STATUS
+.LP
+The following exit values are returned:
+.sp
+.ne 2
+.mk
+.na
+\fBnon\(emzero\fR
+.ad
+.RS 15n
+.rt  
+An error occurred.
+.RE
+
+.SH FILES
+.LP
+\fB/etc/security/device_allocate\fR
+.LP
+\fB/etc/security/device_maps\fR
+.LP
+\fB/etc/security/dev/*\fR
+.LP
+\fB/etc/security/lib/*\fR
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWcsu
+_
+Interface StabilitySee below.
+.TE
+
+.LP
+The invocation is Evolving. The options are Evolving. The output is unstable.
+.SH SEE ALSO
+.LP
+\fBallocate\fR(1), \fBlist_devices\fR(1), \fBbsmconv\fR(1M), \fBdminfo\fR(1M), \fBmkdevalloc\fR(1M), \fBmkdevmaps\fR(1M), \fBdevice_allocate\fR(4), \fBdevice_maps\fR(4), \fBattributes\fR(5)
+.LP
+\fIControlling Access to Devices\fR
+.SH NOTES
+.LP
+The functionality described in this man page is available only if the Basic Security Module (BSM) has been enabled. See \fBbsmconv\fR(1M) for more information.
+.LP
+On systems configured with Trusted Extensions, the functionality is enabled by default.
+.LP
+\fB/etc/security/dev\fR, \fBmkdevalloc\fR(1M), and \fBmkdevmaps\fR(1M) might not be supported in a future release of the Solaris Operating Environment.

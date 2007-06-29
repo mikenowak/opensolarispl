@@ -1,0 +1,149 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (C) 2007, Sun Microsystems, Inc. All Rights Reserved
+.\"  Copyright 1989 AT&T
+.TH archives.h 3HEAD "3 Jul 1990" "SunOS 5.11" "Headers"
+.SH NAME
+archives.h, archives \- device header
+.SH DESCRIPTION
+.sp
+.in +2
+.nf
+/* Magic numbers */
+#define CMN_ASC 0x070701    /* Cpio Magic Number for \(mic header */
+#define CMN_BIN 070707      /* Cpio Magic Number for Binary header */
+#define CMN_BBS 0143561     /* Cpio Magic Number for Byte-Swap header */
+#define CMN_CRC 0x070702    /* Cpio Magic Number for CRC header */
+#define CMS_ASC "070701"    /* Cpio Magic String for \(mic header */
+#define CMS_CHR "070707"    /* Cpio Magic String for odc header */
+#define CMS_CRC "070702"    /* Cpio Magic String for CRC header */
+#define CMS_LEN 6           /* Cpio Magic String length */
+/* Various header and field lengths */
+#define CHRSZ   76         /* \(miH odc size minus filename field */
+#define ASCSZ   110        /* \(mic and CRC hdr size minus filename field */
+#define TARSZ   512        /* TAR hdr size */
+#define HNAMLEN 256        /* maximum filename length for binary and
+                          odc headers */
+#define EXPNLEN 1024      /* maximum filename length for \(mic and
+                         CRC headers */
+#define HTIMLEN 2         /* length of modification time field */
+#define HSIZLEN 2         /* length of file size field */
+/* cpio binary header definition */
+struct hdr_cpio {
+       short   h_magic,           /* magic number field */
+               h_dev;             /* file system of file */
+       ushort_t  h_ino,           /* inode of file */
+               h_mode,            /* modes of file */
+               h_uid,             /* uid of file */
+               h_gid;             /* gid of file */
+       short   h_nlink,           /* number of links to file */
+               h_rdev,            /* maj/min numbers for special files */
+               h_mtime[HTIMLEN],  /* modification time of file */
+               h_namesize,        /* length of filename */
+		h_filesize[HSIZLEN];	/* size of file */
+	char	h_name[HNAMLEN];	/* filename */
+} ;
+/* cpio \(miH odc header format */
+struct c_hdr {
+       char c_magic[CMS_LEN],
+            c_dev[6],
+            c_ino[6],
+            c_mode[6],
+            c_uid[6],
+            c_gid[6],
+            c_nlink[6],
+            c_rdev[6],
+            c_mtime[11],
+            c_namesz[6],
+            c_filesz[11],
+            c_name[HNAMLEN];
+} ;
+/* \(mic and CRC header format */
+struct Exp_cpio_hdr {
+	char	E_magic[CMS_LEN],
+		E_ino[8],
+		E_mode[8],
+		E_uid[8],
+		E_gid[8],
+		E_nlink[8],
+		E_mtime[8],
+		E_filesize[8],
+		E_maj[8],
+		E_min[8],
+		E_rmaj[8],
+		E_rmin[8],
+		E_namesize[8],
+		E_chksum[8],
+		E_name[EXPNLEN];
+} ;
+/* Tar header structure and format */
+#define TBLOCK	512	/* length of tar header and data blocks */
+#define TNAMLEN	100	/* maximum length for tar file names */
+#define TMODLEN	8	/* length of mode field */
+#define TUIDLEN	8	/* length of uid field */
+#define TGIDLEN	8	/* length of gid field */
+#define TSIZLEN	12	/* length of size field */
+#define TTIMLEN	12	/* length of modification time field */
+#define TCRCLEN	8	/* length of header checksum field */
+/* tar header definition */
+union tblock {
+	char dummy[TBLOCK];
+	struct header {
+         char  t_name[TNAMLEN];     /* name of file */
+         char  t_mode[TMODLEN];     /* mode of file */
+         char  t_uid[TUIDLEN];      /* uid of file */
+         char  t_gid[TGIDLEN];      /* gid of file */
+         char  t_size[TSIZLEN];     /* size of file in bytes */
+         char  t_mtime[TTIMLEN];    /* modification time of file */
+         char  t_chksum[TCRCLEN];   /* checksum of header */
+         char  t_typeflag;          /* flag to indicate type of file */
+         char  t_linkname[TNAMLEN]; /* file this file is linked with */
+         char  t_magic[6];          /* magic string always "ustar" */
+         char  t_version[2];        /* version strings always "00" */
+         char  t_uname[32];         /* owner of file in ASCII */
+         char  t_gname[32];         /* group of file in ASCII */
+         char  t_devmajor[8];       /* major number for special files */
+         char  t_devminor[8];       /* minor number for special files */
+         char  t_prefix[155];       /* pathname prefix */
+	} tbuf;
+}
+/* volcopy tape label format and structure */
+#define VMAGLEN 8
+#define VVOLLEN	6
+#define VFILLEN	464
+struct volcopy_label {
+	char	v_magic[VMAGLEN],
+		v_volume[VVOLLEN],
+		v_reels,
+		v_reel;
+	long	v_time,
+		v_length,
+		v_dens,
+		v_reelblks,	/* u370 added field */
+		v_blksize,	/* u370 added field */
+		v_nblocks;	/* u370 added field */
+	char	v_fill[VFILLEN];
+	long	v_offset;	/* used with -e and -reel options */
+	int	v_type;		/* does tape have nblocks field? */
+} ;
+.fi
+.in -2
+.sp
+

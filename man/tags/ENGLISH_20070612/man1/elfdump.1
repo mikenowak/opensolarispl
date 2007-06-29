@@ -1,0 +1,450 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright (c) 2007 by Sun Microsystems, Inc.
+.\" All rights reserved.
+.TH elfdump 1 "20 March 2007" "SunOS 5.11" "User Commands"
+.SH NAME
+elfdump \- dumps selected parts of an object file
+.SH SYNOPSIS
+.LP
+.nf
+\fBelfdump\fR [\fB-cCdegGhHiklmnprsuvy\fR] [\fB-I\fR \fIindex-expr\fR] [\fB-N\fR \fIname\fR] [\fB-w\fR \fIfile\fR] \fIfilename\fR...
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBelfdump\fR utility symbolically dumps selected parts
+of the specified object file(s). The options allow specific portions of the
+file to be displayed.
+.LP
+The \fBelfdump\fR utility is similar in function to the \fBdump\fR(1) utility. The \fBdump\fR utility
+offers an older and less user-friendly interface than \fBelfdump\fR,
+although \fBdump\fR might be more appropriate for certain uses
+such as in shell scripts.
+.LP
+Archive files, produced by \fBar\fR(1),
+can also be inspected with \fBelfdump\fR. In this case, each
+object within the archive is processed using the options supplied.
+.LP
+For a complete description of the displayed information, refer to the \fI\fR.
+.SH OPTIONS
+.LP
+The following options are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-c\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps section header information.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-C\fR\fR
+.ad
+.RS 18n
+.rt  
+Demangles C++ symbol names.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-d\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.dynamic\fR section.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-e\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the \fBELF\fR header.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-g\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.group\fR section.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-G\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.got\fR section.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-h\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.hash\fR section.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-H\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.SUNW_cap\fR hardware
+and software capabilities section.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-i\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.interp\fR section.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-I\fR  \fIindex-expr\fR\fR
+.ad
+.RS 18n
+.rt  
+Qualifies the sections or program headers to examine with
+a specific index or index range. For example, the third section header in
+a file can be displayed using:
+.sp
+.in +2
+.nf
+example% \fBelfdump -c -I 3 \fIfilename\fR\fR
+.fi
+.in -2
+.sp
+
+An \fIindex-expr\fR can be a single non-negative
+integer value that specifies a specific item, as shown in the previous example.
+Alternatively, an \fIindex-expr\fR can consist of two
+such values separated by a colon (:), indicating a range of items. The following
+example displays the third, fourth, and fifth program headers in a file:
+.sp
+.in +2
+.nf
+example% \fBelfdump -p -I 3:5 \fIfilename\fR\fR
+.fi
+.in -2
+.sp
+
+When specifying an index range, the second value can be omitted to indicate
+the final item in the file. For example, the following statement lists all
+section headers from the tenth to the end:
+.sp
+.in +2
+.nf
+example% \fBelfdump -c -I 10: \fIfilename\fR\fR
+.fi
+.in -2
+.sp
+
+See NOTES for additional information about the \fB-I\fR and \fB-N\fR options.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-k\fR\fR
+.ad
+.RS 18n
+.rt  
+Calculates the \fBELF\fR checksum. See \fBgelf_checksum\fR(3ELF).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-l\fR\fR
+.ad
+.RS 18n
+.rt  
+Displays long section names without truncation.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-m\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.SUNW_move\fR section.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-n\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.note\fR section.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-N\fR \fIname\fR\fR
+.ad
+.RS 18n
+.rt  
+Qualifies the sections or program headers to examine with
+a specific name. For example, in a file that contains more than one symbol
+table, the \fB\&.dynsym\fR symbol table can be displayed using:
+.sp
+.in +2
+.nf
+example% \fBelfdump -s -N .dynsym \fIfilename\fR\fR
+.fi
+.in -2
+.sp
+
+If the \fB-p\fR option is specified, \fIname\fR refers
+to the program header type, which allows for the display of specific program
+headers. For example, the program header that identifies an interpreter can
+be displayed using:
+.sp
+.in +2
+.nf
+example% \fBelfdump -p -N PT_INTERP \fIfilename\fR\fR
+.fi
+.in -2
+.sp
+
+See NOTES for additional information about the \fB-I\fR and \fB-N\fR options.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the program headers. Individual program headers can
+be specified with the \fB-I\fR or \fB-N\fR options.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-r\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.rel\fR[\fBa\fR]
+relocation sections.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-s\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.SUNW_ldynsym\fR, \fB\&.dynsym\fR, and \fB\&.symtab\fR symbol table sections. For
+archives, the archive symbol table is also dumped. Individual sections can
+be specified with the \fB-I\fR or \fB-N\fR options. An
+archive symbol table can be specified using the special section name \fB-N\fR \fBARSYM\fR.
+.sp
+In the case of core files, the \fBshndx\fR field will have
+the value "\fBunknown\fR" since the field does not
+contain the valid values.
+.sp
+In addition to the standard symbol table information, the version definition
+index of the symbol is also provided under the \fIver\fR heading.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-S\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.SUNW_ldynsym\fR and \fB\&.dynsym\fR symbol table sections sorted in the order given by the \fB\&.SUNW_dynsymsort\fR and \fB\&.SUNW_dyntlssort\fR symbol
+sort sections. Thread Local Storage (TLS) symbols are sorted by offset. Regular
+symbols are sorted by address. Symbols not referenced by the sort sections
+are not displayed.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-u\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of a frame unwind.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-v\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.SUNW\fR\fI_version\fR version sections.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-w\fR \fIfile\fR\fR
+.ad
+.RS 18n
+.rt  
+Writes the contents of sections which are specified with the \fB-I\fR or \fB-N\fR options to the named file. For example, extracting
+the \fB\&.text\fR section of a file can be carried out with:
+.sp
+.in +2
+.nf
+example% \fBelfdump -w text.out -N .text \fIfilename\fR\fR
+.fi
+.in -2
+.sp
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-y\fR\fR
+.ad
+.RS 18n
+.rt  
+Dumps the contents of the \fB\&.SUNW_syminfo\fR section.
+.RE
+
+.SH OPERANDS
+.LP
+The following operand is supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fIfilename\fR\fR
+.ad
+.RS 12n
+.rt  
+The name of the specified object file.
+.RE
+
+.SH FILES
+.sp
+.ne 2
+.mk
+.na
+\fB\fBliblddbg.so\fR\fR
+.ad
+.RS 15n
+.rt  
+linker debugging library
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for
+descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWbtool
+_
+Interface StabilityStable
+.TE
+
+.SH SEE ALSO
+.LP
+\fBar\fR(1), \fBdump\fR(1), \fBnm\fR(1), \fBpvs\fR(1), \fBelf\fR(3ELF), \fBattributes\fR(5)
+.LP
+\fI\fR
+.SH NOTES
+.LP
+By default, \fBelfdump\fR displays data from all sections
+or program headers that contain relevant information for the specified query.
+The \fB-I\fR, and \fB-N\fR options can be used with some
+options in order to narrow the range of sections or program headers to examine.
+The meaning of the \fB-I\fR, and \fB-N\fR options depends
+on the other options used. When used with \fB-p\fR, program headers
+are selected. Sections are specified when used with \fB-c\fR, \fB-g\fR, \fB-m\fR, \fB-n\fR, \fB-r\fR, \fB-s\fR, \fB-S\fR, \fB-u\fR, and \fB-w\fR. \fB-I\fR,
+or\fB-N\fR are quietly ignored when used with any other option.
+.LP
+The \fB-I\fR option can be used in combination with the \fB-N\fR option in order to specify multiple items by index or by name. In
+addition, either option can be specified multiple times in order to select
+additional items. These features allow for the selection of complex groupings
+of items.

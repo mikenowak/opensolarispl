@@ -1,0 +1,202 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (C) 2001, Sun Microsystems, Inc. All Rights Reserved
+.TH mipagentstat 1M "11 Dec 2001" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+mipagentstat \- show Mobile IP Mobility Agent status
+.SH SYNOPSIS
+.LP
+.nf
+\fBmipagentstat\fR [\fB-fhp\fR]
+.fi
+
+.SH DESCRIPTION
+.LP
+Use the \fBmipagentstat\fR utility to display the content of various Mobile-IP related data structures.
+.SS "Visitor Table (First Form)"
+.LP
+The visitor table display lists information for all mobile nodes registered with the foreign agent, one mobile node per line. This list consists of the mobile node's home address or Network Access Identifier (\fBNAI\fR), home agent address, total registration lifetime and the number
+of seconds remaining before the registration expires. 
+.LP
+The following command line shows the output from a foreign agent with two mobile nodes registered:
+.sp
+.in +2
+.nf
+example# \fBmipagentstat -f\fR
+
+
+Mobile Node     Foreign Agent  Time Granted    Time Remaining     Flags
+                             (in secs)        (in secs)          
+foobar@xyz.com  fa1@tuv.com    600             125
+10.1.5.23       123.2.5.12     1000            10                 R
+.fi
+.in -2
+.sp
+
+.LP
+An "\fBR\fR" in the flags column indicates a reverse tunnel is present. No reverse tunnel is configured for the mobile node \fBfoobar@xyz.com\fR. A reverse tunnel is configured from mobile node \fB10.1.5.23\fR.
+.SS "Binding Table (Second Form)"
+.LP
+The binding table display lists information for all mobile nodes registered with the home agent, one mobile node per line. This list consists of the mobile node's home address or \fBNAI,\fR foreign agent address, total registration lifetime and the number of seconds remaining before
+the registration expires.
+.LP
+Use the following command line to show the output from a home agent with two active mobile nodes:
+.sp
+.in +2
+.nf
+example# \fBmipagentstat -h\fR
+
+
+Mobile Node     Home Agent     Time Granted    Time Remaining     Flags
+                             (in secs)       (in secs)         
+foobar@xyz.com  ha1@xyz.com   600             125
+10.1.5.23       10.1.5.1      1000            10                 R
+.fi
+.in -2
+.sp
+
+.LP
+An "\fBR\fR" in the flags column indicates a reverse tunnel is present. No reverse tunnel is configured for the mobile node \fBfoobar@xyz.com\fR. A reverse tunnel is configured for mobile node \fB10.1.5.23\fR.
+.SS "Agent Table (Third Form)"
+.LP
+The agent table display lists information for all current mobility agent-peers, that is all mobility agents with which mobile-nodes we are servicing are trying to obtain service. 
+.LP
+Provided in this display are the IPsec protection mechanisms being used with registration requests, replies, and tunnels. 
+.LP
+Use the following command line to show the output from a home agent with two (foreign) mobility agent peers:
+.sp
+.in +2
+.nf
+example# \fBmipagentstat -hp\fR
+
+Foreign                    ..... Security Association(s).....
+Agent                      Requests Replies  FTunnel  RTunnel
+------------------------   -------- -------- -------- --------
+fa.eng.example.com         AH,ESP   AH,ESP   AH,ESP   AH,ESP
+fa.central.example.com     AH       AH       ESP      ESP
+.fi
+.in -2
+.sp
+
+.LP
+Use the following command line to show the output from a home agent with two (foreign) mobility agent peers:
+.sp
+.in +2
+.nf
+example# \fBmipagentstat -fp\fR
+
+
+Home                       ..... Security Association(s) .....
+Agent                      Requests Replies  FTunnel  RTunnel
+------------------------   -------- -------- -------- --------
+ha.eng.example.com         AH,ESP   AH,ESP   AH,ESP   AH,ESP
+ha.central.example.com  
+.fi
+.in -2
+.sp
+
+.LP
+Use of the \fB-p\fR option without specifying the agent results in both displays described above, that is one display for each agent.
+.LP
+An \fBAH\fR in any column indicates the IPsec \fBAH\fR mechanism is in place for those datagrams.
+.LP
+An \fBESP\fR in any column indicates the IPsec \fBESP\fR mechanism is in place for those datagrams. 
+.SH OPTIONS
+.LP
+The following options are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-f\fR\fR
+.ad
+.RS 6n
+.rt  
+Display the list of active mobile nodes in the foreign agent's visitor's list.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-h\fR\fR
+.ad
+.RS 6n
+.rt  
+Display the list of active mobile nodes in the home agent's binding table.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR\fR
+.ad
+.RS 6n
+.rt  
+Display the list of mobility agent peers, and the IPsec protection mechanisms currently in use for registration and tunnel traffic. 
+.RE
+
+.SH EXIT STATUS
+.LP
+The following exit values are returned:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB0\fR\fR
+.ad
+.RS 12n
+.rt  
+Successful completion.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBnon-zero\fR\fR
+.ad
+.RS 12n
+.rt  
+An error occurred.
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWmipu
+.TE
+
+.SH SEE ALSO
+.LP
+\fBmipagent\fR(1M), \fBmipagentconfig\fR(1M), \fBmipagent.conf\fR(4), \fBattributes\fR(5)
+.LP
+Aboda, B., and Beadles, M. \fIRFC 2486, The Network Access Identifier\fR. The Internet Society, 1999.

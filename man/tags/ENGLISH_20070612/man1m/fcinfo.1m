@@ -1,0 +1,775 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2006, Sun Microsystems, Inc. All Rights Reserved
+.TH fcinfo 1M "8 Aug 2006" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+fcinfo \- Fibre Channel HBA Port Command Line Interface
+.SH SYNOPSIS
+.LP
+.nf
+\fBfcinfo\fR \fIhba-port\fR [\fB-l\fR] [\fIHBA_port_WWN\fR]...
+.fi
+
+.LP
+.nf
+\fBfcinfo\fR \fIremote-port\fR [\fB-ls\fR] [\fB-p\fR \fIHBA_port_WWN\fR] 
+    [\fIREMOTE_port_WWN\fR]...
+.fi
+
+.LP
+.nf
+\fBfcinfo\fR logical-unit | lu [\fB-v\fR] [OS \fIdevice_path\fR]
+.fi
+
+.LP
+.nf
+\fBfcinfo\fR [\fB-V\fR]
+.fi
+
+.LP
+.nf
+\fBfcinfo\fR [\fB-?\fR]
+.fi
+
+.SH DESCRIPTION
+.LP
+\fBfcinfo\fR is a command line interface that collects administrative information on fibre channel host bus adapter (\fBHBA\fR) ports on a host. It also collects data on any fibre channel targets that may be connected to those ports in a Storage Area Network (\fBSAN\fR).
+.SS "SUBCOMMANDS"
+.LP
+The following subcommands are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fIhba-port\fR\fR
+.ad
+.RS 21n
+.rt  
+Lists information for the \fBHBA\fR port referenced by the specified \fIHBA_port_WWN\fR. If \fIHBA_port_WWN\fR is not specified, all fibre channel \fBHBA\fR ports on the host will be listed.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fIremote-port\fR\fR
+.ad
+.RS 21n
+.rt  
+Lists the \fIremote-port\fR information for those remote ports that are specified. If no \fIREMOTE_port_WWN\fR is specified, all remote ports that are visible through \fIHBA_port_WWN\fR are listed. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBlogical-unit\fR | \fBlu\fR\fR
+.ad
+.RS 21n
+.rt  
+Lists the logical unit referenced by the specified \fIdevice_path\fR. If \fIdevice_path\fR is not specified, all fibre channel logical units will be listed.
+.RE
+
+.SH OPTIONS
+.LP
+The following options are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-l\fR, \fB--linkstat\fR\fR
+.ad
+.sp .6
+.RS 4n
+Lists the link error statistics information for the port referenced by the specified \fIHBA_port_WWN\fR or \fIREMOTE_port_WWN\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p \fR\fIHBA_port_WWN\fR, \fB--port \fR\fIHBA_port_WWN\fR\fR
+.ad
+.sp .6
+.RS 4n
+Retrieve remote port information from the \fIHBA_port_WWN\fR of the local \fBHBA\fR port on the host. The \fB-p\fR option can only be used with the \fBremote-port\fR subcommand and is a mandatory option.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-s\fR, \fB--scsi-target\fR\fR
+.ad
+.sp .6
+.RS 4n
+Lists the \fBSCSI\fR target information for all remote ports the user has asked for. The \fB-p\fR, \fB--port\fR option must always be specified and must be a valid \fBHBA\fR port on the host. This \fBHBA\fR port will be
+used as the initiator for which to retrieve the \fBSCSI\fR level target information. Note that this will only function on remote port fibre channel World-Wide Names that support an FC4 type of \fBSCSI\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-v\fR, \fB--verbose\fR\fR
+.ad
+.sp .6
+.RS 4n
+When used with the \fBlogical-unit\fR subcommand, the \fB-v\fR displays additional information for the logical unit, including \fBSCSI\fR vendor and product information and device type as well as the \fBFC\fR World-Wide names for
+the local and remote fibre channel ports to which this device is attached.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-V\fR, \fB--version\fR\fR
+.ad
+.sp .6
+.RS 4n
+Prints the version information.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-?\fR, \fB--help\fR\fR
+.ad
+.sp .6
+.RS 4n
+Prints the usage information. 
+.RE
+
+.SH EXAMPLES
+.LP
+\fBExample 1 \fRListing all HBA ports
+.LP
+The following command lists all fibre channel \fBHBA\fR ports on the host:
+
+.sp
+.in +2
+.nf
+# fcinfo hba-port 
+
+HBA Port WWN: 210000e08b074cb5
+       OS Device Name: /dev/cfg/c1
+       Manufacturer: QLogic Corp.
+       Model: 375-3108-xx
+       Firmware Version: 3.3.116
+       FCode/BIOS Version: 1.13.08
+       Type: N-port
+       State: online
+       Supported Speeds: 1Gb 2Gb
+       Current Speed: 2Gb
+       Node WWN: 200000e08b074cb5
+HBA Port WWN: 210100e08b274cb5
+       OS Device Name: /dev/cfg/c2
+       Manufacturer: QLogic Corp.
+       Model: 375-3108-xx
+       Firmware Version: 3.3.116
+       FCode/BIOS Version: 1.13.08
+       Type: N-port
+       State: online
+       Supported Speeds: 1Gb 2Gb
+       Current Speed: 2Gb
+       Node WWN: 200100e08b274cb5
+HBA Port WWN: 210000e08b072ab5
+       OS Device Name: /dev/cfg/c3
+       Manufacturer: QLogic Corp.
+       Firmware Version: 3.3.116
+       FCode/BIOS Version: 1.13.08
+       Model: 375-3108-xx
+       Type: L-port
+       State: online
+       Supported Speeds: 1Gb 2Gb
+       Current Speed: 2Gb
+       Node WWN: 200000e08b072ab5
+HBA Port WWN: 210100e08b272ab5
+       OS Device Name: /dev/cfg/c4
+       Manufacturer: QLogic Corp.
+       Model: 375-3108-xx
+       Firmware Version: 3.3.116
+       FCode/BIOS Version: 1.13.08
+       Type: N-port
+       State: online
+       Supported Speeds: 1Gb 2Gb
+       Current Speed: 2Gb
+       Node WWN: 200100e08b272ab5    
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 2 \fRListing HBA ports and link statistics
+.LP
+The following command lists information for the \fBHBA\fR ports and the link statistics for those ports:
+
+.sp
+.in +2
+.nf
+# fcinfo hba-port -l 210000e08b074cb5 210100e08b274cb5
+
+HBA Port WWN: 210000e08b074cb5
+       OS Device Name: /dev/cfg/c1
+       Manufacturer: QLogic Corp.
+       Model: 375-3108-xx
+       Firmware Version: 3.3.116
+       FCode/BIOS Version: 1.13.08
+       Type: N-port
+       State: online
+       Supported Speeds: 1Gb 2Gb
+       Current Speed: 2Gb
+       Node WWN: 200000e08b074cb5
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 0
+               Loss of Signal Count: 0
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+HBA Port WWN: 210100e08b274cb5
+       OS Device Name: /dev/cfg/c2
+       Manufacturer: QLogic Corp.
+       Model: 375-3108-xx
+       Firmware Version: 3.3.116
+       FCode/BIOS Version: 1.13.08
+       Type: N-port
+       State: online
+       Supported Speeds: 1Gb 2Gb
+       Current Speed: 2Gb
+       Node WWN: 200100e08b274cb5
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 0
+               Loss of Signal Count: 0
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 3 \fRListing all remote ports
+.LP
+The following command lists all remote ports that are visible through the given \fBHBA\fR port:
+
+.sp
+.in +2
+.nf
+# fcinfo remote-port -p 210100e08b274cb5
+
+Remote Port WWN: 50020f230000b4af
+       Active FC4 Types: SCSI
+       SCSI Target: yes
+       Node WWN: 50020f200000b4af
+Remote Port WWN: 210000e08b07daa6
+       Active FC4 Types: SCSI
+       SCSI Target: no
+       Node WWN: 200000e08b07daa6
+Remote Port WWN: 20030003ba27c788
+       Active FC4 Types: SCSI
+       SCSI Target: yes
+       Node WWN: 10000003ba27c788
+Remote Port WWN: 210000e08b096a60
+       Active FC4 Types: SCSI,IP
+       SCSI Target: no
+       Node WWN: 200000e08b096a60
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 4 \fRListing remote ports and link statistics
+.LP
+The following command lists information for the remote ports and the link statistics for those ports:
+
+.sp
+.in +2
+.nf
+# fcinfo remote-port -l -p 210100e08b272ab5
+
+Remote Port WWN: 210100e08b296a60
+       Active FC4 Types: SCSI,IP
+       SCSI Target: no
+       Node WWN: 200100e08b296a60
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 0
+               Loss of Signal Count: 0
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+Remote Port WWN: 20030003ba27d56d
+       Active FC4 Types: SCSI
+       SCSI Target: yes
+       Node WWN: 10000003ba27d56d
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 4765165
+               Loss of Signal Count: 4765165
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+Remote Port WWN: 210100e08b27f7a6
+       Active FC4 Types: SCSI
+       SCSI Target: no
+       Node WWN: 200100e08b27f7a6
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 0
+               Loss of Signal Count: 0
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+Remote Port WWN: 50020f230000b897
+       Active FC4 Types: SCSI
+       SCSI Target: yes
+       Node WWN: 50020f200000b897
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 7
+               Loss of Signal Count: 7
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+Remote Port WWN: 210100e08b27daa6
+       Active FC4 Types: SCSI
+       SCSI Target: no
+       Node WWN: 200100e08b27daa6
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 0
+               Loss of Signal Count: 0
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+Remote Port WWN: 210000e08b074cb5
+       Active FC4 Types: SCSI,IP
+       SCSI Target: no
+       Node WWN: 200000e08b074cb5
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 0
+               Loss of Signal Count: 0
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+Remote Port WWN: 210100e08b296060
+       Active FC4 Types: SCSI
+       SCSI Target: no
+       Node WWN: 200100e08b296060
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 0
+               Loss of Signal Count: 0
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 5 \fRListing all SCSI targets and link statistics
+.LP
+The following command lists all remote ports as well as the link statistics and \fIscsi-target\fR information:
+
+.sp
+.in +2
+.nf
+# fcinfo remote-port  -sl -p 210100e08b272ab5
+
+Remote Port WWN: 210100e08b296a60
+       Active FC4 Types: SCSI,IP
+       SCSI Target: no
+       Node WWN: 200100e08b296a60
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 0
+               Loss of Signal Count: 0
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+Remote Port WWN: 20030003ba27d56d
+       Active FC4 Types: SCSI
+       SCSI Target: yes
+       Node WWN: 10000003ba27d56d
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 4765165
+               Loss of Signal Count: 4765165
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+       LUN: 0
+         Vendor: SUN
+         Product: T4
+         OS Device Name: /dev/rdsk/c4t20030003BA27D56Dd0s2
+       LUN: 1
+         Vendor: SUN
+         Product: T4
+         OS Device Name: /dev/rdsk/c4t20030003BA27D56Dd1s2
+Remote Port WWN: 210100e08b27f7a6
+       Active FC4 Types: SCSI
+       SCSI Target: no
+       Node WWN: 200100e08b27f7a6
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 0
+               Loss of Signal Count: 0
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+Remote Port WWN: 50020f230000b897
+       Active FC4 Types: SCSI
+       SCSI Target: yes
+       Node WWN: 50020f200000b897
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 7
+               Loss of Signal Count: 7
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+       LUN: 0
+         Vendor: SUN
+         Product: T300
+         OS Device Name: Unknown
+       LUN: 1
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d1s2
+       LUN: 2
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d2s2
+       LUN: 3
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d3s2
+       LUN: 4
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d4s2
+       LUN: 5
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d5s2
+       LUN: 6
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d6s2
+       LUN: 7
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d7s2
+       LUN: 8
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d8s2
+       LUN: 9
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d9s2
+       LUN: 10
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d10s2
+       LUN: 11
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d11s2
+       LUN: 12
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d12s2
+       LUN: 13
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d13s2
+       LUN: 14
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d14s2
+       LUN: 15
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d15s2
+Remote Port WWN: 210100e08b27daa6
+       Active FC4 Types: SCSI
+       SCSI Target: no
+       Node WWN: 200100e08b27daa6
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 0
+               Loss of Signal Count: 0
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+Remote Port WWN: 210000e08b074cb5
+       Active FC4 Types: SCSI,IP
+       SCSI Target: no
+       Node WWN: 200000e08b074cb5
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 0
+               Loss of Signal Count: 0
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+Remote Port WWN: 210100e08b296060
+       Active FC4 Types: SCSI
+       SCSI Target: no
+       Node WWN: 200100e08b296060
+       Link Error Statistics:
+               Link Failure Count: 0
+               Loss of Sync Count: 0
+               Loss of Signal Count: 0
+               Primitive Seq Protocol Error Count: 0
+               Invalid Tx Word Count: 0
+               Invalid CRC Count: 0
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 6 \fRListing SCSI target information
+.LP
+The following command lists all remote ports as well as the \fIscsi-target\fR information:
+
+.sp
+.in +2
+.nf
+# fcinfo remote-port  -s -p 210100e08b272ab5
+
+Remote Port WWN: 210100e08b296a60
+       Active FC4 Types: SCSI,IP
+       SCSI Target: no
+       Node WWN: 200100e08b296a60
+Remote Port WWN: 20030003ba27d56d
+       Active FC4 Types: SCSI
+       SCSI Target: yes
+       Node WWN: 10000003ba27d56d
+       LUN: 0
+         Vendor: SUN
+         Product: T4
+         OS Device Name: /dev/rdsk/c4t20030003BA27D56Dd0s2
+       LUN: 1
+         Vendor: SUN
+         Product: T4
+         OS Device Name: /dev/rdsk/c4t20030003BA27D56Dd1s2
+Remote Port WWN: 210100e08b27f7a6
+       Active FC4 Types: SCSI
+       SCSI Target: no
+       Node WWN: 200100e08b27f7a6
+Remote Port WWN: 50020f230000b897
+       Active FC4 Types: SCSI
+       SCSI Target: yes
+       Node WWN: 50020f200000b897
+       LUN: 0
+         Vendor: SUN
+         Product: T300
+         OS Device Name: Unknown
+       LUN: 1
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d1s2
+       LUN: 2
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d2s2
+       LUN: 3
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d3s2
+       LUN: 4
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d4s2
+       LUN: 5
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d5s2
+       LUN: 6
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d6s2
+       LUN: 7
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d7s2
+       LUN: 8
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d8s2
+       LUN: 9
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d9s2
+       LUN: 10
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d10s2
+       LUN: 11
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d11s2
+       LUN: 12
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d12s2
+       LUN: 13
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d13s2
+       LUN: 14
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d14s2
+       LUN: 15
+         Vendor: SUN
+         Product: T300
+         OS Device Name: /dev/rdsk/c4t50020F230000B897d15s2
+Remote Port WWN: 210100e08b27daa6
+       Active FC4 Types: SCSI
+       SCSI Target: no
+       Node WWN: 200100e08b27daa6
+Remote Port WWN: 210000e08b074cb5
+       Active FC4 Types: SCSI,IP
+       SCSI Target: no
+       Node WWN: 200000e08b074cb5
+Remote Port WWN: 210100e08b296060
+       Active FC4 Types: SCSI
+       SCSI Target: no
+       Node WWN: 200100e08b296060                
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 7 \fRListing the Logical Unit
+.LP
+The following command lists the logical unit:
+
+.sp
+.in +2
+.nf
+# fcinfo logical-unit
+
+/dev/rdsk/c0t600C0FF0000000000036223AE73EB705d0s2
+/dev/rdsk/c0t600C0FF00000000000362272539E5B03d0s2
+/dev/rmt/0n             
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 8 \fRDisplaying Additional Information for the Logical Unit
+.LP
+The following command displays additional information about the logical unit using the \fB-v\fR option for device \fB/dev/rmt/On\fR:
+
+.sp
+.in +2
+.nf
+# fcinfo lu -v /dev/rmt/On
+
+OS Device Name: /dev/rmt/0n
+       HBA Port WWN: 210000e07c030b91
+       	      Remote Port WWN: 21010003b7830a6
+       LUN: 0
+       Vendor: STK
+       Product: 9940A
+       Device Type: Tape device            
+.fi
+.in -2
+.sp
+
+.LP
+The following command displays additional information about the logical unit using the \fB-v\fR option for device \fB/dev/rdsk/c0t600C0FF0000000000036223AE73EB705d0s2\fR
+
+.sp
+.in +2
+.nf
+# fcinfo logical-unit -v \e
+    /dev/rdsk/c0t600C0FF0000000000036223AE73EB705d0s2
+
+OS Device Name: /dev/rdsk/c0t600C0FF0000000000036223AE73EB705d0s2
+       HBA Port WWN: 210100e08b27a8a1
+               Remote Port WWN: 256000c0ffc03622
+               Remote Port WWN: 216000c0ff803622
+       HBA Port WWN: 210000e08b07a8a1
+               Remote Port WWN: 256000c0ffc03622
+               Remote Port WWN: 216000c0ff803622
+       LUN: 0
+       Vendor: SUN
+       Product: StorEdge 3510
+       Device Type: Disk device
+.fi
+.in -2
+.sp
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNW
+_
+Interface StabilityEvolving
+.TE
+
+.SH SEE ALSO
+.LP
+\fBattributes\fR(5)
+.SH ERROR MESSAGES
+.LP
+Errors that can occur in addition to the errors normally associated with system administration commands: 
+.sp
+.ne 2
+.mk
+.na
+\fB\fB\fIHBA_port_WWN\fR: not found\fR\fR
+.ad
+.RS 30n
+.rt  
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB\fIREMOTE_port_WWN\fR: not found\fR\fR
+.ad
+.RS 30n
+.rt  
+
+.RE
+

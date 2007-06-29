@@ -1,0 +1,142 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright (c) 2001 Sun Microsystems, Inc.  All rights reserved.
+.TH mixerctl 1 "12 Mar 2001" "SunOS 5.11" "User Commands"
+.SH NAME
+mixerctl \- audio mixer control command line application
+.SH SYNOPSIS
+.LP
+.nf
+\fB/usr/sbin/mixerctl\fR [\fB-a\fR | \fB-d\fR \fIdev\fR] [\fB-iv\fR] [\fB-e\fR | \fB-o\fR]
+.fi
+
+.SH DESCRIPTION
+.LP
+Some audio devices support the audio mixer functionality. See \fBmixer\fR(7I) for a
+complete description of the audio mixer. The \fBmixerctl\fR command is used to control the mode of the audio mixer and to get information about the audio mixer and the audio device. See \fBaudio\fR(7I) for details.
+.SH OPTIONS
+.LP
+The following options are supported. If none are specified, option \fB-i\fR is assumed:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-a\fR \fR
+.ad
+.RS 11n
+.rt  
+The command applies to all audio devices.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-d\fR \fIdev\fR \fR
+.ad
+.RS 11n
+.rt  
+The \fIdev\fR argument specifies an alternate \fBaudio control\fR device for the command to use.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-e\fR \fR
+.ad
+.RS 11n
+.rt  
+Enables the audio mixer function if the audio device supports it. If supported, the audio mixer may be enabled at any time. The command silently ignores the enable option if the audio mixer is already enabled.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-i\fR \fR
+.ad
+.RS 11n
+.rt  
+Prints the audio device type information for the device and indicates whether the audio device uses the audio mixer. If the device does use the audio mixer, this option displays the audio mixer's mode.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-o\fR \fR
+.ad
+.RS 11n
+.rt  
+Turns off the audio mixer function if the audio device supports it. If supported, the audio mixer may be turned off if only one process has the device opened with the \fBO_RDWR\fR flag, or, if two different processes have the device opened, one with the \fBO_RDONLY\fR flag and the other with the \fBO_WRONLY\fR flag. (See \fBopen\fR(2).) The command silently ignores the disable option if the audio mixer function is already disabled.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-v\fR \fR
+.ad
+.RS 11n
+.rt  
+Verbose mode. Prints the \fBaudio_info_t\fR structure for the device, along with the device type information. This option implies the \fB-i\fR option.
+.RE
+
+.SH ENVIRONMENT VARIABLES
+.sp
+.ne 2
+.mk
+.na
+\fBAUDIODEV \fR
+.ad
+.RS 13n
+.rt  
+If the \fB-d\fR and \fB-a\fR options are not specified, the AUDIODEV environment variable is consulted. If set, AUDIODEV will contain the full path name of the user's default audio device. The default audio device will be converted into a control device, and then used. If the AUDIODEV variable is not set, \fB/dev/audioctl\fR is used.
+.RE
+
+.SH FILES
+.LP
+\fB/dev/audioctl\fR
+.LP
+\fB/dev/sound/{0...n}ctl\fR 
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+ArchitectureSPARC, x86
+_
+AvailabilitySUNWauda
+_
+Stability LevelEvolving
+.TE
+
+.SH SEE ALSO
+.LP
+\fBaudioconvert\fR(1), \fBaudioplay\fR(1), \fBaudiorecord\fR(1), \fBopen\fR(2), \fBattributes\fR(5), \fBusb_ac\fR(7D), \fBaudio\fR(7I), \fBaudio_support\fR(7I), \fBmixer\fR(7I) 

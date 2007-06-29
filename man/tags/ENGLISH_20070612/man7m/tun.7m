@@ -1,0 +1,253 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2004, Sun Microsystems, Inc.  All Rights Reserved
+.TH tun 7M "19 Aug 2004" "SunOS 5.11" "STREAMS Modules"
+.SH NAME
+tun, TUN, 6to4, 6to4tun, atun \- tunneling STREAMS module
+.SH SYNOPSIS
+.LP
+.nf
+\fBstrmod/tun\fR
+.fi
+
+.LP
+.nf
+\fBstrmod/atun\fR
+.fi
+
+.LP
+.nf
+\fBstrmod/6to4tun\fR
+.fi
+
+.SH DESCRIPTION
+.LP
+\fBtun\fR, \fBatun\fR and \fB6to4tun\fR are STREAMS modules that implement an IP-in-IP  tunneling mechanism.  IPv6-in-IPv4, IPv4-in-IPv4, IPv4-in-IPv6 and IPv6-in-IPv6 tunnels are supported.
+.LP
+Tunnels are configured as point-to-point interfaces. Ipv4-in-Ipv4 allows IPv4 packets to be encapsulated within IPv4 packets. IPv6-in-IPv4 tunnels allow IPv6 packets to be encapsulated within IPv4 packets. IPv4-in-IPv6 tunnels allow IPv4 packets to be encapsulated within IPv6  packets. IPv6-in-IPv6
+tunnels allow IPv6 packets to be encapsulated within IPv6 packets. Both the tunnel source and the  tunnel destination are required to configure these type of tunnels. Configured tunnels support encapsulated multicast packets. See \fBifconfig\fR(1M) for examples of these tunnel configurations.
+.LP
+The \fBatun\fR module is used to configure automatic tunnels. It supports IPv6  packets encapsulated within IPv4  packets. An IPv4 address is required for the tunnel source of these interfaces and  the  IPv4  compatible IPv6  source address must match this address. IPv6 packets using
+this interface must have IPv4  compatible  source  and destination  addresses. Automatic tunnels are not point-to-point, and they do not allow multicast packets to be sent. If the destination  of  an automatic tunnel is a router, the packets will not be forwarded.
+.LP
+The \fB6to4tun\fR module is used to configure 6to4 tunnels as described in \fIRFC 3056\fR. It implements automatic tunneling of IPv6 within IPv4. This IPv6 transition mechanism allows isolated IPv6 networks or nodes attached to an IPv4 network to communicate with other
+IPv6 networks with little configuration.  See \fBifconfig\fR(1M) for an example of how to configure a 6to4 tunnel.
+.RS +4
+.TP
+.ie t \(bu
+.el o
+Network startup scripts look at \fB/etc/hostname.ip.\fR*, \fB/etc/hostname6.ip.\fR*,  \fB/etc/hostname.ip6.\fR* and \fB/etc/hostname6.ip6\fR.* to find the available tunneling interfaces.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+The same tunnel source address (\fBtsrc\fR) and destination  address  (\fBtdst\fR)  is  be used for all instances (\fBluns\fR) of a  specific interface.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+Tunnels do not support snooping.  Instead, a filter made up of the combination of addresses can be used on the physical interface to capture relevant packets.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+If there is a tunnel set up between two multicast routers, then multicast routing should be configured to use the tunnel, rather than a special multicast routing virtual interface.
+.RE
+.SH APPLICATION PROGRAMMING INTEFACE
+.LP
+The tunnel module is architected to be plumbed  between two instances of \fBIP\fR.
+.SS "IOCTLS"
+.LP
+The following \fBioctl()\fR calls may be used to configure a tunneling interface. The \fBioctl()\fRs are defined in <\fBsys/sockio.h\fR>. This structure is defined in <\fBnet/if.h\fR>.
+.sp
+.in +2
+.nf
+/* currently tunnels only support IPv4 or IPv6 */
+enum ifta_proto {
+   IFTAP_INVALID,
+   IFTAP_IPV4,
+   IFTAP_IPV6
+};
+
+#define IFTUN_SECINFOLEN 8
+#define IFTUN_VERSION 1
+
+/* tunnel configuration structure */
+
+struct iftun_req {
+   char        ifta_lifr_name[LIFNAMSIZ];  /* if name */
+   struct sockaddr_storage ifta_saddr;     /* source address */
+   struct sockaddr_storage ifta_daddr;     /* destination address */
+   uint_t      ifta_flags;                 /* See below */
+                               /* IP version information is read only */
+   enum ifta_proto ifta_upper;             /* IP version above tunnel */
+   enum ifta_proto ifta_lower;             /* IP versin below tunnel */
+   uint_t      ifta_vers;                  /* Version number */
+   uint32_t    ifta_secinfo[IFTUN_SECINFOLEN]; /* Security prefs. */
+   int16_t     ifta_encap_lim;             /* Encapsulation limit */
+   uint8_t     ifta_hop_limit;             /* Hop limit */
+};
+          /* These flags are set to indicate which members are valid */
+
+#define    IFTUN_SRC             0x01
+#define    IFTUN_DST             0x02
+#define    IFTUN_SECURITY        0x04
+#define    IFTUN_ENCAP           0x08
+#define    IFTUN_HOPLIMIT        0x10
+.fi
+.in -2
+
+.LP
+The \fBifta_vers\fR field indicates what IPsec request structure is overlayed on top of \fBifta_secinfo\fR. The current value of \fBIFTUN_VERSION\fR implies an overlay of \fBipsec_req_t\fR. See \fBipsec\fR(7P).
+.sp
+.ne 2
+.mk
+.na
+\fBSIOCSTUNPARAM\fR
+.ad
+.RS 17n
+.rt  
+Set tunnel parameters. This ioctl() allows the tunnel's  source or destination address or hop limit or encapsulation limit to be set. The \fBIFTUN_SRC\fR bit set in \fBta_flags\fR indicates that the tunnel should bound to
+the source address supplied in \fBta_saddr\fR. The source must be a valid configured interface IP address. The \fBIFTUN_DST\fR bit set in \fBta_flags\fR indicates that the tunnel should bound to the destination address supplied in \fBta_daddr\fR. The
+destination address must be reachable. The \fBIFTUN_ENCAP\fR bit set in \fBifta_flags\fR indicates that  the tunnel's encapsulation limit should be set to the value supplied  in \fBifta_encap_lim\fR. The encapsulation limit is valid only for IPv4-in-IPv6  and IPv6-in-IPv6
+tunnels. Valid  encapsulation limit values  are \fI0\fR through \fI255\fR. Negative values indicate that no encapsulation limit is desired. The \fBIFTUN_HOPLIMIT\fR bit set in \fBta_flags\fR indicates that the tunnel's hop limit should be set
+to the value supplied in \fBifta_hop_limit\fR. In  the case of IPv4-in-IPv4  and IPv6-in-IPv4 tunnels, the hop limit is placed in the IPv4 header's TTL  field. In the case of  IPv4-in-IPv6 and IPv6-in-IPv6 tunnels, the hop limit is placed in the IPv6 header's hop limit field.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBSIOCGTUNPARAM\fR
+.ad
+.RS 17n
+.rt  
+Get tunnel parameters. Valid fields are indicated by the returned value  of \fBta_flags\fR bitmask. The version of  IP plumbed above or below the tunnel may be determined by inspecting  \fBta_upper\fR and \fBta_lower\fR by comparing the  members against the mutually exclusive defined values \fBIFTAP_INVALID\fR, \fBIFTAP_IPV4\fR, and \fBIFTAP_IPV6\fR. 
+.RE
+
+.SS "Tunnels and \fBDLPI\fR"
+.LP
+The tunnel module is a \fBDLPI st\fRyle 2  service  provider. All \fBM_PROTO\fR  and \fBM_PCPROTO\fR type messages are interpreted as \fBDLPI\fRprimitives.   Valid   \fBDLPI\fR primitives  are defined  in  <\fBsys/dlpi.h\fR>. Refer to \fBdlpi\fR(7P) for more information. An explicit \fBDL_ATTACH_REQ\fR message by the user  is  required to associate the opened stream with a particular
+device (\fBppa\fR).  The \fBppa\fR indicates the corresponding device  instance  (\fBunit\fR)  number. The device is initialized on first attach and deinitialized (stopped) on last detach.
+.LP
+The values returned by the module in the \fBDL_INFO_ACK\fR  primitive in response to  the \fBDL_INFO_REQ\fR from the user are as follows: 
+.RS +4
+.TP
+.ie t \(bu
+.el o
+The maximum \fBSDU\fR is  usually  4196  ("\fBip_max_mtu\fR  -  size of \fBIP\fR header").
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+The minimum \fBSDU\fR is 1.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+The \fBdlsap\fR address length is 0 for configured tunnels and non-zero for automatic tunnels.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+The \fBMAC\fR type is \fBDL_OTHER\fR.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+The \fBsap\fR length value is 0.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+The service mode is \fBDL_CLDLS\fR.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+No optional quality of service (\fBQOS\fR)  support  is included at present so the \fBQOS\fR fields are 0.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+The provider style is \fBDL_STYLE2\fR. 
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+The version is \fBDL_VERSION_2\fR.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+The broadcast address value is 0 
+.RE
+.LP
+Once  in  the \fBDL_ATTACHED\fR  state,  the user must send a \fBDL_BIND_REQ\fR to associate a particular \fBSAP\fR (Service Access Pointer) with the stream. The tunneling  module  interprets the  \fBsap\fR field within the \fBDL_BIND_REQ\fR as an \fBIP\fR "type" therefore the valid value for the \fBsap\fR field is \fBIP_DL_SAP\fR.
+.LP
+Once in the \fBDL_BOUND\fR state, the user may transmit  packets through the tunnel  by sending \fBDL_UNITDATA_REQ\fR messages to the tunnel module. Configured tunnels will encapsulate  the packet  with the appropriate \fBIP\fR header using the source and destination
+specified  by  \fBtsrc\fR  and  \fBtdst\fR  parameters of \fBifconfig\fR(1M). The tunnel module  will  decapsulate  received  packets  and
+route them to the first open and bound stream having a  \fBsap\fR,  \fBtsrc\fR and \fBtdst\fR which matches the the configured information. Packets are routed to exactly one open stream and not duplicated.
+.LP
+The module  does  not support  additional  primitives. \fBDL_ERROR_ACK\fR with the \fBdl_error\fR set to \fBDL_UNSUPPORTED\fR will be returned in the case that an unsupported \fBDLPI\fR primitive is encountered.
+.SH SECURITY
+.LP
+A tunnel creates what appears to be a physical interface to \fBIP\fR. It can be "trusted" as a physical link only so far as the underlying security protocols, if used, can be trusted.  If the security associations (see \fBipsec\fR(7P) are securely set up then the tunnel can be trusted in that packets that come off the tunnel came from the peer specified in the tunnel destination. If this trust exists, per-interface \fBIP\fR forwarding can be used to create a Virtual Private
+Network ("\fBVPN\fR"). See \fBip\fR(7P).
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5)  for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWcsr
+Interface StabilityEvolving
+.TE
+
+.SH SEE ALSO
+.LP
+\fBifconfig\fR(1M), \fBattributes\fR(5),\fBip\fR(7P), \fBipsec\fR(7P)
+.LP
+\fI\fR
+.LP
+Gilligan, R. and Nordmark, E., \fIRFC 1933, Transition Mechanisms for IPv6 Hosts and Routers\fR, The Internet Society, 1996.
+.LP
+Conta, A.  and Deering,  S. \fIRFC 2473,  Generic  Packet Tunneling in IPv6 Specification\fR, The Internet Society, 1998.
+.LP
+Carpenter, B and Moore, K. \fIRVC 3056, Connection of IPv6 Domains via IPv4 Clouds\fR, The Internet Society, 2001 

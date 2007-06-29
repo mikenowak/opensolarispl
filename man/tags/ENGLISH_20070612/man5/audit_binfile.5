@@ -1,0 +1,77 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright (c) 2003, Sun Microsystems, Inc. All Rights Reserved
+.TH audit_binfile 5 "20 May 2003" "SunOS 5.11" "Standards, Environments, and Macros"
+.SH NAME
+audit_binfile \- generation of Solaris audit logs
+.SH SYNOPSIS
+.LP
+.nf
+\fB/usr/lib/security/audit_binfile.so\fR
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBaudit_binfile\fR plugin module for Solaris audit, \fB/usr/lib/security/audit_binfile.so\fR, writes binary audit data to files as configured in \fBaudit_control\fR(4); it is the default plugin for the Solaris audit daemon \fBauditd\fR(1M). Its output is described by \fBaudit.log\fR(4).
+.LP
+The \fBaudit_binfile\fR plugin is loaded by \fBauditd\fR if \fBaudit_control\fR contains one or more lines defining audit directories by means of the \fBdir:\fR specification or if \fBaudit_control\fR has a \fBplugin:\fR
+specification of \fBname=audit_binfile.so\fR.
+.SH OBJECT ATTRIBUTES
+.LP
+The \fBp_dir\fR and \fBp_minfree\fR attributes are equivalent to the \fBdir:\fR and \fBminfree:\fR lines described in \fBaudit_control\fR. If both the \fBdir:\fR line and the \fBp_dir\fR attribute are used,
+the plugin combines all directories into a single list with those specified by means of \fBdir:\fR at the front of the list. If both the \fBminfree\fR and the \fBp_minfree\fR attributes are given, the \fBp_minfree\fR value is used.
+.SH EXAMPLES
+.LP
+The following directives cause \fBaudit_binfile.so\fR to be loaded, specify the directories for writing audit logs, and specify the percentage of required free space per directory.
+.sp
+.in +2
+.nf
+flags: lo,ad,-fm
+naflags: lo,ad
+plugin: name=audit_binfile.so;\e
+p_minfree=20;\e
+p_dir=/etc/security/jedgar/eggplant,\e
+/etc/security/jedgar.aux/eggplant,\e
+/etc/security/global/eggplant
+.fi
+.in -2
+.sp
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for a description of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+\fBATTRIBUTE TYPE\fR\fBATTRIBUTE VALUE\fR
+_
+MT LevelMT-Safe
+_
+Interface StabilityEvolving
+.TE
+
+.SH SEE ALSO
+.LP
+\fBauditd\fR(1M), \fBaudit_control\fR(4), \fBsyslog.conf\fR(4), \fBattributes\fR(5)

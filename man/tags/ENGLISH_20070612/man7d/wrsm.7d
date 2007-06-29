@@ -1,0 +1,169 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright (c) 2002, Sun Microsystems, Inc.
+.\"  All Rights Reserved
+.TH wrsm 7D "17 Nov 2002" "SunOS 5.11" "Devices"
+.SH NAME
+wrsm \- WCI Remote Shared Memory (WRSM)
+device driver
+.SH SYNOPSIS
+.LP
+.nf
+\fBwci@<slot>,0:wrsm\fR
+.fi
+
+.LP
+.nf
+\fBwrsm@<instance>:ctrl\fR
+.fi
+
+.LP
+.nf
+\fBwrsm@ffff,0:admin\fR
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBwrsm\fR driver is a nexus driver that manages Sun Fire Link devices
+and \fBwrsm\fR controllers.
+.LP
+A WCI device on a Sun Fire Link board is attached directly to the host
+system bus and provides clustering communication between Solaris instances
+that are memory transaction-based. The WCI acts as a memory controller on
+the system backplane. The \fBwrsm\fR driver programs registers
+on the WCI to accept network read/write requests on certain exported cluster
+addresses from incoming links. The registers translate the requests into local
+read/write bus transactions that use local physical memory ranges that you
+specify. The driver programs additional WCI registers to forward local system
+backplane read/write transactions within a particular physical address range
+to a remote WCI.  A WCI device in the format \fBwci@slot,0:wrsm\fR
+appears in the device tree.
+.LP
+A \fBwrsm\fR controller is a pseudo device that manages
+a set of WCIs. A device entry in the format \fBwrsm@<instance>:ctrl\fR appears in the device tree.  A \fBwrsm\fR controller
+presents a Sun proprietary protocol to clients, enabling them to set up the
+network and to communicate through the WCIs. To configure a \fBwrsm\fR controller, you download a configuration into the driver using
+the \fBwrsmconf\fR(1M)
+command or through other external WCI network management software. Status
+information on each WCI and \fBwrsm\fR controller is available
+by using the \fBwrsmstat\fR(1M)
+command.
+.LP
+The \fBwrsm\fR admin device is used internally by the driver
+to manage the I/O addresses associated with remote memory. A device entry
+in the format \fBwrsm@ffff,0:admin\fR appears in the device tree
+.SH FILES
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/platform/sun4u/kernel/drv/sparcv9/wrsm\fR\fR
+.ad
+.sp .6
+.RS 4n
+ELF kernel module
+.RE
+
+.SH SEE ALSO
+.LP
+\fBwrsmconf\fR(1M), \fBwrsmstat\fR(1M)
+.LP
+\fIWriting Device Drivers\fR
+.SH DIAGNOSTICS
+.LP
+The messages described below may appear on the system console as well
+as being logged. These messages generally include the string \fBwrsm%d\fR, where \fB%d\fR is the instance number of the \fBwrsm\fR device.  The message context indicates whether the device is
+a WCI or a \fBwrsm\fR controller.  Some messages include the
+string \fBwci %a\fR, where \fB%a\fR is the bus slot
+of the WCI device.
+.sp
+.ne 2
+.mk
+.na
+\fBwrsm%d: unable to map register set %d\fR
+.ad
+.sp .6
+.RS 4n
+Driver was unable to map device registers; check for bad hardware. 
+Driver did not attach device, device will be inaccessible.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBwrsm_detach:cf_remove_controller failed for wrsm%d\fR
+.ad
+.sp .6
+.RS 4n
+Driver did not detach device; device is inaccessible.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBwrsm_detach:cf_remove_wci failed for wrsm%d\fR
+.ad
+.sp .6
+.RS 4n
+Driver did not detach device. This WCI is the last WCI in \fBwrsm\fR controller.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBregister_controller of wrsm%d failed with error %d\fR
+.ad
+.sp .6
+.RS 4n
+The \fBwrsm\fR controller could not register
+with the Sun proprietary protocol framework. Communication is not possible
+through this controller.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBwrsm%d, wci %a, SRAM CE ERROR, at address: 0x%x, syndrome:
+0x%x\fR
+.ad
+.sp .6
+.RS 4n
+There was a correctable error in the WCI's SRAM.
+This indicates that the memory on this WCI module should be replaced.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBwrsm%d, wci %a, SRAM UE ERROR, at address: 0x%x, syndrome:
+0x%x\fR
+.ad
+.sp .6
+.RS 4n
+There was an uncorrectable error in the WCI's SRAM.
+This indicates that the memory on this WCI module should be replaced. In addition,
+attempts to access local memory from remote nodes may fail.
+.RE
+

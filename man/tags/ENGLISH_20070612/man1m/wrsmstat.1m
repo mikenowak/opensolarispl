@@ -1,0 +1,198 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2003, Sun Microsystems, Inc. All Rights Reserved
+.TH wrsmstat 1M "25 Jun 2003" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+wrsmstat \- report WCI
+RSM driver statistics
+.SH SYNOPSIS
+.LP
+.nf
+\fB/usr/platform/sun4u/sbin/wrsmstat\fR controller 
+    [\fB-c\fR \fIcontroller_id\fR]
+.fi
+
+.LP
+.nf
+\fBwrsmstat\fR wrsm [\fB-i\fR \fIwrsm_instance_num\fR] [\fB-v\fR]
+.fi
+
+.LP
+.nf
+\fBwrsmstat\fR route [\fB-c\fR \fIcontroller_id\fR] 
+    [\fB-h\fR \fInode_hostname\fR]
+.fi
+
+.LP
+.nf
+\fBwrsmstat\fR set [\fB-i\fR \fIwrsm_instance_num\fR] \fB-c\fR cmmu \fB-s\fR \fIstart\fR \fB-e\fR \fIend\fR
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBwrsmstat\fR command provides statistics on remote shared memory (RSM) controllers, routes to nodes, and WCI interfaces managed by the WCI RSM driver (\fBwrsm\fR). It also provides an interface for setting extended performance counter control registers that constrain
+the \fBwrsm\fR counters available through \fBbusstat\fR(1M).
+.SH OPTIONS
+.LP
+The following options are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBcontroller\fR [ \fB-c\fR \fIcontroller_id\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+Displays information describing the state of the specified controller, or of all controllers if none is specified. The following is sample output:
+.sp
+	 $ wrsmstat controller -c 5 	Controller 5 	------------ 	Controller state: up 	Local RSM Hardware address: 0x4 	Exported segments: 0 		# published: 0 		# connections: 0 		total bound memory: 0 	Imported segments: 0 	Send Queues: 0 	Registered Handlers: 0  	Assigned WCIs: 4 	Available WCIs: 2
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBwrsm\fR [ \fB-i\fR \fIwrsm_instance_num\fR ] [ \fB-v\fR ] \fR
+.ad
+.sp .6
+.RS 4n
+Displays information describing the state of the specified RSM WCI, or of all RSM WCIs if none is specified. The following is sample output:
+.sp
+.in +2
+.nf
+	
+$ wrsmstat wrsm -i 2
+	WCI instance 2
+	--------------
+	Portid: 5
+	Controller ID: 0
+	Config Version: 5
+	Link Error Shutdown Trigger: 40000
+	Link #0 is not present.
+	Link #1
+		Link Enabled: yes
+		Link State: up
+		Remote RSM HW addr: 1
+		Remote wnode ID: 1
+		Remote link num: 1
+		Remote WCI port ID: 3
+		Error takedowns: 0
+		Bad Config takedowns: 0
+		Failed bringups: 0
+		Total link errors: 0
+		Maximum link errors: 0
+		Average link errors: 0
+		Auto shutdown enabled: yes
+	Link #2 is not present.
+.fi
+.in -2
+.sp
+
+If you specify the \fB-v\fR option, the following additional information is displayed:
+.sp
+.in +2
+.nf
+Cluster Error Count:        0
+Uncorrectable SRAM ECC error:   no
+Maximum SRAM ECC errors:    0
+Average SRAM ECC errors:    0
+.fi
+.in -2
+.sp
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBroute\fR [ \fB-c\fR \fIcontroller_id\fR ] [ \fB-h\fR \fInodename\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+Displays the route to the specified node through the specified controller. If no node is specified, displays the
+routes to all nodes. If no controller is specified, displays the specified node's route through all controllers. If neither is specified, displays the routes to all nodes through all controllers. The following is sample output:
+.sp
+.in +2
+.nf
+	$ wrsmstat -c 3 -h fred
+	Controller 3 - Route to fred
+	----------------------------
+	Config Version: 1
+	FM node id: 0x345543
+	RSM hardware address: 0x9
+	Route Changes: 3
+	Route Type: Passthrough
+	Number of WCIs: 2
+	Stripes: 4
+	WCI #0
+		Port ID: 3
+		Instance: 0
+		Num of hops: 2
+		Num of links: 2
+			link# 1, first hop RSM HW addr: 0x4
+			link# 2, first hop RSM HW addr: 0x2
+	WCI #1
+		Port ID: 13
+		Instance: 1
+		Num of hops: 2
+		Num of links: 2
+			link# 0, first hop RSM HW addr: 0x4
+			link# 2, first hop RSM HW addr: 0x2
+.fi
+.in -2
+.sp
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBset\fR [ \fB-i\fR \fIwrsm_instance_num\fR ] \fB-c\fR \fBcmmu\fR \fB-s\fR \fI<start>\fR \fB-e\fR \fI<end>\fR\fR
+.ad
+.sp .6
+.RS 4n
+For the specified
+WCI (or for each RSM WCI if none specified), configure the specified range of CMMU entries so that transactions through them are counted by \fIwrsm\fR \fBbusstat\fR \fBkstat\fRs. Each call will cause transactions to be counted through the new ranges of \fBcmmu\fR entries in addition to the previously specified ranges. To count transactions through all CMMUs, specify a start value of 0 and end value of 0. To clear all ranges (and not count transactions through any \fBcmmu\fR entries), specify a start value of 0 and end value of -1.
+.RE
+
+.SH EXIT STATUS
+.LP
+This command returns 0 on successful completion, and a non-zero value if an error occurred.
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWwrsm
+.TE
+
+.SH SEE ALSO
+.LP
+\fBbusstat\fR(1M), \fBkstat\fR(1M), \fBwrsmconf\fR(1M), \fBattributes\fR(5)

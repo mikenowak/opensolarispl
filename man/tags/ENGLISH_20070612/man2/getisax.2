@@ -1,0 +1,362 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2007, Sun Microsystems, Inc. All Rights Reserved.
+.TH getisax 2 "10 Jun 2007" "SunOS 5.11" "System Calls"
+.SH NAME
+getisax \- extract valid instruction set extensions
+.SH SYNOPSIS
+.LP
+.nf
+#include <sys/auxv.h>
+
+\fBuint_t\fR \fBgetisax\fR(\fBuint32_t *\fR\fIarray\fR, \fBuint_t\fR \fIn\fR);
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBgetisax()\fR function sets the vector \fIarray\fR of \fIn\fR 32-bit integers to contain the bits from the \fBAV\fR_\fIxxx\fR_\fIyyy\fR namespace of the given instruction set
+architecture.
+.LP
+Values for AV_\fIxxx\fR_\fIyyy\fR are as follows:
+.SS "SPARC"
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_SPARC_DIV32\fR\fR
+.ad
+.RS 19n
+.rt  
+32x32-bit sdiv/udiv is efficient
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_SPARC_FJFMAU\fR\fR
+.ad
+.RS 19n
+.rt  
+Fujitsu Unfused Multiply-Add
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_SPARC_FMAF\fR\fR
+.ad
+.RS 19n
+.rt  
+fused floating multiply-add is supported
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_SPARC_FSMULD\fR\fR
+.ad
+.RS 19n
+.rt  
+fsmuld instruction is efficient
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_SPARC_MUL32\fR\fR
+.ad
+.RS 19n
+.rt  
+32x32-bit smul/umul is efficient
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_SPARC_POPC\fR\fR
+.ad
+.RS 19n
+.rt  
+popc instruction is efficient
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_SPARC_V8PLUS\fR\fR
+.ad
+.RS 19n
+.rt  
+V9 instructions available to 32-bit apps
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_SPARC_VIS\fR\fR
+.ad
+.RS 19n
+.rt  
+VIS instruction set is supported
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_SPARC_VIS2\fR\fR
+.ad
+.RS 19n
+.rt  
+IS2 instruction set is supported
+.RE
+
+.SS "x86"
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_AMD_3DNow\fR\fR
+.ad
+.RS 21n
+.rt  
+AMD's 3Dnow! instructions
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_AMD_3DNowx\fR\fR
+.ad
+.RS 21n
+.rt  
+AMD's 3Dnow! extended instructions
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_AMD_MMX\fR\fR
+.ad
+.RS 21n
+.rt  
+AMD's MMX instructions
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_AMD_SYSC\fR\fR
+.ad
+.RS 21n
+.rt  
+AMD's syscall and sysret
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_CMOV\fR\fR
+.ad
+.RS 21n
+.rt  
+conditional move instructions
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_CX8\fR\fR
+.ad
+.RS 21n
+.rt  
+cmpxchg8b instruction
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_FPU\fR\fR
+.ad
+.RS 21n
+.rt  
+x87-style floating point
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_FXSR\fR\fR
+.ad
+.RS 21n
+.rt  
+fxsave and fxrstor
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_MMX\fR\fR
+.ad
+.RS 21n
+.rt  
+MMX instructions
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_MON\fR\fR
+.ad
+.RS 21n
+.rt  
+monitor/mwait instructions
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_PAUSE\fR\fR
+.ad
+.RS 21n
+.rt  
+use pause instruction (in spin loops)
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_SEP\fR\fR
+.ad
+.RS 21n
+.rt  
+sysenter and sysexit
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_SSE\fR\fR
+.ad
+.RS 21n
+.rt  
+SSE instructions and regs
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_SSE2\fR\fR
+.ad
+.RS 21n
+.rt  
+SSE2 instructions and regs
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_SSE3\fR\fR
+.ad
+.RS 21n
+.rt  
+SSE3 instructions and regs
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAV_386_TSC\fR\fR
+.ad
+.RS 21n
+.rt  
+rdtsc instruction
+.RE
+
+.SH RETURN VALUES
+.LP
+The \fBgetisax()\fR function returns the number of array elements that contain non-zero values.
+.SH EXAMPLES
+.LP
+\fBExample 1 \fRUse \fBgetisax()\fR to determine if the SSE2 instruction set is present.
+.LP
+In the following example, if the message is written, the SSE2 instruction set is present and fully supportred by the operating system.
+
+.sp
+.in +2
+.nf
+uint_t ui;
+
+(void) getisax(&ui, 1);
+
+if (ui & AV_386_SSE2)
+       printf("SSE2 instruction set extension is present.\en");
+.fi
+.in -2
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+Interface StabilityStable
+_
+MT-LevelSafe
+.TE
+
+.SH SEE ALSO
+.LP
+\fBisainfo\fR(1), \fBld\fR(1), \fBpargs\fR(1), \fBattributes\fR(5)
+.LP
+\fI\fR
+.LP
+\fI\fR
+.LP
+\fI\fR
