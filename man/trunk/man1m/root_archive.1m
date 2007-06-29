@@ -1,0 +1,175 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2003, Sun Microsystems, Inc. All Rights Reserved
+.TH root_archive 1M "26 Sep 2005" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+root_archive \- manage bootable miniroot archives
+.SH SYNOPSIS
+.LP
+.nf
+\fB/boot/solaris/bin/root_archive \fR pack \fIarchive\fR \fIroot\fR
+.fi
+
+.LP
+.nf
+\fB/boot/solaris/bin/root_archive \fR unpack \fIarchive\fR \fIroot\fR
+.fi
+
+.LP
+.nf
+\fB/boot/solaris/bin/root_archive \fR packmedia \fIsolaris_image\fR \fIroot\fR
+.fi
+
+.LP
+.nf
+\fB/boot/solaris/bin/root_archive \fR unpackmedia \fIsolaris_image\fR \fIroot\fR
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBroot_archive\fR utility is used to manage bootable miniroot archives and is currently only available on x86 platforms. The utility can pack and unpack boot/root archives in both ufs and hsfs (iso9660) format. It will always generate ufs archives.
+.LP
+\fBroot_archive\fR also uses the \fBlofi\fR file driver to export a file as a block device (see \fBlofi\fR(7D)) and \fBmount\fR
+to mount or unmount file systems and remote resources (see \fBmount\fR(1M)). \fBroot_archive\fR requires the same privileges that are needed to run these commands.
+.SH SUBCOMMANDS
+.LP
+The \fBroot_archive\fR command has the following subcommands:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBpack\fR \fIarchive\fR \fIroot\fR\fR
+.ad
+.RS 21n
+.rt  
+Pack from the image found under the \fIroot\fR directory to the archive.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBunpack\fR \fIarchive\fR \fIroot\fR\fR
+.ad
+.sp .6
+.RS 4n
+Unpack from the archive to an unpacked image under the \fIroot\fR directory.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBpackmedia\fR \fIsolaris_image\fR \fIroot\fR\fR
+.ad
+.sp .6
+.RS 4n
+Pack the solaris image to the \fIroot\fR directory.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBunpackmedia\fR \fIsolaris_image\fR \fIroot\fR\fR
+.ad
+.sp .6
+.RS 4n
+Unpack the solaris image from the \fIroot\fR directory.
+.RE
+
+.LP
+For \fBpackmedia\fR and \fBunpackmedia\fR, other items that do not go into the ramdisk image are copied or uncopied (see \fBcpio\fR(1))
+as well. Specifically, this includes all the packaging databases needed for \fBpkgadd\fR and the other packaging utilities to succeed which are not used in the running and hence pruned to conserve memory.
+.SH EXAMPLES
+.LP
+\fBExample 1 \fRUnpacking the Solaris x86 install image
+.LP
+The following command unpacks the current Solaris image from the \fIroot\fR directory:
+
+.sp
+.in +2
+.nf
+# root_archive unpackmedia \e
+/export/nv/solarisdvd.nvx_dvd/latest /export/Boot
+.fi
+.in -2
+
+.LP
+Where \fB/export/nv/solarisdvd.nvx_dvd/latest\fR represents a path to a Solaris x86 install image and \fB/export/Boot\fR is a directory that will be purged or created, as necessary.
+.LP
+\fBExample 2 \fRPacking the Solaris x86 install image
+.LP
+The following command packs the current Solaris image to the \fIroot\fR directory:
+
+.sp
+.in +2
+.nf
+# root_archive packmedia \e
+/export/nv/solarisdvd.nvx_dvd/latest /export/Boot
+.fi
+.in -2
+
+.SH EXIT STATUS
+.LP
+The following exit values are returned:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB0\fR\fR
+.ad
+.RS 5n
+.rt  
+The command completed successfully.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB1\fR\fR
+.ad
+.RS 5n
+.rt  
+The command exited due to an error.
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWcsu
+_
+Interface StabilityStable
+.TE
+
+.SH SEE ALSO
+.LP
+\fBcpio\fR(1), \fBbootadm\fR(1M), \fBmount\fR(1M), \fBattributes\fR(5), \fBlofi\fR(7D)

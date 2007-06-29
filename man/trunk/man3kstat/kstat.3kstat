@@ -17,7 +17,7 @@
 .\" information: Portions Copyright [yyyy] [name of copyright owner]
 .\"
 .\" CDDL HEADER END
-.\" Copyright (c) 2007, Sun Microsystems, Inc.  All Rights Reserved
+.\" Copyright (c) 2007, Sun Microsystems, Inc.  All Rights Reserved.
 .TH kstat 3KSTAT "29 Jan 2007" "SunOS 5.11" "Kernel Statistics Library Functions"
 .SH NAME
 kstat \- kernel statistics facility
@@ -31,7 +31,7 @@ The kernel maintains a linked list of statistics structures, or kstats. Each kst
 .sp
 .in +2
 .nf
-typedef   intkid_t;    /* unique kstat id */
+typedef   int kid_t;    /* unique kstat id */
 
 typedef struct kstat {
   /*   
@@ -76,8 +76,8 @@ The fields that are of significance to the user are:
 .ad
 .RS 16n
 .rt  
-The time the kstat was created. This allows you to compute the rates of various counters since the kstat was created; "rate since boot" is replaced by the more general concept of "rate since kstat creation". All times associated with kstats (such as creation time, last snapshot
-time, \fBkstat_timer_t\fR and \fBkstat_io_t\fR timestamps, and the like) are 64-bit nanosecond values. The accuracy of kstat timestamps is machine dependent, but the precision (units) is the same across all platforms. See \fBgethrtime\fR(3C) for general information about high-resolution timestamps.
+The time the kstat was created. This allows you to compute the rates of various counters since the kstat was created; "rate since boot" is replaced by the more general concept of "rate since kstat creation". All times associated with kstats (such as creation
+time, last snapshot time, \fBkstat_timer_t\fR and \fBkstat_io_t\fR timestamps, and the like) are 64-bit nanosecond values. The accuracy of kstat timestamps is machine dependent, but the precision (units) is the same across all platforms. See \fBgethrtime\fR(3C) for general information about high-resolution timestamps.
 .RE
 
 .sp
@@ -231,8 +231,8 @@ A list of arbitrary \fIname=value\fR statistics.
 .in +2
 .nf
 typedef struct kstat_named {
-  charname[KSTAT_STRLEN];        /* name of counter */
-  uchar_tdata_type;              /* data type */
+  char    name[KSTAT_STRLEN];    /* name of counter */
+  uchar_t data_type;             /* data type */
   union {
            charc[16];            /* enough for 128-bit ints */
            struct {
@@ -240,7 +240,7 @@ typedef struct kstat_named {
                   char *ptr;    /* NULL-terminated string */
               } addr;
               uint32_t len;     /* length of string */
-           } string;
+           } str;
            int32_t   i32;
            uint32_t  ui32;
            int64_t   i64;
@@ -383,18 +383,19 @@ uint_t           writes;     /* number of write operations */
 * Queue length statistics are kept as a running sum of the
 * product of queue length and elapsed time at that length --
 * that is, a Riemann sum for queue length integrated against time.
-*       ^
-   *       |           _________
-   *       8           | i4    |
-   *       |           |   |
-   *   Queue   6           |   |
-   *   Length  |   _________   |   |
-   *       4   | i2    |_______|   |
-   *       |   |   i3      |
-   *       2_______|           |
-   *       |    i1             |
-   *       |_______________________________|
-   *       Time->  t1  t2  t3  t4
+*        
+*               ^
+*               |                       _________
+*               8                       | i4    |
+*               |                       |       |
+*       Queue   6                       |       |
+*       Length  |       _________       |       |
+*               4       | i2    |_______|       |
+*               |       |       i3              |
+*               2_______|                       |
+*               |    i1                         |
+*               |_______________________________|
+*               Time->  t1      t2      t3      t4
 *
 * At each change of state (entry or exit from the queue),
 * we add the elapsed time (since the previous state change)

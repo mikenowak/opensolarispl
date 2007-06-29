@@ -1,0 +1,365 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2000, Sun Microsystems, Inc. All Rights Reserved
+.TH lofiadm 1M "17 Nov 1999" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+lofiadm \- administer files available as block devices through lofi
+.SH SYNOPSIS
+.LP
+.nf
+\fB/usr/sbin/lofiadm\fR \fB-a\fR \fIfile\fR [\fIdevice\fR]
+.fi
+
+.LP
+.nf
+\fB/usr/sbin/lofiadm\fR \fB-d \fR \fIfile\fR | \fIdevice\fR
+.fi
+
+.LP
+.nf
+\fB/usr/sbin/lofiadm\fR [ \fIfile\fR | \fIdevice\fR]
+.fi
+
+.SH DESCRIPTION
+.LP
+\fBlofiadm\fR administers \fBlofi\fR(7D), the loopback file driver. \fBlofi\fR(7D)
+allows a file to be associated with a block device. That file can then be accessed through the block device. This is useful when the file contains an image of some filesystem (such as a floppy or \fBCD-ROM\fR image), because the block device can then be used with the normal system utilities
+for mounting, checking or repairing filesystems. See \fBfsck\fR(1M) and \fBmount\fR(1M).
+.LP
+Use \fBlofiadm\fR to add a file as a loopback device, remove such an association, or print information about the current associations. 
+.SH OPTIONS
+.LP
+The following options are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-a \fR \fIfile\fR [\fIdevice\fR]\fR
+.ad
+.RS 21n
+.rt  
+Add \fIfile\fR as a block device. 
+.sp
+If \fIdevice\fR is not specified, an available device is picked.
+.sp
+If \fIdevice\fR is specified, \fBlofiadm\fR attempts to assign it to \fIfile\fR. \fIdevice\fR must be available or \fBlofiadm\fR will fail. The ability to specify a device is provided for use in scripts that
+wish to re-establish a particular set of associations.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-d\fR \fIfile\fR | \fIdevice\fR\fR
+.ad
+.RS 21n
+.rt  
+Remove an association by \fIfile\fR or \fIdevice\fR name, if the associated block device is not busy, and deallocates the block device. 
+.RE
+
+.SH OPERANDS
+.LP
+The following operands are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fIfile\fR\fR
+.ad
+.RS 10n
+.rt  
+Print the block device associated with \fIfile\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fIdevice\fR\fR
+.ad
+.RS 10n
+.rt  
+Print the file name associated with the block device \fIdevice\fR.
+.sp
+Without arguments, print a list of the current associations. Filenames must be valid absolute pathnames.
+.sp
+When a file is added, it is opened for reading or writing by root. Any restrictions apply (such as restricted root access over \fBNFS\fR). The file is held open until the association is removed. It is not actually accessed until the block device is used, so it will never be written
+to if the block device is only opened read-only.
+.RE
+
+.SH EXAMPLES
+.LP
+\fBExample 1 \fRMounting an Existing CD-ROM Image
+.LP
+You should ensure that Solaris understands the image before creating the \fBCD\fR. \fBlofi\fR allows you to mount the image and see if it works.
+
+.LP
+This example mounts an existing \fBCD-ROM\fR image (\fBsparc.iso\fR), of the \fBRed Hat 6.0 CD\fR which was downloaded from the Internet. It was created with the \fBmkisofs\fR utility from the Internet.
+
+.LP
+Use \fBlofiadm\fR to attach a block device to it:
+
+.sp
+.in +2
+.nf
+# lofiadm -a /home/mike_s/RH6.0/sparc.iso
+/dev/lofi/1
+.fi
+.in -2
+.sp
+
+.LP
+\fBlofiadm\fR picks the device and prints the device name to the standard output. You can run \fBlofiadm\fR again by issuing the following command: 
+
+.sp
+.in +2
+.nf
+# lofiadm
+Block Device     File 
+/dev/lofi/1      /home/mike_s/RH6.0/sparc.iso
+.fi
+.in -2
+.sp
+
+.LP
+Or, you can give it one name and ask for the other, by issuing the following command: 
+
+.sp
+.in +2
+.nf
+# lofiadm /dev/lofi/1
+/home/mike_s/RH6.0/sparc.iso
+.fi
+.in -2
+.sp
+
+.LP
+Use the \fBmount\fR command to mount the image: 
+
+.sp
+.in +2
+.nf
+# mount -F hsfs -o ro /dev/lofi/1 /mnt
+.fi
+.in -2
+.sp
+
+.LP
+Check to ensure that Solaris understands the image:
+
+.sp
+.in +2
+.nf
+# df -k /mnt
+Filesystem            kbytes    used   avail capacity  Mounted on
+/dev/lofi/1           512418  512418       0   100%    /mnt 
+# ls /mnt 
+\&./            RedHat/       doc/          ls-lR         rr_moved/ 
+\&../           TRANS.TBL     dosutils/     ls-lR.gz      sbin@ 
+\&.buildlog     bin@          etc@          misc/         tmp/ 
+COPYING       boot/         images/       mnt/          usr@ 
+README        boot.cat*     kernels/      modules/ 
+RPM-PGP-KEY   dev@          lib@          proc/
+.fi
+.in -2
+.sp
+
+.LP
+Solaris can mount the CD-ROM image, and understand the filenames. The image was created properly, and you can now create the \fBCD-ROM\fR with confidence.
+
+.LP
+As a final step, unmount and detach the images:
+
+.sp
+.in +2
+.nf
+# umount /mnt 
+# lofiadm -d /dev/lofi/1 
+# lofiadm 
+Block Device             File
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 2 \fRMounting a Floppy Image
+.LP
+This is similar to Example 1.
+
+.LP
+Using \fBlofi\fR to help you mount files that contain floppy images is helpful if a floppy disk contains a file that you need, but the machine which you are on does not have a floppy drive. It is also helpful if you do not want to take the time to use the \fBdd\fR command
+to copy the image to a floppy. 
+
+.LP
+This is an example of getting to \fBMDB\fR floppy for Solaris on an x86 platform: 
+
+.sp
+.in +2
+.nf
+# lofiadm -a /export/s28/MDB_s28x_wos/latest/boot.3
+/dev/lofi/1
+# mount -F pcfs /dev/lofi/1 /mnt
+# ls /mnt
+\&./            COMMENT.BAT*  RC.D/         SOLARIS.MAP*
+\&../           IDENT*        REPLACE.BAT*  X/
+APPEND.BAT*   MAKEDIR.BAT*  SOLARIS/
+# umount /mnt
+# lofiadm -d /export/s28/MDB_s28x_wos/latest/boot.3
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 3 \fRMaking a \fBUFS\fR Filesystem on a File
+.LP
+Making a \fBUFS\fR filesystm on a file can be useful, particularly if a test suite requires a scratch filesystem. It can be painful (or annoying) to have to re-partition a disk just for the test suite, but you do not have to. You can \fBnewfs\fR a file with \fBlofi\fR 
+
+.LP
+Create the file: 
+
+.sp
+.in +2
+.nf
+# mkfile 35m /export/home/test
+.fi
+.in -2
+.sp
+
+.LP
+Attach it to a block device. You also get the character device that \fBnewfs\fR requires, so \fBnewfs \fRthat:
+
+.sp
+.in +2
+.nf
+# lofiadm -a /export/home/test
+/dev/lofi/1
+# newfs /dev/rlofi/1
+newfs: construct a new file system /dev/rlofi/1: (y/n)? y
+/dev/rlofi/1:   71638 sectors in 119 cylinders of 1 tracks, 602 sectors
+       35.0MB in 8 cyl groups (16 c/g, 4.70MB/g, 2240 i/g)
+super-block backups (for fsck -F ufs -o b=#) at:
+32, 9664, 19296, 28928, 38560, 48192, 57824, 67456,
+.fi
+.in -2
+.sp
+
+.LP
+Note that \fBufs\fR might not be able to use the entire file. Mount and use the filesystem: 
+
+.sp
+.in +2
+.nf
+# mount /dev/lofi/1 /mnt
+# df -k /mnt
+Filesystem            kbytes    used   avail capacity  Mounted on
+/dev/lofi/1            33455       9   30101     1%    /mnt
+# ls /mnt
+\&./           ../          lost+found/
+# umount /mnt
+# lofiadm -d /dev/lofi/1
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 4 \fRCreating a PC (FAT) File System on a Unix File
+.LP
+The following series of commands creates a \fBFAT\fR file system on a Unix file. The file is associated with a block device created by \fBlofiadm\fR.
+
+.sp
+.in +2
+.nf
+# mkfile 10M /export/test/testfs
+# lofiadm -a /export/test testfs
+/dev/lofi/1
+\fINote use of\fR rlofi\fI, not\fR lofi\fI, in following command.\fR
+# mkfs -F pcfs -o nofdisk,size=20480 /dev/rlofi/1
+Construct a new FAT file system on /dev/rlofi/1: (y/n)? y
+# mount -F pcfs /dev/lofi/1 /mnt
+# cd /mnt
+# df -k .
+Filesystem            kbytes    used   avail capacity  Mounted on
+/dev/lofi/1            10142       0   10142     0%    /mnt
+.fi
+.in -2
+.sp
+
+.SH ENVIRONMENT VARIABLES
+.LP
+See \fBenviron\fR(5) for descriptions of the following environment variables that affect the execution of \fBlofiadm\fR: LC_CTYPE, LC_MESSAGES and NLSPATH.
+.SH EXIT STATUS
+.LP
+The following exit values are returned:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB0\fR \fR
+.ad
+.RS 6n
+.rt  
+Successful completion. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB>\fB0\fR\fR
+.ad
+.RS 6n
+.rt  
+An error occurred.
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+lw(2.75i) |lw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWcsu
+.TE
+
+.SH SEE ALSO
+.LP
+\fBfsck\fR(1M), \fBmount\fR(1M), \fBmount_ufs\fR(1M), \fBnewfs\fR(1M), \fBattributes\fR(5), \fBlofi\fR(7D), \fBlofs\fR(7FS)
+.SH NOTES
+.LP
+Just as you would not directly access a disk device that has mounted file systems, you should not access a file associated with a block device except through the \fBlofi\fR file driver. It might also be appropriate to ensure that the file has appropriate permissions to prevent such
+access.
+.LP
+Associations are not persistant across reboots. A script can be used to re-establish them if required.
+.LP
+The abilities of \fBlofiadm\fR, and who can use them, are controlled by the permissions of \fB/dev/lofictl\fR. Read-access allows query operations, such as listing all the associations. Write-access is required to do any state-changing operations, like adding an association.
+As shipped, \fB/dev/lofictl\fR is owned by \fBroot\fR, in group \fBsys\fR, and mode \fB0644\fR, so all users can do query operations but only root can change anything. The administrator can give users write-access, allowing them to add or delete associations,
+but that is very likely a security hole and should probably only be given to a trusted group.
+.LP
+When mounting a filesystem image, take care to use appropriate mount options. In particular, the \fBnosuid\fR mount option might be appropriate for \fBUFS\fR images whose origin is unknown. Also, some options might not be useful or appropriate, like \fBlogging\fR
+or \fBforcedirectio\fR for \fBUFS\fR. For compatibility purposes, a raw device is also exported along with the block device. For example, \fBnewfs\fR(1M) requires one.
+.LP
+The output of \fBlofiadm\fR (without arguments) might change in future releases.

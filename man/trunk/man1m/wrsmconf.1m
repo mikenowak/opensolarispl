@@ -1,0 +1,181 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2003, Sun Microsystems, Inc.  All Rights Reserved
+.TH wrsmconf 1M "25 Jun 2003" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+wrsmconf \- manage WCI RSM controller configurations
+.SH SYNOPSIS
+.LP
+.nf
+\fB/usr/platform/sun4u/sbin/wrsmconf\fR create \fB-c\fR \fIcontroller_id\fR \fB-f\fR \fIconfig_file\fR
+.fi
+
+.LP
+.nf
+\fBwrsmconf\fR initial \fB-f\fR \fIconfig_file\fR [\fB-c\fR \fIcontroller_id\fR]
+.fi
+
+.LP
+.nf
+\fBwrsmconf\fR remove [\fB-c\fR \fIcontroller_id\fR]
+.fi
+
+.LP
+.nf
+\fBwrsmconf\fR topology [\fB-c\fR \fIcontroller_id\fR]
+.fi
+
+.LP
+.nf
+\fBwrsmconf\fR dump \fB-c\fR \fIcontroller_id\fR \fB-f\fR \fIconfig_file\fR
+.fi
+
+.SH DESCRIPTION
+.LP
+\fBwrsmconf\fR provides a means to create, install, retrieve, and remove configurations for WCI remote shared memory (RSM) controllers.
+.SH OPTIONS
+.LP
+The following options are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBcreate\fR \fB-c\fR \fIcontroller_id\fR \fB-f\fR \fIconfig_file\fR\fR
+.ad
+.sp .6
+.RS 4n
+Create a set of per-node configurations for the specified controller and store them to the file \fIconfig_file\fR. The created file contains a per-node configuration for each node specified in the input for the specified controller. The file has a checksum on it and cannot be modified directly. This file can be used in a \fBwrsmconf initial\fR call on each node to install the node's configuration
+into the local driver.
+.sp
+A list of nodes and WCI devices connected to those nodes is read from standard input. For each connected pair of links, specify the nodename (\fBuname \fR\fB-n\fR), safari port id, and link number on both sides of the connection. The format of the information looks like this: 
+.sp
+.in +2
+.nf
+<nodename>.<wrsm-portid>.<linkno>=<nodename>.<wrsm-portid>.<linkno>
+<nodename>.<wrsm-portid>.<linkno>=<nodename>.<wrsm-portid>.<linkno>
+.fi
+.in -2
+.sp
+
+This interface is intended for installing configurations for testing (such as for SunVTS). Only direct-connect, non-striped configurations for 1 to 3 nodes can be specified. FM node ids and RSM hardware addresses are assigned to the specified nodes contiguously and in order starting from 0.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBinitial\fR \fB-f\fR \fIconfig_file\fR [\fB-c\fR \fIcontroller_id\fR]\fR
+.ad
+.sp .6
+.RS 4n
+Install the configuration for the local node stored in the file \fIconfig_file\fR into the driver
+as the initial configuration for the specified controller. This command fails under the following circumstances:
+.RS +4
+.TP
+.ie t \(bu
+.el o
+If \fIcontroller_id\fR is specified and the configuration in the file is not for the specified controller.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+If the file does not contain a valid configuration for the local node or if the checksum in the file shows it has been modified.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+If a configuration has already been installed for the controller. If this happens, use \fBwrsmconf remove\fR to remove the existing configuration.
+.RE
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBremove\fR [ \fB-c\fR \fIcontroller_id\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+Disable communication through the installed configuration for all controllers or the specified controller and remove the configuration(s) from the driver.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBtopology\fR \fB-c\fR \fIcontroller_id\fR\fR
+.ad
+.sp .6
+.RS 4n
+For each installed controller (or for the specified controller), print to stdout the set of nodes this controller is configured to reach, including the nodename, FM node id,
+and RSM hardware address for each node. The following is example output:
+.sp
+.in +2
+.nf
+FM Node ID   Node Name  Controller Instance    Controller HW Addr 
+0            hpc00              0                    101
+0            hpc00              1                    333
+1            hpc01              0                    102
+1            hpc01              1                    54
+1            hpc01              2                    34
+2            hpc03              0                    103
+2            hpc03              1                    103
+2            hpc03              2                    103
+.fi
+.in -2
+.sp
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdump\fR \fB-c\fR \fIcontroller-id\fR \fB-f\fR \fIconfig_file\fR\fR
+.ad
+.sp .6
+.RS 4n
+Fetch the installed configuration for the specified controller from the driver and store it into the file \fIconfig_file\fR along with a checksum to protect the data. This configuration can later be installed with the command \fBwrsmconf\fR \fBinitial\fR. 
+.RE
+
+.SH EXIT STATUS
+.LP
+This command returns 0 on successful completion, and a non-zero value if an error occured.
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWwrsm
+.TE
+
+.SH SEE ALSO
+.LP
+\fBkstat\fR(1M), \fBwrsmstat\fR(1M), \fBattributes\fR(5)

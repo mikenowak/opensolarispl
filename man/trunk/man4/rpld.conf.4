@@ -1,0 +1,247 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (C) 1999, Sun Microsystems, Inc.
+.\" All Rights Reserved
+.TH rpld.conf 4 "03 Dec 2003" "SunOS 5.11" "File Formats"
+.SH NAME
+rpld.conf \- Remote Program Load (RPL)
+server configuration file
+.SH SYNOPSIS
+.LP
+.nf
+\fB/etc/rpld.conf\fR
+.fi
+
+.SH DESCRIPTION
+.LP
+The  \fB/etc/rpld.conf\fR file contains the
+configuration information for operation of  \fBrpld\fR, the RPL-based
+network boot server.  It is a text file containing keyword-value pairs and
+comment. 
+.LP
+The keyword-value pairs specify the value to use for parameters used
+by the RPL server.  Comments can be entered by starting the line using the
+# character.  The user can add comments to the file for customized configurations.
+.LP
+Alternate RPL server configuration files can be specified when running
+the RPL server by supplying a configuration file similar to the default configuration
+file.
+.SS "Keywords"
+.LP
+All keywords are case-sensitive.  Not all keywords must be present.
+(However, note that the \fBend\fR keyword at the end of the file
+must be present.) If a keyword is not present, internal defaults, which are
+the default values described here, will be used. Keyword-value pairs are specified
+by:
+.sp
+.in +2
+.nf
+keyword = value
+.fi
+.in -2
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBDebugLevel\fR\fR
+.ad
+.RS 14n
+.rt  
+Specify the number of error, warning, and information messages to be
+generated while the RPL server is running.  The valid range is 0-9.  A value
+of 0 means no message at all, while a value of 9 will generate the most messages.
+The default is 0. Note that it is best to limit the value to 8 or below;
+use of level 9 may generate so many debug messages that the performance of
+the RPL server may be impacted.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBDebugDest\fR\fR
+.ad
+.RS 14n
+.rt  
+A numeric
+value specifying where to send the messages to:
+.sp
+.in +2
+.nf
+0 = standard output
+1 = syslogd
+2 = log file
+.fi
+.in -2
+.sp
+
+The default is 2.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBMaxClients\fR\fR
+.ad
+.RS 14n
+.rt  
+A
+numeric value specifying the maximum number of simultaneous network boot clients
+to be in service.  A value of \(mi1 means unlimited except where system
+resources is the limiting factor.  Any positive value will set a limit on
+the number of clients to be in service at the same time unless system resource
+constraints come in before the limit.  The default is \(mi1.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBBackGround\fR\fR
+.ad
+.RS 14n
+.rt  
+A
+numeric value indicating whether the RPL server should run in the background
+or not. A 0 means run in the background and a 1 means do not run in the background.
+The difference is whether the server will relinquish the controlling terminal
+or not. The default is 1.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBFrameSize\fR\fR
+.ad
+.RS 14n
+.rt  
+The
+default size of data frames to be used to send bootfile data to the network
+boot clients.  This size should not exceed the limits imposed by the underlying
+physical media. For  \fBethernet/802.3\fR, the maximum physical
+frame size is 1500 octets.  The default is 1500. Note that the protocol overhead
+of LLC1 and RPL is 32 octets, resulting in a maximum data length of 1468 octets.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBLogFile\fR\fR
+.ad
+.RS 14n
+.rt  
+The log
+file to which messages will be sent if \fBDebugDest\fR is set
+to 2 (the default).  The default file is  \fBvar/spool/rpld.log\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBStartDelay\fR\fR
+.ad
+.RS 14n
+.rt  
+The
+initial delay factor to use to control the speed of downloading.  In the default
+mode of operation, the downloading process does not wait for a positive acknowledgment
+from the client before the next data frame is sent.  In the case of a fast
+server and slow client, data overrun can result and requests for retransmission
+will be frequent.  By using a delay factor, the speed of data transfer is
+controlled to avoid retransmission requests.  Note that the unit of delay
+is machine dependent and bears no correlation with the actual time delayed.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBDelayGran\fR\fR
+.ad
+.RS 14n
+.rt  
+Delay
+granularity.  If the initial delay factor is not suitable and the rate of
+downloading is either too fast or too slow, retransmission requests from the
+clients will be used to adjust the delay factor either upward (to slow down
+the data rate) or downward (to speed up the data rate).  The delay granularity
+is used as the delay delta for adjustment.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBend\fR\fR
+.ad
+.RS 14n
+.rt  
+Keyword at
+the end of the file.  It must be present.
+.RE
+
+.SH FILES
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/rpld.conf\fR\fR
+.ad
+.RS 18n
+.rt  
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/usr/sbin/rpld\fR\fR
+.ad
+.RS 18n
+.rt  
+
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5)
+for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+Architecturex86
+.TE
+
+.SH SEE ALSO
+.LP
+\fBrpld\fR(1M), \fBattributes\fR(5)

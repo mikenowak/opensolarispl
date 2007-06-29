@@ -18,7 +18,7 @@
 .\"
 .\" CDDL HEADER END
 .\" Copyright (c) 2007, Sun Microsystems, Inc. All Rights Reserved
-.TH prctl 1 "7 Mar 2007" "SunOS 5.11" "User Commands"
+.TH prctl 1 "16 May 2007" "SunOS 5.11" "User Commands"
 .SH NAME
 prctl \- get or set the resource controls of running processes, tasks, and projects
 .SH SYNOPSIS
@@ -383,6 +383,69 @@ The resource limit value after the change shows a new value of 300 Megabytes:
 .in -2
 .sp
 
+.LP
+\fBExample 4 \fRModifying CPU Caps for a Project
+.LP
+The \fBprctl\fR command can use the \fBproject.cpu-cap\fR resource control (see \fBresource_controls\fR(5)) to set and modify
+CPU caps for a project. (The same resource control can be used in the \fB/etc/project\fR file. See \fBproject\fR(4)) The following command modifies
+the CPU cap to limit \fBuser.smith\fR  to three CPUs:
+
+.sp
+.in +2
+.nf
+# \fBprctl -r -t privileged -n project.cpu-cap -v 300 -i project user.smith\fR
+.fi
+.in -2
+.sp
+
+.LP
+The \fBprctl\fR \fB-r\fR option, used above, is used to dynamically change a CPU cap for a project or zone. For example, the following command will change the cap set in the preceding command to 80 percent:
+
+.sp
+.in +2
+.nf
+# \fBprctl -r -t privileged -n project.cpu-cap -v 80 -i project user.smith\fR
+.fi
+.in -2
+.sp
+
+.LP
+To remove a CPU cap, enter:
+
+.sp
+.in +2
+.nf
+# \fBprctl -x -n project.cpu-cap $$\fR
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 5 \fRModifying CPU Caps for a Zone
+.LP
+The \fBprctl\fR command can use the \fBzone.cpu-cap\fR resource control (see \fBresource_controls\fR(5)) to set and modify
+CPU caps for a zone. (The same resource control can be manipulated using the \fBzonecfg\fR(1M) command.) The following command modifies the CPU cap to limit the global
+zone to 80 percent of a CPU:
+
+.sp
+.in +2
+.nf
+# \fBprctl -t privileged -n zone.cpu-cap -v 80 -i zone global\fR
+.fi
+.in -2
+.sp
+
+.LP
+The cap can be lowered to 50% using:
+
+.sp
+.in +2
+.nf
+# \fBprctl -r -t privileged -n zone.cpu-cap -v 50 -i zone global\fR
+.fi
+.in -2
+.sp
+
 .SH EXIT STATUS
 .LP
 The following exit values are returned:
@@ -453,7 +516,7 @@ Interface StabilitySee below.
 The command-line syntax is Evolving. The human-readable output is Unstable. The parseable output is Evolving.
 .SH SEE ALSO
 .LP
-\fBrctladm\fR(1M), \fBsetrctl\fR(2), \fBrctlblk_get_local_action\fR(3C), \fBattributes\fR(5), \fBresource_controls\fR(5)
+\fBrctladm\fR(1M), \fBzonecfg\fR(1M), \fBsetrctl\fR(2), \fBrctlblk_get_local_action\fR(3C), \fBproject\fR(4), \fBattributes\fR(5), \fBresource_controls\fR(5)
 .SH NOTES
 .LP
 The valid signals that can be set on a resource control block allowing local actions are \fBSIGABRT\fR, \fBSIGXRES\fR, \fBSIGHUP\fR, \fBSIGSTOP\fR, \fBSIGTERM\fR, and \fBSIGKILL\fR. Additionally, CPU time related

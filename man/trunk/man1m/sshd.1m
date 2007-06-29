@@ -1,8 +1,8 @@
 '\" te
 .\" To view license terms, attribution, and copyright for OpenSSH, the default path is /var/sadm/pkg/SUNWsshdr/install/copyright. If the Solaris operating environment has been installed anywhere other than the default, modify the given path to access the file at the
 .\" installed location.
-.\" Portions Copyright (c) 2006, Sun Microsystems, Inc. All Rights Reserved.
-.TH sshd 1M "22 Mar 2007" "SunOS 5.11" "System Administration Commands"
+.\" Portions Copyright (c) 2007, Sun Microsystems, Inc. All Rights Reserved.
+.TH sshd 1M "19 May 2007" "SunOS 5.11" "System Administration Commands"
 .SH NAME
 sshd \- secure shell daemon
 .SH SYNOPSIS
@@ -414,6 +414,36 @@ insecure and will require you to manually copy any required authorization cookie
 .sp .6
 .RS 4n
 Set to the path of the user's home directory.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBLANG, LC_ALL, LC_COLLATE, LC_CTYPE, LC_MESSAGES, LC_MONETARY, LC_NUMERIC, LC_TIME\fR
+.ad
+.sp .6
+.RS 4n
+A locale setting. The locale defaults to that of \fBsshd\fR (usually the system-wide default locale), or is negotiated between the client and server during initial key exchange (as per RFC 4253).
+.sp
+Following initial key exchange, each of the variables can be overriden in the following sequence:
+.RS +4
+.TP
+1.
+If a locale setting is set in a client's environment and that client supports "Environment Variable Passing" (see RFC 4254), then the setting will be passed over to the server side.
+.RE
+.RS +4
+.TP
+2.
+If the public key authentication method was used to authenticate the server and the PermitUserEnvironment variable in \fBsshd_config\fR(4) is
+set to \fByes\fR on the server side, then the setting can be changed through the use of the \fBenvironment\fR  option in the client's \fBAuthorizedKeysFile\fR file.
+.RE
+.RS +4
+.TP
+3.
+The setting can be change in the client's \fB~/.ssh/environment\fR file on the server.
+.RE
+See \fBPermitUserEnvironment\fR in \fBsshd_config\fR(4) as to when the \fBAuthorizedKeysFile\fR and \fB~/.ssh/environment\fR files are processed and used for setting the user environment.
 .RE
 
 .sp

@@ -89,7 +89,7 @@ Version number of \fBddi_fm_error_t\fR. The driver should always set this to \fB
 The \fBddi_fm_dma_err_get()\fR and \fBddi_fm_acc_err_get()\fR functions return the error status for a \fBDMA\fR or access handle respectively. If a fault has occurred that affects the resource mapped by the supplied handle, the supplied \fIerror_status\fR structure is updated to reflect error information captured during error handling by a bus or other device driver in the \fBI/O\fR data path.
 .LP
 If an error is indicated for an access handle, the driver might no longer be able to access the mapped registers or memory using programmed \fBI/O\fR through the handle. Typically, this might occur after the device has failed to respond to an \fBI/O\fR access -
-in the case of a bus error, for instance, or a timeout. The effect of programmed \fBI/O\fR access made at the time of a fault is undefined. Read access via \fBddi_get\fR(9F), for example, can return random values, while write access via \fBddi_put\fR(9F) might or might not have an effect. It is possible, however,
+in the case of a bus error, for instance, or a timeout. The effect of programmed \fBI/O\fR access made at the time of a fault is undefined. Read access via \fBddi_get8\fR(9F), for example, can return random values, while write access via \fBddi_put8\fR(9F) might or might not have an effect. It is possible, however,
 that the error might be transient. In that case, the driver can attempt to recover by calling \fBddi_fm_acc_err_clear()\fR, resetting the device to return it to a known state, then retrying any potentially failed transactions.
 .LP
 If an error is indicated for a \fBDMA\fR handle, it implies that an error has been detected that has or will affect \fBDMA\fR transactions between the device and the memory currently bound to the handle - or the memory most recently bound, if the handle is
@@ -118,6 +118,6 @@ Interface StabilityCommitted
 
 .SH SEE ALSO
 .LP
-\fBattributes\fR(5), \fBddi_dma_mem_alloc\fR(9F), \fBddi_fm_acc_err_clear\fR(9F), \fBddi_fm_service_impact\fR(9F), \fBddi_get\fR(9F), \fBddi_put\fR(9F), \fBddi_regs_map_setup\fR(9F), \fBddi_fm_error\fR(9S), 
+\fBattributes\fR(5), \fBddi_dma_mem_alloc\fR(9F), \fBddi_fm_acc_err_clear\fR(9F), \fBddi_fm_service_impact\fR(9F), \fBddi_get8\fR(9F), \fBddi_put8\fR(9F), \fBddi_regs_map_setup\fR(9F), \fBddi_fm_error\fR(9S), 
 .LP
 \fI\fR

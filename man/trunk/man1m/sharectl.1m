@@ -17,8 +17,8 @@
 .\" information: Portions Copyright [yyyy] [name of copyright owner]
 .\"
 .\" CDDL HEADER END
-.\" Copyright (c) 2006, Sun Microsystems, Inc. All Rights Reserved
-.TH sharectl 1M "13 Jul 2006" "SunOS 5.11" "System Administration Commands"
+.\" Copyright (c) 2007, Sun Microsystems, Inc. All Rights Reserved
+.TH sharectl 1M "31 May 2007" "SunOS 5.11" "System Administration Commands"
 .SH NAME
 sharectl \- configure and manage file sharing service
 .SH SYNOPSIS
@@ -91,8 +91,7 @@ Specifies a property. See "Subcommands," below.
 .ad
 .sp .6
 .RS 4n
-Get the property values for the specified protocol. If no \fB-p\fR option is provided, get all the properties for the specified protocol.
-For NFS, properties correspond to entries in the \fB/etc/default/nfs\fR file. See \fBnfs\fR(4).
+Get the property values for the specified protocol. If no \fB-p\fR option is provided, get all the properties for the specified protocol. For NFS, properties correspond to entries in the \fB/etc/default/nfs\fR file. See \fBnfs\fR(4).
 .RE
 
 .sp
@@ -119,7 +118,88 @@ Display status of the specified protocol, or, if no protocol is specified, of al
 
 .SH EXAMPLES
 .LP
-\fBExample 1 \fRSetting a Property
+The first two examples in this section show how to use the \fBsharectl\fR command to create and view settings in a hypothetical \fBex.com\fR environment. This hypothetical environment is described by means of these sections and settings:
+.RS +4
+.TP
+.ie t \(bu
+.el o
+The \fBdefault\fR section describes the default workgroup (domain), which is called \fBSALES\fR, and sets a timeout of 5 seconds. These default settings are inherited by other sections unless parameter values are overridden.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBFSERVER\fR is a server section that defines a server called \fBfserv.ex.com\fR. It is part of the \fBSALES\fR workgroup and has a timeout of 5 seconds.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBRSERVER\fR is a server section that defines a server called \fBrserv.ex.com\fR that belongs to a new workgroup called \fBREMGROUP\fR.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBRSERVER:george\fR is a server-user section that specifies that a special character set, \fBkoi8-r:cp866\fR, be used for the \fBgeorge\fR user. This section is related to the \fBRSERVER\fR section, so it is part of the \fBREMGROUP\fR workgroup instead of the default workgroup, \fBSALES\fR.
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBSSERV:*:POKY\fR is a server-user-share section that applies to all \fBSSERV\fR users who use the \fBPOKY\fR share. This section sets a longer timeout of 25 seconds because the \fBPOKY\fR share is known to be slow. \fBSSERV\fR is
+part of the \fBSALES\fR workgroup.
+.RE
+.LP
+\fBExample 1 \fRConfiguring Global Settings
+.LP
+This example shows how a privileged user can use \fBsharectl\fR commands to configure global settings for the \fBex.com\fR environment in the service management facility (see \fBsmf\fR(5)):
+
+.sp
+.in +2
+.nf
+# \fBsharectl set -p section=default -p workgroup=SALES \e
+-p timeout=5 smb/client\fR
+# \fBsharectl set -p section=FSERVER -p addr=fserv.ex.com smb/client\fR
+# \fBsharectl set -p section=RSERVER -p workgroup=REMGROUP \e
+-p addr=rserv.ex.com smb/client\fR
+# \fBsharectl set -p section=RSERVER:george -p charsets=koi8-r:cp866 \e
+smb/client\fR
+# \fBsharectl set -p section="SSERV:*:POKY" -p addr=sserv.ex.com \e
+-p timeout=25 smb/client\fR
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 2 \fRViewing Current Settings
+.LP
+This example shows how a privileged user can use \fBsharectl get\fR command to view the global settings for \fBsmb/client\fR in the \fBsmf\fR(5).
+The values shown are those set by the previous example:
+
+.sp
+.in +2
+.nf
+# \fBsharectl get smb/client\fR
+[default]
+ workgroup=SALES
+ timeout=5
+[FSERVER]
+ addr=fserv.ex.com
+[RSERVER]
+ workgroup=REMGROUP
+ addr=rserv.ex.com
+[RSERVER:george]
+ charsets=koi8-r:cp866
+[SSERV:*:POKY]
+ addr=sserv.ex.com
+ timeout=25
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 3 \fRSetting a Property
 .LP
 The following command sets the minimum version of the server NFS protocol to version 3.
 
@@ -132,7 +212,7 @@ The following command sets the minimum version of the server NFS protocol to ver
 .sp
 
 .LP
-\fBExample 2 \fRGetting Properties
+\fBExample 4 \fRGetting Properties
 .LP
 The following command gets the properties for the NFS protocol.
 
@@ -166,7 +246,7 @@ grace_period=90
 .sp
 
 .LP
-\fBExample 3 \fRObtaining Status
+\fBExample 5 \fRObtaining Status
 .LP
 The following command obtains the status of all file-sharing protocols on a system.
 
@@ -234,4 +314,4 @@ Interface StabilityEvolving
 
 .SH SEE ALSO
 .LP
-\fBsharemgr\fR(1M), \fBnfs\fR(4), \fBattributes\fR(5), \fBstandards\fR(5)
+\fBsharemgr\fR(1M), \fBnfs\fR(4), \fBattributes\fR(5), \fBsmf\fR(5), \fBstandards\fR(5)

@@ -1,0 +1,1574 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2006, Sun Microsystems, Inc. All Rights Reserved
+.TH dladm 1M "27 Apr 2007" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+dladm \- administer data links
+.SH SYNOPSIS
+.LP
+.nf
+\fBdladm show-link\fR [\fB-p\fR] [\fB-s\fR [\fB-i\fR \fIinterval\fR]] [\fIname\fR]
+\fBdladm show-dev\fR [\fB-p\fR] [\fB-s\fR [\fB-i\fR \fIinterval\fR]] [\fIdev\fR]
+.fi
+
+.LP
+.nf
+\fBdladm create-aggr\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] [\fB-P\fR \fIpolicy\fR] [\fB-l\fR \fImode\fR] 
+    [\fB-T\fR \fItime\fR] [\fB-u\fR \fIaddress\fR] \fB-d\fR \fIdev\fR... \fIkey\fR
+\fBdladm modify-aggr\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] [\fB-P\fR \fIpolicy\fR] [\fB-l\fR \fImode\fR] 
+    [\fB-T\fR \fItime\fR] [\fB-u\fR \fIaddress\fR] \fIkey\fR
+\fBdladm delete-aggr\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] \fIkey\fR
+\fBdladm add-aggr\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] \fB-d\fR \fIdev\fR ... \fIkey\fR
+\fBdladm remove-aggr\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] \fB-d\fR \fIdev\fR ... \fIkey\fR
+\fBdladm show-aggr\fR [\fB-pL\fR] [\fB-s\fR [\fB-i\fR \fIinterval\fR]] [\fIkey\fR]
+.fi
+
+.LP
+.nf
+\fBdladm scan-wifi\fR [\fB-p\fR] [\fB-o\fR \fIfield\fR,...] [\fIname\fR]
+\fBdladm connect-wifi\fR [\fB-e\fR \fIessid\fR] [\fB-i\fR \fIbssid\fR] [\fB-k\fR \fIkey\fR,...] [\fB-s\fR wep | wpa ]
+    [\fB-a\fR open|shared][\fB-b\fR bss|ibss] [\fB-c\fR] [\fB-m\fR a|b|g] [\fB-T\fR \fItime\fR] [\fIname\fR]
+\fBdladm disconnect-wifi\fR [\fB-a\fR] [\fIname\fR]
+\fBdladm show-wifi\fR [\fB-p\fR] [\fB-o\fR \fIfield\fR,...] [\fIname\fR]
+.fi
+
+.LP
+.nf
+\fBdladm set-linkprop\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] \fB-p\fR \fIprop\fR=\fIvalue\fR[,...] \fIname\fR
+\fBdladm reset-linkprop\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] [\fB-p\fR \fIprop\fR,...] \fIname\fR
+\fBdladm show-linkprop\fR [\fB-cP\fR] [\fB-p\fR \fIprop\fR,...] [\fIname\fR]
+.fi
+
+.LP
+.nf
+\fBdladm create-secobj\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] [\fB-f\fR \fIfile\fR] \fB-c\fR \fIclass\fR \fIsecobj\fR
+\fBdladm delete-secobj\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] \fIsecobj\fR[,...]
+\fBdladm show-secobj\fR [\fB-pP\fR] [\fIsecobj\fR,...]
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBdladm\fR command is used to administer data-links. A data-link is represented in the system as a \fBSTREAMS DLPI\fR (v2) interface which may be plumbed under protocol stacks such as \fBTCP/IP\fR. Each data-link relies on either a single network
+device or an aggregation of devices to send packets to or receive packets from a network.
+.LP
+Each \fBdladm\fR subcommand operates on one of the following objects:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBlink\fR\fR
+.ad
+.RS 10n
+.rt  
+Data-links, identified by a name.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdev\fR\fR
+.ad
+.RS 10n
+.rt  
+Network devices, identified by concatenation of a driver name and an instance number.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBaggr\fR\fR
+.ad
+.RS 10n
+.rt  
+Aggregations of network devices, identified by an administratively-chosen key between 1 and 999.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBsecobj\fR\fR
+.ad
+.RS 10n
+.rt  
+Secure objects, identified by an administratively-chosen alphanumeric name.
+.RE
+
+.LP
+Some subcommands require a specific type of link. For instance, the \fBWiFi\fR subcommands require a \fBWiFi\fR link. Further, the behavior of the \fBlinkprop\fR subcommands depends on the type of link and underlying device.
+.LP
+Some devices do not support configurable data-links or aggregations. The fixed data-links provided by such devices can be viewed using \fBdladm\fR, but can not be configured. 
+.SS "SUBCOMMANDS"
+.LP
+The following subcommands are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm show-link\fR [\fB-p\fR] [\fB-s\fR [\fB-i\fR \fIinterval\fR]] [\fIname\fR]\fR
+.ad
+.sp .6
+.RS 4n
+Show link configuration information (the default) or statistics, either for all data-links or for the specified link \fIname\fR. By default, the system is configured with one data-link for each known network device.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR, \fB--parseable\fR\fR
+.ad
+.sp .6
+.RS 4n
+Display using a stable machine-parseable format. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-s\fR, \fB--statistics\fR\fR
+.ad
+.sp .6
+.RS 4n
+Display link statistics.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-i\fR \fIinterval\fR, \fB--interval\fR=\fIinterval\fR\fR
+.ad
+.sp .6
+.RS 4n
+Used with the \fB-s\fR option to specify an interval, in seconds, at which statistics should be displayed. If this option is not specified, statistics will only be displayed once.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm show-dev\fR [\fB-p\fR] [\fB-s\fR [\fB-i\fR \fIinterval\fR]] [\fIdev\fR]\fR
+.ad
+.sp .6
+.RS 4n
+Show device configuration information (the default) or statistics, either for all network devices or for the specified device \fIdev\fR.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR, \fB--parseable\fR\fR
+.ad
+.sp .6
+.RS 4n
+Display using a stable machine-parseable format. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-s\fR, \fB--statistics\fR\fR
+.ad
+.sp .6
+.RS 4n
+Display network device statistics.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-i\fR \fIinterval\fR, \fB--interval\fR=\fIinterval\fR\fR
+.ad
+.sp .6
+.RS 4n
+Used with the \fB-s\fR option to specify an interval, in seconds, at which statistics should be displayed. If this option is not specified, statistics will only be displayed once.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm create-aggr\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] [\fB-P\fR \fIpolicy\fR] [\fB-l\fR \fImode\fR] [\fB-T\fR \fItime\fR]
+[\fB-u\fR \fIaddress\fR] \fB-d\fR \fIdev\fR ... \fIkey\fR\fR
+.ad
+.sp .6
+.RS 4n
+Create an aggregation using the given key value from as many \fIdev\fR objects as are specified. A data-link is created and is given a name which is the concatenation of "\fBaggr\fR" and the \fIkey\fR value of the
+aggregation.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-t\fR, \fB--temporary\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies that the aggregation is temporary. Temporary aggregations last until the next reboot. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-R\fR \fIroot-dir\fR, \fB--root-dir\fR=\fIroot-dir\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies an alternate root directory where \fBdladm\fR should apply persistent creation.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-P\fR \fIpolicy\fR, \fB--policy\fR=\fIpolicy\fR\fR
+.ad
+.br
+.na
+\fB\fR
+.ad
+.sp .6
+.RS 4n
+Specifies the port selection policy to use for load spreading of outbound traffic. The policy specifies which \fIdev\fR object is used to send packets. A policy is a list of one or more layers specifiers separated by commas. A layer specifier is one of the
+following:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBL2\fR\fR
+.ad
+.RS 6n
+.rt  
+Select outbound device according to source and destination \fBMAC\fR addresses of the packet. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBL3\fR\fR
+.ad
+.RS 6n
+.rt  
+Select outbound device according to source and destination \fBIP\fR addresses of the packet.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBL4\fR\fR
+.ad
+.RS 6n
+.rt  
+Select outbound device according to the upper layer protocol information contained in the packet. For \fBTCP\fR and \fBUDP\fR, this includes source and destination ports. For \fIIPsec\fR, this includes the \fBSPI\fR (Security
+Parameters Index.)
+.RE
+
+For example, to use upper layer protocol information, the following policy can be used: 
+.sp
+.in +2
+.nf
+-P L4
+.fi
+.in -2
+.sp
+
+To use the source and destination \fBMAC\fR addresses as well as the source and destination \fBIP\fR addresses, the following policy can be used:
+.sp
+.in +2
+.nf
+-P L2,L3
+.fi
+.in -2
+.sp
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-l\fR \fImode\fR, \fB--lacp-mode\fR=\fImode\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies whether \fBLACP\fR should be used and, if used, the mode in which it should operate. Supported values are "\fBoff\fR", "\fBactive\fR" or "\fBpassive\fR".
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-T\fR \fItime\fR, \fB--lacp-timer\fR=\fItime\fR\fR
+.ad
+.br
+.na
+\fB\fR
+.ad
+.sp .6
+.RS 4n
+Specifies the \fBLACP\fR timer value. The supported values are "\fBshort\fR" or "\fBlong\fR".
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-u\fR \fIaddress\fR, \fB--unicast\fR=\fIaddress\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies a fixed unicast hardware address to be used for the aggregation. If this option is not specified, then an address is automatically chosen from the set of addresses of the component devices.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm modify-aggr\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] [\fB-P\fR \fIpolicy\fR] [\fB-l\fR \fImode\fR] [\fB-T\fR \fItime\fR]
+[\fB-u\fR \fIaddress\fR] \fIkey\fR\fR
+.ad
+.sp .6
+.RS 4n
+Modify the parameters of the specified aggregation. 
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-t\fR, \fB--temporary\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies that the modification is temporary. Temporary aggregations last until the next reboot.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-R\fR \fIroot-dir\fR, \fB--root-dir\fR=\fIroot-dir\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies an alternate root directory where \fBdladm\fR should apply persistent modifications.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-P\fR \fIpolicy\fR, \fB--policy\fR=\fIpolicy\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies the port selection policy to use for load spreading of outbound traffic. See \fBdladm create-aggr\fR for a description of valid policy values.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-l\fR \fImode\fR, \fB--lacp-mode\fR=\fImode\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies whether \fBLACP\fR should be used and, if used, the mode in which it should operate. Supported values are "\fBoff\fR", "\fBactive\fR" or "\fBpassive\fR".
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-T\fR \fItime\fR, \fB--lacp-timer\fR=\fItime\fR\fR
+.ad
+.br
+.na
+\fB\fR
+.ad
+.sp .6
+.RS 4n
+Specifies the \fBLACP\fR timer value. The supported values are "\fBshort\fR" or "\fBlong\fR".
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-u\fR \fIaddress\fR, \fB--unicast\fR=\fIaddress\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies a fixed unicast hardware address to be used for the aggregation. If this option is not specified, then an address is automatically chosen from the set of addresses of the component devices.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm delete-aggr\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] \fIkey\fR\fR
+.ad
+.sp .6
+.RS 4n
+Deletes the specified aggregation.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-t\fR, \fB--temporary\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies that the deletion is temporary. Temporary deletions last until the next reboot. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-R\fR \fIroot-dir\fR, \fB--root-dir\fR=\fIroot-dir\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies an alternate root directory where \fBdladm\fR should apply persistent deletions.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm add-aggr\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] \fB-d\fR \fIdev\fR ... \fIkey\fR\fR
+.ad
+.sp .6
+.RS 4n
+Adds as many \fIdev\fR objects as are provided to the specified aggregation.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-d\fR, \fB--dev\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies a device to add to the aggregation. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-t\fR, \fB--temporary\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies that the additions are temporary. Temporary additions last until the next reboot. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-R\fR \fIroot-dir\fR, \fB--root-dir\fR=\fIroot-dir\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies an alternate root directory where \fBdladm\fR should apply persistent additions.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm remove-aggr\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] \fB-d\fR \fIdev\fR ... \fIkey\fR\fR
+.ad
+.sp .6
+.RS 4n
+Removes as many \fIdev\fR objects as are provided from the specified aggregation.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-d\fR, \fB--dev\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies a device to remove from the aggregation. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-t\fR, \fB--temporary\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies that the removals are temporary. Temporary removal last until the next reboot. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-R\fR \fIroot-dir\fR, \fB--root-dir\fR=\fIroot-dir\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies an alternate root directory where \fBdladm\fR should apply persistent removals.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm show-aggr\fR [\fB-pL\fR] [\fB-s\fR [\fB-i\fR \fIinterval\fR]] [\fIkey\fR]\fR
+.ad
+.sp .6
+.RS 4n
+Show aggregation configuration (the default), \fBLACP\fR information, or statistics, either for all aggregations or for the specified \fIkey\fR.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR, \fB--parseable\fR\fR
+.ad
+.sp .6
+.RS 4n
+Display using a stable machine-parseable format. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-L\fR, \fB--lacp\fR\fR
+.ad
+.sp .6
+.RS 4n
+Displays detailed \fBLACP\fR information.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-s\fR, \fB--statistics\fR\fR
+.ad
+.sp .6
+.RS 4n
+Displays aggregation statistics.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-i\fR \fIinterval\fR, \fB--interval\fR=\fIinterval\fR\fR
+.ad
+.sp .6
+.RS 4n
+Used with the \fB-s\fR option to specify an interval, in seconds, at which statistics should be displayed. If this option is not specified, statistics will only be displayed once.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm scan-wifi\fR [\fB-p\fR] [\fB-o\fR \fIfield\fR,...] [\fIname\fR]\fR
+.ad
+.sp .6
+.RS 4n
+Scans for \fBWiFi\fR networks, either on all \fBWiFi\fR links, or just on the specified \fIname\fR. For each \fBWiFi\fR network found, the following fields can be displayed:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBLINK\fR\fR
+.ad
+.sp .6
+.RS 4n
+The name of the link the \fBWiFi\fR network is on. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBESSID\fR\fR
+.ad
+.sp .6
+.RS 4n
+The \fBESSID\fR (name) of the \fBWiFi\fR network.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBBSSID\fR\fR
+.ad
+.sp .6
+.RS 4n
+Either the hardware address of the \fBWiFi\fR network's Access Point (for \fBBSS\fR networks), or the \fBWiFi\fR network's randomly generated unique token (for \fBIBSS\fR networks).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSEC\fR\fR
+.ad
+.sp .6
+.RS 4n
+Either "\fBnone\fR" for a \fBWiFi\fR network that uses no security, "\fBwep\fR" for a \fBWiFi\fR network that requires WEP (Wired Equivalent Privacy), or "\fBwpa\fR" for a WiFi
+network that requires WPA (Wi-Fi Protected Access).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBMODE\fR\fR
+.ad
+.sp .6
+.RS 4n
+The supported connection modes: one or more of "\fBa\fR", "\fBb\fR", or "\fBg\fR".
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSTRENGTH\fR\fR
+.ad
+.sp .6
+.RS 4n
+The strength of the signal: one of "\fBexcellent\fR", "\fBvery good\fR", "\fBgood\fR", "\fBweak\fR", or "\fBvery weak\fR".
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSPEED\fR\fR
+.ad
+.sp .6
+.RS 4n
+The maximum speed of the \fBWiFi\fR network, in megabits per second.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBBSSTYPE\fR\fR
+.ad
+.sp .6
+.RS 4n
+Either "\fBbss\fR" for \fBBSS\fR (infrastructure) networks, or "\fBibss\fR" for \fBIBSS\fR (ad-hoc) networks.
+.RE
+
+By default, currently all fields but \fBBSSTYPE\fR are displayed.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR, \fB--parseable\fR\fR
+.ad
+.sp .6
+.RS 4n
+Display using a stable machine-parseable format. If this option is specified, all output fields are displayed by default. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-o\fR \fIfield,...\fR, \fB--output\fR=\fIfield\fR\fR
+.ad
+.sp .6
+.RS 4n
+A case-insensitive, comma-separated list of output fields to display. The field name must be one of the fields listed above, or the special value "\fBall\fR" to display all fields.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm connect-wifi\fR [\fB-e\fR \fIessid\fR] [\fB-i\fR \fIbssid\fR] [\fB-k\fR \fIkey\fR,...] [\fB-s\fR \fBwep\fR | \fBwpa\fR] [\fB-a\fR \fBopen\fR|\fBshared\fR] [\fB-b\fR \fBbss\fR|\fBibss\fR] [\fB-c\fR] [\fB-m\fR \fBa\fR|\fBb\fR|\fBg\fR] [\fB-T\fR \fItime\fR] [\fIname\fR]\fR
+.ad
+.sp .6
+.RS 4n
+Connects to a \fBWiFi\fR network. This consists of four steps: \fIdiscovery\fR, \fIfiltration\fR, \fIprioritization\fR, and \fIassociation\fR. However, to enable connections to non-broadcast \fBWiFi\fR networks and to improve performance, if a \fBBSSID\fR or \fBESSID\fR is specified using the \fB-e\fR or \fB-i\fR options, then the first three steps are skipped and \fBconnect-wifi\fR immediately attempts to associate to
+a \fBBSSID\fR or \fBESSID\fR that matches the rest of the provided parameters. If this association fails, but there is a possibility that other networks matching the specified criteria exist, then the traditional discovery process begins as specified below. 
+.sp
+The discovery step finds all available \fBWiFi\fR networks on the specified \fIname\fR, which must not yet be connected. For administrative convenience, if there is only one \fBWiFi\fR link on the system, \fIname\fR may
+be omitted.
+.sp
+Once discovery is complete, the list of networks is filtered according to the value of the following options: 
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-e\fR \fIessid,\fR \fB--essid\fR=\fIessid\fR\fR
+.ad
+.sp .6
+.RS 4n
+Networks that do not have the same \fIessid\fR are filtered out.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-b\fR \fBbss\fR|\fBibss\fR, \fB--bsstype\fR=\fBbss\fR|\fBibss\fR\fR
+.ad
+.sp .6
+.RS 4n
+Networks that do not have the same bsstype are filtered out.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-m\fR \fBa\fR|\fBb\fR|\fBg\fR, \fB--mode\fR=\fBa\fR|\fBb\fR|\fBg\fR\fR
+.ad
+.sp .6
+.RS 4n
+Networks not appropriate for the specified 802.11 mode are filtered out.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-k\fR \fIkey,...\fR, \fB--key\fR=\fIkey, ...\fR\fR
+.ad
+.sp .6
+.RS 4n
+Networks not appropriate for the specified keys are filtered out.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-s\fR \fBnone\fR|\fBwep\fR|\fBwpa\fR, \fB--sec\fR=\fBnone\fR|\fBwep\fR|\fBwpa\fR\fR
+.ad
+.sp .6
+.RS 4n
+Networks not appropriate for the specified security mode are filtered out.
+.RE
+
+Next, the remaining networks are prioritized, first by signal strength, and then by maximum speed. Finally, an attempt is made to associate with each network in the list, in order, until one succeeds or no networks remain. 
+.sp
+In addition to the options described above, the following options also control the behavior of \fBconnect-wifi\fR:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-a\fR \fBopen\fR|\fBshared\fR, \fB--auth\fR=\fBopen\fR|\fBshared\fR\fR
+.ad
+.sp .6
+.RS 4n
+Connect using the specified authentication mode. By default, "\fBopen\fR" and "\fBshared\fR" are tried in order.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-c\fR, \fB--create-ibss\fR\fR
+.ad
+.sp .6
+.RS 4n
+Used with "\fB-b ibss\fR" to create a new ad-hoc network if one matching the specified \fBESSID\fR cannot be found. If no \fBESSID\fR is specified, then "\fB-c -b ibss\fR" will always trigger the creation
+of a new ad-hoc network.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-T\fR \fItime\fR, \fB--timeout\fR=\fItime\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies the number of seconds to wait for association to succeed. If \fItime\fR is "\fBforever\fR", 	 then the associate will wait indefinitely. The current default is ten seconds, but this may change in the future. Timeouts shorter
+than the default may not succeed reliably.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-k\fR \fIkey,...\fR, \fB--key\fR=\fIkey,...\fR\fR
+.ad
+.sp .6
+.RS 4n
+In addition to the filtering previously described, the specified keys will be used to secure the association. The security mode to use will be based on the key class; if a security mode was explicitly specified, it must be compatible with the key class. All keys must be of the
+same class. 
+.sp
+For security modes that support multiple key slots, the slot to place the key will be specified by a colon followed by an index. Therefore, "\fB-k mykey:3\fR" places "\fBmykey\fR"in slot 3. By default, slot 1 is assumed. For security modes
+that support multiple keys, a comma-separated list can be specified, with the first key being the active key.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm disconnect-wifi\fR [\fB-a\fR] [\fIname\fR]\fR
+.ad
+.sp .6
+.RS 4n
+Disconnect from one or more \fBWiFi\fR networks. If \fIname\fR specifies a connected \fBWiFi\fR link, then it is disconnected. For administrative convenience, if only one \fBWiFi\fR link is connected, \fIname\fR may
+be omitted.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-a\fR, \fB--all-links\fR\fR
+.ad
+.RS 19n
+.rt  
+Disconnects from all connected links. This is primarily intended for use by scripts.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm show-wifi\fR [\fB-p\fR] [\fB-o\fR \fIfield\fR,...] [\fIname\fR]\fR
+.ad
+.sp .6
+.RS 4n
+Shows \fBWiFi\fR configuration information either for all \fBWiFi\fR links or for the specified link \fIname\fR. For each \fBWiFi\fR link, the following fields can be displayed:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBLINK\fR\fR
+.ad
+.sp .6
+.RS 4n
+The name of the link being displayed. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSTATUS\fR\fR
+.ad
+.sp .6
+.RS 4n
+Either "\fBconnected\fR" if the link is connected, or "\fBdisconnected\fR" if it is not connected. If the link is disconnected, all remaining fields have the value "\fB--\fR".
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBESSID\fR\fR
+.ad
+.sp .6
+.RS 4n
+The \fBESSID\fR (name) of the connected \fBWiFi\fR network.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBBSSID\fR\fR
+.ad
+.sp .6
+.RS 4n
+Either the hardware address of the \fBWiFi\fR network's Access Point (for \fBBSS\fR networks), or the \fBWiFi\fR network's randomly generated unique token (for \fBIBSS\fR networks).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSEC\fR\fR
+.ad
+.sp .6
+.RS 4n
+Either "\fBnone\fR" for a \fBWiFi\fR network that uses no security, "\fBwep\fR" for a \fBWiFi\fR network that requires WEP, or "\fBwpa\fR" for a WiFi network that requires WPA.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBMODE\fR\fR
+.ad
+.sp .6
+.RS 4n
+The supported connection modes: one or more of "\fBa\fR", "\fBb\fR", or "\fBg\fR".
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSTRENGTH\fR\fR
+.ad
+.sp .6
+.RS 4n
+The connection strength: one of "\fBexcellent\fR", "\fBvery good\fR", "\fBgood\fR", "\fBweak\fR", or "\fBvery weak\fR".
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSPEED\fR\fR
+.ad
+.sp .6
+.RS 4n
+The connection speed, in megabits per second.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBAUTH\fR\fR
+.ad
+.sp .6
+.RS 4n
+Either "\fBopen\fR" or "\fBshared\fR" (see \fBconnect-wifi\fR).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBBSSTYPE\fR\fR
+.ad
+.sp .6
+.RS 4n
+Either "\fBbss\fR" for \fBBSS\fR (infrastructure) networks, or "\fBibss\fR" for \fBIBSS\fR (ad-hoc) networks.
+.RE
+
+By default, currently all fields but \fBAUTH\fR, \fBBSSID\fR, \fBBSSTYPE\fR are displayed.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR, \fB--parseable\fR\fR
+.ad
+.sp .6
+.RS 4n
+Displays using a stable machine-parseable format. If this option is specified, all output fields are displayed by default. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-o\fR \fIfield,...\fR, \fB--output\fR=\fIfield\fR\fR
+.ad
+.sp .6
+.RS 4n
+A case-insensitive, comma-separated list of output fields to display. The field name must be one of the fields listed above, or the special value "\fBall\fR" to display all fields.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm set-linkprop\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] \fB-p\fR \fIprop\fR=\fIvalue\fR[,...] \fIname\fR\fR
+.ad
+.sp .6
+.RS 4n
+Sets the values of one or more properties on the link specified by \fIname\fR. The list of properties and their possible values depend on the link type, the network device driver, and networking hardware, but can be retrieved using \fBshow-linkprop\fR.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-t\fR, \fB--temporary\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies that the changes are temporary. Temporary changes last until the next reboot. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-R\fR \fIroot-dir\fR, \fB--root-dir\fR=\fIroot-dir\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies an alternate root directory where \fBdladm\fR should apply persistent creation.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR \fIprop\fR=\fIvalue,...\fR, \fB--prop\fR \fIprop\fR=\fIvalue,...\fR\fR
+.ad
+.br
+.na
+\fB\fR
+.ad
+.sp .6
+.RS 4n
+A comma-separated list of properties to set to the specified values.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm reset-linkprop\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] \fB-p\fR \fIprop, ...\fR \fIname\fR\fR
+.ad
+.sp .6
+.RS 4n
+Resets one or more properties to their values on the link specified by \fIname\fR. If no properties are specified, all properties are reset.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-t\fR, \fB--temporary\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies that the resets are temporary. Temporary resets last until the next reboot. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-R\fR \fIroot-dir\fR, \fB--root-dir\fR=\fIroot-dir\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies an alternate root directory where \fBdladm\fR should apply persistent creation.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR \fIprop, ...\fR, \fB--prop\fR=\fIprop, ...\fR\fR
+.ad
+.br
+.na
+\fB\fR
+.ad
+.sp .6
+.RS 4n
+A comma-separated list of properties to reset.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm show-linkprop\fR [\fB-cP\fR] [\fB-p\fR \fIprop\fR, ...] [\fIname\fR]\fR
+.ad
+.sp .6
+.RS 4n
+Show the current or persistent values of one or more properties, either for all data-links or for the specified link name. By default, current values are shown. If no properties are specified, all available link properties are displayed. For each property, the following fields
+are displayed:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBLINK\fR\fR
+.ad
+.RS 12n
+.rt  
+The name of the data-link.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBPROPERTY\fR\fR
+.ad
+.RS 12n
+.rt  
+The name of the property.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBVALUE\fR\fR
+.ad
+.RS 12n
+.rt  
+The current (or persistent) property value. The value is shown as "\fB--\fR", if it is not set, and "?", if the value is unknown. Persistent values that are not set or have been  reset will be shown as "\fB--\fR" and
+will use the system \fBDEFAULT\fR value (if any).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBDEFAULT\fR\fR
+.ad
+.RS 12n
+.rt  
+The default value of the property. If the property has no default value, "\fB--\fR" is shown.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBPOSSIBLE\fR\fR
+.ad
+.RS 12n
+.rt  
+A comma-separated list of the values the property may have. If the values span a numeric range, \fImin\fR - \fImax\fR may be shown as shorthand. If the possible values are unknown or unbounded, "\fB--\fR" is shown.
+.RE
+
+The list of properties depends on the link type and network device driver, and the available values for a given property further depends on the underlying network hardware and its state. General link properties are documented in the \fBLINK PROPERTIES\fR section. However, link
+properties that begin with "\fBlink\fR" are specific to a given link or its underlying network device and subject to change or removal; see the appropriate network device driver manpage for details.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-c\fR, \fB--parseable\fR\fR
+.ad
+.sp .6
+.RS 4n
+Display using a stable machine-parseable format. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-P\fR, \fB--persistent\fR\fR
+.ad
+.sp .6
+.RS 4n
+Display persistent link property information
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR \fIprop, ...\fR, \fB--prop\fR=\fIprop, ...\fR\fR
+.ad
+.sp .6
+.RS 4n
+A comma-separated list of properties to show.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm create-secobj\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] [\fB-f\fR \fIfile\fR] \fB-c\fR \fIclass\fR \fIsecobj\fR\fR
+.ad
+.sp .6
+.RS 4n
+Create a secure object named \fBsecobj\fR in the specified \fIclass.\fR The value of the secure object can either be provided interactively or read from a file. The sequence of interactive prompts and file format depends on the class of the secure
+object. 
+.sp
+Currently, the defined class is "\fBwep\fR|\fBwpa\fR". The \fBWEP\fR (Wired Equivalent Privacy) key can be either 5 or 13 bytes long. It can be provided either as an \fBASCII\fR or hexadecimal string -- thus "\fB12345\fR"
+and "\fB0x3132333435\fR" are equivalent 5-byte keys (the "\fB0x\fR" prefix 	may be omitted). A file containing a \fBWEP\fR key must consist of a single line using either \fBWEP\fR key format. The WPA (Wi-Fi Protected
+Access) key must be provided as an ASCII string, and the length must be between 8 and 63 (8~63 bytes).
+.sp
+This subcommand is only usable by users or roles that belong to the "Network Link Security" \fBRBAC\fR profile.
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-t\fR, \fB--temporary\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies that the creation is temporary. Temporary creation last until the next reboot. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-R\fR \fIroot-dir\fR, \fB--root-dir\fR=\fIroot-dir\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies an alternate root directory where \fBdladm\fR should apply persistent creation.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-f\fR \fIfile\fR, \fB--file\fR=\fIfile\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies a file that should be used to obtain the secure object's value. The format of this file depends on the secure object class. See the EXAMPLES section for an example of using this option to set a \fBWEP\fR key.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm delete-secobj\fR [\fB-t\fR] [\fB-R\fR \fIroot-dir\fR] \fIsecobj\fR[,...]\fR
+.ad
+.sp .6
+.RS 4n
+Delete one or more specified secure objects. This subcommand is only usable by users or roles that belong to the "Network Link Security" \fBRBAC\fR profile. 
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-t\fR, \fB--temporary\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies that the deletions are temporary. Temporary deletions last until the next reboot. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-R\fR \fIroot-dir\fR, \fB--root-dir\fR=\fIroot-dir\fR\fR
+.ad
+.sp .6
+.RS 4n
+Specifies an alternate root directory where \fBdladm\fR should apply persistent deletions
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBdladm show-secobj\fR [\fB-pP\fR] [\fIsecobj\fR,...]\fR
+.ad
+.sp .6
+.RS 4n
+Show current or persistent secure object information. If one or more secure objects are specified, then information for each is displayed. Otherwise, all current or persistent secure objects are displayed.
+.sp
+By default, current secure objects are displayed, which are all secure objects that have either been persistently created and not temporarily deleted, or temporarily created.
+.sp
+For each displayed secure object, the following fields are shown:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBOBJECT\fR\fR
+.ad
+.RS 10n
+.rt  
+The name of the secure object.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBCLASS\fR\fR
+.ad
+.RS 10n
+.rt  
+The class of the secure object.
+.RE
+
+For security reasons, it is not possible to show the value of a secure object. 
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR, \fB--parseable\fR\fR
+.ad
+.RS 20n
+.rt  
+Display using a stable machine-parseable format. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-P\fR, \fB--persistent\fR\fR
+.ad
+.RS 20n
+.rt  
+Display persistent secure object information
+.RE
+
+.RE
+
+.SS "LINK PROPERTIES"
+.LP
+The following link properties are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBzone\fR\fR
+.ad
+.RS 8n
+.rt  
+Specifies the zone to which the link belongs. This property can be modified only temporarily through \fBdladm\fR, and thus the \fB-t\fR option must be specified. To modify the zone assignment such that it persists across reboots, please use \fBzonecfg\fR(1M). Possible values consist of any zone currently running on the system. By default, the zone binding is as per \fBzonecfg\fR(1M).
+.RE
+
+.SS "WIFI LINK PROPERTIES"
+.LP
+The following \fBWiFi\fR link properties are supported. Note that the ability to set a given property to a given value depends on the driver and hardware.
+.sp
+.ne 2
+.mk
+.na
+\fB\fBchannel\fR\fR
+.ad
+.RS 13n
+.rt  
+Specifies the channel to use. This property can only be modified by certain \fBWiFi\fR links when in \fBIBSS\fR mode. The default value and allowed range of values varies by regulatory domain.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBpowermode\fR\fR
+.ad
+.RS 13n
+.rt  
+Specifies the power management mode of the \fBWiFi\fR link. Possible values are "\fBoff\fR" (disable power management), "\fBmax\fR" (maximum power savings), and "\fBfast\fR" (performance-sensitive
+power management). Default is "\fBoff\fR".
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBradio\fR\fR
+.ad
+.RS 13n
+.rt  
+Specifies the radio mode of the \fBWiFi\fR link. Possible values are "\fBon\fR" or "\fBoff\fR". Default is "\fBon\fR".
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBspeed\fR\fR
+.ad
+.RS 13n
+.rt  
+Specifies a fixed speed for the \fBWiFi\fR link, in megabits per second. The set of possible values depends on the driver and hardware (but is shown by \fBshow-linkprop\fR); common speeds include 1, 2, 11, and 54. By default, there is no fixed speed. 
+.RE
+
+.SH EXAMPLES
+.LP
+\fBExample 1 \fRConfiguring an Aggregation
+.LP
+To configure a data-link over an aggregation of devices \fBbge0\fR and \fBbge1\fR with key 1, enter the following command:
+
+.sp
+.in +2
+.nf
+# \fBdladm create-aggr -d bge0 -d bge1 1\fR
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 2 \fRConnecting to a WiFi Link
+.LP
+To connect to the most optimal available unsecured network on a system with a single \fBWiFi\fR link (as per the prioritization rules specified for \fBconnect-wifi\fR), enter the following command:
+
+.sp
+.in +2
+.nf
+# \fBdladm connect-wifi\fR
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 3 \fRCreating a WiFi Key
+.LP
+To interactively create the \fBWEP\fR key "\fBmykey\fR", enter the following command:
+
+.sp
+.in +2
+.nf
+# \fBdladm create-secobj -c wep mykey\fR
+.fi
+.in -2
+.sp
+
+.LP
+Alternatively, to non-interactively create the \fBWEP\fR key "\fBmykey\fR" using the contents of a file:
+
+.sp
+.in +2
+.nf
+ # \fBumask 077\fR
+# \fBcat >/tmp/mykey.$$ <<-EOF\fR
+\fB12345\fR
+\fBEOF\fR
+# \fBdladm create-secobj -c wep -f /tmp/mykey.$$ mykey\fR
+# \fBrm /tmp/mykey.$$\fR
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 4 \fRConnecting to a Specified Encrypted WiFi Link
+.LP
+To use key "\fBmykey\fR"to connect to \fBESSID\fR "\fBwlan\fR" on link "\fBath0\fR", enter the following command:
+
+.sp
+.in +2
+.nf
+# \fBdladm connect-wifi -k mykey -e wlan ath0\fR
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 5 \fRChanging a Link Property
+.LP
+To set "\fBpowermode\fR" to the value "\fBfast\fR" on link "\fBpcwl0\fR", enter the following command:
+
+.sp
+.in +2
+.nf
+# \fBdladm set-linkprop -p powermode=fast pcwl0\fR
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 6 \fRConnecting to a WPA-Protected WiFi Link
+.LP
+Create a WPA key \fBpsk\fR and enter the following command:
+
+.sp
+.in +2
+.nf
+# \fBdladm create-secobj -c wpa psk\fR
+.fi
+.in -2
+.sp
+
+.LP
+To then use key \fBpsk\fR to connect to ESSID \fBwlan\fR on link \fBath0\fR, enter the following command:
+
+.sp
+.in +2
+.nf
+# \fBdladm connect-wifi -k psk -e wlan ath0\fR
+.fi
+.in -2
+.sp
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.LP
+\fB/usr/sbin\fR
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWcsu
+_
+Interface StabilityEvolving
+.TE
+
+.LP
+\fB/sbin\fR
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWcsr
+_
+Interface StabilityEvolving
+.TE
+
+.SH SEE ALSO
+.LP
+\fBifconfig\fR(1M), \fBzonecfg\fR(1M), \fBwpad\fR(1M), \fBattributes\fR(5), \fBdlpi\fR(7P)
