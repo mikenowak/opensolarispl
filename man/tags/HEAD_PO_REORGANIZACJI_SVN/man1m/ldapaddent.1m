@@ -1,0 +1,405 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (C) 2002, Sun Microsystems, Inc. All Rights Reserved
+.TH ldapaddent 1M "26 Jul 2006" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+ldapaddent \- create LDAP entries from corresponding /etc files
+.SH SYNOPSIS
+.LP
+.nf
+\fBldapaddent\fR  [\fB-cpv\fR] [\fB-a\fR \fIauthenticationMethod\fR] [\fB-b\fR \fIbaseDN\fR]
+\fB-D\fR \fIbindDN\fR \fB-w\fR \fIbind_password\fR [\fB-f\fR \fIfilename\fR] \fIdatabase\fR
+.fi
+
+.LP
+.nf
+\fBldapaddent\fR  [\fB-cpv\fR] \fB-a\fRsasl/GSSAPI [\fB-b\fR \fIbaseDN\fR] [\fB-f\fR \fIfilename\fR]
+\fIdatabase\fR
+.fi
+
+.LP
+.nf
+\fBldapaddent\fR  \fB-d\fR [\fB-v\fR] [\fB-a\fR \fIauthenticationMethod\fR] [\fB-D\fR \fIbindDN\fR]
+[\fB-w\fR \fIbind_password\fR] \fIdatabase\fR
+.fi
+
+.SH DESCRIPTION
+.LP
+\fBldapaddent\fR creates entries in LDAP containers from their corresponding \fB/etc\fR files. This operation is customized for each of the standard containers that are used in the administration of Solaris systems. The \fIdatabase\fR argument specifies
+the type of the data being processed. Legal values for this type are one of \fBaliases\fR, \fBauto_*\fR, \fBbootparams\fR, \fBethers\fR, \fBgroup\fR, \fBhosts\fR (including both IPv4 and IPv6 addresses), \fBipnodes\fR
+(alias for \fBhosts\fR), \fBnetgroup\fR, \fBnetmasks\fR, \fBnetworks\fR, \fBpasswd\fR, \fBshadow\fR, \fBprotocols\fR, \fBpublickey\fR, \fBrpc\fR, and \fBservices\fR. In addition
+to the preceding, the \fIdatabase\fR argument can be one of the RBAC-related files (see \fBrbac\fR(5)):
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fB/etc/user_attr\fR
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fB/etc/security/auth_attr\fR
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fB/etc/security/prof_attr\fR
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fB/etc/security/exec_attr\fR
+.RE
+.LP
+By default, \fBldapaddent\fR reads from the standard input and adds this data to the LDAP container associated with the database specified on the command line. An input file from which data can be read is specified using the \fB-f\fR option. 
+.LP
+The entries will be stored in the directory based on the client's configuration, thus the client must be configured to use LDAP naming services. The location where entries are to be written can be overridden by using the \fB-b\fR option. 
+.LP
+If the entry to be added exists in the directory, the command displays an error and exits, unless the \fB-c\fR option is used. 
+.LP
+Although, there is a \fBshadow\fR database type, there is no corresponding \fBshadow\fR container. Both the \fBshadow\fR and the \fBpasswd\fR data is stored in the \fBpeople\fR container itself. Similarly, data from \fBnetworks\fR and \fBnetmasks\fR databases are stored in the \fBnetworks\fR container.
+.LP
+The \fBuser_attr\fR and \fBaudit_user\fR data is stored by default in the \fBpeople\fR container. The \fBprof_attr\fR and \fBexec_attr\fR data is stored by default in the \fBSolarisProfAttr\fR container.
+.LP
+You must add entries from the \fBpasswd\fR database before you attempt to add entries from the \fBshadow\fR database. The addition of a \fBshadow\fR entry that does not have a corresponding \fBpasswd\fR entry will fail.
+.LP
+The \fBpasswd\fR database must precede both the \fBuser_attr\fR and \fBaudit_user\fR databases.
+.LP
+For better performance, the recommended order in which the databases should be loaded is as follows: 
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBpasswd\fR database followed by \fBshadow\fR database
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBnetworks\fR database followed by \fBnetmasks\fR database
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBbootparams\fR database followed by \fBethers\fR database
+.RE
+.LP
+Only the first entry of a given type that is encountered will be added to the LDAP server. The \fBldapaddent\fR command skips any duplicate entries.
+.SH OPTIONS
+.LP
+The \fBldapaddent\fR command supports the following options:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-a\fR \fIauthenticationMethod\fR\fR
+.ad
+.RS 27n
+.rt  
+Specify authentication method. The default value is what has been configured in the profile. The supported authentication methods are:
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBsimple\fR
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBsasl/CRAM-MD5\fR
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBsasl/DIGEST-MD5\fR
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBsasl/GSSAPI\fR
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBtls:simple\fR
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBtls:sasl/CRAM-MD5\fR
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fBtls:sasl/DIGEST-MD5\fR
+.RE
+Selecting \fBsimple\fR causes passwords to be sent over the network in clear text. Its use is strongly discouraged. Additionally, if the client is configured with a profile which uses no authentication, that is, either the \fBcredentialLevel\fR attribute is set to \fBanonymous\fR or \fBauthenticationMethod\fR is set to \fBnone\fR, the user must use this option to provide an authentication method. If the  authentication method is \fBsasl/GSSAPI\fR, \fIbindDN\fR and \fIbind_password\fR
+is not required and the \fBhosts\fR and \fBipnodes\fR fields of \fB/etc/nsswitch.conf\fR must be configured as:
+.sp
+.in +2
+.nf
+hosts: dns files
+ipnodes: dns files
+.fi
+.in -2
+
+See \fBnsswitch.conf\fR(4).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-b\fR\ \fIbaseDN\fR\fR
+.ad
+.RS 27n
+.rt  
+Create entries in the \fIbaseDN\fR directory. \fIbaseDN\fR is not relative to the client's default search base, but rather. it is the actual location where the
+entries will be created. If this parameter is not specified, the first search descriptor defined for the service or the default container will be used.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-c\fR\fR
+.ad
+.RS 27n
+.rt  
+Continue adding entries to the directory even after an error. Entries will not be added if the directory server is not responding or if there is an authentication problem.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-D\fR\ \fIbindDN\fR\fR
+.ad
+.RS 27n
+.rt  
+Create an entry which has write permission to the \fIbaseDN\fR. When used with \fB-d\fR option, this entry only needs read permission.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-d\fR\fR
+.ad
+.RS 27n
+.rt  
+Dump the LDAP container to the standard output in the appropriate format for the given database.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-f\fR \fIfilename\fR\fR
+.ad
+.RS 27n
+.rt  
+Indicates input file to read in an \fB/etc/\fR file format.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR\fR
+.ad
+.RS 27n
+.rt  
+Process the \fBpassword\fR field when loading password information from a file. By default, the \fBpassword\fR field is ignored because it is usually not valid, as the actual password appears in a \fBshadow\fR
+file.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-w\fR\ \fIbind_password\fR\fR
+.ad
+.RS 27n
+.rt  
+Password to be used for authenticating the \fIbindDN\fR. If this parameter is missing, the command will prompt for a password. NULL
+passwords are not supported in LDAP.
+.sp
+When you use \fB-w\fR\ \fIbind_password\fR to specify the password to be used for authentication, the password is visible to other users of the system by means of the \fBps\fR command, in script files or in shell history.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-v\fR\fR
+.ad
+.RS 27n
+.rt  
+Verbose. 
+.RE
+
+.SH OPERANDS
+.LP
+The following operands are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fIdatabase\fR\fR
+.ad
+.RS 12n
+.rt  
+The name of the database or service name. Supported values are: \fBaliases\fR, \fBauto_*\fR, \fBbootparams\fR, \fBethers\fR, \fBgroup\fR, \fBhosts\fR
+(including IPv6 addresses), \fBnetgroup\fR, \fBnetmasks\fR, \fBnetworks\fR, \fBpasswd\fR, \fBshadow\fR, \fBprotocols\fR, \fBpublickey\fR, \fBrpc\fR, and \fBservices\fR.  Also supported
+are \fBauth_attr\fR, \fBprof_attr\fR, \fBexec_attr\fR, and \fBuser_attr\fR.
+.RE
+
+.SH EXAMPLES
+.LP
+\fBExample 1 \fRAdding Password Entries to the Directory Server
+.LP
+The following example show how to add password entries to the directory server:
+
+.sp
+.in +2
+.nf
+example# \fBldapaddent -D "cn=directory manager" -w secret \e
+     -f /etc/passwd passwd\fR
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 2 \fRAdding Group Entries
+.LP
+The following example shows how to add \fBgroup\fR entries to the directory server using \fBsasl/CRAM-MD5\fR as the authentication method:
+
+.sp
+.in +2
+.nf
+example# \fBldapaddent -D "cn=directory manager" -w secret \e
+    -a "sasl/CRAM-MD5" -f /etc/group group\fR
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 3 \fRAdding \fBauto_master\fR Entries
+.LP
+The following example shows how to add \fBauto_master\fR entries to the directory server:
+
+.sp
+.in +2
+.nf
+example# \fBdapaddent -D "cn=directory manager" -w secret \e
+    -f /etc/auto_master auto_master\fR
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 4 \fRDumping password Entries from the Directory to File
+.LP
+The following examples shows how to dump \fBpassword\fR entries from the directory to a file foo:
+
+.sp
+.in +2
+.nf
+example# \fBldapaddent -d passwd > foo\fR
+.fi
+.in -2
+.sp
+
+.SH EXIT STATUS
+.LP
+The following exit values are returned:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB0\fR\fR
+.ad
+.RS 6n
+.rt  
+Successful completion. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB>\fB0\fR\fR
+.ad
+.RS 6n
+.rt  
+An error occurred.
+.RE
+
+.SH FILES
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/var/ldap/ldap_client_file\fR\fR
+.ad
+.br
+.na
+\fB\fB/var/ldap/ldap_client_cred\fR\fR
+.ad
+.RS 30n
+.rt  
+Files containing the LDAP configuration of the client. These files are not to be modified manually. Their content is not guaranteed to be human readable.
+Use \fBldapclient\fR(1M) to update these files.
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWnisu
+_
+Interface StabilityEvolving
+.TE
+
+.SH SEE ALSO
+.LP
+\fBldap\fR(1), \fBldaplist\fR(1), \fBldapmodify\fR(1), \fBldapmodrdn\fR(1), \fBldapsearch\fR(1), \fBidsconfig\fR(1M), \fBldapclient\fR(1M), \fBsuninstall\fR(1M), \fBnsswitch.conf\fR(4), \fBattributes\fR(5)
+.LP
+\fI\fR

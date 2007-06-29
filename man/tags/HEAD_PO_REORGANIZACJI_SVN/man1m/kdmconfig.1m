@@ -1,0 +1,203 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright (c) 1997 Sun Microsystems, Inc. All Rights Reserved.
+.TH kdmconfig 1M "14 Nov 2006" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+kdmconfig \- configure or unconfigure keyboard, display, and mouse options for OpenWindows and internationalization
+.SH SYNOPSIS
+.LP
+.nf
+\fBkdmconfig\fR 
+.fi
+
+.LP
+.nf
+\fBkdmconfig\fR [\fB-fv\fR] [\fB-s\fR \fIhostname\fR] \fB-c\fR | \fB-t\fR | \fB-u\fR | \fB-d\fR \fIfilename\fR
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBkdmconfig\fR program applies only to the \fBXsun\fR window system environment, which is no longer the default in Solaris x86. If you want to use \fBXsun\fR, you must run \fBkdmconfig\fR from the command line, select \fBXsun\fR,
+and perform the remaining configuration steps.
+.LP
+The \fBkdmconfig\fR program configures or unconfigures the \fB/etc/openwin/server/etc/OWconfig\fR file with the keyboard, display, and mouse information relevant to a client's machine on x86 based systems for Solaris software. \fBkdmconfig\fR can
+also be used to set up the \fIdisplay\fR, \fIpointer\fR, and \fIkeyboard\fR entries in the \fBbootparams\fR(4) database
+on a server machine or the \fBmonitor\fR, \fIkeyboard\fR, \fIdisplay\fR, and \fIpointer\fR keywords in a \fBsysidcfg\fR(4) file. \fBkdmconfig\fR can only be run as root or with privileges comparable to root. Upon completion of device selection, \fBkdmconfig\fR prompts the user to test the configuration, which is done by running the window system.
+.SH OPTIONS
+.LP
+The valid options are:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-c\fR\fR
+.ad
+.sp .6
+.RS 4n
+Run the program in the configuration mode. This mode is used to create or update the \fBOWconfig\fR file. When invoked in this way, \fBkdmconfig\fR first looks for the relevant configuration information in the \fBbootparams\fR(4) databases. It also takes into account the information returned from device probes, unless the \fB-s\fR option is also used. The \fBbootparams\fR(4) databases available to the client are all of the \fB/etc/bootparams\fR files on servers on the same subnet as the client, provided the server machine is
+running the \fBbootparamd\fR(1M) daemon. \fBkdmconfig\fR is invoked with the \fB-c\fR option when called by \fBsysidconfig\fR(1M)
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-d\fR\fI filename\fR\fR
+.ad
+.sp .6
+.RS 4n
+Set up a \fBsysidcfg\fR(4) file. This option displays the same screens as the \fB-c\fR option, but the information you specify is saved
+as \fBsysidcfg\fR(4) keywords (\fBmonitor\fR, \fIkeyboard\fR, \fIdisplay\fR, and \fIpointer\fR).
+This enables you to use a \fBsysidcfg \fR(4) file to preconfigure a system's device information and bypass \fBkdmconfig\fR during an installation.
+.sp
+\fIfilename\fR is the \fBsysidcfg\fR(4) file that is created, and it is created in the directory where \fBkdmconfig\fR is
+being run unless a path is specified. If filename already exists in the specified directory, the keywords are appended to the existing file.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-f\fR\fR
+.ad
+.sp .6
+.RS 4n
+Force screens mode. When this option is invoked, no network probing will be performed. This is helpful when debugging the client's configuration environment. Note that the \fB-s\fR option implies the use of \fB-f\fR, bypassing network probing when setting up
+a server.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-s\fR\fI hostname\fR\fR
+.ad
+.sp .6
+.RS 4n
+Set up the \fBbootparams\fR(4) database on this machine for the specified client. This option presents the same screens as it does when run on a
+client, but instead writes the resulting information to the \fB/etc/bootparams\fR file. Also, \fB-s\fR implies the use of the \fB-f\fR option. That is, the program will always present the screens to the user when invoked this way. This option will reconfigure the \fBnsswitch.conf\fR( 4) file to look for a \fBbootparams\fR(4) database on a local server. This option is only available to the super-user.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-t\fR\fR
+.ad
+.sp .6
+.RS 4n
+Run the program in test mode. In this mode, \fBkdmconfig\fR will use device probe information to determine whether the \fBOWconfig\fR file contains complete and up-to-date information about the keyboard, display, and mouse. If the information is accurate, \fBkdmconfig\fR will exit silently. Otherwise, \fBkdmconfig\fR will prompt for the super-user password and proceed to a normal editing session (as though it had been run without options).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-u\fR\fR
+.ad
+.sp .6
+.RS 4n
+Unconfigure the system, returning it to an "out-of-the-box" state. In this state, the factory default keyboard, mouse, and display are selected as a result of removing the device configuration entries from the \fB/etc/openwin/server/etc/OWconfig\fR file. This may result
+in an unusable configuration for the display server.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-v\fR\fR
+.ad
+.sp .6
+.RS 4n
+Enable verbose mode. Normally, \fBkdmconfig\fR will not produce any output. This option is helpful for debugging, as it records the different actions taken by \fBkdmconfig\fR on \fBstderr\fR.
+.RE
+
+.SS "No Options"
+.LP
+Run without options, \fBkdmconfig\fR is used to edit the current configuration. \fBkdmconfig\fR uses the information from the \fBOWconfig\fR file in addition to information obtained from the \fBbootparams\fR(4) file and from device probes. In other respects, it is similar to using the \fB-c\fR option of \fBkdmconfig\fR.
+.SH FILES
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/openwin/server/etc/OWconfig\fR\fR
+.ad
+.sp .6
+.RS 4n
+OpenWindows configuration file
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/bootparams\fR\fR
+.ad
+.sp .6
+.RS 4n
+contains list of clients that diskless clients use for booting
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/nsswitch.conf\fR\fR
+.ad
+.sp .6
+.RS 4n
+name service configuration file
+.RE
+
+.SS "x86 Only"
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/dev/openprom\fR\fR
+.ad
+.RS 17n
+.rt  
+installed devices and properties
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+Architecturex86
+_
+AvailabilitySUNWos86r
+.TE
+
+.SH SEE ALSO
+.LP
+\fBbootparamd\fR(1M), \fBsys-unconfig\fR(1M), \fBsysidconfig\fR(1M), \fBbootparams\fR(4), \fBnsswitch.conf\fR(4), \fBsysidcfg\fR(4), \fBattributes\fR(5)
+.LP
+See also the \fBXorg(1)\fR and \fBxorg.conf(4)\fR man pages, which are found under \fB/usr/X11/man\fR on some Solaris systems. These man pages are not part of the SunOS man page collection.

@@ -1,0 +1,104 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2002 Sun Microsystems, Inc. All Rights Reserved.
+.TH rem_drv 1M "6 Apr 2005" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+rem_drv \- remove a device driver from the system
+.SH SYNOPSIS
+.LP
+.nf
+\fBrem_drv\fR [\fB-b\fR \fIbasedir\fR] \fIdevice_driver\fR
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBrem_drv\fR command informs the system that the device driver \fIdevice_driver\fR is no longer valid. If possible, \fBrem_drv\fR unloads \fIdevice_driver\fR
+from memory. \fBrem_drv\fR also updates the system driver configuration files.
+.LP
+If \fBrem_drv\fR has been executed, the next time the system is rebooted it automatically performs a reconfiguration boot (see \fBkernel\fR(1M)).
+.SH OPTIONS
+.LP
+The following options are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB\fR\fB-b\fR\fB \fR\fIbasedir\fR\fR
+.ad
+.RS 14n
+.rt  
+Sets the path to the root directory of the diskless client. Used on the server to execute \fBrem_drv\fR for a client. The client machine must be rebooted to unload
+the driver.
+.LP
+Note - 
+.RS 2
+The root file system of any non-global zones must not be referenced with the \fB-b\fR option. Doing so might damage the global zone's file system, might compromise the security of the global zone, and might damage the non-global zone's file system. See \fBzones\fR(5).
+.RE
+.RE
+
+.SH EXAMPLES
+.LP
+\fBExample 1 \fRRemoving the \fBsd\fR Driver
+.LP
+The following example removes the \fBsd\fR driver from use:
+
+.sp
+.in +2
+.nf
+example% rem_drv sd
+.fi
+.in -2
+.sp
+
+.LP
+\fBExample 2 \fRRemoving a Diskless Client
+.LP
+The following example removes the driver from the \fBsun1\fR diskless client. The driver is not uninstalled or unloaded until the client machine is rebooted.
+
+.sp
+.in +2
+.nf
+example% rem_drv \fB-b\fR /export/root/sun1 sd
+.fi
+.in -2
+.sp
+
+.LP
+Note the caveat on the use of the \fB-b\fR option in the description of that option, above.
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWcsu
+.TE
+
+.SH SEE ALSO
+.LP
+\fBadd_drv\fR(1M), \fBkernel\fR(1M), \fBupdate_drv\fR(1M), \fBattributes\fR(5), \fBdevfs\fR(7FS)
