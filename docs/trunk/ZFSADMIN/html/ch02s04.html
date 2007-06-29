@@ -1,0 +1,124 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Creating a ZFS File System Hierarchy</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="up" href="ch02.html" title="Chapter 2. Getting Started With ZFS"><link rel="prev" href="ch02s03.html" title="Creating a ZFS Storage Pool"><link rel="next" href="ch03.html" title="Chapter 3. ZFS and Traditional File System Differences"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Creating a ZFS File System Hierarchy</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s03.html">Prev</a> </td><th width="60%" align="center">Chapter 2. Getting Started With ZFS</th><td width="20%" align="right"> <a accesskey="n" href="ch03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gaypa"></a>Creating a ZFS File System Hierarchy</h2></div></div></div>
+
+<p>After creating a storage pool to store your data, you can create your
+file system hierarchy. Hierarchies are simple yet powerful mechanisms for
+organizing information. They are also very familiar to anyone who has used
+a file system.<a class="indexterm" name="indexterm-55"></a>
+<a class="indexterm" name="indexterm-56"></a>
+</p>
+<p>ZFS allows file systems to be organized into arbitrary hierarchies,
+where each file system has only a single parent. The root of the hierarchy
+is always the pool name. ZFS leverages this hierarchy by supporting property
+inheritance so that common properties can be set quickly and easily on entire
+trees of file systems.</p>
+<div class="task"><a name="gaypd"></a><p class="title"><b>Determining the ZFS File System Hierarchy</b></p><div class="procedure"><ol type="1"><li>
+<p>Pick the file system granularity.</p>
+<p>ZFS file systems
+are the central point of administration. They are lightweight and can be created
+easily. A good model to use is a file system per user or project, as this
+model allows properties, snapshots, and backups to be controlled on a per-user
+or per-project basis. </p>
+<p>Two ZFS file systems, <code class="filename">bonwick</code> and <code class="filename">billm</code>, are created in <span class="olink">Creating ZFS File Systems</span>.</p>
+<p>For more information on managing file systems,
+see <span class="olink">Chapter 5, Managing ZFS File Systems</span>.</p>
+</li><li>
+<p>Group similar file systems.</p>
+<p>ZFS allows file systems
+to be organized into hierarchies so that similar file systems can be grouped.
+This model provides a central point of administration for controlling properties
+and administering file systems. Similar file systems should be created under
+a common name.</p>
+<p>For the example in <span class="olink">Creating ZFS File Systems</span>, the two file systems are placed under a file system
+named <code class="filename">home</code>. </p>
+</li><li>
+<p>Choose the file system properties.</p>
+<p>Most file system
+characteristics are controlled by using simple properties. These properties
+control a variety of behavior, including where the file systems are mounted,
+how they are shared, if they use compression, and if any quotas are in effect. </p>
+<p>For the example in <span class="olink">Creating ZFS File Systems</span>,
+all home directories are mounted at <code class="filename">/export/zfs/</code>
+<em class="replaceable"><code>user</code></em>, are shared by using NFS, and with compression enabled.
+In addition, a quota of 10 Gbytes on <code class="filename">bonwick</code> is enforced.</p>
+<p>For more information about properties, see <span class="olink">ZFS Properties</span>.</p>
+</li></ol></div></div>
+<div class="task"><a name="gayog"></a><p class="title"><b>Creating ZFS File Systems</b></p><div class="procedure"><ol type="1"><li>
+<p>Become root or assume an equivalent role with the appropriate
+ZFS rights profile.</p>
+<p>For more information about the ZFS rights
+profiles, see <span class="olink">ZFS Rights Profiles</span>.</p>
+</li><li>
+<p>Create the desired hierarchy.</p>
+<p>In this example, a file
+system that acts as a container for individual file systems is created.<a class="indexterm" name="indexterm-57"></a>
+<a class="indexterm" name="indexterm-58"></a>
+</p>
+<pre class="screen"># <strong class="userinput"><code>zfs create tank/home</code></strong>
+</pre>
+<p>Next, individual file systems are grouped under the <code class="filename">home</code> file
+system in the pool <code class="filename">tank</code>.</p>
+</li><li>
+<p>Set the inherited properties.</p>
+<p>After the file system
+hierarchy is established, set up any properties that should be shared among
+all users:</p>
+<pre class="screen"># <strong class="userinput"><code>zfs set mountpoint=/export/zfs tank/home</code></strong>
+# <strong class="userinput"><code>zfs set sharenfs=on tank/home</code></strong>
+# <strong class="userinput"><code>zfs set compression=on tank/home</code></strong>
+# <strong class="userinput"><code>zfs get compression tank/home</code></strong>
+NAME             PROPERTY       VALUE                      SOURCE
+tank/home        compression    on                         local</pre>
+<p>For more information about properties and property inheritance,
+see <span class="olink">ZFS Properties</span>.<a class="indexterm" name="indexterm-59"></a>
+<a class="indexterm" name="indexterm-60"></a>
+<a class="indexterm" name="indexterm-61"></a>
+<a class="indexterm" name="indexterm-62"></a>
+<a class="indexterm" name="indexterm-63"></a>
+<a class="indexterm" name="indexterm-64"></a>
+</p>
+</li><li>
+<p>Create the individual file systems.</p>
+<p>Note that the
+file systems could have been created and then the properties could have been
+changed at the <code class="filename">home</code> level. All properties can be changed
+dynamically while file systems are in use.</p>
+<pre class="screen"># <strong class="userinput"><code>zfs create tank/home/bonwick</code></strong>
+# <strong class="userinput"><code>zfs create tank/home/billm</code></strong>
+</pre>
+<p>These file systems inherit their property settings from their parent,
+so they are automatically mounted at <code class="filename">/export/zfs/</code>
+<em class="replaceable"><code>user</code></em> and are NFS shared. You do not need to edit the <code class="filename">/etc/vfstab</code> or <code class="filename">/etc/dfs/dfstab</code> file.</p>
+<p>For
+more information about creating file systems, see <span class="olink">Creating a ZFS File System</span>.</p>
+<p>For more information about mounting
+and sharing file systems, see <span class="olink">Mounting and Sharing ZFS File Systems</span>.</p>
+</li><li>
+<p>Set the file system-specific properties.</p>
+<p>In this example,
+user <code class="filename">bonwick</code> is assigned a quota of 10 Gbytes. This property
+places a limit on the amount of space he can consume, regardless of how much
+space is available in the pool.<a class="indexterm" name="indexterm-65"></a>
+<a class="indexterm" name="indexterm-66"></a>
+</p>
+<pre class="screen"># <strong class="userinput"><code>zfs set quota=10G tank/home/bonwick</code></strong>
+</pre>
+</li><li>
+<p>View the results.</p>
+<p>View available file system information
+by using the <span><strong class="command">zfs list</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>zfs list</code></strong>
+NAME                   USED  AVAIL  REFER  MOUNTPOINT
+tank                  92.0K  67.0G   9.5K  /tank
+tank/home             24.0K  67.0G     8K  /export/zfs
+tank/home/billm          8K  67.0G     8K  /export/zfs/billm
+tank/home/bonwick        8K  10.0G     8K  /export/zfs/bonwick</pre>
+<p>Note that the user <code class="filename">bonwick</code> only has 10 Gbytes of
+space available, while the user <code class="filename">billm</code> can use the full
+pool (67 Gbytes).<a class="indexterm" name="indexterm-67"></a>
+<a class="indexterm" name="indexterm-68"></a>
+</p>
+<p>For more information about viewing file system status,
+see <span class="olink">Querying ZFS File System Information</span>. </p>
+<p>For more information about how space is used and calculated, see <span class="olink">ZFS Space Accounting</span>.</p>
+</li></ol></div></div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Creating a ZFS Storage Pool </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 3. ZFS and Traditional File System Differences</td></tr></table></div></body></html>

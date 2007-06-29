@@ -1,0 +1,344 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Managing Print Filters</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch05.html" title="Chapter 5. Managing Character Sets, Filters,
+Forms, and Fonts (Tasks)"><link rel="prev" href="ch05s03.html" title="Managing Print Filters (Task Map)"><link rel="next" href="ch05s05.html" title="Managing Forms (Task Map)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Managing Print Filters</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch05s03.html">Prev</a> </td><th width="60%" align="center">Chapter 5. Managing Character Sets, Filters,
+Forms, and Fonts (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch05s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printforms-88247"></a>Managing Print Filters</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="printforms-ix567"></a>
+<a class="indexterm" name="printforms-ix568"></a>
+<a class="indexterm" name="printforms-ix569"></a>
+<a class="indexterm" name="printforms-ix574"></a>Print filters are programs that convert the content type of a file to
+a content type that is acceptable to the destination printer. The LP print service
+uses filters to complete the following tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Convert a file from one data format to another format so that it can
+be printed properly on a specific type of printer</p>
+</li><li>
+<p>Handle the special modes of printing, such as two-sided printing,
+landscape printing, draft-quality, and letter-quality printing</p>
+</li><li>
+<p>Detect printer faults and notify the LP print service, so that the
+print service can alert users and system administrators</p>
+</li></ul></div>
+<p>Not every print filter can perform all these tasks. Because each task is printer-specific,
+the tasks can be implemented separately.</p>
+<p>
+<a class="indexterm" name="printforms-ix575"></a>The LP print service provides the PostScript filters listed in <span class="olink">Table 5&#8211;1</span>. The filter programs are located
+in the <code class="filename">/usr/lib/lp/postscript</code> directory. For PostScript printing,
+you usually only need to install the filter programs when setting up a print server.
+Solaris Print Manager automatically enables the supplied filters. However, if you
+administer other printers, you might need to administer print filters for them. </p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printforms-32"></a>Creating Print Filters</h3></div></div></div>
+
+<a class="indexterm" name="printforms-ix576"></a>
+<p>To create a new print filter, you must write a print filter program and create
+a print filter definition. Filters contain input types, output types, and complex
+options that provide a language to process command-line arguments within the filter.
+For more information and step-by-step instructions, see <span class="olink">Creating a New Print Filter</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printforms-33"></a>Adding, Changing, Deleting, and Restoring Print Filters</h3></div></div></div>
+
+<a class="indexterm" name="printforms-ix577"></a>
+<a class="indexterm" name="printforms-ix578"></a>
+<a class="indexterm" name="printforms-ix579"></a>
+<a class="indexterm" name="printforms-ix580"></a>
+<p>Print filters are added, changed, deleted, or restored on the print server only.</p>
+<p>
+<a class="indexterm" name="printforms-ix581"></a>
+<a class="indexterm" name="printforms-ix583"></a>
+<a class="indexterm" name="printforms-ix584"></a>
+<a class="indexterm" name="printforms-ix585"></a>You can use the <span><strong class="command">lpfilter</strong></span> command to manage the list
+of available filters. System information about filters is stored in the <code class="filename">/etc/lp/filter.table</code> file. The <span><strong class="command">lpfilter</strong></span> command gets
+the information about filters to write to the table from filter descriptor files.
+The filter descriptor files that are supplied (PostScript only) are located in the <code class="filename">/etc/lp/fd</code> directory. The actual filter programs are located in the <code class="filename">/usr/lib/lp</code> directory.    </p>
+<p>The LP print service imposes no fixed limit on the number of print filters you
+can define. You can remove filters that are no longer used to avoid extra processing
+by the LP print service. (LP examines all filters to find a filter that works for
+a specific print request.) If in doubt, do not remove a filter. </p>
+<p>As you add, change, or delete filters, you can overwrite or remove some of the
+original filters provided by the LP print service. You can restore the original set
+of filters, if necessary. You can also remove any filters you have added.</p>
+<p>
+<a class="indexterm" name="printforms-ix588"></a>
+<a class="indexterm" name="printforms-ix589"></a>
+<a class="indexterm" name="printforms-ix590"></a>
+<a class="indexterm" name="printforms-ix591"></a>SunOS software provides a default set of PostScript filters. Solaris Print
+Manager automatically adds these filters to a print server. Some of the TranScript
+filters used with <span><strong class="command">lpd</strong></span>-based print services have SunOS equivalents,
+but other TranScript filters do not. The following table lists the default PostScript
+filters and identifies the equivalent TranScript filters, where applicable. </p>
+<div class="table"><a name="printforms-63029"></a><p class="title"><b>Table 5.1. Default PostScript Filters</b></p>
+
+
+<table summary="Default PostScript Filters" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>PostScript Filter</p>
+</th><th>
+<p>Action</p>
+</th><th>
+<p>TranScript Equivalent</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">download</code>
+</p>
+</td><td>
+<p>Used to download fonts</p>
+</td><td>
+<p>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">dpost</code>
+</p>
+</td><td>
+<p>Changes <code class="literal">ditroff</code> to PostScript</p>
+</td><td>
+<p>
+<code class="literal">psdit</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">postdaisy</code>
+</p>
+</td><td>
+<p>Changes <code class="literal">daisy</code> to PostScript</p>
+</td><td>
+</td></tr><tr><td>
+<p>
+<code class="literal">postdmd</code>
+</p>
+</td><td>
+<p>Changes <code class="literal">dmd</code> to PostScript</p>
+</td><td>
+</td></tr><tr><td>
+<p>
+<code class="literal">postio</code>
+</p>
+</td><td>
+<p>Used for serial interface for PostScript printer</p>
+</td><td>
+<p>
+<code class="literal">pscomm</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">postior</code>
+</p>
+</td><td>
+<p>Used to communicate with printer</p>
+</td><td>
+</td></tr><tr><td>
+<p>
+<code class="literal">postmd</code>
+</p>
+</td><td>
+<p>Changes matrix gray scales to PostScript</p>
+</td><td>
+</td></tr><tr><td>
+<p>
+<code class="literal">postplot</code>
+</p>
+</td><td>
+<p>Changes <code class="literal">plot</code> to PostScript</p>
+</td><td>
+<p>
+<code class="literal">psplot</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">postprint</code>
+</p>
+</td><td>
+<p>Changes <code class="literal">simple</code> to PostScript</p>
+</td><td>
+<p>
+<code class="literal">enscript</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">postreverse</code>
+</p>
+</td><td>
+<p>Used to reverse or select pages</p>
+</td><td>
+<p>
+<code class="literal">psrev</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">posttek</code>
+</p>
+</td><td>
+<p>Changes <code class="literal">TEK4014</code> to PostScript</p>
+</td><td>
+<p>
+<code class="literal">ps4014</code>
+</p>
+</td></tr></tbody></table>
+</div>
+<p>The SunOS software does <span class="emphasis"><em>not</em></span> provide the following filters: </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="literal">TEX</code>
+</p>
+</li><li>
+<p>
+<code class="literal">oscat</code> (NeWSprint <code class="literal">opost</code>)</p>
+</li><li>
+<p>Enscript</p>
+</li></ul></div>
+<p>The <code class="literal">postreverse</code>, <code class="literal">postprint</code>, <code class="literal">postio</code>, and <code class="literal">dpost</code> filters are provided in place of Enscript.</p>
+<p>Solaris Print Manager adds the default PostScript filters to a print server.
+If you have printing needs that are not met by these filters, see <span class="olink">How to Create a New Print Filter</span>. This section provides information about
+writing a custom print filter.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2141477"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-96887"></a><p class="title"><b>How to Add a Print Filter</b></p><a class="indexterm" name="indexterm-80"></a><a class="indexterm" name="indexterm-81"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-35"></a>
+<p>Log in as superuser, <code class="literal">lp</code>, or
+assume an equivalent role on the print server.</p>
+</li><li><a name="printforms-step-36"></a>
+<p>Add a print filter that is based on a print filter
+definition.</p>
+<pre class="screen"># <strong class="userinput"><code>lpfilter -f</code></strong> <em class="replaceable"><code>filter-name</code></em> <strong class="userinput"><code>-F</code></strong> <em class="replaceable"><code>filter-definition</code></em>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+f</code> <em class="replaceable"><code>filter-name</code></em>
+</span></dt><dd>
+<p>Specifies the name you choose for the print filter.</p>
+</dd><dt><span class="term">
+<code class="option">
+F</code> <em class="replaceable"><code>filter-definition</code></em>
+</span></dt><dd>
+<p>Specifies the name of the print filter definition.</p>
+</dd></dl></div>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">lpfilter</span>
+(
+1M
+)
+</span>
+</span> man
+page.</p>
+<p>
+<a class="indexterm" name="printforms-ix593"></a>The print filter is added in the print server's <code class="filename">/etc/lp/filter.table</code> file. </p>
+</li><li><a name="printforms-step-115"></a>
+<p>Verify that the print filter was added.</p>
+<pre class="screen"># <strong class="userinput"><code>lpfilter -f</code></strong> <em class="replaceable"><code>filter-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="emjgv"></a><p class="title"><b>Example 5.7. Adding a Print Filter</b></p>
+
+
+<p>The following example shows how to add the <code class="literal">daisytroff</code> print
+filter that has the <code class="literal">daisytroff.fd</code> print filter definition.</p>
+<pre class="screen"># <strong class="userinput"><code>lpfilter -f daisytroff -F /etc/lp/fd/daisytroff.fd</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2141751"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-76250"></a><p class="title"><b>How to Delete a Print Filter</b></p><a class="indexterm" name="indexterm-82"></a><a class="indexterm" name="indexterm-83"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-40"></a>
+<p>Log in as superuser, <code class="literal">lp</code>, or
+assume an equivalent role on the print server.</p>
+</li><li><a name="printforms-step-41"></a>
+<p>Delete the print filter.</p>
+<pre class="screen"># <strong class="userinput"><code>lpfilter -f</code></strong> <em class="replaceable"><code>filter-name</code></em> <strong class="userinput"><code>-x</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+f</code>
+, </span><span class="term">
+<em class="replaceable"><code>filter-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the print filter to be deleted.</p>
+</dd><dt><span class="term">
+<code class="option">
+x</code>
+</span></dt><dd>
+<p>Deletes the specified filter.</p>
+</dd></dl></div>
+<p>
+<a class="indexterm" name="frcdo"></a>The print filter is deleted from the print server's <code class="filename">/etc/lp/filter.table</code> file. </p>
+</li><li><a name="printforms-step-116"></a>
+<p>Verify that the filter was deleted.</p>
+<pre class="screen"># <strong class="userinput"><code>lpfilter -f</code></strong> <em class="replaceable"><code>filter-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+<p>You should receive an error indicating that no filter by the specified name
+exists.</p>
+</li></ol></div><div class="example"><a name="emjgu"></a><p class="title"><b>Example 5.8. Deleting a Print Filter</b></p>
+
+
+<p>The following example shows how to delete the <code class="literal">daisytroff</code> print
+filter.</p>
+<pre class="screen"># <strong class="userinput"><code>lpfilter -f daisytroff -x</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2142020"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-97732"></a><p class="title"><b>How to View Information About a Print Filter</b></p><a class="indexterm" name="indexterm-84"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-45"></a>
+<p>Log in as superuser, <code class="literal">lp</code>, or
+assume an equivalent role on the print server.</p>
+</li><li><a name="printforms-step-46"></a>
+<p>Request information about a print filter. </p>
+<pre class="screen"># <strong class="userinput"><code>lpfilter -f</code></strong> <em class="replaceable"><code>filter-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+f</code>
+</span></dt><dd>
+<p>Specifies the print filter for which you want to view information.
+Specify <code class="literal">all</code> for <em class="replaceable"><code>filter-name</code></em> to view
+information about all available print filters.</p>
+</dd><dt><span class="term">
+<code class="option">
+l</code>
+</span></dt><dd>
+<p>Displays information about the specified filter.</p>
+</dd></dl></div>
+<p>Information about the specified print filter or filters is displayed.</p>
+</li></ol></div><div class="example"><a name="emjgn"></a><p class="title"><b>Example 5.9. Viewing Information About a Print Filter</b></p>
+
+
+<p>This example shows how to request information for the <code class="literal">postdaisy</code> print
+filter. Sample command output follows.</p>
+<pre class="screen"># <strong class="userinput"><code>lpfilter -f postdaisy -l</code></strong>
+Input types: daisy
+Output types: postscript
+Printer types: any
+Printers: any
+Filter type: slow
+Command: /usr/lib/lp/postscript/postdaisy
+Options: PAGES * = -o*
+Options: COPIES * = -c*
+Options: MODES group = -n2
+Options: MODES group\=\([2-9]\) = -n\1
+Options: MODES portrait = -pp
+Options: MODES landscape = -pl
+Options: MODES x\=\(\-*[\.0-9]*\) = -x\1
+Options: MODES y\=\(\-*[\.0-9]*\) = -y\1
+Options: MODES magnify\=\([\.0-9]*\) = -m\1</pre>
+</div><div class="example"><a name="embzg"></a><p class="title"><b>Example 5.10. Viewing Information About All Print Filters on a System</b></p>
+
+
+<p>This example shows how to display all the print filters that have been added
+to the system. Sample command output follows.</p>
+<pre class="screen"># <strong class="userinput"><code>lpfilter -f all -l | grep Filter</code></strong>
+(Filter "download")
+Filter type: fast
+(Filter "postio")
+Filter type: fast
+(Filter "postior")
+Filter type: fast
+(Filter "postreverse")
+Filter type: slow</pre>
+</div><div class="example"><a name="embzp"></a><p class="title"><b>Example 5.11. Redirecting Information About a Print Filter</b></p>
+
+
+<p>This example shows how to redirect information about the <code class="literal">daisytroff</code> filter to a file. This task is useful if a filter definition is removed
+unintentionally.</p>
+<pre class="screen"># <strong class="userinput"><code>lpfilter -f daisytroff -l &gt; daisytroff.fd</code></strong>
+</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch05s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch05.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch05s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Managing Print Filters (Task Map) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Managing Forms (Task Map)</td></tr></table></div></body></html>

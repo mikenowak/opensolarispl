@@ -1,0 +1,275 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Networking in Shared-IP Non-Global Zones - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage> > <a href="p95.html">26.&nbsp;&nbsp;Solaris Zones Administration (Overview)</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p97.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p99.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="z.admin.ov-9"></a><h3>Networking in Shared-IP Non-Global Zones</h3>
+<p><a name="indexterm-313"></a><a name="indexterm-314"></a>On
+a Solaris system with zones installed, the zones can communicate with each
+other over the network. The zones all have separate bindings, or connections,
+and the zones can all run their own server daemons. These daemons can listen
+on the same port numbers without any conflict. The IP stack resolves conflicts
+by considering the IP addresses for incoming connections. The IP addresses
+identify the zone.</p>
+<a name="z.admin.ov-10"></a><h4>Shared-IP Zone Partitioning</h4>
+<p>The IP stack in a system supporting zones implements the separation
+of network traffic between zones. Applications that receive IP traffic can
+only receive traffic sent to the same zone.</p>
+<p>Each logical interface on the system belongs to a specific zone, the
+global zone by default. Logical network interfaces assigned to zones though
+the <tt>zonecfg</tt> utility are used to communicate over the network.
+Each stream and connection belongs to the zone of the process that opened
+it.</p>
+<p>Bindings between upper-layer streams and logical interfaces are restricted.
+A stream can only establish bindings to logical interfaces in the same zone.
+Likewise, packets from a logical interface can only be passed to upper-layer
+streams in the same zone as the logical interface.</p>
+<p>Each zone has its own set of binds. Each zone can be running the same
+application listening on the same port number without binds failing because
+the address is already in use. Each zone can run its own version of the following
+services:</p>
+<ul><li><p>Internet services daemon with a full configuration file (see
+the <tt>inetd</tt>(1M) man
+page)</p>
+</li>
+<li><p><tt>sendmail</tt> (see the <tt>sendmail</tt>(1M) man page)</p>
+</li>
+<li><p><tt>apache</tt> (see the <tt>apache</tt>(1M) man page)</p>
+</li>
+</ul>
+<p>Zones other than the global zone have restricted access to the network.
+The standard TCP and UDP socket interfaces are available, but <tt>SOCK_RAW</tt> socket
+interfaces are restricted to Internet Control Message Protocol (ICMP). ICMP
+is necessary for detecting and reporting network error conditions or using
+the <tt>ping</tt> command.</p>
+<a name="z.admin.ov-12"></a><h4>Shared-IP Network Interfaces</h4>
+<p>Each non-global zone that requires network connectivity has one or more
+dedicated IP addresses. These addresses are associated with logical network
+interfaces that can be placed in a zone by using the <tt>ifconfig</tt> command.
+Zone network interfaces configured by <tt>zonecfg</tt> will automatically
+be set up and placed in the zone when it is booted. The <tt>ifconfig</tt> command
+can be used to add or remove logical interfaces when the zone is running.
+Only the global administrator can modify the interface configuration and the
+network routes.</p>
+<p>Within a non-global zone, only that zone's interfaces will be visible
+to <tt>ifconfig</tt>.</p>
+<p>For more information, see the <tt>ifconfig</tt>(1M) and <tt>if_tcp</tt>(7P) man pages.</p>
+<a name="z.admin.ov-38"></a><h4>IP Traffic Between Shared-IP Zones on the
+Same Machine</h4>
+<p>Between two zones on the same machine, packet delivery is only allowed
+if there is a &ldquo;matching route&rdquo; for the destination and the zone
+in the forwarding table.</p>
+<p>The matching information is implemented as follows:</p>
+<ul><li><p>The source address for the packets is selected on the output
+interface specified by the matching route.</p>
+</li>
+<li><p>By default, traffic is permitted between two zones that have
+addresses on the same subnet. The matching route in this case is the interface
+route for the subnet.</p>
+</li>
+<li><p>If there is a default route for a given zone, where the gateway
+is on one of the zone's subnets, traffic from that zone to all other zones
+is allowed. The matching route in this case is the default route.</p>
+</li>
+<li><p>If there is a matching route with the <tt>RTF_REJECT</tt> flag,
+packets trigger an ICMP unreachable message. If there is a matching route
+with the <tt>RTF_BLACKHOLE</tt> flag, packets are discarded. The
+global administrator can use the <tt>route</tt> command options
+described in the following table to create routes with these flags.</p>
+<table><tr><th><p>Modifier</p>
+</th><th><p>Flag</p>
+</th><th><p>Description</p>
+</th></tr>
+<tr><td><p><tt>-reject</tt></p>
+</td><td><p><tt>RTF_REJECT</tt></p>
+</td><td><p>Emit an ICMP unreachable message when matched.</p>
+</td></tr>
+<tr><td><p><tt>-blackhole</tt></p>
+</td><td><p><tt>RTF_BLACKHOLE</tt></p>
+</td><td><p>Silently  discard  packets during updates.</p>
+</td></tr>
+</table><p>For more information, see the <tt>route</tt>(1M)</p>
+</li>
+</ul>
+<a name="gedyy"></a><h4>Solaris IP Filter in Shared-IP Zones</h4>
+<p>Solaris IP Filter provides stateful packet filtering and network address
+translation (NAT). A stateful packet filter can monitor the state of active
+connections and use the information obtained to determine which network packets
+to allow through the firewall. Solaris IP Filter also includes stateless packet
+filtering and the ability to create and manage address pools. See Chapter 27, Solaris
+IP Filter (Overview), in <i>System Administration
+Guide: IP Services</i> for additional information.</p>
+<p>Solaris IP Filter can be enabled in non-global zones by turning on loopback
+filtering as described in Chapter 28, Solaris IP Filter (Tasks), in <i>System Administration Guide: IP Services</i>. </p>
+<p>Solaris IP Filter is derived from open source IP Filter software.</p>
+<a name="z.admin.ov-36"></a><h4>IP Network Multipathing in Shared-IP Zones</h4>
+<p>IP network multipathing (IPMP) provides physical interface failure detection
+and transparent network access failover for a system with multiple interfaces
+on the same IP link. IPMP also provides load spreading of packets for systems
+with multiple interfaces.</p>
+<p>All network configuration is done in the global zone. You can configure
+IPMP in the global zone, then extend the functionality to non-global zones.
+The functionality is extended by placing the zone's address in an IPMP group
+when you configure the zone. Then, if one of the interfaces in the global
+zone fails, the non-global zone addresses will migrate to another network
+interface card.</p>
+<p>In a given non-global zone, only the interfaces associated with the
+zone are visible through the <tt>ifconfig</tt> command.</p>
+<p>See <a href="p108.html#z.admin.task-60">How to Extend IP Network Multipathing Functionality to Shared-IP Non-Global Zones</a>. The zones configuration
+procedure is covered in <a href="p63.html#z.conf.start-29">How to Configure the Zone</a>. For information on IPMP features, components, and usage,
+see Chapter 32, Introducing IPMP (Overview), in <i>System Administration Guide: IP Services</i>.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p97.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p99.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

@@ -1,0 +1,320 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title><tt>profile</tt> Provider - Solaris Dynamic Tracing Guide</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2005-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >Solaris Dynamic Tracing Guide<?GenHTML /ReferencePage>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p37.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p39.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="chp-profile"></a>Chapter&nbsp;19<h3><tt>profile</tt> Provider</h3><p>The <tt>profile</tt> provider provides probes associated with a time-based interrupt firing every fixed, specified time interval. These <b>unanchored</b> probes that are not associated with any particular point of execution, but rather with the asynchronous interrupt event. These probes can be used to sample some aspect of system state every unit time and the samples can then be used to infer system behavior. If the sampling rate is high, or the sampling time is long, an accurate inference is possible. Using DTrace actions, the <tt>profile</tt> provider can be used to sample practically anything in the system. For example, you could sample the state of the current thread, the state of the CPU, or the current machine instruction.</p>
+<a name="chp-profile-1"></a><h3><tt>profile-</tt><i>n</i> probes</h3>
+<p><a name="indexterm-315"></a><a name="indexterm-316"></a>A <tt>profile-</tt><i>n</i> probe fires every fixed interval on every CPU at high interrupt level. The probe's firing interval is denoted by the value of <i>n</i>: the interrupt source will fire <i>n</i> times per second. <i>n</i> may also have an optional time suffix, in which case <i>n</i> is interpreted to be in the units denoted by the suffix. Valid suffixes and the units they denote are listed in <a href="p38.html#tbl-timeunits">Table 19-1</a>.</p>
+<a name="tbl-timeunits"></a>Table 19-1 Valid time suffixes<table><tr><th><p>Suffix</p>
+</th><th><p>Time Units</p>
+</th></tr>
+<tr><td><p><tt>nsec</tt> or <tt>ns</tt></p>
+</td><td><p>nanoseconds</p>
+</td></tr>
+<tr><td><p><tt>usec</tt> or <tt>us</tt></p>
+</td><td><p>microseconds</p>
+</td></tr>
+<tr><td><p><tt>msec</tt> or <tt>ms</tt></p>
+</td><td><p>milliseconds</p>
+</td></tr>
+<tr><td><p><tt>sec</tt> or <tt>s</tt></p>
+</td><td><p>seconds</p>
+</td></tr>
+<tr><td><p><tt>min</tt> or <tt>m</tt></p>
+</td><td><p>minutes</p>
+</td></tr>
+<tr><td><p><tt>hour</tt> or <tt>h</tt></p>
+</td><td><p>hours</p>
+</td></tr>
+<tr><td><p><tt>day</tt> or <tt>d</tt></p>
+</td><td><p>days</p>
+</td></tr>
+<tr><td><p><tt>hz</tt></p>
+</td><td><p>hertz (frequency per second)</p>
+</td></tr>
+</table><p>The following example creates a probe to fire at 97 hertz to sample the currently running process:</p>
+<pre>#pragma D option quiet
+
+profile-97
+/pid != 0/
+{
+	@proc[pid, execname] = count();
+}
+
+END
+{
+	printf("%-8s %-40s %s\n", "PID", "CMD", "COUNT");
+	printa("%-8d %-40s %@d\n", @proc);
+}</pre><p>Running the above example for a brief period of time results in output similar to the following example:</p>
+<pre><tt><b># dtrace -s ./prof.d</b></tt>
+<tt><b>^C</b></tt>
+PID      CMD                                      COUNT
+223887   sh                                       1
+100360   httpd                                    1
+100409   mibiisa                                  1
+223887   uname                                    1
+218848   sh                                       2
+218984   adeptedit                                2
+100224   nscd                                     3
+3        fsflush                                  4
+2        pageout                                  6
+100372   java                                     7
+115279   xterm                                    7
+100460   Xsun                                     7
+100475   perfbar                                  9
+223888   prstat                                   15</pre><p>You can also use the <tt>profile-</tt><i>n</i> provider to sample information about the running process. The following example D script uses a 1,001 hertz profile probe to sample the current priority of a specified process:</p>
+<pre>profile-1001
+/pid == $1/
+{
+	@proc[execname] = lquantize(curlwpsinfo->pr_pri, 0, 100, 10);
+}</pre><p>To see this example script in action, type the following commands in one window:</p>
+<pre><tt><b>$ echo $$</b></tt>
+494621
+<tt><b>$ while true ; do let i=0 ; done</b></tt></pre><p>In another window, run the D script for a brief period of time:</p>
+<pre><tt><b># dtrace -s ./profpri.d 494621</b></tt>
+ dtrace: script './profpri.d' matched 1 probe
+<tt><b>^C</b></tt>
+ksh                                               
+           value  ------------- Distribution ------------- count    
+             &lt; 0 |                                         0        
+               0 |@@@@@@@@@@@@@@@@@@@@@                    7443     
+              10 |@@@@@@                                   2235     
+              20 |@@@@                                     1679     
+              30 |@@@                                      1119     
+              40 |@                                        560      
+              50 |@                                        554      
+              60 |                                         0 </pre><p>This output shows the bias of the timesharing scheduling class. Because the shell process is spinning on the CPU, its priority is constantly being lowered by the system. If the shell process were running less frequently, its priority would be higher. To see this result, type Control-C in the spinning shell and run the script again:</p>
+<pre><tt><b># dtrace -s ./profpri.d 494621</b></tt>
+ dtrace: script './profpri.d' matched 1 probe</pre><p>Now in the shell, type a few characters. When you terminate the DTrace script, output like the following example will appear:</p>
+<pre>ksh                                               
+           value  ------------- Distribution ------------- count    
+              40 |                                         0        
+              50 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 14       
+              60 |                                         0</pre><p>Because the shell process was sleeping awaiting user input instead of spinning on the CPU, when it <b>did</b> run it was run at a much higher priority.</p>
+<a name="chp-profile-3"></a><h3><tt>tick-</tt><i>n</i> probes</h3>
+<p><a name="indexterm-317"></a><a name="indexterm-318"></a>Like <tt>profile-</tt><i>n</i> probes, <tt>tick-</tt><i>n</i> probes fire every fixed interval at high interrupt level. However, unlike <tt>profile-</tt><i>n</i> probes, which fire on <b>every</b> CPU, <tt>tick-</tt><i>n</i> probes fire on only <b>one</b> CPU per interval. The actual CPU may change over time. As with <tt>profile-</tt><i>n</i> probes, <i>n</i> defaults to rate-per-second but may also have an optional time suffix. <tt>tick-</tt><i>n</i> probes have several uses, such as provideing some periodic output or taking a periodic action.</p>
+<a name="chp-profile-4"></a><h3>Arguments</h3>
+<p><a name="indexterm-319"></a>The arguments to <tt>profile</tt> probes are as follows:</p>
+<table><tr><td><p><tt>arg0</tt></p>
+</td><td><p>The program counter (PC) in the kernel at the time that the probe fired, or 0 if the current process was not executing in the kernel at the time that the probe fired</p>
+</td></tr>
+<tr><td><p><tt>arg1</tt></p>
+</td><td><p>The PC in the user-level process at the time that the probe fired, or 0 if the current process was executing at the kernel at the time that the probe fired</p>
+</td></tr>
+</table><p>As the descriptions imply, if <tt>arg0</tt> is non-zero then <tt>arg1</tt> is zero; if <tt>arg0</tt> is zero then <tt>arg1</tt> is non-zero. Thus, you can use <tt>arg0</tt> and <tt>arg1</tt> to differentiate user-level from kernel level, as in this simple example:</p>
+<pre>profile-1ms
+{
+	@ticks[arg0 ? "kernel" : "user"] = count();
+}</pre><a name="chp-profile-5"></a><h3>Timer Resolution</h3>
+<p><a name="indexterm-320"></a>The <tt>profile</tt> provider uses arbitrary resolution interval timers in the operating system. On architectures that do not support truly arbitrary resolution time-based interrupts, the frequency is limited by the system clock frequency, which is specified by the <tt>hz</tt> kernel variable. Probes of higher frequency than <tt>hz</tt> on such architectures will fire some number of times every 1/<tt>hz</tt> seconds. For example, a 1000 hertz <tt>profile</tt> probe on such an architecture with <tt>hz</tt> set to 100 will fire ten times in rapid succession every ten milliseconds. On platforms that support arbitrary resolution, a 1000 hertz <tt>profile</tt> probe would fire exactly every one millisecond.</p>
+<p>The following example tests a given architecture's resolution:</p>
+<pre>profile-5000
+{
+	/*
+	 * We divide by 1,000,000 to convert nanoseconds to milliseconds, and
+	 * then we take the value mod 10 to get the current millisecond within
+	 * a 10 millisecond window.  On platforms that do not support truly
+	 * arbitrary resolution profile probes, all of the profile-5000 probes
+	 * will fire on roughly the same millisecond.  On platforms that
+	 * support a truly arbitrary resolution, the probe firings will be
+	 * evenly distributed across the milliseconds.
+	 */
+	@ms = lquantize((timestamp / 1000000) % 10, 0, 10, 1);
+}
+
+tick-1sec
+/i++ >= 10/
+{
+	exit(0);
+}</pre><p>On an architecture that supports arbitrary resolution <tt>profile</tt> probes, running the example script will yield an even distribution:</p>
+<pre><tt><b># dtrace -s ./restest.d</b></tt>
+ dtrace: script './restest.d' matched 2 probes
+CPU     ID                    FUNCTION:NAME
+  0  33631                       :tick-1sec 
+
+
+           value  ------------- Distribution ------------- count    
+             &lt; 0 |                                         0        
+               0 |@@@                                      10760    
+               1 |@@@@                                     10842    
+               2 |@@@@                                     10861    
+               3 |@@@                                      10820    
+               4 |@@@                                      10819    
+               5 |@@@                                      10817    
+               6 |@@@@                                     10826    
+               7 |@@@@                                     10847    
+               8 |@@@@                                     10830    
+               9 |@@@@                                     10830</pre><p>On an architecture that does not support arbitrary resolution <tt>profile</tt> probes, running the example script will yield an uneven distribution:</p>
+<pre><tt><b># dtrace -s ./restest.d</b></tt>
+ dtrace: script './restest.d' matched 2 probes
+ CPU     ID                    FUNCTION:NAME
+  0  28321                       :tick-1sec 
+
+
+           value  ------------- Distribution ------------- count    
+               4 |                                         0        
+               5 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  107864   
+               6 |                                         424      
+               7 |                                         255      
+               8 |                                         496      
+               9 |                                         0</pre><p>On these architectures, <tt>hz</tt> may be manually tuned in <tt>/etc/system</tt> to improve the effective profile resolution.</p>
+<p>Currently, all variants of UltraSPARC (<tt>sun4u</tt>) support arbitrary resolution <tt>profile</tt> probes. Many variants of the x86 architecture (<tt>i86pc</tt>) also support arbitrary resolution <tt>profile</tt> probes, although some older variants do not.</p>
+<a name="chp-profile-6"></a><h3>Probe Creation</h3>
+<p><a name="indexterm-321"></a>Unlike other providers, the <tt>profile</tt> provider creates probes dynamically on an as-needed basis. Thus, the desired profile probe might not appear in a listing of all probes (for example, by using <tt>dtrace -l -P profile</tt>) but the probe will be created when it is explicitly enabled.</p>
+<p>On architectures that support arbitrary resolution <tt>profile</tt> probes, a time interval that is too short would cause the machine to continuously field time-based interrupts, thereby denying service on the machine. To prevent this situation, the <tt>profile</tt> provider will silently refuse to create any probe that would result in an interval of less than two hundred microseconds.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p37.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p39.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

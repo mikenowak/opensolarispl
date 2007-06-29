@@ -1,0 +1,807 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="useraccts-1">
+
+
+
+<title>Users, Rights, and Roles in Trusted Extensions</title>
+<toc>
+<para>This chapter describes essential decisions to make before creating regular
+users, and provides additional background for managing user accounts. The
+chapter assumes that the install team has set up roles, and has set up a limited
+number of user accounts. These users can assume the roles that configure and
+administer Trusted Extensions. For details, see <olink remap="external" targetdoc="819-7314">
+<citetitle remap="book">Solaris Trusted Extensions Installation and Configuration</citetitle>
+</olink>.</para>
+<itemizedlist remap="jumplist">
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="manageusers-34">User Security Features in
+Trusted Extensions</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="manageusers-21">Administrator Responsibilities
+for Users</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="manageusers-15">Decisions to Make Before
+Creating Users</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="manageusers-20">Default User Security Attributes</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="usermgr-15">Configurable User Attributes</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="manageusers-27">User Attributes That Are
+Assigned After Creation</olink>
+</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="manageusers-34">
+<title>User Security Features in Trusted Extensions</title>
+<itemizedlist>
+<para>Trusted Extensions software adds the following security features to users,
+roles, or profiles:</para>
+<listitem>
+<para>A user has a label range within which the user can use the
+system.</para>
+</listitem>
+<listitem>
+<para>A role has a label range within which the role can perform
+its administrative tasks.</para>
+</listitem>
+<listitem>
+<para>A Trusted Extensions rights profile can include actions. Like
+commands, actions can have security attributes.</para>
+</listitem>
+<listitem>
+<para>Commands and actions in a Trusted Extensions rights profile have
+a label attribute. The command or action must be performed within a label
+range, or at a particular label.</para>
+</listitem>
+<listitem>
+<para>Trusted Extensions software adds privileges and authorizations
+to the set of authorizations and privileges that are defined by the Solaris
+OS.</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="manageusers-21">
+<title>Administrator Responsibilities
+for Users</title>
+<para>
+<indexterm xml:id="indexterm-345">
+<primary>users</primary>
+<secondary>creating</secondary>
+</indexterm>The System Administrator role creates user accounts. The Security
+Administrator role sets up the security aspects of an account.</para>
+<para>If you are using the Sun <trademark>Java</trademark> System Directory Server for the LDAP naming service, check that
+the install team configured the <filename>tsol_ldap.tbx</filename> toolbox.
+For the procedure, see <olink remap="external" targetdoc="819-7314" targetptr="confsys-10">
+<citetitle remap="section">Configuring the Solaris Management Console for LDAP (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Installation and Configuration</citetitle>
+</olink>.</para>
+<para>For details on setting up users and roles, use the following references.</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="external" targetdoc="819-2379">
+<citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="external" targetdoc="819-2379" targetptr="usersetup-129">
+<citetitle remap="section">Setting Up User Accounts (Task Map)</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="external" targetdoc="819-3321" targetptr="prbactm-1">Part III, <citetitle remap="chapter">Roles, Rights Profiles, and Privileges,</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>
+</para>
+</listitem>
+</itemizedlist>
+<sect2 xml:id="manageusers-22">
+<title>System Administrator Responsibilities
+for Users</title>
+<itemizedlist>
+<para>In Trusted Extensions, the System Administrator role is responsible for
+determining who can access to the system. The System Administrator is responsible
+for the following tasks:</para>
+<listitem>
+<para>Adding and deleting users</para>
+</listitem>
+<listitem>
+<para>Adding and deleting roles</para>
+</listitem>
+<listitem>
+<para>Modifying user and role configurations, other than security
+attributes</para>
+</listitem>
+</itemizedlist>
+</sect2>
+<sect2 xml:id="manageusers-23">
+<title>Security Administrator Responsibilities
+for Users</title>
+<itemizedlist>
+<para>In Trusted Extensions, the Security Administrator role is responsible for
+all security attributes of a user or role. The Security Administrator is responsible
+for the following tasks:</para>
+<listitem>
+<para>Assigning and modifying the security attributes of a user,
+a role, or a profile</para>
+</listitem>
+<listitem>
+<para>Creating and modifying rights profiles</para>
+</listitem>
+<listitem>
+<para>Assigning rights profiles to a user or role</para>
+</listitem>
+<listitem>
+<para>Assigning privileges to a user, a role, or a profile</para>
+</listitem>
+<listitem>
+<para>Assigning authorizations to a user, a role, or a profile</para>
+</listitem>
+<listitem>
+<para>Removing privileges from a user, a role, or a profile</para>
+</listitem>
+<listitem>
+<para>Removing authorizations from a user, a role, or a profile</para>
+</listitem>
+</itemizedlist>
+<para>In general, the Security Administrator creates rights profiles. However,
+if a profile needs capabilities that the Security Administrator role cannot
+grant, then superuser or the Primary Administrator role creates the profile.</para>
+<para>Before creating a rights profile, the security administrator should
+analyze whether any of the commands or actions in the new profile need privilege
+or authorization to be successful. The man pages for individual commands list
+the privileges and authorizations that a command might need. For examples
+of actions that require privileges and authorizations, see the <filename>exec_attr</filename> database.</para>
+</sect2>
+</sect1>
+<sect1 xml:id="manageusers-15">
+<title>Decisions to Make Before Creating
+Users</title>
+<indexterm xml:id="indexterm-346">
+<primary>users</primary>
+<secondary>planning for</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-347">
+<primary>administering</primary>
+<secondary>users</secondary>
+</indexterm>
+<para>The following decisions and setup affect what users are able to do in Trusted Extensions and
+how much effort is required. Some decisions are the same as the decisions
+that you would make when installing the Solaris OS. However, decisions that are
+specific to Trusted Extensions can affect site security and ease of use.</para>
+<itemizedlist>
+<listitem>
+<para>Decide whether to change default user security attributes
+in the <filename>policy.conf</filename> file. User defaults in the <filename>label_encodings</filename> file were configured by the install team. For a description of
+the defaults, see <olink remap="internal" targetdoc="chapter-6.xml" targetptr="manageusers-20">Default User Security
+Attributes</olink>.</para>
+</listitem>
+<listitem>
+<para>Decide which startup files, if any, should be copied from
+or linked from each user's minimum-label home directory to the user's higher-level
+home directories. For the procedure, see <olink remap="external" targetdoc="chapter-7.xml" targetptr="manageusers-11">How
+to Configure Startup Files for Users</olink>.</para>
+</listitem>
+<listitem>
+<para>Decide if users can access peripheral devices, such as the
+microphone, CD-ROM drive, and JAZ drive.</para>
+<para>If access is permitted
+to some users, decide if your site requires additional authorizations to satisfy
+site security. For the default list of device-related authorizations, see <olink remap="external" targetdoc="chapter-17.xml" targetptr="managedev-28">Example 17–8</olink>. For a finer-grained set
+of device authorizations, see <olink remap="external" targetdoc="chapter-17.xml" targetptr="managedev-16">Customizing
+Device Authorizations in Trusted Extensions (Tasks)</olink>.</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="manageusers-20">
+<title>Default User Security Attributes</title>
+<para>Settings in the <filename>label_encodings</filename> and the <filename>policy.conf</filename> files together define default security attributes for user accounts.
+The values that you set explicitly for a user override these system values.
+Some of the values that are set in these files also apply to role accounts.
+For security attributes that you can explicitly set, see <olink remap="internal" targetdoc="chapter-6.xml" targetptr="usermgr-15">Configurable User Attributes</olink>.</para>
+<sect2 xml:id="manageusers-46">
+<title>Label Encodings File Defaults</title>
+<para>The <filename>label_encodings</filename> file defines a user's minimum
+label, clearance, and default label view. For details about the file, see
+the <olink remap="external" targetdoc="819-7307" targetptr="label-encodings-4">
+<citerefentry>
+<refentrytitle>label_encodings</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> man page. Your site's <filename>label_encodings</filename> file
+was installed by your install team. Their decisions were based on <olink remap="external" targetdoc="819-7314" targetptr="ovw-16">
+<citetitle remap="section">Devising a Label Strategy</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Installation and Configuration</citetitle>
+</olink>, and examples from <olink remap="external" targetdoc="819-7308">
+<citetitle remap="book">Solaris Trusted Extensions Label Administration</citetitle>
+</olink>.</para>
+<para>Label values that the Security Administrator explicitly sets for individual
+users in the Solaris Management Console are derived from the <filename>label_encodings</filename> file.
+User values override the values in the <filename>label_encodings</filename> file.</para>
+</sect2>
+<sect2 xml:id="manageusers-45">
+<title>
+<filename>policy.conf</filename> File
+Defaults</title>
+<indexterm xml:id="indexterm-348">
+<primary>files</primary>
+<secondary>
+<filename>/etc/security/policy.conf</filename>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-349">
+<primary>
+<filename>/etc/security/policy.conf</filename> file</primary>
+</indexterm>
+<indexterm xml:id="indexterm-350">
+<primary>
+<filename>policy.conf</filename> file</primary>
+<secondary>defaults</secondary>
+</indexterm>
+<para>The Solaris <filename>/etc/security/policy.conf</filename> file
+contains the default security settings for the system. In addition, Trusted Extensions provides
+two keywords. You can add these keyword-value pairs to the file if you want
+to change the system-wide value. These keywords are enforced by CDE.</para>
+<table frame="topbot" xml:id="manageusers-tbl-3">
+
+<title>Trusted Extensions Security
+Defaults in <filename>policy.conf</filename> File</title>
+<tgroup cols="4" colsep="0" rowsep="0">
+<colspec colname="colspec7" colwidth="43.25*"/>
+<colspec colname="colspec0" colwidth="44.80*"/>
+<colspec colname="colspec3" colwidth="68.74*"/>
+<colspec colname="colspec1" colwidth="68.92*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Keyword</para>
+</entry>
+<entry colname="colspec0">
+<para>Default Value</para>
+</entry>
+<entry>
+<para>Possible Values</para>
+</entry>
+<entry>
+<para>Notes</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry colname="colspec7">
+<para>IDLECMD</para>
+</entry>
+<entry colname="colspec0">
+<para>LOCK</para>
+</entry>
+<entry>
+<para>LOCK | LOGOUT</para>
+</entry>
+<entry>
+<para>Does not apply to roles.</para>
+</entry>
+</row>
+<row>
+<entry colname="colspec7">
+<para>IDLETIME</para>
+</entry>
+<entry colname="colspec0">
+<para>30</para>
+</entry>
+<entry>
+<para>0 to 120 minutes</para>
+</entry>
+<entry>
+<para>Does not apply to roles.</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>The authorizations and rights profiles that are defined in the <filename>policy.conf</filename> file are <emphasis>in addition</emphasis> to any authorizations
+and profiles that are assigned to individual accounts. For the other fields,
+the individual user's value overrides the system value.</para>
+<para>
+<olink remap="external" targetdoc="819-7314" targetptr="ovw-18">
+<citetitle remap="section">Planning User Security</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Installation and Configuration</citetitle>
+</olink> includes
+a table of every <filename>policy.conf</filename> keyword. See also the <olink remap="external" targetdoc="819-2251" targetptr="policy.conf-4">
+<citerefentry>
+<refentrytitle>policy.conf</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> man page.</para>
+</sect2>
+</sect1>
+<sect1 xml:id="usermgr-15">
+<title>Configurable User Attributes</title>
+<para>The Solaris Management Console 2.1 is your tool for creating and modifying user accounts. For
+multilevel users, you might also want to set up <filename>.copy_files</filename> and <filename>.link_files</filename> files in each user's minimum label home directory.</para>
+<itemizedlist>
+<para>The User Accounts tool in the Solaris Management Console works as it does in the Solaris OS.
+There are two exceptions:</para>
+<listitem>
+<para>Trusted Extensions adds attributes to user accounts.</para>
+</listitem>
+<listitem>
+<para>Home directory server access does not work as smoothly in Trusted Extensions as
+it does in the Solaris OS.</para>
+<itemizedlist>
+<listitem>
+<para>You create the home directory server entry the same as you
+do on a Solaris system.</para>
+</listitem>
+<listitem>
+<para>Then, you do additional steps to mount the home directory
+at every user label.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+<para>As described in <olink remap="external" targetdoc="819-2379" targetptr="usersetup-21">
+<citetitle remap="section">How to Add a User With the Solaris Management Console’s Users Tool</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>, a Wizard enables you to create user
+accounts quickly. After using the Wizard, each account's security information
+must be entered.</para>
+<para>For more information about <filename>.copy_files</filename> and <filename>.link_files</filename> files, see <olink remap="internal" targetdoc="chapter-6.xml" targetptr="manageusers-28">.copy_files and .link_files
+Files</olink>.</para>
+</sect1>
+<sect1 xml:id="manageusers-27">
+<title>User Attributes That Are Assigned
+After Creation</title>
+<para>Security information must still be entered by the Security Administrator,
+as the following table shows. For information about the files that contain
+default values, see <olink remap="internal" targetdoc="chapter-6.xml" targetptr="manageusers-20">Default User Security
+Attributes</olink>.</para>
+<table frame="topbot" xml:id="usermgr-tbl-11">
+
+<title>User Security Attributes
+That You Assign After Creation</title>
+<tgroup cols="4" colsep="0" rowsep="0">
+<colspec colname="colspec0" colwidth="74.47*"/>
+<colspec colname="colspec2" colwidth="109.45*"/>
+<colspec colname="colspec4" colwidth="74.33*"/>
+<colspec colname="colspec1" colwidth="222.28*"/>
+<thead>
+<row rowsep="1" valign="top">
+<entry colname="colspec0" colsep="1">
+<para>User Attribute</para>
+</entry>
+<entry colsep="1">
+<para>Location of Default Value</para>
+</entry>
+<entry colsep="1">
+<para>Is Action Required</para>
+</entry>
+<entry colname="colspec1" colsep="1" rowsep="1">
+<para>Effect of Action</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry colname="colspec0" colsep="1" rowsep="1">
+<para>Password</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>None</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>Required</para>
+</entry>
+<entry colname="colspec1" colsep="1" rowsep="1">
+<para>User has password</para>
+</entry>
+</row>
+<row>
+<entry colsep="1" rowsep="1">
+<para>Roles</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>None</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>Optional</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>User can assume a role</para>
+</entry>
+</row>
+<row>
+<entry colsep="1" rowsep="1">
+<para>Authorizations</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>
+<filename>policy.conf</filename> file</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>Optional</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>User has additional authorizations</para>
+</entry>
+</row>
+<row>
+<entry colname="colspec0" colsep="1" rowsep="1">
+<para>Rights Profiles</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>
+<filename>policy.conf</filename> file</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>Optional</para>
+</entry>
+<entry colname="colspec1" colsep="1" rowsep="1">
+<para>User has additional rights profiles</para>
+</entry>
+</row>
+<row>
+<entry colsep="1" rowsep="1">
+<para>Labels</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>
+<filename>label_encodings</filename> file</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>Optional</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>User has different default label or accreditation range</para>
+</entry>
+</row>
+<row>
+<entry colname="colspec0" colsep="1" rowsep="1">
+<para>Privileges</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>
+<filename>policy.conf</filename> file</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>Optional</para>
+</entry>
+<entry colname="colspec1" colsep="1" rowsep="1">
+<para>User has different set of privileges</para>
+</entry>
+</row>
+<row>
+<entry colname="colspec0" colsep="1" rowsep="1">
+<para>Account Usage</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>
+<filename>policy.conf</filename> file</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>Optional</para>
+</entry>
+<entry colname="colspec1" colsep="1" rowsep="1">
+<para>User has different setting for computer when it is idle</para>
+</entry>
+</row>
+<row>
+<entry colname="colspec0" colsep="1" rowsep="1">
+<para>Audit</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>
+<filename>audit_control</filename> file</para>
+</entry>
+<entry colsep="1" rowsep="1">
+<para>Optional</para>
+</entry>
+<entry colname="colspec1" colsep="1" rowsep="1">
+<para>User is audited differently from the system audit settings</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<sect2 xml:id="usermgr-11">
+<title>Security Attribute Assignment to Users</title>
+<para>The Security Administrator role assigns security attributes to users
+in the Solaris Management Console after the user is created. If the administrator has set up correct
+defaults, assigning security attributes is needed only for users who are exceptions
+to the defaults.</para>
+<variablelist termlength="wholeline">
+<varlistentry>
+<term>Assigning Passwords</term>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-351">
+<primary>users</primary>
+<secondary>assigning passwords</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-352">
+<primary>passwords</primary>
+<secondary>assigning</secondary>
+</indexterm>The Security Administrator role assigns passwords to users after
+the user has been created. The password is created by the administrator. After
+assignment, users can change their passwords.</para>
+<para>As in the Solaris OS, users can be forced to change their passwords at
+regular intervals. The password aging options limit how long any intruder
+who is able to guess or steal a password could potentially access the system.
+Establishing a minimum length of time to elapse before change also prevents
+a user with a new password from reverting immediately to the old password.
+For details, see the <olink remap="external" targetdoc="819-2239" targetptr="passwd-1">
+<citerefentry>
+<refentrytitle>passwd</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+<note>
+
+<para>The passwords for users who can assume roles should not be subject
+to any password aging constraints.</para>
+</note>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Assigning Roles</term>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-353">
+<primary>users</primary>
+<secondary>assigning roles to</secondary>
+</indexterm>A user is not required to have a role. A single user can be assigned
+more than one role if that assignment is consistent with your site's security
+policy.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Assigning Authorizations</term>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-354">
+<primary>authorizations</primary>
+<secondary>assigning</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-355">
+<primary>users</primary>
+<secondary>assigning authorizations to</secondary>
+</indexterm>As in the Solaris OS, assigning authorizations directly to a user
+adds those authorizations to existing authorizations. In Trusted Extensions, you
+add the authorizations to a rights profile, then assign the profile to the
+user.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Assigning Rights Profiles</term>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-356">
+<primary>users</primary>
+<secondary>assigning rights</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-357">
+<primary>roles</primary>
+<secondary>assigning rights</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-358">
+<primary>rights profiles</primary>
+<secondary>assigning</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-359">
+<primary>assigning</primary>
+<secondary>rights profiles</secondary>
+</indexterm>As in the Solaris OS, the order of profiles is important. The profile
+mechanism uses the first instance of the command or action in an account's
+profile set.</para>
+<para>You can use the sorting order of profiles to your advantage. If you
+want a command to run with different security attributes from those defined
+for it in an existing profile, create a new profile with the desired assignments
+for the command. Then, insert that new profile before the existing profile.</para>
+<note>
+
+<para>Rights profiles that include administrative actions or administrative
+commands should not be assigned to an ordinary user account. The profile would
+not work, because an ordinary user cannot enter the global zone.</para>
+</note>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Changing Privilege Default</term>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-360">
+<primary>users</primary>
+<secondary>changing default privileges</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-361">
+<primary>privileges</primary>
+<secondary>changing defaults for users</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-362">
+<primary>assigning</primary>
+<secondary>privileges to users</secondary>
+</indexterm>The default privilege set can be too liberal for many sites. To
+restrict the privilege set for any ordinary user on a system, change the <filename>policy.conf</filename> file setting. To change the privilege set for individual
+users, use the Solaris Management Console. For an example, see <olink remap="external" targetdoc="chapter-7.xml" targetptr="manageusers-38">How
+to Modify a User's Set of Privileges</olink>.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Changing Label Defaults</term>
+<listitem>
+<para>
+<indexterm xml:id="indexterm-363">
+<primary>users</primary>
+<secondary>assigning labels</secondary>
+</indexterm>Changing a user's label defaults creates an exceptions to the
+user defaults in the <filename>label_encodings</filename> file.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Changing Audit Defaults</term>
+<listitem>
+<para>As in the Solaris OS, assigning audit classes to a user creates
+exceptions to the audit classes that are assigned in the <filename>/etc/security/audit_control</filename> file on the system. For more about auditing, see <olink remap="external" targetdoc="chapter-18.xml" targetptr="audtask-1">Chapter 18, Trusted Extensions Auditing</olink>.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+<sect2 xml:id="manageusers-28">
+<title>
+<filename>.copy_files</filename> and <filename>.link_files</filename> Files</title>
+<indexterm xml:id="indexterm-364">
+<primary>
+<command>updatehome</command> command</primary>
+</indexterm>
+<indexterm xml:id="indexterm-365">
+<primary>
+<command>dtsession</command> command</primary>
+<secondary>running <command>updatehome</command>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-366">
+<primary>
+<filename>.copy_files</filename> file</primary>
+<secondary>description</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-367">
+<primary>files</primary>
+<secondary>
+<filename>.copy_files</filename>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-368">
+<primary>
+<filename>.link_files</filename> file</primary>
+<secondary>description</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-369">
+<primary>files</primary>
+<secondary>
+<filename>.link_files</filename>
+</secondary>
+</indexterm>
+<para>In Trusted Extensions, files are automatically copied from the skeleton
+directory <emphasis>only</emphasis> into the zone that contains the account's
+minimum label. To ensure that zones at higher labels can use startup files,
+either the user or the administrator must create the files <filename>.copy_files</filename> and <filename>.link_files</filename>.</para>
+<para>The Trusted Extensions files <filename>.copy_files</filename> and <filename>.link_files</filename> help to automate the copying or linking of startup files into
+every label of an account's home directory. Whenever a user creates a workspace
+at a new label, the <command>updatehome</command> command reads the contents
+of <filename>.copy_files</filename> and <filename>.link_files</filename> at
+the account's minimum label. The command then copies or links every listed
+file into the higher-labeled workspace.</para>
+<para>The <filename>.copy_files</filename> file is useful when a user wants
+a slightly different startup file at different labels. Copying is desirable,
+for example, when users use different mail aliases at different labels. The <filename>.link-files</filename> file is useful when a startup file should be identical
+at any label that it is invoked. Linking is desirable, for example, when using
+one printer for all labeled print jobs. For sample files, see <olink remap="external" targetdoc="chapter-7.xml" targetptr="manageusers-11">How to Configure Startup Files for Users</olink>.</para>
+<para>The following is a list of some startup files that you might want users
+to be able to link or to copy to higher labels:</para>
+<informaltable> <tgroup Remap="SimpleList" cols="3">
+<tbody>
+<row>
+<entry>
+<para>
+<filename>.acrorc</filename>
+</para>
+</entry> <entry>
+<para>
+<filename>.login</filename>
+</para>
+</entry> <entry>
+<para>
+<filename>.signature</filename>
+</para>
+</entry> </row>
+<row>
+<entry>
+<para>
+<filename>.aliases</filename>
+</para>
+</entry> <entry>
+<para>
+<filename>.mailrc</filename>
+</para>
+</entry> <entry>
+<para>
+<filename>.soffice</filename>
+</para>
+</entry> </row>
+<row>
+<entry>
+<para>
+<filename>.cshrc</filename>
+</para>
+</entry> <entry>
+<para>
+<filename>.mime_types</filename>
+</para>
+</entry> <entry>
+<para>
+<filename>.Xdefaults</filename>
+</para>
+</entry> </row>
+<row>
+<entry>
+<para>
+<filename>.dtprofile</filename>
+</para>
+</entry> <entry>
+<para>
+<filename>.newsrc</filename>
+</para>
+</entry> <entry>
+<para>
+<filename>.Xdefaults-<replaceable>hostname</replaceable>
+</filename>
+</para>
+</entry> </row>
+<row>
+<entry>
+<para>
+<filename>.emacs</filename>
+</para>
+</entry> <entry>
+<para>
+<filename>.profile</filename>
+</para>
+</entry> <entry>
+<para>
+</para>
+</entry> </row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect2>
+</sect1>
+</chapter>

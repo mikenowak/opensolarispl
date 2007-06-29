@@ -1,0 +1,155 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Recovering From State Database
+Replica Failures</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch25.html" title="Chapter 25. Troubleshooting Solaris Volume Manager (Tasks)"><link rel="prev" href="ch25s06.html" title="Recovering From Boot Problems"><link rel="next" href="ch25s08.html" title="Recovering From Soft Partition Problems"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Recovering From State Database
+Replica Failures</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch25s06.html">Prev</a> </td><th width="60%" align="center">Chapter 25. Troubleshooting Solaris Volume Manager (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch25s08.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-state-db-replicas-11"></a>Recovering From State Database
+Replica Failures</h2></div></div></div>
+
+<p>If the state database replica quorum is not met, for example, due to
+a drive failure, the system cannot be rebooted into multiuser mode. This situation
+could follow a panic when Solaris Volume Manager discovers that fewer than half of
+the state database replicas are available. This situation could also occur
+if the system is rebooted with exactly half or fewer functional state database
+replicas. In Solaris Volume Manager terminology, the state database has gone &#8220;stale.&#8221;
+This procedure explains how to recover from this problem.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1783701"></a></h3></div></div></div>
+
+<div class="task"><a name="troubleshoottasks-31036"></a><p class="title"><b>How to Recover From Insufficient
+State Database Replicas</b></p><div class="procedure"><ol type="1"><li><a name="troubleshoottasks-step-40"></a>
+<p>Boot the system.</p>
+</li><li><a name="tasks-state-db-replicas-step-23"></a>
+<p>Determine which state database
+replicas are unavailable.</p>
+<pre class="screen"># <strong class="userinput"><code>metadb -i</code></strong>
+</pre>
+</li><li><a name="troubleshoottasks-step-42"></a>
+<p>If one or more disks are known
+to be unavailable, delete the state database replicas on those disks. Otherwise,
+delete enough erred state database replicas (W, M, D, F, or R status flags
+reported by <span><strong class="command">metadb</strong></span>) to ensure that a majority of the existing
+state database replicas are not erred.</p>
+<pre class="screen"># <strong class="userinput"><code>metadb -d <em class="replaceable"><code>disk-slice</code></em>
+</code></strong>
+</pre>
+<div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3>
+
+<p>State database replicas with a capitalized status flag are in error.
+State database replicas with a lowercase status flag are functioning normally.</p>
+</div>
+</li><li><a name="troubleshoottasks-step-43"></a>
+<p>Verify that the replicas have been
+deleted.</p>
+<pre class="screen"># <strong class="userinput"><code>metadb</code></strong>
+</pre>
+</li><li><a name="troubleshoottasks-step-44"></a>
+<p>Reboot the system.</p>
+<pre class="screen"># <strong class="userinput"><code>reboot</code></strong>
+</pre>
+</li><li><a name="troubleshoottasks-step-45"></a>
+<p>If necessary, replace the disk,
+format it appropriately, then add any state database replicas that are needed
+to the disk.</p>
+<p>Follow the instructions in <span class="olink">Creating State Database Replicas</span>.</p>
+<p>
+<a class="indexterm" name="troubleshoottasks-ix449"></a>
+<a class="indexterm" name="troubleshoottasks-ix450"></a>Once you have a replacement disk, halt the system, replace the
+failed disk, and once again, reboot the system. Use the <span><strong class="command">format</strong></span> command
+or the <span><strong class="command">fmthard</strong></span> command to partition the disk as it was
+configured before the failure.  </p>
+</li></ol></div><div class="example"><a name="egjyh"></a><p class="title"><b>Example 25.1. Recovering From Stale State Database Replicas</b></p>
+
+
+<p>In the following example, a disk that contains seven replicas has gone
+bad. As a result, the system has only three good replicas. The system panics,
+then cannot reboot into multiuser mode.</p>
+<pre class="screen">panic[cpu0]/thread=70a41e00: md: state database problem
+
+403238a8 md:mddb_commitrec_wrapper+6c (2, 1, 70a66ca0, 40323964, 70a66ca0, 3c)
+  %l0-7: 0000000a 00000000 00000001 70bbcce0 70bbcd04 70995400 00000002 00000000
+40323908 md:alloc_entry+c4 (70b00844, 1, 9, 0, 403239e4, ff00)
+  %l0-7: 70b796a4 00000001 00000000 705064cc 70a66ca0 00000002 00000024 00000000
+40323968 md:md_setdevname+2d4 (7003b988, 6, 0, 63, 70a71618, 10)
+  %l0-7: 70a71620 00000000 705064cc 70b00844 00000010 00000000 00000000 00000000
+403239f8 md:setnm_ioctl+134 (7003b968, 100003, 64, 0, 0, ffbffc00)
+  %l0-7: 7003b988 00000000 70a71618 00000000 00000000 000225f0 00000000 00000000
+40323a58 md:md_base_ioctl+9b4 (157ffff, 5605, ffbffa3c, 100003, 40323ba8, ff1b5470)
+  %l0-7: ff3f2208 ff3f2138 ff3f26a0 00000000 00000000 00000064 ff1396e9 00000000
+40323ad0 md:md_admin_ioctl+24 (157ffff, 5605, ffbffa3c, 100003, 40323ba8, 0)
+  %l0-7: 00005605 ffbffa3c 00100003 0157ffff 0aa64245 00000000 7efefeff 81010100
+40323b48 md:mdioctl+e4 (157ffff, 5605, ffbffa3c, 100003, 7016db60, 40323c7c)
+  %l0-7: 0157ffff 00005605 ffbffa3c 00100003 0003ffff 70995598 70995570 0147c800
+40323bb0 genunix:ioctl+1dc (3, 5605, ffbffa3c, fffffff8, ffffffe0, ffbffa65)
+  %l0-7: 0114c57c 70937428 ff3f26a0 00000000 00000001 ff3b10d4 0aa64245 00000000
+
+panic: 
+stopped at      edd000d8:       ta      %icc,%g0 + 125
+Type  'go' to resume
+
+ok<strong class="userinput"><code> boot -s</code></strong>
+Resetting ... 
+
+Sun Ultra 5/10 UPA/PCI (UltraSPARC-IIi 270MHz), No Keyboard
+OpenBoot 3.11, 128 MB memory installed, Serial #9841776.
+Ethernet address 8:0:20:96:2c:70, Host ID: 80962c70.
+
+
+
+Rebooting with command: boot -s                                       
+Boot device: /pci@1f,0/pci@1,1/ide@3/disk@0,0:a  File and args: -s
+SunOS Release 5.9 Version s81_39 64-bit
+
+Copyright 1983-2001 Sun Microsystems, Inc.  All rights reserved.
+configuring IPv4 interfaces: hme0.
+Hostname: dodo
+
+metainit: dodo: stale databases
+
+Insufficient metadevice database replicas located.
+
+Use metadb to delete databases which are broken.
+Ignore any "Read-only file system" error messages.
+Reboot the system when finished to reload the metadevice database.
+After reboot, repair any broken database replicas which were deleted.
+
+Type control-d to proceed with normal startup,
+(or give root password for system maintenance): <strong class="userinput"><code>
+<em class="replaceable"><code>root-password</code></em>
+</code></strong>
+single-user privilege assigned to /dev/console.
+Entering System Maintenance Mode
+
+Jun  7 08:57:25 su: 'su root' succeeded for root on /dev/console
+Sun Microsystems Inc.   SunOS 5.9       s81_39  May 2002
+# <strong class="userinput"><code>metadb -i</code></strong>
+        flags           first blk       block count
+     a m  p  lu         16              8192            /dev/dsk/c0t0d0s7
+     a    p  l          8208            8192            /dev/dsk/c0t0d0s7
+     a    p  l          16400           8192            /dev/dsk/c0t0d0s7
+    M     p             16              unknown         /dev/dsk/c1t1d0s0
+    M     p             8208            unknown         /dev/dsk/c1t1d0s0
+    M     p             16400           unknown         /dev/dsk/c1t1d0s0
+    M     p             24592           unknown         /dev/dsk/c1t1d0s0
+    M     p             32784           unknown         /dev/dsk/c1t1d0s0
+    M     p             40976           unknown         /dev/dsk/c1t1d0s0
+    M     p             49168           unknown         /dev/dsk/c1t1d0s0
+# <strong class="userinput"><code>metadb -d c1t1d0s0</code></strong>
+# <strong class="userinput"><code>metadb</code></strong>
+        flags           first blk       block count
+     a m  p  lu         16              8192            /dev/dsk/c0t0d0s7
+     a    p  l          8208            8192            /dev/dsk/c0t0d0s7
+     a    p  l          16400           8192            /dev/dsk/c0t0d0s7
+#  </pre>
+<p>The system panicked because it could no longer detect state database
+replicas on slice <code class="filename">/dev/dsk/c1t1d0s0</code>. This slice is part
+of the failed disk or is attached to a failed controller. The first <span><strong class="command">metadb <code class="option">
+i</code>
+</strong></span> command identifies the replicas on this slice as having
+a problem with the master blocks.</p>
+<p>When you delete the stale state database replicas, the root (<code class="filename">/</code>)
+file system is read-only. You can ignore the <code class="filename">mddb.cf</code> error
+messages that are displayed.</p>
+<p>At this point, the system is again functional, although it probably
+has fewer state database replicas than it should. Any volumes that used part
+of the failed storage are also either failed, erred, or hot-spared. Those
+issues should be addressed promptly. </p>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch25s06.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch25.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch25s08.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Recovering From Boot Problems </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Recovering From Soft Partition Problems</td></tr></table></div></body></html>

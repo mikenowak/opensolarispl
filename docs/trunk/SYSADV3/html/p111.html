@@ -1,0 +1,418 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@16097-->
+<head>
+<META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=iso-8859-1">
+<title>System Administration Guide: IP Services</title>
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<!--stopindex-->
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<A href="toc.html">System Administration Guide: IP Services</A> <font color="red">&gt;&gt;</font> <nobr><A HREF="p107.html#ipsec-mgtasks-1">20.&nbsp;&nbsp;Configuring IPsec (Tasks)</A></nobr> <font color="red">&gt;&gt;</font> <nobr><A HREF="p110.html#ipsec-mgtasks-vpn-4">Protecting a VPN With IPsec</A></nobr>&nbsp;
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr class="grey1"><td></td><td align="right"><A HREF="p110.html"><IMG BORDER="0" ALT="Previous" SRC="graphics/prev.gif"> Previous</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="toc.html">Contents</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="idx.html">Index</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="p112.html">Next <IMG BORDER="0" ALT="Next" SRC="graphics/next.gif"></A></td></tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<A NAME="ipsec-mgtasks-37"></A><p><b>Example 20-6 </b>Creating a Tunnel for FTP
+Traffic for All Subnets</p>
+<p>In this example, IPsec policy protects the FTP ports in <A HREF="p110.html#ipsec-mgtasks-fig-tunnel-1">Figure 20-1</A> with 3DES
+for all subnets of Central to all subnets of Overseas. This configuration
+works for the active mode of FTP.</p>
+<table cellpadding="4" border="1" cols="1" width="100%"><td><pre>## IPsec policy for outbound FTP from Central to Overseas ##
+{tunnel ip.tun0 negotiate tunnel ulp tcp rport 21} 
+  ipsec {encr_algs 3des encr_auth_algs md5 sa shared}
+{tunnel ip.tun0 negotiate tunnel ulp tcp lport 20} 
+  ipsec {encr_algs 3des encr_auth_algs md5 sa shared}</pre>
+</td></table><br><table cellpadding="4" border="1" cols="1" width="100%"><td><pre>## IPsec policy for inbound FTP from Central to Overseas ##
+{tunnel ip.tun0 negotiate tunnel ulp tcp lport 21} 
+  ipsec {encr_algs 3des encr_auth_algs md5 sa shared}
+{tunnel ip.tun0 negotiate tunnel ulp tcp rport 20} 
+  ipsec {encr_algs 3des encr_auth_algs md5 sa shared}</pre>
+</td></table><br><p>The IPv4 procedures in this section assume the following setup. For
+a depiction of the network, see <A HREF="p111.html#ipsec-mgtasks-fig-2">Figure 20-2</A>.</p><ul><li><p>Each system is using an IPv4 address space.</p>
+<p>For
+a similar example with IPv6 addresses, see <A HREF="p112.html#ipsec-mgtasks-15">How to Protect a VPN With an IPsec Tunnel in Tunnel Mode Over IPv6</A>.</p>
+</li>
+<li><p>Each system has two interfaces. The <tt>hme0</tt> interface
+connects to the Internet. In this example, Internet IP addresses begin with <tt>192.168</tt>. The <tt>hme1</tt> interface connects
+to the company's local area network (LAN), its intranet. In this example,
+intranet IP addresses begin with the number <tt>10</tt>.</p>
+</li>
+<li><p>Each system invokes AH protection with the MD5 algorithm.
+The MD5 algorithm requires a 128-bit key.</p>
+</li>
+<li><p>Each system invokes ESP protection with the 3DES algorithm.
+The 3DES algorithm requires a 192-bit key.</p>
+</li>
+<li><p>Each system can connect to a router that has direct access
+to the Internet.</p>
+</li>
+<li><p>Each system uses shared security associations.</p>
+</li>
+</ul>
+<p>For a description of VPNs, see <A HREF="p106.html#ipsec-ov-15">Virtual Private Networks and IPsec</A>. <A HREF="p111.html#ipsec-mgtasks-fig-2">Figure 20-2</A> describes
+the VPN that this procedure configures.</p>
+<A NAME="ipsec-mgtasks-fig-2"></A><p><b>Figure 20-2 </b>Sample VPN Between Offices Separated
+by the Internet</p>
+<IMG src="figures/example-vpn.gif" class="figure" alt="Diagram shows details of VPN between Europe and California
+offices." title="Diagram shows details of VPN between Europe and California
+offices."><p>This procedure uses the following configuration parameters.</p>
+
+<table cellspacing="5" border="1">
+<tr><th scope="col"><p>Parameter</p></th><th scope="col"><p>Europe</p></th><th scope="col"><p>California</p></th></tr>
+<tr><td><p>System name</p></td><td><p>enigma</p></td><td><p>partym</p></td></tr>
+<tr><td><p>System intranet interface</p></td><td><p>hme1</p></td><td><p>hme1</p></td></tr>
+<tr><td><p>System Internet interface</p></td><td><p>hme0</p></td><td><p>hme0</p></td></tr>
+<tr><td><p>System intranet address, also the <i>-point</i> address
+in <A HREF="p111.html#ipsec-mgtask-iptun-1">Step&nbsp;5</A></p></td><td><p>10.16.16.6</p></td><td><p>10.1.3.3</p></td></tr>
+<tr><td><p>System Internet address, also the <i>tsrc</i> address
+in <A HREF="p111.html#ipsec-mgtask-iptun-1">Step&nbsp;5</A></p></td><td><p>192.168.116.16</p></td><td><p>192.168.13.213</p></td></tr>
+<tr><td><p>Name of Internet router</p></td><td><p>router-E</p></td><td><p>router-C</p></td></tr>
+<tr><td><p>Address of Internet router</p></td><td><p>192.168.116.4</p></td><td><p>192.168.13.5</p></td></tr>
+<tr><td><p>Tunnel name</p></td><td><p>ip.tun0</p></td><td><p>ip.tun0</p></td></tr>
+</table><A NAME="ipsec-mgtasks-23"></A><h3><IMG border="0" alt="Procedure" src="graphics/procedure.gif">How to Protect a VPN With an IPsec Tunnel
+in Tunnel Mode Over IPv4</h3>
+<A NAME="indexterm-1830"></A><A NAME="indexterm-1831"></A><A NAME="indexterm-1832"></A><A NAME="indexterm-1833"></A><A NAME="indexterm-1834"></A><A NAME="indexterm-1835"></A><A NAME="indexterm-1836"></A><A NAME="indexterm-1837"></A><p>This procedure extends the procedure, <A HREF="p107.html#ipsec-mgtasks-3">How to Secure Traffic Between Two Systems With IPsec</A>. In addition to connecting
+two systems, you are connecting two intranets that connect to these two systems.
+The systems in this procedure function as gateways.</p>
+<p><hr size="1" noshade><p><b>Note - </b>You configure IPsec policy in the global zone.</p>
+<hr size="1" noshade></p><ol><li><p><b>On the system console on one of the systems, assume
+the Primary Administrator role or become superuser.</b></p><p>The Primary
+Administrator role includes the Primary Administrator profile. To create the
+role and assign the role to a user, see Chapter 2, "Working With the Solaris Management Console (Tasks)," in <i>System Administration Guide: Basic Administration</i>.</p>
+<p><hr size="1" noshade><p><b>Note - </b>Logging in remotely exposes security-critical traffic to eavesdropping.
+Even if you somehow protect the remote login, the security of the system is
+reduced to the security of the remote login session.</p>
+<hr size="1" noshade></p></li>
+<A NAME="ipsec-mgtasks-packetctrl-1"></A><li><p><b>Control the flow of packets before
+configuring IPsec.</b></p><ol Type="a"><li><p><b><A NAME="indexterm-1838"></A>Ensure that IP forwarding and IP dynamic routing are disabled.</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>routeadm</b></tt>
+Configuration       Current         Current
+       Option       Configuration  System State
+--------------------------------------------------
+IPv4 forwarding     disabled           disabled
+   IPv4 routing     default (enabled)   enabled
+...</pre>
+</td></table><br><p>If forwarding and routing are enabled, you can disable them by typing:</p>
+<table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>routeadm -d ipv4-routing -d ipv4-forwarding</b></tt>
+# <tt><b>routeadm -u</b></tt></pre>
+</td></table><br><p><A NAME="indexterm-1839"></A><A NAME="indexterm-1840"></A>Turning off IP forwarding prevents packets from being forwarded
+from one network to another network through this system. For a description
+of the <tt>routeadm</tt> command, see the <tt>routeadm</tt>(1M) man page.</p>
+</li>
+<li><p><b>Turn on IP strict destination multihoming.</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>ndd -set /dev/ip ip_strict_dst_multihoming 1</b></tt></pre>
+</td></table><br><p>Turning on IP strict destination multihoming ensures that packets for
+one of the system's destination addresses arrive at the correct destination
+address.</p>
+<p>When you turn off IP forwarding and turn on IP strict
+destination multihoming, fewer packets flow all the way through the system.
+ When strict destination multihoming is enabled, packets that arrive on a
+particular interface must be addressed to one of the local IP addresses of
+that interface. All other packets, even ones that are addressed to other local
+addresses of the system, are dropped.</p>
+</li>
+<li><p><b>Disable most network services, and possibly all network services.</b></p><p><hr size="1" noshade><p><b>Note - </b>If your system was installed with the "limited" SMF
+profile, then you can skip this step. Network services, with the exception
+of Solaris Secure Shell, are disabled.</p>
+<hr size="1" noshade></p><p><A NAME="indexterm-1841"></A><A NAME="indexterm-1842"></A>The disabling of network services prevents IP packets from doing
+any harm to the system. For example, an SNMP daemon, a <tt>telnet</tt> connection,
+or an <tt>rlogin</tt> connection could be exploited.</p>
+<p>You
+have two options.</p>
+<ul><li><p>Run the "limited" SMF profile.</p>
+<table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>netservices limited</b></tt></pre>
+</td></table><br></li>
+<li><p>Or, individually disable network services.</p>
+<table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>svcadm disable network/ftp:default</b></tt>
+# <tt><b>svcadm disable network/finger:default</b></tt>
+# <tt><b>svcadm disable network/login:rlogin</b></tt>
+# <tt><b>svcadm disable network/nfs/server:default</b></tt>
+# <tt><b>svcadm disable network/rpc/rstat:default</b></tt>
+# <tt><b>svcadm disable network/smtp:sendmail</b></tt>
+# <tt><b>svcadm disable network/telnet:default</b></tt>
+# <tt><b>svcs | grep network</b></tt>
+online         Aug_02   svc:/network/loopback:default
+...
+online         Aug_09   svc:/network/ssh:default
+...</pre>
+</td></table><br></li>
+</ul>
+</li>
+</ol>
+</li>
+<A NAME="ipsec-mgtasks-sa-1"></A><li><p><b>On each system, add a pair of SAs between
+the two systems.</b></p><p>Choose one of the following options:</p><ul><li><p>Configure IKE to manage the keys for the SAs. Use one of the
+procedures in <A HREF="p119.html#ike-task-7">Configuring IKE (Task Map)</A> to
+configure IKE for the VPN.</p>
+</li>
+<li><p>If you have an overriding reason to manually manage the keys,
+see <A HREF="p109.html#ipsec-mgtasks-13">How to Manually Create IPsec Security Associations</A>.</p>
+</li>
+</ul>
+</li>
+<A NAME="ipsec-mgtasks-nobypass-1"></A><li><p><b>On each system, add IPsec policy.</b></p><p>Edit the <tt>/etc/inet/ipsecinit.conf</tt> file to add the
+IPsec policy for the VPN. To strengthen the policy, see <A HREF="p111.html#ipsec-mgtasks-17">Example 20-7</A>. For additional examples,
+see <A HREF="p110.html#ipsec-mgtasks-31">Example 20-3</A> and following.</p>
+<ol Type="a"><li><p><b><A NAME="indexterm-1843"></A><A NAME="indexterm-1844"></A><A NAME="indexterm-1845"></A><A NAME="indexterm-1846"></A>For example, on the <tt>enigma</tt> system, type
+the following entry into the <tt>ipsecinit.conf</tt> file:</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># LAN traffic to and from this host can bypass IPsec.
+{laddr 10.1.3.3 dir both} bypass {}
+
+# WAN traffic uses ESP with 3DES and MD5.
+{tunnel ip.tun0 negotiate tunnel} 
+ ipsec {encr_algs 3des encr_auth_algs md5 sa shared}</pre>
+</td></table><br></li>
+<li><p><b>On the <tt>partym</tt> system, type the following
+entry into the <tt>ipsecinit.conf</tt> file:</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># LAN traffic to and from this host can bypass IPsec.
+{laddr 10.1.3.3 dir both} bypass {}
+
+# WAN traffic uses ESP with 3DES and MD5.
+{tunnel ip.tun0 negotiate tunnel} 
+ ipsec {encr_algs 3des encr_auth_algs md5 sa shared}</pre>
+</td></table><br></li>
+</ol>
+</li>
+<A NAME="ipsec-mgtask-iptun-1"></A><li><p><b><A NAME="indexterm-1847"></A>On each system, configure the tunnel, <tt>ip.tun0</tt>.</b></p><p>Use the following <tt>ifconfig</tt> commands to create the
+point-to-point interface:</p>
+<table cellpadding="4" border="1" cols="1" width="100%"><td><pre># ifconfig ip.tun0 plumb
+
+# ifconfig ip.tun0 <i>system1-point</i> <i>system2-point</i> \
+tsrc <i>system1-taddr</i> tdst <i>system2-taddr</i></pre>
+</td></table><br><ol Type="a"><li><p><b>For example, on the <tt>enigma</tt> system, type
+the following commands:</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>ifconfig ip.tun0 plumb</b></tt>
+
+# <tt><b>ifconfig ip.tun0 10.16.16.6 10.1.3.3 \</b></tt>
+<tt><b>tsrc 192.168.116.16 tdst 192.168.13.213</b></tt></pre>
+</td></table><br></li>
+<li><p><b>On the <tt>partym</tt> system, type the following
+commands:</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>ifconfig ip.tun0 plumb</b></tt>
+
+# <tt><b>ifconfig ip.tun0 10.1.3.3 10.16.16.6  \</b></tt>
+<tt><b>tsrc 192.168.13.213 tdst 192.168.116.16</b></tt></pre>
+</td></table><br></li>
+</ol>
+</li>
+<A NAME="ipsec-mgtasks-transp-1"></A><li><p><b>Protect the tunnel with the IPsec
+policy that you created.</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>ipsecconf</b></tt></pre>
+</td></table><br></li>
+<li><p><b>Bring up the router for the tunnel.</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>ifconfig ip.tun0 router up</b></tt></pre>
+</td></table><br></li>
+<li><p><b><A NAME="indexterm-1848"></A>On each system, turn on IP forwarding for the <tt>hme1</tt> interface.</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>ifconfig hme1 router</b></tt></pre>
+</td></table><br><p>IP forwarding means that packets that arrive from somewhere else can
+be forwarded. IP forwarding also means that packets that leave this interface
+might have originated somewhere else. To successfully forward a packet, both
+the receiving interface and the transmitting interface must have IP forwarding
+turned on.</p>
+<p>Because the <tt>hme1</tt> interface is <b>inside</b> the intranet, IP forwarding must be turned on for <tt>hme1</tt>. Because <tt>ip.tun0</tt> connects the two systems through
+the Internet, IP forwarding must be turned on for <tt>ip.tun0</tt>.</p>
+<p>The <tt>hme0</tt> interface has its IP forwarding turned off
+to prevent an <b>outside</b> adversary from injecting packets
+into the protected intranet. The <b>outside</b> refers to the
+Internet.</p>
+</li>
+<li><p><b>On each system, ensure that routing protocols do not advertise
+the default route within the intranet.</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>ifconfig hme0 private</b></tt></pre>
+</td></table><br><p>Even if <tt>hme0</tt> has IP forwarding turned off, a routing
+protocol implementation might still advertise the interface. For example,
+the <tt>in.routed</tt> protocol might still advertise that <tt>hme0</tt> is available to  forward packets to its peers inside the intranet.
+By setting the interface's <b>private</b> flag, these advertisements
+are prevented.</p>
+</li>
+<li><p><b>Manually, add a default route over <tt>hme0</tt>.</b></p><p>The default route should be a router with direct access to the Internet.</p>
+<table cellpadding="4" border="1" cols="1" width="100%"><td><pre># route add default <i>router-on-hme0-subnet</i></pre>
+</td></table><br><ol Type="a"><li><p><b>For example, on the <tt>enigma</tt> system, add
+the following route:</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>route add default 192.168.116.4</b></tt></pre>
+</td></table><br></li>
+<li><p><b><A NAME="indexterm-1849"></A><A NAME="indexterm-1850"></A>On the <tt>partym</tt> system, add the following
+route:</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>route add default 192.168.13.5</b></tt></pre>
+</td></table><br><p>Even though the <tt>hme0</tt> interface is not part of the
+intranet, <tt>hme0</tt> does need to reach across the Internet to
+its peer system. To find its peer, <tt>hme0</tt> needs information
+about Internet routing. The VPN system appears to be a host, rather than a
+router, to the rest of the Internet. Therefore, you can use a default router
+or run the router discovery protocol to find a peer system. For more information,
+see the <tt>route</tt>(1M) and <tt>in.routed</tt>(1M) man pages.</p>
+</li>
+</ol>
+</li>
+<li><p><b>Ensure that the VPN starts after a reboot by adding
+an entry to the <tt>/etc/hostname.ip.tun0</tt> file.</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre><i>system1-point system2-point</i> tsrc <i>system1-taddr</i> tdst <i>system2-taddr</i> router up</pre>
+</td></table><br><ol Type="a"><li><p><b>For example, on the <tt>enigma</tt> system, add
+the following entry to the <tt>hostname.ip.tun0</tt> file:</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre>10.16.16.6 10.1.3.3 tsrc 192.168.116.16 tdst 192.168.13.213 router up</pre>
+</td></table><br></li>
+<li><p><b>On the <tt>partym</tt> system, add the following
+entry to the <tt>hostname.ip.tun0</tt> file:</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre>10.1.3.3 10.16.16.6 tsrc 192.168.13.213 tdst 192.168.116.16 router up</pre>
+</td></table><br></li>
+</ol>
+</li>
+<li><p><b>On each system, configure the interface files to pass
+the correct parameters to the routing daemon.</b></p><ol Type="a"><li><p><b>On the enigma system, modify the <tt>/etc/hostname.</tt><i>interface</i> files.</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>cat enigma hostname.hme0</b></tt>
+10.16.16.6 private</pre>
+</td></table><br><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>cat enigma hostname.hme1</b></tt>
+192.168.116.16 router</pre>
+</td></table><br></li>
+<li><p><b>On the partym system, modify the <tt>/etc/hostname.</tt><i>interface</i> files.</b></p><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>cat partym hostname.hme0</b></tt>
+10.1.3.3 private</pre>
+</td></table><br><table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>cat partym hostname.hme1</b></tt>
+192.168.13.213 router</pre>
+</td></table><br></li>
+</ol>
+</li>
+<li><p><b>On each system, run a routing protocol.</b></p><p><A NAME="indexterm-1851"></A><A NAME="indexterm-1852"></A>You might need to configure the routing protocol before enabling
+routing. For more information, see <A HREF="p54.html#ipref-13">Routing Protocols in the Solaris OS</A>. For a procedure, see <A HREF="p20.html#ipconfig-118">How to Configure an IPv4 Router</A>.</p>
+<table cellpadding="4" border="1" cols="1" width="100%"><td><pre># <tt><b>routeadm -e ipv4-routing</b></tt>
+# <tt><b>routeadm -u</b></tt></pre>
+</td></table><br></li>
+</ol><A NAME="ipsec-mgtasks-17"></A><h5>Example 20-7 &nbsp;&nbsp;Requiring IPsec Policy on All Systems on a LAN</h5>
+<p><A NAME="indexterm-1853"></A><A NAME="indexterm-1854"></A><A NAME="indexterm-1855"></A>In this example, the administrator comments out the <tt>bypass</tt> policy
+that was configured in <A HREF="p111.html#ipsec-mgtasks-nobypass-1">Step&nbsp;4</A>,
+thereby strengthening the protection. With this policy configuration, each
+system on the LAN must activate IPsec to communicate with the router.</p>
+<table cellpadding="4" border="1" cols="1" width="100%"><td><pre># LAN traffic must implement IPsec.
+# {laddr 10.1.3.3 dir both} bypass {}
+
+# WAN traffic uses ESP with 3DES and MD5.
+{tunnel ip.tun0 negotiate tunnel} ipsec {encr_algs 3des encr_auth_algs md5}</pre>
+</td></table><br><A NAME="ipsecmgtasks-25"></A><h5>Example 20-8 &nbsp;&nbsp;Using IPsec to Protect Telnet Traffic Differently From SMTP Traffic</h5>
+<p>The first rule protects <tt>telnet</tt> traffic on port 23
+with Blowfish and Sha-1. The second rule protects SMTP traffic on port 25
+with AES and MD5.</p>
+<table cellpadding="4" border="1" cols="1" width="100%"><td><pre>{laddr 10.1.3.3 ulp tcp dport 23 dir both} 
+  ipsec {encr_algs blowfish encr_auth_algs sha1 sa unique}
+{laddr 10.1.3.3 ulp tcp dport 25 dir both} 
+ ipsec {encr_algs aes encr_auth_algs md5 sa unique}</pre>
+</td></table><br><A NAME="ipsecmgtasks-27"></A><h5>Example 20-9 &nbsp;&nbsp;Using an IPsec Tunnel in Tunnel Mode to Protect a Subnet Differently
+From Other Network Traffic</h5>
+<p>The following tunnel configuration protects all traffic from subnet <tt>10.1.3.0/24</tt> across the tunnel.</p>
+<table cellpadding="4" border="1" cols="1" width="100%"><td><pre>{tunnel ip.tun0 negotiate tunnel laddr 10.1.3.0/24} 
+  ipsec {encr_algs aes encr_auth_algs md5 sa shared}</pre>
+</td></table><br><p>The following tunnel configurations protect traffic from subnet <tt>10.1.3.0/24</tt> to different subnets across the tunnel. Subnets that begin with <tt>10.2.</tt><i>x.x</i> are across the tunnel.</p>
+<table cellpadding="4" border="1" cols="1" width="100%"><td><pre>{tunnel ip.tun0 negotiate tunnel laddr 10.1.3.0/24 raddr 10.2.1.0/24} 
+  ipsec {encr_algs blowfish encr_auth_algs md5 sa shared}</pre>
+</td></table><br><table cellpadding="4" border="1" cols="1" width="100%"><td><pre>{tunnel ip.tun0 negotiate tunnel laddr 10.1.3.0/24 raddr 10.2.2.0/24} 
+  ipsec {encr_algs blowfish encr_auth_algs sha1 sa shared}</pre>
+</td></table><br><table cellpadding="4" border="1" cols="1" width="100%"><td><pre>{tunnel ip.tun0 negotiate tunnel laddr 10.1.3.0/24 raddr 10.2.3.0/24} 
+  ipsec {encr_algs aes encr_auth_algs sha1 sa shared}</pre>
+</td></table><br>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr class="suntab"><td></td><td align="right"><A HREF="p110.html"><IMG BORDER="0" ALT="Previous" SRC="graphics/prev.gif"> Previous</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="toc.html">Contents</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="idx.html">Index</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="p112.html">Next <IMG BORDER="0" ALT="Next" SRC="graphics/next.gif"></A></td></tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

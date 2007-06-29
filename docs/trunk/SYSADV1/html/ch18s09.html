@@ -1,0 +1,433 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Registering Your Solaris
+Software With the CLI</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch18.html" title="Chapter 18. Registering Your Solaris Express
+3/06 or 10/05 Software (Tasks)"><link rel="prev" href="ch18s08.html" title="Registering Your Solaris Software With the
+CLI (Task Map)"><link rel="next" href="ch18s10.html" title="Disabling the Solaris Registration (Task Map)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Registering Your Solaris
+Software With the CLI</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch18s08.html">Prev</a> </td><th width="60%" align="center">Chapter 18. Registering Your Solaris Express
+3/06 or 10/05 Software (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch18s10.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gatmi"></a>Registering Your Solaris
+Software With the CLI</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-330"></a>
+<div class="itemizedlist"><p>
+<a class="indexterm" name="indexterm-331"></a>To register by using the CLI, you need to <span class="olink">create a registration profile</span>. Use the profile to
+register your systems. Information about using the CLI is also available in
+the following Solaris man pages:</p><ul type="disc"><li>
+<p>
+<span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">sconadm</span>
+(
+1M
+)
+</span>
+</span>
+</p>
+</li><li>
+<p>
+<span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">registration_profile</span>
+(
+4
+)
+</span>
+</span>
+</p>
+</li><li>
+<p>
+<span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">attributes</span>
+(
+5
+)
+</span>
+</span>
+</p>
+</li><li>
+<p>
+<span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">privileges</span>
+(
+5
+)
+</span>
+</span>
+</p>
+</li></ul></div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2121087"></a></h3></div></div></div>
+
+<div class="task"><a name="gbbts"></a><p class="title"><b>How to Create a <code class="filename">RegistrationProfile</code> File</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Go to the <code class="filename">/usr/lib/breg/data/</code> directory.</p>
+</li><li>
+<p>Copy the  <code class="filename">RegistrationProfile</code> file and save
+it in your <code class="filename">/tmp</code> directory.</p>
+<p>
+<code class="filename">/tmp/RegistrationProfile</code>
+</p>
+</li><li>
+<p>Open the <code class="filename">/tmp/RegistrationProfile</code> file in
+a text editor.</p>
+</li><li>
+<p>Complete the <code class="filename">RegistrationProfile</code> properties,
+as needed, to meet your requirements.</p>
+<p>The following properties
+are in the <code class="filename">RegistrationProfile</code> file:</p>
+<div class="variablelist"><dl><dt><span class="term">
+<span class="property">userName</span>
+</span></dt><dd>
+<p>Sun Online Account user name. Systems registered with this
+profile are identified with this Sun Online Account.</p>
+</dd><dt><span class="term">
+<span class="property">password</span>
+</span></dt><dd>
+<p>Sun Online Account password.</p>
+</dd><dt><span class="term">
+<span class="property">hostName</span>
+</span></dt><dd>
+<p>Portal host name (Portal Common Name).</p>
+</dd><dt><span class="term">
+<span class="property">subscriptionKey</span>
+</span></dt><dd>
+<p>(Optional) Sun support contract ID. A valid subscription key
+or service plan number is required to enable access to all Sun Update Connection services.</p>
+</dd><dt><span class="term">
+<span class="property">portalEnabled</span>
+</span></dt><dd>
+<p>Determines if the local client is managed using the Sun hosted
+Update Connection service. <code class="computeroutput">True</code> enables the Sun Update Connection
+service. <code class="computeroutput">False</code> disables the Sun Update Connection.</p>
+</dd><dt><span class="term">
+<span class="property">proxyHostName</span>
+</span></dt><dd>
+<p>(Optional) Proxy host name,  if your system is connected to
+a network proxy.</p>
+</dd><dt><span class="term">
+<span class="property">proxyPort</span>
+</span></dt><dd>
+<p>(Optional) Proxy port number of the network proxy, if your
+system connects to the Internet through a network proxy.</p>
+</dd><dt><span class="term">
+<span class="property">proxyUserName</span>
+</span></dt><dd>
+<p>(Optional) Network proxy user name.  Network proxy user name.
+The user name is only needed if your network proxy requires authentication.</p>
+</dd><dt><span class="term">
+<span class="property">proxyPassword</span>
+</span></dt><dd>
+<p>(Optional) Network proxy password. The proxy password is only
+needed if your network proxy requires authentication.</p>
+</dd></dl></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>If your network proxy requires authentication, store the network
+proxy password in a <code class="filename">registrationprofile.properties</code> file.
+By storing the password in a file, you prevent the proxy password from becoming
+exposed as part of a process listing by other system users.</p>
+</div>
+</li><li>
+<p>Save your changes.</p>
+</li></ol></div><div class="example"><a name="gbbtf"></a><p class="title"><b>Example 18.1. 
+<code class="filename">RegistrationProfile.properties</code> File</b></p>
+
+
+<p>The following is an example of a completed <code class="filename">RegistrationProfile.properties</code> file:</p>
+<div class="informaltable"> <table border="1"><colgroup><col></colgroup><tbody><tr><td>
+<p>
+<span class="property">userName=</span>
+<code class="literal">soa-username1</code>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">password=</span>
+<code class="literal">SOA-password1</code>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">hostName=</span>
+<code class="literal">evita</code>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">subscriptionKey=</span>
+<code class="literal">abc12345678</code>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">portalEnabled=</span>
+<code class="literal">false</code>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">proxyHostName=</span>
+<code class="literal">webcache.mycompany.com</code>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">proxyPort=</span>
+<code class="literal">8080</code>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">proxyUserName=</span>
+<code class="literal">user123</code>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">proxyPassword=</span>
+<code class="literal">abc123</code>
+</p>
+</td></tr></tbody></table>
+</div>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="regsub"></a>Solaris Software CLI Registration Subcommand Options</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-332"></a>
+<p>The Solaris software CLI registration uses the following command-line options:</p>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+a</code>
+</span></dt><dd>
+<p>Accepts the Terms of Use and the Binary Code License. If you
+do not use the <code class="option">
+a</code> option, you do not accept the Terms of Use
+and the Binary Code License
+and the registration fails.</p>
+</dd><dt><span class="term">
+<code class="option">
+e</code>
+</span></dt><dd>
+<p>Enables software updates with the Sun Update Connection services.</p>
+</dd><dt><span class="term">
+<code class="option">
+E</code>
+</span></dt><dd>
+<p>Disables software updates with the Update Connection services.</p>
+</dd><dt><span class="term">
+<code class="option">
+h</code> <em class="replaceable"><code>portal-name</code></em>
+</span></dt><dd>
+<p>Specifies the portal host name (Portal Common Name) of the
+system to be registered. If a name is not provided, the default is the UNIX
+host name.</p>
+</dd><dt><span class="term">
+<code class="option">
+l</code> <em class="replaceable"><code>logfile</code></em>
+</span></dt><dd>
+<p>Specifies the location of the log file.</p>
+</dd><dt><span class="term">
+<code class="option">
+N</code>
+</span></dt><dd>
+<p>Removes the registration options from your system.</p>
+</dd><dt><span class="term">
+<code class="option">
+p</code> <em class="replaceable"><code>proxy-host:[proxy port]</code></em>
+</span></dt><dd>
+<p>Specifies the proxy host name and optional proxy port number
+of your network proxy, if your system connects to the Internet thorough a
+network proxy.</p>
+</dd><dt><span class="term">
+<code class="option">
+r</code> <em class="replaceable"><code>registration-profile</code></em>
+</span></dt><dd>
+<p>Specifies the full path, or relative path, to the registration
+profile.</p>
+</dd><dt><span class="term">
+<code class="option">
+s</code>
+</span></dt><dd>
+<p>Operates the registration in fail-safe mode. For normal operation,
+do not use the <code class="option">
+s</code> option. If you are running at least the Express 3/06 software, the fail-safe mode is not
+available.</p>
+</dd><dt><span class="term">
+<code class="option">
+u</code>
+</span></dt><dd>
+<p>Specifies the Sun Online Account user name.</p>
+</dd><dt><span class="term">
+<code class="option">
+x</code>
+</span></dt><dd>
+<p>Specifies your network proxy user name. The user name is only
+needed if you use a network proxy, and the proxy requires authentication.</p>
+</dd></dl></div>
+<p>The <code class="option">
+u</code>, <code class="option">
+h</code>, <code class="option">
+e</code>, <code class="option">
+E</code>, <code class="option">
+p</code>, <code class="option">
+x</code> options override the values that are specified
+in the registration profile.  If a property is not specified in the profile
+or on the command line, it is not used.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>To successfully register your Solaris software with the CLI, you
+must always use the <code class="option">
+a</code> option to accept the Terms of Use and
+the Binary Code License.</p>
+</div>
+<div class="example"><a name="id2122122"></a><p class="title"><b>Example 18.2. CLI Command to Register Your Solaris Software Using Your Default
+Options</b></p>
+
+
+<p>To register a system using the properties defined in your <code class="filename">/tmp/registrationprofile.properties</code> file, type the following command:</p>
+<pre class="screen"># <strong class="userinput"><code>/usr/sbin/sconadm register -a -r /tmp/registrationprofile.properties</code></strong>
+</pre>
+</div>
+<div class="example"><a name="id2122149"></a><p class="title"><b>Example 18.3. CLI Command to Register Your Solaris Software Using a Registration
+Subcommand Option to Override a Default Option</b></p>
+
+
+<p>To register your Solaris software with a username that is not defined
+in your <code class="filename">/tmp/registrationprofile.properties</code> file, type
+the following command:</p>
+<pre class="screen"># <strong class="userinput"><code>/usr/sbin/sconadm register -a -r  /tmp
+/registrationprofile.properties -u <em class="replaceable"><code>username</code></em>
+</code></strong>
+</pre>
+</div>
+<div class="example"><a name="gbbtl"></a><p class="title"><b>Example 18.4. CLI Command to Register Your Solaris Software Using
+a Network Proxy Subcommand Option to Override a Default Option</b></p>
+
+
+<p>If you define the <span class="property">proxyHostName</span> property in the
+registration profile as <code class="literal">webcache.mycompany.com</code>,  run the
+following command to change the <span class="property">proxyHostName</span> to <code class="literal">newcache.mycompany.com:</code>
+</p>
+<pre class="screen"># <strong class="userinput"><code>/usr/sbin/sconadm proxy -a -r /tmp
+/registrationprofile.properties -p newcache.mycompany.com</code></strong>
+</pre>
+<p>All proxy settings will use the <code class="option">
+p</code> value of <code class="literal">newcache.mycompany.com</code>.</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2122235"></a></h3></div></div></div>
+
+<div class="task"><a name="gaxwr"></a><p class="title"><b>How to Register Your Solaris Software With the CLI</b></p><a class="indexterm" name="indexterm-333"></a><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>
+<span class="olink">Create a <code class="filename">registrationprofile.properties</code> file</span> in the  <code class="filename">/tmp</code> directory.</p>
+</li><li>
+<p>Run the following command to register your Solaris software:</p>
+<pre class="screen"># <strong class="userinput"><code>/usr/sbin/sconadm register -a -r /tmp/registrationprofile.properties</code></strong>
+</pre>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2122390"></a></h3></div></div></div>
+
+<div class="task"><a name="gaxzd"></a><p class="title"><b>How to Reregister Your Solaris Software With a Different
+User</b></p><a class="indexterm" name="indexterm-334"></a><div class="tasksummary">
+<p>The software registration
+is associated with the Sun Online Account used during registration. You
+can create a new registration profile with a new user and reregister the Solaris software to associate it with a new Sun
+Online Account. You might want to reregister if a user has
+moved to a different department or left the company.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>
+<span class="olink">Create a new registration
+profile</span> in the <code class="filename">/tmp</code> directory.</p>
+</li><li>
+<p>To reregister your Solaris software, run the following command:</p>
+<pre class="screen"># <strong class="userinput"><code>/usr/sbin/sconadm register -a -r /tmp/registrationprofile.properties</code></strong>
+</pre>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2122531"></a></h3></div></div></div>
+
+<div class="task"><a name="gaxwy"></a><p class="title"><b>How to Reregister Your Solaris Software and Add a
+Subscription Key or Service Plan Number</b></p><a class="indexterm" name="indexterm-335"></a><div class="tasksummary">
+<p>You can add a subscription key (also called a <span class="emphasis"><em>service plan
+number</em></span>) to an existing registration profile.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Open the <code class="filename">/tmp/registrationprofile.properties</code> file
+in a text editor. </p>
+</li><li>
+<p>Type your subscription key or service plan number in the subscriptionKey
+property and save your changes.</p>
+</li><li>
+<p>Type the following command to register your Solaris software with
+the subscription key or service plan number:</p>
+<pre class="screen"># <strong class="userinput"><code>/usr/sbin/sconadm register -a -r /tmp/registrationprofile.properties</code></strong>
+</pre>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2122669"></a></h3></div></div></div>
+
+<div class="task"><a name="gaxzc"></a><p class="title"><b>How to Reregister Your Solaris Software to Enable
+Access to All of the Update Connection Services</b></p><a class="indexterm" name="indexterm-336"></a><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Open the <code class="filename">/tmp/registrationprofile.properties</code> file.</p>
+</li><li>
+<p>Change the <span class="property">portalEnabled</span> property to true.</p>
+</li><li>
+<p>Run the following command to access all Update Connection services:</p>
+<pre class="screen"># <strong class="userinput"><code>/usr/sbin/sconadm register -a -r /tmp
+/registrationprofile.properties -e softwareUpdate</code></strong>
+</pre>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2122799"></a></h3></div></div></div>
+
+<div class="task"><a name="gaxwz"></a><p class="title"><b>How to Register Your Solaris Software in Fail-Safe
+Mode</b></p><a class="indexterm" name="indexterm-337"></a><div class="tasksummary">
+<p>If the software registration did not collect all system information,
+use this option to register the software in fail-safe mode.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Fail-safe mode is not available after the Solaris Express 10/05 release.</p>
+</div>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Create a <code class="filename">registrationprofile.properties</code> file
+in the  <code class="filename">/tmp</code> directory.</p>
+</li><li>
+<p>Run the following command in fail-safe mode:</p>
+<pre class="screen"># <strong class="userinput"><code>/usr/sbin/sconadm register -a -r /tmp/registrationprofile.properties -s</code></strong>
+</pre>
+</li></ol></div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch18s08.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch18.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch18s10.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Registering Your Solaris Software With the
+CLI (Task Map) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Disabling the Solaris Registration (Task Map)</td></tr></table></div></body></html>

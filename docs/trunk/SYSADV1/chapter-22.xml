@@ -1,0 +1,3150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="patchmanager-1">
+
+
+
+<title>Managing Solaris Patches by Using Sun Patch
+Manager (Tasks)</title>
+<toc>
+<para>The information in this chapter describes how to manage patches by using
+the Sun Patch Manager tools <emphasis>only</emphasis>. Starting with the Solaris
+10 1/06 and
+the Solaris Express 10/05 releases, use Sun Update Connection,
+System Edition software to manage patches and updates on your systems. The
+Sun Update Connection software has the same functionality as the Sun Patch
+Manager 2.0 tools, with the addition of some new features and enhancements.</para>
+<para>If you are running the initial Solaris 10 release, and you want to use
+Sun Update Connection, install the appropriate patches or upgrade your system
+to the Solaris Express 10/05 release.
+For more information, see the product documentation at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://docs.sun.com/app/docs/coll/1320.1">
+</link>.</para>
+<para>For information about registering your system after you install the
+Solaris software, see <olink remap="external" targetdoc="chapter-18.xml" targetptr="tasks-basics-2">Chapter 18, Registering Your Solaris Express 3/06 or 10/05 Software (Tasks)</olink>.</para>
+<para>For information about managing patches on your Solaris 8 and Solaris
+9 systems, see <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://docs.sun.com/app/docs/coll/1152.1">
+</link>.</para>
+<para>The following information is covered in this chapter:</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="usepatchtoolsclitaskmap">Managing Solaris Patches by Using the Sun Patch Manager Command-Line Interface (Task Map)</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="newfeatures">Patch Manager Features</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="concepts">Sun Patch Manager Concepts</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="getstarted">Getting Started With Patch Manager</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="troubleshooting">Patch Manager Troubleshooting</olink>
+</para>
+</listitem>
+</itemizedlist>
+<para>You must install at least the Developer Solaris Software Group of Solaris
+10 software to use the Sun Patch Manager tool. The Patch Manager software
+is included in the Solaris 10 release.</para>
+<para>If you want to run Patch Manager on a Solaris 8 system, you must install
+at least the End User Solaris Software Group of Solaris 8 software. If you
+want to run Patch Manager on a Solaris 9 system, you must install at least
+the Entire Solaris Software Group of Solaris 9 software. You must also obtain
+the Patch Manager software from the Sun Download Center at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://wwws.sun.com/software/download">
+</link>. <indexterm xml:id="indexterm-424">
+<primary>system requirements</primary>
+<secondary>Patch Manager</secondary>
+</indexterm> <indexterm xml:id="indexterm-425">
+<primary>Patch Manager</primary>
+<secondary>required Solaris software</secondary>
+</indexterm>
+</para>
+<para>For step-by-step instructions for managing Solaris patches by using
+the <command>patchadd</command> command, see <olink remap="external" targetdoc="chapter-23.xml" targetptr="swmgrpatchtasks-1">Chapter 23, Managing Solaris Patches by Using the <command>patchadd</command> Command (Tasks)</olink>.</para>
+<note>
+
+<para>As of this Solaris release, not all Sun patches are available
+through Sun Patch Manager. Such patches include those that do not conform
+to PatchPro standards, and those that have third-party contract restrictions.</para>
+</note>
+</toc>
+<sect1 xml:id="newfeatures">
+<title>Patch Manager Features</title>
+<para>Patch Manager has the following features:</para>
+<itemizedlist>
+<listitem>
+<para>PatchPro analysis engine</para>
+</listitem>
+<listitem>
+<para>Local-mode command-line interface</para>
+</listitem>
+<listitem>
+<para>Patch list operations</para>
+</listitem>
+</itemizedlist>
+<note>
+
+<para>The Sun Update Connection software has the same functionality
+as the Sun Patch Manager 2.0 tools, with the addition of some new features
+and enhancements. If you are running the Solaris 10 initial release, and you
+want to use Sun Update Connection, install the appropriate patches or upgrade
+your system to the Solaris Express 10/05 release.</para>
+<para>For information about installing and using the Sun Update Connection,
+System Edition software, see the product documentation at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://docs.sun.com/app/docs/coll/1320.1">
+</link>.</para>
+</note>
+<sect2 xml:id="ppoverview">
+<title>PatchPro Analysis Engine</title>
+<indexterm xml:id="indexterm-426">
+<primary>Patch Manager</primary>
+<secondary>PatchPro analysis engine</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-427">
+<primary>PatchPro analysis engine</primary>
+</indexterm>
+<para>Patch Manager incorporates <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_patchpro" type="custom-text">
+<emphasis>PatchPro</emphasis>
+</olink> functionality
+to automate the patch management process. This process includes performing
+patch analyses on systems, then downloading and applying the resulting patches.
+This automation functionality was previously available for Solaris 2.6, Solaris
+7, Solaris 8, and Solaris 9 as a separate PatchPro product and is now part
+of the standard Solaris 10 release.</para>
+<para>PatchPro uses signed patches, which improves the security of Solaris
+patches by ensuring that they have not been modified.</para>
+<note>
+
+<para>The <command>pprosetup</command> and <command>pprosvc</command> commands
+are included with Sun Patch Manager 2.0 for transition purposes. It is best <emphasis>not</emphasis> to use these commands and to use the <command>smpatch</command> command
+instead.</para>
+</note>
+</sect2>
+<sect2 xml:id="localmodesmpatch">
+<title>Local-Mode Command-Line Interface</title>
+<indexterm xml:id="indexterm-428">
+<primary>local mode</primary>
+<secondary>
+<command>smpatch</command> in</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-429">
+<primary>
+<command>smpatch</command> command</primary>
+<secondary>running in local mode</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-430">
+<primary>remote mode</primary>
+<secondary>
+<command>smpatch</command> in</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-431">
+<primary>command-line interface</primary>
+<secondary>
+<command>smpatch</command> command</secondary>
+<tertiary>local mode</tertiary>
+</indexterm>
+<note>
+
+<para>On Solaris 8 systems, you can only run <command>smpatch</command> in
+local mode.</para>
+</note>
+<para>Starting with Solaris 9, the <command>smpatch</command> command is available
+in two modes: local mode and remote mode. <emphasis>Local mode</emphasis> can
+only be run on the local system. This mode can be run while the system is
+in single-user or multiuser mode. <emphasis>Remote mode</emphasis> can be
+used to perform tasks on remote systems. Both local mode and remote mode can
+be used by users or roles that have the appropriate authorizations. <indexterm xml:id="indexterm-432">
+<primary>command-line interface</primary>
+<secondary>
+<command>smpatch</command> command</secondary>
+<tertiary>remote mode</tertiary>
+</indexterm>
+</para>
+<para>By default, local mode is run. In local mode, the Solaris WBEM services
+are not used, and none of the authentication options or those options referring
+to remote systems are available. The <command>smpatch</command> command in
+local mode runs faster than in remote mode.</para>
+<para>If you specify any of the remote or authentication options (except for <option>
+L</option>), remote mode is used.</para>
+</sect2>
+<sect2 xml:id="singleuseroperations">
+<title>Single-User Mode Operations in Local
+Mode</title>
+<indexterm xml:id="indexterm-433">
+<primary>local mode</primary>
+<secondary>single-user mode patch operations in</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-434">
+<primary>
+<command>smpatch</command> command</primary>
+<secondary>running in local mode</secondary>
+</indexterm>
+<para>You can use the <command>smpatch add</command> command in local mode
+to apply patches while the system is in single-user mode. Apply patches in
+this way when the patches are associated with the <literal>singleuser</literal> patch
+property, or when you want to apply any patches to a quiet system.</para>
+<para>Use only the <command>smpatch add</command>, <command>smpatch order</command>,
+and <command>smpatch remove</command> commands to manage patches when your
+system is running in single-user mode.</para>
+<para>You can configure your patch management environment while the system
+is running in single-user mode by using the <command>smpatch get</command>, <command>smpatch set</command>, and <command>smpatch unset</command> commands.</para>
+<para>Do not use the <command>smpatch analyze</command>, <command>smpatch
+download</command>, and <command>smpatch update</command> commands while the
+system is running in single-user mode. These commands depend on network services
+that are not available while the system is in single-user mode.</para>
+<para>If you previously used the <command>smpatch update</command> command to update your system with patches, some of the patches
+might not have been applied. Such patches cannot be applied if they do not
+meet the policy for applying patches, and must be applied manually in single-user
+mode.</para>
+<para>To apply the patches while the system is in single-user mode, use the <command>smpatch add</command> command with the <option>
+x idlist=</option> option to
+specify the list of patches to apply.</para>
+<para>You can use the <filename>disallowed_patch_list</filename> file as input
+to the <command>smpatch add</command> command to apply the <literal>singleuser</literal> patches.
+This file, stored in the <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_download_directory" type="custom-text">
+<emphasis>download directory</emphasis>
+</olink>,
+lists any patch that could not be applied by <command>smpatch update</command> while
+the system was in multiuser mode. For example:</para>
+<screen># <userinput>smpatch add -x idlist=/var/sadm/spool/disallowed_patch_list</userinput>
+</screen>
+</sect2>
+<sect2 xml:id="oploverview">
+<title>Patch List Operations</title>
+<indexterm xml:id="indexterm-435">
+<primary>Patch Manager</primary>
+<secondary>patch list operations</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-436">
+<primary>patch list operations</primary>
+</indexterm>
+<para>Patch Manager can create an <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_order" type="custom-text">
+<emphasis>ordered</emphasis>
+</olink> list of patches
+that you can save to a text file and use to perform patch operations.</para>
+<para>You might use a patch list to apply the same set of patches to systems
+that have the same hardware and software configurations. Or, you might create
+a patch list file that contains all pertinent security patches and use the
+patch list to apply those security patches to one or more systems.</para>
+<para>You can create a file that contains an ordered <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_patch_list" type="custom-text">
+<emphasis>patch list</emphasis>
+</olink> by
+using the <command>smpatch</command> command in any of these ways:</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="strong">Perform an analysis of a system –</emphasis> Use
+the <command>smpatch analyze</command> command to <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_analyze" type="custom-text">
+<emphasis>analyze</emphasis>
+</olink> a system
+to generate an ordered list of patches and write it to a file. You can edit
+this file to remove unneeded patches.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Supply a specific list of patches –</emphasis> Use the <command>smpatch analyze</command> command to generate
+an ordered list of patches based on a set of patches that you specify for
+a particular system. The patch list is <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_resolve" type="custom-text">
+<emphasis>resolved</emphasis>
+</olink> by augmenting
+the list with patches on which they depend.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Point to a collection of patches stored
+on a system –</emphasis> Use the <command>smpatch order</command> command
+to produce an ordered list of patches based on a collection of patches stored
+on a system.</para>
+</listitem>
+</itemizedlist>
+<para>If you modify a patch list and the patches are available on your system,
+use the <command>smpatch order</command> command to put the list in an order
+suitable for applying patches. Otherwise, use the <command>smpatch analyze</command> command,
+which also produces an ordered list of patches.</para>
+<para>You can use patch lists as input to the <command>smpatch add</command>, <command>smpatch analyze</command>, <command>smpatch download</command>, <command>smpatch
+order</command>, and <command>smpatch update</command> commands.</para>
+<caution>
+
+<para>The <command>smpatch add</command> command attempts to apply
+all of the patches in the patch list, regardless of the policy for applying
+patches and <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_patch_dependency" type="custom-text">
+<emphasis>patch dependencies</emphasis>
+</olink>.</para>
+</caution>
+</sect2>
+</sect1>
+<sect1 xml:id="concepts">
+<title>Sun Patch Manager Concepts</title>
+<indexterm xml:id="indexterm-437">
+<primary>Patch Manager</primary>
+<secondary>purpose of</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-438">
+<primary>Sun Patch Manager</primary>
+<see>
+Patch Manager</see>
+</indexterm>
+<para>Sun Patch Manager is one of the tools that is used to manage <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_patch" type="custom-text">
+<emphasis>patches</emphasis>
+</olink> on
+Solaris systems.</para>
+<note>
+
+<para>For information about new tools for managing patches and updates
+in this Solaris release, see <olink remap="external" targetdoc="chapter-16.xml" targetptr="gazwe">What's New in Software Management in the Solaris Operating System?</olink>.</para>
+</note>
+<para>Patch Manager primarily operates on <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_signed_patch" type="custom-text">
+<emphasis>signed patches</emphasis>
+</olink>,
+which include a <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_digital_signature" type="custom-text">
+<emphasis>digital signature</emphasis>
+</olink> from Sun Microsystems. A signed patch
+offers greater security than an <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_unsigned_patch" type="custom-text">
+<emphasis>unsigned patch</emphasis>
+</olink>,
+which does not have a digital signature. The digital signature of the patch
+is verified before the patch is applied to your system. A valid digital signature
+ensures that the signed patch that you apply has not been modified since the
+signature was applied. You can use the <command>smpatch add</command> command
+to apply unsigned patches. <indexterm xml:id="indexterm-439">
+<primary>signed patches</primary>
+<secondary>definition of</secondary>
+</indexterm> <indexterm xml:id="indexterm-440">
+<primary>patches</primary>
+<secondary>signed</secondary>
+</indexterm> <indexterm xml:id="indexterm-441">
+<primary>signed patches</primary>
+<secondary>digital signature of</secondary>
+</indexterm> <indexterm xml:id="indexterm-442">
+<primary>digital signature</primary>
+<secondary>of signed patches</secondary>
+</indexterm> <indexterm xml:id="indexterm-443">
+<primary>unsigned patches</primary>
+</indexterm> <indexterm xml:id="indexterm-444">
+<primary>patches</primary>
+<secondary>unsigned</secondary>
+</indexterm>
+</para>
+<sect2 xml:id="patchprocess">
+<title>Patch Management Process</title>
+<indexterm xml:id="indexterm-445">
+<primary>patch management process</primary>
+<secondary>using Patch Manager</secondary>
+</indexterm>
+<para>Patch Manager enables you to manually or automatically perform the <emphasis>patch management process</emphasis>, which includes the following tasks:</para>
+<itemizedlist>
+<listitem>
+<para>Updating your system with some or all of the appropriate patches,
+which automatically analyzes the system to determine the appropriate patches,
+downloads the patches, and applies the patches to the system</para>
+</listitem>
+<listitem>
+<para>Analyzing the system to obtain a list of appropriate patches</para>
+</listitem>
+<listitem>
+<para>Downloading the appropriate patches to your system</para>
+</listitem>
+<listitem>
+<para>Applying the appropriate patches to your system</para>
+</listitem>
+<listitem>
+<para>Configuring the patch management environment for your system</para>
+</listitem>
+<listitem>
+<para>Tuning the patch management environment for your system</para>
+</listitem>
+<listitem>
+<para>Removing patches from your system</para>
+</listitem>
+</itemizedlist>
+<para>For information about recommended strategies and practices for using
+Solaris patches, go to <olink remap="external" targetdoc="817-0574">
+<citetitle remap="book">Solaris Patch Management:  Recommended Strategies</citetitle>
+</olink>.</para>
+<sect3 xml:id="updatingsystem">
+<title>Automatically Updating Your System With
+Patches</title>
+<indexterm xml:id="indexterm-446">
+<primary>patch management process</primary>
+<secondary>updating a system with patches</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-447">
+<primary>applying patches</primary>
+<secondary>automatically</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-448">
+<primary>downloading</primary>
+<secondary>patches</secondary>
+<tertiary>automatically</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-449">
+<primary>updating a system with patches</primary>
+</indexterm>
+<para>Patch Manager can automatically apply the set of appropriate patches
+to your system. An update performs these steps in the patch management process:</para>
+<itemizedlist>
+<listitem>
+<para>Analyzes your system to determine which patches are appropriate</para>
+</listitem>
+<listitem>
+<para>Downloads those patches to your system</para>
+</listitem>
+<listitem>
+<para>Applies only the patches that meet the policy for applying
+patches</para>
+</listitem>
+</itemizedlist>
+<para>After a patch has been successfully applied, the downloaded patch is
+removed from the download directory.</para>
+<para>Patches are applied to your system depending on the specified policy
+and the patch properties associated with the patches that are downloaded.</para>
+<para>If a patch does not meet the <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_patch_policy" type="custom-text">
+<emphasis>policy for applying patches</emphasis>
+</olink>,
+the patch is not applied. Instead, a patch entry for that patch is written
+to the <filename>disallowed_patch_list</filename> file in the download directory.
+Sun Patch Manager continues trying to apply the other patches. Later, you
+can go to the download directory and use the <command>smpatch add</command> command
+to manually apply any disallowed patches that are listed in this file. For
+any of the patches that have the <literal>interactive</literal> property set,
+follow the instructions in the patch's README file to apply them.</para>
+<para>For example, you can bring your system to single-user mode and apply
+the patches listed in the <filename>disallowed_patch_list</filename> file
+by typing the following:</para>
+<screen># <userinput>smpatch add -x idlist=/var/sadm/spool/disallowed_patch_list</userinput>
+</screen>
+<para>Instead of performing an <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_update" type="custom-text">
+<emphasis>update</emphasis>
+</olink>, you can perform
+the analyze, download, and apply tasks manually by using the <command>smpatch</command> command.
+These tasks are described in the following sections.</para>
+</sect3>
+<sect3 xml:id="analyzesystem">
+<title>Analyzing Your System</title>
+<indexterm xml:id="indexterm-450">
+<primary>patch management process</primary>
+<secondary>analyzing system for patches</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-451">
+<primary>analyzing system for patches</primary>
+</indexterm>
+<para>Before you can apply patches to your system, you can determine which
+patches are needed. You can use Patch Manager to perform a <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_analyze" type="custom-text">
+<emphasis>patch analysis</emphasis>
+</olink> of
+your system to obtain a list of appropriate patches.</para>
+<para>Patch Manager uses analysis modules and a list of available patches
+from the source of patches, which is the SunSolve Online web site by default,
+to perform the analysis of your Solaris system. For information about the
+source of patches, see <olink remap="internal" targetdoc="chapter-22.xml" targetptr="sourceofpatches">Specifying the Source of Patches</olink>.</para>
+<para>Based on the result of the analysis, the patches can be downloaded and
+applied to your system.</para>
+<para>Sometimes a patch depends on another patch, that is, the first patch
+cannot be applied to the system until the other patch is applied. The first
+patch is said to have a <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_patch_dependency" type="custom-text">
+<emphasis>dependency</emphasis>
+</olink> on
+the second patch. When Patch Manager analyzes your system, it checks for patch
+dependencies and automatically includes all patches in the resulting list.
+If you request a system analysis based on particular patches, Patch Manager
+adds any patches to the list that are needed to resolve patch dependencies.</para>
+<note>
+
+<para>The list of patches that is generated by the analysis is based
+on all of the available patches from the Sun patch server. No explicit information
+about your host system or its network configuration is transmitted to Sun.
+Only a request for the Sun patch set is transmitted. The patch set is scanned
+for patches that are appropriate for this host system, the results are displayed,
+and those patches are optionally downloaded.</para>
+</note>
+</sect3>
+<sect3 xml:id="downloadpatches">
+<title>Downloading Patches to Your System</title>
+<indexterm xml:id="indexterm-452">
+<primary>downloading</primary>
+<secondary>patches</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-453">
+<primary>patch management process</primary>
+<secondary>downloading patches to a system</secondary>
+</indexterm>
+<para>Before you apply patches to your system, you must <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_download" type="custom-text">
+<emphasis>download</emphasis>
+</olink> the patches
+that you want from the Sun patch server to that system.</para>
+<para>You can download patches from the Sun patch server based on an analysis
+of the system, or you can specify particular patches to download.</para>
+</sect3>
+<sect3 xml:id="applypatches">
+<title>Applying Patches to Your System</title>
+<indexterm xml:id="indexterm-454">
+<primary>patch management process</primary>
+<secondary>applying patches to a system</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-455">
+<primary>applying patches</primary>
+</indexterm>
+<para>Patch Manager can <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_apply" type="custom-text">
+<emphasis>apply</emphasis>
+</olink> patches to your system.</para>
+<para>If you use the <command>smpatch add</command> command to apply particular
+patches, it attempts to apply only those patches that you specified. The <command>smpatch add</command> command does not attempt to resolve patch dependencies.
+If you want to apply a patch that has a missing dependency, the patch is not
+applied. You can use the <command>smpatch analyze</command> command or the <command>smpatch update</command> command to resolve patch dependencies.</para>
+</sect3>
+<sect3 xml:id="removepatches">
+<title>Removing Patches From Your System</title>
+<indexterm xml:id="indexterm-456">
+<primary>patch management process</primary>
+<secondary>removing a patch from a system</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-457">
+<primary>removing</primary>
+<secondary>patches</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-458">
+<primary>backing out</primary>
+<see>
+removing</see>
+</indexterm>
+<para>You might want to remove (or <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_backout" type="custom-text">
+<emphasis>back out</emphasis>
+</olink>) a patch
+that you previously applied to your system. Patch Manager enables you to remove
+patches.</para>
+<para>When you remove a patch, the Solaris patch tools restore all of the
+files that have been modified by that patch, unless any of the following are
+true:</para>
+<itemizedlist>
+<listitem>
+<para>The patch was applied by the <command>patchadd -d</command> command,
+which instructs <command>patchadd</command> <emphasis>not</emphasis> to save
+copies of files being updated or replaced.</para>
+</listitem>
+<listitem>
+<para>The patch was applied by the <command>patchadd</command> command
+without using the <option>
+d</option> option and the backout files that were
+generated have since been removed.</para>
+</listitem>
+<listitem>
+<para>The patch has been <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_patch_obsolescence" type="custom-text">
+<emphasis>obsoleted</emphasis>
+</olink> by
+a later patch.</para>
+</listitem>
+<listitem>
+<para>The patch is required by another patch.</para>
+</listitem>
+</itemizedlist>
+<para>The Solaris patch tools call the <command>pkgadd</command> command to
+restore <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_package" type="custom-text">
+<emphasis>packages</emphasis>
+</olink> that were saved when the patch was initially applied.</para>
+<para>During the patch removal process, the <command>patchrm</command> command
+logs the backout process in the <filename>/tmp/backoutlog.</filename>
+<replaceable>process-id</replaceable> file. This log file is automatically removed if the
+patch is successfully removed.</para>
+<para>Note that you can only
+remove <emphasis>one</emphasis> patch at a time when you use the <command>smpatch
+remove</command> command.</para>
+<note>
+
+<para>If you attempt to remove a patch on which other patches depend,
+it is not removed. If you remove all of the patches that depend upon this
+patch, then you can remove it.</para>
+</note>
+</sect3>
+</sect2>
+<sect2 xml:id="sourceofpatches">
+<title>Specifying the Source of Patches</title>
+<indexterm xml:id="indexterm-459">
+<primary>patches</primary>
+<secondary>source of</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-460">
+<primary>source of patches</primary>
+</indexterm>
+<indexterm xml:id="indexterm-461">
+<primary>source of patches</primary>
+<secondary>patch server</secondary>
+<tertiary>specifying</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-462">
+<primary>source of patches</primary>
+<secondary>patch server</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-463">
+<primary>source of patches</primary>
+<secondary>local collection of patches</secondary>
+</indexterm>
+<para>When you use Patch Manager, your client systems must have access to
+Solaris patches and patch data. Both client systems and local patch servers
+can obtain patches from these sources:</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="strong">Patch server –</emphasis> A
+server that provides access to Solaris patches and patch data. <indexterm xml:id="indexterm-464">
+<primary>server</primary>
+<secondary>patch</secondary>
+</indexterm> </para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Local collection of patches –</emphasis> A
+collection of patches and patch data that is stored in a directory available
+to the local system. Such a directory might be a local directory, a shared
+network directory, or a CD mounted on your local system.</para>
+</listitem>
+</itemizedlist>
+<para>The default source of patches for client systems is the Sun patch server.
+As a result, any client system that obtains patches from the Sun patch server
+must be connected, either directly or through a <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_web_proxy" type="custom-text">
+<emphasis>web proxy</emphasis>
+</olink>, to
+the Internet.</para>
+<para>You can use a combination of different patch sources to configure these
+patch management environments.</para>
+<para>Clients access patches and patch data from the following sources:</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="strong">Sun patch server –</emphasis> Your
+client systems obtain patches from the Sun patch server.</para>
+<para>This
+configuration requires that your client systems are connected, directly or
+through a web proxy, to the Internet.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Local collection of patches –</emphasis> Your
+client systems obtain patches and patch data from a collection of patches
+on your local system.</para>
+<para>This configuration does not require that
+the client systems be connected to the Internet.</para>
+</listitem>
+</itemizedlist>
+<para>For instructions on specifying the source of patches for your client
+system, see  or <olink remap="internal" targetdoc="chapter-22.xml" targetptr="patchsourcecliproc">How to Specify the Source of Patches (Command Line)</olink>.</para>
+</sect2>
+<sect2 xml:id="patchpolicy">
+<title>Customizing the Policy for Applying Patches</title>
+<indexterm xml:id="indexterm-465">
+<primary>policy for applying patches</primary>
+</indexterm>
+<indexterm xml:id="indexterm-466">
+<primary>applying patches</primary>
+<secondary>policy for</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-467">
+<primary>changing</primary>
+<secondary>policy for applying patches</secondary>
+</indexterm>
+<para>Patch Manager enables you to customize a policy for applying patches
+to use when updating your system. The policy determines the types of patches
+that can be applied during an update operation. <indexterm xml:id="indexterm-468">
+<primary>policy for applying patches</primary>
+<secondary>changing</secondary>
+</indexterm>
+</para>
+<para>Solaris patches are classified as being standard or nonstandard. A <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_standard_patch" type="custom-text">
+<emphasis>standard
+patch</emphasis>
+</olink> can be applied to your Solaris system when running
+in multiuser mode. A reboot is not required. Such a patch is associated with
+the <literal>standard</literal> patch property. <indexterm xml:id="indexterm-469">
+<primary>standard patch</primary>
+</indexterm> <indexterm xml:id="indexterm-470">
+<primary>patches</primary>
+<secondary>standard</secondary>
+</indexterm> <indexterm xml:id="indexterm-471">
+<primary>patches</primary>
+<secondary>nonstandard</secondary>
+</indexterm> <indexterm xml:id="indexterm-472">
+<primary>nonstandard patches</primary>
+</indexterm>
+</para>
+<para>A <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_nonstandard_patch" type="custom-text">
+<emphasis>nonstandard patch</emphasis>
+</olink> has one of the following characteristics:</para>
+<itemizedlist>
+<listitem>
+<para>The patch is associated with one or more of the <literal>rebootafter</literal>, <literal>rebootimmediate</literal>, <literal>reconfigafter</literal>, <literal>reconfigimmediate</literal>, and <literal>singleuser</literal> properties.
+Such a nonstandard patch can be applied during an update operation if permitted
+by the policy.</para>
+</listitem>
+<listitem>
+<para>The patch is associated with the <literal>interactive</literal> property.
+Such a patch cannot be applied by using the <command>smpatch update</command> command.
+You can use the <command>smpatch add</command> command or the <command>patchadd</command> command
+to apply such a patch.</para>
+</listitem>
+</itemizedlist>
+<note>
+
+<para>As of this Solaris release, not all Sun patches are available
+through Sun Patch Manager. Such patches include those that do not conform
+to PatchPro standards, and those that have third-party contract restrictions.</para>
+</note>
+<para>You can specify the types of patches that Patch Manager can apply during
+an update. Such patches might include those that require a reboot or those
+that must be applied while the system is in single-user mode.</para>
+<para>For descriptions of the following patch properties, see the <olink remap="external" targetdoc="819-2240" targetptr="smpatch-1m">
+<citerefentry>
+<refentrytitle>smpatch</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man page. <indexterm xml:id="indexterm-473">
+<primary>Patch Manager</primary>
+<secondary>patch properties</secondary>
+</indexterm> <indexterm xml:id="indexterm-474">
+<primary>patch properties</primary>
+<secondary>Patch Manager</secondary>
+</indexterm>
+</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>interactive</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>rebootafter</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>reconfigafter</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>rebootimmediate</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>reconfigimmediate</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>singleuser</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>standard</literal>
+</para>
+</listitem>
+</itemizedlist>
+</sect2>
+<sect2 xml:id="configproperties">
+<title>Setting Patch Manager Configuration Parameters</title>
+<indexterm xml:id="indexterm-475">
+<primary>Patch Manager</primary>
+<secondary>configuration parameters</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-476">
+<primary>configuration parameters</primary>
+<secondary>Patch Manager</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-477">
+<primary>setting</primary>
+<secondary>Patch Manager configuration parameters</secondary>
+</indexterm>
+<para>You can use the <command>smpatch</command> command to set the following
+Patch Manager parameters.</para>
+<variablelist termlength="wholeline">
+<varlistentry>
+<term>
+<literal>patchpro.patchset</literal>
+</term>
+<listitem>
+<para>Name of the patch set to use. The default name is <literal>patchdb</literal>.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>patchpro.download.directory</literal>
+</term>
+<listitem>
+<para>Path of the directory where downloaded patches are stored
+and from which patches are applied. The default location is <filename>/var/sadm/spool</filename>.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>patchpro.backout.directory</literal>
+</term>
+<listitem>
+<para>Path of the directory where patch backout data is saved. When
+a patch is removed, the data is retrieved from this directory as well. By
+default, backout data is saved in the package directories.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>patchpro.patch.source</literal>
+</term>
+<listitem>
+<para>URL that points to the collection of patches. The default
+URL is that of the Sun patch server, <literal>https://updateserver.sun.com/solaris/</literal>.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>patchpro.sun.user</literal>
+</term>
+<listitem>
+<para>The Sun user name that you use to obtain patches. You obtain
+this user name by registering at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://sunsolve.sun.com">
+</link>.
+By default, you are not permitted to access contract patches.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>patchpro.sun.passwd</literal>
+</term>
+<listitem>
+<para>Password used with your Sun user name. No default password
+is set. If you specify your Sun user name, you must also specify your password.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>patchpro.proxy.host</literal>
+</term>
+<listitem>
+<para>Host name of your web proxy. By default, no web proxy is specified,
+and a direct connection to the Internet is assumed.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>patchpro.proxy.port</literal>
+</term>
+<listitem>
+<para>Port number used by your web proxy. By default, no web proxy
+is specified, and a direct connection to the Internet is assumed. The default
+port is <literal>8080</literal>.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>patchpro.proxy.user</literal>
+</term>
+<listitem>
+<para>Your user name used by your web proxy for authentication.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>patchpro.proxy.passwd</literal>
+</term>
+<listitem>
+<para>Password used by your web proxy for authentication.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>patchpro.install.types</literal>
+</term>
+<listitem>
+<para>Your policy for applying patches. The value is a list of zero
+or more colon-separated patch properties that are permitted to be applied
+by an update operation (<command>smpatch update</command>).</para>
+<para>By default, patches that have the <literal>standard</literal>, <literal>rebootafter</literal>, and <literal>reconfigafter</literal> properties can be applied.
+See <olink remap="internal" targetdoc="chapter-22.xml" targetptr="patchpolicy">Customizing the Policy for Applying Patches</olink>.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+</sect1>
+<sect1 xml:id="getstarted">
+<title>Getting Started With Patch Manager</title>
+<indexterm xml:id="indexterm-478">
+<primary>getting started</primary>
+<secondary>Patch Manager</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-479">
+<primary>Patch Manager</primary>
+<secondary>getting started</secondary>
+</indexterm>
+<para>To determine which method is best for downloading and applying patches
+to your system, see <olink remap="external" targetdoc="chapter-21.xml" targetptr="swmgrpatchconcepts-169">Selecting the Best Method for Applying Patches and Updates</olink>.</para>
+<para>To get started using Patch Manager, find the situation that best describes
+your patch management environment.</para>
+<itemizedlist>
+<listitem>
+<para>Your client system is directly connected to the Internet.</para>
+<para>You are ready to manage patches by using Patch Manager. See <olink remap="internal" targetdoc="chapter-22.xml" targetptr="accesspatchtoolscli">Accessing the Sun Patch Manager Command-Line Interface</olink>.</para>
+</listitem>
+<listitem>
+<para>Your client system is connected to the Internet by means of
+a web proxy.</para>
+<para>You must first specify the host name and port of
+the web proxy. If required, also specify the user name and password associated
+with the web proxy. See  <olink remap="internal" targetdoc="chapter-22.xml" targetptr="webproxycliproc">How to Specify Your Web Proxy (Command Line)</olink>.</para>
+<para>After you change your configuration,
+see <olink remap="internal" targetdoc="chapter-22.xml" targetptr="accesspatchtoolscli">Accessing the Sun Patch Manager Command-Line Interface</olink>.</para>
+</listitem>
+<listitem>
+<para>You need a user name and a password to access patches from
+the Sun patch server.</para>
+<para>If you need to obtain a user name and password,
+register at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://sunsolve.sun.com">
+</link>.</para>
+<para>Then, specify the user name and password for each client system on which
+you run Patch Manager. See  <olink remap="internal" targetdoc="chapter-22.xml" targetptr="patchaccountcliproc">How to Specify a User Name and Password With Which to Obtain Patches (Command Line)</olink>.</para>
+<para>After you change
+your configuration, see  <olink remap="internal" targetdoc="chapter-22.xml" targetptr="accesspatchtoolscli">Accessing the Sun Patch Manager Command-Line Interface</olink>.</para>
+</listitem>
+</itemizedlist>
+<sect2 xml:id="featuresummary">
+<title>Tasks
+Supported by Sun Patch Manager</title>
+<indexterm xml:id="indexterm-480">
+<primary>Patch Manager</primary>
+<secondary>summary of features</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-481">
+<primary>Patch Manager</primary>
+<secondary>comparison of interfaces</secondary>
+</indexterm>
+<para>The following tasks are supported by Sun Patch Manager:</para>
+<itemizedlist>
+<listitem>
+<para>Performing patch management operations on a remote system</para>
+<para>You can use the <command>smpatch</command> command in remote mode to
+perform patch management operations on a remote system. In local mode, the <command>smpatch</command> command can only be run on the local system.</para>
+</listitem>
+<listitem>
+<para>Analyzing a system for patches</para>
+</listitem>
+<listitem>
+<para>Performing scheduled patch analyses</para>
+<para>Use the <command>cron</command> command to run the <command>smpatch analyze</command> command.</para>
+</listitem>
+<listitem>
+<para>Downloading individual patches</para>
+</listitem>
+<listitem>
+<para>Resolving patch dependencies</para>
+<para>Run <command>smpatch
+update</command> or <command>smpatch analyze -i</command> <replaceable>patch-id</replaceable> to
+resolve patch dependencies. Note that if you run <command>smpatch add</command>,
+patch dependencies are <emphasis>not</emphasis> resolved. </para>
+</listitem>
+<listitem>
+<para>Updating a system with patches</para>
+</listitem>
+<listitem>
+<para>Running while the system is in single-user mode (limited operations
+of local mode with <command>smpatch</command> only).</para>
+</listitem>
+<listitem>
+<para>Operating on patch lists</para>
+</listitem>
+<listitem>
+<para>Configuring the patch management environment for your system</para>
+</listitem>
+</itemizedlist>
+</sect2>
+</sect1>
+<sect1 xml:id="usepatchtoolsclitaskmap">
+<title>Managing Solaris Patches by Using
+the Sun Patch Manager Command-Line Interface (Task Map)</title>
+<para>The following table identifies the tasks that you might perform when
+you use the Sun Patch Manager <command>smpatch</command> command-line interface.</para>
+<note>
+
+<para>You can use the Sun Update Connection, System Edition software
+to manage patches and updates on your Solaris systems. The Sun Update Connection
+software has the same functionality as the Sun Patch Manager 2.0 tools, with
+the addition of some new features and enhancements. For more information,
+see <olink remap="external" targetdoc="chapter-16.xml" targetptr="gazwe">What's New in Software Management in the Solaris Operating System?</olink>.</para>
+</note>
+<informaltable frame="all">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec0" colwidth="30.31*"/>
+<colspec colname="colspec1" colwidth="40.94*"/>
+<colspec colname="colspec2" colwidth="27.74*"/>
+<thead>
+<row>
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Access the command-line interface.</para>
+</entry>
+<entry>
+<para>If you want to perform patch management tasks on the command-line, use
+the <command>smpatch</command> command.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="accesspatchtoolscli">Accessing the Sun Patch Manager Command-Line Interface</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Configure the patch management environment for your system.</para>
+</entry>
+<entry>
+<para>By default, your system is assumed to be connected directly to the Internet
+and configured to obtain patches from the Sun patch server.</para>
+<para>If this is not true for your system, change the configuration settings
+to match your environment.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="configpatchenvclitaskmap">Configuring Your Patch Management Environment by Using the Command-Line Interface (Task Map)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Manage patches on your system.</para>
+</entry>
+<entry>
+<para>You can use the command-line interface to perform an analysis of your
+system, apply one or more patches, find patch dependencies, order patch lists,
+and remove patches.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="managepatchesclitaskmap">Managing Patches by Using the Command-Line Interface (Task Map)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>(Optional) Tune the patch management environment for your system.</para>
+</entry>
+<entry>
+<para>Change some optional configuration settings, such as the policy for
+applying patches.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="tunepatchenvclitaskmap">Tuning Your Patch Management Environment by Using the Command-Line Interface (Task Map)</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect1>
+<sect1 xml:id="accesspatchtoolscli">
+<title>Accessing the Sun Patch Manager Command-Line
+Interface</title>
+<indexterm xml:id="indexterm-482">
+<primary>accessing</primary>
+<secondary>patch management tools</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-483">
+<primary>command-line interface</primary>
+<secondary>accessing <command>smpatch</command>
+</secondary>
+</indexterm>
+<caution>
+
+<para>Do <emphasis>not</emphasis> run simultaneous Patch Manager
+operations on your system because it might become unstable. Do not interrupt
+a patch operation once it has started. If a patch operation is running, you
+must wait for that operation to complete before starting another operation.</para>
+</caution>
+<para>You can run either the local mode or remote mode <command>smpatch</command> command
+as a user with the appropriate authorizations, such as superuser, or by assuming
+a role that includes the appropriate profiles.</para>
+<para>A user must have the <literal>solaris.admin.patchmgr.*</literal> authorization
+to run the <command>smpatch</command> command.</para>
+<para>The System Administrator profile includes the appropriate profiles.
+To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+<note>
+
+<para>The <command>pprosetup</command> and <command>pprosvc</command> commands
+are included with Sun Patch Manager 2.0 for transition purposes. It is best <emphasis>not</emphasis> to use these commands and to use the <command>smpatch</command> command
+instead.</para>
+</note>
+<para>For more information about <command>smpatch</command> command-line options,
+see the <olink remap="external" targetdoc="819-2240" targetptr="smpatch-1m">
+<citerefentry>
+<refentrytitle>smpatch</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+<sect2>
+<title/>
+<task id="accesspmcliproc">
+
+<title>How to Access the Sun Patch Manager Command-Line
+Interface (Command Line)</title>
+<indexterm xml:id="indexterm-484">
+<primary>accessing</primary>
+<secondary>
+<command>smpatch</command> command</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-485">
+<primary>adding</primary>
+<secondary>patches</secondary>
+<see>
+applying patches</see>
+</indexterm>
+<tasksummary>
+<para>By default, the <command>smpatch</command> command runs in local mode.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Decide whether to manage patches on the local system or on a remote
+system.</para>
+<itemizedlist>
+<listitem>
+<para>If you want to manage patches on the local system only, go
+to Step 2.</para>
+</listitem>
+<listitem>
+<para>If you want to manage patches on a remote system, go to Step
+4.</para>
+<para>The Solaris WBEM services must be running on the remote system.</para>
+</listitem>
+</itemizedlist>
+</step>
+<step>
+<para>Log in to a system as a user with appropriate authorizations or
+assume a role with the appropriate authorizations.</para>
+<para>Note that you
+must be an appropriately authorized user to assume an appropriate role. See <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Run the <command>smpatch</command> command you want.</para>
+<para>For
+example:</para>
+<screen>$ <userinput>smpatch analyze</userinput>
+</screen>
+</step>
+<step>
+<para>Log in to a system as a user who is appropriately authorized or
+is permitted to assume a role that is appropriately authorized.</para>
+</step>
+<step>
+<para>Run the <command>smpatch</command> command with the <option>
+n</option> option
+to specify the name of the system on which to operate.</para>
+<para>For example:</para>
+<screen>$ <userinput>smpatch analyze -n <replaceable>system-name</replaceable>
+</userinput>
+</screen>
+<para>To perform the operation with an assumed role, type:</para>
+<screen>$ <userinput>smpatch analyze -r <replaceable>role-name</replaceable> -n <replaceable>system-name</replaceable>
+</userinput>
+</screen>
+</step>
+</procedure>
+<example xml:id="accesscliexample">
+
+<title>Accessing the Sun Patch Manager Command-Line Interface</title>
+<para>The following examples use the <command>smpatch get</command> command,
+which lists the configuration settings for your patch management environment.</para>
+<para>This example shows how to run the <command>smpatch</command> command
+on the local system.</para>
+<screen># <userinput>smpatch get</userinput>
+</screen>
+<para>This example shows how an authorized user can run the <command>smpatch</command> command
+on the remote system called <literal>jupiter</literal>.</para>
+<screen># <userinput>smpatch get -n jupiter</userinput>
+</screen>
+<para>This example shows how you can run the <command>smpatch</command> command
+on the remote system called <literal>jupiter</literal> as the role <literal>patcher</literal>.</para>
+<screen># <userinput>smpatch get -r patcher -n jupiter</userinput>
+</screen>
+</example>
+<taskrelated>
+
+<title>What to Do Next</title>
+<para>You can use the <command>smpatch</command> command to configure the
+patch management environment for your system and manage patches. See the following:</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="configpatchenvclitaskmap">Configuring Your Patch Management Environment by Using the Command-Line Interface (Task Map)</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="managepatchesclitaskmap">Managing Patches by Using the Command-Line Interface (Task Map)</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="tunepatchenvclitaskmap">Tuning Your Patch Management Environment by Using the Command-Line Interface (Task Map)</olink>
+</para>
+</listitem>
+</itemizedlist>
+</taskrelated>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="configpatchenvclitaskmap">
+<title>Configuring Your Patch Management
+Environment by Using the Command-Line Interface (Task Map)</title>
+<indexterm xml:id="indexterm-486">
+<primary>configuring</primary>
+<secondary>patch management environment</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-487">
+<primary>command-line interface</primary>
+<secondary>configuring patch management environment</secondary>
+</indexterm>
+<para>Use the <command>smpatch</command> command to perform the configuration
+tasks in this section. For the list of configuration parameters you can set,
+see <olink remap="internal" targetdoc="chapter-22.xml" targetptr="configproperties">Setting Patch Manager Configuration Parameters</olink> and the <olink remap="external" targetdoc="819-2240" targetptr="smpatch-1m">
+<citerefentry>
+<refentrytitle>smpatch</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+<note>
+
+<para>You can use the Sun Update Connection, System Edition software
+to manage patches and updates on your Solaris system. The Sun Update Connection
+software has the same functionality as the Sun Patch Manager 2.0 tools, with
+the addition of some new features and enhancements. For more information,
+see <olink remap="external" targetdoc="chapter-16.xml" targetptr="gazwe">What's New in Software Management in the Solaris Operating System?</olink>.</para>
+</note>
+<para>By default, the patch management environment is configured to obtain
+patches directly from the Sun patch server. Therefore, you must customize
+your environment if your system does one or more of the following:</para>
+<itemizedlist>
+<listitem>
+<para>Connects to the Internet by means of a web proxy</para>
+</listitem>
+<listitem>
+<para>Requires a user name and password to obtain patches</para>
+</listitem>
+<listitem>
+<para>Obtains patches from a patch source other than the Sun patch
+server</para>
+</listitem>
+</itemizedlist>
+<para>The following table identifies the tasks that you might perform when
+you configure the patch management environment for your system.</para>
+<informaltable frame="all">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec0" colwidth="30.31*"/>
+<colspec colname="colspec1" colwidth="40.94*"/>
+<colspec colname="colspec2" colwidth="27.74*"/>
+<thead>
+<row>
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para> Specify the web proxy to use.</para>
+</entry>
+<entry>
+<para>If your system is connected to the Internet through a web proxy, you
+must specify the web proxy that is used to access the Sun patch server.</para>
+<para>By default, no web proxy is specified.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="webproxycliproc">How to Specify Your Web Proxy (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Specify the user and password needed to provide authentication for the
+web proxy.</para>
+</entry>
+<entry>
+<para>If your web proxy requires authentication, you must specify the web
+proxy user that is needed for authentication.</para>
+<para>By default, no web proxy user is specified.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="webproxycliproc">How to Specify Your Web Proxy (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Specify the user and password needed to obtain patches from the Sun
+patch server.</para>
+</entry>
+<entry>
+<para>If you needed a user and password to obtain patches, you must specify
+the user name and password.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="patchaccountcliproc">How to Specify a User Name and Password With Which to Obtain Patches (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para> Specify the source of patches for your system.</para>
+</entry>
+<entry>
+<para>Your system can obtain patches from one of the following sources:</para>
+<itemizedlist>
+<listitem>
+<para>Sun patch server</para>
+</listitem>
+<listitem>
+<para>Local collection of patches</para>
+</listitem>
+</itemizedlist>
+<para>The default source of patches for your system is the Sun patch server.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="patchsourcecliproc">How to Specify the Source of Patches (Command Line)</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<note>
+
+<para>The following procedures and examples show how to run the local
+mode <command>smpatch</command> command, which is run by default. To run the
+remote mode version, use any of the authentication options (except for <option>
+L</option>)
+or the remote options. See the <olink remap="external" targetdoc="819-2240" targetptr="smpatch-1m">
+<citerefentry>
+<refentrytitle>smpatch</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+</note>
+<sect2>
+<title/>
+<task id="webproxycliproc">
+
+<title>How to Specify Your Web Proxy (Command Line)</title>
+<indexterm xml:id="indexterm-488">
+<primary>web proxy</primary>
+<secondary>specifying</secondary>
+</indexterm>
+<tasksummary>
+<para>If your system connects to the Internet through a web proxy, you must
+provide information about the web proxy to Patch Manager.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Obtain the host name and the port of the web proxy from your network
+administrator.</para>
+</step>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Specify the web proxy.</para>
+<screen># <userinput>smpatch set patchpro.proxy.host=<replaceable>web-proxy-server</replaceable> \
+patchpro.proxy.port=<replaceable>port</replaceable>
+</userinput>
+</screen>
+</step>
+<step>
+<para>(Optional) If the web proxy requires authentication, supply the
+user name and password.</para>
+<para>Obtain this information from your network
+administrator.</para>
+<substeps>
+<step>
+<para>Specify the user name to be used for authentication.</para>
+<screen># <userinput>smpatch set patchpro.proxy.user=<replaceable>web-proxy-user</replaceable>
+</userinput>
+</screen>
+</step>
+<step>
+<para>Specify the proxy user's password by having <command>smpatch</command> prompt
+you for the password.</para>
+<screen># <userinput>smpatch set patchpro.proxy.passwd</userinput>
+Web Proxy User Password: <replaceable>web-proxy-password</replaceable>
+</screen>
+<para>Setting the password in this way ensures that the password you type
+does not appear as clear text in the following:</para>
+<itemizedlist>
+<listitem>
+<para>Standard output</para>
+</listitem>
+<listitem>
+<para>Output of the <command>ps</command> command</para>
+</listitem>
+<listitem>
+<para>Your shell history file</para>
+</listitem>
+</itemizedlist>
+</step>
+</substeps>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="patchaccountcliproc">
+
+<title>How to Specify a User Name and Password
+With Which to Obtain Patches (Command Line)</title>
+<indexterm xml:id="indexterm-489">
+<primary>user name and password used to obtain patches</primary>
+</indexterm>
+<tasksummary>
+<para>If you needed a user name and password to obtain patches from the Sun
+patch server, you must specify them for Patch Manager.</para>
+<para>If you do not have an account on SunSolve, register for one at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://sunsolve.sun.com">
+</link>.</para>
+<para>As of this Solaris release, a user name and password are not required
+to obtain patches from the Sun patch server.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Specify your user name.</para>
+<screen># <userinput>smpatch set patchpro.sun.user=<replaceable>user-name</replaceable>
+</userinput>
+</screen>
+</step>
+<step>
+<para>Specify the password for your user by having <command>smpatch</command> prompt
+you for the password.</para>
+<screen># <userinput>smpatch set patchpro.sun.passwd</userinput>
+Sun User Password: <replaceable>password</replaceable>
+</screen>
+<para>Setting the password in this way ensures that the password you type
+does not appear as clear text in the following:</para>
+<itemizedlist>
+<listitem>
+<para>Standard output</para>
+</listitem>
+<listitem>
+<para>Output of the <command>ps</command> command</para>
+</listitem>
+<listitem>
+<para>Your shell history file</para>
+</listitem>
+</itemizedlist>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="patchsourcecliproc">
+
+<title>How to Specify the Source of Patches
+(Command Line)</title>
+<indexterm xml:id="indexterm-490">
+<primary>source of patches</primary>
+<secondary>patch server</secondary>
+<tertiary>specifying</tertiary>
+</indexterm>
+<tasksummary>
+<para>Your system can obtain patches from the following sources:</para>
+<itemizedlist>
+<listitem>
+<para>Sun patch server</para>
+</listitem>
+<listitem>
+<para>Local patch collection</para>
+</listitem>
+</itemizedlist>
+<para>By default, your system obtains patches from the Sun patch server.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Specify the URL of the patch source.</para>
+<itemizedlist>
+<listitem>
+<para>For the Sun patch server, type:</para>
+<screen># <userinput>smpatch unset patchpro.patch.source</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>For a collection of patches in a directory, use this URL format:</para>
+<screen># <userinput>smpatch set patchpro.patch.source=file:/<replaceable>directory-name</replaceable>
+</userinput>
+</screen>
+<para>Note that <replaceable>directory-name</replaceable> can be a local file
+system or a remotely mounted file system.</para>
+</listitem>
+</itemizedlist>
+<para>See <olink remap="internal" targetdoc="chapter-22.xml" targetptr="patchsourcecliexample">Example 22–2</olink> for
+examples of using the <literal>file:/</literal> URL format.</para>
+</step>
+</procedure>
+<example xml:id="patchsourcecliexample">
+
+<title>Specifying the Source of Patches</title>
+<para>The following example shows how to configure a system to obtain patches
+from the <filename>/export/patches</filename> directory on the local system.</para>
+<screen># <userinput>smpatch set patchpro.patch.source=file:/export/patches</userinput>
+</screen>
+<para>The following example shows how to configure a system to obtain patches
+from the <filename>/export/patches</filename> directory on the remote system
+called <literal>jupiter</literal>.</para>
+<screen># <userinput>smpatch set patchpro.patch.source=file:/net/jupiter/export/patches</userinput>
+</screen>
+<para>The following example shows how to configure a system to obtain patches
+from a CD mounted from the first CD-ROM drive of the local system.</para>
+<screen># <userinput>smpatch set patchpro.patch.source=file:/cdrom/cdrom0</userinput>
+</screen>
+</example>
+<taskrelated>
+
+<title>What to Do Next</title>
+<para>After you specify a patch source, your client system is ready to manage
+patches. See <olink remap="internal" targetdoc="chapter-22.xml" targetptr="managepatchesclitaskmap">Managing Patches by Using the Command-Line Interface (Task Map)</olink>.</para>
+</taskrelated>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="managepatchesclitaskmap">
+<title>Managing Patches by Using the Command-Line
+Interface (Task Map)</title>
+<indexterm xml:id="indexterm-491">
+<primary>command-line interface</primary>
+<secondary>managing patches</secondary>
+</indexterm>
+<para>Use the <command>smpatch</command> command to perform most of the common
+patch management tasks described in the following table. See the <olink remap="external" targetdoc="819-2240" targetptr="smpatch-1m">
+<citerefentry>
+<refentrytitle>smpatch</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man page.</para>
+<note>
+
+<para>You can use the Sun Update Connection, System Edition software
+to manage patches and updates on your Solaris system. The Sun Update Connection
+software has the same functionality as the Sun Patch Manager 2.0 tools, with
+the addition of some new features and enhancements. For more information,
+see <olink remap="external" targetdoc="chapter-16.xml" targetptr="swmgrpkgsconcepts-52619">Chapter 16, Managing Software (Overview)</olink>.</para>
+</note>
+<informaltable frame="all">
+<tgroup cols="3" colsep="1">
+<colspec colname="colspec0" colwidth="30.31*"/>
+<colspec colname="colspec1" colwidth="40.94*"/>
+<colspec colname="colspec2" colwidth="27.74*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row rowsep="1">
+<entry>
+<para>Analyze your system to determine the list of patches.</para>
+</entry>
+<entry>
+<para>You want to analyze your system to obtain the list of appropriate patches.
+Based on the analysis, you can update your system with one or more patches
+in the list.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="analyzecliproc">How to Analyze Your System to Obtain the List of Patches to Apply (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row rowsep="1">
+<entry>
+<para>Automatically update your system with one or more patches in a single
+procedure.</para>
+</entry>
+<entry>
+<para>You want to automatically download and apply the patches that are appropriate
+for your system. The list of patches is determined by having Patch Manager
+analyze your system.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="updatecliproc">How to Update Your System With Patches (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row rowsep="0">
+<entry>
+<para>
+<indexterm xml:id="indexterm-492">
+<primary>patches</primary>
+<secondary>nonstandard</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-493">
+<primary>nonstandard patches</primary>
+</indexterm>Apply patches to your system.</para>
+</entry>
+<entry>
+<para>After you have determined the patches to apply and have downloaded them
+to your system, you can apply them.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="applycliproc">How to Apply Patches to Your System (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row rowsep="0">
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>Some patches should be applied while the system is in single-user mode
+because they might cause the system to become unstable. Such patches are associated
+with the <literal>singleuser</literal> patch property. In single-user mode,
+you must use the <command>smpatch add</command> command to apply patches.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="applycliproc">How to Apply Patches to Your System (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row rowsep="0">
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>Some patches are nonstandard and must be applied manually.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="applynonstandardpatchcliproc">How to Apply a Nonstandard Patch (Command Line)</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="chapter-23.xml" targetptr="swmgrpatchtasks-7">How to Download and Apply a Solaris Patch</olink>
+</para>
+</entry>
+</row>
+<row rowsep="1">
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>Determine whether the patches you want to apply depend on others being
+applied first. This task is optional.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="resolvecliproc">How to Resolve a List of Patches (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row rowsep="1">
+<entry>
+<para>Remove patches from your system.</para>
+</entry>
+<entry>
+<para>You want to remove, or back out, patches that you applied to your system.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="removecliproc">How to Remove Patches From Your System (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row rowsep="1">
+<entry>
+<para>View patch management tool log entries. This task is optional.</para>
+</entry>
+<entry>
+<para>View Patch Manager log entries in the system log file to identify problems
+with installing patch management tools or applying patches.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="viewpatchtoollogscli">How to View Patch Manager Log Entries (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row rowsep="1">
+<entry>
+<para>Apply patches to an inactive boot environment on your system by using <command>luupgrade</command>.</para>
+</entry>
+<entry>
+<para>You want to use Solaris Live Upgrade to apply patches to a system that
+has more than one boot environment.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="applypatchlucliproc">How to Use <command>luupgrade</command> to Apply a List of Patches to an Inactive Boot Environment (Command Line)</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<note>
+
+<para>The following procedures and examples show how to run the local
+mode <command>smpatch</command> command, which is run by default. To run the
+remote mode version, use any of the authentication options (except for <option>
+L</option>)
+or the remote options. See the <olink remap="external" targetdoc="819-2240" targetptr="smpatch-1m">
+<citerefentry>
+<refentrytitle>smpatch</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+</note>
+<sect2>
+<title/>
+<task id="analyzecliproc">
+
+<title>How to Analyze Your System to Obtain the
+List of Patches to Apply (Command Line)</title>
+<indexterm xml:id="indexterm-494">
+<primary>creating</primary>
+<secondary>list of patches</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-495">
+<primary>displaying</primary>
+<secondary>list of patches</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-496">
+<primary>analyzing system for patches</primary>
+</indexterm>
+<indexterm xml:id="indexterm-497">
+<primary>
+<command>smpatch</command> command</primary>
+<secondary>analyzing system for patches</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-498">
+<primary>viewing</primary>
+<secondary>patch lists</secondary>
+</indexterm>
+<tasksummary>
+<para>You can perform an analysis of your system to determine the list of
+appropriate patches. The list is in an order that can be used to apply patches.
+You can also supply a list of one or more patches as input to restrict the
+analysis to just those patches. In addition to performing the analysis, you
+can save the patch list for modification or later use.</para>
+<para>The system analysis writes the list of patches to standard output, so
+you can save the contents of the patch list to a file by redirecting standard
+output to a file.</para>
+<para>Each line in a patch list has two columns. The first column is the patch
+ID, and the second column is a synopsis of that patch.</para>
+<para>If you supply a list of one or more patches to the <command>smpatch
+analyze</command> command, the list of patches is augmented with any patches
+that are required as dependencies.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Perform a patch analysis of your system and optionally save the
+list of patches in a file.</para>
+<itemizedlist>
+<listitem>
+<para>To create a list of all the appropriate patches for your system,
+type:</para>
+<screen># <userinput>smpatch analyze</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>To create a list of particular patches for your system based
+on a patch list, type:</para>
+<screen># <userinput>smpatch analyze -x idlist=<replaceable>patch-list-file</replaceable>
+</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>To create a list of particular patches for your system, type:</para>
+<screen># <userinput>smpatch analyze -i <replaceable>patch-id</replaceable>...</userinput>
+</screen>
+</listitem>
+</itemizedlist>
+</step>
+</procedure>
+<example xml:id="analyzesystemcliexample">
+
+<title>Analyzing Your System to Obtain the List of Patches to Apply</title>
+<para>The following example shows how to analyze a system to create a list
+of all appropriate patches. The list is written to the <filename>/tmp/patch.all</filename> file.</para>
+<screen># <userinput>smpatch analyze &gt; /tmp/patch.all</userinput>
+</screen>
+<para>The following example shows how to create a list of patches, <filename>plist</filename>, modify it, and resolve the patch dependencies. The list is written
+to the <filename>/tmp/patch.plist</filename> file.</para>
+<screen># <userinput>smpatch analyze &gt; plist</userinput>
+# <userinput>vi plist</userinput>
+.
+.
+.
+# <userinput>smpatch analyze -x idlist=plist &gt; /tmp/patch.plist</userinput>
+</screen>
+<para>The following example shows how to resolve patch dependencies for patch
+112785-28 and write the resulting patch list to a file called <filename>/tmp/patch.out</filename>. Patch 112785-28 depends on patch 113096-03. After running the <command>smpatch analyze</command> command, the <filename>patch.out</filename> file
+contains this ordered list: 113096-03 and 112785-28.</para>
+<screen># <userinput>smpatch analyze -i 112785-28 &gt; /tmp/patch.out</userinput>
+</screen>
+</example>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="updatecliproc">
+
+<title>How to Update Your System With Patches (Command
+Line)</title>
+<indexterm xml:id="indexterm-499">
+<primary>updating a system with patches</primary>
+</indexterm>
+<indexterm xml:id="indexterm-500">
+<primary>
+<command>smpatch</command> command</primary>
+<secondary>updating a system with patches</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-501">
+<primary>patch lists</primary>
+<secondary>displaying</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-502">
+<primary>patches</primary>
+<secondary>downloading</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-503">
+<primary>downloading</primary>
+<secondary>patches</secondary>
+<tertiary>using Patch Manager</tertiary>
+</indexterm>
+<tasksummary>
+<para>An update of a system performs the entire patch management process in
+one step. First, the analysis determines the appropriate patches for your
+system. Next, those patches are downloaded to your system. Finally, the patches
+are applied to your system. <indexterm xml:id="indexterm-504">
+<primary>downloading</primary>
+<secondary>patches</secondary>
+<tertiary>using <command>smpatch</command>
+</tertiary>
+</indexterm>
+</para>
+<para>All standard patches are applied by an update. You can configure your
+system to apply some nonstandard patches by changing the default policy for
+applying patches. To change the policy for your system, see <olink remap="internal" targetdoc="chapter-22.xml" targetptr="patchpolicycliproc">How to Change the Policy for Applying Patches (Command Line)</olink>.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Update the system with patches in one of the following ways:</para>
+<itemizedlist>
+<listitem>
+<para>To update your system with all appropriate patches, type:</para>
+<screen># <userinput>smpatch update</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>To update your system with all patches listed in a file, first
+create a patch list (see <olink remap="internal" targetdoc="chapter-22.xml" targetptr="analyzecliproc">How to Analyze Your System to Obtain the List of Patches to Apply (Command Line)</olink>),
+then type:</para>
+<screen># <userinput>smpatch update -x idlist=<replaceable>patch-list-file</replaceable>
+</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>To update your system with particular patches, type:</para>
+<screen># <userinput>smpatch update -i <replaceable>patch-id</replaceable> -i <replaceable>patch-id</replaceable> ...</userinput>
+</screen>
+</listitem>
+</itemizedlist>
+<para>If you specify particular patches by using the <option>
+i</option> or <option>
+x idlist=</option> options, the list is augmented with patches on which they
+depend before the update occurs.</para>
+<note>
+
+<para>Any patches that cannot be applied to the system are listed in
+a patch list file called <filename>disallowed_patch_list</filename>, which
+is located in the download directory. You can use this file as input to the <command>smpatch add</command> command. <indexterm xml:id="indexterm-505">
+<primary>updating a system with patches</primary>
+<secondary>in single-user mode</secondary>
+</indexterm>
+</para>
+<para>For example, you might bring your system to single-user
+mode and apply the patches listed in the <filename>disallowed_patch_list</filename> file
+by typing the following:</para>
+<screen># <userinput>init S</userinput>
+# <userinput>smpatch add -x idlist=/var/sadm/spool/disallowed_patch_list</userinput>
+</screen>
+<para>See <olink remap="internal" targetdoc="chapter-22.xml" targetptr="applycliproc">How to Apply Patches to Your System (Command Line)</olink> for more information.</para>
+</note>
+</step>
+</procedure>
+<example xml:id="updatesystemcliexample">
+
+<title>Updating Your System With Patches</title>
+<para>The following example shows how to update a system with patch 112622-12
+and 112771-17.</para>
+<screen># <userinput>smpatch update -i 112622-12 -i 112771-17</userinput>
+</screen>
+<para>The following example shows how to update a system by using a list of
+patches, named <filename>plist</filename>, as input. It then shows how to
+create a patch list and modify it to contain only the patches that you want
+to apply to your system. Then, use the <command>smpatch update</command> command
+to apply the patches and update the system.</para>
+<orderedlist>
+<listitem>
+<para>Create a list of patches by performing an analysis.</para>
+</listitem>
+<listitem>
+<para>Edit the patch list to include only the patches that you want
+to apply.</para>
+</listitem>
+<listitem>
+<para>Run the <command>smpatch update</command> command to apply
+the patches.</para>
+<para>For example:</para>
+<screen># <userinput>smpatch analyze &gt; plist</userinput>
+.
+.
+.
+# <userinput>vi plist</userinput>
+.
+.
+.
+# <userinput>smpatch update -x idlist=plist</userinput>
+.
+.
+.</screen>
+</listitem>
+</orderedlist>
+</example>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="applycliproc">
+
+<title>How to Apply Patches to Your System (Command
+Line)</title>
+<indexterm xml:id="indexterm-506">
+<primary>applying patches</primary>
+<secondary>using <command>smpatch</command>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-507">
+<primary>
+<command>smpatch</command> command</primary>
+<secondary>applying patches</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-508">
+<primary>
+<command>smpatch</command> command</primary>
+<secondary>applying patches</secondary>
+<tertiary>in single-user mode</tertiary>
+</indexterm>
+<tasksummary>
+<para>You can use the <command>smpatch add</command> command to apply one
+or more downloaded patches to your system.</para>
+<para>You can use the local mode version of the <command>smpatch</command> command
+to apply one or more downloaded patches while your system is in single-user
+mode or in multiuser mode.</para>
+<caution>
+
+<para>The <command>smpatch add</command> command ignores the policy
+for applying patches and does not resolve dependencies when applying patches.</para>
+</caution>
+</tasksummary>
+<procedure>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Apply the downloaded patches to your system.</para>
+<itemizedlist>
+<listitem>
+<para>To apply all patches listed in a file, type:</para>
+<screen># <userinput>smpatch add -x idlist=<replaceable>patch-list-file</replaceable>
+</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>To apply particular patches, type:</para>
+<screen># <userinput>smpatch add -i <replaceable>patch-id</replaceable> -i <replaceable>patch-id</replaceable> ...</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>To apply particular patches that have the <literal>singleuser</literal> property,
+you must first bring the system to single-user mode. Type:</para>
+<screen># <userinput>init S</userinput>
+# <userinput>smpatch add -i <replaceable>patch-id</replaceable> -i <replaceable>patch-id</replaceable> ...</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>To apply the list of patches that could not be applied by
+the <command>smpatch update</command> command, you must first bring the system
+to single-user mode. Type:</para>
+<screen># <userinput>init S</userinput>
+# <userinput>smpatch add -x idlist=/var/sadm/spool/disallowed_patch_list</userinput>
+</screen>
+</listitem>
+</itemizedlist>
+</step>
+</procedure>
+<example xml:id="applypatchplcliexample">
+
+<title>Applying Patches to Your System</title>
+<itemizedlist>
+<listitem>
+<para>The following example shows how to apply the patches listed
+in the file <filename>plist</filename> while the system is in single-user
+mode.</para>
+<screen>Requesting System Maintenance Mode
+SINGLE USER MODE
+
+Root password for system maintenance (control-d to bypass): <userinput>xxxxxxx</userinput>
+single-user privilege assigned to /dev/console.
+Entering System Maintenance Mode Entering System Maintenance Mode
+.
+.
+.
+# <userinput>smpatch add -x idlist=plist</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>The following example shows how to apply patch 112662-12 while
+the system is in single-user mode.</para>
+<screen>Requesting System Maintenance Mode
+SINGLE USER MODE
+
+Root password for system maintenance (control-d to bypass): <userinput>xxxxxxx</userinput>
+single-user privilege assigned to /dev/console.
+Entering System Maintenance Mode Entering System Maintenance Mode
+.
+.
+.
+# <userinput>smpatch add -i 112662-12</userinput>
+</screen>
+</listitem>
+</itemizedlist>
+</example>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="applynonstandardpatchcliproc">
+
+<title>How to Apply a Nonstandard
+Patch (Command Line)</title>
+<indexterm xml:id="indexterm-509">
+<primary>applying patches</primary>
+<secondary>nonstandard patches</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-510">
+<primary>patches</primary>
+<secondary>nonstandard</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-511">
+<primary>nonstandard patches</primary>
+</indexterm>
+<tasksummary>
+<para>You cannot use <command>smpatch</command> to apply nonstandard patches
+that have the <literal>interactive</literal> property set. To apply the patch,
+review the information in the Special Installation Instructions section of
+the patch's README file.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Become superuser or assume an equivalent role.</para>
+<para>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-15">
+<citetitle remap="section">Configuring RBAC (Task Map)</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>In the download directory, find the nonstandard patch that you
+want to apply.</para>
+<screen># <userinput>cd /var/sadm/spool; ls</userinput>
+</screen>
+</step>
+<step>
+<para>To access the patch README file, do one of the following:</para>
+<itemizedlist>
+<listitem>
+<para>View the patch README file from the Sun patch server at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://sunsolve.sun.com">
+</link>.</para>
+</listitem>
+<listitem>
+<para>To extract the patch README file from the <acronym>JAR</acronym> archive,
+do the following:</para>
+<orderedlist>
+<listitem>
+<para>Identify the name of the README file.</para>
+</listitem>
+<listitem>
+<para>Extract the README file.</para>
+</listitem>
+<listitem>
+<para>View the README file.</para>
+</listitem>
+</orderedlist>
+</listitem>
+</itemizedlist>
+</step>
+<step>
+<para>Follow the instructions in the Special Installation Instructions
+section of the README file to apply the patch.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="resolvecliproc">
+
+<title>How to Resolve a List of Patches (Command
+Line)</title>
+<indexterm xml:id="indexterm-512">
+<primary>resolving list of patches</primary>
+</indexterm>
+<indexterm xml:id="indexterm-513">
+<primary>patch lists</primary>
+<secondary>resolving</secondary>
+</indexterm>
+<tasksummary>
+<para>Sometimes a patch depends on another patch, that is, the first patch
+cannot be applied to the system until the other patch is applied. The first
+patch is said to have a dependency on the second patch.</para>
+<para>If you specify a list of patches to apply, you can resolve the list
+for patch dependencies. The resulting list might include additional patches
+that you must apply before applying the patches you specified.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Resolve the list of patches.</para>
+<itemizedlist>
+<listitem>
+<para>Resolve a list of patches specified one at a time on the command
+line.</para>
+<screen># <userinput>smpatch analyze -i <replaceable>patch-id</replaceable> -i <replaceable>patch-id</replaceable> ...</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>Resolve a list of patches specified in a file.</para>
+<screen># <userinput>smpatch analyze -x idlist=<replaceable>patch-list-file</replaceable>
+</userinput>
+</screen>
+</listitem>
+</itemizedlist>
+</step>
+</procedure>
+<example xml:id="resolvesystemcliexample">
+
+<title>Resolving a List of Patches</title>
+<para>The following example shows how to resolve patch dependencies for patch
+112785-28 and write the resulting patch list to a file called <filename>/tmp/patch.out</filename>. Patch 112785-28 depends on patch 113096-03. After running the <command>smpatch analyze</command> command, the <filename>patch.out</filename> file
+contains this ordered list: 113096-03 and 112785-28.</para>
+<screen># <userinput>smpatch analyze -i 112785-28 &gt; /tmp/patch.out</userinput>
+</screen>
+<para>The following example shows how to take a modified list of patches, <filename>plist</filename>, and resolve the patch dependencies. The list is written
+to the <filename>/tmp/patch.plist</filename> file.</para>
+<screen># <userinput>smpatch analyze -x idlist=plist &gt; /tmp/patch.plist</userinput>
+</screen>
+</example>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="applypatchlucliproc">
+
+<title>How to Use <command>luupgrade</command> to
+Apply a List of Patches to an Inactive Boot Environment (Command Line)</title>
+<indexterm xml:id="indexterm-514">
+<primary>applying patches</primary>
+<secondary>using <command>luupgrade</command>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-515">
+<primary>
+<command>luupgrade</command>
+</primary>
+<secondary>applying patches</secondary>
+</indexterm>
+<tasksummary>
+<para>A patch list that is created by the <command>smpatch</command> command
+can be used by <command>luupgrade</command> to apply patches to an inactive
+boot environment. You can also use the <command>luupgrade</command> command
+to remove patches from an inactive boot environment based on <command>showrev</command> information.
+See the <olink remap="external" targetdoc="819-2240" targetptr="luupgrade-1m">
+<citerefentry>
+<refentrytitle>luupgrade</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> and <olink remap="external" targetdoc="819-2240" targetptr="showrev-1m">
+<citerefentry>
+<refentrytitle>showrev</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man pages.</para>
+<note>
+
+<para>This procedure assumes that you have created a second boot environment
+that is a duplicate of the active boot environment. See the <olink remap="external" targetdoc="819-2240" targetptr="lumake-1m">
+<citerefentry>
+<refentrytitle>lumake</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man page for information
+about creating boot environments.</para>
+</note>
+</tasksummary>
+<procedure>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Perform a patch analysis on the active boot environment to obtain
+the list of appropriate patches to apply to the inactive boot environment,
+and remove the synopsis for each patch entry.</para>
+<screen># <userinput>smpatch analyze | sed 's/ .*//' &gt; <replaceable>patch-list-file</replaceable>
+</userinput>
+</screen>
+<para>The modified file will be a list of patches, one <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_patch_id" type="custom-text">
+<emphasis>patch ID</emphasis>
+</olink> per line.</para>
+</step>
+<step>
+<para>Download the patches from a patch list to your system.</para>
+<screen># <userinput>smpatch download -x idlist=<replaceable>patch-list-file</replaceable>
+</userinput>
+</screen>
+</step>
+<step>
+<para>Apply patches from a patch list to the inactive boot environment.</para>
+<screen># <userinput>luupgrade -t -n <replaceable>BE-name</replaceable> -s <replaceable>dir-name</replaceable> `cat <replaceable>patch-list-file</replaceable>`</userinput>
+</screen>
+<para>You must specify the name of the inactive boot environment to update, <replaceable>BE-name</replaceable>, and the directory where the patches are stored, <replaceable>dir-name</replaceable>.</para>
+</step>
+<step>
+<para>(Optional) To remove a patch from the inactive boot environment,
+use the following command:</para>
+<screen># <userinput>luupgrade -T -n <replaceable>BE-name</replaceable> <replaceable>patch-id</replaceable>
+</userinput>
+</screen>
+<para>You must specify the name of the inactive boot environment to update, <replaceable>BE-name</replaceable>, and the patch to be removed, <replaceable>patch-id</replaceable>.</para>
+</step>
+</procedure>
+<example xml:id="luupgradecliexample">
+
+<title>Using <command>luupgrade</command> to Apply a List of Patches to an
+Inactive Boot Environment</title>
+<itemizedlist>
+<listitem>
+<para>The following example shows how to use Patch Manager and Solaris
+Live Upgrade commands to apply a list of patches to an inactive boot environment.
+For this example, a duplicate boot environment, <literal>be2</literal>, of
+the active boot environment has been created.</para>
+<para>First, use the <command>smpatch analyze</command> and <command>sed</command> commands to analyze the
+active boot environment and create a patch list, <filename>plist</filename>,
+that includes one patch ID per line. The <command>sed</command> command removes
+the synopsis from each patch entry. Use the <command>smpatch download</command> command
+to download the patches in the list. Then, use the <command>luupgrade</command> command
+to apply the list of patches to the inactive boot environment of the system.
+The inactive boot environment is called <literal>be2</literal>, and the directory
+where the patches reside is <filename>/var/sadm/spool</filename> on the active
+boot environment.</para>
+<screen># <userinput>smpatch analyze | sed 's/ .*//' &gt; plist</userinput>
+.
+.
+.
+# <userinput>smpatch download -x idlist=plist</userinput>
+.
+.
+.
+# <userinput>luupgrade -t -n be2 -s /var/sadm/spool `cat plist`</userinput>
+.
+.
+.</screen>
+</listitem>
+<listitem>
+<para>The following example shows how to use Patch Manager and the
+Solaris Live Upgrade commands to remove a patch from an inactive boot environment.
+For this example, a duplicate boot environment, <literal>be2</literal>, of
+the active boot environment has been created.</para>
+<para>Use the <command>luupgrade</command> command to remove patch 107058-01 from the inactive boot environment
+of the system, <literal>be2</literal>.</para>
+<screen># <userinput>luupgrade -T -n be2 107058-01</userinput>
+.
+.
+.</screen>
+</listitem>
+</itemizedlist>
+</example>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="removecliproc">
+
+<title>How to Remove Patches From Your System (Command
+Line)</title>
+<indexterm xml:id="indexterm-516">
+<primary>removing</primary>
+<secondary>patches</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-517">
+<primary>
+<command>smpatch</command> command</primary>
+<secondary>removing a patch</secondary>
+</indexterm>
+<tasksummary>
+<para>You can remove only one patch at a time.</para>
+<para>If your system has more than one boot environment, you can use the <command>luupgrade</command> command to remove a list of patches from an inactive boot
+environment. See <olink remap="internal" targetdoc="chapter-22.xml" targetptr="applypatchlucliproc">How to Use <command>luupgrade</command> to Apply a List of Patches to an Inactive Boot Environment (Command Line)</olink>.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Identify the patch that you want to remove.</para>
+</step>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Remove the patch from your system.</para>
+<screen># <userinput>smpatch remove -i <replaceable>patch-id</replaceable>
+</userinput>
+</screen>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="viewpatchtoollogscli">
+
+<title>How to View Patch Manager Log Entries
+(Command Line)</title>
+<indexterm xml:id="indexterm-518">
+<primary>viewing</primary>
+<secondary>Patch Manager log entries</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-519">
+<primary>log entries</primary>
+<secondary>viewing Patch Manager</secondary>
+</indexterm>
+<tasksummary>
+<para>Patch Manager writes to the system log file <filename>/var/adm/messages</filename>.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Choose which method to use to see information about a failed installation
+of a patch.</para>
+<itemizedlist>
+<listitem>
+<para>
+<filename>/var/adm/messages</filename> <emphasis role="strong">–</emphasis> Identifies problems that are found when applying a patch to a
+system by using Patch Manager.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Solaris WBEM log –</emphasis> To
+view this log from the command line, use the <command>smlog view</command> command.
+See the <olink remap="external" targetdoc="819-2240" targetptr="smlog-1m">
+<citerefentry>
+<refentrytitle>smlog</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+</listitem>
+</itemizedlist>
+</step>
+<step>
+<para>View log entries from the appropriate log file.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="tunepatchenvclitaskmap">
+<title>Tuning Your Patch Management Environment
+by Using the Command-Line Interface (Task Map)</title>
+<indexterm xml:id="indexterm-520">
+<primary>tuning</primary>
+<secondary>patch management environment</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-521">
+<primary>command-line interface</primary>
+<secondary>tuning patch management environment</secondary>
+</indexterm>
+<para>The following table identifies the optional tasks that you might perform
+when you tune the patch management environment for your system.</para>
+<para>Use the <command>smpatch</command> command to tune your patch management
+environment. For the list of configuration parameters you can set, see <olink remap="internal" targetdoc="chapter-22.xml" targetptr="configproperties">Setting Patch Manager Configuration Parameters</olink> and
+the <olink remap="external" targetdoc="819-2240" targetptr="smpatch-1m">
+<citerefentry>
+<refentrytitle>smpatch</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+<note>
+
+<para>You can use the Sun Update Connection, System Edition software
+to manage patches and updates on your Solaris system. The Sun Update Connection
+software has the same functionality as the Sun Patch Manager 2.0 tools, with
+the addition of some new features and enhancements. For more information,
+see <olink remap="external" targetdoc="chapter-16.xml" targetptr="gazwe">What's New in Software Management in the Solaris Operating System?</olink>.</para>
+</note>
+<para>The following are optional tasks that you can perform with Sun Patch
+Manager.</para>
+<informaltable frame="all">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec0" colwidth="30.31*"/>
+<colspec colname="colspec1" colwidth="40.94*"/>
+<colspec colname="colspec2" colwidth="27.74*"/>
+<thead>
+<row>
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Obtain configuration information about your patch management environment.</para>
+</entry>
+<entry>
+<para>View the configuration of your patch management environment, which might
+help you diagnose problems.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="viewpatchenvcliproc">How to View the Configuration Settings for Your Patch Management Environment (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Change the policy for applying patches for your system.</para>
+</entry>
+<entry>
+<para>Patch Manager can update your system with standard patches automatically.
+If you want to update your system with some types of nonstandard patches,
+you must change your policy for applying patches.</para>
+<para>By default, only patches that are associated with the <literal>standard</literal>, <literal>rebootafter</literal>, or <literal>reconfigafter</literal> properties are
+applied by an update operation.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="patchpolicycliproc">How to Change the Policy for Applying Patches (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Change the patch set to use for system analysis.</para>
+</entry>
+<entry>
+<para>Patch Manager bases analyses on all available Sun patches. If you want
+to apply only patches from a different patch set, such as the Recommended
+Patch Cluster, you must change the patch set.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="patchsetcliproc">How to Change the Patch Set (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Set different directory locations.</para>
+</entry>
+<entry>
+<para>You might want to specify a different location for the download directory
+or the backout directory if the default locations are not large enough.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="patchdirscliproc">How to Change Directory Locations (Command Line)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Reset configuration parameters to the default values.</para>
+</entry>
+<entry>
+<para>You might want to reset configuration parameters to the default values.</para>
+<para>Note that some configuration parameters have an empty default value.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-22.xml" targetptr="resetpropscliproc">How to Reset Configuration Parameters to the Default Values (Command Line)</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<note>
+
+<para>The following procedures and examples show how to run the local
+mode <command>smpatch</command> command, which is run by default. To run the
+remote mode version, use any of the authentication options (except for <option>
+L</option>)
+or the remote options. See the <olink remap="external" targetdoc="819-2240" targetptr="smpatch-1m">
+<citerefentry>
+<refentrytitle>smpatch</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+</note>
+<sect2>
+<title/>
+<task id="viewpatchenvcliproc">
+
+<title>How to View the Configuration Settings
+for Your Patch Management Environment (Command Line)</title>
+<indexterm xml:id="indexterm-522">
+<primary>displaying</primary>
+<secondary>configuration of patch management environment</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-523">
+<primary>listing</primary>
+<secondary>configuration of patch management environment</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-524">
+<primary>viewing</primary>
+<secondary>configuration of patch management environment</secondary>
+</indexterm>
+<tasksummary>
+<para>You can check the configuration settings of your patch management environment
+to help diagnose problems or to understand your system's patch-related settings.</para>
+<para>The configuration settings output shows an entry for all configuration
+parameters. Each entry appears on a line by itself.</para>
+<para>When you list all settings, each entry includes three fields: the parameter
+name, the value you have assigned, and its default value. The fields are separated
+by one or more tab characters.</para>
+<para>The following values have special meaning:</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>-</literal> means that no value is set</para>
+</listitem>
+<listitem>
+<para>
+<literal>""</literal> means that the value is the null string</para>
+</listitem>
+<listitem>
+<para>
+<literal>\-</literal> means that the value is <literal>-</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>\""</literal> means that the value is <literal>""</literal> (two
+double quotes)</para>
+</listitem>
+</itemizedlist>
+<para>In addition to these special values, these special characters might
+appear in the output:</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>\t</literal> for a tab</para>
+</listitem>
+<listitem>
+<para>
+<literal>\n</literal> for a newline</para>
+</listitem>
+<listitem>
+<para>
+<literal>\\</literal> for a backslash</para>
+</listitem>
+</itemizedlist>
+</tasksummary>
+<procedure>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>List the configuration settings for your patch management environment.</para>
+<itemizedlist>
+<listitem>
+<para>To list all settings, type:</para>
+<screen># <userinput>smpatch get</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>To list the values for one or more parameters, type:</para>
+<screen># <userinput>smpatch get <replaceable>parameter-name...</replaceable>
+</userinput>
+</screen>
+</listitem>
+</itemizedlist>
+</step>
+</procedure>
+<example xml:id="listparamscliexample">
+
+<title>Viewing Configuration Settings for Your Patch Management Environment</title>
+<para>The following example shows how to list all the configuration settings
+for your patch management environment.</para>
+<screen># <userinput>smpatch get</userinput>
+patchpro.backout.directory  -      ""
+patchpro.download.directory -      /var/sadm/spool
+patchpro.install.types      -      rebootafter:reconfigafter:standard
+patchpro.patch.source       -      https://updateserver.sun.com/solaris/
+patchpro.patchset           -      patchdb
+patchpro.proxy.host         -      ""
+patchpro.proxy.passwd       ****   ****
+patchpro.proxy.port         -      8080
+patchpro.proxy.user         -      ""
+patchpro.sun.passwd         ****   ****
+patchpro.sun.user           -      ""</screen>
+<para>The following example shows how to list the configuration settings for
+the <literal>patchpro.download.directory</literal> and <literal>patchpro.patchset</literal> parameters.</para>
+<screen># <userinput>smpatch get patchpro.download.directory patchpro.patchset</userinput>
+/var/sadm/spool
+patchdb</screen>
+</example>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="patchpolicycliproc">
+
+<title>How to Change the Policy for Applying
+Patches (Command Line)</title>
+<indexterm xml:id="indexterm-525">
+<primary>changing</primary>
+<secondary>policy for applying patches</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-526">
+<primary>policy for applying patches</primary>
+<secondary>changing</secondary>
+</indexterm>
+<tasksummary>
+<para>If you want to configure your system to apply some nonstandard patches
+during an update operation, you must change the policy for applying patches.</para>
+<para>By default, only patches that are associated with the <literal>standard</literal>, <literal>rebootafter</literal>, or <literal>reconfigafter</literal> properties can
+be applied by an update operation.</para>
+<caution>
+
+<para>If you change your policy from the default, Sun makes no guarantees
+that the patches apply correctly to your system or that your system will function
+properly.</para>
+</caution>
+<para>For more information about the policy for applying patches, see <olink remap="internal" targetdoc="chapter-22.xml" targetptr="patchpolicy">Customizing the Policy for Applying Patches</olink>.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Determine the types of nonstandard patch properties that you want
+to apply during an update.</para>
+</step>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Specify the new policy.</para>
+<screen># <userinput>smpatch set patchpro.install.types=<replaceable>patch-property</replaceable>
+</userinput>
+</screen>
+<para>
+<replaceable>patch-property</replaceable> is a list of patch properties
+each separated by a colon (<literal>:</literal>). For the list of valid patch
+properties, see <olink remap="internal" targetdoc="chapter-22.xml" targetptr="patchpolicy">Customizing the Policy for Applying Patches</olink>.</para>
+</step>
+</procedure>
+<example xml:id="patchpolicycliexample">
+
+<title>Changing the Policy for Applying Patches</title>
+<para>This example shows how to set the policy for a system. The new policy
+also includes patches that require that the system be rebooted immediately
+for the patch to take effect.</para>
+<screen># <userinput>smpatch set \
+patchpro.install.types=standard:rebootafter:reconfigafter:rebootimmediate</userinput>
+</screen>
+</example>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="patchsetcliproc">
+
+<title>How to Change the Patch Set (Command Line)</title>
+<indexterm xml:id="indexterm-527">
+<primary>changing</primary>
+<secondary>patch sets</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-528">
+<primary>patch sets, changing</primary>
+</indexterm>
+<tasksummary>
+<para>You can choose to analyze your system based on different sets of Sun
+patches, such as the Recommended Patch Cluster. By default, you use the patch
+set All Available Patches.</para>
+<para>As of this Solaris release, the only patch sets available from Sun are
+All Available Patches and Recommended Patch Cluster.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Specify the patch set to use.</para>
+<itemizedlist>
+<listitem>
+<para>To base your analysis on all patches, type:</para>
+<screen># <userinput>smpatch set patchpro.patchset=patchdb</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>To base your analysis on recommended patches, type:</para>
+<screen># <userinput>smpatch set patchpro.patchset=recommended</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>To base your analysis on another patch set, type:</para>
+<screen># <userinput>smpatch set patchpro.patchset=<replaceable>patch-set</replaceable>
+</userinput>
+</screen>
+</listitem>
+</itemizedlist>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="patchdirscliproc">
+
+<title>How to Change Directory Locations (Command
+Line)</title>
+<indexterm xml:id="indexterm-529">
+<primary>setting</primary>
+<secondary>different patch directory locations</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-530">
+<primary>changing</primary>
+<secondary>patch directory locations</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-531">
+<primary>patch directory locations</primary>
+<secondary>changing</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-532">
+<primary>backout directory</primary>
+<secondary>changing patch</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-533">
+<primary>download directory</primary>
+<secondary>changing patch</secondary>
+</indexterm>
+<tasksummary>
+<para>Patch Manager is configured to use these default locations for storing
+patch-related data:</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="strong">Download directory –</emphasis> Directory
+in which patches are stored when they are downloaded from the patch source.
+This is also the directory from which patches are applied. Patches remain
+in this directory until they are successfully applied. The default location
+is <filename>/var/sadm/spool</filename>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Backout data directory –</emphasis> Directory
+in which data that enables a patch to be backed out is stored. By default, <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_backout_data" type="custom-text">
+<emphasis>backout data</emphasis>
+</olink> is
+stored in the default locations used by <command>patchadd</command>. This
+is the <filename>save</filename> directory of each package that was modified
+by the patch. For example, if a patch modifies the <filename>SUNWcsr</filename> package,
+the backout data for that package is stored in the <filename>/var/sadm/pkg/SUNWcsr/save</filename> directory.</para>
+</listitem>
+</itemizedlist>
+<para>If you run out of available disk space in the default locations, specify
+different locations for these directories.</para>
+<note>
+
+<para>If you specify a different directory, you must manually create
+that directory before performing any patch operations.</para>
+</note>
+</tasksummary>
+<procedure>
+<step>
+<para>Determine the new locations for the directories.</para>
+</step>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Specify a new directory, <replaceable>dir-name</replaceable>,
+for any of the patch-related directories.</para>
+<itemizedlist>
+<listitem>
+<para>To specify a different download directory, type:</para>
+<screen># <userinput>smpatch set patchpro.download.directory=<replaceable>dir-name</replaceable>
+</userinput>
+</screen>
+<para>where <replaceable>dir-name</replaceable> is <filename>/export/patches</filename>,
+for example.</para>
+</listitem>
+<listitem>
+<para>To specify a different <olink remap="external" targetdoc="chapter-21.xml" targetptr="glossary_backout_directory" type="custom-text">
+<emphasis>backout directory</emphasis>
+</olink>,
+type:</para>
+<screen># <userinput>smpatch set patchpro.backout.directory=<replaceable>dir-name</replaceable>
+</userinput>
+</screen>
+<para>where <replaceable>dir-name</replaceable> is <filename>/export/patches/backout</filename>, for example.</para>
+</listitem>
+</itemizedlist>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="resetpropscliproc">
+
+<title>How to Reset Configuration Parameters
+to the Default Values (Command Line)</title>
+<indexterm xml:id="indexterm-534">
+<primary>resetting</primary>
+<secondary>patch configuration parameter values</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-535">
+<primary>Patch Manager</primary>
+<secondary>configuration parameters</secondary>
+<tertiary>resetting values of</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-536">
+<primary>changing</primary>
+<secondary>configuration settings</secondary>
+<tertiary>Patch Manager</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-537">
+<primary>configuration parameters</primary>
+<secondary>resetting Patch Manager values</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-538">
+<primary>setting</primary>
+<secondary>Patch Manager configuration parameters</secondary>
+<tertiary>resetting values of</tertiary>
+</indexterm>
+<tasksummary>
+<para>You must reset parameter values explicitly. You cannot use the <command>smpatch</command> command to reset all parameter values at once.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <literal>solaris.admin.patchmgr.*</literal> authorization.</para>
+<para>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-30">
+<citetitle remap="section">Configuring RBAC</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Reset a configuration parameter for your patch management environment
+to its default value.</para>
+<screen># <userinput>smpatch unset <replaceable>parameter-name...</replaceable>
+</userinput>
+</screen>
+</step>
+</procedure>
+<example xml:id="resetpropcliexample">
+
+<title>Resetting Configuration Parameters to the Default Values</title>
+<para>The following example shows how to configure a system to obtain patches
+from the Sun patch server instead of from a different patch source.</para>
+<screen># <userinput>smpatch unset patchpro.patch.source</userinput>
+</screen>
+<para>The following example shows how to reset the patch download directory
+and the backout directory locations to the default values.</para>
+<screen># <userinput>smpatch unset patchpro.download.directory patchpro.backout.directory</userinput>
+</screen>
+</example>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="troubleshooting">
+<title>Patch Manager Troubleshooting</title>
+<indexterm xml:id="indexterm-539">
+<primary>Patch Manager</primary>
+<secondary>troubleshooting</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-540">
+<primary>troubleshooting</primary>
+<secondary>Patch Manager</secondary>
+</indexterm>
+<para>This section describes common problems that you might encounter when
+using Patch Manager to perform the following tasks:</para>
+<itemizedlist>
+<listitem>
+<para>Analyze systems to determine the list of appropriate patches</para>
+</listitem>
+<listitem>
+<para>Download the patches to the system</para>
+</listitem>
+<listitem>
+<para>Apply the patches to the system</para>
+</listitem>
+</itemizedlist>
+<sect2 xml:id="generaltroubleshooting">
+<title>Patch Manager General
+Errors</title>
+<para>This section covers general Patch Manager errors.</para>
+<sect3 xml:id="cannotestablishnetconnect">
+<title>Cannot Update Patches Due to
+Network or Server Failures</title>
+<variablelist termlength="narrow">
+<varlistentry>
+<term>
+<emphasis role="strong">Description:</emphasis>
+</term>
+<listitem>
+<para>When running the <command>smpatch update</command> command,
+any of the following errors appear:</para>
+<screen>Cannot connect to retrieve patchdb: Connection refused</screen>
+<para>Or:</para>
+<screen>Cannot connect to retrieve patchdb: Connection timed out</screen>
+<para>Or:</para>
+<screen>Unknown host (<replaceable>host-name</replaceable>) connecting to http://<replaceable>host-name</replaceable>/</screen>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<emphasis role="strong">Cause:</emphasis>
+</term>
+<listitem>
+<para>This problem might be caused by a network failure between
+the client and the patch server, or the patch server is down.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<emphasis role="strong">Workaround:</emphasis>
+</term>
+<listitem>
+<para>Ensure that <literal>patchpro.patch.source</literal> points
+to a valid patch source.</para>
+<para>Check the condition of the network.</para>
+<para>If the problem is between your system and Sun, wait for the issue to
+be resolved.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+<sect3 xml:id="cimnotavailable">
+<title>Solaris WBEM Services Are Unavailable When
+Using <command>smpatch</command> in Remote Mode</title>
+<variablelist termlength="narrow">
+<varlistentry>
+<term>
+<emphasis role="strong">Description:</emphasis>
+</term>
+<listitem>
+<para>When running <command>smpatch</command> in remote mode or
+trying to restart the Solaris WBEM services, the following error messages
+appear:</para>
+<screen># <userinput>smpatch analyze -u root</userinput>
+Authenticating as user: root
+
+Type /? for help, pressing &lt;enter&gt; accepts the default
+denoted by [ ]
+Please enter a string value for: password :: <replaceable>root-password</replaceable>
+There is no Solaris Management Console Server running on
+pserver2.
+# <userinput>/etc/init.d/init.wbem status</userinput>
+Solaris Management Console server not running on port 898.
+# <userinput>/etc/init.d/init.wbem start</userinput>
+# <userinput>/etc/init.d/init.wbem status</userinput>
+Solaris Management Console server not running on port 898.</screen>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<emphasis role="strong">Workaround:</emphasis>
+</term>
+<listitem>
+<para>Manually stop the Solaris WBEM services before restarting
+them.</para>
+<screen># <userinput>/etc/init.d/init.wbem stop</userinput>
+# <userinput>/etc/init.d/init.wbem start</userinput>
+# <userinput>/etc/init.d/init.wbem status</userinput>
+Solaris Management Console server version 2.1.0 running on
+port 898.</screen>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+<sect3 xml:id="cannotinitializevm">
+<title>Solaris 10: Java Virtual Machine Cannot
+Be Initialized</title>
+<variablelist termlength="narrow">
+<varlistentry>
+<term>
+<emphasis role="strong">Description:</emphasis>
+</term>
+<listitem>
+<para>When you run any <command>smpatch</command> subcommand, you
+see the following error message:</para>
+<screen># <userinput>smpatch analyze</userinput>
+Error occurred during initialization of VM
+java.lang.Error: Properties init: Could not determine current
+working directory.</screen>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<emphasis role="strong">Workaround:</emphasis>
+</term>
+<listitem>
+<para>Change directories and retry the command.</para>
+<screen># <userinput>cd /</userinput>
+# <userinput>smpatch analyze</userinput>
+</screen>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect3>
+</sect2>
+</sect1>
+</chapter>

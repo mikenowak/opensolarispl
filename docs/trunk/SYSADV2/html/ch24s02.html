@@ -1,0 +1,171 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>System Crashes (Overview)</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch24.html" title="Chapter 24. Managing System Crash Information
+(Tasks)"><link rel="prev" href="ch24.html" title="Chapter 24. Managing System Crash Information
+(Tasks)"><link rel="next" href="ch24s03.html" title="Managing System Crash Dump Information"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">System Crashes (Overview)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch24.html">Prev</a> </td><th width="60%" align="center">Chapter 24. Managing System Crash Information
+(Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch24s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tscrashdumps-4"></a>System Crashes (Overview)</h2></div></div></div>
+
+<p>System crashes can occur due to hardware malfunctions, I/O problems, and software
+errors. If the system crashes, it will display an error message on the console, and
+then write a copy of its physical memory to the dump device. The system will then
+reboot automatically. When the system reboots, the <span><strong class="command">savecore</strong></span> command
+is executed to retrieve the data from the dump device and write the saved crash dump
+to your <span><strong class="command">savecore</strong></span> directory. The saved crash dump files provide
+invaluable information to your support provider to aid in diagnosing the problem.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fxcly"></a>
+System Crashes in the GRUB
+Boot Environment</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-272"></a>
+<a class="indexterm" name="indexterm-273"></a>
+<a class="indexterm" name="indexterm-274"></a>
+<p>
+<span class="strong"><strong>Solaris Express 6/05:</strong></span> If a system crash occurs on an x86
+based system in the GRUB boot environment, it is possible that the SMF service that
+manages the GRUB boot archive, <code class="filename">svc:/system/boot-archive:default,</code> might
+fail on the next system reboot. To troubleshoot this type of problem, see <span class="olink">
+What to Do if the SMF Boot Archive Service Fails During a System Reboot</span>. For
+more information on GRUB based booting, see <span class="olink">Chapter 11, <em class="citetitle">GRUB Based Booting (Tasks),</em> in <em class="citetitle">System Administration Guide: Basic Administration</em>
+</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="tscrashdumps-1"></a>System Crash Dump Files</h3></div></div></div>
+
+<p>The <span><strong class="command">savecore</strong></span> command runs automatically after a system crash
+to retrieve the crash dump information from the dump device and writes a pair of files
+called <code class="filename">unix</code>.<em class="replaceable"><code>X</code></em> and <code class="filename">vmcore</code>.<em class="replaceable"><code>X</code></em>, where <em class="replaceable"><code>X</code></em> identifies
+the dump sequence number. Together, these files represent the saved system crash dump
+information. </p>
+<p>Crash dump files are sometimes confused with <span class="emphasis"><em>core</em></span> files,
+which are images of user applications that are written when the application terminates
+abnormally.</p>
+<p>
+<a class="indexterm" name="tscrashdumps-ix5389"></a>
+<a class="indexterm" name="tscrashdumps-ix5391"></a>Crash dump files are saved in a predetermined directory, which by default,
+is <code class="filename">/var/crash/</code>
+<em class="replaceable"><code>hostname</code></em>. In previous
+Solaris releases, crash dump files were overwritten when a system rebooted, unless
+you manually enabled the system to save the images of physical memory in a crash dump
+file. Now, the saving of crash dump files is enabled by default. </p>
+<p>System crash information is managed with the <span><strong class="command">dumpadm</strong></span> command.
+For more information, see <span class="olink">The <span><strong class="command">dumpadm</strong></span> Command</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="tscrashdumps-25"></a>Saving Crash Dumps</h3></div></div></div>
+
+<p>You can examine the control structures, active tables, memory images of a live
+or crashed system kernel, and other information about the operation of the kernel
+by using the <span><strong class="command">mdb</strong></span> utility. Using <span><strong class="command">mdb</strong></span> to its full
+potential requires a detailed knowledge of the kernel, and is beyond the scope of
+this manual. For information on using this utility, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">mdb</span>
+(
+1
+)
+</span>
+</span> man page.</p>
+<p>
+<a class="indexterm" name="tscrashdumps-ix5393"></a>
+<a class="indexterm" name="tscrashdumps-ix5394"></a>
+<a class="indexterm" name="indexterm-275"></a>Additionally, crash dumps saved by <span><strong class="command">savecore</strong></span> can be
+useful to send to a customer service representative for analysis of why the system
+is crashing. </p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="tscrashdumps-32"></a>The <span><strong class="command">dumpadm</strong></span> Command</h3></div></div></div>
+
+<p>Use the <span><strong class="command">dumpadm</strong></span> command to manage system crash dump information
+in the Solaris Operating System.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The <span><strong class="command">dumpadm</strong></span> command enables you to configure crash
+dumps of the operating system. The <span><strong class="command">dumpadm</strong></span> configuration parameters
+include the dump content, dump device, and the directory in which crash dump files
+are saved.</p>
+</li><li>
+<p>Dump data is stored in compressed format on the dump device. Kernel
+crash dump images can be as big as 4 Gbytes or more. Compressing the data means faster
+dumping and less disk space needed for the dump device.</p>
+</li><li>
+<p>Saving crash dump files is run in the background when a dedicated
+dump device, not the swap area, is part of the dump configuration. This means a booting
+system does not wait for the <span><strong class="command">savecore</strong></span> command to complete before
+going to the next step. On large memory systems, the system can be available before <span><strong class="command">savecore</strong></span> completes.</p>
+</li><li>
+<p>System crash dump files, generated by the <span><strong class="command">savecore</strong></span> command,
+are saved by default.</p>
+</li><li>
+<p>The <span><strong class="command">savecore -L</strong></span> command is a new feature which
+enables you to get a crash dump of the live running the Solaris OS. This command is
+intended for troubleshooting a running system by taking a snapshot of memory during
+some bad state, such as a transient performance problem or service outage. If the
+system is up and you can still run some commands, you can execute the <span><strong class="command">savecore
+-L</strong></span> command to save a snapshot of the system to the dump device, and then
+immediately write out the crash dump files to your <span><strong class="command">savecore</strong></span> directory.
+Because the system is still running, you can only use the <span><strong class="command">savecore -L</strong></span> command
+if you have configured a dedicated dump device.</p>
+</li></ul></div>
+<p>
+<a class="indexterm" name="indexterm-276"></a>
+<a class="indexterm" name="indexterm-277"></a>
+<a class="indexterm" name="indexterm-278"></a>The following table describes <span><strong class="command">dumpadm</strong></span>'s configuration
+parameters.</p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Dump Parameter</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>dump device</p>
+</td><td>
+<p>The device that stores dump data temporarily as the system crashes. When the
+dump device is not the swap area, <span><strong class="command">savecore</strong></span> runs in the background,
+which speeds up the boot process.</p>
+</td></tr><tr><td>
+<p>savecore directory</p>
+</td><td>
+<p>The directory that stores system crash dump files.</p>
+</td></tr><tr><td>
+<p>dump content</p>
+</td><td>
+<p>Type of memory data to dump. </p>
+</td></tr><tr><td>
+<p>minimum free space</p>
+</td><td>
+<p>Minimum amount of free space required in the <span><strong class="command">savecore</strong></span> directory
+after saving crash dump files.  If no minimum free space has been configured, the
+default is one Mbyte.</p>
+</td></tr></tbody></table>
+</div>
+<p>For more information, see <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">dumpadm</span>
+(
+1M
+)
+</span>
+</span>.</p>
+<p>The dump configuration parameters managed by the <span><strong class="command">dumpadm</strong></span> command
+are stored in the <code class="filename">/etc/dumpadm.conf</code> file.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Do not edit the <code class="filename">/etc/dumpadm.conf</code> file manually.
+Editing this file manually could result in an inconsistent system dump configuration.</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="tscrashdumps-33"></a>How the <span><strong class="command">dumpadm</strong></span> Command Works</h3></div></div></div>
+
+<p>During system startup, the <span><strong class="command">dumpadm</strong></span> command is invoked by
+the <code class="filename">svc:/system/dumpadm:default</code> service to configure crash dumps
+parameters based on information in the <code class="filename">/etc/dumpadm.conf</code> file.</p>
+<p>Specifically, <span><strong class="command">dumpadm</strong></span> initializes the dump device and the
+dump content through the <code class="filename">/dev/dump</code> interface.</p>
+<p>After the dump configuration is complete, the <code class="filename">savecore</code> script
+looks for the location of the crash dump file directory by parsing the content of <code class="filename">/etc/dumpadm.conf</code> file. Then, <code class="filename">savecore</code> is invoked
+to check for crash dumps and check the content of the <code class="filename">minfree</code> file
+in the crash dump directory. </p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="tscrashdumps-5"></a>Dump Devices and Volume Managers</h3></div></div></div>
+
+<p>Do not configure a dedicated dump device that is under the control of volume
+management product such as Solaris Volume Manager for accessibility and performance
+reasons. You can keep your swap areas under the control of Solaris Volume Manager
+and this is a recommend practice, but keep your dump device separate.</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch24.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch24.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch24s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 24. Managing System Crash Information
+(Tasks) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Managing System Crash Dump Information</td></tr></table></div></body></html>

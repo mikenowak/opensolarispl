@@ -1,0 +1,404 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>DTrace Action Basics</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="DTrace User Guide"><link rel="up" href="ch02.html" title="Chapter 2. DTrace Basics"><link rel="prev" href="ch02s03.html" title="Enabling Probes"><link rel="next" href="ch02s05.html" title="DTrace Aggregations"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">DTrace Action Basics</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s03.html">Prev</a> </td><th width="60%" align="center">Chapter 2. DTrace Basics</th><td width="20%" align="right"> <a accesskey="n" href="ch02s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gcfbn"></a>DTrace Action Basics</h2></div></div></div>
+
+<p>Actions enable DTrace to interact with the system outside of the DTrace
+framework. The most common actions record data to a DTrace buffer. Other actions
+can stop the current process, raise a specific signal on the current process,
+or cease tracing. Actions that change the system state are considered <span class="emphasis"><em>destructive
+actions</em></span>. Data recording actions record data to the <span class="emphasis"><em>principal
+buffer</em></span> by default. The principal buffer is present in every DTrace
+invocation and is always allocated on a per-CPU basis. Tracing and buffer
+allocation can be restricted to a single CPU by using the <code class="option">
+cpu</code> option.
+See <span class="olink">Chapter 11, <em class="citetitle">Buffers and Buffering,</em> in <em class="citetitle">Solaris
+Dynamic Tracing Guide</em>
+</span> for more information about DTrace
+buffering.</p>
+<p>The examples in this section use D expressions that consist of built-in
+D variables. Some of the most commonly used D variables are listed below:</p>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="literal">pid</code>
+</span></dt><dd>
+<p>This variable contains the current process ID.</p>
+</dd><dt><span class="term">
+<code class="literal">execname</code>
+</span></dt><dd>
+<p>This variable contains the current executable name.</p>
+</dd><dt><span class="term">
+<code class="literal">timestamp</code>
+</span></dt><dd>
+<p>This variable contains the time since boot, expressed in nanoseconds.</p>
+</dd><dt><span class="term">
+<code class="literal">curthread</code>
+</span></dt><dd>
+<p>This variable contains a pointer to the <code class="literal">kthread_t</code> structure
+that represents the current thread.</p>
+</dd><dt><span class="term">
+<code class="literal">probemod</code>
+</span></dt><dd>
+<p>This variable contains the module name of the current probe.</p>
+</dd><dt><span class="term">
+<code class="literal">probefunc</code>
+</span></dt><dd>
+<p>This variable contains the function name of the current probe.</p>
+</dd><dt><span class="term">
+<code class="literal">probename</code>
+</span></dt><dd>
+<p>This variable contains the name of the current probe.</p>
+</dd></dl></div>
+<p>For a complete list of the built-in variables of the D scripting language,
+see Variables.</p>
+<p>The D scripting language also provides built-in functions that perform
+specific actions. You can find a complete list of these built-in functions
+at <span class="olink">Chapter 10, <em class="citetitle">Actions and Subroutines,</em> in <em class="citetitle">Solaris
+Dynamic Tracing Guide</em>
+</span>. The <code class="function">trace
+</code> function
+records the result of a D expression to the trace buffer, as in the following
+examples:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="literal">trace(pid)</code> traces the current process ID</p>
+</li><li>
+<p>
+<code class="literal">trace(execname)</code> traces the name of the
+current executable</p>
+</li><li>
+<p>
+<code class="literal">trace(curthread-&gt;t_pri)</code> traces the <code class="literal">t_pri</code> field of the current thread</p>
+</li><li>
+<p>
+<code class="literal">trace(probefunc)</code> traces the function name
+of the probe</p>
+</li></ul></div>
+<p>To indicate a particular action you want a probe to take, type the name
+of the action between <code class="literal">{}</code> characters, as in the following
+example.</p>
+<div class="example"><a name="gcfdz"></a><p class="title"><b>Example 2.10. Specifying a Probe's Action</b></p>
+
+
+<pre class="programlisting"># <span class="strong"><strong>dtrace -n 'readch {trace(pid)}'</strong></span>
+dtrace: description 'readch ' matched 4 probes
+CPU     ID                     FUNCTION:NAME
+  0   4036                       read:readch          2040
+  0   4036                       read:readch          2177
+  0   4036                       read:readch          2177
+  0   4036                       read:readch          2040
+  0   4036                       read:readch          2181
+  0   4036                       read:readch          2181
+  0   4036                       read:readch             7
+...</pre>
+<p><a name="gcfdq"></a>Since the requested action is <code class="literal">trace(pid)</code>,
+the process identification number (PID) appears in the last column of the
+output.</p>
+</div>
+<div class="example"><a name="gcfel"></a><p class="title"><b>Example 2.11. Tracing an Executable Name</b></p>
+
+
+<pre class="programlisting"># <span class="strong"><strong>dtrace -m 'ufs {trace(execname)}'</strong></span>
+dtrace: description 'ufs ' matched 889 probes
+CPU     ID                     FUNCTION:NAME
+  0  14977                  ufs_lookup:entry            ls
+  0  15748                 ufs_iaccess:entry            ls
+  0  15749                ufs_iaccess:return            ls
+  0  14978                 ufs_lookup:return            ls
+...
+  0  15007                    ufs_seek:entry         utmpd
+  0  15008                   ufs_seek:return         utmpd
+  0  14963                   ufs_close:entry         utmpd
+<span class="strong"><strong>^C</strong></span>
+</pre>
+</div>
+<div class="example"><a name="gcfgm"></a><p class="title"><b>Example 2.12. Tracing A System Call's Time of Entry</b></p>
+
+
+<pre class="programlisting"># <span class="strong"><strong>dtrace -n 'syscall:::entry {trace(timestamp)}'</strong></span>
+dtrace: description 'syscall:::entry ' matched 226 probes
+CPU     ID                     FUNCTION:NAME
+  0    312                      portfs:entry    157088479572713
+  0     98                       ioctl:entry    157088479637542
+  0     98                       ioctl:entry    157088479674339
+  0    234                   sysconfig:entry    157088479767243
+...
+  0     98                       ioctl:entry    157088481033225
+  0     60                       fstat:entry    157088481050686
+  0     60                       fstat:entry    157088481074680
+<span class="strong"><strong>^C</strong></span>
+</pre>
+</div>
+<div class="example"><a name="gcfgt"></a><p class="title"><b>Example 2.13. Specifying Multiple Actions</b></p>
+
+
+<p>To specify multiple actions, list the actions separated by the <code class="literal">;</code> character.</p>
+<pre class="programlisting"># <span class="strong"><strong>dtrace -n 'zfod {trace(pid);trace(execname)}'</strong></span>
+dtrace: description 'zfod ' matched 3 probes
+CPU     ID                     FUNCTION:NAME
+  0   4080                    anon_zero:zfod    2195   dtrace
+  0   4080                    anon_zero:zfod    2195   dtrace
+  0   4080                    anon_zero:zfod    2195   dtrace
+  0   4080                    anon_zero:zfod    2195   dtrace
+  0   4080                    anon_zero:zfod    2195   dtrace
+  0   4080                    anon_zero:zfod    2197   bash
+  0   4080                    anon_zero:zfod    2207   vi
+  0   4080                    anon_zero:zfod    2207   vi
+...</pre>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcggx"></a>Data Recording Actions</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-2"></a>
+<a class="indexterm" name="indexterm-3"></a>The actions in this section record data to the principal buffer
+by default, but each action may also be used to record data to speculative
+buffers. See <span class="olink">Speculative Tracing</span> for more
+details on speculative buffers.</p>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcggi"></a>The <code class="function">trace
+</code> function</h4></div></div></div>
+
+<pre class="programlisting">void trace(<em class="replaceable"><code>expression</code></em>)</pre>
+<p>
+<a class="indexterm" name="indexterm-4"></a>The most basic action is the <code class="function">trace
+</code> action,
+which takes a D expression as its argument and traces the result to the directed
+buffer.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcgge"></a>The <code class="function">tracemem
+</code> function</h4></div></div></div>
+
+<pre class="programlisting">void tracemem(<em class="replaceable"><code>address</code></em>, size_t <em class="replaceable"><code>nbytes</code></em>)</pre>
+<p>
+<a class="indexterm" name="indexterm-5"></a>The <code class="function">tracemem
+</code> action copies data from an address
+in memory to a buffer . The number of bytes that this action copies is specified
+in <em class="replaceable"><code>nbytes</code></em>. The address that the data is copied
+from is specified in <em class="replaceable"><code>addr</code></em> as a D expression. The
+buffer that the data is copied to is specified in <em class="replaceable"><code>buf</code></em>.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcgfz"></a>The <code class="function">printf
+</code> function</h4></div></div></div>
+
+<pre class="programlisting">void printf(string <em class="replaceable"><code>format</code></em>, ...) </pre>
+<p>
+<a class="indexterm" name="indexterm-6"></a>Like the <code class="function">trace
+</code> action, the <code class="function">printf
+</code> action
+traces D expressions. However, the <code class="function">printf
+</code> action lets
+you control formatting in ways similar to the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">printf</span>
+(
+3C
+)
+</span>
+</span> function.  Like the <code class="literal">printf</code> function, the parameters consists of a <em class="replaceable"><code>format</code></em> string
+followed by a variable number of arguments.  By default, the arguments are
+traced to the directed buffer.  The arguments are later formatted for output
+by the <code class="literal">dtrace</code> command according to the specified format
+string.</p>
+<p>For more information on the <code class="function">printf
+</code> action, see <span class="olink">Chapter 12, <em class="citetitle">Output Formatting,</em> in <em class="citetitle">Solaris
+Dynamic Tracing Guide</em>
+</span>.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcggy"></a>The <code class="function">printa
+</code> function</h4></div></div></div>
+
+<pre class="programlisting">void printa(<em class="replaceable"><code>aggregation</code></em>)
+void printa(string <em class="replaceable"><code>format</code></em>, <em class="replaceable"><code>aggregation</code></em>)</pre>
+<p>
+<a class="indexterm" name="indexterm-7"></a>The <code class="function">printa
+</code> action enables you to display
+and format aggregations.  See <span class="olink">Chapter 9, <em class="citetitle">Aggregations,</em> in <em class="citetitle">Solaris Dynamic Tracing Guide</em>
+</span> for more detail
+on aggregations.  If a <em class="replaceable"><code>format</code></em> value is not provided,
+the <code class="function">printa
+</code> action only traces a directive to the DTrace
+consumer. The consumer that receives that directive processes and displays
+the aggregation with the default format. See <span class="olink">Chapter 12, <em class="citetitle">Output Formatting,</em> in <em class="citetitle">Solaris Dynamic Tracing Guide</em>
+</span> for a more
+detailed description of the <code class="function">printa
+</code> format string.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcgfo"></a>The <code class="function">stack
+</code> function</h4></div></div></div>
+
+<pre class="programlisting">void stack(int <em class="replaceable"><code>nframes</code></em>)
+void stack(void)</pre>
+<p>
+<a class="indexterm" name="indexterm-8"></a>The <code class="function">stack
+</code> action records a kernel stack trace
+to the directed buffer.  The depth of the kernel stack is given by the value
+given in <em class="replaceable"><code>nframes</code></em>. If no value is given for <em class="replaceable"><code>nframes</code></em>, the stack action records a number of stack frames specified
+by the <code class="literal">stackframes</code> option.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcghb"></a>The <code class="function">ustack
+</code> function</h4></div></div></div>
+
+<pre class="programlisting">void ustack(int <em class="replaceable"><code>nframes</code></em>, int <em class="replaceable"><code>strsize</code></em>)
+void ustack(int <em class="replaceable"><code>nframes</code></em>)
+void ustack(void)</pre>
+<p>
+<a class="indexterm" name="indexterm-9"></a>The <code class="function">ustack
+</code> action records a user stack trace
+to the directed buffer. The depth of the user stack is equal to the value
+specified in <em class="replaceable"><code>nframes</code></em>. If there is no value for <em class="replaceable"><code>nframes</code></em>, the <code class="literal">ustack</code> action records a number
+of stack frames that is specified by the <code class="literal">ustackframes</code> option.
+The <code class="function">ustack
+</code> action determines the address of the calling
+frames when the probe fires. The <code class="function">ustack
+</code> action does not
+translate the stack frames into symbols until the DTrace consumer processes
+the <code class="function">ustack
+</code> action at the user level. If a value for <em class="replaceable"><code>strsize</code></em> is specified and not zero, the <code class="function">ustack
+</code> action
+allocates the specified amount of string space and uses it to perform address-to-symbol
+translation directly from the kernel.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcgfq"></a>The <code class="function">jstack
+</code> function</h4></div></div></div>
+
+<pre class="programlisting">void jstack(int <em class="replaceable"><code>nframes</code></em>, int <em class="replaceable"><code>strsize</code></em>)
+void jstack(int <em class="replaceable"><code>nframes</code></em>)
+void jstack(void)</pre>
+<p>
+<a class="indexterm" name="indexterm-10"></a>The <code class="function">jstack
+</code> action is an alias for <code class="function">ustack
+</code> that uses the value specified by the <code class="literal">jstackframes</code> option
+for the number of stack frames. The <code class="literal">jstack</code> action uses
+the value specified by the <code class="literal">jstackstrsize</code> option to determine
+the string space size. The <code class="literal">jstacksize</code> action defaults to
+a non-zero value.</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcfsm"></a>Destructive Actions</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-11"></a>
+<a class="indexterm" name="indexterm-12"></a>You must explicitly enable destructive actions in order to use
+them. You can enable destructive actions by using the <code class="option">
+w</code> option.
+If you attempt to use destructive actions in <span><strong class="command">dtrace</strong></span> without
+explicitly enabling them, <span><strong class="command">dtrace</strong></span> fails with a message similar
+to the following example:</p>
+<pre class="programlisting">dtrace: failed to enable 'syscall': destructive actions not allowed</pre>
+<p>For more information on DTrace actions, including destructive actions,
+see <span class="olink">Chapter 10, <em class="citetitle">Actions and Subroutines,</em> in <em class="citetitle">Solaris
+Dynamic Tracing Guide</em>
+</span>.</p>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcfrv"></a>Process Destructive Actions</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-13"></a>Some actions are destructive only to a particular process. These
+actions are available to users with the <code class="literal">dtrace_proc</code> or <code class="literal">dtrace_user</code> privileges. See <span class="olink">Chapter 35, <em class="citetitle">Security,</em> in <em class="citetitle">Solaris Dynamic Tracing Guide</em>
+</span> for details
+on DTrace security privileges.</p>
+<div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="gcfrz"></a>The <code class="function">stop
+</code> function</h5></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-14"></a>When a probe fires with the <code class="function">stop
+</code> action enabled,
+the process that fired that probe stops upon leaving the kernel. This process
+stops in the same way as a process that is stopped by a <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">proc</span>
+(
+4
+)
+</span>
+</span> action.</p>
+</div>
+<div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="gcfqz"></a>The <code class="function">raise
+</code> function</h5></div></div></div>
+
+<pre class="programlisting">void raise(int <em class="replaceable"><code>signal</code></em>)</pre>
+<p>
+<a class="indexterm" name="indexterm-15"></a>The <code class="function">raise
+</code> action sends the specified signal
+to the currently running process.</p>
+</div>
+<div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="gcfsd"></a>The <code class="function">copyout
+</code> function</h5></div></div></div>
+
+<pre class="programlisting">void copyout(void *<em class="replaceable"><code>buf</code></em>, uintptr_t <em class="replaceable"><code>addr</code></em>, size_t <em class="replaceable"><code>nbytes</code></em>)</pre>
+<p>
+<a class="indexterm" name="indexterm-16"></a>The <code class="function">copyout
+</code> action copies data from a buffer
+to an address in memory. The number of bytes that this action copies is specified
+in <em class="replaceable"><code>nbytes</code></em>. The buffer that the data is copied from
+is specified in <em class="replaceable"><code>buf</code></em>. The address that the data
+is copied to is specified in <em class="replaceable"><code>addr</code></em>. That address
+is in the address space of the process that is associated with the current
+thread.</p>
+</div>
+<div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="gcfrq"></a>The <code class="function">copyoutstr
+</code> function</h5></div></div></div>
+
+<pre class="programlisting">void copyoutstr(string <em class="replaceable"><code>str</code></em>, uintptr_t <em class="replaceable"><code>addr</code></em>, size_t <em class="replaceable"><code>maxlen</code></em>)</pre>
+<p>
+<a class="indexterm" name="indexterm-17"></a>The <code class="function">copyoutstr
+</code> action copies a string to
+an address in memory. The string to copy is specified in <em class="replaceable"><code>str</code></em>.
+The address that the string is copied to is specified in <em class="replaceable"><code>addr</code></em>.
+That address is in the address space of the process that is associated with
+the current thread.</p>
+</div>
+<div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="gcfsj"></a>The <code class="function">system
+</code> function</h5></div></div></div>
+
+<pre class="programlisting">void system(string <em class="replaceable"><code>program</code></em>, ...) </pre>
+<p>
+<a class="indexterm" name="indexterm-18"></a>The <code class="function">system
+</code> action causes the program specified
+by <em class="replaceable"><code>program</code></em> to be executed by the system as if it
+were given to the shell as input.</p>
+</div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcfre"></a>Kernel Destructive Actions</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-19"></a>Some destructive actions are destructive to the entire system.
+Use these actions with caution. These actions affect every process on the
+system and may affect other systems, depending upon the affected system's
+network services.</p>
+<div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="gcfra"></a>The <code class="function">breakpoint
+</code> function</h5></div></div></div>
+
+<pre class="programlisting">void breakpoint(void)</pre>
+<p>
+<a class="indexterm" name="indexterm-20"></a>The <code class="function">breakpoint
+</code> action induces a kernel breakpoint,
+causing the system to stop and transfer control to the kernel debugger.  The
+kernel debugger will emit a string that denotes the DTrace probe that triggered
+the action.</p>
+</div>
+<div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="gcfru"></a>The <code class="function">panic
+</code> function</h5></div></div></div>
+
+<pre class="programlisting">void panic(void)</pre>
+<p>
+<a class="indexterm" name="indexterm-21"></a>When a probe with the <code class="function">panic
+</code> action triggers,
+the kernel panics. This action can force a system crash dump at a time of
+interest. You can use this action in conjunction with ring buffering and postmortem
+analysis to diagnose a system problem. For more information, see <span class="olink">Chapter 11, <em class="citetitle">Buffers and Buffering,</em> in <em class="citetitle">Solaris
+Dynamic Tracing Guide</em>
+</span> and <span class="olink">Chapter 37, <em class="citetitle">Postmortem Tracing,</em> in <em class="citetitle">Solaris Dynamic Tracing Guide</em>
+</span> respectively.</p>
+</div>
+<div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="gcfsp"></a>The <code class="function">chill
+</code> function</h5></div></div></div>
+
+<pre class="programlisting">void chill(int <em class="replaceable"><code>nanoseconds</code></em>)</pre>
+<p>
+<a class="indexterm" name="indexterm-22"></a>When a probe with the <code class="function">chill
+</code> action triggers,
+DTrace spins for the specified number of nanoseconds. The <code class="function">chill
+</code> action
+is useful for exploring problems related to timing. Because interrupts are
+disabled while in DTrace probe context, any use of <code class="function">chill
+</code> will
+induce interrupt latency, scheduling latency, dispatch latency.</p>
+</div>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Enabling Probes </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> DTrace Aggregations</td></tr></table></div></body></html>

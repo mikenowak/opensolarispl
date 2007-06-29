@@ -1,0 +1,188 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Scheduling a Repetitive System Task (cron)</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch15.html" title="Chapter 15. Scheduling System Tasks (Tasks)"><link rel="prev" href="ch15s02.html" title="Ways to Automatically Execute System Tasks"><link rel="next" href="ch15s04.html" title="Creating and Editing crontab Files"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Scheduling a Repetitive System Task (<span><strong class="command">cron</strong></span>)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch15s02.html">Prev</a> </td><th width="60%" align="center">Chapter 15. Scheduling System Tasks (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch15s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sysrescron-1"></a>Scheduling a Repetitive System Task (<span><strong class="command">cron</strong></span>)</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-186"></a>
+<a class="indexterm" name="indexterm-187"></a>The following sections describe how to create, edit, display, and remove <code class="filename">crontab</code> files, as well as how to control access to them.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sysrescron-2"></a>Inside a <code class="filename">crontab</code> File</h3></div></div></div>
+
+<p>The <span><strong class="command">cron</strong></span> daemon schedules system tasks according to commands
+found within each <code class="filename">crontab</code> file. A <code class="filename">crontab</code> file
+consists of commands, one command per line, that will be executed at regular intervals.
+The beginning of each line contains date and time information that tells the <span><strong class="command">cron</strong></span> daemon when to execute the command.</p>
+<p>
+<a class="indexterm" name="sysrescron-ix2484"></a>For example, a <code class="filename">crontab</code> file named <code class="filename">root</code> is supplied during SunOS software installation. The file's contents include
+these command lines: </p>
+<pre class="screen">10 3 * * * /usr/sbin/logadm <em class="lineannotation"><span class="lineannotation">(1)</span></em>
+15 3 * * 0 /usr/lib/fs/nfs/nfsfind <em class="lineannotation"><span class="lineannotation">(2)</span></em>
+1 2 * * * [ -x /usr/sbin/rtc ] &amp;&amp; /usr/sbin/rtc -c &gt; /dev/null 2&gt;&amp;1 <em class="lineannotation"><span class="lineannotation">(3)</span></em>
+30 3 * * * [ -x /usr/lib/gss/gsscred_clean ] &amp;&amp; /usr/lib/gss/gsscred_clean <em class="lineannotation"><span class="lineannotation">(4)</span></em>
+</pre>
+<p>The following describes the output for each of these command lines:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The first line runs the <span><strong class="command">logadm</strong></span> command at 3:10
+a.m. every day. </p>
+</li><li>
+<p>The second line executes the <span><strong class="command">nfsfind</strong></span> script every
+Sunday at 3:15 a.m.</p>
+</li><li>
+<p>The third line runs a script that checks for daylight savings time
+(and make corrections, if necessary) at 2:10 a.m. daily.</p>
+<p>If there is no
+RTC time zone, nor an <code class="filename">/etc/rtc_config</code> file, this entry does nothing. </p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The <span><strong class="command">/usr/sbin/rtc</strong></span> script can only be run
+on an x86 based system.</p>
+</div>
+</li><li>
+<p>The fourth line checks for (and removes) duplicate entries in the
+Generic Security Service table, <code class="filename">/etc/gss/gsscred_db</code>, at 3:30
+a.m. daily.</p>
+</li></ul></div>
+<p>For more information about the syntax of lines within a <code class="filename">crontab</code> file,
+see <span class="olink">Syntax of <code class="filename">crontab</code> File Entries</span>.</p>
+<p>
+<a class="indexterm" name="sysrescron-ix2486"></a>
+<a class="indexterm" name="sysrescron-ix2488"></a>
+<a class="indexterm" name="sysrescron-ix2489"></a>The <code class="filename">crontab</code> files are stored in the <code class="filename">/var/spool/cron/crontabs</code> directory. Several <code class="filename">crontab</code> files besides <code class="filename">root</code> are provided during SunOS software installation. See the following
+table.</p>
+<div class="table"><a name="sysrescron-tbl-3"></a><p class="title"><b>Table 15.2. Default <code class="filename">crontab</code> Files</b></p>
+
+
+<table summary="Default crontab Files" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>
+<code class="filename">crontab</code> File</p>
+</th><th>
+<p>Function</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="filename">adm</code> </p>
+</td><td>
+<p>Accounting</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">lp</code> </p>
+</td><td>
+<p>Printing</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">root</code> </p>
+</td><td>
+<p>General system functions and file system cleanup</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">sys</code> </p>
+</td><td>
+<p>Performance data collection</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">uucp</code> </p>
+</td><td>
+<p>General <code class="literal">uucp</code> cleanup</p>
+</td></tr></tbody></table>
+</div>
+<p>Besides the default <code class="filename">crontab</code> files, users can create <code class="filename">crontab</code> files to schedule their own system tasks. Other <code class="filename">crontab</code> files are named after the user accounts in which they are created, such
+as <code class="literal">bob</code>, <code class="literal">mary</code>, <code class="literal">smith</code>, or <code class="literal">jones</code>.</p>
+<p>To access <code class="filename">crontab</code> files that belong to <code class="literal">root</code> or
+other users, superuser privileges are required.</p>
+<p>
+<a class="indexterm" name="sysrescron-ix2498"></a>
+<a class="indexterm" name="sysrescron-ix2499"></a>Procedures explaining how to create, edit, display, and remove <code class="filename">crontab</code> files are described in subsequent sections.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sysrescron-26552"></a>How the <span><strong class="command">cron</strong></span> Daemon Handles
+Scheduling</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="sysrescron-ix2500"></a>
+<a class="indexterm" name="sysrescron-ix2501"></a>
+<a class="indexterm" name="sysrescron-ix2502"></a>
+<a class="indexterm" name="sysrescron-ix2503"></a>
+<a class="indexterm" name="sysrescron-ix2506"></a>The <span><strong class="command">cron</strong></span> daemon manages the automatic scheduling of <span><strong class="command">crontab</strong></span> commands. The role of the <span><strong class="command">cron</strong></span> daemon is to check
+the <code class="filename">/var/spool/cron/crontab</code> directory for the presence of <code class="filename">crontab</code> files. The <span><strong class="command">cron</strong></span> daemon performs the following
+tasks at startup:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Checks for new <code class="filename">crontab</code> files.</p>
+</li><li>
+<p>Reads the execution times that are listed within the files.</p>
+</li><li>
+<p>Submits the commands for execution at the proper times.</p>
+</li><li>
+<p>Listens for notifications from the <span><strong class="command">crontab</strong></span> commands
+regarding updated <code class="filename">crontab</code> files.</p>
+</li></ul></div>
+<p>
+<a class="indexterm" name="sysrescron-ix2507"></a>
+<a class="indexterm" name="sysrescron-ix2508"></a>
+<a class="indexterm" name="sysrescron-ix2509"></a>
+<a class="indexterm" name="sysrescron-ix2510"></a>In much the same way, the <code class="filename">cron</code> daemon controls the
+scheduling of <span><strong class="command">at</strong></span> files. These files are stored in the <code class="filename">/var/spool/cron/atjobs</code> directory. The <span><strong class="command">cron</strong></span> daemon also
+listens for notifications from the <span><strong class="command">crontab</strong></span> commands regarding submitted <span><strong class="command">at</strong></span> jobs.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sysrescron-62861"></a>Syntax of <code class="filename">crontab</code> File Entries</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="sysrescron-ix2513"></a>
+<a class="indexterm" name="sysrescron-ix2514"></a>A <code class="filename">crontab</code> file consists of commands, one command
+per line, that execute automatically at the time specified by the first five fields
+of each command line. These five fields, described in the following table, are separated
+by spaces.</p>
+<div class="table"><a name="sysrescron-68345"></a><p class="title"><b>Table 15.3. Acceptable Values for <code class="filename">crontab</code> Time Fields</b></p>
+
+
+<table summary="Acceptable Values for crontab Time Fields" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Time Field</p>
+</th><th>
+<p>Values</p>
+</th></tr></thead><tbody><tr><td>
+<p>Minute </p>
+</td><td>
+<p>0-59</p>
+</td></tr><tr><td>
+<p>Hour</p>
+</td><td>
+<p>0-23</p>
+</td></tr><tr><td>
+<p>Day of month</p>
+</td><td>
+<p>1-31</p>
+</td></tr><tr><td>
+<p>Month</p>
+</td><td>
+<p>1-12</p>
+</td></tr><tr><td>
+<p>Day of week</p>
+</td><td>
+<p>0-6 (0 = Sunday)</p>
+</td></tr></tbody></table>
+</div>
+<p>Follow these guidelines for using special characters in <code class="filename">crontab</code> time
+fields:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Use a space to separate each field.</p>
+</li><li>
+<p>Use a comma to separate multiple values.</p>
+</li><li>
+<p>Use a hyphen to designate a range of values.</p>
+</li><li>
+<p>Use an asterisk as a wildcard to include all possible values. </p>
+</li><li>
+<p>Use a comment mark (#) at the beginning of a line to indicate a comment
+or a blank line. </p>
+</li></ul></div>
+<p>For example, the following <span><strong class="command">crontab</strong></span> command entry displays
+a reminder in the user's console window at 4 p.m. on the first and fifteenth days
+of every month.  </p>
+<pre class="screen">0 16 1,15 * * echo Timesheets Due &gt; /dev/console</pre>
+<p>
+<a class="indexterm" name="sysrescron-ix2527"></a>Each command within a <code class="filename">crontab</code> file must consist of
+one line, even if that line is very long. The <span><strong class="command">crontab</strong></span> file does
+not recognize extra carriage returns. For more detailed information about <code class="filename">crontab</code> entries and command options, refer to the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">crontab</span>
+(
+1
+)
+</span>
+</span> man page.</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch15s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch15.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch15s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Ways to Automatically Execute System Tasks </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Creating and Editing <code class="filename">crontab</code> Files</td></tr></table></div></body></html>

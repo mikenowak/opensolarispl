@@ -1,0 +1,399 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Sun Patch Manager Concepts</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch22.html" title="Chapter 22. Managing Solaris Patches by Using Sun Patch
+Manager (Tasks)"><link rel="prev" href="ch22.html" title="Chapter 22. Managing Solaris Patches by Using Sun Patch
+Manager (Tasks)"><link rel="next" href="ch22s03.html" title="Getting Started With Patch Manager"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Sun Patch Manager Concepts</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch22.html">Prev</a> </td><th width="60%" align="center">Chapter 22. Managing Solaris Patches by Using Sun Patch
+Manager (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch22s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="concepts"></a>Sun Patch Manager Concepts</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-437"></a>
+<a class="indexterm" name="indexterm-438"></a>
+<p>Sun Patch Manager is one of the tools that is used to manage <span class="olink">
+<span class="emphasis"><em>patches</em></span>
+</span> on
+Solaris systems.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>For information about new tools for managing patches and updates
+in this Solaris release, see <span class="olink">What's New in Software Management in the Solaris Operating System?</span>.</p>
+</div>
+<p>Patch Manager primarily operates on <span class="olink">
+<span class="emphasis"><em>signed patches</em></span>
+</span>,
+which include a <span class="olink">
+<span class="emphasis"><em>digital signature</em></span>
+</span> from Sun Microsystems. A signed patch
+offers greater security than an <span class="olink">
+<span class="emphasis"><em>unsigned patch</em></span>
+</span>,
+which does not have a digital signature. The digital signature of the patch
+is verified before the patch is applied to your system. A valid digital signature
+ensures that the signed patch that you apply has not been modified since the
+signature was applied. You can use the <span><strong class="command">smpatch add</strong></span> command
+to apply unsigned patches. <a class="indexterm" name="indexterm-439"></a> <a class="indexterm" name="indexterm-440"></a> <a class="indexterm" name="indexterm-441"></a> <a class="indexterm" name="indexterm-442"></a> <a class="indexterm" name="indexterm-443"></a> <a class="indexterm" name="indexterm-444"></a>
+</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="patchprocess"></a>Patch Management Process</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-445"></a>
+<p>Patch Manager enables you to manually or automatically perform the <span class="emphasis"><em>patch management process</em></span>, which includes the following tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Updating your system with some or all of the appropriate patches,
+which automatically analyzes the system to determine the appropriate patches,
+downloads the patches, and applies the patches to the system</p>
+</li><li>
+<p>Analyzing the system to obtain a list of appropriate patches</p>
+</li><li>
+<p>Downloading the appropriate patches to your system</p>
+</li><li>
+<p>Applying the appropriate patches to your system</p>
+</li><li>
+<p>Configuring the patch management environment for your system</p>
+</li><li>
+<p>Tuning the patch management environment for your system</p>
+</li><li>
+<p>Removing patches from your system</p>
+</li></ul></div>
+<p>For information about recommended strategies and practices for using
+Solaris patches, go to <span class="olink">
+<em class="citetitle">Solaris Patch Management:  Recommended Strategies</em>
+</span>.</p>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="updatingsystem"></a>Automatically Updating Your System With
+Patches</h4></div></div></div>
+
+<a class="indexterm" name="indexterm-446"></a>
+<a class="indexterm" name="indexterm-447"></a>
+<a class="indexterm" name="indexterm-448"></a>
+<a class="indexterm" name="indexterm-449"></a>
+<p>Patch Manager can automatically apply the set of appropriate patches
+to your system. An update performs these steps in the patch management process:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Analyzes your system to determine which patches are appropriate</p>
+</li><li>
+<p>Downloads those patches to your system</p>
+</li><li>
+<p>Applies only the patches that meet the policy for applying
+patches</p>
+</li></ul></div>
+<p>After a patch has been successfully applied, the downloaded patch is
+removed from the download directory.</p>
+<p>Patches are applied to your system depending on the specified policy
+and the patch properties associated with the patches that are downloaded.</p>
+<p>If a patch does not meet the <span class="olink">
+<span class="emphasis"><em>policy for applying patches</em></span>
+</span>,
+the patch is not applied. Instead, a patch entry for that patch is written
+to the <code class="filename">disallowed_patch_list</code> file in the download directory.
+Sun Patch Manager continues trying to apply the other patches. Later, you
+can go to the download directory and use the <span><strong class="command">smpatch add</strong></span> command
+to manually apply any disallowed patches that are listed in this file. For
+any of the patches that have the <code class="literal">interactive</code> property set,
+follow the instructions in the patch's README file to apply them.</p>
+<p>For example, you can bring your system to single-user mode and apply
+the patches listed in the <code class="filename">disallowed_patch_list</code> file
+by typing the following:</p>
+<pre class="screen"># <strong class="userinput"><code>smpatch add -x idlist=/var/sadm/spool/disallowed_patch_list</code></strong>
+</pre>
+<p>Instead of performing an <span class="olink">
+<span class="emphasis"><em>update</em></span>
+</span>, you can perform
+the analyze, download, and apply tasks manually by using the <span><strong class="command">smpatch</strong></span> command.
+These tasks are described in the following sections.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="analyzesystem"></a>Analyzing Your System</h4></div></div></div>
+
+<a class="indexterm" name="indexterm-450"></a>
+<a class="indexterm" name="indexterm-451"></a>
+<p>Before you can apply patches to your system, you can determine which
+patches are needed. You can use Patch Manager to perform a <span class="olink">
+<span class="emphasis"><em>patch analysis</em></span>
+</span> of
+your system to obtain a list of appropriate patches.</p>
+<p>Patch Manager uses analysis modules and a list of available patches
+from the source of patches, which is the SunSolve Online web site by default,
+to perform the analysis of your Solaris system. For information about the
+source of patches, see <span class="olink">Specifying the Source of Patches</span>.</p>
+<p>Based on the result of the analysis, the patches can be downloaded and
+applied to your system.</p>
+<p>Sometimes a patch depends on another patch, that is, the first patch
+cannot be applied to the system until the other patch is applied. The first
+patch is said to have a <span class="olink">
+<span class="emphasis"><em>dependency</em></span>
+</span> on
+the second patch. When Patch Manager analyzes your system, it checks for patch
+dependencies and automatically includes all patches in the resulting list.
+If you request a system analysis based on particular patches, Patch Manager
+adds any patches to the list that are needed to resolve patch dependencies.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The list of patches that is generated by the analysis is based
+on all of the available patches from the Sun patch server. No explicit information
+about your host system or its network configuration is transmitted to Sun.
+Only a request for the Sun patch set is transmitted. The patch set is scanned
+for patches that are appropriate for this host system, the results are displayed,
+and those patches are optionally downloaded.</p>
+</div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="downloadpatches"></a>Downloading Patches to Your System</h4></div></div></div>
+
+<a class="indexterm" name="indexterm-452"></a>
+<a class="indexterm" name="indexterm-453"></a>
+<p>Before you apply patches to your system, you must <span class="olink">
+<span class="emphasis"><em>download</em></span>
+</span> the patches
+that you want from the Sun patch server to that system.</p>
+<p>You can download patches from the Sun patch server based on an analysis
+of the system, or you can specify particular patches to download.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="applypatches"></a>Applying Patches to Your System</h4></div></div></div>
+
+<a class="indexterm" name="indexterm-454"></a>
+<a class="indexterm" name="indexterm-455"></a>
+<p>Patch Manager can <span class="olink">
+<span class="emphasis"><em>apply</em></span>
+</span> patches to your system.</p>
+<p>If you use the <span><strong class="command">smpatch add</strong></span> command to apply particular
+patches, it attempts to apply only those patches that you specified. The <span><strong class="command">smpatch add</strong></span> command does not attempt to resolve patch dependencies.
+If you want to apply a patch that has a missing dependency, the patch is not
+applied. You can use the <span><strong class="command">smpatch analyze</strong></span> command or the <span><strong class="command">smpatch update</strong></span> command to resolve patch dependencies.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="removepatches"></a>Removing Patches From Your System</h4></div></div></div>
+
+<a class="indexterm" name="indexterm-456"></a>
+<a class="indexterm" name="indexterm-457"></a>
+<a class="indexterm" name="indexterm-458"></a>
+<p>You might want to remove (or <span class="olink">
+<span class="emphasis"><em>back out</em></span>
+</span>) a patch
+that you previously applied to your system. Patch Manager enables you to remove
+patches.</p>
+<p>When you remove a patch, the Solaris patch tools restore all of the
+files that have been modified by that patch, unless any of the following are
+true:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The patch was applied by the <span><strong class="command">patchadd -d</strong></span> command,
+which instructs <span><strong class="command">patchadd</strong></span> <span class="emphasis"><em>not</em></span> to save
+copies of files being updated or replaced.</p>
+</li><li>
+<p>The patch was applied by the <span><strong class="command">patchadd</strong></span> command
+without using the <code class="option">
+d</code> option and the backout files that were
+generated have since been removed.</p>
+</li><li>
+<p>The patch has been <span class="olink">
+<span class="emphasis"><em>obsoleted</em></span>
+</span> by
+a later patch.</p>
+</li><li>
+<p>The patch is required by another patch.</p>
+</li></ul></div>
+<p>The Solaris patch tools call the <span><strong class="command">pkgadd</strong></span> command to
+restore <span class="olink">
+<span class="emphasis"><em>packages</em></span>
+</span> that were saved when the patch was initially applied.</p>
+<p>During the patch removal process, the <span><strong class="command">patchrm</strong></span> command
+logs the backout process in the <code class="filename">/tmp/backoutlog.</code>
+<em class="replaceable"><code>process-id</code></em> file. This log file is automatically removed if the
+patch is successfully removed.</p>
+<p>Note that you can only
+remove <span class="emphasis"><em>one</em></span> patch at a time when you use the <span><strong class="command">smpatch
+remove</strong></span> command.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>If you attempt to remove a patch on which other patches depend,
+it is not removed. If you remove all of the patches that depend upon this
+patch, then you can remove it.</p>
+</div>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sourceofpatches"></a>Specifying the Source of Patches</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-459"></a>
+<a class="indexterm" name="indexterm-460"></a>
+<a class="indexterm" name="indexterm-461"></a>
+<a class="indexterm" name="indexterm-462"></a>
+<a class="indexterm" name="indexterm-463"></a>
+<p>When you use Patch Manager, your client systems must have access to
+Solaris patches and patch data. Both client systems and local patch servers
+can obtain patches from these sources:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="strong"><strong>Patch server &#8211;</strong></span> A
+server that provides access to Solaris patches and patch data. <a class="indexterm" name="indexterm-464"></a> </p>
+</li><li>
+<p>
+<span class="strong"><strong>Local collection of patches &#8211;</strong></span> A
+collection of patches and patch data that is stored in a directory available
+to the local system. Such a directory might be a local directory, a shared
+network directory, or a CD mounted on your local system.</p>
+</li></ul></div>
+<p>The default source of patches for client systems is the Sun patch server.
+As a result, any client system that obtains patches from the Sun patch server
+must be connected, either directly or through a <span class="olink">
+<span class="emphasis"><em>web proxy</em></span>
+</span>, to
+the Internet.</p>
+<p>You can use a combination of different patch sources to configure these
+patch management environments.</p>
+<p>Clients access patches and patch data from the following sources:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="strong"><strong>Sun patch server &#8211;</strong></span> Your
+client systems obtain patches from the Sun patch server.</p>
+<p>This
+configuration requires that your client systems are connected, directly or
+through a web proxy, to the Internet.</p>
+</li><li>
+<p>
+<span class="strong"><strong>Local collection of patches &#8211;</strong></span> Your
+client systems obtain patches and patch data from a collection of patches
+on your local system.</p>
+<p>This configuration does not require that
+the client systems be connected to the Internet.</p>
+</li></ul></div>
+<p>For instructions on specifying the source of patches for your client
+system, see  or <span class="olink">How to Specify the Source of Patches (Command Line)</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="patchpolicy"></a>Customizing the Policy for Applying Patches</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-465"></a>
+<a class="indexterm" name="indexterm-466"></a>
+<a class="indexterm" name="indexterm-467"></a>
+<p>Patch Manager enables you to customize a policy for applying patches
+to use when updating your system. The policy determines the types of patches
+that can be applied during an update operation. <a class="indexterm" name="indexterm-468"></a>
+</p>
+<p>Solaris patches are classified as being standard or nonstandard. A <span class="olink">
+<span class="emphasis"><em>standard
+patch</em></span>
+</span> can be applied to your Solaris system when running
+in multiuser mode. A reboot is not required. Such a patch is associated with
+the <code class="literal">standard</code> patch property. <a class="indexterm" name="indexterm-469"></a> <a class="indexterm" name="indexterm-470"></a> <a class="indexterm" name="indexterm-471"></a> <a class="indexterm" name="indexterm-472"></a>
+</p>
+<p>A <span class="olink">
+<span class="emphasis"><em>nonstandard patch</em></span>
+</span> has one of the following characteristics:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The patch is associated with one or more of the <code class="literal">rebootafter</code>, <code class="literal">rebootimmediate</code>, <code class="literal">reconfigafter</code>, <code class="literal">reconfigimmediate</code>, and <code class="literal">singleuser</code> properties.
+Such a nonstandard patch can be applied during an update operation if permitted
+by the policy.</p>
+</li><li>
+<p>The patch is associated with the <code class="literal">interactive</code> property.
+Such a patch cannot be applied by using the <span><strong class="command">smpatch update</strong></span> command.
+You can use the <span><strong class="command">smpatch add</strong></span> command or the <span><strong class="command">patchadd</strong></span> command
+to apply such a patch.</p>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>As of this Solaris release, not all Sun patches are available
+through Sun Patch Manager. Such patches include those that do not conform
+to PatchPro standards, and those that have third-party contract restrictions.</p>
+</div>
+<p>You can specify the types of patches that Patch Manager can apply during
+an update. Such patches might include those that require a reboot or those
+that must be applied while the system is in single-user mode.</p>
+<p>For descriptions of the following patch properties, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">smpatch</span>
+(
+1M
+)
+</span>
+</span> man page. <a class="indexterm" name="indexterm-473"></a> <a class="indexterm" name="indexterm-474"></a>
+</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="literal">interactive</code>
+</p>
+</li><li>
+<p>
+<code class="literal">rebootafter</code>
+</p>
+</li><li>
+<p>
+<code class="literal">reconfigafter</code>
+</p>
+</li><li>
+<p>
+<code class="literal">rebootimmediate</code>
+</p>
+</li><li>
+<p>
+<code class="literal">reconfigimmediate</code>
+</p>
+</li><li>
+<p>
+<code class="literal">singleuser</code>
+</p>
+</li><li>
+<p>
+<code class="literal">standard</code>
+</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="configproperties"></a>Setting Patch Manager Configuration Parameters</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-475"></a>
+<a class="indexterm" name="indexterm-476"></a>
+<a class="indexterm" name="indexterm-477"></a>
+<p>You can use the <span><strong class="command">smpatch</strong></span> command to set the following
+Patch Manager parameters.</p>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="literal">patchpro.patchset</code>
+</span></dt><dd>
+<p>Name of the patch set to use. The default name is <code class="literal">patchdb</code>.</p>
+</dd><dt><span class="term">
+<code class="literal">patchpro.download.directory</code>
+</span></dt><dd>
+<p>Path of the directory where downloaded patches are stored
+and from which patches are applied. The default location is <code class="filename">/var/sadm/spool</code>.</p>
+</dd><dt><span class="term">
+<code class="literal">patchpro.backout.directory</code>
+</span></dt><dd>
+<p>Path of the directory where patch backout data is saved. When
+a patch is removed, the data is retrieved from this directory as well. By
+default, backout data is saved in the package directories.</p>
+</dd><dt><span class="term">
+<code class="literal">patchpro.patch.source</code>
+</span></dt><dd>
+<p>URL that points to the collection of patches. The default
+URL is that of the Sun patch server, <code class="literal">https://updateserver.sun.com/solaris/</code>.</p>
+</dd><dt><span class="term">
+<code class="literal">patchpro.sun.user</code>
+</span></dt><dd>
+<p>The Sun user name that you use to obtain patches. You obtain
+this user name by registering at <a href="http://sunsolve.sun.com" target="_top">
+</a>.
+By default, you are not permitted to access contract patches.</p>
+</dd><dt><span class="term">
+<code class="literal">patchpro.sun.passwd</code>
+</span></dt><dd>
+<p>Password used with your Sun user name. No default password
+is set. If you specify your Sun user name, you must also specify your password.</p>
+</dd><dt><span class="term">
+<code class="literal">patchpro.proxy.host</code>
+</span></dt><dd>
+<p>Host name of your web proxy. By default, no web proxy is specified,
+and a direct connection to the Internet is assumed.</p>
+</dd><dt><span class="term">
+<code class="literal">patchpro.proxy.port</code>
+</span></dt><dd>
+<p>Port number used by your web proxy. By default, no web proxy
+is specified, and a direct connection to the Internet is assumed. The default
+port is <code class="literal">8080</code>.</p>
+</dd><dt><span class="term">
+<code class="literal">patchpro.proxy.user</code>
+</span></dt><dd>
+<p>Your user name used by your web proxy for authentication.</p>
+</dd><dt><span class="term">
+<code class="literal">patchpro.proxy.passwd</code>
+</span></dt><dd>
+<p>Password used by your web proxy for authentication.</p>
+</dd><dt><span class="term">
+<code class="literal">patchpro.install.types</code>
+</span></dt><dd>
+<p>Your policy for applying patches. The value is a list of zero
+or more colon-separated patch properties that are permitted to be applied
+by an update operation (<span><strong class="command">smpatch update</strong></span>).</p>
+<p>By default, patches that have the <code class="literal">standard</code>, <code class="literal">rebootafter</code>, and <code class="literal">reconfigafter</code> properties can be applied.
+See <span class="olink">Customizing the Policy for Applying Patches</span>.</p>
+</dd></dl></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch22.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch22.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch22s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 22. Managing Solaris Patches by Using Sun Patch
+Manager (Tasks) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Getting Started With Patch Manager</td></tr></table></div></body></html>

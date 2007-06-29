@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>How Zone State Affects Patch and Package Operations - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage> > <a href="p84.html">24.&nbsp;&nbsp;About Packages and Patches on a Solaris System With Zones Installed (Overview)</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p85.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p87.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="gdzlv"></a><h3>How Zone State Affects Patch and Package Operations</h3>
+<p>The following table describes what will happen when <tt>pkgadd</tt>, <tt>pkgrm</tt>, <tt>patchadd</tt>, and <tt>patchrm</tt> commands
+are used on a system with non-global zones in various states.</p>
+<table><tr><th><p>Zone State</p>
+</th><th><p>Effect on Package and Patch Operations</p>
+</th></tr>
+<tr><td><p>Configured</p>
+</td><td><p>Patch and package tools can be run. No software has been installed yet.</p>
+</td></tr>
+<tr><td><p>Installed</p>
+</td><td><p>Must be either transitioned to the ready state using <tt>zoneadm</tt> <tt>-z</tt> <i>zonename</i> <tt>ready</tt>, or
+booted using <tt>zoneadm</tt> <tt>-z</tt> <i>zonename</i> <tt>boot</tt>. After the zone is placed in the ready state or booted, the
+package and patch tools can be run.</p>
+</td></tr>
+<tr><td><p>Ready</p>
+</td><td><p>Patch and package tools can be run.</p>
+</td></tr>
+<tr><td><p>Running</p>
+</td><td><p>Patch and package tools can be run.</p>
+</td></tr>
+<tr><td><p>Halted</p>
+</td><td><p>Patch and package tools can be run. The system moves a halted zone to
+a new state, <b>mounted</b>. This new state is internal to the
+zone maintenance API. After patching has completed, the zone is reverted back
+to the halted state.</p>
+</td></tr>
+<tr><td><p>Incomplete</p>
+</td><td><p>A zone being installed or removed by <tt>zoneadm</tt>. Patch
+and package tools cannot be used. The tools cannot bring the zone into the
+appropriate state for using the tools.</p>
+</td></tr>
+</table><a name="z.pkginst.ov-14"></a><h3>About Adding Packages in Zones</h3>
+<p><a name="indexterm-304"></a>The <tt>pkgadd</tt> system utility described in the <tt>pkgadd</tt>(1M) man page is used to add packages
+on a Solaris system with zones installed.</p>
+<a name="z.pkginst.ov-16"></a><h4>Using <tt>pkgadd</tt> in the
+Global Zone</h4>
+<p>The <tt>pkgadd</tt> utility can be used with the <tt>-G</tt> option
+in the global zone to add the package to the global zone only. The package
+is not propagated to any other  zones. Note that if <tt>SUNW_PKG_THISZONE=true</tt>, you do not have to use the <tt>-G</tt> option. If  <tt>SUNW_PKG_THISZONE=false</tt>, the <tt>-G</tt> option will override it.</p>
+<p>When you run the <tt>pkgadd</tt> utility in the global zone,
+the following actions apply.</p>
+<ul><li><p>The <tt>pkgadd</tt> utility is able to add a package:</p>
+<ul><li><p>To the global zone only, unless the package is <tt>SUNW_PKG_ALLZONES=true</tt></p>
+</li>
+<li><p>To the global zone and to all non-global zones</p>
+</li>
+<li><p>To all non-global zones only, if the package is already installed
+in the global zone</p>
+</li>
+<li><p>To the current zone only, if <tt>SUNW_PKG_THISZONE=true</tt></p>
+</li>
+</ul>
+</li>
+<li><p>The <tt>pkgadd</tt> utility cannot add a package:</p>
+<ul><li><p>To any subset of the non-global zones</p>
+</li>
+<li><p>To all non-global zones, unless the package is already installed
+in the global zone</p>
+</li>
+</ul>
+</li>
+<li><p>If the <tt>pkgadd</tt> utility is run without the <tt>-G</tt> option and <tt>SUNW_PKG_THISZONE=false</tt> , the specified package is added to all
+zones by default. The package is not marked as installed in the global zone
+only.</p>
+</li>
+<li><p>If the <tt>pkgadd</tt> utility is run without the <tt>-G</tt> option and <tt>SUNW_PKG_THISZONE=true</tt>, then the
+specified package is added to the current (global) zone by default. The package
+is marked as installed in the global zone only.</p>
+</li>
+<li><p>If the <tt>-G</tt> option is used, the <tt>pkgadd</tt> utility
+adds the specified package to the global zone only. The package is marked
+as installed in the global zone only. The package is not installed when any
+non-global zone is installed.</p>
+</li>
+</ul>
+<a name="z.pkginst.ov-41"></a><h5>Adding a Package to the Global Zone and
+to All Non-Global Zones</h5>
+<p>To add a package to the global zone and to all non-global zones, execute
+the <tt>pkgadd</tt> utility in the global zone. As the global administrator,
+run <tt>pkgadd</tt> without the <tt>-G</tt> option.</p>
+<p>A package can be added to the global zone and to all non-global zones
+without regard to the area affected by the package.</p>
+<p>The following steps are performed by the <tt>pkgadd</tt> utility:</p>
+<ul><li><p>Package dependencies are checked on the global zone and on
+all non-global zones. If required packages are not installed in any zone,
+then the dependency check fails. The system notifies the global administrator,
+who is prompted whether to continue.</p>
+</li>
+<li><p>The package is added to the global zone.</p>
+</li>
+<li><p>The package database on the global zone is updated.</p>
+</li>
+<li><p>The package is added to each non-global zone and the database
+in the global zone is updated.</p>
+</li>
+<li><p>The package database on each non-global zone is updated.</p>
+</li>
+</ul>
+<a name="z.pkginst.ov-42"></a><h5>Adding a Package to the Global Zone Only</h5>
+<p>To add a package to the global zone only, as the global administrator
+in the global zone, execute the <tt>pkgadd</tt> utility with the <tt>-G</tt> option only.</p>
+<p>A package can be added to the global zone if the following conditions
+are true:</p>
+<ul><li><p>The package contents do not affect any area of the global
+zone that is shared with any non-global zone.</p>
+</li>
+<li><p>The package is set <tt>SUNW_PKG_ALLZONES=false</tt>.</p>
+</li>
+</ul>
+<p>The following steps are performed by the <tt>pkgadd</tt> utility:</p>
+<ul><li><p>If the package contents affect any area of the global zone
+that is shared with any non-global zone, or if the package is set <tt>SUNW_PKG_ALLZONES=true</tt>, then <tt>pkgadd</tt> fails. The error message states
+that the package must be added to the global zone and to all non-global zones.</p>
+</li>
+<li><p>Package dependencies are checked on the global zone only.
+If required packages are not installed, then the dependency check fails. The
+system notifies the global administrator, who is prompted whether to continue.</p>
+</li>
+<li><p>The package is added to the global zone.</p>
+</li>
+<li><p>The package database on the global zone is updated.</p>
+</li>
+<li><p>The package information on the global zone is annotated to
+indicate that this package is installed on the global zone only. If a non-global
+zone is installed in the future, this package will not be installed.</p>
+</li>
+</ul>
+<a name="z.pkginst.ov-43"></a><h5>Adding a Package Installed in the Global
+Zone to all Non-Global Zones</h5>
+<p>To add a package that is already installed in the global zone to all
+non-global zones, you must currently remove the package from the global zone
+and reinstall it in all zones.</p>
+<p>These are the steps used to add a package that is already installed
+in the global zone to all of the non-global zones:</p>
+<ol><li><p>In the global zone, use <tt>pkgrm</tt> to remove
+the package.</p>
+</li>
+<li><p>Add  the package without using the <tt>-G</tt> option.</p>
+</li>
+</ol>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p85.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p87.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

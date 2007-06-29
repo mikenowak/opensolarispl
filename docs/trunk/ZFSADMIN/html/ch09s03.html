@@ -1,0 +1,262 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Identifying Problems in ZFS</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="up" href="ch09.html" title="Chapter 9. ZFS Troubleshooting and Data Recovery"><link rel="prev" href="ch09s02.html" title="Checking ZFS Data Integrity"><link rel="next" href="ch09s04.html" title="Repairing a Damaged ZFS Configuration"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Identifying Problems in ZFS</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch09s02.html">Prev</a> </td><th width="60%" align="center">Chapter 9. ZFS Troubleshooting and Data Recovery</th><td width="20%" align="right"> <a accesskey="n" href="ch09s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gbbuw"></a>Identifying Problems in ZFS</h2></div></div></div>
+
+<p>All ZFS troubleshooting is centered around the <span><strong class="command">zpool status</strong></span> command.
+This command analyzes the various failures in the system and identifies the
+most severe problem, presenting you with a suggested action and a link to
+a knowledge article for more information. Note that the command only identifies
+a single problem with the pool, though multiple problems can exist. For example,
+data corruption errors always imply that one of the devices has failed. Replacing
+the failed device does not fix the data corruption problems.</p>
+<p>In addition, a ZFS diagnostic engine is provided to diagnose and report
+pool failures and device failures. Checksum, I/O, device, and pool errors
+associated with pool or device failures are also reported. ZFS failures as
+reported by <span><strong class="command">fmd</strong></span> are displayed on the console as well as
+the system messages file. In most cases, the <span><strong class="command">fmd</strong></span> message
+directs you to the <span><strong class="command">zpool status</strong></span> command for further recovery
+instructions.<a class="indexterm" name="indexterm-519"></a>
+<a class="indexterm" name="indexterm-520"></a>
+</p>
+<p>The basic recovery process is as follows:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Identify the errors through the <span><strong class="command">fmd</strong></span> messages
+that are displayed on the system console or in the <code class="filename">/var/adm/messages</code> files.</p>
+</li><li>
+<p>Find further repair instructions in the <span><strong class="command">zpool status
+-x</strong></span> command.</p>
+</li><li>
+<p>Repair the failures, such as:</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>Replace the faulted or missing device and bring it online.</p>
+</li><li>
+<p>Restore the faulted configuration or corrupted data from a
+backup.</p>
+</li><li>
+<p>Verify the recovery by using the <span><strong class="command">zpool status</strong></span> <span><strong class="command">x</strong></span> command.</p>
+</li><li>
+<p>Back up your restored configuration, if applicable.</p>
+</li></ul></div>
+</li></ul></div>
+<p>This chapter describes how to interpret <span><strong class="command">zpool status</strong></span> output
+in order to diagnose the type of failure and directs you to one of the following
+sections on how to repair the problem. While most of the work is performed
+automatically by the command, it is important to understand exactly what problems
+are being identified in order to diagnose the type of failure.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbcwb"></a>Determining if Problems Exist in a ZFS Storage Pool</h3></div></div></div>
+
+<p>The easiest way to determine if any known problems exist on the system
+is to use the <span><strong class="command">zpool status</strong></span> <code class="option">
+x</code> command.
+This command describes only pools exhibiting problems. If no bad pools exist
+on the system, then the command displays a simple message, as follows:</p>
+<pre class="screen"># <strong class="userinput"><code>zpool status -x</code></strong>
+all pools are healthy</pre>
+<p>Without the <code class="option">
+x</code> flag, the command displays the complete
+status for all pools (or the requested pool, if specified on the command line),
+even if the pools are otherwise healthy.<a class="indexterm" name="indexterm-521"></a>
+<a class="indexterm" name="indexterm-522"></a>
+</p>
+<p>For more information about command-line options to the <span><strong class="command">zpool
+status</strong></span> command, see <span class="olink">Querying ZFS Storage Pool Status</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbcve"></a>Understanding <span><strong class="command">zpool status</strong></span> Output</h3></div></div></div>
+
+<p>The complete <span><strong class="command">zpool status</strong></span> output looks similar to
+the following:</p>
+<pre class="screen"># <strong class="userinput"><code>zpool status tank</code></strong>
+  pool: tank
+ state: DEGRADED
+status: One or more devices has been taken offline by the administrator.
+        Sufficient replicas exist for the pool to continue functioning in a
+        degraded state.
+action: Online the device using 'zpool online' or replace the device with
+        'zpool replace'.
+ scrub: none requested
+ config:
+
+        NAME         STATE     READ WRITE CKSUM
+        tank         DEGRADED     0     0     0
+          mirror     DEGRADED     0     0     0
+            c1t0d0   ONLINE       0     0     0
+            c1t1d0   OFFLINE      0     0     0
+
+errors: No known data errors</pre>
+<p>This output is divided into several sections:</p>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gbcvl"></a>Overall Pool Status Information</h4></div></div></div>
+
+<p>This header section in the <span><strong class="command">zpool status</strong></span> output contains
+the following fields, some of which are only displayed for pools exhibiting
+problems:<a class="indexterm" name="indexterm-523"></a>
+<a class="indexterm" name="indexterm-524"></a>
+</p>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="literal">pool</code>
+</span></dt><dd>
+<p>The name of the pool.</p>
+</dd><dt><span class="term">
+<code class="literal">state</code>
+</span></dt><dd>
+<p>The current health of the pool. This information refers only
+to the ability of the pool to provide the necessary replication level. Pools
+that are <code class="literal">ONLINE</code> might still have failing devices or data
+corruption.</p>
+</dd><dt><span class="term">
+<code class="literal">status</code>
+</span></dt><dd>
+<p>A description of what is wrong with the pool. This field is
+omitted if no problems are found.</p>
+</dd><dt><span class="term">
+<code class="literal">action</code>
+</span></dt><dd>
+<p>A recommended action for repairing the errors. This field
+is an abbreviated form directing the user to one of the following sections.
+This field is omitted if no problems are found.</p>
+</dd><dt><span class="term">
+<code class="literal">see</code>
+</span></dt><dd>
+<p>A reference to a knowledge article containing detailed repair
+information. Online articles are updated more often than this guide can be
+updated, and should always be referenced for the most up-to-date repair procedures.
+This field is omitted if no problems are found.</p>
+</dd><dt><span class="term">
+<code class="literal">scrub</code>
+</span></dt><dd>
+<p>Identifies the current status of a scrub operation, which
+might include the date and time that the last scrub was completed, a scrub
+in progress, or if no scrubbing was requested.</p>
+</dd><dt><span class="term">
+<code class="literal">errors</code>
+</span></dt><dd>
+<p>Identifies known data errors or the absence of known data
+errors.</p>
+</dd></dl></div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gbcvv"></a>Configuration Information</h4></div></div></div>
+
+<p>The <code class="literal">config</code> field in the <span><strong class="command">zpool status</strong></span> output
+describes the configuration layout of the devices comprising the pool, as
+well as their state and any errors generated from the devices. The state can
+be one of the following: <code class="literal">ONLINE</code>, <code class="literal">FAULTED</code>, <code class="literal">DEGRADED</code>, <code class="literal">UNAVAILABLE</code>, or <code class="literal">OFFLINE</code>.
+If the state is anything but <code class="literal">ONLINE</code>, the fault tolerance
+of the pool has been compromised.</p>
+<p>The second section of the configuration output displays error statistics.
+These errors are divided into three categories:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="literal">READ</code> &#8211; I/O error occurred while issuing
+a read request.</p>
+</li><li>
+<p>
+<code class="literal">WRITE</code> &#8211; I/O error occurred while
+issuing a write request.</p>
+</li><li>
+<p>
+<code class="literal">CKSUM</code> &#8211; Checksum error. The device
+returned corrupted data as the result of a read request.</p>
+</li></ul></div>
+<p>These errors can be used to determine if the damage is permanent. A
+small number of I/O errors might indicate a temporary outage, while a large
+number might indicate a permanent problem with the device. These errors do
+not necessarily correspond to data corruption as interpreted by applications.
+If the device is in a redundant configuration, the disk devices might show
+uncorrectable errors, while no errors appear at the mirror or RAID-Z device
+level. If this scenario is the case, then ZFS successfully retrieved the good
+data and attempted to heal the damaged data from existing replicas.</p>
+<p>For more information about interpreting these errors to determine device
+failure, see <span class="olink">Determining the Type of Device Failure</span>.</p>
+<p>Finally, additional auxiliary information is displayed in the last column
+of the <span><strong class="command">zpool status</strong></span> output. This information expands on
+the <code class="literal">state</code> field, aiding in diagnosis of failure modes.
+If a device is <code class="literal">FAULTED</code>, this field indicates whether the
+device is inaccessible or whether the data on the device is corrupted. If
+the device is undergoing resilvering, this field displays the current progress.</p>
+<p>For more information about monitoring resilvering progress, see <span class="olink">Viewing Resilvering Status</span>.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gbcvd"></a>Scrubbing Status</h4></div></div></div>
+
+<p>The third section of the <span><strong class="command">zpool status</strong></span> output describes
+the current status of any explicit  scrubs. This
+information is distinct from whether any errors are detected on the system,
+though this information can be used to determine the accuracy of the data
+corruption error reporting. If the last scrub ended recently, most likely,
+any known data corruption has been discovered.</p>
+<p>For more information about data scrubbing and how to interpret this
+information, see <span class="olink">Checking ZFS Data Integrity</span>.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gbcwe"></a>Data Corruption Errors</h4></div></div></div>
+
+<p>The <span><strong class="command">zpool status</strong></span> command also shows whether any known
+errors are associated with the pool. These errors might have been found during
+disk scrubbing or during normal operation. ZFS maintains a persistent log
+of all data errors associated with the pool. This log is rotated whenever
+a complete scrub of the system finishes.</p>
+<p>Data corruption errors are always fatal. Their presence indicates that
+at least one application experienced an I/O error due to corrupt data within
+the pool. Device errors within a replicated pool do not result in data corruption
+and are not recorded as part of this log. By default, only the number of errors
+found is displayed. A complete list of errors and their specifics can be found
+by using the <span><strong class="command">zpool status</strong></span> <code class="option">
+v</code> option. For
+example:<a class="indexterm" name="indexterm-525"></a>
+<a class="indexterm" name="indexterm-526"></a>
+<a class="indexterm" name="indexterm-527"></a>
+</p>
+<pre class="screen"># <strong class="userinput"><code>zpool status -v</code></strong>
+  pool: tank
+ state: DEGRADED
+status: One or more devices has experienced an error resulting in data
+        corruption.  Applications may be affected.
+action: Restore the file in question if possible.  Otherwise restore the
+        entire pool from backup.
+   see: http://www.sun.com/msg/ZFS-8000-8A
+ scrub: resilver completed with 1 errors on Fri Mar 17 15:42:18 2006
+config:
+
+        NAME         STATE     READ WRITE CKSUM
+        tank         DEGRADED     0     0     1
+          mirror     DEGRADED     0     0     1
+            c1t0d0   ONLINE       0     0     2
+            c1t1d0   UNAVAIL      0     0     0  corrupted data
+
+errors: The following persistent errors have been detected:
+
+          DATASET  OBJECT  RANGE
+          5        0       lvl=4294967295 blkid=0</pre>
+<p>A similar message is also displayed by <span><strong class="command">fmd</strong></span> on the
+system console and the <code class="filename">/var/adm/messages</code> file. These
+messages can also be tracked by using the <span><strong class="command">fmdump</strong></span> command.</p>
+<p>For more information about interpreting data corruption errors, see <span class="olink">Identifying the Type of Data Corruption</span>.</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbcvk"></a>System Reporting of ZFS Error Messages</h3></div></div></div>
+
+<p>In addition to persistently keeping track of errors within the pool,
+ZFS also displays syslog messages when events of interest occur. The following
+scenarios generate events to notify the administrator:<a class="indexterm" name="indexterm-528"></a>
+<a class="indexterm" name="indexterm-529"></a>
+<a class="indexterm" name="indexterm-530"></a>
+</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="strong"><strong>Device state transition</strong></span> &#8211;
+If a device becomes <code class="literal">FAULTED</code>, ZFS logs a message indicating
+that the fault tolerance of the pool might be compromised. A similar message
+is sent if the device is later brought online, restoring the pool to health.</p>
+</li><li>
+<p>
+<span class="strong"><strong>Data corruption</strong></span> &#8211;
+If any data corruption is detected, ZFS logs a message describing when and
+where the corruption was detected. This message is only logged the first time
+it is detected. Subsequent accesses do not generate a message.</p>
+</li><li>
+<p>
+<span class="strong"><strong>Pool failures and device failures</strong></span> &#8211;
+If a pool failure or device failure occurs, the fault manager daemon reports
+these errors through syslog messages as well as the <span><strong class="command">fmdump</strong></span> command.</p>
+</li></ul></div>
+<p>If ZFS detects a device error and automatically recovers from it, no
+notification occurs. Such errors do not constitute a failure in the pool redundancy
+or data integrity. Moreover, such errors are typically the result of a driver
+problem accompanied by its own set of error messages.</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch09s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch09.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch09s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Checking ZFS Data Integrity </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Repairing a Damaged ZFS Configuration</td></tr></table></div></body></html>

@@ -1,0 +1,207 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Run Control Scripts</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch14.html" title="Chapter 14. Managing Services (Overview)"><link rel="prev" href="ch14s09.html" title="
+/etc/inittab File"><link rel="next" href="ch15.html" title="Chapter 15. Managing Services (Tasks)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Run Control Scripts</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch14s09.html">Prev</a> </td><th width="60%" align="center">Chapter 14. Managing Services (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch15.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="hbrunlevels-11168"></a>Run Control Scripts</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="hbrunlevels-ix953"></a>The Solaris software provides a detailed series of run control
+(<code class="literal">rc</code>) scripts to control run-level changes. Each run level
+has an associated <code class="literal">rc</code> script that is located in the <code class="filename">/sbin</code> directory:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="filename">rc0</code>
+</p>
+</li><li>
+<p>
+<code class="filename">rc1</code>
+</p>
+</li><li>
+<p>
+<code class="filename">rc2</code>
+</p>
+</li><li>
+<p>
+<code class="filename">rc3</code>
+</p>
+</li><li>
+<p>
+<code class="filename">rc5</code>
+</p>
+</li><li>
+<p>
+<code class="filename">rc6</code>
+</p>
+</li><li>
+<p>
+<code class="filename">rcS</code>
+</p>
+</li></ul></div>
+<p>For each <code class="literal">rc</code> script in the <code class="filename">/sbin</code> directory,
+there is a corresponding directory named <code class="filename">/etc/rc</code>
+<em class="replaceable"><code>n</code></em>
+<code class="filename">.d</code> that contains scripts to perform various
+actions for that run level. For example, <code class="filename">/etc/rc2.d</code> contains
+files that are used to start and stop processes for run level 2.</p>
+<pre class="screen"># <strong class="userinput"><code>ls /etc/rc2.d</code></strong>
+K03samba                S42ncakmod              S81dodatadm.udaplt
+K05volmgt               S47pppd                 S89PRESERVE
+K06mipagent             S65ipfboot              S89bdconfig
+K07dmi                  S69mrouted              S90wbem
+K07snmpdx               S70sckm                 S93cacheos.finish
+K16apache               S70uucp                 S94ncalogd
+K27boot.server          S72autoinstall          S95ncad
+README                  S73cachefs.daemon       S95networker
+S10lu                   S75savecore             S98deallocate
+S20sysetup              S80lp                   S99audit
+S40llc2                 S80spc</pre>
+<p>The <code class="filename">/etc/rc</code>
+<em class="replaceable"><code>n</code></em>
+<code class="filename">.d</code> scripts
+are always run in ASCII sort order. The scripts have names of the form:</p>
+<p>
+<code class="literal">[KS][0-9][0-9]*</code>
+</p>
+<p>Files that begin with <code class="literal">K</code> are run to terminate (kill)
+a system service. Files that begin with <code class="literal">S</code> are run to start
+a system service.</p>
+<p>Run control scripts are located in the <code class="filename">/etc/init.d</code> directory.
+These files are linked to corresponding run control scripts in the <code class="filename">/etc/rc</code>
+<em class="replaceable"><code>n</code></em>
+<code class="filename">.d</code> directories.</p>
+<p>The actions of each run control script are summarized in the following
+section.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="hbrunlevels-11926"></a>Run Control Script Summaries</h3></div></div></div>
+
+<p>The following sections summarize the run control scripts that are used
+to start and stop system services when you change run levels.</p>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="hbrunlevels-53"></a>The <code class="filename">/sbin/rc0</code> Script</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="hbrunlevels-ix962"></a>The <code class="filename">/sbin/rc0</code> script runs the <code class="filename">/etc/rc0.d</code> scripts to perform the following tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Stops system services and daemons</p>
+</li><li>
+<p>Terminates all running processes</p>
+</li><li>
+<p>Unmounts all file systems</p>
+</li></ul></div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="hbrunlevels-52"></a>The <code class="filename">/sbin/rc1</code> Script</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-258"></a>The <code class="filename">/sbin/rc1</code> script runs the <code class="filename">/etc/rc1.d</code> scripts to perform the following tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Stops system services and daemons</p>
+</li><li>
+<p>Terminates all running user processes</p>
+</li><li>
+<p>Unmounts all remote file systems</p>
+</li><li>
+<p>Mounts all local file systems if the previous run level was
+S</p>
+</li></ul></div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="hbrunlevels-51"></a>The <code class="filename">/sbin/rc2</code> Script</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-259"></a>The <code class="filename">/sbin/rc2</code> script runs the <code class="filename">/etc/rc2.d</code> scripts to perform the following tasks, grouped by function:</p>
+<p>Local system-related tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Starts system accounting and system auditing, if configured</p>
+</li><li>
+<p>Sets the default scheduling class if the <code class="filename">/etc/dispadmin.conf</code> file exists</p>
+</li><li>
+<p>Configures serial device stream</p>
+</li><li>
+<p>Configures WBEM services</p>
+</li></ul></div>
+<p>Network service or security-related tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Starts the logical link controller (<span><strong class="command">llc2</strong></span>),
+if  configured</p>
+</li><li>
+<p>Configures the Solaris Network Cache and Accelerator (NCA)
+and NCA logging, if appropriate</p>
+</li><li>
+<p>Starts the Solaris PPP server or client daemons (<span><strong class="command">pppoed</strong></span> or <span><strong class="command">pppd</strong></span>), if configured</p>
+</li><li>
+<p>Starts directory server (<span><strong class="command">slapd</strong></span>) daemon,
+if configured</p>
+</li><li>
+<p>Configures system resource controls and system pools if the <code class="filename">/etc/rctladm.conf</code> and <code class="filename">/etc/pooladm.conf</code>  files
+exist</p>
+</li><li>
+<p>Starts the <span><strong class="command">htt_server</strong></span> process</p>
+</li></ul></div>
+<p>Install-related tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Configures the boot environment for the Live Upgrade software
+upon system startup or system shutdown</p>
+</li><li>
+<p>Checks for the presence of the <code class="filename">/etc/.UNCONFIGURE</code> file
+to see if the system should be reconfigured</p>
+</li><li>
+<p>Reboots the system from the installation media or a boot server
+if either <code class="filename">/.PREINSTALL</code> or <code class="filename">/AUTOINSTALL</code> exists</p>
+</li></ul></div>
+<p>Hardware-related tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Starts the <span class="trademark">Sun Fire</span>&#8482; 15000 key management
+daemon (<span><strong class="command">sckmd</strong></span>), if appropriate</p>
+</li><li>
+<p>Runs the flash PROM update script</p>
+</li><li>
+<p>Configures any graphic frame buffers or graphic accelerators</p>
+</li></ul></div>
+<p>Transitions the following services between run level changes:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Apache (<span><strong class="command">tomcat</strong></span>)</p>
+</li><li>
+<p>Mobile IP (<span><strong class="command">mipagent</strong></span>)</p>
+</li><li>
+<p>Samba (<span><strong class="command">smdb</strong></span>)  and (<span><strong class="command">nmdb</strong></span>)</p>
+</li><li>
+<p>
+<span class="trademark">Solstice Enterprise Agents</span>&#8482; daemon (<span><strong class="command">dmispd</strong></span>) and (<span><strong class="command">snmpXdmid</strong></span>)</p>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Many of the system services and applications that are started
+at run level 2 depend on what software is installed on the system.</p>
+</div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="hbrunlevels-50"></a>The <code class="filename">/sbin/rc3</code> Script</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="hbrunlevels-ix964"></a>The <code class="filename">/sbin/rc3</code> script runs the <code class="filename">/etc/rc3.d</code> scripts to perform the following tasks: </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Starts the Apache server daemon (<span><strong class="command">tomcat</strong></span>),
+if configured</p>
+</li><li>
+<p>Starts Mobile IP daemon (<span><strong class="command">mipagent</strong></span>), if
+configured</p>
+</li><li>
+<p>Starts the Samba daemons (<span><strong class="command">smdb</strong></span> and <span><strong class="command">nmdb</strong></span>), if configured</p>
+</li><li>
+<p>Starts the Solstice Enterprise Agents daemons (<span><strong class="command">dmispd</strong></span> and <span><strong class="command">snmpXdmid</strong></span>)</p>
+</li></ul></div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="hbrunlevels-49"></a>The <code class="filename">/sbin/rc5</code> and <code class="filename">/sbin/rc6</code> Scripts</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="hbrunlevels-ix965"></a>
+<a class="indexterm" name="indexterm-260"></a>The <code class="filename">/sbin/rc5</code> and <code class="filename">/sbin/rc6</code> scripts
+run the <code class="filename">/etc/rc0.d/K*</code> scripts to perform the following
+tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Kills all active processes</p>
+</li><li>
+<p>Unmounts the file systems</p>
+</li></ul></div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="hbrunlevels-48"></a>The <code class="filename">/sbin/rcS</code> Script</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="hbrunlevels-ix968"></a>The <code class="filename">/sbin/rcS</code> script runs the <code class="filename">/etc/rcS.d</code> scripts to bring the system up to run level S. This scripts starts <span><strong class="command">wrsmconf</strong></span> to manage WCI RSM controller configurations.</p>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch14s09.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch14.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch15.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">
+<code class="filename">/etc/inittab</code> File </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 15. Managing Services (Tasks)</td></tr></table></div></body></html>

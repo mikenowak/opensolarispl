@@ -1,0 +1,29 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Scenario&#8212;State Database
+Replicas</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch06.html" title="Chapter 6. State Database (Overview)"><link rel="prev" href="ch06s04.html" title="Handling State Database Replica
+Errors"><link rel="next" href="ch07.html" title="Chapter 7. State Database (Tasks)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Scenario&#8212;State Database
+Replicas</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch06s04.html">Prev</a> </td><th width="60%" align="center">Chapter 6. State Database (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch07.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="about-state-db-replicas-11"></a>Scenario&#8212;State Database
+Replicas</h2></div></div></div>
+
+<p>State database replicas provide redundant data about the overall Solaris Volume Manager configuration.
+The following example, is based on the sample system in the scenario provided
+in <span class="olink">Chapter 5, Configuring and Using Solaris Volume Manager (Scenario)</span>. This example describes how state
+database replicas can be distributed to provide adequate redundancy.</p>
+<p>The sample system has one internal IDE controller and drive, plus two
+SCSI controllers. Each SCSI controller has six disks attached. With three
+controllers, the system can be configured to avoid any single point-of-failure.
+Any system with only two controllers cannot avoid a single point-of-failure
+relative to Solaris Volume Manager. By distributing replicas evenly across all three
+controllers and across at least one disk on each controller (across two disks,
+if possible), the system can withstand any single hardware failure. </p>
+<p>In a minimal configuration, you could put a single state database replica
+on slice 7 of the root disk, then an additional replica on slice 7 of one
+disk on each of the other two controllers. To help protect against the admittedly
+remote possibility of media failure, add another replica to the root disk
+and then two replicas on two different disks on each controller, for a total
+of six replicas, provides more than adequate security.</p>
+<p>To provide even more security, add 12 additional replicas spread evenly
+across the 6 disks on each side of the two mirrors. This configuration results
+in a total of 18 replicas with 2 on the root disk and 8 on each of the SCSI
+controllers, distributed across the disks on each controller.</p>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch06s04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch06.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch07.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Handling State Database Replica
+Errors </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 7. State Database (Tasks)</td></tr></table></div></body></html>

@@ -1,0 +1,34 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Specifying Probes in DTrace</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="DTrace User Guide"><link rel="up" href="ch02.html" title="Chapter 2. DTrace Basics"><link rel="prev" href="ch02.html" title="Chapter 2. DTrace Basics"><link rel="next" href="ch02s03.html" title="Enabling Probes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Specifying Probes in DTrace</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><th width="60%" align="center">Chapter 2. DTrace Basics</th><td width="20%" align="right"> <a accesskey="n" href="ch02s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gcfar"></a>Specifying Probes in DTrace</h2></div></div></div>
+
+<p>You can fully specify a probe by listing each component of the 4&#8211;tuple
+that uniquely identifies that probe. The format for the probe specification
+is <span class="emphasis"><em>provider:module:function:name</em></span>. An empty component
+in a probe specification matches anything. For example, the specification <span><strong class="command">fbt::alloc:entry</strong></span> specifies a probe with the following attributes:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The probe must be from the <code class="literal">fbt</code> provider</p>
+</li><li>
+<p>The probe may be in any module</p>
+</li><li>
+<p>The probe must be in the <code class="literal">alloc</code> function</p>
+</li><li>
+<p>The probe must be named <code class="literal">entry</code>
+</p>
+</li></ul></div>
+<p>Elements on the left hand side of the 4&#8211;tuple are optional. The
+probe specification <code class="literal">::open:entry</code> is equivalent to the specification <code class="literal">open:entry</code>. Either specification will match probes from all providers
+and kernel modules that have a function name of <code class="literal">open</code> and
+are named <code class="literal">entry</code>.</p>
+<pre class="programlisting"># <span class="strong"><strong>dtrace -l -n open:entry</strong></span>
+  ID      PROVIDER        MODULE             FUNCTION NAME
+  14       syscall                               open entry
+7386           fbt       genunix                 open entry</pre>
+<p>You can also describe probes with a pattern matching syntax that is
+similar to the syntax that is described in the <span class="emphasis"><em>File Name Generation</em></span> section
+of the <code class="literal">sh(1)</code> man page. The syntax supports
+the special characters <code class="literal">*</code>, <code class="literal">?</code>, <code class="literal">[</code>,
+and <code class="literal">]</code>. The probe description <code class="literal">syscall::open*:entry</code> matches
+both the <code class="literal">open</code> and <code class="literal">open64</code> system calls.
+The <code class="literal">?</code> character represents any single character in the
+name. The <code class="literal">[</code> and <code class="literal">]</code> characters are used
+to specify a set of specific characters in the name.</p>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 2. DTrace Basics </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Enabling Probes</td></tr></table></div></body></html>

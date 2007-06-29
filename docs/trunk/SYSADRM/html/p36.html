@@ -1,0 +1,312 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title><tt>poold</tt> Overview - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage> > <a href="p32.html">12.&nbsp;&nbsp;Resource Pools (Overview)</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p35.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p37.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="rmpool-73"></a><h3><tt>poold</tt> Overview</h3>
+<p><a name="indexterm-106"></a>The pools resource controller, <tt>poold</tt>,
+uses system targets and observable statistics to preserve the system performance
+goals that you specify. This system daemon should always be active when dynamic
+resource allocation is required.</p>
+<p>The <tt>poold</tt> resource controller identifies available
+resources and then monitors workloads to determine when the system usage objectives
+are no longer being met. <tt>poold</tt> then considers alternative
+configurations in terms of the objectives, and remedial action is taken. If
+possible, the resources are reconfigured so that objectives can be met. If
+this action is not possible, the daemon logs that user-specified objectives
+can no longer be achieved. Following a reconfiguration, the daemon resumes
+monitoring workload objectives.</p>
+<p><tt>poold</tt> maintains a decision history that it can examine.
+The decision history is used to eliminate reconfigurations that historically
+did not show improvements.</p>
+<p>Note that a reconfiguration can also be triggered asynchronously if
+the workload objectives are changed or if the resources available to the system
+are modified.</p>
+<a name="gbxvv"></a><h3>Managing Dynamic Resource Pools</h3>
+<p>The DRP service is managed by the service management facility (SMF)
+under the service identifier <tt> svc:/system/pools/dynamic</tt>.</p>
+<p>Administrative actions on this service, such as enabling, disabling,
+or requesting restart, can be performed using the <tt>svcadm</tt> command.
+The service's status can be queried using the <tt>svcs</tt> command.
+See the <tt>svcs</tt>(1) and<tt>svcadm</tt>(1M) man pages for more information.</p>
+<p>The SMF interface is the preferred method for controlling DRP, but for
+backward compatibility, the following methods can also be used.</p>
+<ul><li><p>If dynamic resource allocation is not required, <tt>poold</tt> can
+be stopped with the <tt>SIGQUIT</tt> or the <tt>SIGTERM</tt> signal.
+Either of these signals causes <tt>poold</tt> to terminate gracefully.</p>
+</li>
+<li><p>Although <tt>poold</tt> will automatically detect
+changes in the resource or pools configuration, you can also force a reconfiguration
+to occur by using the <tt>SIGHUP</tt> signal.</p>
+</li>
+</ul>
+<a name="rmpool-75"></a><h3>Configuration Constraints and Objectives</h3>
+<p>When making changes to a configuration, <tt>poold</tt> acts
+on directions that you provide. You specify these directions as a series of
+constraints and objectives. <tt>poold</tt> uses your specifications
+to determine the relative value of different configuration possibilities in
+relation to the existing configuration. <tt>poold</tt> then changes
+the resource assignments of the current configuration to generate new candidate
+configurations.</p>
+<a name="rmpool-76"></a><h4>Configuration Constraints</h4>
+<p><a name="indexterm-107"></a>Constraints affect the range of possible configurations
+by eliminating some of the potential changes that could be made to a configuration.
+The following constraints, which are specified in the <tt>libpool</tt> configuration,
+are available.</p>
+<ul><li><p>The minimum and maximum CPU allocations</p>
+</li>
+<li><p>Pinned components that are not available to be moved from
+a set</p>
+</li>
+<li><p>The importance factor of the pool</p>
+</li>
+</ul>
+<p>See the <tt>libpool</tt>(3LIB) man
+page and <a href="p34.html#rmpool-71">Pools Properties</a> for more information
+about pools properties.</p>
+<p>See <a href="p44.html">How to Set Configuration Constraints</a> for
+usage instructions.</p>
+<a name="rmpool-96"></a><h5><tt>pset.min</tt> Property and <tt>pset.max</tt> Property Constraints</h5>
+<p>These two properties place limits on the number of processors that can
+be allocated to a processor set, both minimum and maximum. See <a href="p37.html#rmpool-tbl-94">Table 12-1</a> for more details about
+these properties.</p>
+<p>Within these constraints, a resource partition's resources are available
+to be allocated to other resource partitions in the same Solaris instance.
+Access to the resource is obtained by binding to a pool that is associated
+with the resource set. Binding is performed at login or manually by an administrator
+who has the <tt>PRIV_SYS_RES_CONFIG</tt> privilege.</p>
+<a name="rmpool-97"></a><h5><tt>cpu.pinned</tt> Property Constraint</h5>
+<p><a name="indexterm-108"></a>The <tt>cpu-pinned</tt> property
+indicates that a particular CPU should not be moved by DRP from the processor
+set in which it is located. You can set this <tt>libpool</tt> property
+to maximize cache utilization for a particular application that is executing
+within a processor set.</p>
+<p>See <a href="p37.html#rmpool-tbl-94">Table 12-1</a> for more
+details about this property.</p>
+<a name="gbvhv"></a><h5><tt>pool.importance</tt> Property Constraint</h5>
+<p>The <tt>pool.importance</tt> property describes the relative
+importance of a pool as defined by the administrator.</p>
+<a name="rmpool-77"></a><h4>Configuration Objectives</h4>
+<p><a name="indexterm-109"></a>Objectives are specified similarly to constraints.
+The full set of objectives is documented in <a href="p37.html#rmpool-tbl-94">Table 12-1</a>.</p>
+<p>There are two categories of objectives.</p>
+<dl><dt>Workload dependent</dt>
+<dd><p>A workload-dependent objective is an objective that will vary
+according to the nature of the workload running on the system. An example
+is the <tt>utilization</tt> objective. The utilization figure for
+a resource set will vary according to the nature of the workload that is active
+in the set.</p>
+</dd>
+<dt>Workload independent</dt>
+<dd><p>A workload-independent objective is an objective that does
+not vary according to the nature of the workload running on the system. An
+example is the CPU <tt>locality</tt> objective. The evaluated measure
+of locality for a resource set does not vary with the nature of the workload
+that is active in the set.</p>
+</dd>
+</dl>
+<p>You can define three types of objectives.</p>
+<table><tr><th><p>Name</p>
+</th><th><p>Valid Elements</p>
+</th><th><p>Operators</p>
+</th><th><p>Values</p>
+</th></tr>
+<tr><td><p><tt>wt-load</tt></p>
+</td><td><p><tt>system</tt></p>
+</td><td><p>N/A</p>
+</td><td><p>N/A</p>
+</td></tr>
+<tr><td><p><tt>locality</tt></p>
+</td><td><p><tt>pset</tt></p>
+</td><td><p>N/A</p>
+</td><td><p><tt>loose</tt> | <tt>tight</tt> | <tt>none</tt></p>
+</td></tr>
+<tr><td><p><tt>utilization</tt></p>
+</td><td><p><tt>pset</tt></p>
+</td><td><p><tt>&lt;</tt> <tt>></tt> <tt>~</tt></p>
+</td><td><p><tt>0</tt>&ndash;<tt>100%</tt></p>
+</td></tr>
+</table><p>Objectives are stored in property strings in the <tt>libpool</tt> configuration.
+The property names are as follows:</p>
+<ul><li><p><tt>system.poold.objectives</tt></p>
+</li>
+<li><p><tt>pset.poold.objectives</tt></p>
+</li>
+</ul>
+<p>Objectives have the following syntax:</p>
+<ul><li><p><tt>objectives = objective [; objective]*</tt></p>
+</li>
+<li><p><tt>objective = [n:] keyword [op] [value]</tt></p>
+</li>
+</ul>
+<p>All objectives take an optional importance prefix. The importance acts
+as a multiplier for the objective and thus increases the significance of its
+contribution to the objective function evaluation. The range is from 0 to
+INT64_MAX (<tt>9223372036854775807</tt>). If not specified, the
+default importance value is <tt>1</tt>.</p>
+<p>Some element types support more than one type of objective. An example
+is <tt>pset</tt>. You can specify multiple objective types for these
+elements. You can also specify multiple utilization objectives on a single <tt>pset</tt> element.</p>
+<p>See <a href="p44.html#rmpool.task-108">How to Define Configuration Objectives</a> for usage examples.</p>
+<a name="rmpool-78"></a><h5><tt>wt-load</tt> Objective</h5>
+<p>The <tt>wt-load</tt> objective favors configurations that
+match resource allocations to resource utilizations. A resource set that uses
+more resources will be given more resources when this objective is active. <tt>wt-load</tt> means <b>weighted load</b>.</p>
+<p>Use this objective when you are satisfied with the constraints you have
+established using the minimum and maximum properties, and you would like the
+daemon to manipulate resources freely within those constraints.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p35.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p37.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

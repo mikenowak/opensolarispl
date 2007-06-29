@@ -1,0 +1,297 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Using ZFS on a Solaris System With Zones Installed</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="up" href="ch08.html" title="Chapter 8. ZFS Advanced Topics"><link rel="prev" href="ch08.html" title="Chapter 8. ZFS Advanced Topics"><link rel="next" href="ch08s03.html" title="ZFS Alternate Root Pools"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Using ZFS on a Solaris System With Zones Installed</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch08.html">Prev</a> </td><th width="60%" align="center">Chapter 8. ZFS Advanced Topics</th><td width="20%" align="right"> <a accesskey="n" href="ch08s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gayov"></a>Using ZFS on a Solaris System With Zones Installed</h2></div></div></div>
+
+<p>ZFS datasets can be added to a zone either as a generic file system
+or as a delegated dataset.</p>
+<p>Adding a file system allows the non-global zone to share space with
+the global zone, though the zone administrator cannot control properties or
+create new file systems in the underlying file system hierarchy. This is identical
+to adding any other type of file system to a zone, and should be used when
+the primary purpose is solely to share common space.</p>
+<p>ZFS also allows datasets to be delegated to a non-global zone, giving
+complete control over the dataset and all its children to the zone administrator.
+The zone administrator can create and destroy file systems within that dataset,
+and modify properties of the datasets. The zone administrator cannot affect
+datasets that have not been added to the zone, and cannot exceed any top-level
+quotas set on the exported dataset.<a class="indexterm" name="indexterm-467"></a>
+<a class="indexterm" name="indexterm-468"></a>
+</p>
+<p>Consider
+the following interactions when working with ZFS on a system with Solaris
+zones installed:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>A ZFS file system that is added to a non-global zone must
+have its <span><strong class="command">mountpoint</strong></span> property set to legacy.</p>
+</li><li>
+<p>When a source <code class="literal">zonepath</code> and the
+target <code class="literal">zonepath</code> both reside on ZFS and are in the same
+pool, <span><strong class="command">zoneadm clone</strong></span> will now automatically use ZFS clone
+to clone a zone. The <span><strong class="command">zoneadm clone</strong></span> command will take a
+ZFS snapshot of the source <code class="literal">zonepath</code> and set
+up the target <code class="literal">zonepath</code>. Do not use the ZFS snapshot features
+to clone a zone. For more information, see <span class="olink">Part II, <em class="citetitle">Zones,</em> in <em class="citetitle">System Administration Guide: Solaris Containers-Resource Management
+and Solaris Zones</em>
+</span>.</p>
+</li></ul></div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbbrq"></a>Adding ZFS File Systems to a Non-Global Zone</h3></div></div></div>
+
+<p>You can add a ZFS file system as a generic file system when the goal
+is solely to share space with the global zone. A ZFS file system that is added
+to a non-global zone must have its <code class="literal">mountpoint</code> property
+set to legacy.</p>
+<p>You can add a ZFS file system to a non-global zone by using the <span><strong class="command">zonecfg</strong></span> command's <code class="literal">add fs</code> subcommand. For example:<a class="indexterm" name="indexterm-469"></a>
+<a class="indexterm" name="indexterm-470"></a>
+<a class="indexterm" name="indexterm-471"></a>
+</p>
+<p>In the following example, a ZFS file system is added to a non-global
+zone by a global administrator in the global zone.</p>
+<pre class="screen"># <strong class="userinput"><code>zonecfg -z zion</code></strong>
+zion: No such zone configured
+Use 'create' to begin configuring a new zone.
+zonecfg:zion&gt; <strong class="userinput"><code>create</code></strong>
+zonecfg:zion&gt; <strong class="userinput"><code>add fs</code></strong>
+zonecfg:zion:fs&gt; <strong class="userinput"><code>set type=zfs</code></strong>
+zonecfg:zion:fs&gt; <strong class="userinput"><code>set special=tank/zone/zion</code></strong>
+zonecfg:zion:fs&gt; <strong class="userinput"><code>set dir=/export/shared</code></strong>
+zonecfg:zion:fs&gt; <strong class="userinput"><code>end</code></strong>
+</pre>
+<p>This syntax adds the ZFS file system, <code class="filename">tank/zone/zion</code>,
+to the zone <code class="literal">zion</code>, mounted at <code class="filename">/export/shared</code>.
+The <span class="property">mountpoint</span> property of the file system must be set
+to <span class="property">legacy</span>, and the file system cannot already be mounted
+in another location. The zone administrator can create and destroy files within
+the file system. The file system cannot be remounted in a different location,
+nor can the zone administrator change properties on the file system such as
+atime, readonly, compression, and so on.  The
+global zone administrator is responsible for setting and controlling properties
+of the file system.</p>
+<p>For more information about the <span><strong class="command">zonecfg</strong></span> command and
+about configuring resource types with <span><strong class="command">zonecfg</strong></span>, see <span class="olink">Part II, <em class="citetitle">Zones,</em> in <em class="citetitle">System Administration Guide: Solaris
+Containers-Resource Management and Solaris Zones</em>
+</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbbst"></a>Delegating Datasets to a Non-Global Zone</h3></div></div></div>
+
+<p>If the primary goal is to delegate the administration of storage to
+a zone, then ZFS supports adding datasets to a non-global zone through use
+of the <span><strong class="command">zonecfg</strong></span> command's <code class="literal">add dataset</code> subcommand.<a class="indexterm" name="indexterm-472"></a>
+<a class="indexterm" name="indexterm-473"></a>
+<a class="indexterm" name="indexterm-474"></a>
+</p>
+<p>In the following example, a ZFS file system is delegated to a non-global
+zone by a global administrator in the global zone.</p>
+<pre class="screen"># <strong class="userinput"><code>zonecfg -z zion</code></strong>
+zion: No such zone configured
+Use 'create' to begin configuring a new zone.
+zonecfg:zion&gt; <strong class="userinput"><code>create</code></strong>
+zonecfg:zion&gt; <strong class="userinput"><code>add dataset</code></strong>
+zonecfg:zion:dataset&gt; <strong class="userinput"><code>set name=tank/zone/zion</code></strong>
+zonecfg:zion:dataset&gt; <strong class="userinput"><code>end</code></strong>
+</pre>
+<p>Unlike adding a file system, this syntax causes the ZFS file system <code class="filename">tank/zone/zion</code> to be visible within the zone <code class="literal">zion</code>.
+The zone administrator can set file system properties, as well as create children.
+In addition, the zone administrator can take snapshots, create clones, and
+otherwise control the entire file system hierarchy.</p>
+<p>For more information about what actions are allowed within zones, see <span class="olink">Property Management Within a Zone</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbebi"></a>Adding ZFS Volumes to a Non-Global Zone</h3></div></div></div>
+
+<p>Emulated volumes cannot be added to a non-global zone by using the <span><strong class="command">zonecfg</strong></span> command's <code class="literal">add dataset</code> subcommand. If
+an attempt to add an emulated volume is detected, the zone cannot boot. However,
+volumes can be added to a zone by using the <span><strong class="command">zonecfg</strong></span> command's <code class="literal">add device</code> subcommand.<a class="indexterm" name="indexterm-475"></a>
+<a class="indexterm" name="indexterm-476"></a>
+<a class="indexterm" name="indexterm-477"></a>
+</p>
+<p>In the following example, a ZFS emulated volume is added to a non-global
+zone by a global administrator in the global zone:</p>
+<pre class="screen"># <strong class="userinput"><code>zonecfg -z zion</code></strong>
+zion: No such zone configured
+Use 'create' to begin configuring a new zone.
+zonecfg:zion&gt; <strong class="userinput"><code>create</code></strong>
+zonecfg:zion&gt; <strong class="userinput"><code>add device</code></strong>
+zonecfg:zion:device&gt; <strong class="userinput"><code>set match=/dev/zvol/dsk/tank/vol</code></strong>
+zonecfg:zion:device&gt; <strong class="userinput"><code>end</code></strong>
+</pre>
+<p>This syntax exports the <code class="literal">tank/vol</code> emulated volume
+to the zone. Note that adding a raw volume to a zone has implicit security
+risks, even if the volume doesn't correspond to a physical device. In particular,
+the zone administrator could create malformed file systems that would panic
+the system when a mount is attempted. For more information about adding devices
+to zones and the related security risks, see <span class="olink">Understanding the <span class="property">zoned</span> Property</span>.</p>
+<p>For more information about adding devices to zones, see <span class="olink">Part II, <em class="citetitle">Zones,</em> in <em class="citetitle">System Administration Guide: Solaris
+Containers-Resource Management and Solaris Zones</em>
+</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbbso"></a>Using ZFS Storage Pools Within a Zone</h3></div></div></div>
+
+<p>ZFS storage pools cannot be created or modified within a zone. The delegated
+administration model centralizes control of physical storage devices within
+the global zone and control of virtual storage to non-global zones. While
+a pool-level dataset can be added to a zone, any command that modifies the
+physical characteristics of the pool, such as creating, adding, or removing
+devices, is not allowed from within a zone. Even if physical devices are added
+to a zone by using the <span><strong class="command">zonecfg</strong></span> command's <code class="literal">add device</code> subcommand,
+or if files are used, the <span><strong class="command">zpool</strong></span> command does not allow
+the creation of any new pools within the zone.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbbsn"></a>Property Management Within a Zone</h3></div></div></div>
+
+<p>Once a dataset is added to a zone, the zone administrator can control
+specific dataset properties. When a dataset is added to a zone, all its ancestors
+are visible as read-only datasets, while the dataset itself is writable as
+are all its children. For example, consider the following configuration:<a class="indexterm" name="indexterm-478"></a>
+<a class="indexterm" name="indexterm-479"></a>
+<a class="indexterm" name="indexterm-480"></a>
+</p>
+<pre class="screen">global# <strong class="userinput"><code>zfs list -Ho name</code></strong>
+tank
+tank/home
+tank/data
+tank/data/matrix
+tank/data/zion
+tank/data/zion/home</pre>
+<p>If <code class="filename">tank/data/zion</code> is added to a zone, each dataset
+would have the following properties.</p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>
+<p>Dataset</p>
+</th><th>
+<p>Visible</p>
+</th><th>
+<p>Writable</p>
+</th><th>
+<p>Immutable Properties</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="filename">tank</code>
+</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>-</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">tank/home</code>
+</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>-</p>
+</td><td>
+<p>-</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">tank/data</code>
+</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>-</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">tank/data/matrix</code>
+</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>-</p>
+</td><td>
+<p>-</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">tank/data/zion</code>
+</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>
+<span class="property">sharenfs</span>, <span class="property">zoned</span>, <span class="property">quota</span>, <span class="property">reservation</span>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">tank/data/zion/home</code>
+</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>
+<span class="property">sharenfs</span>, <span class="property">zoned</span>
+</p>
+</td></tr></tbody></table>
+</div>
+<p>Note that every parent of <code class="filename">tank/zone/zion</code> is visible
+read-only, all children are writable, and datasets that are not part of the
+parent hierarchy are not visible at all. The zone administrator cannot change
+the <span class="property">sharenfs</span> property, because non-global zones cannot
+act as NFS servers. Neither can the zone administrator change the <code class="literal">zoned</code> property,
+because doing so would expose a security risk as described in the next section. </p>
+<p>Any other property can be changed, except for the added dataset itself,
+where the <span class="property">quota</span> and <span class="property">reservation</span> properties
+cannot be changed. This behavior allows the global zone administrator to control
+the space consumption of all datasets used by the non-global zone.</p>
+<p>In addition, the <span class="property">sharenfs</span> and <span class="property">mountpoint</span> properties
+cannot be changed by the global zone administrator once a dataset has been
+added to a non-global zone.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbbre"></a>Understanding the <span class="property">zoned</span> Property</h3></div></div></div>
+
+<p>When a dataset is added to a non-global zone, the dataset must be specially
+marked so that certain properties are not interpreted within the context of
+the global zone. Once a dataset has been added to a non-global zone under
+the control of a zone administrator, its contents can no longer be trusted.
+As with any file system, there might be setuid binaries, symbolic links, or
+otherwise questionable contents that might adversely affect the security of
+the global zone. In addition, the <span class="property">mountpoint</span> property
+cannot be interpreted in the context of the global zone. Otherwise, the zone
+administrator could affect the global zone's namespace. To address the latter,
+ZFS uses the <span class="property">zoned</span> property to indicate that a dataset
+has been delegated to a non-global zone at one point in time.<a class="indexterm" name="indexterm-481"></a>
+<a class="indexterm" name="indexterm-482"></a>
+<a class="indexterm" name="indexterm-483"></a>
+</p>
+<p>The <span class="property">zoned</span> property is a boolean value that is automatically
+turned on when a zone containing a ZFS dataset is first booted. A zone administrator
+will not need to manually turn on this property. If the <span class="property">zoned</span> property
+is set, the dataset cannot be mounted or shared in the global zone, and is
+ignored when the <span><strong class="command">zfs share</strong></span> <code class="option">
+a</code> command or
+the <span><strong class="command">zfs mount</strong></span> <code class="option">
+a</code> command is executed. In
+the following example, <code class="filename">tank/zone/zion</code> has been added
+to a zone, while <code class="filename">tank/zone/global</code> has not:</p>
+<pre class="screen"># <strong class="userinput"><code>zfs list -o name,zoned,mountpoint -r tank/zone</code></strong>
+NAME                  ZONED  MOUNTPOINT
+tank/zone/global        off  /tank/zone/global
+tank/zone/zion           on  /tank/zone/zion
+# <strong class="userinput"><code>zfs mount</code></strong>
+tank/zone/global           /tank/zone/global
+tank/zone/zion             /export/zone/zion/root/tank/zone/zion</pre>
+<p>Note the difference between the <span class="property">mountpoint</span> property
+and the directory where the <code class="filename">tank/zone/zion</code> dataset is
+currently mounted. The <span class="property">mountpoint</span> property reflects the
+property as stored on disk, not where the dataset is currently mounted on
+the system.</p>
+<p>When a dataset is removed from a zone or a zone is destroyed, the <span class="property">zoned</span> property is <span class="strong"><strong>not</strong></span> automatically
+cleared. This behavior is due to the inherent security risks associated with
+these tasks. Because an untrusted user has had complete access to the dataset
+and its children, the <span class="property">mountpoint</span> property might be set
+to bad values, or setuid binaries might exist on the file systems.</p>
+<p>To prevent accidental security risks, the <span class="property">zoned</span> property
+must be manually cleared by the global administrator if you want to reuse
+the dataset in any way. Before setting the <span class="property">zoned</span> property
+to <code class="literal">off</code>, make sure that the <span class="property">mountpoint</span> property
+for the dataset and all its children are set to reasonable values and that
+no setuid binaries exist, or turn off the <span class="property">setuid</span> property.</p>
+<p>Once you have verified that no security vulnerabilities are left, the <span class="property">zoned</span> property can be turned off by using the <span><strong class="command">zfs set</strong></span> or <span><strong class="command">zfs inherit</strong></span> commands. If the <span class="property">zoned</span> property
+is turned off while a dataset is in use within a zone, the system might behave
+in unpredictable ways. Only change the property if you are sure the dataset
+is no longer in use by a non-global zone.</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch08.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch08.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch08s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 8. ZFS Advanced Topics </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> ZFS Alternate Root Pools</td></tr></table></div></body></html>

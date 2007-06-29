@@ -1,0 +1,138 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Setting and Displaying ACLs on ZFS Files in Compact
+Format</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="up" href="ch07.html" title="Chapter 7. Using ACLs to Protect ZFS Files"><link rel="prev" href="ch07s03.html" title="Setting and Displaying ACLs on ZFS Files in Verbose
+Format"><link rel="next" href="ch08.html" title="Chapter 8. ZFS Advanced Topics"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Setting and Displaying ACLs on ZFS Files in Compact
+Format</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch07s03.html">Prev</a> </td><th width="60%" align="center">Chapter 7. Using ACLs to Protect ZFS Files</th><td width="20%" align="right"> <a accesskey="n" href="ch08.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gbchf"></a>Setting and Displaying ACLs on ZFS Files in Compact
+Format</h2></div></div></div>
+
+<p>You can set and display permissions on ZFS files in a compact format
+ that uses 14 unique letters to represent the permissions. The letters that
+represent the compact permissions are listed in <span class="olink">Table 7&#8211;2</span> and <span class="olink">Table 7&#8211;3</span>.<a class="indexterm" name="indexterm-455"></a>
+<a class="indexterm" name="indexterm-456"></a>
+<a class="indexterm" name="indexterm-457"></a>
+</p>
+<p>You can display compact ACL listings for files and directories by using
+the <span><strong class="command">ls</strong></span> <code class="option">
+V</code> command. For example:</p>
+<pre class="screen"># <strong class="userinput"><code>ls -V file.1</code></strong>
+-rw-r--r--   1 root     root      206663 Feb 16 11:00 file.1
+            owner@:--x-----------:------:deny
+            owner@:rw-p---A-W-Co-:------:allow
+            group@:-wxp----------:------:deny
+            group@:r-------------:------:allow
+         everyone@:-wxp---A-W-Co-:------:deny
+         everyone@:r-----a-R-c--s:------:allow</pre>
+<p>The compact ACL output is described as follows:</p>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="literal">owner@</code>
+</span></dt><dd>
+<p>The owner is denied execute permissions to the file (<code class="literal">x</code>=<code class="literal">execute</code>).</p>
+</dd><dt><span class="term">
+<code class="literal">owner@</code>
+</span></dt><dd>
+<p>The owner can read and modify the contents of the file (<code class="literal">rw</code>=<code class="literal">read_data/write_data</code>), (<code class="literal">p</code>=<code class="literal">append_data</code>). The owner can also modify the file's attributes such
+as timestamps, extended attributes, and ACLs (<code class="literal">A</code>=<code class="literal">write_xattr</code>, <code class="literal">W</code>=<code class="literal">write_attributes</code>, <code class="literal">C</code>=<code class="literal">write_acl</code>). In addition, the owner can modify the ownership of the
+file (<code class="literal">O</code>=<code class="literal">write_owner</code>).</p>
+</dd><dt><span class="term">
+<code class="literal">group@</code>
+</span></dt><dd>
+<p>The group is denied modify and execute permissions to the
+file (<code class="literal">rw</code>=<code class="literal">read_data/write_data</code>, <code class="literal">p</code>=<code class="literal">append_data</code>, and <code class="literal">x</code>=<code class="literal">execute</code>).</p>
+</dd><dt><span class="term">
+<code class="literal">group@</code>
+</span></dt><dd>
+<p>The group is granted read permissions to the file (<code class="literal">r</code>=<code class="literal">read_data</code>).</p>
+</dd><dt><span class="term">
+<code class="literal">everyone@</code>
+</span></dt><dd>
+<p>Everyone who is not user or group is denied permission to
+execute or modify the contents of the file, and to modify any attributes of
+the file (<code class="literal">w</code>=<code class="literal">write_data</code>, <code class="literal">x</code>=<code class="literal">execute</code>, <code class="literal">p</code>=<code class="literal">append_data</code>, <code class="literal">A</code>=<code class="literal">write_xattr</code>, <code class="literal">W</code>=<code class="literal">write_attributes</code>, <code class="literal">C</code>=<code class="literal">write_acl</code>, and <code class="literal">o</code>=<code class="literal">write_owner</code>).</p>
+</dd><dt><span class="term">
+<code class="literal">everyone@</code>
+</span></dt><dd>
+<p>Everyone who is not user or group is granted read permissions
+to the file and the file's attributes (<code class="literal">r</code>=<code class="literal">read_data</code>, <code class="literal">a</code>=<code class="literal">append_data</code>, <code class="literal">R</code>=<code class="literal">read_xattr</code>, <code class="literal">c</code>=<code class="literal">read_acl</code>, and <code class="literal">s</code>=<code class="literal">synchronize</code>). The <code class="literal">synchronize</code> access permission
+is not currently implemented.</p>
+</dd></dl></div>
+<p>Compact ACL format provides the following advantages over verbose ACL
+format:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Permissions can be specified as positional arguments to the <span><strong class="command">chmod</strong></span> command.</p>
+</li><li>
+<p>The hyphen (-) characters, which identify no permissions,
+can be removed and only the required letters need to be specified.</p>
+</li><li>
+<p>Both permissions and inheritance flags are set in the same
+fashion.</p>
+</li></ul></div>
+<p>For information about using the verbose ACL format, see <span class="olink">Setting and Displaying ACLs on ZFS Files in Verbose Format</span>.</p>
+<div class="example"><a name="gcfhr"></a><p class="title"><b>Example 7.10. Setting and Displaying ACLs in Compact Format</b></p>
+
+
+<p>In the following example, a trivial ACL exists on <code class="filename">file.1</code>:<a class="indexterm" name="indexterm-458"></a>
+<a class="indexterm" name="indexterm-459"></a>
+<a class="indexterm" name="indexterm-460"></a>
+</p>
+<pre class="screen"># <strong class="userinput"><code>ls -V file.1</code></strong>
+-rw-r-xr-x   1 root     root      206663 Feb 16 11:00 file.1
+            owner@:--x-----------:------:deny
+            owner@:rw-p---A-W-Co-:------:allow
+            group@:-w-p----------:------:deny
+            group@:r-x-----------:------:allow
+         everyone@:-w-p---A-W-Co-:------:deny
+         everyone@:r-x---a-R-c--s:------:allow</pre>
+<p>In this example, read_data/execute permissions are added for the user <code class="literal">gozer</code> on <code class="filename">file.1</code>. </p>
+<pre class="screen"># <strong class="userinput"><code>chmod A+user:gozer:rx:allow file.1</code></strong>
+# <strong class="userinput"><code>ls -V file.1</code></strong>
+-rw-r-xr-x+  1 root     root      206663 Feb 16 11:00 file.1
+        user:gozer:r-x-----------:------:allow
+            owner@:--x-----------:------:deny
+            owner@:rw-p---A-W-Co-:------:allow
+            group@:-w-p----------:------:deny
+            group@:r-x-----------:------:allow
+         everyone@:-w-p---A-W-Co-:------:deny
+         everyone@:r-x---a-R-c--s:------:allow</pre>
+<p>Another way to add the same permissions for user <code class="literal">gozer</code> is
+to insert a new ACL at a specific position, 4, for example. As such, the existing
+ACLs at positions 4&#8211;6 are pushed down. For example:</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A4+user:gozer:rx:allow file.1</code></strong>
+# <strong class="userinput"><code>ls -V file.1</code></strong>
+-rw-r-xr-x+  1 root     root      206663 Feb 16 11:00 file.1
+            owner@:--x-----------:------:deny
+            owner@:rw-p---A-W-Co-:------:allow
+            group@:-w-p----------:------:deny
+            group@:r-x-----------:------:allow
+        user:gozer:r-x-----------:------:allow
+         everyone@:-w-p---A-W-Co-:------:deny
+         everyone@:r-x---a-R-c--s:------:allow</pre>
+<p>In the following example, user <code class="literal">gozer</code> is granted read,
+write, and execute permissions that are inherited for newly created files
+and directories by using the compact ACL format.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A+user:gozer:rwx:f:allow dir.1</code></strong>
+# <strong class="userinput"><code>ls -dV dir.1</code></strong>
+drwxr-xr-x+  2 root     root           2 Feb 23 10:37 dir.1
+        user:gozer:rwx-----------:f-----:allow
+            owner@:--------------:------:deny
+            owner@:rwxp---A-W-Co-:------:allow
+            group@:-w-p----------:------:deny
+            group@:r-x-----------:------:allow
+         everyone@:-w-p---A-W-Co-:------:deny
+         everyone@:r-x---a-R-c--s:------:allow</pre>
+<p>You can also cut and paste permissions and inheritance flags from the <span><strong class="command">ls</strong></span> <code class="option">
+V</code> output into the compact <span><strong class="command">chmod</strong></span> format.
+For example, to duplicate the permissions and inheritance flags on <code class="filename">dir.1</code> for user <code class="literal">gozer</code> to user <code class="literal">cindys</code>,
+copy and paste the permission and inheritance flags (<code class="literal">rwx-----------:f-----:allow</code>) into your <span><strong class="command">chmod</strong></span> command. For example:</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A+user:cindys:rwx-----------:f-----:allow dir.1</code></strong>
+# <strong class="userinput"><code>ls -dV dir.1</code></strong>
+drwxr-xr-x+  2 root     root           2 Feb 23 10:37 dir.1
+       user:cindys:rwx-----------:f-----:allow
+        user:gozer:rwx-----------:f-----:allow
+            owner@:--------------:------:deny
+            owner@:rwxp---A-W-Co-:------:allow
+            group@:-w-p----------:------:deny
+            group@:r-x-----------:------:allow
+         everyone@:-w-p---A-W-Co-:------:deny
+         everyone@:r-x---a-R-c--s:------:allow</pre>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch07s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch07.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch08.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Setting and Displaying ACLs on ZFS Files in Verbose
+Format </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 8. ZFS Advanced Topics</td></tr></table></div></body></html>

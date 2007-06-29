@@ -1,0 +1,90 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Port Monitor Service Administration (pmadm)</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch10.html" title="Chapter 10. Managing Serial
+Ports With the Service Access Facility (Tasks)"><link rel="prev" href="ch10s03.html" title="Overall SAF Administration (sacadm)"><link rel="next" href="ch10s05.html" title="TTY Monitor and Network Listener Port Monitors"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Port Monitor Service Administration (<span><strong class="command">pmadm</strong></span>)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10s03.html">Prev</a> </td><th width="60%" align="center">Chapter 10. Managing Serial
+Ports With the Service Access Facility (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch10s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="modsafapp-10269"></a>Port Monitor Service Administration (<span><strong class="command">pmadm</strong></span>)</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="modsafapp-ix1095"></a>The <span><strong class="command">pmadm</strong></span> command enables you to administer
+port monitors' services. In particular, you use the <span><strong class="command">pmadm</strong></span> command
+to add or remove a service and to enable or disable a service. You can also
+install or replace per-service configuration scripts, or print information
+about a service. </p>
+<p>Each instance of a service must be uniquely identified by a port monitor
+and a port. When you use the <span><strong class="command">pmadm</strong></span> command to administer
+a service, you specify a particular port monitor with the <em class="replaceable"><code>pmtag</code></em> argument,
+and a particular port with the <em class="replaceable"><code>svctag</code></em> argument.</p>
+<p>For each port monitor type, the SAF requires a specialized command to
+format port monitor-specific configuration data. This data is used by the <span><strong class="command">pmadm</strong></span> command. For <span><strong class="command">ttymon</strong></span> and <span><strong class="command">listen</strong></span> type
+port monitors, these specialized commands are <span><strong class="command">ttyadm</strong></span> and <span><strong class="command">nlsadmin</strong></span>, respectively.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-3"></a>
+<span><strong class="command">ttymon</strong></span> Port Monitor</h3></div></div></div>
+
+<p>Whenever you attempt to log in by using a directly connected modem or
+alphanumeric terminal, <span><strong class="command">ttymon</strong></span> goes to work. First, the
+SAC process is started by SMF. Then, the SAC automatically starts the port
+monitors that are designated in its administrative file, <code class="filename">/etc/saf/_sactab</code>. After the <span><strong class="command">ttymon</strong></span> port monitor has been started,
+it monitors the serial port lines for service requests.</p>
+<p>
+<a class="indexterm" name="modsafapp-ix1100"></a>
+<a class="indexterm" name="modsafapp-ix1101"></a>When someone attempts to log in by using an alphanumeric terminal
+or a modem, the serial port driver passes the activity to the operating system.
+The <code class="literal">ttymon</code> port monitor notes the serial port activity,
+and attempts to establish a communications link. The <span><strong class="command">ttymon</strong></span> port
+monitor determines which data transfer rate, line discipline, and handshaking
+protocol are required to communicate with the device.  </p>
+<p>After the proper parameters for communication with the modem or terminal
+are established, the <code class="literal">ttymon</code> port monitor passes these parameters
+to the login program and transfers control to it.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-5"></a>Port Initialization Process</h3></div></div></div>
+
+<a class="indexterm" name="modsafapp-ix1102"></a>
+<p>When an instance of the <code class="literal">ttymon</code> port monitor is invoked
+by the SAC, <span><strong class="command">ttymon</strong></span> starts to monitor its ports. For each
+port, the <code class="literal">ttymon</code> port monitor first initializes the line
+disciplines, if they are specified, and the speed and terminal settings. The
+values used for initialization are taken from the appropriate entry in the <code class="filename">/etc/ttydefs</code> file.</p>
+<p>The <code class="literal">ttymon</code> port monitor then writes the prompt and
+waits for user input. If the user indicates that the speed is inappropriate
+by pressing the Break key, the <code class="literal">ttymon</code> port monitor tries
+the next speed and writes the prompt again.</p>
+<p>If <span class="emphasis"><em>autobaud</em></span> is enabled for a port, the <code class="literal">ttymon</code> port monitor tries to determine the baud rate on the port automatically.
+Users must press Return before the <code class="literal">ttymon</code> port monitor
+can recognize the baud rate and print the prompt.</p>
+<p>When valid input is received, the <code class="literal">ttymon</code> port monitor
+does the following tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Interprets the per-service configuration file for the port</p>
+</li><li>
+<p>Creates an <code class="filename">/etc/utmpx</code> entry, if required</p>
+</li><li>
+<p>Establishes the service environment</p>
+</li><li>
+<p>Invokes the service associated with the port</p>
+</li></ul></div>
+<p>
+<a class="indexterm" name="modsafapp-ix1103"></a>After the service terminates, the <code class="literal">ttymon</code> port
+monitor cleans up the <code class="filename">/etc/utmpx</code> entry, if this entry
+exists, and returns the port to its initial state.  </p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-6"></a>Bidirectional Service</h3></div></div></div>
+
+<a class="indexterm" name="modsafapp-ix1105"></a>
+<a class="indexterm" name="modsafapp-ix1106"></a>
+<a class="indexterm" name="modsafapp-ix1107"></a>
+<p>If a port is configured for bidirectional service, the <code class="literal">ttymon</code> port
+monitor does the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Allows users to connect to a service</p>
+</li><li>
+<p>Allows the <span><strong class="command">uucico</strong></span>, <span><strong class="command">cu</strong></span>,
+or <span><strong class="command">ct</strong></span> commands to use the port for dialing out, if the
+port is free</p>
+</li><li>
+<p>Waits to read a character before printing a prompt</p>
+</li><li>
+<p>Invokes the port's associated service, without sending the
+prompt message, when a connection is requested, if the connect-on-carrier
+flag  is set</p>
+</li></ul></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch10.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch10s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Overall SAF Administration (<span><strong class="command">sacadm</strong></span>) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> TTY Monitor and Network Listener Port Monitors</td></tr></table></div></body></html>

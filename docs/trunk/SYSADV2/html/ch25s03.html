@@ -1,0 +1,66 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>
+What to Do if the
+SMF Boot Archive Service Fails During a System Reboot</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch25.html" title="Chapter 25. Troubleshooting Miscellaneous Software Problems (Tasks)"><link rel="prev" href="ch25s02.html" title="What to Do if You Forgot Root Password"><link rel="next" href="ch25s04.html" title="What to Do if a System Hangs"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">
+What to Do if the
+SMF Boot Archive Service Fails During a System Reboot</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch25s02.html">Prev</a> </td><th width="60%" align="center">Chapter 25. Troubleshooting Miscellaneous Software Problems (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch25s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="fxcmh"></a>
+What to Do if the
+SMF Boot Archive Service Fails During a System Reboot</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-297"></a>
+<a class="indexterm" name="indexterm-298"></a>
+<a class="indexterm" name="indexterm-299"></a>
+<p>
+<span class="strong"><strong>Solaris Express 6/05:</strong></span> If the system crashes, the
+boot archive SMF service, <code class="filename">svc:/system/boot-archive:default</code>,
+might fail when the system is rebooted.  If the boot archive service has failed,
+a message similar to the following is displayed when you run the <span><strong class="command">svcs</strong></span> <code class="option">
+x</code> command:</p>
+<pre class="screen">svc:/system/boot-archive:default (check boot archive content)
+ State: maintenance since Fri Jun 03 10:24:52 2005
+Reason: Start method exited with $SMF_EXIT_ERR_FATAL.
+   See: http://sun.com/msg/SMF-8000-KS
+   See: /etc/svc/volatile/system-boot-archive:default.log
+Impact: 48 dependent services are not running.  (Use -v for list.)
+
+svc:/network/rpc/gss:default (Generic Security Service)
+ State: uninitialized since Fri Jun 03 10:24:51 2005
+Reason: Restarter svc:/network/inetd:default is not running.
+   See: http://sun.com/msg/SMF-8000-5H
+   See: gssd(1M)
+Impact: 10 dependent services are not running.  (Use -v for list.)
+
+svc:/application/print/server:default (LP print server)
+ State: disabled since Fri Jun 03 10:24:51 2005
+Reason: Disabled by an administrator.
+   See: http://sun.com/msg/SMF-8000-05
+   See: lpsched(1M)
+Impact: 1 dependent service is not running.  (Use -v for list.)</pre>
+<p>To correct the problem, take the following action:</p>
+<div class="orderedlist"><ol type="1"><li>
+<p>Reboot the system and select the Solaris failsafe archive
+option from the GRUB boot menu.</p>
+</li><li>
+<p>Answer <code class="literal">y</code> when prompted by the system to
+rebuild the boot archive.</p>
+<p>After the boot archive is rebuilt, the
+system is ready to boot.</p>
+</li><li>
+<p>To continue booting, clear the SMF boot archive service by
+using the following command.</p>
+</li></ol></div>
+<pre class="screen"># <strong class="userinput"><code>svcadm clear boot-archive</code></strong>
+</pre>
+<p>Note that you must become superuser or the equivalent to run this command.</p>
+<p>For more information on rebuilding the GRUB boot archive, see <span class="olink">
+<em class="citetitle">How to Boot the Failsafe Archive for Recovery Purposes</em> in <em class="citetitle">System Administration Guide: Basic Administration</em>
+</span> and
+the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">bootadm</span>
+(
+1M
+)
+</span>
+</span> man
+page.</p>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch25s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch25.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch25s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">What to Do if You Forgot Root Password </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> What to Do if a System Hangs</td></tr></table></div></body></html>

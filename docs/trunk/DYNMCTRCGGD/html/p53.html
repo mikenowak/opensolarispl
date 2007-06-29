@@ -1,0 +1,336 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title><tt>fpuinfo</tt> Provider - Solaris Dynamic Tracing Guide</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2005-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >Solaris Dynamic Tracing Guide<?GenHTML /ReferencePage>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p52.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p54.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="chp-fpuinfo"></a>Chapter&nbsp;29<h3><tt>fpuinfo</tt> Provider</h3><p>The <tt>fpuinfo</tt> provider makes available probes that correspond to the simulation of floating-point instructions on SPARC microprocessors. While most floating-point instructions are executed in hardware, some floating-point operations trap into the operating system for simulation. The conditions under which floating-point operations require operating system simulation are specific to a microprocessor implementation. The operations that require simulation are rare. However, if an application uses one of these operations frequently, the effect on performance could be severe. The <tt>fpuinfo</tt> provider enables rapid investigation of floating-point simulation seen through either <tt>kstat</tt>(1M) and the <tt>fpu_info</tt> kernel statistic or <tt>trapstat</tt>(1M) and the <tt>fp-xcp-other</tt> trap.</p>
+<a name="gelsd"></a><h3>Probes</h3>
+<p><a name="indexterm-420"></a><a name="indexterm-421"></a>The <tt>fpuinfo</tt> provider makes available a probe for each type of floating-point instruction that can be simulated. The <tt>fpuinfo</tt> provider has a Name Stability of <tt>CPU</tt>; the names of the probes are specific to a microprocessor implementation, and might not be available on different microprocessors within the same family. For example, some of the probes listed might only be available on UltraSPARC-III and not UltraSPARC-III+ or vice versa.</p>
+<p>The <tt>fpuinfo</tt> probes are described in <a href="p53.html#tbl-fpuinfo">Table 29-1</a>.</p>
+<a name="tbl-fpuinfo"></a>Table 29-1 <tt>fpuinfo</tt> Probes<table><tr><td><p><tt>fpu_sim_fitoq</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fitoq</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fitod</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fitod</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fitos</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fitos</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fxtoq</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fxtoq</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fxtod</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fxtod</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fxtos</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fxtos</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fqtox</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fqtox</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fdtox</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fdtox</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fstox</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fstox</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fqtoi</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fqtoi</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fdtoi</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fdtoi</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fstoi</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fstoi</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fsqrtq</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fsqrtq</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fsqrtd</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fsqrtd</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fsqrts</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fsqrts</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fcmpeq</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fcmpeq</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fcmped</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fcmped</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fcmpes</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fcmpes</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fcmpq</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fcmpq</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fcmpd</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fcmpd</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fcmps</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fcmps</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fdivq</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fdivq</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fdivd</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fdivd</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fdivs</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fdivs</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fdmulx</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fdmulx</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fsmuld</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fsmuld</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fmulq</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fmulq</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fmuld</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fmuld</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fmuls</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fmuls</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fsubq</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fsubq</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fsubd</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fsubd</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fsubs</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fsubs</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_faddq</tt></p>
+</td><td><p>Probe that fires whenever an <tt>faddq</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_faddd</tt></p>
+</td><td><p>Probe that fires whenever an <tt>faddd</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fadds</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fadds</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fnegd</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fnegd</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fnegq</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fneqq</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fnegs</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fnegs</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fabsd</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fabsd</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fabsq</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fabsq</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fabss</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fabss</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fmovd</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fmovd</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fmovq</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fmovq</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fmovs</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fmovs</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fmovr</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fmovr</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+<tr><td><p><tt>fpu_sim_fmovcc</tt></p>
+</td><td><p>Probe that fires whenever an <tt>fmovcc</tt> instruction is simulated by the kernel.</p>
+</td></tr>
+</table><a name="gelsb"></a><h3>Arguments</h3>
+<p>There are no arguments to <tt>fpuinfo</tt> probes.</p>
+<a name="gelry"></a><h3>Stability</h3>
+<p><a name="indexterm-422"></a>The <tt>fpuinfo</tt> provider uses DTrace's stability mechanism to describe its stabilities, as shown in the following table. For more information about the stability mechanism, see <a href="p64.html">Chapter&nbsp;39, Stability</a>.</p>
+<table><tr><th><p>Element</p>
+</th><th><p>Name stability</p>
+</th><th><p>Data stability</p>
+</th><th><p>Dependency class</p>
+</th></tr>
+<tr><td><p>Provider</p>
+</td><td><p>Evolving</p>
+</td><td><p>Evolving</p>
+</td><td><p>CPU</p>
+</td></tr>
+<tr><td><p>Module</p>
+</td><td><p>Private</p>
+</td><td><p>Private</p>
+</td><td><p>Unknown</p>
+</td></tr>
+<tr><td><p>Function</p>
+</td><td><p>Private</p>
+</td><td><p>Private</p>
+</td><td><p>Unknown</p>
+</td></tr>
+<tr><td><p>Name</p>
+</td><td><p>Evolving</p>
+</td><td><p>Evolving</p>
+</td><td><p>CPU</p>
+</td></tr>
+<tr><td><p>Arguments</p>
+</td><td><p>Evolving</p>
+</td><td><p>Evolving</p>
+</td><td><p>CPU</p>
+</td></tr>
+</table>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p52.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p54.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

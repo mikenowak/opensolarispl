@@ -1,0 +1,278 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Output Formatting - Solaris Dynamic Tracing Guide</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2005-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >Solaris Dynamic Tracing Guide<?GenHTML /ReferencePage> > <a href="p5.html">1.&nbsp;&nbsp;Introduction</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p6.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p8.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="chp-intro-6"></a><h3>Output Formatting</h3>
+<p>System call tracing is a powerful way to observe the behavior of most user processes. If you've used the Solaris <tt>truss</tt>(1) utility before as an administrator or developer, you've probably learned that it's a useful tool to keep around for whenever there is a problem. If you've never used <tt>truss</tt> before, give it a try right now by typing this command into one of your shells:</p>
+<pre><tt><b>$ truss date</b></tt></pre><p>You will see a formatted trace of all the system calls executed by <tt>date</tt>(1) followed by its one line of output at the end. The following example improves upon the earlier <tt>rw.d</tt> program by formatting its output to look more like <tt>truss</tt>(1) so you can more easily understand the output. Type the following program and save it in a file called <tt>trussrw.d</tt>:</p>
+<a name="ex-trussrw.d"></a>Example 1-2 <tt>trussrw.d</tt>: Trace System Calls with <tt>truss</tt>(1) Output Format<pre>syscall::read:entry,
+syscall::write:entry
+/pid == $1/
+{
+	printf("%s(%d, 0x%x, %4d)", probefunc, arg0, arg1, arg2);
+}
+
+syscall::read:return,
+syscall::write:return
+/pid == $1/
+{
+	printf("\t\t = %d\n", arg1);
+}</pre><p>In this example, the constant <tt>12345</tt> is replaced with the label <tt>$1</tt> in each predicate. This label allows you to specify the process of interest as an <b>argument</b> to the script: <tt>$1</tt> is replaced by the value of the first argument when the script is compiled. To execute <tt>trussrw.d</tt>, use the <tt>dtrace</tt> options <tt>-q</tt> and <tt>-s</tt>, followed by the process ID of your shell as the final argument. The <tt>-q</tt> option indicates that <tt>dtrace</tt> should be quiet and suppress the header line and the CPU and ID columns shown in the preceding examples. As a result, you will only see the output for the data that you explicitly traced. Type the following command (replacing <tt>12345</tt> with the process ID of a shell process) and then press return a few times in the specified shell:</p>
+<pre><tt><b># dtrace -q -s trussrw.d 12345</b></tt>
+	                 = 1
+write(2, 0x8089e48,    1)                = 1
+read(63, 0x8090a38, 1024)                = 0
+read(63, 0x8090a38, 1024)                = 0
+write(2, 0x8089e48,   52)                = 52
+read(0, 0x8089878,    1)                 = 1
+write(2, 0x8089e48,    1)                = 1
+read(63, 0x8090a38, 1024)                = 0
+read(63, 0x8090a38, 1024)                = 0
+write(2, 0x8089e48,   52)                = 52
+read(0, 0x8089878,    1)                 = 1
+write(2, 0x8089e48,    1)                = 1
+read(63, 0x8090a38, 1024)                = 0
+read(63, 0x8090a38, 1024)                = 0
+write(2, 0x8089e48,   52)                = 52
+read(0, 0x8089878,    1)<tt><b>^C</b></tt>
+#</pre><p>Now let's examine your D program and its output in more detail. First, a clause similar to the earlier program instruments each of the shell's calls to <tt>read</tt>(2) and <tt>write</tt>(2). But for this example, a new function, <tt>printf()</tt>, is used to trace data and print it out in a specific format:</p>
+<pre>syscall::read:entry,
+syscall::write:entry
+/pid == $1/
+{
+	printf("%s(%d, 0x%x, %4d)", probefunc, arg0, arg1, arg2);
+}</pre><p>The <tt>printf()</tt> function combines the ability to trace data, as if by the <tt>trace()</tt> function used earlier, with the ability to output the data and other text in a specific format that you describe. The <tt>printf()</tt> function tells DTrace to trace the data associated with each argument after the first argument, and then to format the results using the rules described by the first <tt>printf()</tt> argument, known as a format string.</p>
+<p>The format string is a regular string that contains any number of format conversions, each beginning with the <tt>%</tt> character, that describe how to format the corresponding argument. The first conversion in the format string corresponds to the second <tt>printf()</tt> argument, the second conversion to the third argument, and so on. All of the text between conversions is printed verbatim. The character following the <tt>%</tt> conversion character describes the format to use for the corresponding argument. Here are the meanings of the three format conversions used in <tt>trussrw.d</tt>:</p>
+<table><tr><td><p><tt>%d</tt></p>
+</td><td><p>Print the corresponding value as a decimal integer</p>
+</td></tr>
+<tr><td><p><tt>%s</tt></p>
+</td><td><p>Print the corresponding value as a string</p>
+</td></tr>
+<tr><td><p><tt>%x</tt></p>
+</td><td><p>Print the corresponding value as a hexadecimal integer</p>
+</td></tr>
+</table><p>DTrace <tt>printf()</tt> works just like the C <tt>printf</tt>(3C) library routine or the shell <tt>printf</tt>(1) utility. If you've never seen <tt>printf()</tt> before, the formats and options are explained in detail in <a href="p27.html">Chapter&nbsp;12, Output Formatting</a>. You should read this chapter carefully even if you're already familiar with <tt>printf()</tt> from another language. In D, <tt>printf()</tt> is provided as a built-in and some new format conversions are available to you designed specifically for DTrace.</p>
+<p>To help you write correct programs, the D compiler validates each <tt>printf()</tt> format string against its argument list. Try changing <tt>probefunc</tt> in the clause above to the integer <tt>123</tt>. If you run the modified program, you will see an error message telling you that the string format conversion <tt>%s</tt> is not appropriate for use with an integer argument:</p>
+<pre><tt><b># dtrace -q -s trussrw.d</b></tt>
+dtrace: failed to compile script trussrw.d: line 4: printf( )
+	   argument #2 is incompatible with conversion #1 prototype:
+	        conversion: %s
+	         prototype: char [] or string (or use stringof)
+	          argument: int
+#</pre><p>To print the name of the read or write system call and its arguments, use the <tt>printf()</tt> statement:</p>
+<pre>printf("%s(%d, 0x%x, %4d)", probefunc, arg0, arg1, arg2);</pre><p>to trace the name of the current probe function and the first three integer arguments to the system call, available in the DTrace variables <tt>arg0</tt>, <tt>arg1</tt>, and <tt>arg2</tt>. For more information about probe arguments, see <a href="p10.html">Chapter&nbsp;3, Variables</a>. The first argument to <tt>read</tt>(2) and <tt>write</tt>(2) is a file descriptor, printed in decimal. The second argument is a buffer address, formatted as a hexadecimal value. The final argument is the buffer size, formatted as a decimal value. The format specifier <tt>%4d</tt> is used for the third argument to indicate that the value should be printed using the <tt>%d</tt> format conversion with a minimum field width of 4 characters. If the integer is less than 4 characters wide, <tt>printf()</tt> will insert extra blanks to align the output.</p>
+<p>To print the result of the system call and complete each line of output, use the following clause:</p>
+<pre>syscall::read:return,
+syscall::write:return
+/pid == $1/
+{
+	printf("\t\t = %d\n", arg1);
+}</pre><p>Notice that the <tt>syscall</tt> provider also publishes a probe named <tt>return</tt> for each system call in addition to <tt>entry</tt>. The DTrace variable <tt>arg1</tt> for the syscall <tt>return</tt> probes evaluates to the system call's return value. The return value is formatted as a decimal integer. The character sequences beginning with backwards slashes in the format string expand to tab (<tt>\t</tt>) and newline (<tt>\n</tt>) respectively. These escape sequences help you print or record characters that are difficult to type. D supports the same set of escape sequences as C, C++, and the Java programming language. The complete list of escape sequences is found in <a href="p8.html">Chapter&nbsp;2, Types, Operators, and Expressions</a>.</p>
+<a name="chp-intro-7"></a><h3>Arrays</h3>
+<p>D permits you to define variables that are integers, as well as other types to represent strings and composite types called structs and unions. If you are familiar with C programming, you'll be happy to know you can use any type in D that you can in C. If you're not a C expert, don't worry: the different kinds of data types are all described in <a href="p8.html">Chapter&nbsp;2, Types, Operators, and Expressions</a>. D also supports a special kind of variable called an associative array. An associative array is similar to a normal array in that it associates a set of keys with a set of values, but in an associative array the keys are not limited to integers of a fixed range.</p>
+<p>D associative arrays can be indexed by a list of one or more values of any type. Together the individual key values form a tuple that is used to index into the array and access or modify the value corresponding to that key. Every tuple used with a given associative array must conform to the same type signature; that is, each tuple key must be of the same length and have the same key types in the same order. The value associated with each element of a given associative array is also of a single fixed type for the entire array. For example, the following D statement defines a new associative array <tt>a</tt> of value type <tt>int</tt> with the tuple signature <tt>[ string, int ]</tt> and stores the integer value 456 in the array:</p>
+<pre>a["hello", 123] = 456;</pre><p>Once an array is defined, its elements can be accessed like any other D variable. For example, the following D statement modifies the array element previously stored in <tt>a</tt> by incrementing the value from 456 to 457:</p>
+<pre>a["hello", 123]++;</pre><p>The values of any array elements you have not yet assigned are set to zero. Now let's use an associative array in a D program. Type the following program and save it in a file named <tt>rwtime.d</tt>:</p>
+<a name="ex-rwtime.d"></a>Example 1-3 <tt>rwtime.d</tt>: Time <tt>read</tt>(2) and <tt>write</tt>(2) Calls<pre>syscall::read:entry,
+syscall::write:entry
+/pid == $1/
+{
+	ts[probefunc] = timestamp;
+}
+
+syscall::read:return,
+syscall::write:return
+/pid == $1 &amp;&amp; ts[probefunc] != 0/
+{
+	printf("%d nsecs", timestamp - ts[probefunc]);
+}</pre><p>As with <tt>trussrw.d</tt>, specify the ID of shell process when you execute <tt>rwtime.d</tt>. If you type a few shell commands, you'll see the amount time elapsed during each system call. Type in the following command and then press return a few times in your other shell:</p>
+<pre><tt><b># dtrace -s rwtime.d `pgrep -n ksh`</b></tt>
+dtrace: script 'rwtime.d' matched 4 probes
+CPU     ID                    FUNCTION:NAME
+  0     33                      read:return 22644 nsecs
+  0     33                      read:return 3382 nsecs
+  0     35                     write:return 25952 nsecs
+  0     33                      read:return 916875239 nsecs
+  0     35                     write:return 27320 nsecs
+  0     33                      read:return 9022 nsecs
+  0     33                      read:return 3776 nsecs
+  0     35                     write:return 17164 nsecs
+...
+<tt><b>^C</b></tt>
+#</pre><p>To trace the elapsed time for each system call, you must instrument both the entry to and return from <tt>read</tt>(2) and <tt>write</tt>(2) and sample the time at each point. Then, on return from a given system call, you must compute the difference between our first and second timestamp. You could use separate variables for each system call, but this would make the program annoying to extend to additional system calls. Instead, it's easier to use an associative array indexed by the probe function name. Here is the first probe clause:</p>
+<pre>syscall::read:entry,
+syscall::write:entry
+/pid == $1/
+{
+	ts[probefunc] = timestamp;
+}</pre><p>This clause defines an array named <tt>ts</tt> and assigns the appropriate member the value of the DTrace variable <tt>timestamp</tt>. This variable returns the value of an always-incrementing nanosecond counter, similar to the Solaris library routine <tt>gethrtime</tt>(3C). Once the entry timestamp is saved, the corresponding return probe samples <tt>timestamp</tt> again and reports the difference between the current time and the saved value:</p>
+<pre>syscall::read:return,
+syscall::write:return
+/pid == $1 &amp;&amp; ts[probefunc] != 0/
+{
+	printf("%d nsecs", timestamp - ts[probefunc]);
+}</pre><p>The predicate on the return probe requires that DTrace is tracing the appropriate process and that the corresponding <tt>entry</tt> probe has already fired and assigned <tt>ts[probefunc]</tt> a non-zero value. This trick eliminates invalid output when DTrace first starts. If your shell is already waiting in a <tt>read</tt>(2) system call for input when you execute <tt>dtrace</tt>, the <tt>read:return</tt> probe will fire without a preceding <tt>read:entry</tt> for this first <tt>read</tt>(2) and <tt>ts[probefunc]</tt> will evaluate to zero because it has not yet been assigned.</p>
+<a name="chp-intro-8"></a><h3>External Symbols and Types</h3>
+<p>DTrace instrumentation executes inside the Solaris operating system kernel, so in addition to accessing special DTrace variables and probe arguments, you can also access kernel data structures, symbols, and types. These capabilities enable advanced DTrace users, administrators, service personnel, and driver developers to examine low-level behavior of the operating system kernel and device drivers. The reading list at the start of this book includes books that can help you learn more about Solaris operating system internals.</p>
+<p>D uses the backquote character (<tt>`</tt>) as a special scoping operator for accessing symbols that are defined in the operating system and not in your D program. For example, the Solaris kernel contains a C declaration of a system tunable named <tt>kmem_flags</tt> for enabling memory allocator debugging features. See the <i>Solaris Tunable Parameters Reference Manual</i>for more information about <tt>kmem_flags</tt>. This tunable is declared in C in the kernel source code as follows:</p>
+<pre>int kmem_flags;</pre><p>To trace the value of this variable in a D program, you can write the D statement:</p>
+<pre>trace(`kmem_flags);</pre><p>DTrace associates each kernel symbol with the type used for it in the corresponding operating system C code, providing easy source-based access to the native operating system data structures. Kernel symbol names are kept in a separate namespace from D variable and function identifiers, so you never need to worry about these names conflicting with your D variables.</p>
+<p>You have now completed a whirlwind tour of DTrace and you've learned many of the basic DTrace building blocks necessary to build larger and more complex D programs. The following chapters describe the complete set of rules for D and demonstrate how DTrace can make complex performance measurements and functional analysis of the system easy. Later, you'll see how to use DTrace to connect user application behavior to system behavior, giving you the capability to analyze your entire software stack.</p>
+<p>You've only just begun!</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p6.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p8.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

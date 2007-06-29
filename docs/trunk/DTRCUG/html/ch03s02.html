@@ -1,0 +1,223 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>DTrace Built-in Variables</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="DTrace User Guide"><link rel="up" href="ch03.html" title="Chapter 3. Scripting With the D Language"><link rel="prev" href="ch03.html" title="Chapter 3. Scripting With the D Language"><link rel="next" href="ch04.html" title="Chapter 4. Using DTrace"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">DTrace Built-in Variables</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Scripting With the D Language</th><td width="20%" align="right"> <a accesskey="n" href="ch04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gcfpz"></a>DTrace Built-in Variables</h2></div></div></div>
+
+<p>The following list includes all of the built-in variables for the DTrace
+framework.</p>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="literal">int64_t arg0, ..., arg9</code>
+</span></dt><dd>
+<p>The first ten input arguments to a probe represented as raw
+64-bit integers.  If fewer than ten arguments are passed to the current probe,
+the remaining variables return zero.</p>
+</dd><dt><span class="term">
+<code class="literal">args[]</code>
+</span></dt><dd>
+<p>The typed arguments to the current probe, if any. The <code class="literal">args[]</code> array is accessed using an integer index, but each element is defined
+to be the type corresponding to the given probe argument. For example, if
+the <code class="literal">args[]</code> array is referenced by a <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">read</span>
+(
+2
+)
+</span>
+</span> system call probe, <code class="literal">args[0]</code> is of
+type <code class="literal">int</code>, <code class="literal">args[1]</code> is of type <code class="literal">void
+*</code>, and <code class="literal">args[2]</code> is of type <code class="literal">size_t</code>.</p>
+</dd><dt><span class="term">
+<code class="literal">uintptr_t caller</code>
+</span></dt><dd>
+<p>The program counter location of the current thread just before
+entering the current probe.</p>
+</dd><dt><span class="term">
+<code class="literal">chipid_t chip</code>
+</span></dt><dd>
+<p>The CPU chip identifier for the current physical chip. See <span class="olink">Chapter 26, <em class="citetitle">sched Provider,</em> in <em class="citetitle">Solaris
+Dynamic Tracing Guide</em>
+</span> for more information.</p>
+</dd><dt><span class="term">
+<code class="literal">processorid_t cpu</code>
+</span></dt><dd>
+<p>The CPU identifier for the current CPU. See <span class="olink">Chapter 26, <em class="citetitle">sched Provider,</em> in <em class="citetitle">Solaris
+Dynamic Tracing Guide</em>
+</span> for more information.</p>
+</dd><dt><span class="term">
+<code class="literal">cpuinfo_t *curcpu</code>
+</span></dt><dd>
+<p>The CPU information for the current CPU. See <span class="olink">Chapter 26, <em class="citetitle">sched Provider,</em> in <em class="citetitle">Solaris
+Dynamic Tracing Guide</em>
+</span> for more information.</p>
+</dd><dt><span class="term">
+<code class="literal">lwpsinfo_t *curlwpsinfo</code>
+</span></dt><dd>
+<p>The lightweight process (LWP) state of the LWP associated
+with the current thread. This structure is described in further detail in
+the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">proc</span>
+(
+4
+)
+</span>
+</span> man page.</p>
+</dd><dt><span class="term">
+<code class="literal">psinfo_t *curpsinfo</code>
+</span></dt><dd>
+<p>The process state of the process associated with the current
+thread. This structure is described in further detail in the  This structure
+is described in further detail in the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">proc</span>
+(
+4
+)
+</span>
+</span> man page.</p>
+</dd><dt><span class="term">
+<code class="literal">kthread_t *curthread</code>
+</span></dt><dd>
+<p>The address of the operating system kernel's internal data
+structure for the current thread, the <code class="literal">kthread_t</code>. The <code class="literal">kthread_t</code> is defined in <code class="literal">&lt;sys/thread.h&gt;
+</code>. Refer
+to <em class="citetitle">Solaris Internals</em> for more information on this variable
+and other operating system data structures.</p>
+</dd><dt><span class="term">
+<code class="literal">string cwd</code>
+</span></dt><dd>
+<p>The name of the current working directory of the process associated
+with the current thread.</p>
+</dd><dt><span class="term">
+<code class="literal">uint_t epid</code>
+</span></dt><dd>
+<p>The enabled probe ID (EPID) for the current probe. This integer
+uniquely identifiers a particular probe that is enabled with a specific predicate
+and set of actions.</p>
+</dd><dt><span class="term">
+<code class="literal">int errno</code>
+</span></dt><dd>
+<p>The error value returned by the last system call executed
+by this thread.</p>
+</dd><dt><span class="term">
+<code class="literal">string execname</code>
+</span></dt><dd>
+<p>The name that was passed to <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">exec</span>
+(
+2
+)
+</span>
+</span> to execute the current process.</p>
+</dd><dt><span class="term">
+<code class="literal">gid_t gid</code>
+</span></dt><dd>
+<p>The real group ID of the current process.</p>
+</dd><dt><span class="term">
+<code class="literal">uint_t id</code>
+</span></dt><dd>
+<p>The probe ID for the current probe. This ID is the system-wide
+unique identifier for the probe as published by DTrace and listed in the output
+of <span><strong class="command">dtrace</strong></span> <code class="option">
+l</code>.</p>
+</dd><dt><span class="term">
+<code class="literal">uint_t ipl</code>
+</span></dt><dd>
+<p>The interrupt priority level (IPL) on the current CPU at the
+time that the probe fires. Refer to <em class="citetitle">Solaris Internals</em> for
+more information on interrupt levels and interrupt handling in the Solaris
+operating system kernel.</p>
+</dd><dt><span class="term">
+<code class="literal">lgrp_id_t lgrp</code>
+</span></dt><dd>
+<p>The locality group ID for the latency group of which the current
+CPU is a member. See <span class="olink">Chapter
+26, <em class="citetitle">sched Provider,</em> in <em class="citetitle">Solaris Dynamic Tracing Guide</em>
+</span> for more information
+on CPU management in DTrace. See <span class="olink">Chapter 4, <em class="citetitle">Locality Group
+APIs,</em> in <em class="citetitle">Programming Interfaces Guide</em>
+</span> for
+more information about locality groups.</p>
+</dd><dt><span class="term">
+<code class="literal">pid_t pid</code>
+</span></dt><dd>
+<p>The process ID of the current process.</p>
+</dd><dt><span class="term">
+<code class="literal">pid_t ppid</code>
+</span></dt><dd>
+<p>The parent process ID of the current process.</p>
+</dd><dt><span class="term">
+<code class="literal">string probefunc</code>
+</span></dt><dd>
+<p>The function name portion of the current probe's description.</p>
+</dd><dt><span class="term">
+<code class="literal">string probemod</code>
+</span></dt><dd>
+<p>The module name portion of the current probe's description.</p>
+</dd><dt><span class="term">
+<code class="literal">string probename</code>
+</span></dt><dd>
+<p>The name portion of the current probe's description.</p>
+</dd><dt><span class="term">
+<code class="literal">string probeprov</code>
+</span></dt><dd>
+<p>The provider name portion of the current probe's description.</p>
+</dd><dt><span class="term">
+<code class="literal">psetid_t pset</code>
+</span></dt><dd>
+<p>The processor set ID for the processor set that contains the
+current CPU. See <span class="olink">Chapter
+26, <em class="citetitle">sched Provider,</em> in <em class="citetitle">Solaris Dynamic Tracing Guide</em>
+</span> for more information.</p>
+</dd><dt><span class="term">
+<code class="literal">string root</code>
+</span></dt><dd>
+<p>The name of the root directory of the process associated with
+the current thread.</p>
+</dd><dt><span class="term">
+<code class="literal">uint_t stackdepth</code>
+</span></dt><dd>
+<p>The current thread's stack frame depth at probe firing time.</p>
+</dd><dt><span class="term">
+<code class="literal">id_t tid</code>
+</span></dt><dd>
+<p>The thread ID of the current thread. For threads that are
+associated with user processes, this value is equal to the result of a call
+to <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">pthread_self</span>
+(
+3C
+)
+</span>
+</span>.</p>
+</dd><dt><span class="term">
+<code class="literal">uint64_t timestamp</code>
+</span></dt><dd>
+<p>The current value of a nanosecond timestamp counter. This
+counter increments from an arbitrary point in the past and should only be
+used for relative computations.</p>
+</dd><dt><span class="term">
+<code class="literal">uid_t uid</code>
+</span></dt><dd>
+<p>The real user ID of the current process.</p>
+</dd><dt><span class="term">
+<code class="literal">uint64_t uregs[]</code>
+</span></dt><dd>
+<p>The current thread's saved user-mode register values at probe
+firing time. Use of the <code class="literal">uregs[]</code> array is discussed in <span class="olink">Chapter 33, <em class="citetitle">User Process Tracing,</em> in <em class="citetitle">Solaris
+Dynamic Tracing Guide</em>
+</span>.</p>
+</dd><dt><span class="term">
+<code class="literal">uint64_t vtimestamp</code>
+</span></dt><dd>
+<p>The current value of a nanosecond timestamp counter. The counter
+is virtualized to the amount of time that the current thread has been running
+on a CPU. The counter does not include the time that is spent in DTrace predicates
+and actions. This counter increments from an arbitrary point in the past and
+should only be used for relative time computations.</p>
+</dd><dt><span class="term">
+<code class="literal">uint64_t walltimestamp</code>
+</span></dt><dd>
+<p>The current number of nanoseconds since 00:00 Universal Coordinated
+Time, January 1, 1970.</p>
+</dd></dl></div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 3. Scripting With the D Language </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 4. Using DTrace</td></tr></table></div></body></html>

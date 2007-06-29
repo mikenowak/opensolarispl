@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title><tt>plockstat</tt> Provider - Solaris Dynamic Tracing Guide</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2005-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >Solaris Dynamic Tracing Guide<?GenHTML /ReferencePage>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p54.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p56.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="chp-plockstat"></a>Chapter&nbsp;31<h3><tt>plockstat</tt> Provider</h3><p>The <tt>plockstat</tt> provider makes available probes that can be used to observe the behavior of user-level synchronization primitives including lock contention and hold times. The <tt>plockstat</tt>(1M) command is a DTrace consumer that uses the <tt>plockstat</tt> provider to gather data on user-level locking events.</p>
+<a name="chp-plockstat-1"></a><h3>Overview</h3>
+<p><a name="indexterm-437"></a><a name="indexterm-438"></a><a name="indexterm-439"></a>The <tt>plockstat</tt> provider makes available probes for the following types of events:</p>
+<dl><dt>Contention Events</dt>
+<dd><p><a name="indexterm-440"></a><a name="indexterm-441"></a>These probes correspond to contention on a user-level synchronization primitive, and fire when a thread is forced to wait for a resource to become available. Solaris is generally optimized for the non-contention case, so prolonged contention is not expected; these probes should be used to understand those cases where contention does arise. Because contention is designed to be (relatively) rare, enabling contention-event probes generally doesn't have a serious probe effect; they can be enabled without concern for substantially affecting performance.</p>
+</dd>
+<dt>Hold Events</dt>
+<dd><p><a name="indexterm-442"></a><a name="indexterm-443"></a>These probes correspond to acquiring, releasing or otherwise manipulating a user-level synchronization primitive. As such, these probes can be used to answer arbitrary questions about the way user-level synchronization primitives are manipulated. Because applications typically acquire and release synchronization primitives very often, enabling hold-event probes can have a greater probe effect than enabling contention-event probes. While the probe effect induced by enabling them can be substantial, it is not pathological; they may still be enabled with confidence on production applications.</p>
+</dd>
+<dt>Error Events</dt>
+<dd><p><a name="indexterm-444"></a><a name="indexterm-445"></a>These probes correspond to any kind of anomalous behavior encountered when acquiring or releasing a user-level synchronization primitive. These events can be used to detect errors encountered while a thread is blocking on a user-level synchronization primitive. Error events should be extremely uncommon so enabling them shouldn't induce a serious probe effect.</p>
+</dd>
+</dl>
+<a name="chp-plockstat-2"></a><h3>Mutex Probes</h3>
+<p><a name="indexterm-446"></a><a name="indexterm-447"></a>Mutexes enforce mutual exclusion to critical sections. When a thread attempts to acquire a mutex held by another thread using <tt>mutex_lock(3C)</tt> or <tt>pthread_mutex_lock(3C)</tt>, it will determine if the owning thread is running on a different CPU. If it is, the acquiring thread will <b>spin</b> for a short while waiting for the mutex to become available. If the owner is not executing on another CPU, the acquiring thread will <b>block</b>.</p>
+<p>The four <tt>plockstat</tt> probes pertaining to mutexes are listed in <a href="p55.html#tbl-umutex">Table 31-1</a>. For each probe, <tt>arg0</tt> contains a pointer to the <tt>mutex_t</tt> or <tt>pthread_mutex_t</tt> structure (these are identical types) that represents the mutex.</p>
+<a name="tbl-umutex"></a>Table 31-1 Mutex Probes<table><tr><td><p><tt>mutex-acquire</tt></p>
+</td><td><p>Hold event probe that fires immediately after a mutex is acquired. <tt>arg1</tt> contains a boolean value that indicates whether the acquisition was recursive on a recursive mutex. <tt>arg2</tt> indicates the number of iterations that the acquiring thread spent spinning on this mutex. <tt>arg2</tt> will be non-zero only if the <tt>mutex-spin</tt> probe fired on this mutex acquisition.</p>
+</td></tr>
+<tr><td><p><tt>mutex-block</tt></p>
+</td><td><p>Contention event probe that fires before a thread blocks on a held mutex. Both <tt>mutex-block</tt> and <tt>mutex-spin</tt> might fire for a single lock acquisition.</p>
+</td></tr>
+<tr><td><p><tt>mutex-spin</tt></p>
+</td><td><p>Contention event probe that fires before a thread begins spinning on a held mutex. Both <tt>mutex-block</tt> and <tt>mutex-spin</tt> might fire for a single lock acquisition.</p>
+</td></tr>
+<tr><td><p><tt>mutex-release</tt></p>
+</td><td><p>Hold event probe that fires immediately after an mutex is released. <tt>arg1</tt> contains a boolean value that indicates whether the event corresponds to a recursive release on a recursive mutex.</p>
+</td></tr>
+<tr><td><p><tt>mutex-error</tt></p>
+</td><td><p>Error event probe that fires when an error is encountered on a mutex operation. <tt>arg1</tt> is the <tt>errno</tt> value for the error encountered.</p>
+</td></tr>
+</table><a name="chp-plockstat-3"></a><h3>Reader/Writer Lock Probes</h3>
+<p><a name="indexterm-448"></a><a name="indexterm-449"></a>Reader/write locks permit multiple readers <b>or</b> a single writer, but not both, to be in a critical section at one time. These locks are typically used for structures that are searched more frequently than they are modified, or when threads spend substantial time in a critical section. Users interact with reader/writer locks using the Solaris <tt>rwlock(3C)</tt> or POSIX <tt>pthread_rwlock_init(3C)</tt> interfaces.</p>
+<p>The probes pertaining to readers/writer locks are in <a href="p55.html#tbl-urwlock">Table 31-2</a>. For each probe, <tt>arg0</tt> contains a pointer to the <tt>rwlock_t</tt> or <tt>pthread_rwlock_t</tt>structure (these are identical types) that represents the adaptive lock. <tt>arg1</tt> contains a boolean value that indicates whether the operation was as a writer.</p>
+<a name="tbl-urwlock"></a>Table 31-2 Readers/Writer Lock Probes<table><tr><td><p><tt>rw-acquire</tt></p>
+</td><td><p>Hold event probe that fires immediately after a readers/writer lock is acquired.</p>
+</td></tr>
+<tr><td><p><tt>rw-block</tt></p>
+</td><td><p>Contention event probe that fires before a thread blocks while attempting to acquire a lock. If enabled, the <tt>rw-acquire</tt> probe or the <tt>rw-error</tt> probe will fire after <tt>rw-block</tt>.</p>
+</td></tr>
+<tr><td><p><tt>rw-release</tt></p>
+</td><td><p>Hold event probe that fires immediately after a reader/writer lock is released</p>
+</td></tr>
+<tr><td><p><tt>rw-error</tt></p>
+</td><td><p>Error event probe that fires when an error is encountered during a reader/writer lock operation. <tt>arg1</tt> is the <tt>errno</tt> value of the error encountered.</p>
+</td></tr>
+</table><a name="chp-plockstat-stability"></a><h3>Stability</h3>
+<p><a name="indexterm-450"></a><a name="indexterm-451"></a>The <tt>plockstat</tt> provider uses DTrace's stability mechanism to describe its stabilities, as shown in the following table. For more information about the stability mechanism, see <a href="p64.html">Chapter&nbsp;39, Stability</a>.</p>
+<table><tr><th><p>Element</p>
+</th><th><p>Name stability</p>
+</th><th><p>Data stability</p>
+</th><th><p>Dependency class</p>
+</th></tr>
+<tr><td><p>Provider</p>
+</td><td><p>Evolving</p>
+</td><td><p>Evolving</p>
+</td><td><p>ISA</p>
+</td></tr>
+<tr><td><p>Module</p>
+</td><td><p>Private</p>
+</td><td><p>Private</p>
+</td><td><p>Unknown</p>
+</td></tr>
+<tr><td><p>Function</p>
+</td><td><p>Private</p>
+</td><td><p>Private</p>
+</td><td><p>Unknown</p>
+</td></tr>
+<tr><td><p>Name</p>
+</td><td><p>Evolving</p>
+</td><td><p>Evolving</p>
+</td><td><p>ISA</p>
+</td></tr>
+<tr><td><p>Arguments</p>
+</td><td><p>Evolving</p>
+</td><td><p>Evolving</p>
+</td><td><p>ISA</p>
+</td></tr>
+</table>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p54.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p56.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

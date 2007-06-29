@@ -1,0 +1,1014 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="gbxwv">
+
+
+
+<title>DTrace Basics</title>
+<toc>
+<para>This chapter provides a tour of the DTrace facility and provides examples
+of several basic tasks.</para>
+</toc>
+<sect1 xml:id="gcfah">
+<title>Listing Probes</title>
+<para>You can list all DTrace probes by passing the <option>
+l</option> option
+to the <command>dtrace</command> command:</para>
+<programlisting># <emphasis role="strong">dtrace -l</emphasis>
+ID   PROVIDER    MODULE        FUNCTION NAME
+ 1     dtrace                           BEGIN
+ 2     dtrace                           END
+ 3     dtrace                           ERROR
+ 4    syscall                     nosys entry
+ 5    syscall                     nosys return
+ 6    syscall                     rexit entry
+ 7    syscall                     rexit return
+ 8    syscall                   forkall entry
+ 9    syscall                   forkall return
+10    syscall                      read entry
+11    syscall                      read return
+...</programlisting>
+<para>To count all the probes that are available on your system, you can type
+the following command:</para>
+<programlisting># <emphasis role="strong">dtrace -l | wc -l</emphasis>
+</programlisting>
+<para>The number of probes reported will vary depending on your operating
+platform and the software you have installed. Some probes do not list an entry
+under the <literal>MODULE</literal> or <literal>FUNCTION</literal> columns,
+such as the <literal>BEGIN</literal> and <literal>END</literal> probes in
+the previous example. Probes with blank entries in these fields do not correspond
+to a specifically instrumented program function or location. These probes
+refer to more abstract concepts, such as the end of a tracing request. A probe
+that has a module and function as part of its name is called an <emphasis>anchored
+probe</emphasis>. A probe that is not associated with a module and function
+is called an <emphasis>unanchored probe</emphasis>.</para>
+<para>You can use additional options to list specific probes, as seen in the
+following examples.</para>
+<example xml:id="gcfac">
+
+<title>Listing Probes by Specific Function</title>
+<para>You can list probes that are associated with a specific function by
+passing that function name to DTrace with the <option>
+f</option> option.</para>
+<programlisting># <emphasis role="strong">dtrace -l -f cv_wait</emphasis>
+ID      PROVIDER        MODULE        FUNCTION NAME
+12921        fbt       genunix         cv_wait entry
+12922        fbt       genunix         cv_wait return</programlisting>
+</example>
+<example xml:id="gcfao">
+
+<title>Listing Probes by Specific Module</title>
+<para>You can list probes that are associated with a specific module by passing
+that module name to DTrace with the <option>
+m</option> option.</para>
+<programlisting># <emphasis role="strong">dtrace -l -m sd</emphasis>
+ID      PROVIDER        MODULE        FUNCTION NAME
+17147        fbt            sd          sdopen entry
+17148        fbt            sd          sdopen return
+17149        fbt            sd         sdclose entry
+17150        fbt            sd         sdclose return
+17151        fbt            sd      sdstrategy entry
+17152        fbt            sd      sdstrategy return
+...</programlisting>
+</example>
+<example xml:id="gcfaf">
+
+<title>Listing Probes by Specific Name</title>
+<para>You can list probes that have a specific name by passing that name to
+DTrace with the <option>
+n</option> option.</para>
+<programlisting># <emphasis role="strong">dtrace -l -n BEGIN</emphasis>
+ID      PROVIDER        MODULE        FUNCTION NAME
+1         dtrace                               BEGIN</programlisting>
+</example>
+<example xml:id="gcfag">
+
+<title>Listing Probes by Provider of Origin</title>
+<para>You can list probes that are originate from a specific provider by passing
+the provider name to DTrace with the <option>
+P</option> option.</para>
+<programlisting># <emphasis role="strong">dtrace -l -P lockstat</emphasis>
+ID        PROVIDER        MODULE             FUNCTION NAME
+469       lockstat       genunix          mutex_enter adaptive-acquire
+470       lockstat       genunix          mutex_enter adaptive-block
+471       lockstat       genunix          mutex_enter adaptive-spin
+472       lockstat       genunix           mutex_exit adaptive-release
+473       lockstat       genunix        mutex_destroy adaptive-release
+474       lockstat       genunix       mutex_tryenter adaptive-acquire
+...</programlisting>
+</example>
+<example xml:id="gcfad">
+
+<title>Multiple Providers Supporting a Specific Function
+or Module</title>
+<para>A specific function or specific module can be supported by multiple
+providers, as the following example shows.</para>
+<programlisting># <emphasis role="strong">dtrace -l -f read</emphasis>
+ID        PROVIDER        MODULE             FUNCTION NAME
+  10       syscall                               read entry
+  11       syscall                               read return
+4036       sysinfo       genunix                 read readch
+4040       sysinfo       genunix                 read sysread
+7885           fbt       genunix                 read entry
+7886           fbt       genunix                 read return</programlisting>
+</example>
+<para>As the previous examples show, the output for a listing of probes displays
+the following information:</para>
+<itemizedlist>
+<listitem>
+<para>The probe's uniquely assigned integer probe ID</para>
+<note>
+
+<para>The probe ID is only unique within a given release or patch level
+of the Solaris operating system.</para>
+</note>
+</listitem>
+<listitem>
+<para>The provider name</para>
+</listitem>
+<listitem>
+<para>The module name, if applicable</para>
+</listitem>
+<listitem>
+<para>The function name, if applicable</para>
+</listitem>
+<listitem>
+<para>The probe name</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="gcfar">
+<title>Specifying Probes in DTrace</title>
+<para>You can fully specify a probe by listing each component of the 4–tuple
+that uniquely identifies that probe. The format for the probe specification
+is <emphasis>provider:module:function:name</emphasis>. An empty component
+in a probe specification matches anything. For example, the specification <command>fbt::alloc:entry</command> specifies a probe with the following attributes:</para>
+<itemizedlist>
+<listitem>
+<para>The probe must be from the <literal>fbt</literal> provider</para>
+</listitem>
+<listitem>
+<para>The probe may be in any module</para>
+</listitem>
+<listitem>
+<para>The probe must be in the <literal>alloc</literal> function</para>
+</listitem>
+<listitem>
+<para>The probe must be named <literal>entry</literal>
+</para>
+</listitem>
+</itemizedlist>
+<para>Elements on the left hand side of the 4–tuple are optional. The
+probe specification <literal>::open:entry</literal> is equivalent to the specification <literal>open:entry</literal>. Either specification will match probes from all providers
+and kernel modules that have a function name of <literal>open</literal> and
+are named <literal>entry</literal>.</para>
+<programlisting># <emphasis role="strong">dtrace -l -n open:entry</emphasis>
+  ID      PROVIDER        MODULE             FUNCTION NAME
+  14       syscall                               open entry
+7386           fbt       genunix                 open entry</programlisting>
+<para>You can also describe probes with a pattern matching syntax that is
+similar to the syntax that is described in the <emphasis>File Name Generation</emphasis> section
+of the <literal remap="137">sh(1)</literal> man page. The syntax supports
+the special characters <literal>*</literal>, <literal>?</literal>, <literal>[</literal>,
+and <literal>]</literal>. The probe description <literal>syscall::open*:entry</literal> matches
+both the <literal>open</literal> and <literal>open64</literal> system calls.
+The <literal>?</literal> character represents any single character in the
+name. The <literal>[</literal> and <literal>]</literal> characters are used
+to specify a set of specific characters in the name.</para>
+</sect1>
+<sect1 xml:id="gcfay">
+<title>Enabling Probes</title>
+<para>You enable probes with the <command>dtrace</command> command by specifying
+the probes without the <option>
+l</option> option. Without further directions,
+DTrace performs the default action when the specified probe fires. The default
+probe action indicates only that the specified probe has fired and does not
+record any other data. The following code example enables every probe in the <command>sd</command> module.</para>
+<example xml:id="gcfbm">
+
+<title>Enabling Probes by Module</title>
+<programlisting># <emphasis role="strong">dtrace -m sd</emphasis>
+CPU     ID                     FUNCTION:NAME
+  0  17329           sd_media_watch_cb:entry
+  0  17330          sd_media_watch_cb:return
+  0  17167                      sdinfo:entry
+  0  17168                     sdinfo:return
+  0  17151                  sdstrategy:entry
+  0  17152                 sdstrategy:return
+  0  17661          ddi_xbuf_qstrategy:entry
+  0  17662         ddi_xbuf_qstrategy:return
+  0  17649                xbuf_iostart:entry
+  0  17341            sd_xbuf_strategy:entry
+  0  17385                sd_xbuf_init:entry
+  0  17386               sd_xbuf_init:return
+  0  17342           sd_xbuf_strategy:return
+  0  17177     sd_mapblockaddr_iostart:entry
+  0  17178    sd_mapblockaddr_iostart:return
+  0  17179               sd_pm_iostart:entry
+  0  17365                 sd_pm_entry:entry
+  0  17366                sd_pm_entry:return
+  0  17180              sd_pm_iostart:return
+  0  17181             sd_core_iostart:entry
+  0  17407         sd_add_buf_to_waitq:entry
+...</programlisting>
+<para>The output in this example shows that the default action displays the
+CPU where the probe fired, the integer probe ID that is assigned by DTrace,
+the function where the probe fired, and the probe name.</para>
+</example>
+<example xml:id="gcfcx">
+
+<title>Enabling Probes by Provider</title>
+<programlisting># <emphasis role="strong">dtrace -P syscall</emphasis>
+dtrace: description 'syscall' matched 452 probes
+CPU     ID                     FUNCTION:NAME
+  0     99                      ioctl:return
+  0     98                       ioctl:entry
+  0     99                      ioctl:return
+  0     98                       ioctl:entry
+  0     99                      ioctl:return
+  0    234                   sysconfig:entry
+  0    235                  sysconfig:return
+  0    234                   sysconfig:entry
+  0    235                  sysconfig:return
+  0    168                   sigaction:entry
+  0    169                  sigaction:return
+  0    168                   sigaction:entry
+  0    169                  sigaction:return
+  0     98                       ioctl:entry
+  0     99                      ioctl:return
+  0    234                   sysconfig:entry
+  0    235                  sysconfig:return
+  0     38                         brk:entry
+  0     39                        brk:return
+...</programlisting>
+</example>
+<example xml:id="gcfbu">
+
+<title>Enabling Probes by Name</title>
+<programlisting># <emphasis role="strong">dtrace -n zfod</emphasis>
+dtrace: description 'zfod' matched 3 probes
+CPU     ID                     FUNCTION:NAME
+  0   4080                    anon_zero:zfod
+  0   4080                    anon_zero:zfod
+<emphasis role="strong">^C</emphasis>
+</programlisting>
+</example>
+<example xml:id="gcfcs">
+
+<title>Enabling Probes by Fully Specified Name</title>
+<programlisting># <emphasis role="strong">dtrace -n clock:entry</emphasis>
+dtrace: description 'clock:entry' matched 1 probe
+CPU     ID                     FUNCTION:NAME
+  0   4198                       clock:entry
+<emphasis role="strong">^C</emphasis>
+</programlisting>
+</example>
+</sect1>
+<sect1 xml:id="gcfbn">
+<title>DTrace Action Basics</title>
+<para>Actions enable DTrace to interact with the system outside of the DTrace
+framework. The most common actions record data to a DTrace buffer. Other actions
+can stop the current process, raise a specific signal on the current process,
+or cease tracing. Actions that change the system state are considered <emphasis>destructive
+actions</emphasis>. Data recording actions record data to the <emphasis>principal
+buffer</emphasis> by default. The principal buffer is present in every DTrace
+invocation and is always allocated on a per-CPU basis. Tracing and buffer
+allocation can be restricted to a single CPU by using the <option>
+cpu</option> option.
+See <olink remap="external" targetdoc="817-6223" targetptr="chp-buf">Chapter 11, <citetitle remap="chapter">Buffers and Buffering,</citetitle> in <citetitle remap="book">Solaris
+Dynamic Tracing Guide</citetitle>
+</olink> for more information about DTrace
+buffering.</para>
+<para>The examples in this section use D expressions that consist of built-in
+D variables. Some of the most commonly used D variables are listed below:</para>
+<variablelist>
+<varlistentry>
+<term>
+<literal>pid</literal>
+</term>
+<listitem>
+<para>This variable contains the current process ID.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>execname</literal>
+</term>
+<listitem>
+<para>This variable contains the current executable name.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>timestamp</literal>
+</term>
+<listitem>
+<para>This variable contains the time since boot, expressed in nanoseconds.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>curthread</literal>
+</term>
+<listitem>
+<para>This variable contains a pointer to the <literal>kthread_t</literal> structure
+that represents the current thread.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>probemod</literal>
+</term>
+<listitem>
+<para>This variable contains the module name of the current probe.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>probefunc</literal>
+</term>
+<listitem>
+<para>This variable contains the function name of the current probe.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>probename</literal>
+</term>
+<listitem>
+<para>This variable contains the name of the current probe.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+<para>For a complete list of the built-in variables of the D scripting language,
+see Variables.</para>
+<para>The D scripting language also provides built-in functions that perform
+specific actions. You can find a complete list of these built-in functions
+at <olink remap="external" targetdoc="817-6223" targetptr="chp-actsub">Chapter 10, <citetitle remap="chapter">Actions and Subroutines,</citetitle> in <citetitle remap="book">Solaris
+Dynamic Tracing Guide</citetitle>
+</olink>. The <function>trace
+</function> function
+records the result of a D expression to the trace buffer, as in the following
+examples:</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>trace(pid)</literal> traces the current process ID</para>
+</listitem>
+<listitem>
+<para>
+<literal>trace(execname)</literal> traces the name of the
+current executable</para>
+</listitem>
+<listitem>
+<para>
+<literal>trace(curthread-&gt;t_pri)</literal> traces the <literal>t_pri</literal> field of the current thread</para>
+</listitem>
+<listitem>
+<para>
+<literal>trace(probefunc)</literal> traces the function name
+of the probe</para>
+</listitem>
+</itemizedlist>
+<para>To indicate a particular action you want a probe to take, type the name
+of the action between <literal>{}</literal> characters, as in the following
+example.</para>
+<example xml:id="gcfdz">
+
+<title>Specifying a Probe's Action</title>
+<programlisting># <emphasis role="strong">dtrace -n 'readch {trace(pid)}'</emphasis>
+dtrace: description 'readch ' matched 4 probes
+CPU     ID                     FUNCTION:NAME
+  0   4036                       read:readch          2040
+  0   4036                       read:readch          2177
+  0   4036                       read:readch          2177
+  0   4036                       read:readch          2040
+  0   4036                       read:readch          2181
+  0   4036                       read:readch          2181
+  0   4036                       read:readch             7
+...</programlisting>
+<para xml:id="gcfdq">Since the requested action is <literal>trace(pid)</literal>,
+the process identification number (PID) appears in the last column of the
+output.</para>
+</example>
+<example xml:id="gcfel">
+
+<title>Tracing an Executable Name</title>
+<programlisting># <emphasis role="strong">dtrace -m 'ufs {trace(execname)}'</emphasis>
+dtrace: description 'ufs ' matched 889 probes
+CPU     ID                     FUNCTION:NAME
+  0  14977                  ufs_lookup:entry            ls
+  0  15748                 ufs_iaccess:entry            ls
+  0  15749                ufs_iaccess:return            ls
+  0  14978                 ufs_lookup:return            ls
+...
+  0  15007                    ufs_seek:entry         utmpd
+  0  15008                   ufs_seek:return         utmpd
+  0  14963                   ufs_close:entry         utmpd
+<emphasis role="strong">^C</emphasis>
+</programlisting>
+</example>
+<example xml:id="gcfgm">
+
+<title>Tracing A System Call's Time of Entry</title>
+<programlisting># <emphasis role="strong">dtrace -n 'syscall:::entry {trace(timestamp)}'</emphasis>
+dtrace: description 'syscall:::entry ' matched 226 probes
+CPU     ID                     FUNCTION:NAME
+  0    312                      portfs:entry    157088479572713
+  0     98                       ioctl:entry    157088479637542
+  0     98                       ioctl:entry    157088479674339
+  0    234                   sysconfig:entry    157088479767243
+...
+  0     98                       ioctl:entry    157088481033225
+  0     60                       fstat:entry    157088481050686
+  0     60                       fstat:entry    157088481074680
+<emphasis role="strong">^C</emphasis>
+</programlisting>
+</example>
+<example xml:id="gcfgt">
+
+<title>Specifying Multiple Actions</title>
+<para>To specify multiple actions, list the actions separated by the <literal>;</literal> character.</para>
+<programlisting># <emphasis role="strong">dtrace -n 'zfod {trace(pid);trace(execname)}'</emphasis>
+dtrace: description 'zfod ' matched 3 probes
+CPU     ID                     FUNCTION:NAME
+  0   4080                    anon_zero:zfod    2195   dtrace
+  0   4080                    anon_zero:zfod    2195   dtrace
+  0   4080                    anon_zero:zfod    2195   dtrace
+  0   4080                    anon_zero:zfod    2195   dtrace
+  0   4080                    anon_zero:zfod    2195   dtrace
+  0   4080                    anon_zero:zfod    2197   bash
+  0   4080                    anon_zero:zfod    2207   vi
+  0   4080                    anon_zero:zfod    2207   vi
+...</programlisting>
+</example>
+<sect2 xml:id="gcggx">
+<title>Data Recording Actions</title>
+<para>
+<indexterm xml:id="indexterm-2">
+<primary>data recording actions</primary>
+</indexterm>
+<indexterm xml:id="indexterm-3">
+<primary>actions</primary>
+<secondary>data recording</secondary>
+</indexterm>The actions in this section record data to the principal buffer
+by default, but each action may also be used to record data to speculative
+buffers. See <olink remap="external" targetdoc="chapter-4.xml" targetptr="gbxxu">Speculative Tracing</olink> for more
+details on speculative buffers.</para>
+<sect3 xml:id="gcggi">
+<title>The <function>trace
+</function> function</title>
+<programlisting>void trace(<replaceable>expression</replaceable>)</programlisting>
+<para>
+<indexterm xml:id="indexterm-4">
+<primary>actions</primary>
+<secondary>
+<literal>trace</literal>
+</secondary>
+</indexterm>The most basic action is the <function>trace
+</function> action,
+which takes a D expression as its argument and traces the result to the directed
+buffer.</para>
+</sect3>
+<sect3 xml:id="gcgge">
+<title>The <function>tracemem
+</function> function</title>
+<programlisting>void tracemem(<replaceable>address</replaceable>, size_t <replaceable>nbytes</replaceable>)</programlisting>
+<para>
+<indexterm xml:id="indexterm-5">
+<primary>actions</primary>
+<secondary>
+<literal>tracemem</literal>
+</secondary>
+</indexterm>The <function>tracemem
+</function> action copies data from an address
+in memory to a buffer . The number of bytes that this action copies is specified
+in <replaceable>nbytes</replaceable>. The address that the data is copied
+from is specified in <replaceable>addr</replaceable> as a D expression. The
+buffer that the data is copied to is specified in <replaceable>buf</replaceable>.</para>
+</sect3>
+<sect3 xml:id="gcgfz">
+<title>The <function>printf
+</function> function</title>
+<programlisting>void printf(string <replaceable>format</replaceable>, ...) </programlisting>
+<para>
+<indexterm xml:id="indexterm-6">
+<primary>actions</primary>
+<secondary>
+<literal>printf</literal>
+</secondary>
+</indexterm>Like the <function>trace
+</function> action, the <function>printf
+</function> action
+traces D expressions. However, the <function>printf
+</function> action lets
+you control formatting in ways similar to the <olink remap="external" targetdoc="816-5168" targetptr="printf-3c">
+<citerefentry>
+<refentrytitle>printf</refentrytitle>
+<manvolnum>
+3C
+</manvolnum>
+</citerefentry>
+</olink> function.  Like the <literal>printf</literal> function, the parameters consists of a <replaceable>format</replaceable> string
+followed by a variable number of arguments.  By default, the arguments are
+traced to the directed buffer.  The arguments are later formatted for output
+by the <literal>dtrace</literal> command according to the specified format
+string.</para>
+<para>For more information on the <function>printf
+</function> action, see <olink remap="external" targetdoc="817-6223" targetptr="chp-fmt">Chapter 12, <citetitle remap="chapter">Output Formatting,</citetitle> in <citetitle remap="book">Solaris
+Dynamic Tracing Guide</citetitle>
+</olink>.</para>
+</sect3>
+<sect3 xml:id="gcggy">
+<title>The <function>printa
+</function> function</title>
+<programlisting>void printa(<replaceable>aggregation</replaceable>)
+void printa(string <replaceable>format</replaceable>, <replaceable>aggregation</replaceable>)</programlisting>
+<para>
+<indexterm xml:id="indexterm-7">
+<primary>actions</primary>
+<secondary>
+<literal>printa</literal>
+</secondary>
+</indexterm>The <function>printa
+</function> action enables you to display
+and format aggregations.  See <olink remap="external" targetdoc="817-6223" targetptr="chp-aggs">Chapter 9, <citetitle remap="chapter">Aggregations,</citetitle> in <citetitle remap="book">Solaris Dynamic Tracing Guide</citetitle>
+</olink> for more detail
+on aggregations.  If a <replaceable>format</replaceable> value is not provided,
+the <function>printa
+</function> action only traces a directive to the DTrace
+consumer. The consumer that receives that directive processes and displays
+the aggregation with the default format. See <olink remap="external" targetdoc="817-6223" targetptr="chp-fmt">Chapter 12, <citetitle remap="chapter">Output Formatting,</citetitle> in <citetitle remap="book">Solaris Dynamic Tracing Guide</citetitle>
+</olink> for a more
+detailed description of the <function>printa
+</function> format string.</para>
+</sect3>
+<sect3 xml:id="gcgfo">
+<title>The <function>stack
+</function> function</title>
+<programlisting>void stack(int <replaceable>nframes</replaceable>)
+void stack(void)</programlisting>
+<para>
+<indexterm xml:id="indexterm-8">
+<primary>actions</primary>
+<secondary>
+<literal>stack</literal>
+</secondary>
+</indexterm>The <function>stack
+</function> action records a kernel stack trace
+to the directed buffer.  The depth of the kernel stack is given by the value
+given in <replaceable>nframes</replaceable>. If no value is given for <replaceable>nframes</replaceable>, the stack action records a number of stack frames specified
+by the <literal>stackframes</literal> option.</para>
+</sect3>
+<sect3 xml:id="gcghb">
+<title>The <function>ustack
+</function> function</title>
+<programlisting>void ustack(int <replaceable>nframes</replaceable>, int <replaceable>strsize</replaceable>)
+void ustack(int <replaceable>nframes</replaceable>)
+void ustack(void)</programlisting>
+<para>
+<indexterm xml:id="indexterm-9">
+<primary>actions</primary>
+<secondary>
+<literal>ustack</literal>
+</secondary>
+</indexterm>The <function>ustack
+</function> action records a user stack trace
+to the directed buffer. The depth of the user stack is equal to the value
+specified in <replaceable>nframes</replaceable>. If there is no value for <replaceable>nframes</replaceable>, the <literal>ustack</literal> action records a number
+of stack frames that is specified by the <literal>ustackframes</literal> option.
+The <function>ustack
+</function> action determines the address of the calling
+frames when the probe fires. The <function>ustack
+</function> action does not
+translate the stack frames into symbols until the DTrace consumer processes
+the <function>ustack
+</function> action at the user level. If a value for <replaceable>strsize</replaceable> is specified and not zero, the <function>ustack
+</function> action
+allocates the specified amount of string space and uses it to perform address-to-symbol
+translation directly from the kernel.</para>
+</sect3>
+<sect3 xml:id="gcgfq">
+<title>The <function>jstack
+</function> function</title>
+<programlisting>void jstack(int <replaceable>nframes</replaceable>, int <replaceable>strsize</replaceable>)
+void jstack(int <replaceable>nframes</replaceable>)
+void jstack(void)</programlisting>
+<para>
+<indexterm xml:id="indexterm-10">
+<primary>actions</primary>
+<secondary>
+<literal>jstack</literal>
+</secondary>
+</indexterm>The <function>jstack
+</function> action is an alias for <function>ustack
+</function> that uses the value specified by the <literal>jstackframes</literal> option
+for the number of stack frames. The <literal>jstack</literal> action uses
+the value specified by the <literal>jstackstrsize</literal> option to determine
+the string space size. The <literal>jstacksize</literal> action defaults to
+a non-zero value.</para>
+</sect3>
+</sect2>
+<sect2 xml:id="gcfsm">
+<title>Destructive Actions</title>
+<para>
+<indexterm xml:id="indexterm-11">
+<primary>destructive actions</primary>
+</indexterm>
+<indexterm xml:id="indexterm-12">
+<primary>actions</primary>
+<secondary>destructive</secondary>
+</indexterm>You must explicitly enable destructive actions in order to use
+them. You can enable destructive actions by using the <option>
+w</option> option.
+If you attempt to use destructive actions in <command>dtrace</command> without
+explicitly enabling them, <command>dtrace</command> fails with a message similar
+to the following example:</para>
+<programlisting>dtrace: failed to enable 'syscall': destructive actions not allowed</programlisting>
+<para>For more information on DTrace actions, including destructive actions,
+see <olink remap="external" targetdoc="817-6223" targetptr="chp-actsub">Chapter 10, <citetitle remap="chapter">Actions and Subroutines,</citetitle> in <citetitle remap="book">Solaris
+Dynamic Tracing Guide</citetitle>
+</olink>.</para>
+<sect3 xml:id="gcfrv">
+<title>Process Destructive Actions</title>
+<para>
+<indexterm xml:id="indexterm-13">
+<primary>destructive actions</primary>
+<secondary>process</secondary>
+</indexterm>Some actions are destructive only to a particular process. These
+actions are available to users with the <literal>dtrace_proc</literal> or <literal>dtrace_user</literal> privileges. See <olink remap="external" targetdoc="817-6223" targetptr="chp-sec">Chapter 35, <citetitle remap="chapter">Security,</citetitle> in <citetitle remap="book">Solaris Dynamic Tracing Guide</citetitle>
+</olink> for details
+on DTrace security privileges.</para>
+<sect4 xml:id="gcfrz">
+<title>The <function>stop
+</function> function</title>
+<para>
+<indexterm xml:id="indexterm-14">
+<primary>actions</primary>
+<secondary>destructive</secondary>
+<tertiary>
+<literal>stop</literal>
+</tertiary>
+</indexterm>When a probe fires with the <function>stop
+</function> action enabled,
+the process that fired that probe stops upon leaving the kernel. This process
+stops in the same way as a process that is stopped by a <olink remap="external" targetdoc="816-5174" targetptr="proc-4">
+<citerefentry>
+<refentrytitle>proc</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> action.</para>
+</sect4>
+<sect4 xml:id="gcfqz">
+<title>The <function>raise
+</function> function</title>
+<programlisting>void raise(int <replaceable>signal</replaceable>)</programlisting>
+<para>
+<indexterm xml:id="indexterm-15">
+<primary>actions</primary>
+<secondary>destructive</secondary>
+<tertiary>
+<literal>raise</literal>
+</tertiary>
+</indexterm>The <function>raise
+</function> action sends the specified signal
+to the currently running process.</para>
+</sect4>
+<sect4 xml:id="gcfsd">
+<title>The <function>copyout
+</function> function</title>
+<programlisting>void copyout(void *<replaceable>buf</replaceable>, uintptr_t <replaceable>addr</replaceable>, size_t <replaceable>nbytes</replaceable>)</programlisting>
+<para>
+<indexterm xml:id="indexterm-16">
+<primary>actions</primary>
+<secondary>destructive</secondary>
+<tertiary>
+<literal>copyout</literal>
+</tertiary>
+</indexterm>The <function>copyout
+</function> action copies data from a buffer
+to an address in memory. The number of bytes that this action copies is specified
+in <replaceable>nbytes</replaceable>. The buffer that the data is copied from
+is specified in <replaceable>buf</replaceable>. The address that the data
+is copied to is specified in <replaceable>addr</replaceable>. That address
+is in the address space of the process that is associated with the current
+thread.</para>
+</sect4>
+<sect4 xml:id="gcfrq">
+<title>The <function>copyoutstr
+</function> function</title>
+<programlisting>void copyoutstr(string <replaceable>str</replaceable>, uintptr_t <replaceable>addr</replaceable>, size_t <replaceable>maxlen</replaceable>)</programlisting>
+<para>
+<indexterm xml:id="indexterm-17">
+<primary>actions</primary>
+<secondary>destructive</secondary>
+<tertiary>
+<literal>copyoutstr</literal>
+</tertiary>
+</indexterm>The <function>copyoutstr
+</function> action copies a string to
+an address in memory. The string to copy is specified in <replaceable>str</replaceable>.
+The address that the string is copied to is specified in <replaceable>addr</replaceable>.
+That address is in the address space of the process that is associated with
+the current thread.</para>
+</sect4>
+<sect4 xml:id="gcfsj">
+<title>The <function>system
+</function> function</title>
+<programlisting>void system(string <replaceable>program</replaceable>, ...) </programlisting>
+<para>
+<indexterm xml:id="indexterm-18">
+<primary>actions</primary>
+<secondary>destructive</secondary>
+<tertiary>
+<literal>system</literal>
+</tertiary>
+</indexterm>The <function>system
+</function> action causes the program specified
+by <replaceable>program</replaceable> to be executed by the system as if it
+were given to the shell as input.</para>
+</sect4>
+</sect3>
+<sect3 xml:id="gcfre">
+<title>Kernel Destructive Actions</title>
+<para>
+<indexterm xml:id="indexterm-19">
+<primary>destructive actions</primary>
+<secondary>kernel</secondary>
+</indexterm>Some destructive actions are destructive to the entire system.
+Use these actions with caution. These actions affect every process on the
+system and may affect other systems, depending upon the affected system's
+network services.</para>
+<sect4 xml:id="gcfra">
+<title>The <function>breakpoint
+</function> function</title>
+<programlisting>void breakpoint(void)</programlisting>
+<para>
+<indexterm xml:id="indexterm-20">
+<primary>actions</primary>
+<secondary>destructive</secondary>
+<tertiary>
+<literal>breakpoint</literal>
+</tertiary>
+</indexterm>The <function>breakpoint
+</function> action induces a kernel breakpoint,
+causing the system to stop and transfer control to the kernel debugger.  The
+kernel debugger will emit a string that denotes the DTrace probe that triggered
+the action.</para>
+</sect4>
+<sect4 xml:id="gcfru">
+<title>The <function>panic
+</function> function</title>
+<programlisting>void panic(void)</programlisting>
+<para>
+<indexterm xml:id="indexterm-21">
+<primary>actions</primary>
+<secondary>destructive</secondary>
+<tertiary>
+<literal>panic</literal>
+</tertiary>
+</indexterm>When a probe with the <function>panic
+</function> action triggers,
+the kernel panics. This action can force a system crash dump at a time of
+interest. You can use this action in conjunction with ring buffering and postmortem
+analysis to diagnose a system problem. For more information, see <olink remap="external" targetdoc="817-6223" targetptr="chp-buf">Chapter 11, <citetitle remap="chapter">Buffers and Buffering,</citetitle> in <citetitle remap="book">Solaris
+Dynamic Tracing Guide</citetitle>
+</olink> and <olink remap="external" targetdoc="817-6223" targetptr="chp-post">Chapter 37, <citetitle remap="chapter">Postmortem Tracing,</citetitle> in <citetitle remap="book">Solaris Dynamic Tracing Guide</citetitle>
+</olink> respectively.</para>
+</sect4>
+<sect4 xml:id="gcfsp">
+<title>The <function>chill
+</function> function</title>
+<programlisting>void chill(int <replaceable>nanoseconds</replaceable>)</programlisting>
+<para>
+<indexterm xml:id="indexterm-22">
+<primary>actions</primary>
+<secondary>destructive</secondary>
+<tertiary>
+<literal>chill</literal>
+</tertiary>
+</indexterm>When a probe with the <function>chill
+</function> action triggers,
+DTrace spins for the specified number of nanoseconds. The <function>chill
+</function> action
+is useful for exploring problems related to timing. Because interrupts are
+disabled while in DTrace probe context, any use of <function>chill
+</function> will
+induce interrupt latency, scheduling latency, dispatch latency.</para>
+</sect4>
+</sect3>
+</sect2>
+</sect1>
+<sect1 xml:id="gcggh">
+<title>DTrace Aggregations</title>
+<para>For performance-related questions, aggregated data is often more useful
+than individual data points. DTrace provides several built-in aggregating
+functions. When an aggregating function is applied to subsets of a collection
+of data, then applied again to the results of the analysis of those subsets,
+the results are identical to the results returned by the aggregating function
+when it is applied to the collection as a whole.</para>
+<para>The DTrace facility stores a running count of data items for aggregations.
+The aggregating functions store only the current intermediate result and the
+new element that the function is being applied to. The intermediate results
+are allocated on a per-CPU basis. Because this allocation scheme does not
+require locks, the implementation is inherently scalable.</para>
+<sect2 xml:id="gcggc">
+<title>DTrace Aggregation Syntax</title>
+<para>A DTrace aggregation takes the following general form:</para>
+<programlisting>@name[ <replaceable>keys</replaceable> ] = aggfunc( <replaceable>args</replaceable> );</programlisting>
+<para>In this general form, the variables are defined as follows:</para>
+<variablelist>
+<varlistentry>
+<term>
+<literal>name</literal>
+</term>
+<listitem>
+<para>The name of the aggregation, preceded by the <literal>@</literal> character.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>keys</literal>
+</term>
+<listitem>
+<para>A comma-separated list of D expressions.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>aggfunc</literal>
+</term>
+<listitem>
+<para>One of the DTrace aggregating functions.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>args</literal>
+</term>
+<listitem>
+<para>A comma-separated list of arguments appropriate to the aggregating
+function.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+<table frame="topbot" xml:id="gcggr">
+
+<title>DTrace Aggregating Functions</title>
+<tgroup cols="3" colsep="0" rowsep="0">
+<colspec colwidth="20.45*"/>
+<colspec colwidth="20.45*"/>
+<colspec colwidth="58.10*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Function Name</para>
+</entry>
+<entry>
+<para>Arguments</para>
+</entry>
+<entry>
+<para>Result</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>
+<literal>count</literal>
+</para>
+</entry>
+<entry>
+<para>none</para>
+</entry>
+<entry>
+<para>The number of times that the <literal>count</literal> function is called.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>sum</literal>
+</para>
+</entry>
+<entry>
+<para>scalar expression</para>
+</entry>
+<entry>
+<para>The total value of the specified expressions.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>avg</literal>
+</para>
+</entry>
+<entry>
+<para>scalar expression</para>
+</entry>
+<entry>
+<para>The arithmetic average of the specified expressions.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>min</literal>
+</para>
+</entry>
+<entry>
+<para>scalar expression</para>
+</entry>
+<entry>
+<para>The smallest value among the specified expressions.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>max</literal>
+</para>
+</entry>
+<entry>
+<para>scalar expression</para>
+</entry>
+<entry>
+<para>The largest value among the specified expressions.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>lquantize</literal>
+</para>
+</entry>
+<entry>
+<para>scalar expression, lower bound, upper bound, step value</para>
+</entry>
+<entry>
+<para>A linear frequency distribution of the values of the specified expressions
+that is sized by the specified range. This aggregating function increments
+the value in the <emphasis>highest</emphasis> bucket that is <emphasis>less</emphasis> than
+the specified expression.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>quantize</literal>
+</para>
+</entry>
+<entry>
+<para>scalar expression</para>
+</entry>
+<entry>
+<para>A power-of-two frequency distribution of the values of the specified
+expressions. This aggregating function increments the value in the <emphasis>highest</emphasis> power-of-two bucket that is <emphasis>less</emphasis> than the
+specified expression.</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<example xml:id="gcgfw">
+
+<title>Using an Aggregating Function</title>
+<para>This example uses the <command>count</command> aggregating function
+to count the number of <olink remap="external" targetdoc="816-5167" targetptr="write-2">
+<citerefentry>
+<refentrytitle>write</refentrytitle>
+<manvolnum>
+2
+</manvolnum>
+</citerefentry>
+</olink> system
+calls per process. The aggregation does not output any data until the <command>dtrace</command> command is terminated. The output data represents a summary of
+the data collected during the time that the <command>dtrace</command> command
+was active.</para>
+<screen># <userinput>cat writes.d</userinput>
+#!/usr/sbin/dtrace -s
+syscall::write:entry]
+{   @numWrites[execname] = count();
+}
+
+# <userinput>./writes.d</userinput>
+dtrace: script 'writes.d' matched 1 probe
+<userinput>^C</userinput>
+  dtrace                           1
+  date                             1
+  bash                             3
+  grep                            20
+  file                           197
+  ls                             201</screen>
+</example>
+</sect2>
+</sect1>
+</chapter>

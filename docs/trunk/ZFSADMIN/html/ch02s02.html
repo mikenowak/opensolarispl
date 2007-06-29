@@ -1,0 +1,40 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Creating a Basic ZFS File System</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="up" href="ch02.html" title="Chapter 2. Getting Started With ZFS"><link rel="prev" href="ch02.html" title="Chapter 2. Getting Started With ZFS"><link rel="next" href="ch02s03.html" title="Creating a ZFS Storage Pool"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Creating a Basic ZFS File System</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><th width="60%" align="center">Chapter 2. Getting Started With ZFS</th><td width="20%" align="right"> <a accesskey="n" href="ch02s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gaypm"></a>Creating a Basic ZFS File System</h2></div></div></div>
+
+<p>ZFS administration has been designed with simplicity in mind. Among
+the goals of the ZFS design is to reduce the number of commands needed to
+create a usable file system. When you create a new pool, a new ZFS file system
+is created and mounted automatically.</p>
+<p>The following example illustrates how to create a storage pool named <code class="literal">tank</code> and a ZFS file system name <code class="filename">tank</code> in one
+command. Assume that the whole disk <code class="filename">/dev/dsk/c1t0d0</code> is
+available for use.</p>
+<pre class="screen"># <strong class="userinput"><code>zpool create tank c1t0d0</code></strong>
+</pre>
+<p>The new ZFS file system, <code class="filename">tank</code>, can use as much
+of the disk space on <code class="systemitem">c1t0d0</code> as needed, and is automatically
+mounted at <code class="filename">/tank</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>mkfile 100m /tank/foo</code></strong>
+# <strong class="userinput"><code>df -h /tank</code></strong>
+Filesystem             size   used  avail capacity  Mounted on
+tank                   80G   100M    80G     1%    /tank</pre>
+<p>Within a pool, you will probably want to create additional file systems.
+File systems provide points of administration that allow you to manage different
+sets of data within the same pool.</p>
+<p>The following example illustrates how to create a file system named <code class="literal">fs</code> in the storage pool <code class="literal">tank</code>. Assume that the
+whole disk <code class="filename">/dev/dsk/c1t0d0</code> is available for use.</p>
+<pre class="screen"># <strong class="userinput"><code>zpool create tank c1t0d0</code></strong>
+# <strong class="userinput"><code>zfs create tank/fs</code></strong>
+</pre>
+<p>The new ZFS file system, <code class="filename">tank/fs</code>, can use as much
+of the disk space on <code class="systemitem">c1t0d0</code> as needed, and is automatically
+mounted at <code class="filename">/tank/fs</code>.<a class="indexterm" name="indexterm-47"></a>
+<a class="indexterm" name="indexterm-48"></a>
+<a class="indexterm" name="indexterm-49"></a>
+</p>
+<pre class="screen"># <strong class="userinput"><code>mkfile 100m /tank/fs/foo</code></strong>
+# <strong class="userinput"><code>df -h /tank/fs</code></strong>
+Filesystem             size   used  avail capacity  Mounted on
+tank/fs                 80G   100M    80G     1%    /tank/fs</pre>
+<p>In most cases, you will probably want to create and organize a hierarchy
+of file systems that matches your organizational needs. For more information
+about creating a hierarchy of ZFS file systems, see <span class="olink">Creating a ZFS File System Hierarchy</span>.</p>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 2. Getting Started With ZFS </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Creating a ZFS Storage Pool</td></tr></table></div></body></html>

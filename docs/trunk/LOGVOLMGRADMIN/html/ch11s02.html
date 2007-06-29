@@ -1,0 +1,1017 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Creating a RAID-1 Volume</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch11.html" title="Chapter 11. RAID-1
+(Mirror) Volumes (Tasks)"><link rel="prev" href="ch11.html" title="Chapter 11. RAID-1
+(Mirror) Volumes (Tasks)"><link rel="next" href="ch11s03.html" title="Working With Submirrors"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Creating a RAID-1 Volume</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch11.html">Prev</a> </td><th width="60%" align="center">Chapter 11. RAID-1
+(Mirror) Volumes (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch11s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-mirrors-21"></a>Creating a RAID-1 Volume</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-72"></a>
+<a class="indexterm" name="indexterm-73"></a>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1739951"></a></h3></div></div></div>
+
+<div class="task"><a name="addtasks-12543"></a><p class="title"><b>How to Create a RAID-1 Volume From Unused
+Slices</b></p><div class="tasksummary">
+<p>This procedure shows you how to create a two-way mirror. If you want
+to create a three-way mirror or a four-way mirror, use the same procedure.</p>
+</div><div class="taskprerequisites">
+
+<p>Check <span class="olink">Prerequisites for Creating Solaris Volume Manager Components</span> and <span class="olink">Creating and Maintaining RAID-1 Volumes</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-mirrors-step-30"></a>
+<p>Create two stripes or concatenations.
+These components become the submirrors.</p>
+<p>See <span class="olink">How to Create a RAID-0 (Stripe) Volume</span> or <span class="olink">How to Create a RAID-0 (Concatenation) Volume</span>.</p>
+</li><li><a name="tasks-mirrors-step-31"></a>
+<p>To create the mirror, use one of the
+following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node, then choose Action&#8658;Create
+Volume and follow the onscreen instructions. For more information, see the
+online help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit</strong></span> command
+to create a one-way mirror:</p>
+<pre class="screen"># <strong class="userinput"><code>metainit <em class="replaceable"><code>volume-name</code></em> -m  <em class="replaceable"><code>submirror-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the volume to create</p>
+</dd><dt><span class="term">
+<code class="option">
+m</code>
+</span></dt><dd>
+<p>Specifies to create a mirror</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>submirror-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the component that will be the first
+submirror in the mirror</p>
+</dd></dl></div>
+<p>See the following examples and the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metainit</span>
+(
+1M
+)
+</span>
+</span> man page for more information.</p>
+</li></ul></div>
+</li><li><a name="tasks-mirrors-step-31a"></a>
+<p>To add the second submirror, use one
+of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node, then choose the
+mirror you want to modify. Choose Action&#8658;Properties, then the Submirrors.
+Follow the onscreen instructions to attach the submirror. For more information,
+see the online help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metattach</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>metattach <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>submirror-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the RAID-1 volume on which to add the
+submirror</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>submirror-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the component that will be the second
+submirror attached to the mirror</p>
+</dd></dl></div>
+<p>See the following examples and the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metattach</span>
+(
+1M
+)
+</span>
+</span> man page for more information.</p>
+</li></ul></div>
+</li></ol></div><div class="example"><a name="egjxo"></a><p class="title"><b>Example 11.1. Creating a Two-Way Mirror</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metainit d51 1 1 c0t0d0s2</code></strong>
+d51: Concat/Stripe is setup
+# <strong class="userinput"><code>metainit d52 1 1 c1t0d0s2</code></strong>
+d52: Concat/Stripe is setup
+# <strong class="userinput"><code>metainit d50 -m d51</code></strong>
+d50: Mirror is setup
+# <strong class="userinput"><code>metattach d50 d52</code></strong>
+d50: Submirror d52 is attached</pre>
+<p>This example shows you how to create the two-way mirror, <code class="filename">d50</code>.
+The <span><strong class="command">metainit</strong></span> command creates two submirrors (<code class="filename">d51</code> and <code class="filename">d52</code>), which are RAID-0 volumes. The <span><strong class="command">metainit</strong></span> <code class="option">
+m</code> command creates the one-way mirror from the <code class="filename">d51</code> RAID-0
+volume. The <span><strong class="command">metattach</strong></span> command attaches <code class="filename">d52</code>,
+creating a two-way mirror and causing a resynchronization. Any data on the
+attached submirror is overwritten by the other submirror during the resynchronization. </p>
+</div><div class="example"><a name="egjxk"></a><p class="title"><b>Example 11.2. Creating a Two-Way Mirror Without Resynchronization</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metainit d51 1 1 c0t0d0s2</code></strong>
+d51: Concat/Stripe is setup
+# <strong class="userinput"><code>metainit d52 1 1 c1t0d0s2</code></strong>
+d52: Concat/Stripe is setup
+# <strong class="userinput"><code>metainit d50 -m d51 d52</code></strong>
+metainit: d50: WARNING: This form of metainit is not recommended.
+The submirrors may not have the same data.
+Please see ERRORS in metainit(1M) for additional information.
+d50: Mirror is setup</pre>
+<p>This example shows the creation a two-way mirror, <code class="filename">d50</code>.
+The <span><strong class="command">metainit</strong></span> command creates two submirrors (<code class="filename">d51</code> and <code class="filename">d52</code>), which are RAID-0 volumes. The <span><strong class="command">metainit</strong></span> <code class="option">
+m</code> command is then run with both submirrors to create the mirror.
+When you create a mirror using the <span><strong class="command">metainit</strong></span> command rather
+than the <span><strong class="command">metattach</strong></span> command , no resynchronization operations
+occur. As a result, data could become corrupted when Solaris Volume Manager assumes
+that both sides of the mirror are identical and can be used interchangeably.</p>
+</div><div class="taskrelated">
+
+<p>To prepare a newly created mirror for a file system, see <span class="olink">Chapter 18, <em class="citetitle">Creating UFS, TMPFS, and LOFS File Systems (Tasks),</em> in <em class="citetitle">System Administration Guide: Devices and File Systems</em>
+</span>.
+Some applications, such as a database, do not use a file system. These applications
+instead use the raw device. The application must have its own way of accessing
+the raw device.</p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1740599"></a></h3></div></div></div>
+
+<div class="task"><a name="addtasks-18898"></a><p class="title"><b>How to Create a RAID-1 Volume From a File
+System</b></p><a class="indexterm" name="indexterm-74"></a><div class="tasksummary">
+<p>Use this procedure to mirror an existing file system. If the file system
+can be unmounted, the entire procedure can be completed without a reboot.
+For file systems that cannot be unmounted, such as <code class="filename">/usr</code> and <code class="filename">/swap</code>, the system must be rebooted to complete the procedure.</p>
+<p>When creating a RAID-1 volume from an existing file system built on
+a slice, only the single slice may be included in the primary RAID-0 volume
+(submirror). If you are mirroring system-critical file systems, all submirrors
+must consist of only a single slice. </p>
+<p>For the procedures associated with mirroring the root (/) file system,
+see <span class="olink">
+How to Create a RAID-1 Volume From the root (<code class="filename">/</code>) File System</span> and <span class="olink">
+How to Create a RAID-1 Volume From the root (<code class="filename">/</code>) File System</span>.</p>
+<p>In the example used in this procedure, the existing slice is <code class="filename">c1t0d0s0</code>. The second slice, <code class="filename">c1t1d0s0</code>, is available
+for the second half of the mirror. The submirrors are <code class="filename">d1</code> and <code class="filename">d2</code>, respectively, and the mirror is <code class="filename">d0</code>. </p>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>Be sure to create a one-way mirror with the <span><strong class="command">metainit</strong></span> command
+then attach the additional submirrors with the <span><strong class="command">metattach</strong></span> command.
+When the <span><strong class="command">metattach</strong></span> command is not used, no resynchronization
+operations occur. As a result, data could become corrupted when Solaris Volume Manager assumes
+that both sides of the mirror are identical and can be used interchangeably. </p>
+</div>
+</div><div class="taskprerequisites">
+
+<p>Check <span class="olink">Prerequisites for Creating Solaris Volume Manager Components</span> and <span class="olink">Creating and Maintaining RAID-1 Volumes</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-mirrors-step-35"></a>
+<p>Identify the slice that contains the
+existing file system to be mirrored This example uses the slice <code class="literal">c1t0d0s0</code>.</p>
+</li><li><a name="tasks-mirrors-step-132"></a>
+<p>Create a new RAID-0 volume on the
+slice from the previous step by using one of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node, then choose Action&#8658;Create
+Volume. Follow the onscreen instructions . For more information, see the online
+help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>metainit -f  <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>number-of-stripes</code></em> <em class="replaceable"><code>components-per-stripe</code></em> <em class="replaceable"><code>component-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+f</code>
+</span></dt><dd>
+<p>Forces the command to continue. You must use this option when
+the slice contains a mounted file system.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the volume to create. For information
+on naming volumes, see <span class="olink">Volume Names</span>.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>number-of-stripes</code></em>
+</span></dt><dd>
+<p>Specifies the number of stripes to create.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>components-per-stripe</code></em>
+</span></dt><dd>
+<p>Specifies the number of components each stripe should have.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>component-names</code></em>
+</span></dt><dd>
+<p>Specifies the names of the components that are used. This
+example uses the root slice, <code class="filename">c0t0d0s0</code>.</p>
+</dd></dl></div>
+</li></ul></div>
+</li><li><a name="tasks-mirrors-step-126"></a>
+<p>Create a second RAID-0 volume (concatenation)
+on an unused slice (<code class="literal">c1t1d0s0</code> in this example) to act as
+the second submirror. The second submirror must be the same size as the original
+submirror or larger. Use one of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node, then choose Action-&gt;Create
+Volume and follow the instructions on screen. For more information, see the
+online help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit </strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metainit <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>number-of-stripes</code></em> <em class="replaceable"><code>components-per-stripe</code></em> <em class="replaceable"><code>component-name</code></em>
+</code></strong>
+</pre>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>See Step 2 for an explanation of the options.</p>
+</div>
+</li></ul></div>
+</li><li><a name="tasks-mirrors-step-127"></a>
+<p>Create a one-way mirror by using one
+of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node, then choose Action&#8658;Create
+Volume. Follow the onscreen instructions . For more information, see the online
+help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit </strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metainit <em class="replaceable"><code>volume-name</code></em> -m <em class="replaceable"><code>submirror-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the volume to create.</p>
+</dd><dt><span class="term">
+<code class="option">
+m</code>
+</span></dt><dd>
+<p>Specifies to create a mirror.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>submirror-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the component that will be the first
+submirror in the mirror. In this example, it is the RAID-0 volume that contains
+the root slice.</p>
+</dd></dl></div>
+</li></ul></div>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metainit</span>
+(
+1M
+)
+</span>
+</span> man
+page for more information.</p>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>When you create a mirror from an existing file system, you
+must follow the next two steps precisely to avoid data corruption. </p>
+</div>
+</li><li>
+<p>Edit the <code class="filename">/etc/vfstab</code> file so that the file
+system mount instructions refer to the mirror, not to the block device. For
+more information about the<code class="filename">/etc/vfstab</code> file, see <span class="olink">
+<em class="citetitle">Mounting
+File Systems</em> in <em class="citetitle">System Administration
+Guide: Devices and File Systems</em>
+</span>.</p>
+<p>For example,
+if the <code class="filename">/etc/vfstab file</code> contains the following entry
+for the file system:</p>
+<pre class="screen">/dev/dsk/<em class="replaceable"><code>slice</code></em> /dev/rdsk/<em class="replaceable"><code>slice</code></em> /var ufs 2 yes -</pre>
+<p>Change the entry to read as follows:</p>
+<pre class="screen">/dev/md/dsk/<em class="replaceable"><code>mirror-name</code></em> /dev/md/rdsk/<em class="replaceable"><code>mirror-name</code></em> /var ufs 2 yes -</pre>
+</li><li><a name="tasks-mirrors-step-39"></a>
+<p>Remount your newly mirrored file system
+according to one of the following procedures:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>If you are mirroring a file system that can be unmounted,
+then unmount and remount the file system.</p>
+<pre class="screen"># <strong class="userinput"><code>umount <em class="replaceable"><code>/filesystem</code></em>
+</code></strong>
+# <strong class="userinput"><code>mount <em class="replaceable"><code>/filesystem</code></em>
+</code></strong>
+</pre>
+</li><li>
+<p>If you are mirroring a file system that cannot be unmounted,
+then reboot your system.</p>
+<pre class="screen"># <strong class="userinput"><code>reboot</code></strong>
+</pre>
+</li></ul></div>
+</li><li><a name="tasks-mirrors-step-42"></a>
+<p>
+<a class="indexterm" name="addtasks-ix70"></a>Use the following form of the <span><strong class="command">metattach</strong></span> command
+to attach the second submirror. </p>
+<pre class="screen"># <strong class="userinput"><code>metattach <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>submirror-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the RAID-1 volume on which to add the
+submirror</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>submirror-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the component that will be the second
+submirror attached to the mirror</p>
+</dd></dl></div>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metattach</span>
+(
+1M
+)
+</span>
+</span> man
+page for more information.</p>
+</li></ol></div><div class="example"><a name="egjxl"></a><p class="title"><b>Example 11.3. Creating a Two-Way Mirror From a File System That Can Be Unmounted</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metainit -f d1 1 1 c1t0d0s0</code></strong>
+d1: Concat/Stripe is setup
+# <strong class="userinput"><code>metainit d2 1 1 c1t1d0s0</code></strong>
+d2: Concat/Stripe is setup
+# <strong class="userinput"><code>metainit d0 -m d1</code></strong>
+d0: Mirror is setup
+# <strong class="userinput"><code>umount /master</code></strong>
+<em class="lineannotation"><span class="lineannotation">(Edit the /etc/vfstab file so that the file system references the mirror)</span></em>
+# <strong class="userinput"><code>mount /master</code></strong>
+# <strong class="userinput"><code>metattach d0 d2</code></strong>
+d0: Submirror d2 is attached</pre>
+<p>
+<a class="indexterm" name="addtasks-ix71"></a>In this example, the <code class="option">
+f</code> option forces the creation
+of the first concatenation, <code class="filename">d1</code>, which contains the mounted
+file system <code class="filename">/master</code> on <code class="filename">/dev/dsk/c1t0d0s0</code>.
+The second concatenation, <code class="filename">d2</code>, is created from <code class="filename">/dev/dsk/c1t1d0s0</code>. This slice must be the same size as , or larger than the size
+of <code class="filename">d1</code>.) The <span><strong class="command">metainit</strong></span> command with
+the <code class="option">
+m</code> option creates the one-way mirror, <code class="filename">d0</code>,
+from <code class="filename">d1</code>. </p>
+<p>Next, the entry for the file system should be changed in the <code class="filename">/etc/vfstab</code> file to reference the mirror. The following line in the <code class="filename">/etc/vfstab</code> file initially appears as follows:</p>
+<pre class="screen">/dev/dsk/<span class="strong"><strong>c1t0d0s0</strong></span> /dev/rdsk/<span class="strong"><strong>c1t0d0s0</strong></span> /var ufs 2 yes -</pre>
+<p>The entry is changed to the following: </p>
+<pre class="screen">/dev/md/dsk/<span class="strong"><strong>d0</strong></span> /dev/md/rdsk/<span class="strong"><strong>d0</strong></span> /var ufs 2 yes -</pre>
+<p>Finally, the file system is remounted and submirror <code class="filename">d2</code> is
+attached to the mirror, causing a mirror resynchronization. The system confirms
+that the RAID-0 and RAID-1 volumes are set up, and that submirror <code class="filename">d2</code> is
+attached.</p>
+</div><div class="example"><a name="egjxp"></a><p class="title"><b>Example 11.4. Creating a Two-way Mirror From a File System That Cannot Be Unmounted</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metainit -f d12 1 1 c0t3d0s6</code></strong>
+d12: Concat/Stripe is setup
+# <strong class="userinput"><code>metainit d22 1 1 c1t0d0s6</code></strong>
+d22: Concat/Stripe is setup
+# <strong class="userinput"><code>metainit d2 -m d12</code></strong>
+d2: Mirror is setup
+<em class="lineannotation"><span class="lineannotation">(Edit the /etc/vfstab file so that /usr references the mirror)</span></em>
+# <strong class="userinput"><code>reboot</code></strong>
+...
+# <strong class="userinput"><code>metattach d2 d22</code></strong>
+d2: Submirror d22 is attached</pre>
+<p>This example creates a two-way mirror using a slice containing the <code class="filename">/usr</code> file system. The <code class="option">
+f</code> option forces the creation
+of the first concatenation, <code class="filename">d12</code>, which contains the mounted
+file system <code class="filename">/usr</code> on <code class="filename">/dev/dsk/c0t3d0s6</code>.
+The second concatenation, <code class="filename">d22</code>, is created from <code class="filename">/dev/dsk/c1t0d0s6</code>. This slice must be the same size as, or larger than the size
+of <code class="filename">d12</code>. The <span><strong class="command">metainit</strong></span> command with
+the <code class="option">
+m</code> option creates the one-way mirror <code class="filename">d2</code> using
+the concatenation that contains the <code class="filename">/usr</code> file system.
+Next, the <code class="filename">/etc/vfstab</code> file must be edited to change the
+entry for <code class="filename">/usr</code> to reference the mirror.</p>
+<p>The <code class="filename">/etc/vfstab file</code> contains the following entry
+for the <code class="filename">/usr</code> file system:</p>
+<pre class="screen">/dev/dsk/c0t3d0s6 /dev/rdsk/c0t3d0s6 /usr ufs 1 yes -</pre>
+<p>Change the entry to read as follows:</p>
+<pre class="screen">/dev/md/dsk/d2 /dev/md/rdsk/d2 /usr ufs 1 yes -</pre>
+<p>
+<a class="indexterm" name="addtasks-ix76"></a>After a reboot, the second submirror <code class="filename">d22</code> is
+attached to the mirror, causing a mirror resynchronization.</p>
+</div><div class="example"><a name="egjxq"></a><p class="title"><b>Example 11.5. Creating a Mirror From the <code class="filename">/swap</code> Space</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metainit -f d11 1 1 c0t0d0s1</code></strong>
+d11: Concat/Stripe is setup
+# <strong class="userinput"><code>metainit d21 1 1 c1t0d0s1</code></strong>
+d21: Concat/Stripe is setup
+# <strong class="userinput"><code>metainit d1 -m d11</code></strong>
+d1: Mirror is setup
+<em class="lineannotation"><span class="lineannotation">(Edit the /etc/vfstab file so that swap references the mirror)</span></em>
+# <strong class="userinput"><code>reboot</code></strong>
+...
+# <strong class="userinput"><code>metattach d1 d21</code></strong>
+d1: Submirror d21 is attached</pre>
+<p>In this example, the <code class="option">
+f</code> option forces the creation of
+the first concatenation, <code class="filename">d11</code>, which contains the mounted
+file system <code class="filename">swap</code> on <code class="filename">/dev/dsk/c0t0d0s1</code>.
+The second concatenation, <code class="filename">d21</code>, is created from <code class="filename">/dev/dsk/c1t0d0s1</code>. This slice must be the same size as, or larger than the size
+of <code class="filename">d11</code>. The <span><strong class="command">metainit</strong></span> command with
+the <code class="option">
+m</code> option creates the one-way mirror <code class="filename">d1</code> using
+the concatenation that contains <code class="filename">swap</code>. Next, if there
+is an entry for <code class="filename">swap</code> in the <code class="filename">/etc/vfstab</code> file,
+it must be edited to reference the mirror.</p>
+<p>The <code class="filename">/etc/vfstab file</code> contains the following entry
+for the <code class="filename">swap</code> space:</p>
+<pre class="screen">/dev/dsk/c0t0d0s1 - - swap - no -</pre>
+<p>Change the entry to read as follows:</p>
+<pre class="screen">/dev/md/dsk/d1 - - swap - no -</pre>
+<p>After a reboot, the second submirror <code class="filename">d21</code> is attached
+to the mirror, causing a mirror resynchronization.</p>
+<p>To save the crash dump when you have mirrored the <code class="filename">swap</code> space,
+use the <span><strong class="command">dumpadm</strong></span> command to configure the dump device as
+a volume. For instance, if the swap device is named <code class="filename">/dev/md/dsk/d2</code>,
+use the <span><strong class="command">dumpadm</strong></span> command to set this device as the dump
+device.</p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1742156"></a></h3></div></div></div>
+
+<div class="task"><a name="frkdb"></a><p class="title"><b>
+How to Create a RAID-1 Volume From the
+root (<code class="filename">/</code>) File System</b></p><a class="indexterm" name="indexterm-75"></a><div class="tasksummary">
+<p>The process for mirroring the root (<code class="filename">/</code>) file system
+on a SPARC platform is similar to mirroring any other file system that you
+cannot unmount. The procedure differs in that the <span><strong class="command">metaroot</strong></span> command
+is run instead of manually editing the <code class="filename">/etc/vfstab</code> file.
+Mirroring the root (<code class="filename">/</code>) file system also requires recording
+the path to the alternate boot device. This device reboots the system if the
+submirror fails.</p>
+<p>In the example used in this procedure, the existing slice is <code class="filename">c1t0d0s0</code>. The second slice, <code class="filename">c1t1d0s0</code>, is available
+for the second half of the mirror. The submirrors are <code class="filename">d1</code> and <code class="filename">d2</code>, respectively, and the mirror is <code class="filename">d0</code>. </p>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>Be sure to create a one-way mirror with the <span><strong class="command">metainit</strong></span> command
+then attach the additional submirrors with the <span><strong class="command">metattach</strong></span> command.
+When the <span><strong class="command">metattach</strong></span> command is not used, no resynchronization
+operations occur. As a result, data could become corrupted when Solaris Volume Manager assumes
+that both sides of the mirror are identical and can be used interchangeably. </p>
+</div>
+</div><div class="taskprerequisites">
+
+<p>Check <span class="olink">Prerequisites for Creating Solaris Volume Manager Components</span> and <span class="olink">Creating and Maintaining RAID-1 Volumes</span>.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Identify the slice that contains the existing root (<code class="filename">/</code>)
+file system to be mirrored. This example uses the slice <code class="filename">c1t0d0s0</code>.</p>
+</li><li>
+<p>Create a new RAID-0 volume on the slice from the previous step
+by using one of the following methods. Only the single slice can be included
+in the RAID-0 volume.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node, then choose Action&#8658;Create
+Volume. Follow the onscreen instructions . For more information, see the online
+help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>metainit -f  <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>number-of-stripes</code></em> <em class="replaceable"><code>components-per-stripe</code></em> <em class="replaceable"><code>component-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+f</code>
+</span></dt><dd>
+<p>Forces the command to continue. You must use this option when
+the slice contains a mounted file system.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the volume to create. For information
+on naming volumes, see <span class="olink">Volume Names</span>.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>number-of-stripes</code></em>
+</span></dt><dd>
+<p>Specifies the number of stripes to create.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>components-per-stripe</code></em>
+</span></dt><dd>
+<p>Specifies the number of components each stripe should have.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>component-names</code></em>
+</span></dt><dd>
+<p>Specifies the names of the components that are used. This
+example uses the root slice, <code class="filename">c0t0d0s0</code>.</p>
+</dd></dl></div>
+</li></ul></div>
+</li><li>
+<p>Create a second RAID-0 volume on an unused slice (<code class="filename">c1t1d0s0</code> in
+this example) to act as the second submirror. The secondary submirror must
+be the same size as the original submirror, or larger. Use one of the following
+methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node, then choose Action-&gt;Create
+Volume and follow the instructions on screen. For more information, see the
+online help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit </strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metainit <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>number-of-stripes</code></em> <em class="replaceable"><code>components-per-stripe</code></em> <em class="replaceable"><code>component-name</code></em>
+</code></strong>
+</pre>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>See Step 2 for and explanation of the options.</p>
+</div>
+</li></ul></div>
+</li><li>
+<p>Create a one-way mirror by using one of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node, then choose Action&#8658;Create
+Volume. Follow the onscreen instructions . For more information, see the online
+help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit </strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metainit <em class="replaceable"><code>volume-name</code></em> -m <em class="replaceable"><code>submirror-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the volume to create.</p>
+</dd><dt><span class="term">
+<code class="option">
+m</code>
+</span></dt><dd>
+<p>Specifies to create a mirror.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>submirror-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the component that will be the first
+submirror in the mirror. In this example, it is the RAID-0 volume that contains
+the root slice.</p>
+</dd></dl></div>
+</li></ul></div>
+</li><li>
+<p>Remount your newly mirrored file system. Run the <span><strong class="command">metaroot <em class="replaceable"><code>volume-name</code></em>
+</strong></span> command, replacing <em class="replaceable"><code>volume-name</code></em> with
+the name of the mirror you have created. Then, reboot your system.</p>
+<pre class="screen"># <strong class="userinput"><code>metaroot <em class="replaceable"><code>volume-name</code></em>
+</code></strong>
+# <strong class="userinput"><code>reboot</code></strong>
+</pre>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metaroot</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</li><li>
+<p>
+<a class="indexterm" name="frqvh"></a>Use the following form of the <span><strong class="command">metattach</strong></span> command
+to attach the second submirror. </p>
+<pre class="screen"># <strong class="userinput"><code>metattach <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>submirror-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the RAID-1 volume on which to add the
+submirror</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>submirror-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the component that will be the second
+submirror attached to the mirror</p>
+</dd></dl></div>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metattach</span>
+(
+1M
+)
+</span>
+</span> man
+page for more information.</p>
+</li><li>
+<p>Record the alternate boot path.</p>
+<ol type="a">
+<li>
+<p>Determine the path to the alternate root device. Use the <span><strong class="command">ls <code class="option">
+l</code>
+</strong></span> command on the slice that is being attached as the second
+submirror to the root (<code class="filename">/</code>) file system mirror.</p>
+<pre class="screen"># <strong class="userinput"><code>ls -l /dev/dsk/c1t1d0s0</code></strong>
+lrwxrwxrwx 1  root root  55 Mar 5 12:54  /dev/rdsk/c1t1d0s0 -&gt; \ 
+../../devices/sbus@1,f8000000/esp@1,200000/sd@3,0:a</pre>
+</li>
+<li>
+<p>Record the string that follows the <code class="filename">/devices</code> directory: <code class="filename">/sbus@1,f8000000/esp@1,200000/sd@3,0:a</code>.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Because the system might not be available, this information should
+also be written down somewhere other than on the system. See <span class="olink">Recovering From Boot Problems</span> for
+details on booting from the alternate boot device.</p>
+</div>
+</li>
+<li>
+<p>Edit the string to change the major name (<code class="literal">sd</code>,
+in this case) to <code class="literal">disk</code>, resulting in <code class="literal">/sbus@1,f8000000/esp@1,200000/disk@3,0:a</code>. If the system uses an IDE bus, the original full path might look
+like </p>
+<pre class="screen">$ <strong class="userinput"><code>ls -l /dev/dsk/c1t1d0s0</code></strong> 
+lrwxrwxrwx 1 root root 38 Mar 13 15:03 /dev/dsk/c0t0d0s0 -&gt; \
+../../devices/pci@1f,0/ide@d/dad@0,0:a</pre>
+<p>After changing the major name <code class="literal">dad</code> to <code class="literal">disk</code>,
+you would have <code class="literal">/pci@1f,0/ide@d/disk@0,0:a</code>
+</p>
+</li>
+<li>
+<p>Use the <span class="trademark">OpenBoot</span>&#8482; PROM <span><strong class="command">nvalias</strong></span> command
+to define a &#8220;backup root&#8221; device alias for the secondary root
+(<code class="filename">/</code>) file system mirror. For example:</p>
+<pre class="screen">ok  <strong class="userinput"><code>nvalias backup_root /sbus@1,f8000000/esp@1,200000/disk@3,0:a</code></strong>
+</pre>
+</li>
+<li>
+<p>Redefine the <code class="literal">boot-device</code> alias to reference
+both the primary and secondary submirrors, in the order in which you want
+them to be used, and store the configuration.</p>
+<pre class="screen">ok <strong class="userinput"><code>printenv boot-device</code></strong>
+boot-device =         disk net
+ok <strong class="userinput"><code>setenv boot-device disk backup_root net</code></strong>
+boot-device =         disk backup_root net
+ok <strong class="userinput"><code>nvstore</code></strong>
+</pre>
+</li>
+</ol>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>In the event that the primary submirror fails, the system would
+automatically boot to the second submirror. Or, if you boot manually, rather
+than using autoboot, you would enter:</p>
+<pre class="screen">ok <strong class="userinput"><code>boot backup_root</code></strong>
+</pre>
+</div>
+</li></ol></div><div class="example"><a name="egjxm"></a><p class="title"><b>Example 11.6. SPARC: Creating a Mirror From the root (<code class="filename">/</code>) File
+System</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metainit -f d1 1 1 c0t0d0s0</code></strong>
+d1: Concat/Stripe is setup
+# <strong class="userinput"><code>metainit d2 1 1 c0t1d0s0</code></strong>
+d2: Concat/Stripe is setup
+# <strong class="userinput"><code>metainit d0 -m d1</code></strong>
+d0: Mirror is setup
+# <strong class="userinput"><code>metaroot d0</code></strong>
+# <strong class="userinput"><code>lockfs -fa</code></strong>
+# <strong class="userinput"><code>reboot</code></strong>
+...
+# <strong class="userinput"><code>metattach d0 d2</code></strong>
+d0: Submirror d2 is attached
+# <strong class="userinput"><code>ls -l /dev/dsk/c0t1d0s0</code></strong>
+lrwxrwxrwx   1 root     root          88 Feb  8 15:51 /dev/rdsk/c1t3d0s0 -&gt;
+../../devices/pci@1f,0/pci@1,1/ide@3/dad@0,0:a
+# <strong class="userinput"><code>init 0</code></strong>
+.
+.
+.
+ok <strong class="userinput"><code>nvalias backup_root /pci@1f,0/pci@1,1/ide@3/disk@0,0:a</code></strong>
+ok <strong class="userinput"><code>setenv boot-device disk backup_root net</code></strong>
+ok <strong class="userinput"><code>nvstore</code></strong>
+</pre>
+<p>In this example, the <code class="option">
+f</code> option forces the creation of
+the first RAID-0 volume, <code class="filename">d1</code>, which contains the mounted
+root (<code class="filename">/</code>) file system on <code class="filename">/dev/dsk/c0t0d0s0</code>.
+The second concatenation, <code class="filename">d2</code>, is created from <code class="filename">/dev/dsk/c0t1d0s0</code>. This slice must be the same size as, or larger than the size
+of <code class="filename">d1</code>. The <span><strong class="command">metainit</strong></span> command with the <code class="option">
+m</code> option creates the one-way mirror <code class="filename">d0</code> using
+the concatenation that contains root (<code class="filename">/</code>). </p>
+<p>Next, the <span><strong class="command">metaroot</strong></span> command edits the <code class="filename">/etc/vfstab</code> and <code class="filename">/etc/system</code> files so that the system
+can be booted with the root (<code class="filename">/</code>) file system on a volume.
+It is a good idea to run the <span><strong class="command">lockfs <code class="option">
+fa</code>
+</strong></span> command
+before rebooting. For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">lockfs</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+<p>Do not attach the second submirror before the system is rebooted. You
+must reboot after running the <span><strong class="command">metaroot</strong></span> command and before
+attaching the second submirror.</p>
+<p>After a reboot, the submirror <code class="filename">d2</code> is attached to
+the mirror, causing a mirror resynchronization. The system confirms that the
+concatenations and the mirror are set up, and that submirror <code class="filename">d2</code> is
+attached.</p>
+<p>The <span><strong class="command">ls <code class="option">
+l</code>
+</strong></span> command is run on the root
+raw device to determine the path to the alternate root device in case the
+system might later need to be booted from it.</p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1743460"></a></h3></div></div></div>
+
+<div class="task"><a name="gcsdr"></a><p class="title"><b>
+How to Create a RAID-1 Volume From the root (<code class="filename">/</code>) File System</b></p><a class="indexterm" name="indexterm-76"></a><div class="tasksummary">
+<p>The process for mirroring the root (<code class="filename">/</code>) file system
+on an x86 based system is similar to mirroring root on a SPARC system.
+However, on x86 based systems, the BIOS and <code class="filename">fdisk</code> partitioning
+add an additional layer of complexity.</p>
+<p>In the example used in the procedures, the existing slice is <code class="filename">c1t0d0s0</code>. The second slice, <code class="filename">c1t1d0s0</code>, is available
+for the second half of the mirror. The submirrors are <code class="filename">d1</code> and <code class="filename">d2</code>, respectively, and the mirror is <code class="filename">d0</code>.</p>
+</div><div class="taskprerequisites">
+
+<p>Before implementing any of the procedures, check <span class="olink">Prerequisites for Creating Solaris Volume Manager Components</span> and <span class="olink">Creating and Maintaining RAID-1 Volumes</span>.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Verify that the ordering for the BIOS boot device can be configured
+to allow the system to boot off of the second disk in the mirror.</p>
+<p>Before
+the kernel is started, the system is controlled by the read-only-memory (ROM)
+Basic Input/Output System (BIOS), which is the firmware interface on an x86 based
+system. The BIOS is analogous to the boot PROM on a SPARC based system.
+Some of the BIOS's tasks are as follows:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Perform startup functions.</p>
+</li><li>
+<p>Detect the correct device from which to boot the system.</p>
+</li><li>
+<p>Load the master boot record from that device to allow the
+system to self-boot.</p>
+</li></ul></div>
+<p>You can usually configure the BIOS to select the order of devices to
+probe for the boot record. Additionally, most modern BIOS implementations
+allow you to configure your devices so that the failover to the secondary
+submirror is automatic. If your system's BIOS does not have this feature and
+the primary submirror fails, you need to access the BIOS during system boot
+to reconfigure the system to boot from the secondary root slice. Consult the
+user's guide for your BIOS for instructions on how to configure settings in
+your BIOS</p>
+<p>Before setting up a root mirror, check the BIOS on your
+system to verify that you can boot off of more than one disk. Some device
+drivers are configured to only see one disk on the system.</p>
+</li><li>
+<p>Verify that the <code class="literal">fdisk</code> partitions are configured
+to support root mirroring.</p>
+<p>The existence of a separate x86 boot
+partition presents a problem when mirroring the root (<code class="filename">/</code>)
+file system. Because it exists outside of the Solaris <code class="filename">fdisk</code> partition,
+the x86 boot partition cannot be mirrored by Solaris Volume Manager. Additionally,
+because only one copy of the x86 boot partition exists, it represents a
+single point of failure.</p>
+<p>The GRUB-based installation program of
+the Solaris 10 1/06 software and subsequent releases no longer automatically
+creates an x86 boot partition. However, if the x86 already exists in the
+system, the installation program preserves that partition by default.</p>
+<p>To determine if your system has a separate x86 boot partition, check
+the <code class="filename">/etc/vfstab</code> file. The x86 boot partition exists
+if the file contains an entry similar to the following:</p>
+<pre class="screen">/dev/dsk/c2t1d0p0:boot  -       /boot   pcfs    -       no      -</pre>
+<p>To use the Solaris Volume Manager to mirror the root (<code class="filename">/</code>)
+file system, the file system must use the single Solaris <code class="literal">fdisk</code> partition.
+Therefore, if the x86 boot partition already exists in the system, delete
+this partition with the <span><strong class="command">fdisk</strong></span> command and then reinstall
+the Solaris software. When you reinstall, the boot partition is no longer
+recreated.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Solaris Volume Manager can only mirror slices within the Solaris <code class="literal">fdisk</code> partition If you have multiple <code class="filename">fdisk</code> partitions,
+you need to use another approach to protect the data outside of the Solaris <code class="literal">fdisk</code> partition.</p>
+</div>
+</li><li>
+<p>Make the secondary submirror bootable with a master boot program.</p>
+<ol type="a">
+<li>
+<p>Specify the master boot program.</p>
+<pre class="screen"># <strong class="userinput"><code>fdisk -b /usr/lib/fs/ufs/mboot /dev/rdsk/c1t1d0p0</code></strong>
+</pre>
+<p>The following screen appears:</p>
+<pre class="screen">             Total disk size is 31035 cylinders
+             Cylinder size is 1146 (512 byte) blocks
+
+                                               Cylinders
+      Partition   Status    Type          Start   End   Length    %
+      =========   ======    ============  =====   ===   ======   ===
+          1        Active   Solaris           1  31034    31034    100
+
+
+SELECT ONE OF THE FOLLOWING:
+   1. Create a partition
+   2. Specify the active partition
+   3. Delete a partition
+   4. Change between Solaris and Solaris2 Partition IDs
+   5. Exit (update disk configuration and exit)
+   6. Cancel (exit without updating disk configuration)
+Enter Selection: </pre>
+</li>
+<li>
+<p>Choose number 5 from the menu, and press return.</p>
+</li>
+</ol>
+</li><li>
+<p>Make the secondary disk bootable.</p>
+<pre class="screen"># <strong class="userinput"><code>/sbin/installgrub /boot/grub/stage1 /boot/grub/stage2 /dev/rdsk/c1t1d0s0</code></strong>
+</pre>
+<p>For more information about <span><strong class="command">installgrub,</strong></span> refer to
+the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">installgrub</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</li><li>
+<p>Identify the slice that contains the existing root (<code class="filename">/</code>)
+file system to be mirrored.</p>
+<p>This example uses the slice <code class="filename">c1t0d0s0</code>.</p>
+</li><li>
+<p>Create a new RAID-0 volume on the slice from the previous step.</p>
+<p>Only the single slice can be included in the RAID-0 volume. Use one
+of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node, then choose Action&#8658;Create
+Volume. Follow the onscreen instructions. For more information, see the online
+help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>metainit -f <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>number-of-stripes</code></em> <em class="replaceable"><code>components-per-stripe</code></em> <em class="replaceable"><code>component-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+f</code>
+</span></dt><dd>
+<p>Forces the command to continue. You must use this option when
+the slice contains a mounted file system.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the volume to create. For information
+on naming volumes, see <span class="olink">Volume Names</span>.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>number-of-stripes</code></em>
+</span></dt><dd>
+<p>Specifies the number of stripes to create.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>components-per-stripe</code></em>
+</span></dt><dd>
+<p>Specifies the number of components each stripe should have.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>component-names</code></em>
+</span></dt><dd>
+<p>Specifies the names of the components that are used. This
+example uses the root slice, <code class="filename">c0t0d0s0</code>.</p>
+</dd></dl></div>
+</li></ul></div>
+</li><li>
+<p>Create a second RAID-0 volume (<code class="literal">c1t1d0s0</code> in
+this example) on an unused slice to act as the second submirror.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The secondary submirror must be the same size as the original
+submirror, or larger. Also, the slice you use as the second submirror must
+have a slice tag of &#8220;root&#8221; and the root slice must be slice 0.</p>
+<p>For information on configuring the slice tag field, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">format</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</div>
+<p>Use either of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node, then choose Action-&gt;Create
+Volume and follow the instructions on screen. For more information, see the
+online help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit </strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metainit <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>number-of-stripes</code></em> <em class="replaceable"><code>components-per-stripes</code></em> <em class="replaceable"><code>component-names</code></em>
+</code></strong>
+</pre>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>See Step 6 for an explanation of the options.</p>
+</div>
+</li></ul></div>
+</li><li>
+<p>Create a one-way mirror by using one of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node, then choose Action&#8658;Create
+Volume. Follow the onscreen instructions. For more information, see the online
+help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit</strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metainit <em class="replaceable"><code>volume-name</code></em> -m <em class="replaceable"><code>submirror-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the volume to create.</p>
+</dd><dt><span class="term">
+<code class="option">
+m</code>
+</span></dt><dd>
+<p>Specifies to create a mirror.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>submirror-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the component that will be the first
+submirror in the mirror. In this example, it is the RAID-0 volume that contains
+the root slice.</p>
+</dd></dl></div>
+</li></ul></div>
+</li><li>
+<p>Remount your newly mirrored file system, then reboot the system.</p>
+<pre class="screen"># <strong class="userinput"><code>metaroot <em class="replaceable"><code>volume-name</code></em>
+</code></strong>
+# <strong class="userinput"><code>reboot</code></strong>
+</pre>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metaroot</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</li><li>
+<p>
+<a class="indexterm" name="gcsan"></a>Attach the second submirror. </p>
+<pre class="screen"># <strong class="userinput"><code>metattach <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>submirror-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the RAID-1 volume on which to add the
+submirror.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>submirror-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the component that will be the second
+submirror attached to the mirror.</p>
+</dd></dl></div>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metattach</span>
+(
+1M
+)
+</span>
+</span> man
+page for more information.</p>
+</li><li>
+<p>Define the alternative boot path in the <code class="filename">menu.lst</code> file.</p>
+<p>To enable the system to boot off of the disk that holds the secondary
+submirror, configure the system to see the disk as the alternate boot device.
+In the current example, <code class="literal">c1t1d0s0</code>, the alternative path
+is on the first slice of the first fdisk partition on the second disk. Thus,
+you would edit the <code class="filename">menu.lst</code> with the following entry:</p>
+<pre class="screen">title alternate boot
+ root (hd1,0,a)
+ kernel /boot/multiboot
+ module /boot/x86.miniroot-safe</pre>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>To properly edit entries in <code class="filename">menu.lst,</code> you
+must be familiar with disk-naming conventions in GRUB. For details, see <span class="olink">Chapter 11, <em class="citetitle">GRUB Based Booting (Tasks),</em> in <em class="citetitle">System Administration Guide: Basic Administration</em>
+</span>
+</p>
+</div>
+<p>After you have completed editing the <code class="filename">menu.lst</code> file,
+the system is set to failover to the second disk. If the primary disk fails,
+disk numbering changes so that the system boots from the secondary disk.</p>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>On certain cases, the automatic disk-renumbering feature of
+the BIOS might affect recovery from an unavailable primary disk. When disk
+renumbering forces the system to boot from the secondary disk, the primary
+disk's boot archive becomes stale. If the same primary disk becomes available
+later and you boot the system, the disk numbering switches again to use the
+default primary disk for the system boot. However, at this stage, the primary
+disk's boot archive remains stale. Consequently, the system might not boot
+at all. Therefore make sure that in such cases, you select the correct entry
+from the GRUB menu to boot the system from the valid boot archive. After the
+system completes the boot up process, perform the normal <span><strong class="command">metadevice</strong></span> maintenance
+which synchronizes both primary and secondary disks and restores the valid
+boot archive to the primary disk.</p>
+</div>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fryix"></a>Understanding Boot Time Warnings When Mirroring the
+root (<code class="filename">/</code>) File System</h3></div></div></div>
+
+<p>After you mirror your root (<code class="filename">/</code>) file system, error
+messages will be displayed in the console and logged in the system log that
+is defined in the <code class="filename">/etc/syslog.conf</code> file. These error
+messages do not indicate a problem. These messages are displayed for each
+device type that you are not currently using, because an unused module cannot
+be force loaded. The error messages are similar to the following:</p>
+<pre class="screen">Jul 13 10:17:42 ifr genunix: [ID 370176 kern.warning] WARNING: forceload of 
+    misc/md_trans failed
+Jul 13 10:17:42 ifr genunix: [ID 370176 kern.warning] WARNING: forceload of 
+    misc/md_raid failed
+Jul 13 10:17:42 ifr genunix: [ID 370176 kern.warning] WARNING: forceload of 
+    misc/md_hotspares failed</pre>
+<p>You can safely disregard these error messages. </p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch11.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch11.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch11s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 11. RAID-1
+(Mirror) Volumes (Tasks) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Working With Submirrors</td></tr></table></div></body></html>

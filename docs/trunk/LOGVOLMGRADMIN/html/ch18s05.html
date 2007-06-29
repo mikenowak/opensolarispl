@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Guidelines for Working With Disk Sets</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch18.html" title="Chapter 18. Disk
+Sets (Overview)"><link rel="prev" href="ch18s04.html" title="Solaris Volume Manager Disk Set Administration"><link rel="next" href="ch18s06.html" title="Asynchronous Shared Storage in Disk Sets"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Guidelines for Working With Disk Sets</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch18s04.html">Prev</a> </td><th width="60%" align="center">Chapter 18. Disk
+Sets (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch18s06.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="egjyp"></a>Guidelines for Working With Disk Sets</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-160"></a>
+<p>When working with disk sets, consider the following guidelines:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Solaris Volume Manager must be configured on each host that will
+be connected to the disk set.</p>
+</li><li>
+<p>Each host must have its local state database set up before
+you can create disk sets.</p>
+</li><li>
+<p>The sequence of steps for creating a disk set and creating
+the volumes for that disk set is to, first, create the disk set. Then, add
+the disks to the disk set. Finally, create the volumes in the disk set.</p>
+</li><li>
+<p>To create and work with a disk set in a clustering environment, <code class="literal">root</code> must be a member of Group 14. Alternatively, the <code class="filename">/.rhosts</code> file on each host must contain an entry for the other host names
+associated with the disk set.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>This step is not necessary in a SunCluster 3.x environment.</p>
+</div>
+</li><li>
+<p>To perform maintenance on a disk set, a host must be the owner
+of the disk set or have reserved the disk set. A host takes implicit ownership
+of the disk set by putting the first drives into the disk set.</p>
+</li><li>
+<p>You cannot add a drive to a disk set that is in use for a
+file system, database or any other application. Before you add a drive, make
+sure that it is not currently being used.</p>
+</li><li>
+<p>Do not add to a disk set a drive containing existing data
+that you want to preserve. The process of adding the disk to the disk set
+repartitions the disk and destroys existing data.</p>
+</li><li>
+<p>Unlike local volume administration, it is not necessary to
+manually create or delete state database replicas on the disk set. Solaris Volume Manager tries
+to balance a reasonable number of state database replicas across all drives
+in a disk set.</p>
+</li><li>
+<p>When drives are added to a disk set, Solaris Volume Manager rebalances
+the state database replicas across the remaining drives. Later, if necessary,
+you can change the replica layout with the <span><strong class="command">metadb</strong></span> command.</p>
+</li></ul></div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch18s04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch18.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch18s06.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Solaris Volume Manager Disk Set Administration </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Asynchronous Shared Storage in Disk Sets</td></tr></table></div></body></html>

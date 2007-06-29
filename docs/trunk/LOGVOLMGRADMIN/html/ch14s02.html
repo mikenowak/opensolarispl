@@ -1,0 +1,94 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Background Information for Creating RAID-5
+Volumes</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch14.html" title="Chapter 14. RAID-5
+Volumes (Overview)"><link rel="prev" href="ch14.html" title="Chapter 14. RAID-5
+Volumes (Overview)"><link rel="next" href="ch14s03.html" title="Overview of Checking Status of RAID-5 Volumes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Background Information for Creating RAID-5
+Volumes</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch14.html">Prev</a> </td><th width="60%" align="center">Chapter 14. RAID-5
+Volumes (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch14s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="addtasks-25668"></a>Background Information for Creating RAID-5
+Volumes</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-106"></a>
+<p>When you work with RAID-5 volumes, consider the <span class="olink">Requirements for RAID-5 Volumes</span> and <span class="olink">Guidelines for RAID-5 Volumes</span>. Many striping
+guidelines also apply to RAID-5 volume configurations. See <span class="olink">RAID-0 Volume Requirements</span>. </p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="about-raid5-8"></a>Requirements for RAID-5 Volumes</h3></div></div></div>
+
+<div class="itemizedlist"><ul type="disc"><li>
+<p>A RAID-5 volume must consist of at least three components.
+The more components a RAID-5 volume contains, however, the longer read and
+write operations take when a component fails.</p>
+</li><li>
+<p>RAID-5 volumes cannot be striped, concatenated, or mirrored.</p>
+</li><li>
+<p>Do not create a RAID-5 volume from a component that contains
+an existing file system. Doing so will erase the data during the RAID-5 initialization
+process.</p>
+</li><li>
+<p>
+<a class="indexterm" name="addtasks-ix98"></a>When you create a RAID-5 volume, you can define the interlace
+value. If not specified, the interlace value defaults to 512 Kbytes.
+This value is reasonable for most applications.</p>
+</li><li>
+<p>A RAID-5 volume (with no hot spares) can only handle a single
+component failure.</p>
+</li><li>
+<p>When you create RAID-5 volumes, use components across separate
+controllers. Controllers and associated cables tend to fail more often than
+disks.</p>
+</li><li>
+<p>Use components of the same size. Creating a RAID-5 volume
+with components of different sizes results in unused disk space.</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="about-raid5-9"></a>Guidelines for RAID-5 Volumes</h3></div></div></div>
+
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<a class="indexterm" name="indexterm-107"></a>
+<a class="indexterm" name="addtasks-ix97"></a>Because of the complexity of parity calculations, volumes with
+greater than about 20 percent writes should probably not be RAID-5 volumes.
+If data redundancy on a write-heavy volume is needed, consider mirroring.</p>
+</li><li>
+<p>If the different components in a RAID-5 volume reside on different
+controllers and the accesses to the volume are primarily large sequential
+accesses, then setting the interlace value to 32 Kbytes might improve performance.</p>
+</li><li>
+<p>You can expand a RAID-5 volume by concatenating additional
+components to the volume. Concatenating a new component to an existing RAID-5
+volume decreases the overall performance of the volume because the data on
+concatenations is sequential. Data is not striped across all components. The
+original components of the volume have data and parity striped across all
+components. This striping is lost for the concatenated component. However,
+the data is still recoverable from errors because the parity is used during
+the component I/O. The resulting RAID-5 volume continues to handle a single
+component failure.</p>
+<p>Concatenated components also differ in the
+sense that they do not have parity striped on any of the regions. Thus, the
+entire contents of the component are available for data.</p>
+<p>Any performance
+enhancements for large or sequential writes are lost when components are concatenated.</p>
+</li><li>
+<p>You can create a RAID-5 volume without having to &#8220;zero
+out&#8221; the data blocks. To do so, do one of the following:</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>Use the <span><strong class="command">metainit</strong></span> command with the <code class="option">
+k</code> option.
+The <code class="option">
+k</code> option recreates the RAID-5 volume without initializing
+it, and sets the disk blocks to the &#8220;Okay&#8221; state. This option
+is potentially dangerous, as any errors that exist on disk blocks within the
+volume will cause unpredictable behavior from Solaris Volume Manager, including the
+possibility of fabricated data. </p>
+</li><li>
+<p>Initialize the device and restore data from tape. See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metainit</span>
+(
+1M
+)
+</span>
+</span> man page
+for more information.</p>
+</li></ul></div>
+</li></ul></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch14.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch14.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch14s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 14. RAID-5
+Volumes (Overview) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Overview of Checking Status of RAID-5 Volumes</td></tr></table></div></body></html>

@@ -1,0 +1,80 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Print Server Requirements and Recommendations</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch02.html" title="Chapter 2. Planning Printers on Your
+Network (Tasks)"><link rel="prev" href="ch02s02.html" title="Assigning Print Servers and Print Clients"><link rel="next" href="ch02s04.html" title="Planning for Printer Setup"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Print Server Requirements and Recommendations</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s02.html">Prev</a> </td><th width="60%" align="center">Chapter 2. Planning Printers on Your
+Network (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch02s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printplan-9"></a>Print Server Requirements and Recommendations</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="printconcept-ix20"></a>
+<a class="indexterm" name="printconcept-ix21"></a>You can attach a printer to a standalone system or to any system
+on the network. Any networked system with a printer can be a print server,
+as long as the system has adequate resources to manage the printing load.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printplan-5"></a>Spooling Space</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="printconcept-ix22"></a>
+<a class="indexterm" name="printconcept-ix24"></a>
+<a class="indexterm" name="printconcept-ix25"></a>
+<span class="emphasis"><em>Spooling space</em></span> is the amount of disk space
+that is used to store and process requests in the print queue. Spooling space
+is the single most important factor to consider when deciding which systems
+to designate as print servers. When users submit files for printing, the files
+are stored in the <code class="filename">/var/spool/lp</code> directory until the files
+are printed. The size of the <code class="filename">/var</code> directory depends on
+the size of the disk and how the disk is partitioned. Spooling space can be
+allocated in the <code class="filename">/var</code> directory on the print server,
+or mounted from a file server and accessed over the network.    </p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>
+<a class="indexterm" name="printconcept-ix26"></a>If <code class="filename">/var</code> is not created as a separate file
+system, the <code class="filename">/var</code> directory uses space in the root (<code class="filename">/</code>) file system. The root (<code class="filename">/</code>) file system is
+likely to be insufficient on a print server. </p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printplan-1"></a>Disk Space</h3></div></div></div>
+
+<p>When evaluating systems as possible print servers, consider their available
+disk space. A large spool directory can consume 600 Mbytes of disk space.
+Evaluate the size and division of disk space on systems that can be designated
+as print servers.</p>
+<p>Also, carefully evaluate the printing needs and use patterns of print
+client systems. For example, assume that users in a small group typically
+print only short email messages, which are simple ASCII files without sophisticated
+formatting requirements. In this example, a print server with 20 to 25 Mbytes
+of disk space allocated to the <code class="filename">/var</code> directory is probably
+sufficient. If, however, many print client users are printing large documents,
+bit mapped images, or raster images, the users will likely fill the spooling
+space quite frequently. When users cannot queue their jobs for printing, work
+flow is interrupted. Requests for more spooling space can force you to either
+add disk space for spooling or designate a different system as the print server.</p>
+<p>If the print server has a <code class="filename">/var</code> directory that is
+too small, and a larger file system is available, you can mount the larger
+file system on the <code class="filename">/var</code> directory for additional spooling
+space. For information about mounting file systems and editing the <code class="filename">vfstab</code> file, see <span class="olink">
+<em class="citetitle">Mounting File Systems</em> in <em class="citetitle">System Administration Guide: Devices and File Systems</em>
+</span>. </p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printplan-6"></a>Memory Requirements</h3></div></div></div>
+
+<p>The Solaris Operating System requires a minimum of 64 Mbytes of memory to run. A
+print server does not require additional memory. However, you might find that
+more memory improves performance in managing print requests.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printplan-7"></a>Swap Space</h3></div></div></div>
+
+<p>The swap space allocation on the print server should be sufficient to
+handle LP print service requirements. For information about how to increase
+swap space, see <span class="olink">Chapter 21, <em class="citetitle">Configuring Additional Swap Space (Tasks),</em> in <em class="citetitle">System Administration Guide: Devices and File Systems</em>
+</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printplan-8"></a>Hard Disk</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="printconcept-ix31"></a>
+<a class="indexterm" name="printconcept-ix32"></a>For optimal performance, the print server should have a hard disk
+and a local <code class="filename">/var</code> directory. You should mount spooling
+space for a print server on a local hard disk. If a print server has its own
+hard disk and a local <code class="filename">/var</code> directory, printing is much
+faster. And, you can more accurately predict the time needed to process print
+requests.</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Assigning Print Servers and Print Clients </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Planning for Printer Setup</td></tr></table></div></body></html>

@@ -1,0 +1,162 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Using Run Control Scripts</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch15.html" title="Chapter 15. Managing Services (Tasks)"><link rel="prev" href="ch15s05.html" title="Using Run Control Scripts (Task Map)"><link rel="next" href="ch15s07.html" title="Troubleshooting the Service Management Facility"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Using Run Control Scripts</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch15s05.html">Prev</a> </td><th width="60%" align="center">Chapter 15. Managing Services (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch15s07.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="fahqr"></a>Using Run Control Scripts</h2></div></div></div>
+
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2103135"></a></h3></div></div></div>
+
+<div class="task"><a name="hbrunlevels-36110"></a><p class="title"><b>How to Use a Run Control Script to Stop
+or Start a Legacy Service</b></p><div class="tasksummary">
+<p>One advantage of having individual scripts for each run level is that
+you can run scripts in the <code class="filename">/etc/init.d</code> directory individually
+to stop system services without changing a system's run level.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume a role that includes the <code class="literal">Service Management</code> rights profile.</p>
+<p>Roles contain authorizations and privileged
+commands. For more information about roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li><a name="hbrunlevels-step-7"></a>
+<p>Stop the system service. </p>
+<pre class="screen"># <strong class="userinput"><code>/etc/init.d/</code></strong>
+<em class="replaceable"><code>filename</code></em> <strong class="userinput"><code>stop</code></strong>
+</pre>
+</li><li><a name="hbrunlevels-step-8"></a>
+<p>Restart the system service.</p>
+<pre class="screen"># <strong class="userinput"><code>/etc/init.d/</code></strong>
+<em class="replaceable"><code>filename</code></em> <strong class="userinput"><code>start</code></strong>
+</pre>
+</li><li><a name="hbrunlevels-step-24"></a>
+<p>
+<a class="indexterm" name="hbrunlevels-ix954"></a>
+<a class="indexterm" name="hbrunlevels-ix955"></a>Verify that the service has been stopped or started.</p>
+<pre class="screen"># <strong class="userinput"><code>pgrep -f</code></strong> <em class="replaceable"><code>service</code></em>
+</pre>
+</li></ol></div><div class="example"><a name="id2103375"></a><p class="title"><b>Example 15.15. Using a Run Control Script to Stop or Start a Service</b></p>
+
+
+<p>For example, you can stop the NFS server daemons by typing the following:</p>
+<pre class="screen"># <strong class="userinput"><code>/etc/init.d/nfs.server stop</code></strong>
+# <strong class="userinput"><code>pgrep -f nfs</code></strong>
+</pre>
+<p>Then, you can restart the NFS server daemons by typing the following:</p>
+<pre class="screen"># <strong class="userinput"><code>/etc/init.d/nfs.server start</code></strong>
+# <strong class="userinput"><code>pgrep -f nfs</code></strong>
+101773
+101750
+102053
+101748
+101793
+102114
+# <strong class="userinput"><code>pgrep -f nfs -d, | xargs ps -fp</code></strong>
+     UID    PID   PPID   C    STIME TTY         TIME CMD
+  daemon 101748      1   0   Sep 01 ?           0:06 /usr/lib/nfs/nfsmapid
+  daemon 101750      1   0   Sep 01 ?          26:27 /usr/lib/nfs/lockd
+  daemon 101773      1   0   Sep 01 ?           5:27 /usr/lib/nfs/statd
+    root 101793      1   0   Sep 01 ?          19:42 /usr/lib/nfs/mountd
+  daemon 102053      1   0   Sep 01 ?        2270:37 /usr/lib/nfs/nfsd
+  daemon 102114      1   0   Sep 01 ?           0:35 /usr/lib/nfs/nfs4cbd</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2103430"></a></h3></div></div></div>
+
+<div class="task"><a name="hbrunlevels-14344"></a><p class="title"><b>How to Add a Run Control Script</b></p><div class="tasksummary">
+<p>If you want to add a run control script to start and stop a service,
+copy the script into the <code class="filename">/etc/init.d</code> directory. Then,
+create links in the <code class="filename">rc</code>
+<em class="replaceable"><code>n</code></em>
+<code class="filename">.d</code> directory where you want the service to start and stop.</p>
+<p>See the <code class="filename">README</code> file in each <code class="filename">/etc/rc</code>
+<em class="replaceable"><code>n</code></em>
+<code class="filename">.d</code> directory for more information on naming
+run control scripts. The following procedure describes how to add a run control
+script.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume a role that includes the <code class="literal">Service Management</code> rights profile.</p>
+<p>Roles contain authorizations and privileged
+commands. For more information about roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li><a name="hbrunlevels-step-14"></a>
+<p>
+<a class="indexterm" name="hbrunlevels-ix958"></a>
+<a class="indexterm" name="indexterm-261"></a>
+<a class="indexterm" name="indexterm-262"></a>Add the script to the <code class="filename">/etc/init.d</code> directory. </p>
+<pre class="screen"># <strong class="userinput"><code>cp</code></strong> <em class="replaceable"><code>filename</code></em> <strong class="userinput"><code>/etc/init.d</code></strong>
+# <strong class="userinput"><code>chmod 0744 /etc/init.d/</code></strong>
+<em class="replaceable"><code>filename</code></em>
+# <strong class="userinput"><code>chown root:sys /etc/init.d/</code></strong>
+<em class="replaceable"><code>filename</code></em>
+</pre>
+</li><li><a name="hbrunlevels-step-15"></a>
+<p>Create links to the appropriate <code class="filename">rc</code>
+<em class="replaceable"><code>n</code></em>
+<code class="filename">.d</code> directory.</p>
+<pre class="screen"># <strong class="userinput"><code>cd /etc/init.d</code></strong>
+# <strong class="userinput"><code>ln</code></strong> <em class="replaceable"><code>filename</code></em> <strong class="userinput"><code>/etc/rc2.d/</code></strong>
+<em class="replaceable"><code>Snnfilename</code></em>
+# <strong class="userinput"><code>ln</code></strong> <em class="replaceable"><code>filename</code></em> <strong class="userinput"><code>/etc/rc</code></strong>
+<em class="replaceable"><code>n</code></em>
+<strong class="userinput"><code>.d/</code></strong>
+<em class="replaceable"><code>Knnfilename</code></em>
+</pre>
+</li><li><a name="hbrunlevels-step-25"></a>
+<p>Verify that the script has links in the
+specified directories.</p>
+<pre class="screen"># <strong class="userinput"><code>ls /etc/init.d/*<em class="replaceable"><code>filename</code></em>
+</code></strong> <strong class="userinput"><code>/etc/rc2.d/*<em class="replaceable"><code>filename</code></em>
+</code></strong> <strong class="userinput"><code>/etc/rc</code></strong>
+<em class="replaceable"><code>n</code></em>
+<strong class="userinput"><code>.d/*<em class="replaceable"><code>filename</code></em>
+</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="id2103781"></a><p class="title"><b>Example 15.16. Adding a Run Control Script</b></p>
+
+
+<p>The following example shows how to add a run control script for the <code class="literal">xyz</code> service.</p>
+<pre class="screen"># <strong class="userinput"><code>cp xyz /etc/init.d</code></strong>
+# <strong class="userinput"><code>chmod 0744 /etc/init.d/xyz</code></strong>
+# <strong class="userinput"><code>chown root:sys /etc/init.d/xyz</code></strong>
+# <strong class="userinput"><code>cd /etc/init.d</code></strong>
+# <strong class="userinput"><code>ln xyz /etc/rc2.d/S99xyz</code></strong>
+# <strong class="userinput"><code>ln xyz /etc/rc0.d/K99xyz</code></strong>
+# <strong class="userinput"><code>ls /etc/init.d/*xyz /etc/rc2.d/*xyz /etc/rc0.d/*xyz</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2103846"></a></h3></div></div></div>
+
+<div class="task"><a name="hbrunlevels-35982"></a><p class="title"><b>How to Disable a Run Control Script</b></p><div class="tasksummary">
+<p>You can disable a run control script by renaming it with an underscore
+(<code class="filename">_</code>) at the beginning of the file name. Files that begin
+with an underscore or dot are not executed. If you copy a file by adding a
+suffix to it, both files will be run.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume a role that includes the <code class="literal">Service Management</code> rights profile.</p>
+<p>Roles contain authorizations and privileged
+commands. For more information about roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li><a name="hbrunlevels-step-21"></a>
+<p>Rename the script by adding an underscore
+(<code class="filename">_</code>) to the beginning of the new file.</p>
+<pre class="screen"># <strong class="userinput"><code>cd /etc/rc</code></strong>
+<em class="replaceable"><code>n</code></em>
+<strong class="userinput"><code>.d</code></strong>
+# <strong class="userinput"><code>mv</code></strong> <em class="replaceable"><code>filename _filename</code></em>
+</pre>
+</li><li><a name="hbrunlevels-step-26"></a>
+<p>
+<a class="indexterm" name="hbrunlevels-ix960"></a>
+<a class="indexterm" name="hbrunlevels-ix959"></a>Verify that the script has been renamed.</p>
+<pre class="screen"># <strong class="userinput"><code>ls _*</code></strong>
+<em class="replaceable"><code>_filename</code></em>
+</pre>
+</li></ol></div><div class="example"><a name="id2104019"></a><p class="title"><b>Example 15.17. Disabling a Run Control Script</b></p>
+
+
+<p>The following example shows how to rename the <code class="filename">S99datainit</code> script.</p>
+<pre class="screen"># <strong class="userinput"><code>cd /etc/rc2.d</code></strong>
+# <strong class="userinput"><code>mv S99datainit _S99datainit</code></strong>
+# <strong class="userinput"><code>ls _*</code></strong>
+_S99datainit</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch15s05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch15.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch15s07.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Using Run Control Scripts (Task Map) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Troubleshooting the Service Management Facility</td></tr></table></div></body></html>

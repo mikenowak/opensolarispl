@@ -1,0 +1,296 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Java Web Console Reference Information</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch03.html" title="Chapter 3. Working With the Sun Java Web Console (Tasks)"><link rel="prev" href="ch03s09.html" title="Troubleshooting the Java Web Console Software"><link rel="next" href="ch04.html" title="Chapter 4. Managing User Accounts and Groups (Overview)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Java Web Console Reference Information</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s09.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Working With the Sun Java Web Console (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="ewpoy"></a>Java Web Console Reference Information</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-70"></a>
+<p>This reference section includes the following topics:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="olink">Java Web Console Security Considerations</span>
+</p>
+</li><li>
+<p>
+<span class="olink">Specifying Authorizations With the <code class="literal">authTypes</code> Tag</span>
+</p>
+</li></ul></div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ewpla"></a>Java Web Console Security Considerations</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-71"></a>
+<a class="indexterm" name="indexterm-72"></a>There are several security considerations to keep in mind when
+you use applications that are in the Java Web Console. These security considerations
+include the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="strong"><strong>Access to the Java Web Console</strong></span> &#8211;
+Whether you can connect to the console through a browser.</p>
+</li><li>
+<p>
+<span class="strong"><strong>Access to applications</strong></span> &#8211;
+Whether you can see a particular application in the Java Web Console's launch
+page</p>
+</li><li>
+<p>
+<span class="strong"><strong>Application permissions</strong></span> &#8211;
+The levels of permissions that you must have to run parts or all of an application</p>
+</li><li>
+<p>
+<span class="strong"><strong>Application access to remote systems</strong></span> &#8211;
+How security credentials relate to remote systems</p>
+</li><li>
+<p>
+<span class="strong"><strong>Internal passwords used in the console</strong></span> &#8212; Changing
+the default passwords that are used internally in the console, starting with
+the Solaris Express 5/06 release.</p>
+</li></ul></div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcnvf"></a>Access
+to the Java Web Console</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-73"></a>
+<a class="indexterm" name="indexterm-74"></a>Permissions to the web console launcher application are usually
+open so that any valid user can log in. However, you can restrict access to
+the console by specifying the rights in the <code class="literal">authTypes</code> tag
+in the web console's <code class="filename">app.xml</code> file, which is located in
+the <code class="filename">/usr/share/webconsole/webapps/console/WEB-INF</code> directory.
+For more information, see <span class="olink">Specifying Authorizations With the <code class="literal">authTypes</code> Tag</span>.</p>
+<p>Some system configurations are set up to be very secure, so that attempts
+to connect from a remote system to the URLs of the console or registered applications
+are refused. If your system is configured to prevent remote access, when you
+try to access the console as <code class="literal">https://hostname.domain:6789</code>,
+your browser displays a message such as:</p>
+<pre class="screen">Connect to hostname.domain:6789 failed (Connection refused)</pre>
+<p>The SMF profile in effect on the system might be restricting
+access. See <span class="olink">SMF Profiles</span> for more information
+about profiles. See <span class="olink">Enabling Remote Access to the Java Web Console</span> for a procedure to allow access
+to the console from remote systems.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="ewplb"></a>Access to Applications in the Java Web Console</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-75"></a>
+<a class="indexterm" name="indexterm-76"></a>After you successfully log in to the web console, you might not automatically
+have access to all of the applications that are registered in that console . Typically, applications
+are installed so that all users can see them in the console launch page. As an administrator,
+you can grant and restrict access to applications. </p>
+<p>To restrict
+access to an application, specify the rights in the <code class="literal">authTypes</code> tag, which
+is in the application's <code class="filename">app.xml</code> file.  You can find the
+application's <code class="filename">app.xml</code> file in the <code class="filename">
+<em class="replaceable"><code>installation-location</code></em>/WEB-INF/</code> subdirectory. By default, this directory would
+be located in <code class="filename">/usr/share/webconsole/webapps/<em class="replaceable"><code>app-context-name</code></em>/WEB-INF</code>. For more information,
+see <span class="olink">Specifying Authorizations With the <code class="literal">authTypes</code> Tag</span>.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="ewplg"></a>Application Privileges</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-77"></a>
+<a class="indexterm" name="indexterm-78"></a>If a user
+can see an application's link  on the Java Web Console's launch
+page, that user can run that
+application. However, an application might make additional authorization checks
+based upon the authenticated user or role identity.  These checks are not
+controlled by the <code class="literal">authTypes</code> tag, but are explicitly coded
+into the application itself.  For example, an application might grant read
+access to all authenticated users, but restrict update access to a few users
+or a few roles.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="ewplm"></a>Application Access to Remote Systems</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-79"></a>
+<a class="indexterm" name="indexterm-80"></a>Having all the appropriate credentials does not guarantee that
+you can use an application to manage every system within the application's
+scope of operation. Each system that you administer by using the Java Web
+Console application has its own security domain. Having read-and-write permissions
+on the web console system does not guarantee that those credentials are automatically
+sufficient to administer any other remote system.</p>
+<p>In general, access to remote systems depends on how the security is
+implemented in the web application.  Typically, web applications make calls
+to <span class="emphasis"><em>agents</em></span> that perform actions on behalf of the applications.
+These applications must be authenticated by the agents based on their web
+console credentials and the credentials by which they are known on the agent
+system. Depending upon how this agent authentication is done, an authorization
+check might also be made on the agent itself, based upon this authenticated
+identity.</p>
+<p>For example, in web applications that use remote WBEM agents, authentication
+typically uses the user or role identity that initially authenticated to the Java Web Console.
+ If this authentication fails on that agent system, access to that system
+is denied in the web application.  If authentication succeeds on that agent
+system, access might still be denied if the agent makes an access control
+check and denies access there. Most applications are written so that the authentication
+and authorization checks on the agent never fail if you have been successfully
+authenticated on the web console and assumed the correct role.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gdcpc"></a>Internal
+Passwords Used in the Console</h4></div></div></div>
+
+<a class="indexterm" name="indexterm-81"></a>
+<p>
+<span class="strong"><strong>Starting with the Solaris Express
+5/06 release</strong></span>, the Java Web Console
+uses several password-protected internal user names to perform administrative
+tasks on the underlying web server, and to encrypt key store and trust store
+files. The passwords are set to initial values to enable the console to be
+installed. To reduce the possibility of a security breach, you should change
+the passwords after installation. See <span class="olink">Changing Internal Passwords for Java Web Console</span>
+</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="ewplr"></a>Specifying Authorizations With the <code class="literal">authTypes</code> Tag</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-82"></a>
+<a class="indexterm" name="indexterm-83"></a>
+<a class="indexterm" name="indexterm-84"></a>While most system management web applications
+do not require any administrator intervention to use the <code class="literal">authTypes</code> tag, in some cases, you might
+need to change the values of this tag. The <code class="literal">authTypes</code> tag contains a set of
+information that describes the level of authorization that is required for
+a user to view an application in the Java Web Console. The web
+console determines if a user is authorized to see a particular application,
+based on the 
+authorization requirements
+in the application's <code class="filename">app.xml</code> file. Each
+application can determine whether a user must have proper authorization to
+run the application. This determination might be made as part of the application
+installation process. Or, you might need to supply the information, depending
+on your own security requirements. The product documentation for the application
+should contain the information that is necessary to determine whether you
+need to specify a particular permission.</p>
+<p>You can nest several  <code class="literal">authType</code> tags within the <code class="literal">authTypes</code> tag. The <code class="literal">authTypes</code> tag must contain at least one <code class="literal">authType</code> tag that provides
+the following necessary information:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Type of authorization check to perform</p>
+</li><li>
+<p>
+<code class="classname">Permission</code> subclass name</p>
+</li><li>
+<p>Parameters that are required to instantiate the <code class="classname">Permission</code> subclass</p>
+</li></ul></div>
+<p>In the following example, the <code class="literal">authType</code> tag has one
+attribute, <code class="literal">name</code>. The required <code class="literal">name</code> attribute
+is the name of the authorization service type. Different authorization
+types might require different values for the <code class="literal">classType</code> and <code class="literal">permissionParam</code> tags. </p>
+<pre class="screen">&lt;authTypes&gt;
+	&lt;authType name="SolarisRbac"&gt;
+	    &lt;classType&gt;com.sun.management.solaris.RbacPermission&lt;/classType&gt;
+	    &lt;permissionParam name="permission"&gt;solaris.admin.serialmgr.read&lt;/permissionParam&gt;
+	&lt;/authType&gt;
+&lt;/authTypes&gt;
+</pre>
+<p>The following table shows the tags that can be nested within an <code class="literal">authType</code> tag</p>
+<div class="table"><a name="ewpll"></a><p class="title"><b>Table 3.1. Nested <code class="literal">authTypes</code> Tags</b></p>
+
+
+<table summary="Nested authTypes Tags" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>Tag</p>
+</th><th>
+<p>Attribute</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">classType</code>
+</p>
+</td><td>
+<p>
+</p>
+</td><td>
+<p>The <code class="literal">Permission</code> subclass name. This tag is a required
+tag.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">permissionParam</code>
+</p>
+</td><td>
+<p>
+<code class="literal">name</code>
+</p>
+</td><td>
+<p>The parameters that are required to create an instance of the class
+specified by <code class="literal">classType</code>. </p>
+</td></tr></tbody></table>
+</div>
+<p>The <code class="literal">authTypes</code> tag and nested <code class="literal">authType</code> tags
+are required elements in the <code class="filename">app.xml</code> file. If you want
+to register an application that is available to anyone, specify the <code class="literal">authType</code> tag
+with no content, as shown in the following example.</p>
+<pre class="screen">&lt;authTypes&gt;
+        &lt;authType name=""&gt;
+            &lt;classType&gt;&lt;/classType&gt;
+            &lt;permissionParam name=""&gt;&lt;/permissionParam&gt;
+        &lt;/authType&gt;
+&lt;/authTypes&gt;
+</pre>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gdhhu"></a>Enabling Remote Access to the Java Web Console</h3></div></div></div>
+
+<p>If you can only connect to the console by logging into the system that
+is running the console, and then using the URL <code class="literal">https://localhost:6789</code>,
+the system is using a configuration that prevents remote access. <span class="strong"><strong>Starting with the Solaris Express 5/06 release</strong></span>, you can enable remote access only to the
+console, while leaving the other access restrictions in place, by using the
+following procedure:</p>
+<div class="task"><a name="gdhgt"></a><p class="title"><b>How to Enable Remote Access to the Java Web Console</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role on the system where
+the console is running.</p>
+<p>Roles contain authorizations and privileged
+commands. For more information about roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Set a property to allow the console server to respond to network
+requests.</p>
+<pre class="screen"># <strong class="userinput"><code>svccfg -s svc:/system/webconsole setprop options/tcp_listen = true</code></strong>
+# <strong class="userinput"><code>svcadm refresh svc:/system/webconsole</code></strong>
+</pre>
+</li><li>
+<p>On the remote system, set your browser to not use a proxy for
+the system that is running the console.</p>
+<p>This procedure varies
+with the browser. Consult the browser's online help or documentation for information
+about setting a proxy.</p>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gdcso"></a>Changing Internal Passwords for Java Web Console</h3></div></div></div>
+
+<p>
+<span class="strong"><strong>Starting with the Solaris Express
+5/06 release,</strong></span> the console uses
+some internal user names and passwords. The console's internal user names
+and passwords are used only by the console framework, and are never used directly
+by a user or system administrator. However, if the passwords were known, a
+malicious user could potentially interfere with the console applications.
+To reduce the possibility of such a security breach, you should change the
+passwords. You do not need to remember the new passwords, because the software
+uses them invisibly.</p>
+<div class="task"><a name="gdcsa"></a><p class="title"><b>How to Change the Console's Internal Passwords</b></p><div class="tasksummary">
+<p>The passwords are known as the administrative password, keystore password,
+and truststore password. You do not need to know the default initial values
+in order to change the passwords. This procedure explains how to change all
+three passwords with separate commands.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Change the administrative password.</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin password -a</code></strong>
+</pre>
+<p>You are prompted to enter the new password twice. The password should
+be 8 to 32 characters.</p>
+</li><li>
+<p>Change the key store password.</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin password -k</code></strong>
+</pre>
+<p>You are prompted to enter the new password twice. The password should
+be 8 to 32 characters.</p>
+</li><li>
+<p>Change the trust store password.</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin password -t</code></strong>
+</pre>
+<p>You are prompted to enter the new password twice. The password should
+be 8 to 32 characters.</p>
+</li></ol></div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s09.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Troubleshooting the Java Web Console Software </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 4. Managing User Accounts and Groups (Overview)</td></tr></table></div></body></html>
