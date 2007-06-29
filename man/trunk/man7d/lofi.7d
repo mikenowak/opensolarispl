@@ -1,0 +1,137 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 1999 Sun Microsystems, Inc. 
+.\" All Rights Reserved.
+.TH lofi 7D "30 Jul 1999" "SunOS 5.11" "Devices"
+.SH NAME
+lofi \- Loopback file driver 
+.SH DESCRIPTION
+.LP
+The \fBlofi\fR file driver exports
+a file as a block device. Reads and writes to the block device are translated
+to reads and writes on the underlying file. This is useful when the file contains
+a file system image. Exporting it as a block device through the  \fBlofi\fR file driver allows normal system utilities to operate on the
+image through the block device (like \fBfstyp\fR(1M)\fBfsck\fR(1M), and \fBmount\fR(1M). This
+is useful for accessing CD-ROM and \fBFAT\fR floppy images. See \fBlofiadm\fR(1M) for
+examples.   
+.LP
+File block device entries are contained in\fB /dev/lofi\fR,
+while \fB/dev/rlofi\fR contains the character (or raw) device
+entries. Entries are in the form of  decimal numbers which are assigned through \fBlofiadm\fR(1M). When
+created, these device entries are owned by \fBroot\fR, in group \fBsys\fR, and have permissions \fB0600\fR. While ownership,
+group, and permission settings can be altered, there are possible ramifications.
+See \fBlofiadm\fR(1M) for
+more information.
+.SH FILES
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/dev/lofictl\fR\fR
+.ad
+.RS 28n
+.rt  
+Master control device
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/dev/lofi/\fIn\fR\fR\fR
+.ad
+.RS 28n
+.rt  
+Block device for file \fIn\fR
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/dev/rlofi/\fIn\fR\fR\fR
+.ad
+.RS 28n
+.rt  
+Character device for file \fIn\fR
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/kernel/drv/lofi\fR\fR
+.ad
+.RS 28n
+.rt  
+32-bit driver
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/kernel/drv/lofi.conf\fR\fR
+.ad
+.RS 28n
+.rt  
+Driver configuration file. (Should not be altered.)
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/kernel/drv/sparcv9/lofi\fR\fR
+.ad
+.RS 28n
+.rt  
+64-bit driver
+.RE
+
+.SH ATTRIBUTES
+.LP
+See  \fBattributes\fR(5)
+for descriptions of the following attributes: 
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWcsr, SUNWcarx.u
+.TE
+
+.SH SEE ALSO
+.LP
+\fBlofiadm\fR(1M), \fBfsck\fR(1M), \fBfstyp\fR(1M), \fBmount\fR(1M), \fBnewfs\fR(1M), \fBattributes\fR(5), \fBlofs\fR(7FS)
+.SH NOTES
+.LP
+Just as you would not directly access a disk device that has mounted
+file systems, you should not access a file associated with a block device
+except through the \fBlofi\fR file driver.
+.LP
+For compatability purposes, a raw device is also exported along with
+the block device. For example, \fBnewfs\fR(1M)
+requires one. 

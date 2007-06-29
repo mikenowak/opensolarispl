@@ -1,0 +1,773 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (C) 2003, Sun Microsystems, Inc. All Rights Reserved
+.TH mipagent.conf 4 "18 Feb 2003" "SunOS 5.11" "File Formats"
+.SH NAME
+mipagent.conf \- configuration file for Mobile IP mobility agent
+.SH SYNOPSIS
+.LP
+.nf
+\fB/etc/inet/mipagent.conf\fR
+.fi
+
+.SH DESCRIPTION
+.LP
+\fB/etc/inet/mipagent.conf\fR is the configuration file used to initialize the Mobile IP mobility agent described in \fBmipagent\fR(1M). Three
+sample configuration files are located in the \fB/etc/inet directory\fR:
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fB/etc/inet/mipagent.conf-sample\fR
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fB/etc/inet/mipagent.conf.ha-sample\fR
+.RE
+.RS +4
+.TP
+.ie t \(bu
+.el o
+\fB/etc/inet/mipagent.conf.fa-sample\fR
+.RE
+.LP
+Blank lines are ignored. Lines beginning with the hash character (\fB#\fR) are treated as comments. Sections are denoted by identifiers in brackets. Each section can contain multiple attribute-value pairs. The syntax of an attribute-value pair is an identifier, followed by an equal
+sign (\fB=\fR), followed by a value. 
+.LP
+The following sections and the following attribute-value pairs must be present in \fB/etc/inet/mipagent.conf\fR:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB[ General ]\fR\fR
+.ad
+.sp .6
+.RS 4n
+This section contains the \fBVersion\fR attribute. 
+.sp
+.ne 2
+.mk
+.na
+\fB\fBVersion\fR\fR
+.ad
+.RS 11n
+.rt  
+\fBVersion\fR is required. For the current release of Mobile IP in Solaris, \fBVersion\fR must be \fB1\fR. Consequently, the default value is \fB1\fR.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB[ Advertisements \fIinterface\fR ]\fR\fR
+.ad
+.sp .6
+.RS 4n
+This section identifies the interfaces that serve as Mobile IP mobility agents. \fIinterface\fR is the interface name of the advertising interface. Advertising interface
+name must be specified in the mipagent.conf file, if the interface is already configured. \fIinterface\fR attribute has two components, device name and device number, that is, \fIinterface\fR\fB=eri0\fR indicates device name is \fBeri\fR
+and the device number is \fB0\fR. The device number part of \fIinterface\fR attribute can also have a special symbol \fB*\fR , which indicates support of advertisments on interfaces that are configured after the \fBmipagent\fR has started. For
+example, if \fBeri0\fR and \fBeri1\fR are defined specifically on the \fBmipagent.conf\fR file, then the advertisement should be done based on that configuration. If \fBeri*\fR is present in an \fBAdvertisements\fR section, then \fB*\fR represents dynamic interfaces. \fB*\fR represents those interfaces that are not already configured in the \fBmipagent.conf\fR file and are newly created on the system while \fBmipagent\fR is running. One or more of the following attribute-value pairs
+might be found in this section: 
+.sp
+.ne 2
+.mk
+.na
+\fBAdvLifeTime\fR
+.ad
+.RS 25n
+.rt  
+Lifetime, in seconds, advertised in the \fBICMP\fR router discovery portion of an agent advertisement. See \fIRFC 1256\fR. The default value is \fB300\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBRegLifeTime\fR
+.ad
+.RS 25n
+.rt  
+Lifetime, in seconds, advertised in the mobility extension of an agent advertisement. The default value is \fB300\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBAdvFrequency\fR
+.ad
+.RS 25n
+.rt  
+The frequency at which agent advertisements are sent and when different entries are aged. This interval must be less than one-third of \fBAdvLifeTime\fR. The recommended value for \fBAdvFrequency\fR is \fB1\fR
+when \fBAdvLimitSolicited\fR is set to \fByes\fR.The default value is \fB4\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBAdvInitCount\fR
+.ad
+.RS 25n
+.rt  
+The initial number of unsolicited advertisements which are sent when an interface first starts advertising. If this value is set to zero, no unsolicited advertisements are sent out on the \fIinterface\fR. The default value is \fB1\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBAdvLimitUnsolicited\fR
+.ad
+.RS 25n
+.rt  
+Determines whether the interface performs limited or unlimited unsolicited agent advertisements. The agent always responds to the agent solicitations in both cases.
+.sp
+.ne 2
+.mk
+.na
+\fByes\fR
+.ad
+.RS 7n
+.rt  
+If the value is set to \fByes\fR, then the interface performs \fBAdvInitCount\fR number of advertisements when it comes up and then it stops sending unsolicited advertisements.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBno\fR
+.ad
+.RS 7n
+.rt  
+When the value is set to \fBno\fR, the interface performs periodic and unlimited number of unsolicited advertisements. The default value for \fBAdvLimitUnsolicited\fR is \fBno\fR. When \fBAdvLimitUnsolicited\fR
+is set to the default value, \fBadvInitCount\fR is also set to its default value. 
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBHomeAgent\fR
+.ad
+.RS 25n
+.rt  
+Indicates if this agent can act as a home agent. The default value is \fByes\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBForeignAgent\fR
+.ad
+.RS 25n
+.rt  
+Indicates if this agent can act as a foreign agent. The default value is \fByes\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBregistrationRequired\fR
+.ad
+.RS 25n
+.rt  
+Indicates whether or not registration with a foreign agent is required. If set to \fByes\fR, then registration is required, even when using a co-located care-of-address. The default value for this label is \fBno\fR,
+thus the advertisement flag does not set the "R" bit by default.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBPrefixFlags\fR
+.ad
+.RS 25n
+.rt  
+Enables the prefix length extension. The default value is \fByes\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBNAIExt\fR
+.ad
+.RS 25n
+.rt  
+Enables the Network Access Identifier (\fBNAI\fR) extension. The default value is \fByes\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBReverseTunnel\fR
+.ad
+.RS 25n
+.rt  
+Indicates if this interface supports reverse tunneling as specified in \fIRFC 3024\fR. \fBReverseTunnel\fR can contain one of the following values:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBno\fR or \fBneither\fR\fR
+.ad
+.RS 17n
+.rt  
+Indicates this interface does not support reverse tunneling.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBFA\fR\fR
+.ad
+.RS 17n
+.rt  
+Indicates only the foreign agent supports reverse tunneling.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBHA\fR\fR
+.ad
+.RS 17n
+.rt  
+Indicates only the home agent supports reverse tunneling.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fByes\fR or \fBboth\fR\fR
+.ad
+.RS 17n
+.rt  
+Indicates that both foreign and home agents support reverse tunneling as specified in \fIRFC 3024\fR.
+.RE
+
+The default value for \fBReverseTunnel\fR is \fBno\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBReverseTunnelRequired\fR
+.ad
+.RS 25n
+.rt  
+Indicates if this interface will require reverse tunneling as specified in \fIRFC 3024\fR. \fBReverseTunnelRequired\fR can contain one of the following values:
+.sp
+.ne 2
+.mk
+.na
+\fB\fBno\fR or \fBneither\fR\fR
+.ad
+.RS 17n
+.rt  
+Indicates this interface will not require reverse tunneling.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBFA\fR\fR
+.ad
+.RS 17n
+.rt  
+Indicates only the foreign agent will require a reverse tunnel.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBHA\fR\fR
+.ad
+.RS 17n
+.rt  
+Indicates only the home agent will require a reverse tunnel.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fByes\fR or \fBboth\fR\fR
+.ad
+.RS 17n
+.rt  
+Indicates that both foreign and home agents will require a reverse tunnel.
+.RE
+
+.RE
+
+The default value for \fBReverseTunnelRequired\fR is \fBno\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB[ GlobalSecurityParameters ]\fR
+.ad
+.sp .6
+.RS 4n
+This section defines the global security parameters that will be used to authenticate mobile nodes. \fBMN-HA\fR authentication is always enabled. This section may contain one or more the of the following attribute-value
+pairs: 
+.sp
+.ne 2
+.mk
+.na
+\fBChallenge\fR
+.ad
+.RS 19n
+.rt  
+Enables the foreign agent challenge extension. The default value is \fBno\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBHA-FAAuth\fR
+.ad
+.RS 19n
+.rt  
+Enables home agent - foreign agent authentication. The default value is \fByes\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBMN-FAAuth\fR
+.ad
+.RS 19n
+.rt  
+Enables mobile node - foreign agent authentication. The default value is \fBno\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBMaxClockSkew\fR
+.ad
+.RS 19n
+.rt  
+The maximum allowable difference in \fBclocks\fR, in seconds, that will be tolerated. This is used for replay protection. The default value is \fB300\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBKeyDistribution\fR
+.ad
+.RS 19n
+.rt  
+This attribute defines where keys are found. The default for this \fBVersion\fR of Solaris Mobile IP software is \fBfiles\fR.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB[ SPI \fInumber\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+These sections define multiple Security Parameter Indices (\fBSPI\fRs). One section is required for each security context. These \fBSPI\fR values are used in the \fBAddress\fR section
+to define the security used for a particular mobile node or agent. In this section, both the \fBKey\fR and \fBReplayMethod\fR attributes must be present. 
+.sp
+.ne 2
+.mk
+.na
+\fBKey\fR
+.ad
+.RS 16n
+.rt  
+The hexadecimal representation of the key used for authentication.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBReplayMethod\fR
+.ad
+.RS 16n
+.rt  
+The replay method. Possible values are \fBtimestamps\fR or \fBnone\fR.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB[ Pool \fInumber\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+These sections define address pools for dynamically assigned IP addresses. The \fBStart\fR and \fBLength\fR attributes both must be present.
+.sp
+.ne 2
+.mk
+.na
+\fBStart\fR
+.ad
+.RS 10n
+.rt  
+The beginning range of the IP address from which to allocate an IP address in dotted quad notation.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBLength\fR
+.ad
+.RS 10n
+.rt  
+The length of the IP address range.
+.RE
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB[ Address \fINAI\fR | \fIIPaddr\fR |\fInode-default\fR ]\fR
+.ad
+.sp .6
+.RS 4n
+This section defines the security policy used for each host for which an \fBNAI\fR or \fBIP\fR address is specified
+in the section header. The keyword \fBnode-default\fR is used to create a single entry that can be used by any mobile node that has the correct \fBSPI\fR and associated keying information. This section specifies the \fBSPI\fR, and in the case of mobile nodes, pool
+numbers for \fBNAI\fR addresses.
+.sp
+.ne 2
+.mk
+.na
+\fBType\fR
+.ad
+.RS 8n
+.rt  
+Indicates whether the address entry specifies a mobile node or a mobility agent.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBSPI\fR
+.ad
+.RS 8n
+.rt  
+The \fBSPI\fR used for this \fBAddress\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBPool\fR
+.ad
+.RS 8n
+.rt  
+The \fBPool\fR used for this \fBNAI\fR address. The \fBPool\fR keyword may only be present if the \fBType\fR operand is set to mobile node. 
+.RE
+
+The following entries are valid only for Addresss sections where \fItype\fR = \fIagent\fR:
+.sp
+.ne 2
+.mk
+.na
+\fBIPsecRequest\fR
+.ad
+.RS 16n
+.rt  
+The IPsec policies to add to the global IPsec policy file so as to be enforced for Registration Requests to and from this mobility agent peer. These are the IPsec properties which foreign agent's \fBapply\fR, and which home agents \fBpermit\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBIPsecReply\fR
+.ad
+.RS 16n
+.rt  
+The IPsec policis to add to the global IPsec policy file so as to be enforced for Registration Replies to and from this mobility agent peer. These are the IPsec properties which home agents \fBapply\fR, and which foreign agents \fBpermit\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fBIPsecTunnel\fR
+.ad
+.RS 16n
+.rt  
+The IPsec policies to enforce on all tunnel traffic with this mobility agent peer. These are the IPsec properties which home agent's \fBapply\fR, and which foreign agents \fBpermit\fR.
+.RE
+
+Mobility agents can be functioning as home agents for some mobile nodes, and as foreign agents for others. To allow for different policy configurations as both a home agent for some mobile nodes, and as a foreign agent for other mobile nodes all using the same mobility agent peer, \fBapply\fR and \fBpermit\fR policies need to be specified for the same entry. This is achieved by using a colon (\fB:\fR) to separte the IPsec policies. For example:
+.sp
+.in +2
+.nf
+IPsecRequest apply {properties} : permit {properties}
+.fi
+.in -2
+
+This configuration for IPsecRequest could indicate a set of properties that are to be applied when sending regisration requests, and a different property to enforce when receiving registration requests in a session with the same mobility agent peer.
+.RE
+
+.SH EXAMPLES
+.LP
+\fBExample 1 \fRConfiguration for Providing Mobility Services on One Interface
+.LP
+The following example shows the configuration file for a mobility agent that provides mobility services on one interface (\fBeri0\fR). The mobility agent acts both as a home agent as well as a foreign agent on that interface. It includes the prefix length in its advertisements. Its home
+and foreign agent functions support reverse tunneling, but only the foreign agent requires that a reverse tunnel be configured.
+
+.LP
+The mobility agent has IPsec relationships with two mobilty agent peers, 192.168.10.1 - with which it will be a foreignagent peer, and 192.168.10.2 - with which it will be a home- agent peer. 
+
+.LP
+All registration request packets being sent to 192.168.10.1 will use md5 as the IPsec authentication algorithm, and all registration replies from 192.168.10.1 must be protected using md5 as the IPsec authentication algorithm. Should a tunnel be established with this mobility agent peer, all tunnel
+traffic must arrive using md5 as an encryption authentication algorithm, and must also be encrypted using triple-DES. If a reverse tunnel is configured, all reverse tunnel traffic will be sent using md5 as the encryption authentication algorithm, and will also be enctrypted using triple-DES.
+
+.LP
+Identically, all registration requeset packets being received from 192.168.10.2 must be protected using md5 as the IPsec authentication algorithm, and all registration replies sent to 192.168.10.2 will use md5 as the IPsec authentication algorithm. Should a tunnel be established with 192.168.10.2,
+all tunnel traffic sent will be protected using md5 as the encryption authentication algorithm, and will also be encrypted using triple-DES. Should a reverse tunnel be configured as well, tunnel traffic must arrive secured with md5 as the encryption authentication algorithm, and must also have been encrypted
+using triple-DES as the encryption algorithm.
+
+.LP
+Any registration or tunnel traffic that does not conform to these policies will be silently dropped by IPsec. Note that ipsec Keys are managed through IPsec. See \fBipsec\fR(7P).
+
+.LP
+The mobility agent provides home agent services to three mobile nodes: \fB192.168.10.17\fR, \fB192.168.10.18\fR, and the \fBNAI\fR address \fBuser@defaultdomain.com.\fRThe configuration file also indicates that it provides foreign agent service
+on any PPP interfaces that are dynamically created after the mipagent starts.
+
+.LP
+With the first mobile node, the agent uses an \fBSPI\fR of 257 (decimal) and a shared secret key that is six bytes long containing alternate bytes that are 0 and 255 (decimal). For the second mobile node, the \fBSPI\fR is 541 (decimal), the key is 10 bytes, and it contains
+the decimal values 11 through 20 in those bytes. The first mobile node uses no replay protection, and the second uses \fBtimestamps\fR. The third mobile node uses \fBNAI\fR and gets its address from Pool 1.
+
+.LP
+The mobile node will also need to be configured with the same security association that is specified in the home agent's configuration file.
+
+.sp
+.in +2
+.nf
+# start of file
+[ General ]
+Version = 1
+
+[ Advertisements eri0 ]
+AdvLifeTime = 200
+RegLifetime = 200
+AdvFrequency = 5
+AdvInitCount = 1
+AdvLimitUnsolicited = no
+AdvertiseOnBcast = yes
+HomeAgent = yes
+ForeignAgent = yes
+PrefixFlags = yes
+ReverseTunnel = both
+ReverseTunnelRequired = FA
+
+[ Advertisements hme1 ]
+ForeignAgent = yes
+HomeAgent = yes
+registrationRequired = yes
+
+# Advertisements over PPP interfaces that are created
+# while the mipagent is running. Note we are doing limited
+# unsolicited advertisements here.
+
+[Advertisements sppp*]
+homeagent = no
+foreignagent = yes
+PrefixFlags = 1
+reglifetime = 200
+advlifetime = 200
+advFrequency = 1
+advInitCount = 2
+advLimitUnsolicited = yes
+reverseTunnel = yes
+reverseTunnelReq = no
+
+[ GlobalSecurityParameters ]
+HA-FAAuth = no
+MN-FAAuth = no
+KeyDistribution = files
+
+[ SPI 257 ]
+Key = 00ff00ff00ff
+ReplayMethod = none
+
+[ SPI 541 ]
+Key = 0b0c0d0e0f1011121314
+ReplayMethod = timestamps
+
+[ Pool 1 ]
+Start = 192.168.167.1
+Length = 250
+
+
+[ Address 192.168.10.1 ]
+   Type = agent    
+   SPI = 257
+   IPsecRequest = apply {auth_algs md5 sa shared}
+   IPsecReply = permit {auth_algs md5} 
+   IPsecTunnel = permit {encr_auth_algs md5 encr_algs 3des}
+
+[ Address 192.168.10.2 ]
+   Type = agent
+   SPI = 257
+   IPsecRequest = permit {auth_algs md5}
+   IPsecReply = apply {auth_algs md5 sa shared} 
+   IPsecTunnel = apply {encr_auth_algs md5 encr_algs 3des}
+
+[ Address 192.168.10.17 ]
+    Type = node
+    SPI = 257
+
+[ Address 192.168.10.18 ]
+    Type = node
+    SPI = 541
+
+
+[ Address user@defaultdomain.com ]
+    Type = node
+    SPI = 541
+    Pool = 1
+
+
+[ Address node-default ]
+    Type = node
+    SPI = 541
+    Pool = 1
+
+#end of file
+.fi
+.in -2
+
+.SH FILES
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/inet/mipagent.conf\fR \fR
+.ad
+.sp .6
+.RS 4n
+Configuration file for Mobile IP mobility agent
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/inet/mipagent.conf-sample\fR\fR
+.ad
+.sp .6
+.RS 4n
+Sample configuration file for mobility agents.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/inet/mipagent.conf.ha-sample\fR\fR
+.ad
+.sp .6
+.RS 4n
+Sample configuration file for home agent functionality.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/inet/mipagent.conf.fa-sample\fR\fR
+.ad
+.sp .6
+.RS 4n
+Sample configuration file for foreign agent functionality.
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWmipr
+.TE
+
+.SH SEE ALSO
+.LP
+\fBmipagent\fR(1M), \fBmipagentconfig\fR(1M), \fBattributes\fR(5), \fBipsec\fR(7P)
+.LP
+Deering, S., Editor. \fIRFC 1256, ICMP Router Discovery Messages\fR. Network Working Group. September 1991.
+.LP
+Montenegro, G., editor. \fIRFC 3024, Reverse Tunneling for Mobile IP, revised\fR. The Internet Society. January, 2001.
+.LP
+Perkins, C., Editor. \fIRFC 2002, IP Mobility Support\fR. Network Working Group. October 1996.
+.SH NOTES
+.LP
+The base Mobile IP protocol, \fIRFC 2002\fR, does not address the problem of scalable key distribution and treats key distribution as an orthogonal issue. The Solaris Mobile IP software utilizes manually configured keys only, specified in a configuration file. 
+.LP
+The \fB*\fR symbol for the interface number determines only those interfaces that are newly configured while \fBmipagent\fR is running. Thus the symbol \fB*\fR in the \fIinterface\fR excludes any preconfigured interfaces in the system.
+Interfaces that are already configured in the system need to be specifically mentioned in the \fBmipagent.conf\fR file for advertisement on those interfaces.
+.LP
+The \fBAdvLimitUnsolicited\fR parameter is useful when someone wants to limit unsolicited advertisements on the interface. Limited unsolicited agent advertisment is required for some wireless mobile IP usage. 
+.LP
+Note that IPsec protection requires keying information that depends on the algorithms being used. IPsec manages its own keys, whether they are manually configured, or managed with some other mechanism such as Internet Key Exchange (\fBIKE\fR). See \fBipsec\fR(7P).

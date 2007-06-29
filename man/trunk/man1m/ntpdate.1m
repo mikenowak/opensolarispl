@@ -1,0 +1,253 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) David L. Mills 1992, 1993, 1994, 1995, 1996, 1997
+.\" Portions Copyright (c) 1999 Sun Microsystems, Inc. All Rights Reserved.
+.TH ntpdate 1M "29 Sep 1999" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+ntpdate \- set the date and time by way of NTP
+.SH SYNOPSIS
+.LP
+.nf
+\fB/usr/sbin/ntpdate\fR [\fB-bBdoqsuv\fR] [\fB-a\fR \fIkey#\fR] [\fB-e\fR \fIauthdelay\fR] 
+    [\fB-k\fR \fIkeyfile\fR] [\fB-m\fR] [\fB-o\fR \fIversion\fR] [\fB-p\fR \fIsamples\fR] 
+    [\fB-t\fR \fItimeout\fR] [\fB-w\fR] \fIserver\fR...
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBntpdate\fR utility sets the local date and time. To determine the correct time, it polls the Network Time Protocol (NTP) servers on the hosts given as arguments. This utility must be run as root on the local host. It obtains a number of samples from each of the servers
+and applies the standard \fBNTP\fR clock filter and selection algorithms to select the best of these.
+.LP
+The reliability and precision of \fBntpdate\fR improve dramatically with a greater number of servers. While a single server may be used, better performance and greater resistance to inaccuracy on the part of any one server can be obtained by providing at least three or four
+servers, if not more.
+.LP
+The \fBntpdate\fR utility makes time adjustments in one of two ways. If it determines that your clock is off by more than 0.5 seconds it simply steps the time by calling \fBgettimeofday\fR(3C). If the error is less than 0.5 seconds, by default, it slews the clock's time with the offset, by way of a call to \fBadjtime\fR(2). The latter technique is less disruptive and more accurate when the offset is small; it works quite well when \fBntpdate\fR is run by \fBcron\fR every hour or two. The adjustment made in the latter case is actually 50% larger than the measured
+offset. This adjustment tends to keep a badly drifting clock more accurate, at some expense to stability. This tradeoff is usually advantageous. At boot time, however, it is usually better to step the time. This can be forced in all cases by specifying the \fB-b\fR option on the command
+line.
+.LP
+The \fBntpdate\fR utility declines to set the date if an \fBNTP\fR server daemon like \fBxntpd\fR(1M) is running on the same host. It
+can be run on a regular basis from \fBcron\fR(1M) as an alternative to running a daemon. Doing so once every one to two hours results in precise enough timekeeping to
+avoid stepping the clock.
+.SH OPTIONS
+.LP
+The following options are supported:
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-a\fR \fIkey#\fR\fR
+.ad
+.RS 16n
+.rt  
+Authenticate transactions, using the key number, \fIkey#\fR.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-b\fR\fR
+.ad
+.RS 16n
+.rt  
+Step the time by calling \fBgettimeofday\fR(3C).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-B\fR\fR
+.ad
+.RS 16n
+.rt  
+Force the time to always be slewed using the \fBadjtime\fR(2) system call, even if the measured offset is greater than +-128 ms. The default is to
+step the time using \fBsettimeofday\fR(3C) if the offset is greater than +-128 ms. If the offset is much greater than +-128 ms in this case, that it can take
+a long time (hours) to slew the clock to the correct value. During this time the host should not be used to synchronize clients.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-d\fR\fR
+.ad
+.RS 16n
+.rt  
+Display what will be done without actually doing it. Information useful for general debugging is also printed.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-e\fR \fIauthdelay\fR\fR
+.ad
+.RS 16n
+.rt  
+Specify an authentication processing delay, \fIauthdelay\fR in seconds. See \fBxntpd\fR(1M) for details. This number is usually
+small enough to be negligible for purposes of \fBntpdate\fR. However, specifying a value may improve timekeeping on very slow CPU's.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-k\fR \fIkeyfile\fR\fR
+.ad
+.RS 16n
+.rt  
+Read keys from the file \fIkeyfile\fR instead of the default file, \fB/etc/inet/ntp.keys\fR. \fIkeyfile\fR should be in the format described in \fBxntpd\fR(1M).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-m\fR\fR
+.ad
+.RS 16n
+.rt  
+Join multicast group specified in \fIserver\fR and synchronize to multicast \fBNTP\fR packets. The standard \fBNTP\fR group is 224.0.1.1.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-o\fR \fIversion\fR\fR
+.ad
+.RS 16n
+.rt  
+Force the program to poll as a version 1 or version 2 implementation. By default \fBntpdate\fR claims to be an \fBNTP\fR version 3 implementation in its outgoing packets. However, some older software declines to respond to version 3 queries. This option
+can be used in these cases.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-p\fR \fIsamples\fR\fR
+.ad
+.RS 16n
+.rt  
+Set the number of samples \fBntpdate\fR acquires from each server. \fIsamples\fR can be between 1 and 8 inclusive. The default is 4.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-q\fR\fR
+.ad
+.RS 16n
+.rt  
+Query only. Do not set the clock.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-s\fR\fR
+.ad
+.RS 16n
+.rt  
+Log actions by way of the \fBsyslog\fR(3C) facility rather than to the standard output \(em a useful option when running the program from \fBcron\fR(1M).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-t\fR \fItimeout\fR\fR
+.ad
+.RS 16n
+.rt  
+Set the time \fBntpdate\fR spends, waiting for a response. \fItimeout\fR is rounded to a multiple of 0.2 seconds. The default is 1 second, a value suitable for polling across a LAN.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-u\fR\fR
+.ad
+.RS 16n
+.rt  
+Use an unprivileged port to send the packets from. This option is useful when you are behind a firewall that blocks incoming traffic to privileged ports, and you want to synchronize with hosts beyond the firewall. The \fB-d\fR option always uses unprivileged ports.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-v\fR\fR
+.ad
+.RS 16n
+.rt  
+Be verbose. This option causes \fBntpdate\fR's version identification string to be logged.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fB-w\fR\fR
+.ad
+.RS 16n
+.rt  
+Wait until able to synchronize with a server. When the \fB-w\fR option is used together with \fB-m\fR, \fBntpdate\fR waits until able to join the group and synchronize.
+.RE
+
+.SH FILES
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/inet/ntp.keys\fR\fR
+.ad
+.RS 22n
+.rt  
+Contains the encryption keys used by \fBntpdate\fR.
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWntpu
+.TE
+
+.SH SEE ALSO
+.LP
+\fBcron\fR(1M), \fBxntpd\fR(1M), \fBadjtime\fR(2), \fBgettimeofday\fR(3C), \fBsettimeofday\fR(3C)\fBsyslog\fR(3C), \fB attributes\fR(5)
+.SH NOTES
+.LP
+The technique of compensating for clock oscillator errors to improve accuracy is inadequate. However, to further improve accuracy would require the program to save \fIstate\fR from previous runs.

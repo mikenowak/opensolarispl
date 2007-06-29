@@ -1,0 +1,919 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (C) 2006, Sun Microsystems, Inc. All Rights Reserved.
+.\" Copyright 1989 AT&T
+.TH if_tcp 7P "27Nov 2006" "SunOS 5.11" "Protocols"
+.SH NAME
+if_tcp, if \- general properties of Internet Protocol network interfaces
+.SH DESCRIPTION
+.LP
+A network interface is a device for sending and receiving packets on a network. It is usually a hardware device, although it can be implemented in software. Network interfaces used by the Internet Protocol (IPv4 or IPv6) must be STREAMS devices conforming to the Data Link Provider Interface
+(\fBDLPI\fR). See \fBdlpi\fR(7P). 
+.SH APPLICATION PROGRAMMING INTERFACE
+.LP
+An interface becomes available to \fBIP\fR when it is opened and the \fBIP\fR module is pushed onto the stream with the \fBI_PUSH\fR \fBioctl\fR(2) command. (See \fBstreamio\fR(7I)). The \fBSIOCSLIFNAME\fR \fBioctl\fR(2) is issued to specify the name of the interface and to indicate whether it is IPv4 or IPv6. This may be initiated by the kernel at boot time or by a user program after the system is running. Each interface must
+be assigned an \fBIP\fR address with the \fBSIOCSLIFADDR\fR \fBioctl()\fR before it can be used. On interfaces where the network-to-link layer address mapping is static, only the network number is taken from the \fBioctl()\fR request; the remainder
+is found in a hardware specific manner. On interfaces which provide dynamic network-to-link layer address mapping facilities (for example, 10Mb/s Ethernets using \fBarp\fR(7P)),
+the entire address specified in the \fBioctl()\fR is used. A routing table entry for destinations on the network of the interface is installed automatically when an interface's address is set.
+.SH IOCTLS
+.LP
+The following \fBioctl()\fR calls may be used to manipulate \fBIP\fR network interfaces. Unless specified otherwise, the request takes an \fBlifreq\fR structure as its parameter. This structure has the form:
+.sp
+.in +2
+.nf
+/* Interface request struct. used for socket ioctls.  All   */
+/* interface ioctls must have parameter definitions which    */
+/* begin with lifr_name. The remainder may be interface specific. */
+struct lifreq {
+#define LIFNAMSIZ	32
+  char    lifr_name[LIFNAMSIZ];        /* if name, e.g. "le1" */
+  union {
+     int    lifru_addrlen;            /* for subnet/token etc */
+     uint_t lifru_ppa;                /* SIOCSLIFNAME */
+  } lifr_lifru1;
+  union {
+     struct sockaddr_storage lifru_addr;
+     struct sockaddr_storage lifru_dstaddr;
+     struct sockaddr_storage lifru_broadaddr;
+     struct sockaddr_storage lifru_token;    /* With lifr_addrlen */
+     struct sockaddr_storage lifru_subnet;   /* With lifr_addrlen */
+     int                     lifru_index;    /* interface index */
+     uint64_t                lifru_flags;    /* SIOC?LIFFLAGS */
+     int                     lifru_metric;
+     uint_t                  lifru_mtu;
+     int                     lif_muxid[2];   /* mux id's for arp & ip */
+     struct lif_nd_req       lifru_nd_req;
+     struct lif_ifinfo_req   lifru_ifinfo_req;
+     zoneid_t                lifru_zone;     /* SIOC[GS]LIFZONE */
+  } lifr_lifru;
+
+#define lifr_addrlen   lifr_lifru1.lifru_addrlen
+#define lifr_ppa       lifr_lifru1.lifru_ppa       /* Driver's ppa */
+#define lifr_addr      lifr_lifru.lifru_addr       /* address */
+#define lifr_dstaddr   lifr_lifru.lifru_dstaddr    
+#define lifr_broadaddr lifr_lifru.lifru_broadaddr  /* broadcast addr. */
+#define lifr_token     lifr_lifru.lifru_token      /* address token */
+#define lifr_subnet    lifr_lifru.lifru_subnet     /* subnet prefix */
+#define lifr_index     lifr_lifru.lifru_index      /* interface index */
+#define lifr_flags     lifr_lifru.lifru_flags      /* flags */
+#define lifr_metric    lifr_lifru.lifru_metric     /* metric */
+#define lifr_mtu       lifr_lifru.lifru_mtu        /* mtu */
+#define lifr_index     lifr_lifru.lifru_index      /* interface index  */
+#define lifr_ip_muxid  lifr_lifru.lif_muxid[0]
+#define lifr_arp_muxid lifr_lifru.lif_muxid[1]
+#define lifr_nd        lifr_lifru.lifru_nd_req     /* SIOCLIF*ND */
+#define lifr_ifinfo    lifr_lifru.lifru_ifinfo_req /* SIOC[GS]LIFLNKINFO */
+#define lifr_zone      lifr_lifru.lifru_zone       /* SIOC[GS]LIFZONE */
+};
+.fi
+.in -2
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSLIFADDR\fR \fR
+.ad
+.RS 20n
+.rt  
+Set interface address. Following the address assignment, the "initialization" routine for the interface is called.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFADDR\fR \fR
+.ad
+.RS 20n
+.rt  
+Get interface address.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSLIFDSTADDR\fR \fR
+.ad
+.RS 20n
+.rt  
+Set point to point address for interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFDSTADDR\fR \fR
+.ad
+.RS 20n
+.rt  
+Get point to point address for interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSLIFFLAGS\fR \fR
+.ad
+.RS 20n
+.rt  
+Set interface flags field. If the interface is marked down, any processes currently routing packets through the interface are notified.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFFLAGS\fR \fR
+.ad
+.RS 20n
+.rt  
+Get interface flags.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFCONF\fR \fR
+.ad
+.RS 20n
+.rt  
+Get interface configuration list. This request takes an \fBlifconf\fR structure (see below) as a value-result parameter. The \fBlifc_family\fR field can be set to AF_UNSPEC to retrieve both AF_INET and AF_INET6 interfaces. The \fBlifc_flags\fR field
+should be set to zero. The \fBlifc_len\fR field should be set to the size of the buffer pointed to by \fBlifc_buf\fR. Upon success, \fBlifc_len\fR will contain the length, in bytes, of the array of \fBlifreq\fR structures pointed to by \fBlifc_req\fR. For each \fBlifreq\fR structure, the \fBlifr_name\fR and \fBlifr_addr\fR fields will be valid.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFNUM\fR \fR
+.ad
+.RS 20n
+.rt  
+Get number of interfaces. This request returns an integer which is the number of interface descriptions (\fBstruct lifreq\fR) that will be returned by the \fBSIOCGLIFCONF\fR ioctl; that is, it gives an indication of how large \fBlifc_len\fR has
+to be. This request takes an \fBlifnum\fR structure (see below) as a value-result parameter. The \fBlifn_family\fR field should be set to \fBAF_UNSPEC\fR to count both \fBAF_INET\fR and \fBAF_INET6\fR interfaces. The \fBlifn_flags\fR field should be initially set to zero.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSLIFMTU\fR \fR
+.ad
+.RS 20n
+.rt  
+Set the maximum transmission unit (MTU) size for interface. Place the result of this request in \fBlifru_mtu\fR field. The \fBMTU\fR can not exceed the physical \fBMTU\fR limitation  (which is reported in the  \fBDLPI\fR \fBDL_INFO_ACK\fR message).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFMTU\fR \fR
+.ad
+.RS 20n
+.rt  
+Get the maximum transmission unit size for interface. Place the result of this request in \fBifru_mtu\fR field. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSLIFMETRIC\fR \fR
+.ad
+.RS 20n
+.rt  
+Set the metric associated with the interface.  The metric is used by routing daemons such as \fBin.routed\fR(1M). 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFMETRIC\fR \fR
+.ad
+.RS 20n
+.rt  
+Get the metric associated with the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFMUXID\fR \fR
+.ad
+.RS 20n
+.rt  
+Get the \fBip\fR and \fBarp\fR \fBmuxid\fR associated with the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSLIFMUXID\fR \fR
+.ad
+.RS 20n
+.rt  
+Set the \fBip\fR and \fBarp\fR \fBmuxid\fR associated with the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFINDEX\fR \fR
+.ad
+.RS 20n
+.rt  
+Get the interface index associated with the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSLIFINDEX\fR \fR
+.ad
+.RS 20n
+.rt  
+Set the interface index associated with the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFZONE\fR \fR
+.ad
+.RS 20n
+.rt  
+Get the zone associated with the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSLIFZONE\fR\fR
+.ad
+.RS 20n
+.rt  
+Set the zone associated with the interface. Only applies for zones that use the shared-IP instance.  
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCLIFADDIF\fR\fR
+.ad
+.RS 20n
+.rt  
+Add a new logical interface on a physical interface using an unused logical unit number. If the physical interface is part of an IP multipathing group, the logical interface may be added to a different physical interface in the same group. Upon return, the  lifr_name field  contains
+the name of the actual logical interface created.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCLIFREMOVEIF\fR\fR
+.ad
+.RS 20n
+.rt  
+Remove a logical interface by specifying its \fBIP\fR address or logical interface name. When the IP address is specified and the interface is part of an IP multipathing group, the logical interface is removed from the physical interface in the group which holds the
+IP address.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSLIFTOKEN\fR \fR
+.ad
+.RS 20n
+.rt  
+Set the address token used to form IPv6 link-local addresses and for stateless address autoconfiguration.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFTOKEN\fR \fR
+.ad
+.RS 20n
+.rt  
+Get the address token used to form IPv6 link-local addresses and for stateless address autoconfiguration.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSLIFSUBNET\fR \fR
+.ad
+.RS 20n
+.rt  
+Set the subnet prefix associated with the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFSUBNET\fR \fR
+.ad
+.RS 20n
+.rt  
+Get the subnet prefix associated with the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSLIFLNKINFO\fR \fR
+.ad
+.RS 20n
+.rt  
+Set link specific parameters for the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFLNKINFO\fR \fR
+.ad
+.RS 20n
+.rt  
+Get link specific parameters for the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCLIFDELND\fR \fR
+.ad
+.RS 20n
+.rt  
+Delete a neighbor cache entry for  IPv6. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCLIFGETND\fR \fR
+.ad
+.RS 20n
+.rt  
+Get a neighbor cache entry for  IPv6. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCLIFSETND\fR \fR
+.ad
+.RS 20n
+.rt  
+Set a neighbor cache entry for  IPv6. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCTMYADDR\fR \fR
+.ad
+.RS 20n
+.rt  
+Test if the address is assigned to this node. This request takes an \fBsioc_addrreq\fR structure (see below) as a value-result parameter. The \fBsa_addr\fR field should be set to the address to test. The \fBsa_res\fR field will contain a non-zero
+value if the address is assigned to this node.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSLIFUSESRC\fR\fR
+.ad
+.RS 20n
+.rt  
+Set the interface from which to choose a source address. The \fBlifr_index\fR field has the interface index corresponding to the interface whose address is to be used as the source address for packets going out on the interface whose name is provided by \fBlifr_name\fR. If the \fBlifr_index\fR field is set to zero, the previous setting is cleared.  See \fBifconfig\fR(1M) for examples of the 'usesrc' option.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFUSESRC\fR \fR
+.ad
+.RS 20n
+.rt  
+Get the interface index of the interface whose address is used as the source address for packets going out on the interface provided by \fBlifr_name\fR field. The value is retrieved in the \fBlifr_index\fR field. See \fBifconfig\fR(1M) for examples of the 'usesrc' option.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGLIFSRCOF\fR \fR
+.ad
+.RS 20n
+.rt  
+Get the interface configuration list for interfaces that use an address hosted on the interface provided by the \fBlifs_ifindex\fR field in the \fBlifsrcof\fR struct (see below), as a source address. The application sets \fBlifs_maxlen\fR to
+the size (in bytes) of the buffer it has allocated for the data. On return, the kernel sets \fBlifs_len\fR to the actual size required. Note, the application could set \fBlifs_maxlen\fR to zero to query the kernel of the required buffer size instead of estimating a buffer
+size. The application tests 'lifs_len <= lifs_maxlen' -- if that's true,  the buffer was big enough and the application has an accurate list.  If it is false, it needs to allocate a bigger buffer and try again, and \fBlifs_len\fR provides a hint of how big to make the next trial.
+See \fBifconfig\fR(1M) for examples of the 'usesrc' option.
+.sp
+The \fBlifsrcof\fR structure has the form:
+.sp
+.in +2
+.nf
+/*
+ * Structure used in SIOCGLIFSRCOF to get interface
+ * configuration list for interfaces that use an 
+ * address hosted on the interface (set in lifs_ifindex),
+ * as the source address.
+ */
+struct lifsrcof {
+ uint_t  lifs_ifindex;  /* addr on this interface*/ 
+                        /*  used as the src addr */
+ size_t  lifs_maxlen;    /* size of buffer: input */
+ size_t  lifs_len;       /* size of buffer: output */
+       union {
+         caddr_t lifsu_buf;
+         struct  lifreq *lifsu_req;
+ } lifs_lifsu;
+#define lifs_buf lifs_lifsu.lifsu_buf /* buffer addr. */
+#define lifs_req lifs_lifsu.lifsu_req /* array returned */  
+};
+.fi
+.in -2
+
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCTONLINK\fR \fR
+.ad
+.RS 20n
+.rt  
+Test if the address is directly reachable, for example, that it can be reached without going through a router. This request takes an \fBsioc_addrreq\fR structure (see below) as a value-result parameter. The \fBsa_addr\fR field should be set to the address
+to test. The \fBsa_res\fR field will contain a non-zero value if the address is onlink.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCTMYSITE\fR \fR
+.ad
+.RS 20n
+.rt  
+Test if the address is part of the same site as this node. This request takes an \fBsioc_addrreq\fR structure (see below) as a value-result parameter. The \fBsa_addr\fR field should be set to the address to test. The \fBsa_res\fR field will
+contain a non-zero value if the address is in the same site.
+.RE
+
+.LP
+The \fBlifconf\fR structure has the form:
+.sp
+.in +2
+.nf
+/*
+/* Structure used in SIOCGLIFCONF request. */
+
+struct lifconf {
+  sa_family_t     lifc_family;
+  int             lifc_flags;          /* req. specific interfaces */
+  int             lifc_len;            /* size of assoc. buffer */
+  union {
+     caddr_t      lifcu_buf;
+     struct lifreq *lifcu_req;
+  } lifc_lifcu;
+
+#define lifc_buf lifc_lifcu.lifcu_buf   /* buffer address */
+#define lifc_req lifc_lifcu.lifcu_req   /* array of structs returned */
+};
+.fi
+.in -2
+
+.sp
+.in +2
+.nf
+/* Structure used in SIOCGLIFNUM request. */
+struct lifnum {
+  sa_family_t     lifn_family;
+  int             lifn_flags;   /* req. specific interfaces */
+  int             lifn_count;   /* Result */
+};
+The \fBsioc_addrreq\fR structure has the form:
+/*
+* Argument structure for SIOCT* address testing ioctls.
+*/
+struct sioc_addrreq {
+  struct sockaddr_storage sa_addr; /* Address to test */
+  int                     sa_res;  /* Result - 0/1 */
+};
+.fi
+.in -2
+
+.LP
+The following \fBioctl()\fR calls are maintained for compatibility but only apply to IPv4 network interfaces, since the data structures are too small to hold an IPv6 address. Unless specified otherwise, the request takes an \fBifreq\fR structure as its parameter.
+This structure has the form:
+.sp
+.in +2
+.nf
+/* Interface request structure used for socket ioctls.  All */
+/* interface ioctls must have parameter definitions which */
+/* begin with lifr_name.  The remainder may be interface specific. */
+struct ifreq {
+#define IFNAMSIZ	16
+	char	ifr_name[IFNAMSIZ];	              /* interface name - e.g. "hme0" */
+	union {
+		struct sockaddr	ifru_addr;
+		struct sockaddr	ifru_dstaddr;
+		struct sockaddr	ifru_broadaddr;
+		short	ifru_flags;
+		int	ifru_metric;
+		int	if_muxid[2];                     /* mux id's for arp and ip */
+		int	ifru_index;	                      /* interface index */
+	} ifr_ifru;
+
+#define ifr_addr	ifr_ifru.ifru_addr      /* address */
+#define ifr_dstaddr	ifr_ifru.ifru_dstaddr /* other end of p-to-p link */
+#define ifr_broadaddr	ifr_ifru.ifru_broadaddr	/* broadcast address */
+#define ifr_flags	ifr_ifru.ifru_flags     /* flags */
+#define ifr_index 	ifr_ifru.ifru_index	  /* interface index  */
+#define ifr_metric	ifr_ifru.ifru_metric  /* metric */
+};
+.fi
+.in -2
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSIFADDR\fR \fR
+.ad
+.RS 19n
+.rt  
+Set interface address. Following the address assignment, the "initialization" routine for the interface is called.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGIFADDR\fR \fR
+.ad
+.RS 19n
+.rt  
+Get interface address.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSIFDSTADDR\fR \fR
+.ad
+.RS 19n
+.rt  
+Set point to point address for interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGIFDSTADDR\fR \fR
+.ad
+.RS 19n
+.rt  
+Get point to point address for interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSIFFLAGS\fR \fR
+.ad
+.RS 19n
+.rt  
+Set interface flags field. If the interface is marked down, any processes currently routing packets through the interface are notified.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGIFFLAGS\fR \fR
+.ad
+.RS 19n
+.rt  
+Get interface flags.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGIFCONF\fR \fR
+.ad
+.RS 19n
+.rt  
+Get interface configuration list. This request takes an \fBifconf\fR structure (see below) as a value-result parameter. The \fBifc_len\fR field should be set to the size of the buffer pointed to by \fBifc_buf\fR. Upon success, \fBifc_len\fR will
+contain the length, in bytes, of the array of \fBifreq\fR structures pointed to by \fB ifc_req\fR. For each \fBifreq\fR structure, the \fBifr_name\fR and \fBifr_addr\fR fields will be valid.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGIFNUM\fR \fR
+.ad
+.RS 19n
+.rt  
+Get number of interfaces. This request returns an integer which is the number of interface descriptions (\fBstruct ifreq\fR) that will be returned by the \fBSIOCGIFCONF\fR ioctl; that is, it gives an indication of how large \fBifc_len\fR has
+to be.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSIFMTU\fR \fR
+.ad
+.RS 19n
+.rt  
+Set the maximum transmission unit (\fBMTU\fR) size for interface. Place the result of this request in \fBifru_metric\fR field. The \fBMTU\fR has to be smaller than physical \fBMTU\fR limitation (which is reported in the \fBDLPI\fR \fBDL_INFO_ACK\fR message).
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGIFMTU\fR \fR
+.ad
+.RS 19n
+.rt  
+Get the maximum transmission unit size for interface. Place the result of this request in \fBifru_metric\fR field. 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSIFMETRIC\fR \fR
+.ad
+.RS 19n
+.rt  
+Set the metric associated with the interface.  The metric is used by routine daemons such as \fBin.routed\fR(1M). 
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGIFMETRIC\fR \fR
+.ad
+.RS 19n
+.rt  
+Get the metric associated with the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGIFMUXID\fR \fR
+.ad
+.RS 19n
+.rt  
+Get the \fBip\fR and \fBarp\fR \fBmuxid\fR associated with the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSIFMUXID\fR \fR
+.ad
+.RS 19n
+.rt  
+Set the \fBip\fR and \fBarp\fR \fBmuxid\fR associated with the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCGIFINDEX\fR \fR
+.ad
+.RS 19n
+.rt  
+Get the interface index associated with the interface.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBSIOCSIFINDEX\fR \fR
+.ad
+.RS 19n
+.rt  
+Set the interface index associated with the interface.
+.RE
+
+.LP
+The \fBifconf\fR structure has the form:
+.sp
+.in +2
+.nf
+/*
+* Structure used in SIOCGIFCONF request.
+* Used to retrieve interface configuration
+* for machine (useful for programs which
+* must know all networks accessible).
+*/
+struct ifconf {
+	int	ifc_len;		               /* size of assoc. buffer */
+	union {
+		caddr_t	ifcu_buf;
+		struct ifreq	*ifcu_req;
+	} ifc_ifcu;
+
+#define ifc_buf	ifc_ifcu.ifcu_buf	/* buffer address */
+#define ifc_req	ifc_ifcu.ifcu_req	/* array of structs returned */
+};
+.fi
+.in -2
+
+.SS "IFF_ Flags"
+.LP
+To display addressing information for each interface, enter \fBifconfig\fR \fB-a\fR. IFF_ flags are defined in \fB/usr/include/net/if.h\fR. The flags are:
+.sp
+.in +2
+.nf
+#define IFF_UP          0x00000001      /* Interface is up */
+#define IFF_BROADCAST   0x00000002      /* Broadcast address valid */
+#define IFF_DEBUG       0x00000004      /* Turn on debugging */
+#define IFF_LOOPBACK    0x00000008      /* Loopback net */
+#define IFF_POINTOPOINT 0x00000010      /* Interface is point-to-point link */
+#define IFF_NOTRAILERS  0x00000020      /* Avoid use of trailers */
+#define IFF_RUNNING     0x00000040      /* Resources allocated */
+#define IFF_NOARP       0x00000080      /* No address res. protocol */
+#define IFF_PROMISC     0x00000100      /* Receive all packets */
+#define IFF_ALLMULTI    0x00000200      /* Receive all multicast pkts */
+#define IFF_INTELLIGENT 0x00000400      /* Protocol code on board */
+#define IFF_MULTICAST   0x00000800      /* Supports multicast */
+#define IFF_MULTI_BCAST 0x00001000      /* Multicast using broadcast add. */
+#define IFF_UNNUMBERED  0x00002000      /* Non-unique address */
+#define IFF_DHCPRUNNING 0x00004000      /* DHCP controls interface */
+#define IFF_PRIVATE     0x00008000      /* Do not advertise */
+
+#define IFF_NOXMIT      0x00010000      /* Do not transmit pkts */
+#define IFF_NOLOCAL     0x00020000      /* No address - just on-link subnet */
+#define IFF_DEPRECATED  0x00040000      /* Interface addr. deprecated */
+#define IFF_ADDRCONF    0x00080000      /* Addr. from stateless addrconf */
+
+#define IFF_ROUTER      0x00100000      /* Router on interface */
+#define IFF_NONUD       0x00200000      /* No NUD on interface */
+#define IFF_ANYCAST     0x00400000      /* Anycast address */
+#define IFF_NORTEXCH    0x00800000      /* Don't exchange routing info */
+
+#define IFF_IPV4        0x01000000      /* IPv4 interface */
+#define IFF_IPV6        0x02000000      /* IPv6 interface */
+#define IFF_MIPRUNNING  0x04000000      /* Mobile IP controls interface */
+
+#define	IFF_NOFAILOVER 0x008000000	 /* Don't failover on NIC failure */
+
+#define	IFF_FAILED	0x010000000	 /* NIC has failed */
+#define	IFF_STANDBY	0x020000000	 /* Standby NIC-use on failures */
+#define	IFF_INACTIVE	0x040000000	 /* Standby active or not? */
+#define	IFF_OFFLINE	0x080000000	 /* NIC offlined */
+
+#define	IFF_XRESOLV	0x100000000	  /* IPv6 external resolver */
+#define	IFF_COS_ENABLED 0x200000000	 /* If CoS marking is supported */
+#define IFF_PREFERRED   0x400000000      /* Prefer as source address */
+#define IFF_TEMPORARY   0x800000000      /* RFC3041 */
+
+#define IFF_FIXEDMTU    0x1000000000     /* MTU set with SIOCSLIFMTU */
+#define IFF_VIRTUAL     0x2000000000     /* Cannot send/receive pkts */
+#define IFF_DUPLICATE   0x4000000000     /* Local address in use */
+.fi
+.in -2
+
+.LP
+For more information on IFF_ flags, see \fBifconfig\fR(1M).
+.SH ERRORS
+.sp
+.ne 2
+.mk
+.na
+\fB\fBEPERM\fR \fR
+.ad
+.RS 13n
+.rt  
+The effective user id of the calling process in not superuser.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBENXIO\fR \fR
+.ad
+.RS 13n
+.rt  
+The  \fBlifr_name\fR member of the  \fBlifreq\fR structure contains an invalid value. 
+.sp
+For SIOCGLIFSRCOF, the \fBlifs_ifindex\fR member of the \fBlifsrcof\fR structure contains an invalid value. 
+.sp
+For SIOCSLIFUSESRC, this error is returned if the \fBlifr_index\fR is set to an invalid value.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBEBADADDR\fR \fR
+.ad
+.RS 13n
+.rt  
+Wrong address family or malformed address.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBEBUSY\fR \fR
+.ad
+.RS 13n
+.rt  
+For  \fBSIOCSLIFFLAGS\fR, this error is returned when the order of bringing  the primary/physical interface (for example,  \fBeri0\fR) and a secondary/logical interface associated with the same physical interface (for example, \fBeri0:1\fR)
+up or down is violated.   The physical interface must be configured up first  and cannot be configured down until all the corresponding  logical interfaces have been configured down.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBEINVAL\fR \fR
+.ad
+.RS 13n
+.rt  
+For \fBSIOCSLIFMTU\fR, this error is returned when the requested \fBMTU\fR size is invalid. This error indicates the \fBMTU\fR size is greater than the \fBMTU\fR size supported by the \fBDLPI\fR provider or less than \fB68\fR (for IPv4 ) or less than \fB1200\fR (for IPv6 ). ]
+.sp
+For SIOCSLIFUSESRC, this error is returned if either the \fBlifr_index\fR or \fBlifr_name\fR identify interfaces that are already part of an existing IPMP group.
+.RE
+
+.sp
+.ne 2
+.mk
+.na
+\fB\fBEEXIST\fR \fR
+.ad
+.RS 13n
+.rt  
+For \fBSIOCLIFADDIF\fR, this error is returned if the \fBlifr_name\fR member in the \fBlifreq\fR structure corresponds to an interface that already has the PPA specified by \fBlifru_ppa\fR plumbed.
+.RE
+
+.SH SEE ALSO
+.LP
+\fBifconfig\fR(1M), \fBin.routed\fR(1M), \fBioctl\fR(2), \fBstreamio\fR(7I), \fBarp\fR(7P), \fBdlpi\fR(7P), \fBip\fR(7P), \fBip6\fR(7P)

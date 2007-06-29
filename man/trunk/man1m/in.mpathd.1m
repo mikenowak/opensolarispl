@@ -1,0 +1,230 @@
+'\" te
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (C) 2006, Sun Microsystems, Inc. All Rights Reserved
+.TH in.mpathd 1M "8 Sep 2006" "SunOS 5.11" "System Administration Commands"
+.SH NAME
+in.mpathd \- daemon for network adapter (NIC) failure detection, recovery, automatic failover and failback
+.SH SYNOPSIS
+.LP
+.nf
+\fB/usr/lib/inet/in.mpathd\fR 
+.fi
+
+.SH DESCRIPTION
+.LP
+The \fBin.mpathd\fR daemon performs Network Interface Card (\fBNIC\fR) failure and repair detection. In the event of a \fBNIC\fR failure, it causes IP network access from the failed \fBNIC\fR to failover to a standby \fBNIC\fR, if
+available, or to any another operational \fBNIC\fR that has been configured as part of the same network multipathing group. Once the failed \fBNIC\fR is repaired, all network access is restored to the repaired \fBNIC\fR.
+.LP
+The \fBin.mpathd\fR daemon can detect NIC failure and repair through two methods: by monitoring the IFF_RUNNING flag for each NIC (link-based failure detection), and by sending and receiving ICMP echo requests and replies on each NIC (probe-based failure detection). Link-based failure
+detection requires no explicit configuration and thus is always enabled (provided the NIC driver supports the feature); probe-based failure detection must be enabled through the configuration of one or more test addresses (described below), but has the benefit of testing the entire NIC send and receive
+path.
+.LP
+If only link-based failure detection is enabled, then the health of the interface is determined solely from the state of the \fBIFF_RUNNING\fR flag. Otherwise, the interface is considered failed if either of the two methods indicate a failure, and repaired once both methods indicate
+the failure has been corrected. Not all interfaces in a group need to be configured with the same failure detection methods.
+.LP
+As mentioned above, in order to perform probe-based failure detection \fBin.mpathd\fR needs a special test address on each NIC for the purpose of sending and receiving probes on the \fBNIC\fR. Use the \fBifconfig\fR command \fB-failover\fR option
+to configure these test addresses. See \fBifconfig\fR(1M). The test address must belong to a subnet that is known to the hosts and routers on the link.
+.LP
+The \fBin.mpathd\fR daemon can detect \fBNIC\fR failure and repair by two methods, by sending and receiving \fBICMP\fR echo requests and replies on each \fBNIC\fR, and by monitoring the \fBIFF_RUNNING\fR flag for each \fBNIC\fR. The link state on some models of \fBNIC\fR is indicated by the \fBIFF_RUNNING\fR flag, allowing for faster failure detection when the link goes down. The \fBin.mpathd\fR daemon considers a \fBNIC\fR to have failed if either of the above two
+methods indicates failure. A \fBNIC\fR is considered to be repaired only if both methods indicate the \fBNIC\fR is repaired.
+.LP
+The \fBin.mpathd\fR daemon sends the \fBICMP\fR echo request probes to on-link routers. If no routers are available, it sends the probes to neighboring hosts. Thus, for network failure detection and repair, there must be at least one neighbor on each link that responds
+to \fBICMP\fR echo request probes.
+.LP
+\fBin.mpathd\fR works on both IPv4 and IPv6. If IPv4 is plumbed on a \fBNIC\fR, an IPv4 test address is configured on the\fBNIC\fR, and the \fBNIC\fR is configured as part of a network multipathing group, then \fBin.mpathd\fR will
+start sending \fBICMP\fR probes on the \fBNIC\fR using IPv4.
+.LP
+In the case of IPv6, the link-local address must be configured as the test address. The \fBin.mpathd\fR daemon will not accept a non-link-local address as a test address. If the \fBNIC\fR is part of a multipathing group, and the test address has been configured, then \fBin.mpathd\fR will probe the \fBNIC\fR for failures using IPv6.
+.LP
+Even if both the IPv4 and IPv6 protocol streams are plumbed, it is sufficient to configure only one of the two, that is, either an IPv4 test address or an IPv6 test address on a \fBNIC\fR. If only an IPv4 test address is configured, it probes using only ICMPv4. If only an IPv6 test
+address is configured, it probes using only ICMPv6. If both type test addresses are configured, it probes using both ICMPv4 and ICMPv6.
+.LP
+The \fBin.mpathd\fR daemon accesses three variable values in \fB/etc/default/mpathd\fR: \fIFAILURE_DETECTION_TIME\fR, \fIFAILBACK\fR and \fITRACK_INTERFACES_ONLY_WITH_GROUPS\fR.
+.LP
+The \fIFAILURE_DETECTION_TIME\fR variable specifies the \fBNIC\fR failure detection time for the ICMP echo request probe method of detecting \fBNIC\fR failure. The shorter the failure detection time, the greater the volume of probe traffic. The default
+value of \fIFAILURE_DETECTION_TIME\fR is 10 seconds. This means that NIC failure will be detected by \fBin.mpathd\fR within 10 seconds. \fBNIC\fR failures detected by the \fBIFF_RUNNING\fR flag being cleared are acted on as soon as the \fBin.mpathd\fR daemon notices the change in the flag. The \fBNIC\fR repair detection time cannot be configured; however, it is defined as double the value of \fIFAILURE_DETECTION_TIME\fR. 
+.LP
+By default, \fBin.mpathd\fR does failure detection only on \fBNIC\fRs that are configured as part of a multipathing group. You can set \fITRACK_INTERFACES_ONLY_WITH_GROUPS\fR to \fBno\fR to enable failure detection by \fBin.mpathd\fR on all \fBNIC\fRs, even if they are not part of a multipathing group. However, \fBin.mpathd\fR cannot do failover from a failed \fBNIC\fR if it is not part of a multipathing group. 
+.LP
+The \fBin.mpathd\fR daemon will restore network traffic back to the previously failed \fBNIC\fR, after it has detected a \fBNIC\fR repair. To disable this, set the value of \fIFAILBACK\fR to \fBno\fR in \fB/etc/default/mpathd\fR.
+.SH FILES
+.sp
+.ne 2
+.mk
+.na
+\fB\fB/etc/default/mpathd\fR\fR
+.ad
+.RS 23n
+.rt  
+Contains default values used by the \fBin.mpathd\fR daemon.
+.RE
+
+.SH ATTRIBUTES
+.LP
+See \fBattributes\fR(5) for descriptions of the following attributes:
+.sp
+
+.sp
+.TS
+tab() box;
+cw(2.75i) |cw(2.75i) 
+lw(2.75i) |lw(2.75i) 
+.
+ATTRIBUTE TYPEATTRIBUTE VALUE
+_
+AvailabilitySUNWcsr
+.TE
+
+.SH SEE ALSO
+.LP
+\fBifconfig\fR(1M), \fBattributes\fR(5), \fBicmp\fR(7P), \fBicmp6\fR(7P), 
+.LP
+\fI\fR
+.SH DIAGNOSTICS
+.LP
+Test address \fIaddress\fR is not unique; disabling probe based failure detection on \fIinterface_name\fR
+.RS +4
+\fBDescription: \fR
+.LP
+For \fBin.mpathd\fR to perform probe-based failure detection, each test address in the group must be unique. Since the IPv6 test address is a link-local address derived from the \fBMAC\fR address, each IP interface in the group must
+have a unique \fBMAC\fR address.
+.RE
+
+.LP
+NIC \fIinterface_name\fR of group \fIgroup_name\fR is not plumbed for IPv[4|6] and may affect failover capability
+.RS +4
+\fBDescription: \fR
+.LP
+All \fBNIC\fRs in a multipathing group must be homogeneously plumbed. For example, if a \fBNIC\fR is plumbed for IPv4, then all \fBNIC\fRs in the group must be plumbed for IPv4. The streams modules pushed on all \fBNIC\fRs must be identical. 
+.RE
+
+.LP
+No test address configured on interface \fIinterface_name\fR disabling probe-based failure detection on it
+.RS +4
+\fBDescription: \fR
+.LP
+In order for \fBin.mpathd\fR to perform probe-based failure detection on a NIC, it must be configured with a test address: IPv4, IPv6, or both.
+.RE
+
+.LP
+The link has come up on \fIinterface_name\fR more than 2 times in the last minute; disabling failback until it stabilizes.
+.RS +4
+\fBDescription: \fR
+.LP
+In order to prevent interfaces with intermittent hardware, such as a bad cable, from causing repeated failovers and failbacks, \fBin.mpathd\fR does not failback to interfaces with frequently fluctuating link states.
+.RE
+
+.LP
+Invalid failure detection \fItime\fR assuming default 10000
+.RS +4
+\fBDescription: \fR
+.LP
+An invalid value was encountered for \fIFAILURE_DETECTION_TIME\fR in the \fB/etc/default/mpathd\fR file.
+.RE
+
+.LP
+Too small failure detection time of \fItime\fR assuming minimum 100
+.RS +4
+\fBDescription: \fR
+.LP
+The minimum value that can be specified for \fIFAILURE_DETECTION_TIME\fR is currently 100 milliseconds.
+.RE
+
+.LP
+Invalid value for FAILBACK \fIvalue\fR
+.RS +4
+\fBDescription: \fR
+.LP
+Valid values for the boolean variable \fIFAILBACK\fR are \fByes\fR or \fBno\fR.
+.RE
+
+.LP
+Invalid value for TRACK_INTERFACES_ONLY_WITH_GROUPS \fIvalue\fR
+.RS +4
+\fBDescription: \fR
+.LP
+Valid values for the boolean variable \fITRACK_INTERFACES_ONLY_WITH_GROUPS\fR are \fByes\fR or \fBno\fR.
+.RE
+
+.LP
+Cannot meet requested failure detection time of \fItime\fR ms on (inet[6] \fIinterface_name\fR) new failure detection time for group \fIgroup_name\fR is \fItime\fR ms
+.RS +4
+\fBDescription: \fR
+.LP
+The round trip time for \fBICMP\fR probes is higher than necessary to maintain the current failure detection time. The network is probably congested or the probe targets are loaded. \fBin.mpathd\fR automatically increases the failure
+detection time to whatever it can achieve under these conditions.
+.RE
+
+.LP
+Improved failure detection time \fItime\fR ms on (inet[6] \fIinterface_name\fR) for group \fIgroup_name\fR
+.RS +4
+\fBDescription: \fR
+.LP
+The round trip time for \fBICMP\fR probes has now decreased and \fBin.mpathd\fR has lowered the failure detection time correspondingly.
+.RE
+
+.LP
+NIC failure detected on \fIinterface_name\fR
+.RS +4
+\fBDescription: \fR
+.LP
+\fBin.mpathd\fR has detected \fBNIC\fR failure on \fIinterface_name\fR, and has set the \fBIFF_FAILED\fR flag on \fBNIC\fR \fIinterface_name\fR.
+.RE
+
+.LP
+Successfully failed over from NIC \fIinterface_name1\fR to NIC \fIinterface_name2\fR
+.RS +4
+\fBDescription: \fR
+.LP
+\fBin.mpathd\fR has caused the network traffic to failover from \fBNIC\fR \fIinterface_name1\fR to \fBNIC\fR \fIinterface_name2\fR, which is part of the multipathing group.
+.RE
+
+.LP
+NIC repair detected on \fIinterface_name\fR
+.RS +4
+\fBDescription: \fR
+.LP
+\fBin.mpathd\fR has detected that \fBNIC\fR \fIinterface_name\fR is repaired and operational. If the \fBIFF_FAILED\fR flag on the \fBNIC\fR was previously set, it will be reset.
+.RE
+
+.LP
+Successfully failed back to NIC \fIinterface_name\fR
+.RS +4
+\fBDescription: \fR
+.LP
+\fBin.mpathd\fR has restored network traffic back to \fBNIC\fR \fIinterface_name\fR, which is now repaired and operational.
+.RE
+
+.LP
+The link has gone down on \fIinterface_name\fR 
+.RS +4
+\fBDescription: \fR
+.LP
+\fBin.mpathd\fR has detected that the \fBIFF_RUNNING\fR flag for \fBNIC\fR \fIinterface_name\fR has been cleared, indicating the link has gone down.
+.RE
+
+.LP
+The link has come up on \fIinterface_name\fR
+.RS +4
+\fBDescription: \fR
+.LP
+\fBin.mpathd\fR has detected that the \fBIFF_RUNNING\fR flag for \fBNIC\fR \fIinterface_name\fR has been set, indicating the link has come up. 
+.RE
+
