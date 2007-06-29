@@ -1,0 +1,268 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Overview of Software Packages</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch16.html" title="Chapter 16. Managing Software (Overview)"><link rel="prev" href="ch16s02.html" title="Where to Find Software Management
+Tasks"><link rel="next" href="ch16s04.html" title="Tools for Managing Software Packages"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Overview of Software Packages</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch16s02.html">Prev</a> </td><th width="60%" align="center">Chapter 16. Managing Software (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch16s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="swmgrpkgsconcepts-35274"></a>Overview of Software Packages</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-276"></a>
+<a class="indexterm" name="indexterm-277"></a>Software management involves installing or removing software products.
+Sun and its third-party vendors deliver software products in a form called
+a <span class="emphasis"><em>package</em></span>. </p>
+<p>
+<a class="indexterm" name="swmgrpkgsconcepts-ix1702"></a>The term <span class="emphasis"><em>packaging</em></span> generically refers to
+the method for distributing and installing software products to systems where
+the products will be used. A package is a collection of files and directories
+in a defined format. This format conforms to the application binary interface
+(ABI), which is a supplement to the System V Interface Definition. The Solaris
+OS provides a set of utilities that interpret this format and provide the
+means to install a package, to remove a package, or to verify a package installation. </p>
+<p>A <span class="emphasis"><em>patch</em></span> is a collection of files and directories
+that replace or update existing files and directories that are preventing
+proper execution of the existing software. For more information about patches,
+see <span class="olink">Chapter 21, Managing Solaris Patches and Updates (Overview)</span>.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The terms patch and update are used interchangeably in this book.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="swmgrpkgsconcepts-27"></a>Signed Packages, Patches, and Updates</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-278"></a>
+<a class="indexterm" name="indexterm-279"></a>
+<a class="indexterm" name="indexterm-280"></a>
+<a class="indexterm" name="indexterm-281"></a>
+<a class="indexterm" name="indexterm-282"></a>
+<a class="indexterm" name="indexterm-283"></a>
+<a class="indexterm" name="indexterm-284"></a>Packages can include a digital signature. A
+package with a valid digital signature ensures that the package has not been
+modified since the signature was applied to the package. Using signed packages
+is a secure method of downloading or adding packages because the digital signature
+can be verified before the package is added to your system.</p>
+<p>The same holds true for signed patches. A patch with a valid digital
+signature ensures that the patch has not been modified since the signature
+was applied to the patch. Using signed patches is a secure method of downloading
+or applying patches because the digital signature can be verified before the
+patch is applied to your system.</p>
+<p>For more information about <span class="emphasis"><em>applying</em></span> signed patches
+to your system, see  <span class="olink">Managing Solaris Patches by Using the Sun Patch Manager Command-Line Interface (Task Map)</span> or <span class="olink">Managing Solaris Patches by Using the <span><strong class="command">patchadd</strong></span> Command (Task Map)</span>.</p>
+<p>For information about <span class="emphasis"><em>creating</em></span> signed packages,
+see <span class="olink">
+<em class="citetitle">Application Packaging Developer&#8217;s Guide</em>
+</span>.</p>
+<p>A signed package is identical to an unsigned package, except for the
+digital signature. The package can be installed, queried, or removed with
+existing Solaris packaging tools. A signed package is also binary-compatible
+with an unsigned package.</p>
+<p>Before you can use <span><strong class="command">pkgadd</strong></span> and <span><strong class="command">patchadd</strong></span> to
+add a package or patch with a digital signature to your system, you must set
+up a package keystore with trusted certificates. These certificates are used
+to identify that the digital signature on the package or patch is valid. Note
+that the keystore and certificates are automatically set up when you use Patch
+Manager to apply signed patches.</p>
+<p>The following describes the general terms associated with signed packages
+and patches.</p>
+<div class="variablelist"><dl><dt><span class="term">
+<span class="strong"><strong>Keystore</strong></span>
+</span></dt><dd>
+<p>A repository of certificates and keys that is queried when
+needed.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Java keystore &#8211; A repository of certificates that is
+installed by default with the Solaris release. The Java keystore is usually
+stored in the <code class="filename">/usr/j2se/jre/lib/security</code> directory.</p>
+</li><li>
+<p>Package keystore &#8211; A repository of certificates that
+you import when adding signed packages and patches to your system.</p>
+<p>The
+package keystore is stored in the <code class="filename">/var/sadm/security</code> directory
+by default.</p>
+</li></ul></div>
+</dd><dt><span class="term">
+<span class="strong"><strong>Trusted certificate</strong></span>
+</span></dt><dd>
+<p>A certificate that holds a public key that belongs to another
+entity. The <span class="emphasis"><em>trusted certificate</em></span> is named as such because
+the keystore owner trusts that the public key in the certificate indeed belongs
+to the identity identified by the subject or owner of the certificate. The
+issuer of the certificate vouches for this trust by signing the certificate.</p>
+<p>Trusted certificates are used when verifying signatures, and when initiating
+a connection to a secure (SSL) server.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>User key</strong></span>
+</span></dt><dd>
+<p>Holds sensitive cryptographic key information. This information
+is stored in a protected format to prevent unauthorized access. A user key
+consists of both the user's private key and the public key certificate that
+corresponds to the private key.</p>
+</dd></dl></div>
+<p>The process of using the <span><strong class="command">pkgadd</strong></span> or <span><strong class="command">patchadd</strong></span> command
+to add a signed package or patch to your system involves three basic steps:</p>
+<div class="orderedlist"><ol type="1"><li>
+<p>Adding the certificates to your system's package keystore
+by using the <span><strong class="command">pkgadm</strong></span> command</p>
+</li><li>
+<p>(Optional) Listing the certificates by using the <span><strong class="command">pkgadm</strong></span> command</p>
+</li><li>
+<p>Adding the package with the <span><strong class="command">pkgadd</strong></span> command
+or applying the patch by using the <span><strong class="command">patchadd</strong></span> command</p>
+</li></ol></div>
+<p>If you use Patch Manager to apply patches to your system, you do not
+need to manually set up the keystore and certificates, as it is automatically
+set up.</p>
+<p>For step-by-step instructions on adding signed packages to your system,
+see <span class="olink">Adding and Removing Signed Packages by Using the <span><strong class="command">pkgadd</strong></span> Command (Task Map)</span>.</p>
+<p>For step-by-step instructions on applying patches and updates to your
+system with the Sun Update Manager tools, see the Sun Update Connection, System
+Edition software documentation at <a href="http://docs.sun.com/app/docs/coll/1320.1/" target="_top">
+</a>.</p>
+<p>For step-by-step instructions on applying signed patches to your system
+with the Sun Patch Manger tools, see  <span class="olink">Managing Solaris Patches by Using the Sun Patch Manager Command-Line Interface (Task Map)</span>, or <span class="olink">Managing Solaris Patches by Using the <span><strong class="command">patchadd</strong></span> Command (Task Map)</span>.</p>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="swmgrpkgsconcepts-28"></a>Using Sun's Certificates to Verify
+Signed Packages and Patches</h4></div></div></div>
+
+<p>Digital certificates, issued and authenticated by Sun Microsystems,
+are used to verify that the downloaded package or patch with the digital signature
+has not been compromised. These certificates are imported into your system's
+package keystore.<a class="indexterm" name="indexterm-285"></a>
+<a class="indexterm" name="indexterm-286"></a>
+<a class="indexterm" name="indexterm-287"></a>
+<a class="indexterm" name="indexterm-288"></a>
+<a class="indexterm" name="indexterm-289"></a>
+<a class="indexterm" name="indexterm-290"></a>
+<a class="indexterm" name="indexterm-291"></a>
+<a class="indexterm" name="indexterm-292"></a>
+</p>
+<p>A <span class="emphasis"><em>stream-formatted</em></span> SVR4-signed package or patch
+contains an embedded PEM-encoded PKCS7 signature. This signature contains
+at a minimum the encrypted digest of the package or patch, along with the
+signer's X.509 public key certificate. The package or patch can also contain
+a <span class="emphasis"><em>certificate chain</em></span> that is used to form a chain of trust
+from the signer's certificate to a locally stored trusted certificate.</p>
+<p>The PEM-encoded PKCS7 signature is used to verify the following information:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The package came from the entity that signed it.</p>
+</li><li>
+<p>The entity indeed signed it.</p>
+</li><li>
+<p>The package hasn't been modified since the entity signed it.</p>
+</li><li>
+<p>The entity that signed it is a trusted entity.</p>
+</li></ul></div>
+<p>All Sun certificates are issued by Baltimore Technologies, which recently
+bought GTE CyberTrust.</p>
+<p>Access to a package keystore is protected by a special password that
+you specify when you import the Sun certificates into your system's package
+keystore.</p>
+<p>If you use the <span><strong class="command">pkgadm listcert</strong></span> command, you can view
+information about your locally stored certificates in the package keystore.
+For example:</p>
+<pre class="screen"># <strong class="userinput"><code>pkgadm listcert -P pass:</code></strong>
+<em class="replaceable"><code>store-pass</code></em>
+    Keystore Alias: GTE CyberTrust Root
+       Common Name: GTE CyberTrust Root
+  Certificate Type: Trusted Certificate
+Issuer Common Name: GTE CyberTrust Root
+    Validity Dates: &lt;Feb 23 23:01:00 1996 GMT&gt; - &lt;Feb 23 23:59:00 2006 GMT&gt;
+   MD5 Fingerprint: C4:D7:F0:B2:A3:C5:7D:61:67:F0:04:CD:43:D3:BA:58
+  SHA1 Fingerprint: 90:DE:DE:9E:4C:4E:9F:6F:D8:86:17:57:9D:D3:91:BC:65:A6...</pre>
+<p>The following describes the output of the <span><strong class="command">pkgadm listcert</strong></span> command.</p>
+<div class="variablelist"><dl><dt><span class="term">
+<span class="strong"><strong>Keystore Alias</strong></span>
+</span></dt><dd>
+<p>When you retrieve certificates for printing, signing, or removing,
+this name must be used to reference the certificate.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>Command Name</strong></span>
+</span></dt><dd>
+<p>The common name of the certificate. For trusted certificates,
+this name is the same as the keystore alias.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>Certificate Type</strong></span>
+</span></dt><dd>
+<p>Can be one of two types:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Trusted certificate &#8211; A certificate that can be used
+as a trust anchor when verifying other certificates. No private key is associated
+with a trusted certificate.</p>
+</li><li>
+<p>Signing certificate &#8211; A certificate that can be used
+when signing a package or patch. A private key is  associated with a signing
+certificate.</p>
+</li></ul></div>
+</dd><dt><span class="term">
+<span class="strong"><strong>Issuer Command Name</strong></span>
+</span></dt><dd>
+<p>The name of the entity that issued, and therefore signed,
+this certificate. For trusted certificate authority (CA) certificates, the
+issuer common name and common name are the same.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>Validity Dates</strong></span>
+</span></dt><dd>
+<p>A date range that identifies when the certificate is valid.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>MD5 Fingerprint</strong></span>
+</span></dt><dd>
+<p>An MD5 digest of the certificate. This digest can be used
+to verify that the certificate has not been altered during transmission from
+the source of the certificate.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>SHA1 Fingerprint</strong></span>
+</span></dt><dd>
+<p>Similar to an MD5 fingerprint, except that it is calculated
+using a different algorithm.</p>
+</dd></dl></div>
+<p>Each certificate is authenticated by comparing its MD5 and SHA1 hashes,
+also called <span class="emphasis"><em>fingerprints</em></span>, against the known correct fingerprints
+published by the issuer.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="swmgrpkgsconcepts-36"></a>Importing Sun's Trusted Certificates</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-293"></a>
+<a class="indexterm" name="indexterm-294"></a>
+<a class="indexterm" name="indexterm-295"></a>
+<a class="indexterm" name="indexterm-296"></a>You can obtain Sun's trusted certificates for adding signed packages
+and patches in the following ways:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="strong"><strong>Java keystore</strong></span> &#8211; Import
+Sun's Root CA certificate that is included by default in the Java keystore
+when you install the Solaris release.</p>
+</li><li>
+<p>
+<span class="strong"><strong>Sun's Public Key Infrastructure (PKI)
+site</strong></span> &#8211; If you do not have a Java keystore available on your
+system, you can import the certificates from this site.</p>
+<p>
+<a href="https://ra.sun.com:11005" target="_top">https://ra.sun.com:11005/</a>
+</p>
+</li><li>
+<p>
+<span class="strong"><strong>PatchPro's keystore</strong></span> &#8211;
+If you have installed PatchPro for applying signed patches with the <span><strong class="command">smpatch</strong></span> command, you can import Sun's Root CA certificate from the Java
+keystore.</p>
+</li></ul></div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="swmgrpkgsconcepts-31"></a>Setting Up a Package Keystore</h4></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-297"></a>
+<a class="indexterm" name="indexterm-298"></a>In previous Solaris releases, you could download the patch management
+tools and create a Java keystore, for use by PatchPro, by importing the certificates
+with the <span><strong class="command">keytool</strong></span> command.</p>
+<p>If your system already has a populated Java keystore, you can now export
+the Sun Microsystems root CA certificate from the Java keystore with the <span><strong class="command">keytool</strong></span> command. Then, use the <span><strong class="command">pkgadm</strong></span> command
+to import this certificate into the package keystore.</p>
+<p>After the Root CA certificate is imported into the package keystore,
+you can use the <span><strong class="command">pkgadd</strong></span> and <span><strong class="command">patchadd</strong></span> commands
+to add signed packages and patches to your system.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The Sun Microsystems root-level certificates are only required
+when adding Sun-signed patches and packages.</p>
+</div>
+<p>For step-by-step instructions on importing certificates into the package
+keystore, see <span class="olink">How to Import a Trusted Certificate From the Java Keystore (<span><strong class="command">pkgadm addcert</strong></span>)</span>.</p>
+<p>For complete instructions on adding signed packages with the <span><strong class="command">pkgadd</strong></span> command, see <span class="olink">How to Add a Signed Package (<span><strong class="command">pkgadd</strong></span>)</span>.</p>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch16s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch16.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch16s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Where to Find Software Management
+Tasks </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Tools for Managing Software Packages</td></tr></table></div></body></html>

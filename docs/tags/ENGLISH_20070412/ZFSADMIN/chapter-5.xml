@@ -1,0 +1,2865 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="gavwq">
+
+
+
+<title>Zarządzanie systemami plików ZFS</title>
+<toc>
+<para>Ten rozdział dostarcza szczegółowe informacje o zarządzaniu systemami plików ZFS. Omawia także takie koncepcje,
+jak hierarchiczny układ systemów plików, dziedziczenie właściwości, automatyczne zarządzanie punktem montowania oraz
+(FIXIT!) share interactions.</para>
+
+<para>ZFS jest lekkim systemem plików zgodnym z POSIX, który jest umieszczony na
+samym szczycie puli nośników danych. Systemy plików mogą być dynamicznie tworzone
+i usuwane bez potrzeby uprzedniego przydzielania lub formatowania jakiejkolwiek
+przestrzeni. Ponieważ te systemy plików są tak lekkie i zarządzalne z jednego
+centralnego miejsca w systemie plików ZFS, można bardzo łatwo tworzyć ich wiele. (FIXIT)
+<indexterm xml:id="indexterm-198">
+<primary>System plików ZFS</primary>
+<secondary>opis</secondary>
+</indexterm>
+</para>
+<para>Systemy plików ZFS są administrowane przy użyciu polecenia <command>zfs</command>.
+The <command>zfs</command> command provides a set of subcommands that perform
+specific operations on file systems. This chapter describes these subcommands
+in detail. Snapshots, volumes, and clones are also managed by using this command,
+but these features are only covered briefly in this chapter. For detailed
+information about snapshots and clones, see <olink targetdoc="" remap="internal" targetptr="gavvx">Chapter 6, Working With ZFS Snapshots and Clones</olink>. For detailed information about
+emulated volumes, see <olink targetdoc="" remap="internal" targetptr="gaypf">Emulated Volumes</olink>.</para>
+<note>
+
+<para>Pojęcie <emphasis>dataset</emphasis> używane w tym rozdziale
+jest ogólnym pojęciem odnoszącym się do jakiegokolwiek systemu plików,
+obrazu (snapshotu), klonu lub woluminu.<indexterm xml:id="indexterm-199">
+<primary>dataset</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+</note>
+<para>W tym rozdziale zostaną omówione następujące zagadnienia:</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink targetdoc="" remap="internal" targetptr="gamnq">Tworzenie i usuwanie systemów plików ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink targetdoc="" remap="internal" targetptr="gazss">Parametry dla systemu plików ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink targetdoc="" remap="internal" targetptr="gazsu">Uzyskiwanie informacji o systemie plików ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink targetdoc="" remap="internal" targetptr="gayns">Zarządzanie parametrami dla ZFS-a</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink targetdoc="" remap="internal" targetptr="gaynd">Montowanie i współdzielenie systemów plików ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink targetdoc="" remap="internal" targetptr="gazvb">Limity i rezerwacje</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink targetdoc="" remap="internal" targetptr="gbchx">Zapisywanie i odzyskiwanie danych</olink>
+</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="gamnq">
+<title>Tworzenie i usuwanie systemów plików ZFS</title>
+<para>Systemy plików ZFS tworzy się i usuwa przy użyciu poleceń <command>zfs
+create</command> oraz <command>zfs destroy</command>.</para>
+<sect2 xml:id="gazsf">
+<title>Tworzenie systemu plików ZFS</title>
+<para>Systemy plików ZFS tworzy się przy użyciu polecenia <command>zfs create</command>.
+Komenda <command>create</command> pobiera jeden argument: nazwę systemu plików
+do stworzenia. Nazwa systemu plików określa ścieżkę dostępu począwszy od nazwy puli:
+<indexterm xml:id="indexterm-200">
+<primary>creating</primary>
+<secondary>ZFS file system</secondary>
+<tertiary>description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-201">
+<primary>
+<command>zfs create</command>
+</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>
+<replaceable>pool-name/[filesystem-name/]filesystem-name</replaceable>
+</para>
+<para>Nazwa puli i poprzednie nazwy systemu plików w ścieżce określają położenie
+w hierarchii, gdzie nowy system plików zostanie utworzony. Wszystkie pośrednie
+nazwy systemów plików muszą już istnieć w puli. Ostatnia nazwa w ścieżce określa
+nazwę systemu plików, który zostanie utworzony. Nazwa systemu plików musi
+odpowiadać zasadom tworzenia nazw zdefiniowanych w
+<olink targetdoc="" remap="internal" targetptr="gbcpt">ZFS Component Naming Requirements</olink>.</para>
+<para>W tym przykładzie system plików o nazwie <filename>bonwick</filename>
+zostanie stworzony w systemie plików <filename>tank/home</filename>.<indexterm xml:id="indexterm-202">
+<primary>creating</primary>
+<secondary>ZFS file system</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-203">
+<primary>
+<command>zfs create</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-204">
+<primary>ZFS file systems</primary>
+<secondary>creating</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<screen># <userinput>zfs create tank/home/bonwick</userinput>
+</screen>
+<para>ZFS automatycznie montuje nowo utworzony system plików, jeśli operacja tworzenia
+powiodła się. Domyślnie systemy plików są montowane jako <replaceable>/dataset</replaceable>,
+używając ścieżki dostarczanej jako nazwa systemu plików dla polecenia <command>create</command>.
+W tym przykładzie nowo utworzony system plików <filename>bonwick</filename> jest dostępny
+jako <filename>/tank/home/bonwick</filename>. W celu uzyskania większej ilości informacji
+na temat automatycznego zarządzania punktami montowania, proszę zobaczyć
+<olink targetdoc="" remap="internal" targetptr="gaztn">Managing ZFS Mount Points</olink>.<indexterm xml:id="indexterm-205">
+<primary>mountpoint</primary>
+<secondary>default for ZFS file system</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-206">
+<primary>ZFS file systems</primary>
+<secondary>default mountpoint</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<para>W celu uzyskania większej ilości informacji na temat polecenia <command>zfs create</command>, proszę
+zobaczyć <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<citerefentry>
+<refentrytitle>zfs</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>.</para>
+</sect2>
+<sect2 xml:id="gammq">
+<title>Niszczenie systemu plików ZFS</title>
+<para>W celu zniszczenia systemu plików ZFS należy użyć polecenia <command>zfs destroy</command>.
+Zniszczony system plików jest automatycznie odmontowany i wyłączony ze współdzielenia.
+W celu uzyskania większej ilości informacji na temat automatyczne zarządzania montowaniem
+lub współdzieleniem systemów plików, proszę zobaczyć
+<olink targetdoc="" remap="internal" targetptr="gbala">Automatic Mount Points</olink>.<indexterm xml:id="indexterm-207">
+<primary>destroying</primary>
+<secondary>ZFS file system</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-208">
+<primary>
+<command>zfs destroy</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-209">
+<primary>ZFS file systems</primary>
+<secondary>destroying</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<para>W podanym przykładzie system plików <filename>tabriz</filename>
+zostanie zniszczony.</para>
+<screen># <userinput>zfs destroy tank/home/tabriz</userinput>
+</screen>
+<caution>
+
+<para>Po użyciu polecenia <command>destroy</command> nie ma żadnej prośby o potwierdzenie operacji.
+Proszę używać ze wzmożoną ostrożnością.</para>
+</caution>
+<para>Jeśli system plików przeznaczony do zniszczenia jest zajęty i w związku z tym
+nie może zostać odmontowany, wykonanie polecenia <command>zfs destroy</command>
+nie powiedzie się. W celu zniszczenia aktywnego systemu plików, proszę użyć
+opcji <option>f</option>. Proszę używać tej opcji ostrożnie, ponieważ
+może ona odmontować, wyłączyć ze współdzielenia i zniszczyć aktywne systemy plików,
+co może spowodować nieoczekiwane zachowanie się aplikacji.</para>
+<screen># <userinput>zfs destroy tank/home/ahrens</userinput>
+cannot unmount 'tank/home/ahrens': Device busy
+
+# <userinput>zfs destroy -f tank/home/ahrens</userinput>
+</screen>
+<para>Wykonanie polecenia <command>zfs destroy</command> również nie powiedzie się,
+jeśli system plików ma dzieci. W celu rekursywnego zniszczenia systemu plików i wszystkich
+potomnych dla niego, proszę użyć opcji <option>r</option>. Proszę zauważyć,
+że rekursywne niszczenie systemów plików zniszczy również obrazy (snapshoty), więc
+należy używać tej opcji ostrożnie.</para>
+<screen># <userinput>zfs destroy tank/ws</userinput>
+cannot destroy 'tank/ws': filesystem has children
+use '-r' to destroy the following datasets:
+tank/ws/billm
+tank/ws/bonwick
+tank/ws/maybee
+
+# <userinput>zfs destroy -r tank/ws</userinput>
+</screen>
+<para>Jeśli system plików przeznaczony do zniszczenia ma pośrednie zależności,
+nawet próba rekursywnego zniszczenia opisana powyżej nie powiedzie się. Żeby wymusić
+zniszczenie <emphasis>wszystkich</emphasis> zależności, włącznie z klonami systemów plików
+poza docelową hierarchią, musi zostać użyta opcja <option>R</option>. Proszę używać
+tej opcji ze szczególną ostrożnością.<indexterm xml:id="indexterm-210">
+<primary>destroying</primary>
+<secondary>ZFS file system with dependents</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-211">
+<primary>
+<command>zfs destroy -r</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-212">
+<primary>ZFS file systems</primary>
+<secondary>destroying with dependents</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<screen># <userinput>zfs destroy -r tank/home/schrock</userinput>
+cannot destroy 'tank/home/schrock': filesystem has dependent clones
+use '-R' to destroy the following datasets:
+tank/clones/schrock-clone
+
+# <userinput>zfs destroy -R tank/home/schrock</userinput>
+</screen>
+<caution>
+
+<para>Po użyciu opcji <option>f</option>, <option>r</option>, lub <option>
+R</option> nie ma żadnej prośby o potwierdzenie operacji, więc proszę używać tych
+opcji ostrożnie.</para>
+</caution>
+<para>W celu uzyskania większej ilości informacji o obrazach i klonach, proszę zajrzeć do <olink targetdoc="" remap="internal" targetptr="gavvx">Chapter 6, Working With ZFS Snapshots and Clones</olink>.</para>
+</sect2>
+<sect2 xml:id="gamnn">
+<title>Zmiana nazwy systemu plików ZFS</title>
+<para>Systemy plików mogą mieć zmienianą nazwę przy użyciu polecenia <command>zfs rename</command>.
+Używając komendy <command>rename</command> można przeprowadzić następujące operacje:<indexterm xml:id="indexterm-213">
+<primary>renaming</primary>
+<secondary>ZFS file system</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-214">
+<primary>
+<command>zfs rename</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-215">
+<primary>ZFS file systems</primary>
+<secondary>renaming</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<itemizedlist>
+<listitem>
+<para>Zmiana nazwy systemu plików</para>
+</listitem>
+<listitem>
+<para>Przeniesienie systemu plików do nowej lokalizacji w ramach hierarchii systemu
+plików ZFS</para>
+</listitem>
+<listitem>
+<para>Zmiana nazwy systemu plików i przeniesienie go włącznie z hierarchią systemu
+plików ZFS</para>
+</listitem>
+</itemizedlist>
+<para>Następujący przykład używa komendy <command>rename</command> w celu
+prostej zmiany nazwy systemu plików:</para>
+<screen># <userinput>zfs rename tank/home/kustarz tank/home/kustarz_old</userinput>
+</screen>
+<para>Ten przykład zmienia nazwę systemu plików z <filename>kustarz</filename> na <filename>kustarz_old</filename>. </para>
+<para>Następujący przykład pokazuje, jak używać polecenia <command>zfs rename</command> do
+zmiany lokalizacji systemu plików.</para>
+<screen># <userinput>zfs rename tank/home/maybee tank/ws/maybee</userinput>
+</screen>
+<para>W tym przykładzie system plików <filename>maybee</filename> zostanie przeniesiony
+z <filename>tank/home</filename> do <filename>tank/ws</filename>. Jeśli
+następuje próba zmiany lokalizacji systemu plików przy użyciu polecenia
+<command>rename</command>, nowa lokalizacja musi zawierać się w obrębie
+tej samej puli i musi mieć wystarczającą ilość wolnego miejsca, żeby
+trzymać nowy system plików. Jeśli nowa lokalizacja nie zapewnia wystarczającej
+ilości miejsca, przypuszczalnie z powodu osiągnięcia limitu (quoty), przeniesienie
+systemu plików nie powiedzie się.</para>
+<para>W celu uzyskania większej ilości informacji o limitach, proszę zobaczyć <olink targetdoc="" remap="internal" targetptr="gazvb">ZFS Quotas and Reservations</olink>.</para>
+<para>Operacja zmiany nazwy próbuje wykonać sekwencję odmontowania i przemontowania wskazanego oraz
+potomnego systemu plików. Operacja zmiany nazwy nie powiedzie się, jeśli nie będzie
+w stanie odmontować aktywnego systemu plików. Jeśli wystąpi taki problem,
+potrzebne będzie wymuszenie odmontowania systemu plików.</para>
+<para>W celu uzyskania większej ilości informacji o zmianie nazwy obrazów (snapshotów), proszę zobaczyć <olink targetdoc="" remap="internal" targetptr="gbion">Renaming ZFS Snapshots</olink>.</para>
+</sect2>
+</sect1>
+<sect1 xml:id="gazss">
+<title>Parametry dla systemu plików ZFS</title>
+<para>Parametry są podstawowym mechanizmem, którego używa się w celu kontroli zachowania
+się systemów plików, woluminów, obrazów i klonów. O ile nie określono ineaczej, parametry
+opisane w tej sekcji odnoszą się do wszystkich typów datasetu.<indexterm xml:id="indexterm-216">
+<primary>ZFS properties</primary>
+<secondary>description</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-217">
+<primary>properties of ZFS</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Parametry dzielą się na tylko do odczytu (statystyki) lub ustawiane. Większość
+parametrów przeznaczonych do ustawiania jest także dziedziczona. Dziedziczony parametr jest takim,
+którego ustawiona wartość na "rodzicu" jest dziedziczona na wszystkie potomne datasety.</para>
+<para>Wszystkie dziedziczone parametry mają przypisane źródło. Źródło określa, w jaki sposób
+parametr została przypisana. Źródło parametru może przyjmować następujące parametry:<indexterm xml:id="indexterm-218">
+<primary>ZFS properties</primary>
+<secondary>inheritable, description of</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-219">
+<primary>properties of ZFS</primary>
+<secondary>description of heritable properties</secondary>
+</indexterm>
+</para>
+<variablelist>
+<varlistentry>
+<term>
+<literal>local</literal>
+</term>
+<listitem>
+<para>Źródło zdefiniowane jako <literal>local</literal> określa, że parametr został
+dokładnie określony na tym datasecie przy użyciu polecenia
+<command>zfs set</command>, tak jak to opisano w <olink targetdoc="" remap="internal" targetptr="gazsp">Setting ZFS Properties</olink>.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>inherited from</literal> <replaceable>dataset-name</replaceable>
+</term>
+<listitem>
+<para>Wartość <literal>inherited from</literal> <replaceable>dataset-name</replaceable> oznacza, że parametr został odziedziczony
+z podanego poprzednika.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<literal>default</literal>
+</term>
+<listitem>
+<para>Wartość <literal>default</literal> (domyślny) oznacza, że parametr nie został
+ani odziedziczony, ani ustawiony lokalnie. To źródło jest wynikiem nie posiadania
+jakiegokolwiek przodka mającego ustawionego parametr ze źródłem zdefiniowanym jako
+<literal>local</literal>.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+<para>Poniższa tabela zestawia wszystkie parametry (tylko do odczytu i ustawialne)
+systemu plików ZFS. Parametry tylko do odczytu są oznaczone. Wszystkie pozostałe
+są ustawiane.</para>
+<table frame="topbot" xml:id="gcfgr">
+
+<title>Opisy parametrów dla ZFS</title>
+<tgroup cols="4" colsep="0" rowsep="0">
+<colspec colwidth="16.17*"/>
+<colspec colwidth="11.73*"/>
+<colspec colwidth="13.42*"/>
+<colspec colwidth="58.65*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Nazwa Parametru</para>
+</entry>
+<entry>
+<para>Typ</para>
+</entry>
+<entry>
+<para>Wartość domyślna</para>
+</entry>
+<entry>
+<para>Opis</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>aclinherit</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Łańcuch znaków</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>secure</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Kontroluje w jaki sposób wpisy ACL są dziedziczone, kiedy są tworzone pliki i katalogi.
+Dopuszczalne wartości to <literal>discard</literal>, <literal>noallow</literal>, <literal>secure</literal> oraz <literal>passthrough</literal>.
+Opis tych wartości znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbaaz">ACL Property Modes</olink>.<indexterm xml:id="indexterm-220">
+<primary>ZFS properties</primary>
+<secondary>
+<property>aclinherit</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-221">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>aclinherit</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-222">
+<primary>ACL property mode</primary>
+<secondary>
+<property>aclinherit</property>
+</secondary>
+</indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>aclmode</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Łańcuch znaków</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>groupmask</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Kontroluje w jaki sposób wpis ACL jest zmieniany podczas operacji <literal>chmod</literal>.
+Dopuszczalne wartości to <literal>discard</literal>, <literal>groupmask</literal> oraz <literal>passthrough</literal>.
+Opis tych wartości znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbaaz">ACL Property Modes</olink>.<indexterm xml:id="indexterm-223">
+<primary>ZFS properties</primary>
+<secondary>
+<property>aclmode</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-224">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>aclmode</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-225">
+<primary>ACL property mode</primary>
+<secondary>
+<property>aclmode</property>
+</secondary>
+</indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>atime</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Logiczny</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>on</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Kontroluje, czy czas dostępu do pliku jest aktualizowany za każdym razem,
+gdy ten jest czytany. Ustawienie tego parametru na "off" zapobiega generowaniu
+zapisów w czasie odczytu do pliku i może znacząco wpłynąć na podniesienie
+wydajności, ale jednocześnie spowodować problemy z programami do poczty
+elektronicznej i podobnymi narzędziami użytkowymi.<indexterm xml:id="indexterm-226">
+<primary>ZFS properties</primary>
+<secondary>
+<property>atime</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-227">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>atime</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-228">
+<primary>
+<property>atime</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>available</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Liczba</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>N/A</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Parametr tylko do odczytu, który określa dostępne miejsce dla datasetu
+i wszystkich jego dzieci, przy założeniu braku jakiejkolwiek innej aktywności w puli.
+Ponieważ miejsce jest współdzielone wewnątrz puli, dostępne miejsce może być
+ograniczone przez różne inne czynniki włączając w to fizyczny rozmiar puli, limity (quoty),
+rezerwacje lub inne datasety w puli.<indexterm xml:id="indexterm-229">
+<primary>ZFS properties</primary>
+<secondary>
+<property>available</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-230">
+<primary>read-only properties of ZFS</primary>
+<secondary>
+<property>available</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-231">
+<primary>
+<property>available</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Do tego parametru można także odwołać się po skróconej nazwie, <literal>avail</literal>.</para>
+<para>Więcej informacji na temat liczenia miejsca w puli jest pod <olink targetdoc="" remap="internal" targetptr="gbchp">ZFS Space Accounting</olink>.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>checksum</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Łańcuch znaków</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>on</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Kontroluje sposób użycia sum kontrolnych do weryfikowania integralności danych.
+Domyślna wartość jest ustawiona na <literal>on</literal>, która automatycznie wybiera
+odpowiedni algorytm, aktualnie <literal>fletcher2</literal>.
+Dopuszczalne wartości to <literal>on, off, fletcher2</literal>, <literal>fletcher4</literal> oraz <literal>sha256</literal>.
+Wartość <literal>off</literal> wyłącza sprawdzanie integralności danych użytkownika.
+Wartość <literal>off</literal> nie jest polecane.<indexterm xml:id="indexterm-232">
+<primary>ZFS properties</primary>
+<secondary>
+<property>checksum</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-233">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>checksum</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-234">
+<primary>
+<property>checksum</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>compression</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Łańcuch znaków</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>off</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Kontroluje rodzaj użytego algorytmu kompresji dla tego datasetu. Aktualnie
+istnieje tylko jeden algorytm, <literal>lzjb</literal>.<indexterm xml:id="indexterm-235">
+<primary>ZFS properties</primary>
+<secondary>
+<property>compression</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-236">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>compression</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-237">
+<primary>
+<property>compression</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Do tego parametru można także odwołać się po skróconej nazwie, <literal>compress</literal>.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>compressratio</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Liczba</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>N/A</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Parametr tylko do odczytu, który określa współczynnik kompresji
+osiągnięty dla tego datasetu, wyrażony jako mnożnik.
+Kompresja może być włączona przez wykonanie
+<literal>zfs set compression=on</literal> <replaceable>dataset</replaceable>.<indexterm xml:id="indexterm-238">
+<primary>ZFS properties</primary>
+<secondary>
+<property>compressratio</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-239">
+<primary>read-only properties of ZFS</primary>
+<secondary>
+<property>compression</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-240">
+<primary>
+<property>compressratio</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Wartość jest wyliczana z logicznego rozmiaru wszystkich plików i wielkości danych
+fizycznych. Includes explicit savings through the use of the <property>compression</property> property.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>creation</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Liczba</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>N/A</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Parametr tylko do odczytu, który określa datę i czas, kiedy ten dataset
+został stworzony.<indexterm xml:id="indexterm-241">
+<primary>ZFS properties</primary>
+<secondary>
+<property>creation</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-242">
+<primary>read-only properties of ZFS</primary>
+<secondary>
+<property>creation</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-243">
+<primary>
+<property>creation</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>devices</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Logiczny</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>on</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Controls whether device nodes found within this file system can be opened.<indexterm xml:id="indexterm-244">
+<primary>ZFS properties</primary>
+<secondary>
+<property>devices</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-245">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>devices</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-246">
+<primary>
+<property>devices</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>exec</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Logiczny</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>on</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Określa, czy programy znajdujące się na tym systemie plików są dopuszczone do wykonania.
+Dodatkowo, jeśli parametr ten jest ustawiony na <literal>off</literal>, wywołania <command>mmap(2)</command>
+z <literal>PROT_EXEC</literal> są zabronione.<indexterm xml:id="indexterm-247">
+<primary>ZFS properties</primary>
+<secondary>
+<property>exec</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-248">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>exec</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-249">
+<primary>
+<property>exec</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>mounted</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Logiczny</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>N/A</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Parametr tylko do odczytu określający, czy system plików, klon lub
+obraz jest aktualnie zamontowany. Ten parametr nie ma zastosowania w odniesieniu
+do wollimunów. Parametr może przyjmować wartości yes lub no.<indexterm xml:id="indexterm-250">
+<primary>ZFS properties</primary>
+<secondary>
+<property>mounted</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-251">
+<primary>read-only properties of ZFS</primary>
+<secondary>
+<property>mounted</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-252">
+<primary>
+<property>mounted</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>mountpoint</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Łańcuch znaków</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>N/A</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Określa punkt montowania dla systemu plików. Kiedy wartość parametru <property>mountpoint</property>
+zostaje zmieniona, system plików i wszystkie jego potomne, które dzieciczą punkt montowania zostają odmontowane.
+Jeśli nową wartością jest  <literal>legacy</literal>, wtedy pozostają odmontowane. W przeciwnym przypadku
+zostaną automatycznie zamontowane w nowej lokalizacji, jeśli parametr ten miał poprzednio wartość
+<literal>legacy</literal> or <literal>none</literal> lub był zamontowany, zanim parametr został
+zmieniony. Dodatkowo wszystkie udostępniane systemy plików zostaną wyłączone ze współdzielenia i udostępnione
+z nowej lokalizacji.<indexterm xml:id="indexterm-253">
+<primary>ZFS properties</primary>
+<secondary>
+<property>mountpoint</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-254">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>mountpoint</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-255">
+<primary>
+<property>mountpoint</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Więcej informacji o tym parametrze znajduje się pod <olink targetdoc="" remap="internal" targetptr="gaztn">Managing ZFS Mount Points</olink>.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>origin</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Łańcuch znaków</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>N/A</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Parametr tylko do odczytu dla klonów lub woluminów, który określa obraz
+systemu plików, z którego klon został stworzony. Oryginalny obraz nie może
+zostać zniszczony (nawet przy użyciu opcji <option>
+r</option> lub <option>
+f</option>) tak długo, jak klon istnieje.</para>
+<para>Nie sklonowane systemu plików mają ten parametr ustawiony jako none.<indexterm xml:id="indexterm-256">
+<primary>ZFS properties</primary>
+<secondary>
+<property>origin</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-257">
+<primary>read-only properties of ZFS</primary>
+<secondary>
+<property>origin</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-258">
+<primary>
+<property>origin</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>quota</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Liczba (lub <literal>none</literal>)</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>none</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Ogranicza wielkość dostępnego miejsca dla datasetu i jego potomków.
+Ten parametr wymusza twarde ograniczenie miejsca do wykorzystania, włączając w to
+miejsce zajęte przez potomków, włącznie z innymi systemami plików i obrazami.
+Ustawienie limitu na potomnym datasecie, gdy już rodzic ma takowy zdefiniowany nie
+nadpisuje limitu rodzica, tylko raczej narzuca dodatkowy limit. Parametr ten
+nie może być ustawiony dla woluminów, w tym przypadku parametr 
+<property>volsize</property> zachowuje się analogicznie.<indexterm xml:id="indexterm-259">
+<primary>ZFS properties</primary>
+<secondary>
+<property>quota</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-260">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>quota</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-261">
+<primary>
+<property>quota</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Więcej informacji o ustawianiu limitów znajduje się pod <olink targetdoc="" remap="internal" targetptr="gazud">Setting Quotas on ZFS File Systems</olink>.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>readonly</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Logiczny</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>off</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Określa, czy dataset może być zmieniany. Jeśli parametr ten jest ustawiony na <literal>on</literal>,
+nie są dopuszczalne jakiekolwiek modyfikacje w datasecie.<indexterm xml:id="indexterm-262">
+<primary>ZFS properties</primary>
+<secondary>
+<property>read-only</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-263">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>read-only</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-264">
+<primary>
+<property>read-only</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Do tego parametru można także odwołać się po skróconej nazwie, <literal>rdonly</literal>.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>recordsize</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Liczba</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>128K</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Określa sugerowaną wielkość bloku dla plików na tym systemie plików.<indexterm xml:id="indexterm-265">
+<primary>ZFS properties</primary>
+<secondary>
+<property>recordsize</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-266">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>recordsize</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-267">
+<primary>
+<property>recordsize</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Do tego parametru można także odwołać się po skróconej nazwie, <property>recsize</property>. Więcej informacji znajduje się pod <olink targetdoc="" remap="internal" targetptr="gcfgv">The <property>recordsize</property> Property</olink>.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>referenced</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Liczba</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>N/A</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Parametr tylko do odczytu, który określa liczbę danych dostępnych w tym datasecie,
+które mogą lub mogą nie być współdzielone z innymi datasetami w puli.<indexterm xml:id="indexterm-268">
+<primary>ZFS properties</primary>
+<secondary>
+<property>referenced</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-269">
+<primary>read-only properties of ZFS</primary>
+<secondary>
+<property>referenced</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-270">
+<primary>
+<property>referenced</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Kiedy jest tworzony obraz lub klon systemu plików, początkowo odnosi się do tej
+samej ilości zajętego miejsca, co system plików lub obraz, z którego został stworzony,
+ponieważ ich zawartość jest identyczna.</para>
+<para>Do tego parametru można także odwołać się po skróconej nazwie, <property>refer</property>.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>reservation</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Liczba (lub <literal>none)</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>none</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Minimalna wilekość dostępnego miejsca gwarantowana dla datasetu i
+jego potomków. Jeżeli ilość zużytego miejsca jest poniżej tej wartości,
+dataset jest traktowany, jakby zużywał miejsce określone przez rezerwację.
+Reservations are accounted for in the parent datasets' space used, and count against the parent datasets' quotas and reservations.<indexterm xml:id="indexterm-271">
+<primary>ZFS properties</primary>
+<secondary>
+<property>reservation</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-272">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>reservation</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-273">
+<primary>
+<property>reservation</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Do tego parametru można także odwołać się po skróconej nazwie, <property>reserv</property>.</para>
+<para>Więcej informacji można znaleźć pod <olink targetdoc="" remap="internal" targetptr="gbdbb">Setting Reservations on ZFS File Systems</olink>.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>sharenfs</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Łańcuch znaków</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>off</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Określa, czy system plików jest dostępny po protokole NFS i z jakimi opcjami.
+Jeśli parametr jest ustawiony na <literal>on</literal>, polecenie <command>zfs share</command>
+jest wykonywane bez żadnych opcji.  przeciwnym wypadku polecenie <command>zfs share</command>
+jest wykonywane z opcjami odpowiadającymi zawartości tego parametru. W przypadku ustawienia
+tego parametru na <literal>off</literal> do zarządzania systemem plików należy używać
+podstawowych komend <command>share</command> oraz <command>unshare</command>, a także
+pliku <filename>dfstab</filename>.<indexterm xml:id="indexterm-274">
+<primary>ZFS properties</primary>
+<secondary>
+<property>sharenfs</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-275">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>sharenfs</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-276">
+<primary>
+<property>sharenfs</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Więcej informacji o udostępnianiu systemów plików ZFS znajduje się pod <olink targetdoc="" remap="internal" targetptr="gamnd">Sharing ZFS File Systems</olink>.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>setuid</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Logiczny</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>on</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Określa, czy bit <literal>setuid</literal> ma znaczenie w danym
+systemie plików.<indexterm xml:id="indexterm-277">
+<primary>ZFS properties</primary>
+<secondary>
+<property>setuid</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-278">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>setuid</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-279">
+<primary>
+<property>setuid</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>snapdir</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Łańcuch znaków</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>hidden</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Określa, czy katalog <filename>.zfs</filename> jest ukryty czy widoczny
+w korzeniu systemu plików. Więcej informacji o używaniu obrazów (snapshotów)
+znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbciq">ZFS Snapshots</olink>.<indexterm xml:id="indexterm-280">
+<primary>ZFS properties</primary>
+<secondary>
+<property>snapdir</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-281">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>snapdir</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-282">
+<primary>
+<property>snapdir</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>type</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Łańcuch znaków</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>N/A</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Parametr tylko do odczytu, który określa typ datasetu. Możliwe wartości to <literal>filesystem</literal> (system
+plików lub klon), <literal>volume</literal> (wolumin) lub <literal>snapshot</literal> (obraz).<indexterm xml:id="indexterm-283">
+<primary>ZFS properties</primary>
+<secondary>
+<property>type</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-284">
+<primary>read-only properties of ZFS</primary>
+<secondary>
+<property>type</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-285">
+<primary>
+<property>type</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>used</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Liczba</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>N/A</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Parametr tylko do odczytu określający wielkość zajętego miejsca przez dataset
+i wszystkie jego potomki.<indexterm xml:id="indexterm-286">
+<primary>ZFS properties</primary>
+<secondary>
+<property>used</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-287">
+<primary>read-only properties of ZFS</primary>
+<secondary>
+<property>used</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-288">
+<primary>
+<property>used</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Dokładniejszy opis znajduje się pod w sekcji opisującej <olink targetdoc="" remap="internal" targetptr="gcfgz">parametr <property>used</property></olink>.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>volsize</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Liczba</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>N/A</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Określa logiczny rozmiar woluminu.<indexterm xml:id="indexterm-289">
+<primary>ZFS properties</primary>
+<secondary>
+<property>volsize</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-290">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>volsize</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-291">
+<primary>
+<property>volsize</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Dokładniejszy opis znajduje się pod <olink targetdoc="" remap="internal" targetptr="gcfhk">The <property>volsize</property> Property</olink>.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<literal>volblocksize</literal>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Liczba</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>8 Kbytes</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Określa wielkość bloku dla woluminu. Rozmiar bloku nie może zostać zmieniona,
+jeśli wystąpiły już jakieś operacje zapisu na woluminie, więc należy ustawiać
+wielkość bloku w czasie tworzenia datasetu. Domyślną wielkością bloku dla
+woluminów jest 8 kilobajtów. Dopuszczalne wartości to jakakolwiek potęga
+liczby 2 w zakresie od 512 bajtów do 128 kilobajtów.<indexterm xml:id="indexterm-292">
+<primary>ZFS properties</primary>
+<secondary>
+<property>volblocksize</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-293">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>volblocksize</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-294">
+<primary>
+<property>volblocksize</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Do tego parametru można także odwołać się po skróconej nazwie, <property>volblock</property>.</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>
+<property>zoned</property>
+</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Logiczny</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>N/A</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>Określa, czy dataset został dodany do nieglobalnej zony. Jeśli ten
+parametr jest ustawiony, wówczas punkt montowania nie jest uwzględniany
+w zonie globalnej, w związku z tym ZFS nie może zamontować tego systemu
+plików w zonie globalnej. Jeśli najpierw została zainstalowana zona,
+parametr ten jest ustawiany dla każdego dodanego systemu pliku do niej.<indexterm xml:id="indexterm-295">
+<primary>ZFS properties</primary>
+<secondary>
+<property>zoned</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-296">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>zoned</property>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-297">
+<primary>
+<property>zoned</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Więcej informacji na temat używania systemu plików ZFS razem z zonami znajduje się pod <olink targetdoc="" remap="internal" targetptr="gayov">Using ZFS on a Solaris System With Zones Installed</olink>.</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<sect2 xml:id="gazsy">
+<title>Parametry ZFS tylko do odczytu</title>
+<para>Parametry do odczytu mogą być tylko odczytywane, nie można
+ich natomiast ustawić. Nie są również dziedziczone. Niektórre z tych
+parametrów są specyficzne dla pewnych typów datasetu. W takim przypadku
+typ ten jest wspomniany w opisie parametru.<indexterm xml:id="indexterm-298">
+<primary>ZFS properties</primary>
+<secondary>read-only</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-299">
+<primary>read-only properties of ZFS</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Parametry tylko do odczytu są wymienione i opisane w <olink targetdoc="" remap="internal" targetptr="gcfgr">tabeli 5–1</olink>.</para>
+<itemizedlist>
+<listitem>
+<para>
+<property>available</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>creation</property> </para>
+</listitem>
+<listitem>
+<para>
+<property>mounted</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>origin</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>compressratio</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>referenced</property> </para>
+</listitem>
+<listitem>
+<para>
+<property>type</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>used</property>
+</para>
+<para>Więcej informacji znajduje się w sekcji opisującej
+<olink targetdoc="" remap="internal" targetptr="gcfgz">parametr <property>used</property></olink>.</para>
+</listitem>
+</itemizedlist>
+<para>Więcej informacji na temat zliczania miejsca włącznie z opisem parametrów <property>used</property>, <property>referenced</property> oraz <property>available</property> znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbchp">ZFS Space Accounting</olink>.</para>
+<sect3 xml:id="gcfgz">
+<title>Parametr <property>used</property></title>
+<para>Ilość miejsca zajęta przez aktualny i jemu potomne datasety.
+Wartość ta jest sprawdzana z uwzględnieniem parametrów limitu i rezerwacji.
+Wartość ta nie uwzględnia rezerwacji bieżącego datasetu, ale uwzględnia
+rezerwacje wszystkich potomnych. Wielkość miejsca, jaką zużywa dataset
+od rodzica, jak również ilość miejsca, która jest zwalnia podczas
+rekursywnego niszczenia datasetu jest większa od aktualnie zużytego
+miejsca i jego rezerwacji (?!?! FIXIT, bo bełkot wyszedł).
+The amount of space consumed by this dataset and all its descendants.
+This value is checked against the dataset's quota and reservation. The space
+used does not include the dataset's reservation, but does consider the reservation
+of any descendant datasets. The amount of space that a dataset consumes from
+its parent, as well as the amount of space that is freed if the dataset is
+recursively destroyed, is the greater of its space used and its reservation.<indexterm xml:id="indexterm-300">
+<primary>ZFS properties</primary>
+<secondary>
+<property>used</property>
+</secondary>
+<tertiary>detailed description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-301">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>used</property>
+</secondary>
+<tertiary>detailed description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-302">
+<primary>
+<property>used</property> property</primary>
+<secondary>detailed description</secondary>
+</indexterm>
+</para>
+<para>W momencie tworzenia obrazów (snapshotów) ich przestrzeń jest pierwotnie
+współdzielona między nimi a systemem plików, a także prawdopodobnie poprzednimi
+obrazami. W momencie zmiany danych w systemie plików, przestrzeń, która pierwotnie
+była współdzielona staje się unikalna dla obrazu i jest wliczana jako przestrzeń
+zużywana przez obraz. Dodatkowo usunięcie snapshotów może zwiększyć wielkośc przestrzeni
+unikalnej (i używanej przez) inne obrazy.
+Więcej informacji o obrazach i niuansach związanych z miejscem znajduje się pod <olink targetdoc="" remap="internal" targetptr="gayra">Out of Space Behavior</olink>.</para>
+<para>The amount of space used, available, or referenced does not take into
+account pending changes. Pending changes are generally accounted for within
+a few seconds. Committing a change to a disk using <literal>fsync(3c)</literal> or <literal>O_SYNC</literal> does not necessarily guarantee that the space usage information
+will be updated immediately.</para>
+</sect3>
+</sect2>
+<sect2 xml:id="gazsd">
+<title>Settable ZFS Properties</title>
+<para>Settable properties are properties whose values can be both retrieved
+and set. Settable properties are set by using the <command>zfs set</command> command,
+as described in <olink targetdoc="" remap="internal" targetptr="gazsp">Setting ZFS Properties</olink>. With
+the exceptions of quotas and reservations, settable properties are inherited.
+For more information about quotas and reservations, see <olink targetdoc="" remap="internal" targetptr="gazvb">ZFS Quotas and Reservations</olink>.<indexterm xml:id="indexterm-303">
+<primary>ZFS properties</primary>
+<secondary>settable</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-304">
+<primary>settable properties of ZFS</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>Some settable properties are specific to a particular type of dataset.
+In such cases, the particular dataset type is mentioned in the description.
+If not specifically mentioned, a property applies to all dataset types: file
+systems, volumes, clones, and snapshots.</para>
+<para>The settable properties are listed here and are described in <olink targetdoc="" remap="internal" targetptr="gcfgr">Table 5–1</olink>.</para>
+<itemizedlist>
+<listitem>
+<para>
+<property>aclinherit</property>
+</para>
+<para>For a detailed
+description, see <olink targetdoc="" remap="internal" targetptr="gbaaz">ACL Property Modes</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<property>aclmode</property>
+</para>
+<para>For a detailed description,
+see <olink targetdoc="" remap="internal" targetptr="gbaaz">ACL Property Modes</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<property>atime</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>checksum</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>compression</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>devices</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>exec</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>mountpoint</property> </para>
+</listitem>
+<listitem>
+<para>
+<property>quota</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>readonly</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>recordsize</property>
+</para>
+<para>For a detailed
+description, see <olink targetdoc="" remap="internal" targetptr="gcfgv">The <property>recordsize</property> Property</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<property>reservation</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>sharenfs</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>setuid</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>snapdir</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>volsize</property>
+</para>
+<para>For a detailed description,
+see <olink targetdoc="" remap="internal" targetptr="gcfhk">The <property>volsize</property> Property</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<property>volblocksize</property>
+</para>
+</listitem>
+<listitem>
+<para>
+<property>zoned</property>
+</para>
+</listitem>
+</itemizedlist>
+<sect3 xml:id="gcfgv">
+<title>The <property>recordsize</property> Property</title>
+<para>Specifies a suggested block size for files in the file system.<indexterm xml:id="indexterm-305">
+<primary>ZFS properties</primary>
+<secondary>
+<property>recordsize</property>
+</secondary>
+<tertiary>detailed description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-306">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>recordsize</property>
+</secondary>
+<tertiary>detailed description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-307">
+<primary>
+<property>recordsize</property> property</primary>
+<secondary>detailed description</secondary>
+</indexterm>
+</para>
+<para>This property is designed solely for use with database workloads that
+access files in fixed-size records. ZFS automatically adjust block sizes according
+to internal algorithms optimized for typical access patterns. For databases
+that create very large files but access the files in small random chunks,
+these algorithms may be suboptimal. Specifying a <property>recordsize</property> greater
+than or equal to the record size of the database can result in significant
+performance gains. Use of this property for general purpose file systems is
+strongly discouraged, and may adversely affect performance. The size specified
+must be a power of two greater than or equal to 512 and less than or equal
+to 128 Kbytes. Changing the file system's <literal>recordsize</literal> only
+affects files created afterward. Existing files are unaffected.</para>
+<para>This property can also be referred to by its shortened column name, <property>recsize</property>.</para>
+</sect3>
+<sect3 xml:id="gcfhk">
+<title>The <property>volsize</property> Property</title>
+<para>The logical size of the volume. By default, creating a volume establishes
+a reservation for the same amount. Any changes to <property>volsize</property> are
+reflected in an equivalent change to the reservation. These checks are used
+to prevent unexpected behavior for users. A volume that contains less space
+than it claims is available can result in undefined behavior or data corruption,
+depending on how the volume is used. These effects can also occur when the
+volume size is changed while it is in use, particularly when you shrink the
+size.  Extreme care should be used when adjusting the volume size.<indexterm xml:id="indexterm-308">
+<primary>ZFS properties</primary>
+<secondary>
+<property>volsize</property>
+</secondary>
+<tertiary>detailed description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-309">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>volsize</property>
+</secondary>
+<tertiary>detailed description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-310">
+<primary>
+<property>volsize</property> property</primary>
+<secondary>detailed description</secondary>
+</indexterm>
+</para>
+<para>Though not recommended, you can create a sparse volume by specifying
+the <option>
+s</option> flag to <command>zfs create -V</command>, or by changing
+the reservation once the volume has been created. A <emphasis>sparse volume</emphasis> is
+defined as a volume where the reservation is not equal to the volume size.
+ For a sparse volume, changes to <property>volsize</property> are not reflected
+in the reservation.</para>
+<para>For more information about using volumes, see <olink targetdoc="" remap="internal" targetptr="gaypf">Emulated Volumes</olink>.</para>
+</sect3>
+</sect2>
+</sect1>
+<sect1 xml:id="gazsu">
+<title>Querying ZFS File System Information</title>
+<para>The <command>zfs list</command> command provides an extensible mechanism
+for viewing and querying dataset information. Both basic and complex queries
+are explained in this section.</para>
+<sect2 xml:id="gaztd">
+<title>Listing Basic ZFS Information</title>
+<para>You can list basic dataset information by using the <command>zfs list</command> command
+with no options. This command displays the names of all datasets on the system
+including their <property>used</property>, <property>available</property>, <property>referenced</property>, and <property>mountpoint</property> properties. For
+more information about these properties, see <olink targetdoc="" remap="internal" targetptr="gazss">ZFS Properties</olink>.<indexterm xml:id="indexterm-311">
+<primary>listing</primary>
+<secondary>ZFS file systems</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-312">
+<primary>
+<command>zfs list</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-313">
+<primary>ZFS file systems</primary>
+<secondary>listing</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<para>For example:</para>
+<screen># <userinput>zfs list</userinput>
+NAME                   USED  AVAIL  REFER  MOUNTPOINT
+pool                  84.0K  33.5G      -  /pool
+pool/clone                0  33.5G  8.50K  /pool/clone
+pool/test                8K  33.5G     8K  /test
+pool/home             17.5K  33.5G  9.00K  /pool/home
+pool/home/marks       8.50K  33.5G  8.50K  /pool/home/marks
+pool/home/marks@snap      0      -  8.50K  /pool/home/marks@snap</screen>
+<para>You can also use this command to display specific datasets by providing
+the dataset name on the command line. Additionally, use the the <option>
+r</option> option
+to recursively display all descendants of that dataset.</para>
+<para>The following example shows how to display <filename>tank/home/chua</filename> and
+all of its descendant datasets.<indexterm xml:id="indexterm-314">
+<primary>listing</primary>
+<secondary>descendants of ZFS file systems</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-315">
+<primary>
+<command>zfs list -r</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-316">
+<primary>ZFS file systems</primary>
+<secondary>listing descendants</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<screen># <userinput>zfs list -r tank/home/chua</userinput>
+NAME                        USED  AVAIL  REFER  MOUNTPOINT 
+tank/home/chua		        26.0K  4.81G  10.0K  /tank/home/chua 
+tank/home/chua/projects       16K  4.81G   9.0K  /tank/home/chua/projects
+tank/home/chua/projects/fs1    8K  4.81G     8K  /tank/home/chua/projects/fs1 
+tank/home/chua/projects/fs2    8K  4.81G     8K  /tank/home/chua/projects/fs2</screen>
+<para>For additional information about the <command>zfs list</command> command,
+see <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<citerefentry>
+<refentrytitle>zfs</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>.</para>
+</sect2>
+<sect2 xml:id="gazsh">
+<title>Creating Complex ZFS Queries</title>
+<para>The <command>zfs list</command> output can be customized by using of
+the <option>
+o</option>, <option>
+f</option>, and <option>
+H</option> options.</para>
+<para>You can customize property value output by using the <option>
+o</option> option
+and a comma-separated list of desired properties. Supply any dataset property
+as a valid value.  For a list of all supported dataset properties, see <olink targetdoc="" remap="internal" targetptr="gazss">ZFS Properties</olink>. In addition to the properties defined
+there, the <option>
+o</option> option list can also contain the literal <literal>name</literal> to indicate that the output should include the name of the dataset. </para>
+<para>The following example uses <command>zfs list</command> to display the
+dataset name, along with the <property>sharenfs</property> and <property>mountpoint</property> properties.</para>
+<screen># <userinput>zfs list -o name,sharenfs,mountpoint</userinput> 
+NAME                  SHARENFS         MOUNTPOINT
+tank                  rw               /export
+tank/archives         rw               /export/archives
+tank/archives/zfs     rw               /export/archives/zfs
+tank/calendar         off              /var/spool/calendar
+tank/cores            rw               /cores
+tank/dumps            rw               /export/dumps
+tank/home             rw               /export/home
+tank/home/ahl         rw               /export/home/ahl
+tank/home/ahrens      rw               /export/home/ahrens
+tank/home/andrei      rw               /export/home/andrei
+tank/home/barts       rw               /export/home/barts
+tank/home/billm       rw               /export/home/billm
+tank/home/bjw         rw               /export/home/bjw
+tank/home/bmc         rw               /export/home/bmc
+tank/home/bonwick     rw               /export/home/bonwick
+tank/home/brent       rw               /export/home/brent
+tank/home/dilpreet    rw               /export/home/dilpreet
+tank/home/dp          rw               /export/home/dp
+tank/home/eschrock    rw               /export/home/eschrock
+tank/home/fredz       rw               /export/home/fredz
+tank/home/johansen    rw               /export/home/johansen
+tank/home/jwadams     rw               /export/home/jwadams
+tank/home/lling       rw               /export/home/lling
+tank/home/mws         rw               /export/home/mws
+tank/home/rab         rw               /export/home/rab
+tank/home/sch         rw               /export/home/sch
+tank/home/tabriz      rw               /export/home/tabriz
+tank/home/tomee       rw               /export/home/tomee</screen>
+<para>You can use the <option>
+t</option> option to specify the types of datasets
+to display. The valid types are described in the following table.<indexterm xml:id="indexterm-317">
+<primary>ZFS file systems</primary>
+<secondary>dataset types</secondary>
+<tertiary>description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-318">
+<primary>dataset types</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<table frame="topbot" xml:id="gbaje">
+
+<title>Types of ZFS Datasets</title>
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colwidth="29.53*"/>
+<colspec colwidth="70.47*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Type</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>
+<literal>filesystem</literal>
+</para>
+</entry>
+<entry>
+<para>File systems and clones</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>volume</literal>
+</para>
+</entry>
+<entry>
+<para>Volumes</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>snapshot</literal>
+</para>
+</entry>
+<entry>
+<para>Snapshots</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>The <option>
+t</option> options takes a comma-separated list of the types
+of datasets to be displayed. The following example uses the <option>
+t</option> and <option>
+o</option> options simultaneously to show the name and <property>used</property> property
+for all file systems:<indexterm xml:id="indexterm-319">
+<primary>listing</primary>
+<secondary>types of ZFS file systems</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-320">
+<primary>
+<command>zfs list -t</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-321">
+<primary>ZFS file systems</primary>
+<secondary>listing types of</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<screen># <userinput>zfs list -t filesystem -o name,used</userinput>
+NAME                  USED
+pool                  105K
+pool/container        0
+pool/home             26.0K
+pool/home/tabriz      26.0K
+pool/home/tabriz_clone  0</screen>
+<para>You can use the <option>
+H</option> option to omit the <command>zfs list</command> header
+from the generated output. With the <option>
+H</option> option, all white space
+is output as tabs. This option can be useful when you need parseable output,
+for example, when scripting. The following example shows the output generated
+from using the <command>zfs list</command> command with the <option>
+H</option> option:<indexterm xml:id="indexterm-322">
+<primary>listing</primary>
+<secondary>ZFS file systems without header information</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-323">
+<primary>
+<command>zfs list -H</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-324">
+<primary>ZFS file systems</primary>
+<secondary>listing without header information</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<screen># <userinput>zfs list -H -o name</userinput>
+pool
+pool/container
+pool/home
+pool/home/tabriz
+pool/home/tabriz@now
+pool/home/tabriz/container
+pool/home/tabriz/container/fs1
+pool/home/tabriz/container/fs2
+pool/home/tabriz_clone</screen>
+</sect2>
+</sect1>
+<sect1 xml:id="gayns">
+<title>Managing ZFS Properties</title>
+<para>Dataset properties are managed through the <command>zfs</command> command's <command>set</command>, <command>inherit</command>, and <command>get</command> subcommands.</para>
+<sect2 xml:id="gazsp">
+<title>Setting ZFS Properties</title>
+<para>You can use the <command>zfs set</command> command to modify any settable
+dataset property.  For a list of settable dataset properties, see <olink targetdoc="" remap="internal" targetptr="gazsd">Settable ZFS Properties</olink>. The <command>zfs set</command> command
+takes a property/value sequence in the format of <replaceable>property</replaceable>=<replaceable>value</replaceable> and a dataset name.<indexterm xml:id="indexterm-325">
+<primary>setting</primary>
+<secondary>ZFS <property>atime</property> property</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-326">
+<primary>
+<command>zfs set</command> <property>atime</property>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-327">
+<primary>ZFS file systems</primary>
+<secondary>setting <property>atime</property> property</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<para>The following example sets the <property>atime</property> property to <literal>off</literal> for <filename>tank/home</filename>. Only one property can be
+set or modified during each <command>zfs set</command> invocation.</para>
+<screen># <userinput>zfs set atime=off tank/home</userinput>
+</screen>
+<para>You can specify numeric properties by using the following easy to understand
+suffixes (in order of magnitude): <literal>BKMGTPEZ</literal>.  Any of these
+suffixes can be followed by an optional <literal>b</literal>, indicating bytes,
+with the exception of the <literal>B</literal> suffix, which already indicates
+bytes. The following four invocations of <command>zfs set</command> are equivalent
+numeric expressions indicating that the <property>quota</property> property
+be set to the value of 50 Gbytes on the <filename>tank/home/marks</filename> file
+system:</para>
+<screen># <userinput>zfs set quota=50G tank/home/marks</userinput>
+# <userinput>zfs set quota=50g tank/home/marks</userinput>
+# <userinput>zfs set quota=50GB tank/home/marks</userinput>
+# <userinput>zfs set quota=50gb tank/home/marks</userinput>
+</screen>
+<para>Non-numeric properties are case-sensitive and must be lowercase, with
+the exception of <property>mountpoint</property> and  <property>sharenfs</property>.
+These properties may have mixed upper and lower case letters.<indexterm xml:id="indexterm-328">
+<primary>setting</primary>
+<secondary>ZFS quota</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-329">
+<primary>
+<command>zfs set</command> <property>quota</property>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-330">
+<primary>ZFS file systems</primary>
+<secondary>setting <property>quota</property> property</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<para>For more information about the <command>zfs set</command> command, see <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<citerefentry>
+<refentrytitle>zfs</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>.</para>
+</sect2>
+<sect2 xml:id="gazup">
+<title>Inheriting ZFS Properties</title>
+<para>All settable properties, with the exception of quotas and reservations,
+inherit their value from their parent, unless a quota or reservation is explicitly
+set on the child. If no ancestor has an explicit value set for an inherited
+property, the default value for the property is used. You can use the <command>zfs
+inherit</command> command is to clear a property setting, thus causing the
+setting to be inherited from the parent.<indexterm xml:id="indexterm-331">
+<primary>inheriting</primary>
+<secondary>ZFS properties (<command>zfs inherit</command>)</secondary>
+<tertiary>description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-332">
+<primary>
+<command>zfs inherit</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-333">
+<primary>ZFS file systems</primary>
+<secondary>inheriting property of (<command>zfs inherit</command>)</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<para>The following example uses the <command>zfs set</command> command to
+turn on compression for the <filename>tank/home/bonwick</filename> file system.
+Then, <command>zfs inherit</command> is used to unset the <property>compression</property> property,
+thus causing the property to inherit the default setting of <literal>off</literal>.
+Because neither <filename>home</filename> nor <filename>tank</filename> have
+the <property>compression</property> property set locally, the default value
+is used. If both had compression on, the value set in the most immediate ancestor
+would be used (<filename>home</filename> in this example).</para>
+<screen># <userinput>zfs set compression=on tank/home/bonwick</userinput>
+# <userinput>zfs get -r compression tank</userinput>
+NAME             PROPERTY      VALUE                    SOURCE
+tank             compression   off                      default
+tank/home        compression   off                      default
+tank/home/bonwick compression   on                      local
+# <userinput>zfs inherit compression tank/home/bonwick</userinput>
+# <userinput>zfs get -r compression tank</userinput>
+NAME             PROPERTY      VALUE                    SOURCE
+tank             compression   off                      default
+tank/home        compression   off                      default
+tank/home/bonwick compression  off                      inherited from tank/home</screen>
+<para>The <command>inherit</command> subcommand is applied recursively when
+the <option>
+r</option> option is specified. In the following example, the
+command causes the value for the <property>compression</property> property
+to be inherited by <filename>tank/home</filename> and any descendants it might
+have.</para>
+<screen># <userinput>zfs inherit -r compression tank/home</userinput>
+</screen>
+<note>
+
+<para>Be aware that the use of the <option>
+r</option> option clears
+the current property setting for all descendant datasets.</para>
+</note>
+<para>For more information about the <command>zfs</command> command, see <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<citerefentry>
+<refentrytitle>zfs</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>.</para>
+</sect2>
+<sect2 xml:id="gazuk">
+<title>Querying ZFS Properties</title>
+<para>The simplest way to query property values is by using the <command>zfs
+list</command> command. For more information, see <olink targetdoc="" remap="internal" targetptr="gaztd">Listing Basic ZFS Information</olink>. However, for complicated queries and for scripting,
+use the <command>zfs get</command> command to provide more detailed information
+in a customized format.<indexterm xml:id="indexterm-334">
+<primary>listing</primary>
+<secondary>ZFS properties (<command>zfs list</command>)</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-335">
+<primary>
+<command>zfs get</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-336">
+<primary>ZFS file systems</primary>
+<secondary>listing properties of (<command>zfs list</command>)</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<para>You can use the <command>zfs get</command> command to retrieve any dataset
+property. The following example shows how to retrieve a single property on
+a dataset:</para>
+<screen># <userinput>zfs get checksum tank/ws</userinput>
+NAME    	         PROPERTY      VALUE                      SOURCE
+tank/ws             checksum      on                         default</screen>
+<para>The fourth column, <literal>SOURCE</literal>, indicates where this property
+value has been set from. The following table defines the meaning of the possible
+source values. </para>
+<table frame="topbot" xml:id="gbavh">
+
+<title>Possible <literal>SOURCE</literal> Values
+(<command>zfs get</command>)</title>
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colwidth="35.30*"/>
+<colspec colwidth="64.70*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Source Value</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>
+<literal>default</literal>
+</para>
+</entry>
+<entry>
+<para>This property was never explicitly set for this dataset or any of its
+ancestors. The default value for this property is being used.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>inherited from</literal> <replaceable>dataset-name</replaceable>
+</para>
+</entry>
+<entry>
+<para>This property value is being inherited from the parent as specified
+by <replaceable>dataset-name</replaceable>.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>local</literal>
+</para>
+</entry>
+<entry>
+<para>This property value was explicitly set for this dataset by using <command>zfs
+set</command>.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>temporary</literal>
+</para>
+</entry>
+<entry>
+<para>This property value was set by using the <command>zfs mount</command> <option>
+o</option> option and is only valid for the lifetime of the mount. For more
+information about temporary mount point properties, see <olink targetdoc="" remap="internal" targetptr="gamnt">Temporary Mount Properties</olink>.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>- (none)</para>
+</entry>
+<entry>
+<para>This property is a read-only property. Its value is generated by ZFS.</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>You can use the special keyword <literal>all</literal> to retrieve all
+dataset properties. The following example uses the <literal>all</literal> keyword
+to retrieve all existing dataset properties:</para>
+<screen># <userinput>zfs get all pool</userinput>
+NAME             PROPERTY       VALUE                      SOURCE
+pool             type           filesystem                 -
+pool             creation       Mon Mar 13 11:41 2006      -
+pool             used           2.62M                      -
+pool             available      33.5G                      -
+pool             referenced     10.5K                      -
+pool             compressratio  1.00x                      -
+pool             mounted        yes                        -
+pool             quota          none                       default
+pool             reservation    none                       default
+pool             recordsize     128K                       default
+pool             mountpoint     /pool                      default
+pool             sharenfs       off                        default
+pool             checksum       on                         default
+pool             compression    off                        default
+pool             atime          on                         default
+pool             devices        on                         default
+pool             exec           on                         default
+pool             setuid         on                         default
+pool             readonly       off                        default
+pool             zoned          off                        default
+pool             snapdir        hidden                     default
+pool             aclmode        groupmask                  default
+pool             aclinherit     secure                     default</screen>
+<para>The <option>
+s</option> option to <command>zfs get</command> enables
+you to specify, by source value, the type of properties to display. This option
+takes a comma-separated list indicating the desired source types. Only properties
+with the specified source type are displayed. The valid source types are <literal>local</literal>, <literal>default</literal>, <literal>inherited</literal>, <literal>temporary</literal>, and <literal>none</literal>. The following example shows
+all properties that have been locally set on <literal>pool</literal>.<indexterm xml:id="indexterm-337">
+<primary>listing</primary>
+<secondary>ZFS properties by source value</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-338">
+<primary>
+<command>zfs get -s</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-339">
+<primary>ZFS file systems</primary>
+<secondary>listing properties by source value</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<screen># <userinput>zfs get -s local all pool</userinput>
+NAME             PROPERTY      VALUE                      SOURCE
+pool             compression   on                         local</screen>
+<para>Any of the above options can be combined with the <option>
+r</option> option
+to recursively display the specified properties on all children of the specified
+dataset. In the following example, all temporary properties on all datasets
+within <literal>tank</literal> are recursively displayed:</para>
+<screen># <userinput>zfs get -r -s temporary all tank</userinput>
+NAME             PROPERTY       VALUE                      SOURCE
+tank/home          atime          off                      temporary
+tank/home/bonwick  atime          off                      temporary
+tank/home/marks    atime          off                      temporary</screen>
+<para>For more information about the <command>zfs get</command> command, see <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<citerefentry>
+<refentrytitle>zfs</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>.</para>
+</sect2>
+<sect2 xml:id="gazum">
+<title>Querying ZFS Properties for Scripting</title>
+<para>The <command>zfs get</command> command supports the <option>
+H</option> and <option>
+o</option> options, which are designed for scripting. The <option>
+H</option> option
+indicates that any header information should be omitted and that all white
+space should come in the form of tab. Uniform white space allows for easily
+parseable data. You can use the <option>
+o</option> option to customize the
+output. This option takes a comma-separated list of values to be output. All
+properties defined in <olink targetdoc="" remap="internal" targetptr="gazss">ZFS Properties</olink>, along
+with the literals <literal>name</literal>, <literal>value</literal>, <literal>property</literal> and <literal>source</literal> can be supplied in the <option>
+o</option> list.<indexterm xml:id="indexterm-340">
+<primary>listing</primary>
+<secondary>ZFS properties for scripting</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-341">
+<primary>
+<command>zfs get -H -o</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-342">
+<primary>ZFS file systems</primary>
+<secondary>listing properties for scripting</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<para>The following example shows how to retrieve a single value by using
+the <option>
+H</option> and <option>
+o</option> options of <command>zfs get</command>.</para>
+<screen># <userinput>zfs get -H -o value compression tank/home</userinput>
+on</screen>
+<para>The <option>
+p</option> option reports numeric values as their exact
+values. For example, 1 Mbyte would be reported as 1000000. This option can
+be used as follows:</para>
+<screen># <userinput>zfs get -H -o value -p used tank/home</userinput>
+182983742</screen>
+<para>You can use the <option>
+r</option> option along with any of the above
+options to recursively retrieve the requested values for all descendants.
+The following example uses the <option>
+r</option>, <option>
+o</option>, and <option>
+H</option> options to retrieve the dataset name and the value of the <property>used</property> property for <filename>export/home</filename> and its descendants,
+while omitting any header output:</para>
+<screen># <userinput>zfs get -H -o name,value -r used export/home</userinput>
+export/home     5.57G
+export/home/marks       1.43G
+export/home/maybee      2.15G</screen>
+</sect2>
+</sect1>
+<sect1 xml:id="gaynd">
+<title>Mounting and Sharing ZFS File Systems</title>
+<para>This section describes how mount points and shared file systems are
+managed in ZFS.</para>
+<sect2 xml:id="gaztn">
+<title>Managing ZFS Mount Points</title>
+<para>By default, all ZFS file systems are mounted by ZFS at boot by using
+SMF's <filename>svc://system/filesystem/local</filename> service. File systems
+are mounted under <replaceable>/path</replaceable>, where <replaceable>path</replaceable> is
+the name of the file system.<indexterm xml:id="indexterm-343">
+<primary>mount points</primary>
+<secondary>managing ZFS</secondary>
+<tertiary>description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-344">
+<primary>ZFS file systems</primary>
+<secondary>managing mount points</secondary>
+<tertiary>description</tertiary>
+</indexterm>
+</para>
+<para>You can override the default mount point by setting the <property>mountpoint</property> property to a specific path by using the <command>zfs set</command> command.
+ZFS automatically creates this mount point, if needed, and automatically mounts
+this file system when the <command>zfs mount -a</command> command is invoked,
+without requiring you to edit the <filename>/etc/vfstab</filename> file.</para>
+<para>The  <literal>mountpoint</literal> property is inherited. For example,
+if <filename>pool/home</filename> has <property>mountpoint</property> set
+to <filename>/export/stuff</filename>, then <filename>pool/home/user</filename> inherits <filename>/export/stuff/user</filename> for its <property>mountpoint</property> property.</para>
+<para>The <property>mountpoint</property> property can be set to <literal>none</literal> to
+prevent the file system from being mounted.<indexterm xml:id="indexterm-345">
+<primary>mount points</primary>
+<secondary>legacy</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-346">
+<primary>ZFS file systems</primary>
+<secondary>managing legacy mount points</secondary>
+<tertiary>description</tertiary>
+</indexterm>
+</para>
+<para>If desired, file systems can also be explicitly managed through legacy
+mount interfaces by setting the <property>mountpoint</property> property to <property>legacy</property> by using <command>zfs set</command>. Doing so prevents ZFS
+from automatically mounting and managing this file system. Legacy tools including
+the <command>mount</command> and <command>umount</command> commands, and the <filename>/etc/vfstab</filename> file must be used instead. For more information about
+legacy mounts, see <olink targetdoc="" remap="internal" targetptr="gbaln">Legacy Mount Points</olink>.</para>
+<para>When changing mount point management strategies, the following behaviors
+apply:</para>
+<itemizedlist>
+<listitem>
+<para>Automatic mount point behavior</para>
+</listitem>
+<listitem>
+<para>Legacy mount point behavior</para>
+</listitem>
+</itemizedlist>
+<sect3 xml:id="gbala">
+<title>Automatic Mount Points</title>
+<itemizedlist>
+<listitem>
+<para>When changing from <literal>legacy</literal> or <literal>none</literal>,
+ZFS automatically mounts the file system.</para>
+</listitem>
+<listitem>
+<para>If ZFS is currently managing the file system but it is currently
+unmounted, and the <property>mountpoint</property> property is changed, the
+file system remains unmounted.</para>
+</listitem>
+</itemizedlist>
+<para>You can also set the default mount point for the root dataset at creation
+time by using <command>zpool create</command>'s <option>
+m</option> option.
+For more information about creating pools, see <olink targetdoc="" remap="internal" targetptr="gaynr">Creating a ZFS Storage Pool</olink>.<indexterm xml:id="indexterm-347">
+<primary>mount points</primary>
+<secondary>automatic</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-348">
+<primary>ZFS file systems</primary>
+<secondary>managing automatic mount points</secondary>
+</indexterm>
+</para>
+<para>Any dataset whose <property>mountpoint</property> property is not <literal>legacy</literal> is managed by ZFS. In the following example, a dataset is
+created whose mount point is automatically managed by ZFS.</para>
+<screen># <userinput>zfs create pool/filesystem</userinput>
+# zfs get mountpoint pool/filesystem
+NAME             PROPERTY      VALUE                      SOURCE
+pool/filesystem  mountpoint    /pool/filesystem           default
+# zfs get mounted pool/filesystem
+NAME             PROPERTY      VALUE                      SOURCE
+pool/filesystem  mounted       yes                        -</screen>
+<para>You can also explicitly set the <property>mountpoint</property> property
+as shown in the following example:</para>
+<screen># <userinput>zfs set mountpoint=/mnt pool/filesystem</userinput>
+# <userinput>zfs get mountpoint pool/filesystem</userinput>
+NAME             PROPERTY      VALUE                      SOURCE
+pool/filesystem  mountpoint    /mnt                       local
+# <userinput>zfs get mounted pool/filesystem</userinput>
+NAME             PROPERTY      VALUE                      SOURCE
+pool/filesystem  mounted       yes                        -</screen>
+<para>When the <property>mountpoint</property> property is changed, the file
+system is automatically unmounted from the old mount point and remounted to
+the new mount point. Mount point directories are created as needed. If ZFS
+is unable to unmount a file system due to it being active, an error is reported
+and a forced manual unmount is necessary.<indexterm xml:id="indexterm-349">
+<primary>setting</primary>
+<secondary>ZFS mount points (<command>zfs set mountpoint</command>)</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-350">
+<primary>
+<command>zfs set mountpoint</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-351">
+<primary>ZFS file systems</primary>
+<secondary>setting mount point (<command>zfs set mountpoint</command>)</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+</sect3>
+<sect3 xml:id="gbaln">
+<title>Legacy Mount Points</title>
+<para>You can manage ZFS file systems with legacy tools by setting the <property>mountpoint</property> property to <property>legacy</property>. Legacy file
+systems must be managed through the <command>mount</command> and <command>umount</command> commands
+and the <filename>/etc/vfstab</filename> file. ZFS does not automatically
+mount legacy file systems on boot, and the ZFS <command>mount</command> and <command>umount</command> command do not operate on datasets of this type. The following
+examples show how to set up and manage a ZFS dataset in legacy mode:</para>
+<screen># <userinput>zfs set mountpoint=legacy tank/home/eschrock</userinput>
+# <userinput>mount -F zfs tank/home/eschrock /mnt</userinput>
+</screen>
+<para>In particular, if you have set up separate ZFS <filename>/usr</filename> or <filename>/var</filename> file systems, you must indicate that they are legacy file
+systems. In addition, you must mount them by creating entries in the <filename>/etc/vfstab</filename> file. Otherwise, the <filename>system/filesystem/local</filename> service
+enters maintenance mode when the system boots.<indexterm xml:id="indexterm-352">
+<primary>setting</primary>
+<secondary>legacy mount points</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-353">
+<primary>
+<command>zfs set mountpoint=legacy</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-354">
+<primary>ZFS file systems</primary>
+<secondary>setting legacy mount point</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<para>To automatically mount a legacy file system on boot, you must add an
+entry to the <filename>/etc/vfstab</filename> file. The following example
+shows what the entry in the <filename>/etc/vfstab</filename> file might look
+like:</para>
+<screen>#device         device        mount           FS      fsck    mount   mount
+#to mount       to fsck       point           type    pass    at boot options
+#
+
+tank/home/eschrock -		/mnt		   zfs		-		yes		-	</screen>
+<para>Note that the <literal>device to fsck</literal> and <literal>fsck pass</literal> entries
+are set to <literal>-</literal>. This syntax is because the <command>fsck</command> command
+is not applicable to ZFS file systems. For more information regarding data
+integrity and the lack of need for <command>fsck</command> in ZFS, see <olink targetdoc="" remap="internal" targetptr="gaypi">Transactional Semantics</olink>.</para>
+</sect3>
+</sect2>
+<sect2 xml:id="gamns">
+<title>Mounting ZFS File Systems</title>
+<para>ZFS automatically mounts file systems when file systems are created
+or when the system boots. Use of the <command>zfs mount</command> command
+is necessary only when changing mount options or explicitly mounting or unmounting
+file systems.</para>
+<para>The <command>zfs mount</command> command with no arguments shows all
+currently mounted file systems that are managed by ZFS. Legacy managed mount
+points are not displayed. For example:</para>
+<screen># <userinput>zfs mount</userinput>
+tank                            /tank
+tank/home                       /tank/home
+tank/home/bonwick               /tank/home/bonwick
+tank/ws                         /tank/ws</screen>
+<para>You can use the <option>
+a</option> option to mount all ZFS managed file
+systems. Legacy managed file systems are not mounted. For example:</para>
+<screen># <userinput>zfs mount -a</userinput>
+</screen>
+<para>By default, ZFS does not allow mounting on top of a nonempty directory.
+To force a mount on top of a nonempty directory, you must use the <option>
+O</option> option.
+For example:<indexterm xml:id="indexterm-355">
+<primary>mounting</primary>
+<secondary>ZFS file systems</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-356">
+<primary>
+<command>zfs mount</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-357">
+<primary>ZFS file systems</primary>
+<secondary>mounting</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<screen># <userinput>zfs mount tank/home/lalt</userinput>
+cannot mount '/export/home/lalt': directory is not empty
+use legacy mountpoint to allow this behavior, or use the -O flag
+# <userinput>zfs mount -O tank/home/lalt</userinput>
+</screen>
+<para>Legacy mount points must be managed through legacy tools. An attempt
+to use ZFS tools results in an error. For example:</para>
+<screen># <userinput>zfs mount pool/home/billm</userinput>
+cannot mount 'pool/home/billm': legacy mountpoint
+use mount(1M) to mount this filesystem
+# <userinput>mount -F zfs tank/home/billm</userinput>
+</screen>
+<para>When a file system is mounted, it uses a set of mount options based
+on the property values associated with the dataset.  The correlation between
+properties and mount options is as follows:</para>
+<variablelist>
+<varlistentry>
+<term>Property</term>
+<listitem>
+<para>Mount Options</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<property>devices</property>
+</term>
+<listitem>
+<para>
+<literal>devices/nodevices</literal>
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<property>exec</property>
+</term>
+<listitem>
+<para>
+<literal>exec/noexec</literal>
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<property>readonly</property>
+</term>
+<listitem>
+<para>
+<literal>ro/rw</literal>
+</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<property>setuid</property>
+</term>
+<listitem>
+<para>
+<literal>setuid/nosetuid</literal>
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+<para>The mount option <literal>nosuid</literal> is an alias for  <literal>nodevices,nosetuid</literal>.</para>
+</sect2>
+<sect2 xml:id="gamnt">
+<title>Temporary Mount Properties</title>
+<para>If any of the above options are set explicitly by using the<option>
+o</option> option
+with the <command>zfs mount</command> command, the associated property value
+is temporarily overridden. These property values are reported as <literal>temporary</literal> by the <command>zfs get</command> command and revert back to their
+original settings when the file system is unmounted. If a property value is
+changed while the dataset is mounted, the change takes effect immediately,
+overriding any temporary setting.</para>
+<para>In the following example, the read-only mount option is temporarily
+set on the <filename>tank/home/perrin</filename> file system:</para>
+<screen># <userinput>zfs mount -o ro tank/home/perrin</userinput>
+</screen>
+<para>In this example, the file system is assumed to be unmounted. To temporarily
+change a property on a file system that is currently mounted, you must use
+the special <literal>remount</literal> option. In the following example, the <property>atime</property> property is temporarily changed to <literal>off</literal> for
+a file system that is currently mounted:</para>
+<screen># <userinput>zfs mount -o remount,noatime tank/home/perrin</userinput>
+# <userinput>zfs get atime tank/home/perrin</userinput>
+NAME             PROPERTY      VALUE                      SOURCE
+tank/home/perrin atime         off                        temporary</screen>
+<para>For more information about the <command>zfs mount</command> command,
+see <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<citerefentry>
+<refentrytitle>zfs</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>.</para>
+</sect2>
+<sect2 xml:id="gamnr">
+<title>Unmounting ZFS File Systems</title>
+<para>You can unmount file systems by using the <command>zfs unmount</command> subcommand.
+The <command>unmount</command> command can take either the mount point or
+the file system name as arguments.<indexterm xml:id="indexterm-358">
+<primary>unmounting</primary>
+<secondary>ZFS file systems</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-359">
+<primary>
+<command>zfs unmount</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-360">
+<primary>ZFS file systems</primary>
+<secondary>unmounting</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<para>In the following example, a file system is unmounted by file system
+name:</para>
+<screen># <userinput>zfs unmount tank/home/tabriz</userinput>
+</screen>
+<para>In the following example, the file system is unmounted by mount point:</para>
+<screen># <userinput>zfs unmount /export/home/tabriz</userinput>
+</screen>
+<para>The <command>unmount</command> command fails if the file system is active
+or busy. To forceably unmount a file system, you can use the <option>
+f</option> option.
+Be cautious when forceably unmounting a file system, if its contents are actively
+being used. Unpredictable application behavior can result.</para>
+<screen># <userinput>zfs unmount tank/home/eschrock</userinput>
+cannot unmount '/export/home/eschrock': Device busy
+# <userinput>zfs unmount -f tank/home/eschrock</userinput>
+</screen>
+<para>To provide for backwards compatibility, the legacy <command>umount</command> command
+can be used to unmount ZFS file systems. For example:</para>
+<screen># <userinput>umount /export/home/bob</userinput>
+</screen>
+<para>For more information about the <command>zfs umount</command> command,
+see <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<citerefentry>
+<refentrytitle>zfs</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>.</para>
+</sect2>
+<sect2 xml:id="gamnd">
+<title>Sharing ZFS File Systems</title>
+<para>Similar to mount points, ZFS can automatically share file systems by
+using the <property>sharenfs</property> property. Using this method, you do
+not have to modify the <filename>/etc/dfs/dfstab</filename> file when a new
+file system is added. The <property>sharenfs</property> property is a comma-separated
+list of options to pass to the <command>share</command> command. The special
+value <literal>on</literal> is an alias for the default share options, which
+are <literal>read/write</literal> permissions for anyone. The special value <literal>off</literal> indicates that the file system is not managed by ZFS and can
+be shared through traditional means, such as the <filename>/etc/dfs/dfstab</filename> file.
+All file systems whose <property>sharenfs</property> property is not <literal>off</literal> are shared during boot.<indexterm xml:id="indexterm-361">
+<primary>sharing</primary>
+<secondary>ZFS file systems</secondary>
+<tertiary>description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-362">
+<primary>
+<property>sharenfs</property> property</primary>
+<secondary>description</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-363">
+<primary>ZFS file systems</primary>
+<secondary>sharing</secondary>
+<tertiary>description</tertiary>
+</indexterm>
+</para>
+<sect3 xml:id="gbdxz">
+<title>Controlling Share Semantics</title>
+<para>By default, all file systems are unshared. To share a new file system,
+use <command>zfs set</command> syntax similar to the following:</para>
+<screen># <userinput>zfs set sharenfs=on tank/home/eschrock</userinput>
+</screen>
+<para>The property is inherited, and file systems are automatically shared
+on creation if their inherited property is not <literal>off</literal>. For
+example:<indexterm xml:id="indexterm-364">
+<primary>sharing</primary>
+<secondary>ZFS file systems</secondary>
+<tertiary>example of</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-365">
+<primary>
+<command>zfs set sharenfs=on</command>
+</primary>
+<secondary>example of</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-366">
+<primary>ZFS file systems</primary>
+<secondary>sharing</secondary>
+<tertiary>example of</tertiary>
+</indexterm>
+</para>
+<screen># <userinput>zfs set sharenfs=on tank/home</userinput>
+# <userinput>zfs create tank/home/bricker</userinput>
+# <userinput>zfs create tank/home/tabriz</userinput>
+# <userinput>zfs set sharenfs=ro tank/home/tabriz</userinput>
+</screen>
+<para>Both <filename>tank/home/bricker</filename> and <filename>tank/home/tabriz</filename> are
+initially shared writable because they inherit the <property>sharenfs</property> property
+from <filename>tank/home</filename>. Once the property is set to <literal>ro</literal> (readonly), <filename>tank/home/tabriz</filename> is shared read-only regardless of the <property>sharenfs</property> property that is set for <filename>tank/home</filename>.</para>
+</sect3>
+<sect3 xml:id="gbdze">
+<title>Unsharing ZFS File Systems</title>
+<para>While most file systems are automatically shared and unshared during
+boot, creation, and destruction, file systems sometimes need to be explicitly
+unshared. To do so, use the <command>zfs unshare</command> command. For example:</para>
+<screen># <userinput>zfs unshare tank/home/tabriz</userinput>
+</screen>
+<para>This command unshares the <filename>tank/home/tabriz</filename> file
+system. To unshare all ZFS file systems on the system, you need to use the <option>
+a</option> option.<indexterm xml:id="indexterm-367">
+<primary>unsharing</primary>
+<secondary>ZFS file systems</secondary>
+<tertiary>example of</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-368">
+<primary>ZFS file systems</primary>
+<secondary>unsharing</secondary>
+<tertiary>example of</tertiary>
+</indexterm>
+</para>
+<screen># <userinput>zfs unshare -a</userinput>
+</screen>
+</sect3>
+<sect3 xml:id="gbdxw">
+<title>Sharing ZFS File Systems</title>
+<para>Most of the time the automatic behavior of ZFS, sharing on boot and
+creation, is sufficient for normal operation. If, for some reason, you unshare
+a file system, you can share it again by using the <command>zfs share</command> command.
+For example:</para>
+<screen># <userinput>zfs share tank/home/tabriz</userinput>
+</screen>
+<para>You can also share all ZFS file systems on the system by using the <option>
+a</option> option.</para>
+<screen># <userinput>zfs share -a</userinput>
+</screen>
+</sect3>
+<sect3 xml:id="gbdxq">
+<title>Legacy Share Behavior</title>
+<para>If the <property>sharenfs</property> property is <literal>off</literal>,
+then ZFS does not attempt to share or unshare the file system at any time.
+This setting enables you to administer through traditional means such as the <filename>/etc/dfs/dfstab</filename> file.</para>
+<para>Unlike the traditional <command>mount</command> command, the traditional <command>share</command> and <command>unshare</command> commands can still function
+on ZFS file systems. As a result, you can manually share a file system with
+options that are different from the settings of the <literal>sharenfs</literal> property.
+This administrative model is discouraged. Choose to either manage NFS shares
+completely through ZFS or completely through the <filename>/etc/dfs/dfstab</filename> file.
+The ZFS administrative model is designed to be simpler and less work than
+the traditional model. However, in some cases, you might still want to control
+file system sharing behavior through the familiar model.</para>
+</sect3>
+</sect2>
+</sect1>
+<sect1 xml:id="gazvb">
+<title>ZFS Quotas and Reservations</title>
+<para>ZFS supports quotas and reservations at the file system level. You can
+use the <property>quota</property> property to set a limit on the amount of
+space a file system can use. In addition, you can use the <property>reservation</property> property
+to guarantee that some amount of space is available to a file system. Both
+properties apply to the dataset they are set on and all descendants of that
+dataset.<indexterm xml:id="indexterm-369">
+<primary>quotas and reservations</primary>
+<secondary>description</secondary>
+</indexterm>
+</para>
+<para>That is, if a quota is set on the <filename>tank/home</filename> dataset,
+the total amount of space used by <filename>tank/home</filename> <emphasis>and
+all of its descendants</emphasis> cannot exceed the quota. Similarly, if <filename>tank/home</filename> is given a reservation, <filename>tank/home</filename> <emphasis>and all of its descendants</emphasis> draw from that reservation. The amount
+of space used by a dataset and all of its descendents is reported by the <property>used</property> property.</para>
+<sect2 xml:id="gazud">
+<title>Setting Quotas on ZFS File Systems</title>
+<para>ZFS quotas can be set and displayed by using the <command>zfs set</command> and <command>zfs get</command> commands. In the following example, a quota of 10 Gbytes
+is set on <filename>tank/home/bonwick</filename>.<indexterm xml:id="indexterm-370">
+<primary>setting</primary>
+<secondary>ZFS file system quota (<command>zfs set quota</command>)</secondary>
+<tertiary>example of</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-371">
+<primary>
+<command>zfs set quota</command>
+</primary>
+<secondary>example of</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-372">
+<primary>ZFS file systems (<command>zfs set quota</command>)</primary>
+<secondary>setting a quota</secondary>
+<tertiary>example of</tertiary>
+</indexterm>
+</para>
+<screen># <userinput>zfs set quota=10G tank/home/bonwick</userinput>
+# <userinput>zfs get quota tank/home/bonwick</userinput>
+NAME              PROPERTY      VALUE                      SOURCE
+tank/home/bonwick quota         10.0G                      local</screen>
+<para>ZFS quotas also impact the output of the <command>zfs list</command> and <command>df</command> commands. For example:</para>
+<screen># <userinput>zfs list</userinput>
+NAME                   USED  AVAIL  REFER  MOUNTPOINT
+tank/home             16.5K  33.5G  8.50K  /export/home
+tank/home/bonwick     15.0K  10.0G  8.50K  /export/home/bonwick
+tank/home/bonwick/ws  6.50K  10.0G  8.50K  /export/home/bonwick/ws
+# <userinput>df -h /export/home/bonwick</userinput>
+Filesystem             size   used  avail capacity  Mounted on
+tank/home/bonwick       10G     8K    10G     1%    /export/home/bonwick</screen>
+<para>Note that although <filename>tank/home</filename> has 33.5 Gbytes of
+space available, <filename>tank/home/bonwick</filename> and <filename>tank/home/bonwick/ws</filename> only have 10 Gbytes of space available, due to the quota on <filename>tank/home/bonwick</filename>.</para>
+<para>You cannot set a quota to an amount less than is currently being used
+by a dataset. For example:</para>
+<screen># <userinput>zfs set quota=10K tank/home/bonwick</userinput>
+cannot set quota for 'tank/home/bonwick': size is less than current used or 
+reserved space</screen>
+</sect2>
+<sect2 xml:id="gbdbb">
+<title>Setting Reservations on ZFS File Systems</title>
+<para>A ZFS <emphasis>reservation</emphasis> is an allocation of space from
+the pool that is guaranteed to be available to a dataset. As such, you cannot
+reserve space for a dataset if that space is not currently available in the
+pool. The total amount of all outstanding unconsumed reservations cannot exceed
+the amount of unused space in the pool. ZFS reservations can be set and displayed
+by using the <command>zfs set</command> and <command>zfs get</command> commands.
+For example:<indexterm xml:id="indexterm-373">
+<primary>setting</primary>
+<secondary>ZFS file system reservation</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-374">
+<primary>
+<command>zfs set reservation</command>
+</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-375">
+<primary>ZFS file systems</primary>
+<secondary>setting a reservation</secondary>
+<tertiary>(example of)</tertiary>
+</indexterm>
+</para>
+<screen># <userinput>zfs set reservation=5G tank/home/moore</userinput>
+# <userinput>zfs get reservation tank/home/moore</userinput>
+NAME             PROPERTY      VALUE                      SOURCE
+tank/home/moore  reservation   5.00G                      local</screen>
+<para>ZFS reservations can affect the output of the <command>zfs list</command> command.
+For example:</para>
+<screen># <userinput>zfs list</userinput>
+NAME                   USED  AVAIL  REFER  MOUNTPOINT
+tank/home             5.00G  33.5G  8.50K  /export/home
+tank/home/moore       15.0K  10.0G  8.50K  /export/home/moore</screen>
+<para>Note that <filename>tank/home</filename> is using 5 Gbytes of space,
+although the total amount of space referred to by <filename>tank/home</filename> and
+its descendants is much less than 5 Gbytes. The used space reflects the space
+reserved for <filename>tank/home/moore</filename>. Reservations are considered
+in the used space of the parent dataset and do count against its quota, reservation,
+or both.</para>
+<screen># <userinput>zfs set quota=5G pool/filesystem</userinput>
+# <userinput>zfs set reservation=10G pool/filesystem/user1</userinput>
+cannot set reservation for 'pool/filesystem/user1': size is greater than 
+available space</screen>
+<para>A dataset can use more space than its reservation, as long as space
+is available in the pool that is unreserved and the dataset's current usage
+is below its quota. A dataset cannot consume space that has been reserved
+for another dataset.</para>
+<para>Reservations are not cumulative. That is, a second invocation of <command>zfs
+set</command> to set a reservation does not add its reservation to the existing
+reservation. Rather, the second reservation replaces the first reservation.</para>
+<screen># <userinput>zfs set reservation=10G tank/home/moore</userinput>
+# <userinput>zfs set reservation=5G tank/home/moore</userinput>
+# <userinput>zfs get reservation tank/home/moore</userinput>
+NAME             PROPERTY      VALUE                      SOURCE
+tank/home/moore  reservation   5.00G                      local</screen>
+</sect2>
+</sect1>
+</chapter>

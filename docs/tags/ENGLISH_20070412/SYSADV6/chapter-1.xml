@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="secov-1">
+
+
+
+<title>Security Services (Overview)</title>
+<toc>
+<para>To maintain the security of the Solaris Operating System (Solaris OS), Solaris software provides
+the following features:</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-1.xml" targetptr="secov-6">System Security</olink> –
+The ability to prevent intrusion, to protect machine resources and devices
+from misuse, and to protect files from malicious modification or unintentional
+modification by users or intruders</para>
+<para>For a general discussion of
+system security, see <olink remap="external" targetdoc="chapter-2.xml" targetptr="concept-1">Chapter 2, Managing
+Machine Security (Overview)</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-1.xml" targetptr="secov-4">Solaris Cryptographic Services</olink> –
+The ability to scramble data so that only the sender and the designated receiver
+can read the contents, and to manage cryptographic providers</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-1.xml" targetptr="secov-5">Authentication Services</olink> –
+The ability to securely identify a user, which requires the user's name and
+some form of proof, typically a password</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-1.xml" targetptr="secov-7">Authentication With Encryption</olink> –
+The ability to ensure that authenticated parties can communicate without interception,
+modification, or spoofing</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-1.xml" targetptr="secov-9">Solaris Auditing</olink> –
+The ability to identify the source of security changes to the system, including
+file access, security-related system calls, and authentication failures</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-1.xml" targetptr="secov-8">Security Policy</olink> –
+The design and implementation of security guidelines for a computer or network
+of computers</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="secov-6">
+<title>System Security</title>
+<para>System security ensures that the system's resources are used properly.
+Access controls can restrict who is permitted access to resources on the system.
+The Solaris OS features for system security and access control include the following:</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="strong">Login administration tools –</emphasis> Commands
+for monitoring and controlling a user's ability to log in. See <olink remap="external" targetdoc="chapter-3.xml" targetptr="secsys-25">Securing Logins and Passwords (Task Map)</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Hardware access –</emphasis> Commands
+for limiting access to the PROM, and for restricting who can boot the system.
+See <olink remap="external" targetdoc="chapter-3.xml" targetptr="secsys-29">Controlling Access to System Hardware (Task
+Map)</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Resource access –</emphasis> Tools
+and strategies for maximizing the appropriate use of machine resources while
+minimizing the misuse of those resources. See <olink remap="external" targetdoc="chapter-2.xml" targetptr="concept-13">Controlling
+Access to Machine Resources</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Role-based access control (RBAC) –</emphasis> An
+architecture for creating special, restricted user accounts that are permitted
+to perform specific administrative tasks. See <olink remap="external" targetdoc="chapter-7.xml" targetptr="rbac-1">Role-Based
+Access Control (Overview)</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Privileges –</emphasis> Discrete
+rights on processes to perform operations. These process rights are enforced
+in the kernel. See <olink remap="external" targetdoc="chapter-7.xml" targetptr="prbac-2">Privileges (Overview)</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Device management –</emphasis> Device <emphasis>policy</emphasis> additionally protects devices that are already protected
+by UNIX permissions. Device <emphasis>allocation</emphasis> controls access
+to peripheral devices, such as a microphone or CD-ROM drive. Upon deallocation,
+device-clean scripts can then erase any data from the device. See <olink remap="external" targetdoc="chapter-2.xml" targetptr="concept-42">Controlling Access to Devices</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Basic Audit Reporting Tool (BART) –</emphasis> A snapshot, called a <emphasis>manifest</emphasis>, of the file
+attributes of files on a system. By comparing the manifests across systems
+or on one system over time, changes to files can be monitored to reduce security
+risks. See <olink remap="external" targetdoc="chapter-5.xml" targetptr="bart-1">Chapter 5, Using the Basic Audit
+Reporting Tool (Tasks)</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">File permissions –</emphasis> Attributes
+of a file or directory. Permissions restrict the users and groups that are
+permitted to read, write, or execute a file, or search a directory. See <olink remap="external" targetdoc="chapter-6.xml" targetptr="secfile-1">Chapter 6, Controlling Access to Files (Tasks)</olink>.</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="secov-4">
+<title>Solaris Cryptographic Services</title>
+<para>Cryptography is the science of encrypting and decrypting data. Cryptography
+is used to insure integrity, privacy, and authenticity. Integrity means that
+the data has not been altered. Privacy means that the data is not readable
+by others. Authenticity for data means that what was delivered is what was
+sent. User authentication means that the user has supplied one or more proofs
+of identity. Authentication mechanisms mathematically verify the source of
+the data or the proof of identity. Encryption mechanisms scramble data so
+that the data is not readable by a casual observer. Cryptographic services
+provide authentication and encryption mechanisms to applications and users.</para>
+<para>Cryptographic algorithms use hashing, chaining, and other mathematical
+techniques to create ciphers that are difficult to break. Authentication mechanisms
+require that the sender and the receiver compute an identical number from
+the data. Encryption mechanisms rely on the sender and the receiver sharing
+information about the method of encryption. This information enables only
+the receiver and the sender to decrypt the message. The Solaris OS provides a
+centralized cryptographic framework, and provides encryption mechanisms that
+are tied to particular applications.</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="strong">
+<trademark>Solaris</trademark> Cryptographic
+Framework –</emphasis> A central framework of cryptographic services
+for kernel-level and user-level consumers. Uses include passwords, IPsec,
+and third-party applications. The cryptographic framework includes a number
+of software encryption modules. The framework enables you to specify which
+software encryption modules or hardware encryption sources an application
+can use. The framework is built on the PKCS #11 v2 library. This library is
+implemented according to  the following standard: RSA Security Inc. PKCS #11
+Cryptographic Token Interface (Cryptoki). The library provides an API for
+third-party developers to plug in the cryptographic requirements for their
+applications. See <olink remap="external" targetdoc="chapter-12.xml" targetptr="scf-1">Chapter 12, Solaris Cryptographic
+Framework (Overview)</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Encryption mechanisms per application –</emphasis>
+</para>
+<itemizedlist>
+<listitem>
+<para>For the use of DES in Secure RPC, see <olink remap="external" targetdoc="chapter-14.xml" targetptr="auth-2">Overview
+of Secure RPC</olink>.</para>
+</listitem>
+<listitem>
+<para>For the use of DES, 3DES, AES, and ARCFOUR in the Kerberos
+service, see <olink remap="external" targetdoc="chapter-19.xml" targetptr="intro-1">Chapter 19, Introduction to the
+Kerberos Service</olink>.</para>
+</listitem>
+<listitem>
+<para>For the use of RSA, DSA, and ciphers such as Blowfish in Solaris
+Secure Shell, see <olink remap="external" targetdoc="chapter-17.xml" targetptr="sshuser-1">Chapter 17, Using Solaris
+Secure Shell (Tasks)</olink>.</para>
+</listitem>
+<listitem>
+<para>For the use of cryptographic algorithms in passwords, see <olink remap="external" targetdoc="chapter-3.xml" targetptr="secsys-15">Changing the Password Algorithm (Task Map)</olink>.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="secov-5">
+<title>Authentication Services</title>
+<para>Authentication is a mechanism that identifies a user or service based
+on predefined criteria. Authentication services range from simple name-password
+pairs to more elaborate challenge-response systems, such as smart cards and
+biometrics. Strong authentication mechanisms rely on a user supplying information
+that only that person knows, and a personal item that can be verified. A user
+name is an example of information that the person knows. A smart card or a
+fingerprint, for example, can be verified. The Solaris features for authentication
+include the following:</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="strong">Secure RPC –</emphasis> An authentication
+mechanism that uses the <olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-154">Diffie-Hellman protocol</olink> to
+protect NFS mounts and a name service, such as NIS or NIS+. See <olink remap="external" targetdoc="chapter-14.xml" targetptr="auth-2">Overview of Secure RPC</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Pluggable Authentication Module (PAM) –</emphasis> A framework that enables various authentication technologies to
+be plugged into a system entry service without recompiling the service. Some
+of the system entry services include <command>login</command> and <command>ftp</command>.
+See <olink remap="external" targetdoc="chapter-15.xml" targetptr="pam-1">Chapter 15, Using PAM</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Simple Authentication and Security
+Layer (SASL) –</emphasis> A framework that provides authentication and
+security services to network protocols. See <olink remap="external" targetdoc="chapter-16.xml" targetptr="sasl-1">Chapter 16,
+Using SASL</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Solaris Secure Shell –</emphasis> A
+secure remote login and transfer protocol that encrypts communications over
+an insecure network. See <olink remap="external" targetdoc="chapter-17.xml" targetptr="sshuser-1">Chapter 17, Using
+Solaris Secure Shell (Tasks)</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Kerberos service –</emphasis> A
+client-server architecture that provides encryption with authentication. See <olink remap="external" targetdoc="chapter-19.xml" targetptr="intro-1">Chapter 19, Introduction to the Kerberos Service</olink>.</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="secov-7">
+<title>Authentication With Encryption</title>
+<para>Authentication with encryption is the basis of secure communication.
+Authentication helps ensure that the source and the destination are the intended
+parties. Encryption codes the communication at the source, and decodes the
+communication at the destination. Encryption prevents intruders from reading
+any transmissions that the intruders might manage to intercept. The Solaris
+features for secure communication include the following:</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="strong">Solaris Secure Shell –</emphasis> A
+protocol for protecting data transfers and interactive user network sessions
+from eavesdropping, session hijacking, and “man-in-the-middle”
+attacks. Strong authentication is provided through public key cryptography.
+X windows services and other network services can be tunneled safely over
+Secure Shell connections for additional protection. See <olink remap="external" targetdoc="chapter-17.xml" targetptr="sshuser-1">Chapter 17, Using Solaris Secure Shell (Tasks)</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Kerberos service –</emphasis> A
+client-server architecture that provides authentication with encryption. See <olink remap="external" targetdoc="chapter-19.xml" targetptr="intro-1">Chapter 19, Introduction to the Kerberos Service</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Internet Protocol Security Architecture
+(IPsec) –</emphasis> An architecture that provides IP datagram protection.
+Protections include confidentiality, strong integrity of the data, data authentication,
+and partial sequence integrity. See <olink remap="external" targetdoc="819-3000" targetptr="ipsec-ov-1">Chapter 19, <citetitle remap="chapter">IP Security Architecture (Overview),</citetitle> in <citetitle remap="book">System Administration Guide: IP Services</citetitle>
+</olink>.</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="secov-9">
+<title>Solaris Auditing</title>
+<para>Auditing is a fundamental concept of system security and maintainability.
+Auditing is the process of examining the history of actions and events on
+a system to determine what happened. The history is kept in a log of what
+was done, when it was done, by whom, and what was affected. See <olink remap="external" targetdoc="chapter-26.xml" targetptr="auditov-1">Chapter 26, Solaris Auditing (Overview)</olink>.</para>
+</sect1>
+<sect1 xml:id="secov-8">
+<title>Security Policy</title>
+<indexterm xml:id="indexterm-1">
+<primary>policies</primary>
+<secondary>overview</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-2">
+<primary>policy</primary>
+<secondary>definition in Solaris OS</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-3">
+<primary>security</primary>
+<secondary>policy overview</secondary>
+</indexterm>
+<para>The phrase security policy, or <olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-19">policy</olink>,
+is used throughout this book to refer to an organization's security guidelines.
+Your site's security policy is the set of rules that define the sensitivity
+of the information that is being processed and the measures that are used
+to protect the information from unauthorized access. Security technologies
+such as Solaris Secure Shell, authentication, RBAC, authorization, privileges, and resource
+control provide measures to protect information.</para>
+<para>Some security technologies also use the word policy when describing
+specific aspects of their implementation.  For example, Solaris auditing uses
+audit policy options to configure some aspects of auditing policy. The following
+table points to glossary, man page, and information on features that use the
+word policy to describe specific aspects of their implementation.</para>
+<table frame="topbot" xml:id="secov-3">
+
+<title>Use of Policy in the Solaris OS</title>
+<tgroup cols="3" colsep="0" rowsep="0">
+<colspec colwidth="33.22*"/>
+<colspec colname="colspec0" colwidth="30.92*"/>
+<colspec colwidth="34.85*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Glossary Definition</para>
+</entry>
+<entry>
+<para>Selected Man Pages</para>
+</entry>
+<entry>
+<para>Further Information</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-52">audit policy</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2251" targetptr="audit-control-4">
+<citerefentry>
+<refentrytitle>audit_control</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="819-2251" targetptr="audit-user-4">
+<citerefentry>
+<refentrytitle>audit_user</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="819-2240" targetptr="auditconfig-1m">
+<citerefentry>
+<refentrytitle>auditconfig</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-26.xml" targetptr="auditov-1">Chapter 26, Solaris Auditing (Overview)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-86">policy in the cryptographic framework</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2240" targetptr="cryptoadm-1m">
+<citerefentry>
+<refentrytitle>cryptoadm</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-12.xml" targetptr="scf-1">Chapter 12, Solaris Cryptographic Framework
+(Overview)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-97">device policy</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2240" targetptr="getdevpolicy-1m">
+<citerefentry>
+<refentrytitle>getdevpolicy</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="concept-42">Controlling Access to Devices</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-85">Kerberos policy</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2251" targetptr="krb5.conf-4">
+<citerefentry>
+<refentrytitle>krb5.conf</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-23.xml" targetptr="aadmin-1">Chapter 23, Administering Kerberos
+Principals and Policies (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="internal" targetdoc="" targetptr="glossary-107">network policies</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2252" targetptr="ipfilter-5">
+<citerefentry>
+<refentrytitle>ipfilter</refentrytitle>
+<manvolnum>
+5
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="819-2240" targetptr="ifconfig-1m">
+<citerefentry>
+<refentrytitle>ifconfig</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="819-2251" targetptr="ike.config-4">
+<citerefentry>
+<refentrytitle>ike.config</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="819-2240" targetptr="ipsecconf-1m">
+<citerefentry>
+<refentrytitle>ipsecconf</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="819-2240" targetptr="routeadm-1m">
+<citerefentry>
+<refentrytitle>routeadm</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-3000" targetptr="ipsectm-1">Part IV, <citetitle remap="chapter">IP Security,</citetitle> in <citetitle remap="book">System Administration Guide: IP Services</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-87">password policy</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2239" targetptr="passwd-1">
+<citerefentry>
+<refentrytitle>passwd</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="819-2251" targetptr="nsswitch.conf-4">
+<citerefentry>
+<refentrytitle>nsswitch.conf</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="819-2251" targetptr="crypt.conf-4">
+<citerefentry>
+<refentrytitle>crypt.conf</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink>, <olink remap="external" targetdoc="819-2251" targetptr="policy.conf-4">
+<citerefentry>
+<refentrytitle>policy.conf</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-2.xml" targetptr="concept-2">Maintaining Login Control</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-68">RBAC policy</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-2252" targetptr="rbac-5">
+<citerefentry>
+<refentrytitle>rbac</refentrytitle>
+<manvolnum>
+5
+</manvolnum>
+</citerefentry>
+</olink>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-9.xml" targetptr="rbacref-13">exec_attr Database</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</sect1>
+</chapter>

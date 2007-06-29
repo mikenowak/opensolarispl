@@ -1,0 +1,577 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Managing Forms</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch05.html" title="Chapter 5. Managing Character Sets, Filters,
+Forms, and Fonts (Tasks)"><link rel="prev" href="ch05s05.html" title="Managing Forms (Task Map)"><link rel="next" href="ch05s07.html" title="Managing Fonts (Task Map)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Managing Forms</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch05s05.html">Prev</a> </td><th width="60%" align="center">Chapter 5. Managing Character Sets, Filters,
+Forms, and Fonts (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch05s07.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printforms-48"></a>Managing Forms</h2></div></div></div>
+
+<a class="indexterm" name="printforms-ix602"></a>
+<p>A <span class="emphasis"><em>form</em></span> is a sheet of paper on which information is printed
+in a predetermined format. Unlike plain paper stock, forms usually have text or graphics
+preprinted on them. Common examples of forms are company letterhead, invoices, blank
+checks, receipts, and labels.</p>
+<p>The term <span class="emphasis"><em>form</em></span> has two meanings: the physical medium (the
+paper) and the software that defines a form to the LP print service.</p>
+<p>The LP print service allows you to control the use of forms. This section provides
+information about adding, changing, deleting, mounting, and limiting access to forms.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printforms-70392"></a>Adding, Changing, or Deleting Forms</h3></div></div></div>
+
+<a class="indexterm" name="printforms-ix603"></a>
+<a class="indexterm" name="printforms-ix604"></a>
+<a class="indexterm" name="printforms-ix605"></a>
+<p>When you add a form, you tell the LP print service to include the form in its
+list of available forms. You also have to supply the information required to describe
+or define the form. Although you can specify such definitions when you add the form,
+it helps to create the definitions first and save them in files. You can then change
+the form definition by editing the file.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>No form definitions are supplied with the LP print service.</p>
+</div>
+<p>To change a form, you must re-add the form with a different definition.</p>
+<p>The LP print service imposes no limit on the number of forms you can define.
+However, you should delete forms that are no longer appropriate. Obsolete forms can
+result in unnecessary processing by the print service.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2142942"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-70477"></a><p class="title"><b>How to Add a Form</b></p><a class="indexterm" name="indexterm-86"></a><a class="indexterm" name="indexterm-87"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-50"></a>
+<p>Log in as superuser, <code class="literal">lp</code>, or
+assume an equivalent role on the print server.</p>
+</li><li><a name="printforms-step-51"></a>
+<p>Add a form that is based on a form definition.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f</code></strong> <em class="replaceable"><code>form-name</code></em> <strong class="userinput"><code>-F /etc/lp/forms/</code></strong>
+<em class="replaceable"><code>form</code></em>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+f</code>
+</span></dt><dd>
+<p>Specifies the name you choose for the form</p>
+</dd><dt><span class="term">
+<code class="option">
+F</code> <code class="filename">/etc/lp/forms/</code> <em class="replaceable"><code>form</code></em>
+</span></dt><dd>
+<p>Specifies the name of the form definition.</p>
+</dd></dl></div>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">lpforms</span>
+(
+1M
+)
+</span>
+</span> man
+page.</p>
+<p>
+<a class="indexterm" name="printforms-ix616"></a>The form is added to the print server's <code class="filename">/etc/lp/forms/</code>
+<em class="replaceable"><code>form-name</code></em>
+<code class="filename">/describe</code> file. </p>
+</li><li><a name="printforms-step-117"></a>
+<p>Verify that the form was added by checking the
+output of the following command:</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f</code></strong> <em class="replaceable"><code>form-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="emjgs"></a><p class="title"><b>Example 5.12. Adding a Form</b></p>
+
+
+<p>The following example shows how to add the <code class="literal">medical</code> form that
+uses the <code class="literal">medical.fmd</code> form definition.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f medical -F /etc/lp/forms/medical.fmd</code></strong>
+</pre>
+</div><div class="taskrelated">
+
+<p>
+<a class="indexterm" name="printforms-ix618"></a>Before the form can be used, one or more printers must be given access
+to the form. For more information, see <span class="olink">How to Limit Printer Access to a Form</span>. </p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2143281"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-98930"></a><p class="title"><b>How to Delete a Form</b></p><a class="indexterm" name="indexterm-88"></a><a class="indexterm" name="indexterm-89"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-55"></a>
+<p>Log in as superuser, <code class="literal">lp</code>, or
+assume an equivalent role on the print server.</p>
+</li><li><a name="printforms-step-56"></a>
+<p>Delete the form.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f</code></strong> <em class="replaceable"><code>form-name</code></em> <strong class="userinput"><code>-x</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+f</code>
+</span></dt><dd>
+<p>Is the form to be deleted.</p>
+</dd><dt><span class="term">
+<code class="option">
+x</code>
+</span></dt><dd>
+<p>Deletes the specified form</p>
+</dd></dl></div>
+<p>
+<a class="indexterm" name="printforms-ix621"></a>The form is deleted from <code class="filename">/etc/lp/forms/</code>
+<em class="replaceable"><code>form-name</code></em> file. </p>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">lpforms</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</li><li><a name="printforms-step-112"></a>
+<p>Verify that the form was deleted.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f</code></strong> <em class="replaceable"><code>form-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+<p>You should receive an error indicating that a form by the specified name does
+not exist.</p>
+</li></ol></div><div class="example"><a name="emjgo"></a><p class="title"><b>Example 5.13. Deleting a Form</b></p>
+
+
+<p>The following example shows how to delete the <code class="literal">medical</code> form.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f medical -x</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printforms-83300"></a>Mounting Forms</h3></div></div></div>
+
+<a class="indexterm" name="printforms-ix606"></a>
+<a class="indexterm" name="printforms-ix607"></a>
+<p>To print a form, you must load the paper in the printer and use a command to <span class="emphasis"><em>mount</em></span> the form. This command notifies the LP print service that print requests
+submitted to the printer are to be printed using the form definition. If you use one
+printer for different types of printing, including forms, you should do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Disable the printer before you load the paper and mount the form. </p>
+</li><li>
+<p>Re-enable the printer when the form is ready. Otherwise, the LP print
+service will continue to print files that do not need the form on the printer. </p>
+</li></ul></div>
+<p>When you mount a form, ensure that it is aligned properly. If an alignment pattern
+has been defined for the form, you can request that the pattern print repeatedly after
+you have mounted the form. Let the pattern print repeatedly until you have adjusted
+the printer so the alignment is correct.</p>
+<p>When you want to change or discontinue using a form on a printer, you must notify
+the LP print service by unmounting the form.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2143652"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-31385"></a><p class="title"><b>How to Unmount and Mount a Form</b></p><a class="indexterm" name="indexterm-90"></a><a class="indexterm" name="indexterm-91"></a><a class="indexterm" name="indexterm-92"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-60"></a>
+<p>Log in as superuser, <code class="literal">lp</code>, or
+assume an equivalent role on the print server.</p>
+</li><li><a name="printforms-step-61"></a>
+<p>Stop accepting print requests on the printer on
+which you are unmounting the current form.</p>
+<pre class="screen"># <strong class="userinput"><code>reject</code></strong> <em class="replaceable"><code>printer-name</code></em>
+</pre>
+<p>
+<em class="replaceable"><code>printer-name</code></em> is the name of the printer on which
+you are unmounting a form.</p>
+<p>New print requests (which might not require
+the form) are not allowed to enter the printer's queue.</p>
+</li><li><a name="printforms-step-62"></a>
+<p>
+<a class="indexterm" name="printforms-ix626"></a>
+<a class="indexterm" name="printforms-ix627"></a>Unmount the current form. </p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-M -f none</code></strong>
+</pre>
+<p>In this command, the variable <em class="replaceable"><code>printer-name</code></em> is the
+same variable that is used in <span class="olink">Step 2</span>.</p>
+<p>The current form is deleted from the print server's  <code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/configuration</code> file. </p>
+</li><li><a name="printforms-step-63"></a>
+<p>
+<a class="indexterm" name="printforms-ix629"></a>
+<a class="indexterm" name="printforms-ix631"></a>
+<a class="indexterm" name="printforms-ix634"></a>Remove the form paper from the printer.  </p>
+</li><li><a name="printforms-step-64"></a>
+<p>Load the new form paper for the next print request. </p>
+</li><li><a name="printforms-step-65"></a>
+<p>Mount the form. </p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-M -f</code></strong> <em class="replaceable"><code>form-name</code></em>[<strong class="userinput"><code>-a -o filebreak</code></strong>]</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code>
+</span></dt><dd>
+<p>Specifies the printer on which you are mounting a form.</p>
+</dd><dt><span class="term">
+<code class="option">
+M</code>
+</span></dt><dd>
+<p>Specifies the name of the form to be mounted.</p>
+</dd><dt><span class="term">
+<code class="option">
+a</code> <code class="option">
+o</code> <span><strong class="command">filebreak</strong></span>
+</span></dt><dd>
+<p>Optionally enables you to print a copy of the alignment pattern defined
+for the form, if this definition exists.</p>
+</dd></dl></div>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code> <em class="replaceable"><code>printer-name</code></em>
+</span></dt><dd>
+<p>Printer on which you are mounting a form.</p>
+</dd><dt><span class="term">
+<code class="option">
+M</code> <code class="option">
+f</code> <em class="replaceable"><code>form-name</code></em>
+</span></dt><dd>
+<p>Name of the form to be mounted.</p>
+</dd></dl></div>
+<p>The specified form is added in the print server's <code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/configuration</code> file. </p>
+</li><li><a name="printforms-step-66"></a>
+<p>Start accepting print requests on the printer. </p>
+<pre class="screen"># <strong class="userinput"><code>accept</code></strong> <em class="replaceable"><code>printer-name</code></em>
+</pre>
+<p>The printer is ready to print the form you just mounted.</p>
+</li><li><a name="printforms-step-119"></a>
+<p>Verify that the form has been mounted.</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+<p>Otherwise, submit a print request that requires the new form and check the printer
+for output.</p>
+</li></ol></div><div class="example"><a name="emjgr"></a><p class="title"><b>Example 5.14. Unmounting a Form</b></p>
+
+
+<p>The following example shows the process of unmounting the currently mounted
+form on the printer <code class="literal">luna</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>reject luna</code></strong>
+destination "luna" will no longer accept requests
+# <strong class="userinput"><code>lpadmin -p luna -M f none</code></strong>
+# <strong class="userinput"><code>accept luna</code></strong>
+destination "luna" now accepting requests</pre>
+</div><div class="example"><a name="embzo"></a><p class="title"><b>Example 5.15. Mounting a Form</b></p>
+
+
+<p>The following example shows the process of mounting the <code class="literal">medical</code> form
+on the printer <code class="literal">luna</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>reject luna</code></strong>
+destination "luna" will no longer accept requests
+# <strong class="userinput"><code>lpadmin -p luna -M f medical -a -o filebreak</code></strong>
+# <strong class="userinput"><code>accept luna</code></strong>
+destination "luna" now accepting requests</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printforms-45"></a>Tracking Forms</h3></div></div></div>
+
+<a class="indexterm" name="printref-ix212"></a>
+<a class="indexterm" name="printref-ix213"></a>
+<a class="indexterm" name="indexterm-93"></a>
+<p>The LP print service helps you track which forms are mounted on each printer.
+The print service also notifies you when it cannot find a description it needs to
+print a form. You are responsible for creating form descriptions, and mounting and
+unmounting form paper in each printer. You complete this task either as part of setting
+up a printer or in response to alerts from the LP print service.</p>
+<p>Users can specify the form on which they want a job to print. As superuser,
+you can mount a specific form, then tell the LP print service that the form is available
+and on which printer it is mounted. Users can submit print requests specifying a particular
+form. When the LP print service receives the request, it sends an alert message to <code class="literal">root</code> requesting that you mount the form.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printforms-30782"></a>Defining Alerts for Mounting Forms</h3></div></div></div>
+
+<a class="indexterm" name="printforms-ix608"></a>
+<a class="indexterm" name="printforms-ix609"></a>
+<p>You request alerts for mounting forms in the same way that you request other
+alerts from the LP print service. For general information about alerts, see <span class="olink">Setting Up Printer Fault Alerts</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2144485"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-44360"></a><p class="title"><b>How to Set an Alert to Mount a Form</b></p><a class="indexterm" name="indexterm-94"></a><a class="indexterm" name="indexterm-95"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-70"></a>
+<p>Log in as superuser, <code class="literal">lp</code>, or
+assume an equivalent role on the print server.</p>
+</li><li><a name="printforms-step-71"></a>
+<p>
+<a class="indexterm" name="printforms-ix640"></a>Set a request alert for mounting a form. </p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f</code></strong> <em class="replaceable"><code>form-name</code></em> <strong class="userinput"><code>-A</code></strong> <em class="replaceable"><code>alert</code></em> [<strong class="userinput"><code>-Q</code></strong> <em class="replaceable"><code>requests</code></em>] [<strong class="userinput"><code>-W</code></strong> <em class="replaceable"><code>minutes</code></em>]</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+f</code>
+</span></dt><dd>
+<p>Specifies the form for which you want to set a request alert.</p>
+</dd><dt><span class="term">
+<code class="option">
+A</code> <em class="replaceable"><code>alert</code></em>
+</span></dt><dd>
+<p>Specifies what kind of alert will occur when a form is requested.
+See <span class="olink">Table 4&#8211;3</span> for detailed information
+about the valid values for <em class="replaceable"><code>alert</code></em>. Some valid values are <code class="literal">mail</code>, <code class="literal">write</code>, and <code class="literal">quiet</code>. If you choose <code class="literal">mail</code> or <code class="literal">write</code>, a predefined alert message says to mount
+the specified form. The message includes names of one or more printers that have been
+set up to use the form.</p>
+</dd><dt><span class="term">
+<code class="option">
+Q</code> <em class="replaceable"><code>requests</code></em>
+</span></dt><dd>
+<p>Specifies how many print requests that require the form must be in
+the queue to trigger an alert. If you don't specify this option, an alert occurs with
+just one print request in the queue.</p>
+</dd><dt><span class="term">
+<code class="option">
+W</code> <em class="replaceable"><code>minutes</code></em>
+</span></dt><dd>
+<p>Specifies how often (in minutes) the alert will occur. If you don't
+specify this option, the alert is sent one time.</p>
+</dd></dl></div>
+<p>The request alert is added to the print server's <code class="filename">/etc/lp/forms/</code>
+<em class="replaceable"><code>form-name</code></em>
+<code class="filename">/alert.sh</code> file. </p>
+</li><li><a name="printforms-step-114"></a>
+<p>Verify that the alert has been added for the
+form.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f</code></strong> <em class="replaceable"><code>form-name</code></em> <strong class="userinput"><code>-A list</code></strong>
+</pre>
+<p>Alternately, if you have set a low number of print requests to trigger the alert,
+submit print requests to meet the minimum requirement. Ensure that you receive an
+alert to mount the form.</p>
+</li></ol></div><div class="example"><a name="emjgp"></a><p class="title"><b>Example 5.16. Setting an Alert to Mount a Form</b></p>
+
+
+<p>This example shows how to set email alerts to occur every 5 minutes for the <code class="literal">letterhead</code> form when 10 print requests for <code class="literal">letterhead</code> reside
+in the print queue.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f letterhead -A mail -Q 10 -W 5</code></strong>
+</pre>
+</div><div class="example"><a name="embzm"></a><p class="title"><b>Example 5.17. Setting a Console Window Alert</b></p>
+
+
+<p>This example shows how to set console window alerts to occur every 10 minutes
+for the <code class="literal">letterhead</code> form when 5 requests for <code class="literal">letterhead</code>reside in the print queue.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f letterhead -A write -Q 5 -W 10</code></strong>
+</pre>
+</div><div class="example"><a name="embyn"></a><p class="title"><b>Example 5.18. Setting up No Request Alerts</b></p>
+
+
+<p>This example shows how to set no request alerts for the <code class="literal">invoice</code> form.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f invoice -A none</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printforms-55079"></a>Checking Forms</h3></div></div></div>
+
+<a class="indexterm" name="printforms-ix610"></a>
+<a class="indexterm" name="indexterm-96"></a>
+<p>When you have defined a form for the LP print service, you can check the form
+with either of two commands. Which command you choose depends on the type of information
+you want to check.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>To show the attributes of the form, use the <span><strong class="command">lpforms</strong></span> command.
+You can also redirect the output of the command into a file to save it for future
+reference.</p>
+</li><li>
+<p>
+<a class="indexterm" name="printforms-ix611"></a>To display the current status of the form, use the <span><strong class="command">lpstat</strong></span> command.
+To protect potentially sensitive content, the alignment pattern is not shown. </p>
+</li></ul></div>
+<p>
+<a class="indexterm" name="printforms-ix612"></a>If you are not sure about the name of an existing form, you can view the
+form names by listing the contents of the <code class="filename">/etc/lp/forms</code> directory. </p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2145104"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-40098"></a><p class="title"><b>How to View Information About a Form</b></p><a class="indexterm" name="indexterm-97"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-75"></a>
+<p>Log in as superuser, <code class="literal">lp</code>, or
+assume an equivalent role on the print server.</p>
+</li><li><a name="printforms-step-76"></a>
+<p>Request information about a form.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f</code></strong> <em class="replaceable"><code>form-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+f</code>
+</span></dt><dd>
+<p>Specifies the form for which you want to view information. Specify <code class="literal">all</code> for <em class="replaceable"><code>form-name</code></em> to view information about all
+the available forms.</p>
+</dd><dt><span class="term">
+<code class="option">
+l</code>
+</span></dt><dd>
+<p>Lists the specified form.</p>
+</dd></dl></div>
+<p>Information about the specified form or forms is displayed.</p>
+</li></ol></div><div class="example"><a name="emjgq"></a><p class="title"><b>Example 5.19. Viewing Information About a Form</b></p>
+
+
+<p>The following example shows how to display information about the <code class="literal">medical</code> form.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f medical -l</code></strong>
+Page length: 62
+Page width: 72
+Number of pages: 2
+Line pitch: 6
+Character pitch: 12
+Character set choice: pica
+Ribbon color: black
+Comment:
+Medical claim form</pre>
+<p>The following example shows how to redirect the information about the <code class="literal">medical</code> form to a file. This command creates the form definition for the
+form. This command is useful if a form definition is removed unintentionally.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f medical -l &gt; medical.fmd</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2145294"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-67212"></a><p class="title"><b>How to View the Current Status of a Form</b></p><a class="indexterm" name="indexterm-98"></a><a class="indexterm" name="indexterm-99"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-79"></a>
+<p>Log in on the print server.</p>
+</li><li><a name="printforms-step-80"></a>
+<p>Request information about the current status of
+a form.</p>
+<pre class="screen">$ <strong class="userinput"><code>lpstat -f</code></strong> <em class="replaceable"><code>form-name</code></em>
+</pre>
+<p>The <code class="option">
+f</code> option specifies the form for which you want to view
+the current status. Specify <code class="literal">all</code> for <em class="replaceable"><code>form-name</code></em> to
+view the current status of all the forms.</p>
+<p>Information about the current
+status of the specified form or forms is displayed.</p>
+</li></ol></div><div class="example"><a name="emjgt"></a><p class="title"><b>Example 5.20. Viewing the Current Status of a Form</b></p>
+
+
+<p>This example shows how to display the status of the <code class="literal">medical</code> form.</p>
+<pre class="screen">$ <strong class="userinput"><code>lpstat -f medical</code></strong>
+form medical is available to you</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printforms-91507"></a>Limiting Access to Forms</h3></div></div></div>
+
+<a class="indexterm" name="printforms-ix613"></a>
+<p>You can control which printers and which users have access to some or all of
+the forms available on the network. For example, you might want only the people in
+the payroll or accounts payable department to be able to print check forms. In addition,
+you might want the check forms to be available only on certain printers.</p>
+<p>For more information, see <span class="olink">How to Limit User Access to a Form</span>. To limit printer access to a form, see <span class="olink">How to Limit Printer Access to a Form</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2145538"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-12946"></a><p class="title"><b>How to Limit User Access to a Form</b></p><a class="indexterm" name="indexterm-100"></a><a class="indexterm" name="indexterm-101"></a><a class="indexterm" name="indexterm-102"></a><a class="indexterm" name="indexterm-103"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-83"></a>
+<p>Log in as superuser, <code class="literal">lp</code>, or
+assume an equivalent role on the print server.</p>
+</li><li><a name="printforms-step-84"></a>
+<p>Allow or deny users access to a form.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f</code></strong> <em class="replaceable"><code>form-name</code></em> <strong class="userinput"><code>-u allow</code></strong>:<em class="replaceable"><code>user-list</code></em> | <strong class="userinput"><code>deny</code></strong>:<em class="replaceable"><code>user-list</code></em>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+f</code>
+</span></dt><dd>
+<p>Specifies the name of the form for which the allow user access lists
+or the deny user access list is being created.</p>
+</dd><dt><span class="term">
+<span><strong class="command">-u allow:</strong></span>
+<em class="replaceable"><code>user-list</code></em>
+</span></dt><dd>
+<p>Represents users to be added to the allow user access list. Use a
+comma or a space to separate user login IDs. If you use spaces, enclose the list of
+IDs in quotation marks. </p>
+<p>
+<span class="olink">Table 4&#8211;5</span> provides the valid
+values for <em class="replaceable"><code>user-list</code></em>.</p>
+</dd><dt><span class="term">
+<span><strong class="command">-u deny:</strong></span>
+<em class="replaceable"><code>user-list</code></em>
+</span></dt><dd>
+<p>Represents users to be added to the deny user access list. Use a comma
+or a space to separate user login IDs. If you use spaces, enclose the list of IDs
+in quotation marks. <span class="olink">Table 4&#8211;5</span> provides
+the valid values for <em class="replaceable"><code>user-list</code></em>.</p>
+</dd></dl></div>
+<p>
+<a class="indexterm" name="printforms-ix650"></a>
+<a class="indexterm" name="printforms-ix651"></a>The specified users are added to the appropriate user access list for
+the specified form in one of the following files on the print server: </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="filename">/etc/lp/forms/</code>
+<em class="replaceable"><code>form-name</code></em>
+<code class="filename">/allow</code>
+</p>
+</li><li>
+<p>
+<code class="filename">/etc/lp/forms/</code>
+<em class="replaceable"><code>form-name</code></em>
+<code class="filename">/deny</code> </p>
+</li></ul></div>
+</li><li><a name="printforms-step-121"></a>
+<p>Verify that the allow user access list and deny
+user access list are set up correctly.</p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f</code></strong> <em class="replaceable"><code>form-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="emjgw"></a><p class="title"><b>Example 5.21. Allowing User Access to a Form</b></p>
+
+
+<p>This example shows how to allow only the users <code class="literal">nathan</code> and <code class="literal">marcia</code> access to the <code class="literal">check</code> form. </p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f check -u allow:nathan,marcia</code></strong>
+</pre>
+</div><div class="example"><a name="emcab"></a><p class="title"><b>Example 5.22. Denying User Access to a Form</b></p>
+
+
+<p>This example shows how to deny users <code class="literal">jones</code> and <code class="literal">smith</code> access to the <code class="literal">dental</code> form. </p>
+<pre class="screen"># <strong class="userinput"><code>lpforms -f dental -u deny:jones,smith</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2146002"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-12033"></a><p class="title"><b>How to Limit Printer Access to a Form</b></p><a class="indexterm" name="indexterm-104"></a><a class="indexterm" name="indexterm-105"></a><a class="indexterm" name="indexterm-106"></a><a class="indexterm" name="indexterm-107"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-88"></a>
+<p>Log in as superuser, <code class="literal">lp</code>, or
+assume an equivalent role on the print server.</p>
+</li><li><a name="printforms-step-89"></a>
+<p>
+<a class="indexterm" name="printforms-ix659"></a>
+<a class="indexterm" name="printforms-ix660"></a>
+<a class="indexterm" name="printforms-ix661"></a>Allow or deny use of forms on a printer. </p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-f allow</code></strong>:<em class="replaceable"><code>form-list</code></em> | <strong class="userinput"><code>deny</code></strong>:<em class="replaceable"><code>form-list</code></em>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code>
+</span></dt><dd>
+<p>Specifies the name of the printer for which the allow forms list or
+deny forms list is being created.</p>
+</dd><dt><span class="term">
+<code class="option">
+f</code> allow: <em class="replaceable"><code>form-list</code></em>
+</span></dt><dd>
+<p>Specifies the form name to be added to the allow list. Use a space
+or a comma to separate multiple form names. If you use spaces to separate form names,
+enclose the list of form names in quotation marks.</p>
+</dd><dt><span class="term">
+<code class="option">
+f</code> deny: <em class="replaceable"><code>form-list</code></em>
+</span></dt><dd>
+<p>Is the form name to be added to the deny list. Use a space or a comma
+to separate multiple form names. If you use spaces to separate form names, enclose
+the list of form names in quotation marks.</p>
+</dd></dl></div>
+<p>The specified form or forms are added to the allow forms list or the deny forms
+list in one of the following files on the print server:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/form.allow</code>
+</p>
+</li><li>
+<p>
+<code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/form.deny</code> </p>
+</li></ul></div>
+</li><li><a name="printforms-step-122"></a>
+<p>Verify that the allow forms list and the deny
+forms list are set up correctly.</p>
+<pre class="screen"># <strong class="userinput"><code>lpstat -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-l</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="emjgy"></a><p class="title"><b>Example 5.23. Allowing Printer Access to a Form</b></p>
+
+
+<p>This example shows how to allow the printer <code class="literal">luna</code> to access
+only the <code class="literal">medical</code>, <code class="literal">dental</code>, and <code class="literal">check</code> forms. </p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p luna -f allow:medical,dental,check</code></strong>
+</pre>
+</div><div class="example"><a name="embze"></a><p class="title"><b>Example 5.24. Limiting Printer Access to a Form</b></p>
+
+
+<p>
+<a class="indexterm" name="printforms-ix664"></a>This example shows how to deny the printer <code class="literal">luna</code> from
+accessing the <code class="literal">medical</code>, <code class="literal">dental</code>, and <code class="literal">check</code> forms. </p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p luna -f deny:"medical dental check"</code></strong>
+</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch05s05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch05.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch05s07.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Managing Forms (Task Map) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Managing Fonts (Task Map)</td></tr></table></div></body></html>

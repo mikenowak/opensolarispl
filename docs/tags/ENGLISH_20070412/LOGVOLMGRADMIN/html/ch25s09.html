@@ -1,0 +1,371 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Recovering Storage From a Different
+System</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch25.html" title="Chapter 25. Troubleshooting Solaris Volume Manager (Tasks)"><link rel="prev" href="ch25s08.html" title="Recovering From Soft Partition Problems"><link rel="next" href="ch25s10.html" title="Recovering From Disk Set Problems"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Recovering Storage From a Different
+System</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch25s08.html">Prev</a> </td><th width="60%" align="center">Chapter 25. Troubleshooting Solaris Volume Manager (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch25s10.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="troubleshoottasks-84"></a>Recovering Storage From a Different
+System</h2></div></div></div>
+
+<p>You can recover a Solaris Volume Manager configuration, even onto a different
+system from the original system. </p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1784526"></a></h3></div></div></div>
+
+<div class="task"><a name="eqqcz"></a><p class="title"><b>How to Recover Storage From a Local Disk Set</b></p><div class="tasksummary">
+<p>If you experience a system failure, you can attach the storage to a
+different system and recover the complete configuration from the local disk
+set. For example, assume you have a system with an external disk pack of six
+disks in it and a Solaris Volume Manager configuration, including at least one state
+database replica, on some of those disks. If you have a system failure, you
+can physically move the disk pack to a new system and enable the new system
+to recognize the configuration. This procedure describes how to move the disks
+to another system and recover the configuration from a local disk set.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>This recovery procedure works only with Solaris 9, and later,
+Solaris Volume Manager volumes.</p>
+</div>
+</div><div class="procedure"><ol type="1"><li><a name="troubleshoottasks-step-111"></a>
+<p>Attach the disk or disks that
+contain the Solaris Volume Manager configuration to a system with no preexisting Solaris Volume Manager configuration. </p>
+</li><li><a name="troubleshoottasks-step-87"></a>
+<p>Do a reconfiguration reboot to
+ensure that the system recognizes the newly added disks.</p>
+<pre class="screen"># <strong class="userinput"><code>reboot -- -r</code></strong>
+</pre>
+</li><li><a name="troubleshoottasks-step-88"></a>
+<p>Determine the major/minor number
+for a slice containing a state database replica on the newly added disks. </p>
+<p>Use <span><strong class="command">ls -lL</strong></span>, and note the two numbers between the
+group name and the date. These numbers are the major/minor numbers for this
+slice. </p>
+<pre class="screen"># ls -Ll /dev/dsk/c1t9d0s7
+brw-r-----   1 root     sys       32, 71 Dec  5 10:05 /dev/dsk/c1t9d0s7</pre>
+</li><li><a name="troubleshoottasks-step-94"></a>
+<p>If necessary, determine the major
+name corresponding with the major number by looking up the major number in <code class="filename">/etc/name_to_major</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>grep " 32" /etc/name_to_major  sd 32</code></strong>
+</pre>
+</li><li><a name="troubleshoottasks-step-89"></a>
+<p>Update the <code class="filename">/kernel/drv/md.conf</code> file with the information that instructs Solaris Volume Manager where
+to find a valid state database replica on the new disks.</p>
+<p>For example,
+in the line that begins with <code class="literal">mddb_bootlist1</code>, replace the <code class="literal">sd</code> with the major name you found in step 4. Replace <em class="replaceable"><code>71</code></em> in
+the example with the minor number you identified in <span class="olink">Step 3</span>.</p>
+<pre class="screen">#pragma ident   "@(#)md.conf    2.2     04/04/02 SMI"
+#
+# Copyright 2004 Sun Microsystems, Inc.  All rights reserved.
+# Use is subject to license terms.
+#
+# The parameters nmd and md_nsets are obsolete.  The values for these
+# parameters no longer have any meaning.
+name="md" parent="pseudo" nmd=128 md_nsets=4;
+
+# Begin MDD database info (do not edit)
+<strong class="userinput"><code>mddb_bootlist1="</code></strong>
+<code class="systemitem">sd</code>
+<strong class="userinput"><code>:</code></strong>
+<code class="systemitem">71</code>
+<strong class="userinput"><code>:16:id0";</code></strong>
+# End MDD database info (do not edit)</pre>
+</li><li><a name="troubleshoottasks-step-90"></a>
+<p>Reboot to force Solaris Volume Manager to
+reload your configuration. </p>
+<p>You will see messages similar to the
+following displayed on the console. </p>
+<pre class="screen">volume management starting.
+Dec  5 10:11:53 host1 metadevadm: Disk movement detected
+Dec  5 10:11:53 host1 metadevadm: Updating device names in 
+Solaris Volume Manager
+The system is ready.</pre>
+</li><li><a name="troubleshoottasks-step-91"></a>
+<p>Verify your configuration. Use
+the <span><strong class="command">metadb</strong></span> command to verify the status of the state database
+replicas. and <span><strong class="command">metastat</strong></span> command view the status for each
+volume.</p>
+<pre class="screen"># <strong class="userinput"><code>metadb</code></strong>
+        flags           first blk       block count
+     a m  p  luo        16              8192            /dev/dsk/c1t9d0s7
+     a       luo        16              8192            /dev/dsk/c1t10d0s7
+     a       luo        16              8192            /dev/dsk/c1t11d0s7
+     a       luo        16              8192            /dev/dsk/c1t12d0s7
+     a       luo        16              8192            /dev/dsk/c1t13d0s7
+# <strong class="userinput"><code>metastat</code></strong>
+d12: RAID
+    State: Okay         
+    Interlace: 32 blocks
+    Size: 125685 blocks
+Original device:
+    Size: 128576 blocks
+        Device              Start Block  Dbase State        Reloc  Hot Spare
+        c1t11d0s3                330     No    Okay         Yes    
+        c1t12d0s3                330     No    Okay         Yes    
+        c1t13d0s3                330     No    Okay         Yes    
+
+d20: Soft Partition
+    Device: d10
+    State: Okay
+    Size: 8192 blocks
+        Extent              Start Block              Block count
+             0                     3592                     8192
+
+d21: Soft Partition
+    Device: d10
+    State: Okay
+    Size: 8192 blocks
+        Extent              Start Block              Block count
+             0                    11785                     8192
+
+d22: Soft Partition
+    Device: d10
+    State: Okay
+    Size: 8192 blocks
+        Extent              Start Block              Block count
+             0                    19978                     8192
+
+d10: Mirror
+    Submirror 0: d0
+      State: Okay         
+    Submirror 1: d1
+      State: Okay         
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: parallel (default)
+    Size: 82593 blocks
+
+d0: Submirror of d10
+    State: Okay         
+    Size: 118503 blocks
+    Stripe 0: (interlace: 32 blocks)
+        Device              Start Block  Dbase State        Reloc  Hot Spare
+        c1t9d0s0                   0     No    Okay         Yes    
+        c1t10d0s0               3591     No    Okay         Yes    
+
+
+d1: Submirror of d10
+    State: Okay         
+    Size: 82593 blocks
+    Stripe 0: (interlace: 32 blocks)
+        Device              Start Block  Dbase State        Reloc  Hot Spare
+        c1t9d0s1                   0     No    Okay         Yes    
+        c1t10d0s1                  0     No    Okay         Yes    
+
+
+Device Relocation Information:
+Device       Reloc    Device ID
+c1t9d0       Yes      id1,sd@SSEAGATE_ST39103LCSUN9.0GLS3487980000U00907AZ
+c1t10d0      Yes      id1,sd@SSEAGATE_ST39103LCSUN9.0GLS3397070000W0090A8Q
+c1t11d0      Yes      id1,sd@SSEAGATE_ST39103LCSUN9.0GLS3449660000U00904NZ
+c1t12d0      Yes      id1,sd@SSEAGATE_ST39103LCSUN9.0GLS32655400007010H04J
+c1t13d0      Yes      id1,sd@SSEAGATE_ST39103LCSUN9.0GLS3461190000701001T0
+# 
+# metadb         
+        flags           first blk       block count
+     a m  p  luo        16              8192            /dev/dsk/c1t9d0s7
+     a       luo        16              8192            /dev/dsk/c1t10d0s7
+     a       luo        16              8192            /dev/dsk/c1t11d0s7
+     a       luo        16              8192            /dev/dsk/c1t12d0s7
+     a       luo        16              8192            /dev/dsk/c1t13d0s7
+# metastat 
+d12: RAID
+    State: Okay         
+    Interlace: 32 blocks
+    Size: 125685 blocks
+Original device:
+    Size: 128576 blocks
+        Device              Start Block  Dbase State        Reloc  Hot Spare
+        c1t11d0s3                330     No    Okay         Yes    
+        c1t12d0s3                330     No    Okay         Yes    
+        c1t13d0s3                330     No    Okay         Yes    
+
+d20: Soft Partition
+    Device: d10
+    State: Okay
+    Size: 8192 blocks
+        Extent              Start Block              Block count
+             0                     3592                     8192
+
+d21: Soft Partition
+    Device: d10
+    State: Okay
+    Size: 8192 blocks
+        Extent              Start Block              Block count
+             0                    11785                     8192
+
+d22: Soft Partition
+    Device: d10
+    State: Okay
+    Size: 8192 blocks
+        Extent              Start Block              Block count
+             0                    19978                     8192
+
+d10: Mirror
+    Submirror 0: d0
+      State: Okay         
+    Submirror 1: d1
+      State: Okay         
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: parallel (default)
+    Size: 82593 blocks
+
+d0: Submirror of d10
+    State: Okay         
+    Size: 118503 blocks
+    Stripe 0: (interlace: 32 blocks)
+        Device              Start Block  Dbase State        Reloc  Hot Spare
+        c1t9d0s0                   0     No    Okay         Yes    
+        c1t10d0s0               3591     No    Okay         Yes    
+
+
+d1: Submirror of d10
+    State: Okay         
+    Size: 82593 blocks
+    Stripe 0: (interlace: 32 blocks)
+        Device              Start Block  Dbase State        Reloc  Hot Spare
+        c1t9d0s1                   0     No    Okay         Yes    
+        c1t10d0s1                  0     No    Okay         Yes    
+
+
+Device Relocation Information:
+Device         Reloc    Device ID
+c1t9d0         Yes     id1,sd@SSEAGATE_ST39103LCSUN9.0GLS3487980000U00907AZ1
+c1t10d0        Yes     id1,sd@SSEAGATE_ST39103LCSUN9.0GLS3397070000W0090A8Q
+c1t11d0        Yes     id1,sd@SSEAGATE_ST39103LCSUN9.0GLS3449660000U00904NZ
+c1t12d0        Yes     id1,sd@SSEAGATE_ST39103LCSUN9.0GLS32655400007010H04J
+c1t13d0        Yes     id1,sd@SSEAGATE_ST39103LCSUN9.0GLS3461190000701001T0
+# <strong class="userinput"><code>metastat -p</code></strong>
+d12 -r c1t11d0s3 c1t12d0s3 c1t13d0s3 -k -i 32b
+d20 -p d10 -o 3592 -b 8192 
+d21 -p d10 -o 11785 -b 8192 
+d22 -p d10 -o 19978 -b 8192 
+d10 -m d0 d1 1
+d0 1 2 c1t9d0s0 c1t10d0s0 -i 32b
+d1 1 2 c1t9d0s1 c1t10d0s1 -i 32b
+#</pre>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="egkaa"></a>Recovering Storage From a Known Disk Set</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-249"></a>
+<a class="indexterm" name="indexterm-250"></a>
+<a class="indexterm" name="indexterm-251"></a>
+<p>The introduction of device ID support for disk sets in Solaris Volume
+Manager allows you to recover storage from known disk sets and to import the
+disk set to a different system. The <span><strong class="command">metaimport</strong></span> command
+allows you to  import known disk sets  from one system to another system.
+Both systems must contain existing Solaris Volume Manager configurations that
+include device ID support. For more information on device ID support, see <span class="olink">Asynchronous Shared Storage in Disk Sets</span>. For more
+information on the <span><strong class="command">metaimport</strong></span> command, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metaimport</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+<div class="task"><a name="eoqsb"></a><p class="title"><b>How to Print a Report on Disk Sets Available for Import</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser.</p>
+</li><li>
+<p>Obtain a report on disk sets available for import.</p>
+<pre class="screen"># <span><strong class="command">metaimport <code class="option">
+r</code> <code class="option">
+v</code>
+</strong></span>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+r</code>
+</span></dt><dd>
+<p>Provides a report of the unconfigured disk sets available
+for import on the system.</p>
+</dd><dt><span class="term">
+<code class="option">
+v</code>
+</span></dt><dd>
+<p>Provides detailed information about the state database replica
+location and status on the disks of unconfigured disk sets available for import
+on the system.</p>
+</dd></dl></div>
+</li></ol></div><div class="example"><a name="id1785141"></a><p class="title"><b>Example 25.3. Reporting on Disk Sets Available for Import</b></p>
+
+
+<p>The following examples show how to print a report on disk sets available
+for import.</p>
+<pre class="screen"># <strong class="userinput"><code>metaimport -r</code></strong>
+ Drives in regular diskset including disk c1t2d0:
+   c1t2d0
+   c1t3d0
+ More info:
+   metaimport -r -v c1t2d0 
+Import:   metaimport -s &lt;newsetname&gt; c1t2d0 
+ Drives in replicated diskset including disk c1t4d0:
+   c1t4d0
+   c1t5d0
+ More info:
+   metaimport -r -v c1t4d0 
+Import:   metaimport -s &lt;newsetname&gt; c1t4d0
+
+# <strong class="userinput"><code>metaimport -r -v c1t2d0</code></strong>
+Import: metaimport -s &lt;newsetname&gt; c1t2d0
+Last update: Mon Dec 29 14:13:35 2003
+Device       offset       length replica flags
+c1t2d0           16         8192      a        u     
+c1t3d0           16         8192      a        u     
+c1t8d0           16         8192      a        u     </pre>
+</div></div>
+<div class="task"><a name="eoqry"></a><p class="title"><b>How to Import a Disk Set From One System to Another
+System</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser.</p>
+</li><li>
+<p>Verify that a disk set is available for import .</p>
+<pre class="screen"># <span><strong class="command">metaimport <code class="option">
+r</code> <code class="option">
+v</code>
+</strong></span>
+</pre>
+</li><li>
+<p>Import an available disk set.</p>
+<pre class="screen"># <span><strong class="command">metaimport <code class="option">
+s</code> <em class="replaceable"><code>diskset-name</code></em> <em class="replaceable"><code>drive-name</code></em>
+</strong></span>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+ s</code> <em class="replaceable"><code>diskset-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the disk set being created.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>drive-name</code></em>
+</span></dt><dd>
+<p>Identifies a disk (<code class="literal">c#t#d#</code>) containing a
+state database replica from the disk set being imported.</p>
+</dd></dl></div>
+</li><li>
+<p>Verify that the disk set has been imported.</p>
+<pre class="screen"># <span><strong class="command">metaset</strong></span> <code class="option">
+s</code> <em class="replaceable"><code>diskset-name</code></em>
+</pre>
+</li></ol></div><div class="example"><a name="id1785351"></a><p class="title"><b>Example 25.4. Importing a Disk Set</b></p>
+
+
+<p>The following example shows how to import a disk set.</p>
+<pre class="screen"># <strong class="userinput"><code>metaimport -s red c1t2d0</code></strong>
+Drives in diskset including disk c1t2d0:
+  c1t2d0
+  c1t3d0
+  c1t8d0
+# <strong class="userinput"><code>metaset -s red</code></strong>
+
+
+Set name = red, Set number = 1
+
+Host                Owner
+  host1            Yes
+
+Drive    Dbase
+
+c1t2d0   Yes  
+
+c1t3d0   Yes  
+
+c1t8d0   Yes  </pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch25s08.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch25.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch25s10.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Recovering From Soft Partition Problems </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Recovering From Disk Set Problems</td></tr></table></div></body></html>

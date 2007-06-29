@@ -1,0 +1,278 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Statically Defined Tracing for User Applications - Solaris Dynamic Tracing Guide</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2005-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >Solaris Dynamic Tracing Guide<?GenHTML /ReferencePage>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p58.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p60.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="chp-usdt"></a>Chapter&nbsp;34<h3>Statically Defined Tracing for User Applications</h3><p>DTrace provides a facility for user application developers to define
+customized probes in application code to augment the capabilities of the <tt>pid</tt> provider. These static probes impose little to no overhead when
+disabled and are dynamically enabled like all other DTrace probes. You can
+use static probes to describe application semantics to users of DTrace without
+exposing or requiring implementation knowledge of your applications. This
+chapter describes how to define static probes in user applications and how
+to use DTrace to enable such probes in user processes.</p>
+<a name="chp-usdt-1"></a><h3>Choosing the Probe Points</h3>
+<p><a name="indexterm-469"></a><a name="indexterm-470"></a><a name="indexterm-471"></a>DTrace allows developers to embed static probe points
+in application code, including both complete applications and shared libraries.
+These probes can be enabled wherever the application or library is running,
+either in development or in production. You should define probes that have
+a semantic meaning that is readily understood by your DTrace user community.
+For example, you could define <tt>query-receive</tt> and <tt>query-respond</tt> probes for a web server that correspond to a client submitting
+a request and the web server responding to that request. These example probes
+are easily understood by most DTrace users and correspond to the highest level
+abstractions for the application, rather than lower level implementation details.
+DTrace users might use these probes to understand the time distribution of
+requests. If your <tt>query-receive</tt> probe presented the URL request strings as an argument, a DTrace user could determine which
+requests were generating the most disk I/O by combining this probe with the <tt>io</tt> provider.</p>
+<p>You should also consider the stability of the abstractions you describe
+when choosing probe names and locations. Will this probe persist in future
+releases of the application, even if the implementation changes? Does the
+probe make sense on all system architectures or is it specific to a particular
+instruction set? This chapter will discuss the details of how these decisions
+guide your static tracing definitions.</p>
+<a name="chp-usdt-2"></a><h3>Adding Probes to an Application</h3>
+<p><a name="indexterm-472"></a><a name="indexterm-473"></a>DTrace probes for libraries and executables are defined in an ELF section in the corresponding application binary. This section
+describes how to define your probes, add them to your application source code,
+and augment your application's build process to include the DTrace probe definitions.</p>
+<a name="chp-usdt-3"></a><h4>Defining Providers and Probes</h4>
+<p>You define DTrace probes in a <tt>.d</tt> source file which
+is then used when compiling and linking your application. First, select an
+appropriate name for your user application provider. The provider name you
+choose will be appended with the process identifier for each process that
+is executing your application code. For example, if you chose the provider
+name <tt>myserv</tt> for a web server that was executing as process
+ID 1203, the DTrace provider name corresponding to this process would be <tt>myserv1203</tt>. In your <tt>.d</tt> source file, add a provider
+definition similar to the following example:</p>
+<pre>provider myserv {
+	...
+};			</pre><p>Next, add a definition for each probe and the corresponding arguments.
+The following example defines the two probes discussed in <a href="p59.html#chp-usdt-1">Choosing the Probe Points</a>. The
+first probe has two arguments, both of type <tt>string</tt>, and
+the second probe has no arguments. The D compiler converts two consecutive
+underscores (<tt>--</tt>) in any probe name to a hyphen (<tt>-</tt>).</p>
+<pre>provider myserv {
+	probe query__receive(string, string);
+	probe query__respond();
+};</pre><p>You should add stability attributes to your provider definition so that
+consumers of your probes understand the likelihood of change in future versions
+of your application. See <a href="p64.html">Chapter&nbsp;39, Stability</a> for
+more information on the DTrace stability attributes. Stability attributes
+are defined as shown in the following example:</p>
+<a name="ex-myserv.d"></a>Example 34-1 <tt>myserv.d</tt>: Statically
+Defined Application Probes<pre>#pragma D attributes Evolving/Evolving/Common provider myserv provider
+#pragma D attributes Private/Private/Unknown provider myserv module
+#pragma D attributes Private/Private/Unknown provider myserv function
+#pragma D attributes Evolving/Evolving/Common provider myserv name
+#pragma D attributes Evolving/Evolving/Common provider myserv args
+
+provider myserv {
+	probe query__receive(string, string);
+	probe query__respond();
+};</pre><a name="chp-usdt-4"></a><h4>Adding Probes to Application Code</h4>
+<p>Now that you have defined your probes in a <tt>.d</tt> file,
+you need to augment your source code to indicate the locations that should
+trigger your probes. Consider the following example C application source code:</p>
+<pre>void
+main_look(void)
+{
+	...
+	query = wait_for_new_query();
+	process_query(query)
+	...
+}</pre><p>To add a probe site, add a reference to the <tt>DTRACE_PROBE()</tt> macro
+defined in <tt>&lt;sys/sdt.h></tt> as shown in the following example:</p>
+<pre>#include &lt;sys/sdt.h>
+...
+
+void
+main_look(void)
+{
+	...
+	query = wait_for_new_query();
+	DTRACE_PROBE2(myserv, query__receive, query->clientname, query->msg);
+	process_query(query)
+	...
+}</pre><p>The suffix <tt>2</tt> in the macro name <tt>DTRACE_PROBE2</tt> refers
+the number of arguments that are passed to the probe. The first two arguments
+to the probe macro are the provider name and probe name and must correspond
+to your D provider and probe definitions. The remaining macro arguments are
+the arguments assigned to the DTrace <tt>arg0..9</tt> variables
+when the probes fires.Your application source code can contain multiple references
+to the same provider and probe name. If multiple references to the same probe
+are present in your source code, any of the macro references will cause the
+probe to fire.</p>
+<a name="chp-usdt-5"></a><h4>Building Applications with Probes</h4>
+<p>You must augment the build process for your application to include the
+DTrace provider and probe definitions. A typical build process takes each
+source file and compiles it to create a corresponding object file. The compiled
+object files are then linked together to create the finished application binary,
+as shown in the following example:</p>
+<pre>cc -c src1.c
+cc -c src2.c
+...
+cc -o myserv src1.o src2.o ...</pre><p>To include DTrace probe definitions in your application, add appropriate
+Makefile rules to your build process to execute the <tt>dtrace</tt> command
+as shown in the following example:</p>
+<pre>cc -c src1.c
+cc -c src2.c
+...
+dtrace -G -32 -s myserv.d src1.o src2.o ...
+cc -o myserv myserv.o src1.o src2.o ...</pre><p>The <tt>dtrace</tt> command shown above post-processes the
+object files generated by the preceding compiler commands and generates the
+object file <tt>myserv.o</tt> from <tt>myserv.d</tt> and
+the other object files. The <tt>dtrace</tt> <tt>-G</tt> option
+is used to link provider and probe definitions with a user application. The <tt>-32</tt> option is used to build 32&ndash;bit application binaries. The <tt>-64</tt> option is used to build 64&ndash;bit application binaries.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p58.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p60.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

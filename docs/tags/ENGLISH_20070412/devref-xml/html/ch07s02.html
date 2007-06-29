@@ -1,0 +1,211 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>7.2 Style Guide</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="OpenSolaris Developer's Reference"><link rel="up" href="ch07.html" title="Chapter 7. Best Practices and Requirements"><link rel="prev" href="ch07.html" title="Chapter 7. Best Practices and Requirements"><link rel="next" href="ch07s03.html" title="7.3 Testing Guidelines"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">7.2 Style Guide</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch07.html">Prev</a> </td><th width="60%" align="center">Chapter 7. Best Practices and Requirements</th><td width="20%" align="right"> <a accesskey="n" href="ch07s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="_7_2_Style_Guide"></a>7.2 Style Guide</h2></div></div></div><p>
+Like many engineering efforts, OpenSolaris enforces a coding style on
+contributed code, regardless of its source.  This coding style is very
+similar to that used by the Linux kernel, BSD systems, and many other
+non-GNU projects (the GNU project uses its own unique coding style).
+This style is described in detail at
+<a href="http://opensolaris.org/os/community/onnv/" target="_top">http://opensolaris.org/os/community/onnv/</a>, although some elements
+in the style guide are rather dated, especially as they relate to K&amp;R C
+versus ANSI (now ISO) C.  You also should examine the files in
+<code class="code">usr/src/prototypes</code>; these provide examples of the correct general
+layout and style for most types of source files.
+</p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_7_2_1_Automated_Style_Tools"></a>7.2.1 Automated Style Tools</h3></div></div></div><p>
+Two tools for checking many elements of the coding style are available
+as part of the ON tools.  These tools are cstyle(1) for verifying
+compliance of C code with most style guidelines, and hdrchk(1) for
+checking the style of C and C++ headers.  Note that these tools are not
+perfect; there are style mistakes that cannot be caught by any
+reasonable tool, and others that cannot be caught by the particular
+implementations.  Improving the accuracy and completeness of these tools
+is an ongoing task and enhancements of all kinds are welcome.
+</p><p>
+All headers are expected to pass 'hdrchk'.  All C files and headers 
+are expected to pass 'cstyle -P -p'.  These tools produce no output 
+and exit with status code 0 if the file(s) checked meet the style 
+requirements.
+</p><p>
+7.2.2 =head3 Style Examples
+</p><p>
+A few common examples of bad style which are not currently caught by the
+tools include:
+</p><p>
+* Mixing declaration of initialized and uninitialized variables on the
+same line; for example:
+</p><pre class="programlisting">
+int a, b = 16, c = -4, d;
+</pre><p>
+Instead, uninitialized variables may be declared one or more per line,
+and each initialized variable should be declared on its own line:
+</p><pre class="programlisting">
+int a, d;
+int b = 16;
+int c = -4;
+</pre><p>
+or
+</p><pre class="programlisting">
+int a;
+int b = 16;
+int c = -4;
+int d;
+</pre><p>
+* Inconsistent use of acceptable styles.  In the above
+example, two acceptable ways to declare variables are presented.
+Good style dictates that whichever is used by used everywhere within
+a file; however, the tools do not check for such consistency.
+</p><p>
+* Incorrect placement and use of braces around if/else constructs.  The
+heuristic test for this is not run by default, and is not completely
+reliable.  For simplicity's sake, here is the correct format for
+if/else in which both alternatives are compound statements:
+</p><pre class="programlisting">
+if (x != SOME_CONSTANT) {
+	do_stuff();
+	return (x);
+} else {
+	do_other_stuff();
+	x = OTHER_CONSTANT;
+}
+</pre><p>
+If neither alternative is a compound statement, use:
+</p><pre class="programlisting">
+if (x != SOME_CONSTANT)
+	do_stuff();
+else
+	do_other_stuff();
+</pre><p>
+Finally, if only one alternative is a compound statement, both
+alternatives should have braces, formatted as shown:
+</p><pre class="programlisting">
+if (x != SOME_CONSTANT) {
+	do_stuff();
+	return (x);
+} else {
+	do_other_stuff();
+}
+</pre><p>
+Note the placement of braces; they should surround an "else" and only
+the closing brace should be on a line by itself.
+</p><p>
+* Use of comments associated with conditional compilation directives.
+It is good style to include trailing comments after #else and #endif
+directives describing the condition it references; for example:
+</p><pre class="programlisting">
+#ifdef __FOO
+...
+#else	/* !__FOO */
+...
+#endif	/* !__FOO */
+</pre><p>
+The style tools do not check for the presence, usefulness, or
+correctness of these trailing comments, but you should normally
+include them, especially if the intervening code blocks are lengthy
+or the tests are part of a complicated set of nested preprocessor
+conditionals.
+</p><p>
+* Incorrect guards in header files.  Guard names should be derived
+from the header name, but hdrchk does not check this.  For example, a
+header installed in &lt;sys/scsi/foo_impl.h&gt; should have a guard as
+follows:
+</p><pre class="programlisting">
+#ifndef _SYS_SCSI_FOO_IMPL_H
+#define _SYS_SCSI_FOO_IMPL_H
+...
+#endif /* _SYS_SCSI_FOO_IMPL_H */
+</pre><p>
+However, hdrchk verifies neither the actual guard token name nor the
+comment following #endif.
+</p><p>
+* Comment style is only partially checked.  For example, the correct
+style for block comments is:
+</p><pre class="programlisting">
+/*
+ * Some comment here.
+ * More here.
+ */
+</pre><p>
+cstyle(1) can detect some common errors, such as enclosing the entire
+block comment in a box of asterisks or other characters.  However, it
+cannot detect all such errors; for example:
+</p><pre class="programlisting">
+/*
+   Some comment here.
+   We conserve asterisks even though it's harder to read.
+   Our comment is nonconforming.
+ */
+</pre><p>
+Correct indentation of comments is also unchecked; block and
+single-line comments within functions should be indented at the same
+level as the code they document.  Trailing comments should be aligned
+with other trailing comments in related code.  None of these style
+guidelines is checked by the tools.
+</p><p>
+It probably goes without saying that the contents of comments aren't
+checked in any way.  Please, be sure to follow the comment content
+guidelines in the style guide.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_7_2_3_Non_Formatting_Considera"></a>7.2.3 Non-Formatting Considerations</h3></div></div></div><p>
+cstyle(1) and hdrchk(1) will, in addition to several code-formatting
+guidelines, verify compliance with SCCS keyword and copyright
+requirements.  All files must be under SCCS control, and each must have
+a set of keywords near the top (see the prototypes for the exact order
+of file contents).  In general, the keywords should have the following
+format in C files and headers:
+</p><pre class="programlisting">
+@PRAGMA_IDENT_EXP@
+</pre><p>
+Note that this string actually contains several embedded tabs; showing
+these tabs as \t, the keywords look like:
+</p><pre class="programlisting">
+@PRAGMA_IDENT@
+</pre><p>
+Files which are not C (or C++) implementations or headers should
+dispense with the "pragma" portion and just use #ident as follows:
+</p><pre class="programlisting">
+@IDENT@
+</pre><p>
+In addition, each file must contain a statement of copyright at the very
+top.  The acceptable text and formats for these copyrights are shown in
+the example files in usr/src/prototypes.  When a source file is
+significantly updated, the year or range of years in the copyright
+should be replaced with just the current year at the time of
+modification.  Significant updates do not include formatting changes.
+However, if you prefer not to think about whether your change
+constitutes a significant update or if you don't trust your judgment,
+erring on the side of always updating the year is acceptable.  Since the
+prototypes assume that Sun is always the sole copyright holder, you will
+need to change the copyright statement slightly; for example, if a file
+initially contains:
+</p><pre class="programlisting">
+/*
+ * Copyright (c) 1992-1998 by Sun Microsystems, Inc.
+ * All rights reserved.
+ */
+</pre><p>
+you should replace this notice with:
+</p><pre class="programlisting">
+/*
+ * Copyright 2005 Sun Microsystems, Inc.
+ * All rights reserved.  Use is subject to license terms.
+ */
+</pre><p>
+and, if you are a contributor not employed by Sun, you should also add:
+</p><pre class="programlisting">
+/*
+ * Copyright 2005 J. Random Hacker
+ * All rights reserved.  Use is subject to license terms.
+ */
+</pre><p>
+or a similar statement of your copyright.  Do not combine copyright
+notices, and do not remove the existing copyright notices unless
+specifically instructed to do so.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_7_2_4_Integration_Requirements"></a>7.2.4 Integration Requirements</h3></div></div></div><p>
+Before submitting any changes for code review prior to inclusion in
+OpenSolaris, you should self-review your code for stylistic correctness
+(as well as semantic correctness!).  Running the cstyle(1) and/or
+hdrchk(1) tools is part of this process, but you should also be familiar
+with the entire style guide so that you will be able to use correct
+style even in elements that the tools do not check.  All new code must
+be cstyle- and, if applicable, hdrchk-clean.  If you are modifying
+existing code which does not conform to the style guide, your changes
+should be conformant, and at worst your changes should not increase the
+number of cstyle or hdrchk warnings.
+</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch07.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch07.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch07s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 7. Best Practices and Requirements </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 7.3 Testing Guidelines</td></tr></table></div></body></html>

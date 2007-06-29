@@ -1,0 +1,1272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="swmgrpatchconcepts-30492">
+
+
+
+<title>Managing Solaris Patches and
+Updates (Overview)</title>
+<toc>
+<para>Patch management involves <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_apply" type="custom-text">
+<emphasis>applying</emphasis>
+</olink> Solaris patches
+and updates to a system. Patch management might also involve removing unwanted
+or faulty patches. Removing patches is also called <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_backout" type="custom-text">
+<emphasis>backing out</emphasis>
+</olink> patches.</para>
+<note>
+
+<para>You can obtain timely access to Solaris patches and updates with
+the Sun Update Connection, System Edition software. The Sun Update Connection
+software is available, starting with the Solaris 10 1/06 and the Solaris Express 10/05 releases.
+The Sun Update Connection software has the same functionality as the Sun Patch
+Manager 2.0 tools, with the addition of some new features and enhancements.</para>
+<para>If you are running the Solaris 10 initial release, and you want to use
+Sun Update Connection, install the appropriate patches or upgrade your system
+to the Solaris Express 10/05 release.</para>
+<para>For information about installing and using the Sun Update Connection,
+System Edition software to manage patches and updates on your Solaris system,
+see the <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="text_url" xlink:href="http://docs.sun.com/app/docs/coll/1320.1">Sun
+Update Connection Collection</link>.</para>
+<para>For information about registering
+your system after you install the Solaris software, see <olink remap="external" targetdoc="chapter-18.xml" targetptr="tasks-basics-2">Chapter 18, Registering Your Solaris Express 3/06 or 10/05 Software (Tasks)</olink>.</para>
+</note>
+<para>The following overview information is in this chapter:</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="swmgrpatchconcepts-32371">Types of Patches</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="swmgrpatchconcepts-13707">Accessing Solaris Patches</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="swmgrpatchconcepts-41788">Tools for Managing Solaris Patches and Updates</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="swmgrpatchconcepts-169">Selecting the Best Method for Applying Patches and Updates</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="swmgrpatchtasks-11">Managing Patches in the Solaris Operating System (Road Map)</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary">Solaris Patch Management Terms and Definitions</olink>
+</para>
+</listitem>
+</itemizedlist>
+<para>For information about the Sun Patch Manager tool (Patch Manager) and
+step-by-step instructions on using Patch Manager to manage patches, see <olink remap="external" targetdoc="chapter-22.xml" targetptr="patchmanager-1">Chapter 22, Managing Solaris Patches by Using Sun Patch Manager (Tasks)</olink>.</para>
+<para>For step-by-step instructions on using the <command>patchadd</command> command
+to manage patches, see <olink remap="external" targetdoc="chapter-23.xml" targetptr="swmgrpatchtasks-1">Chapter 23, Managing Solaris Patches by Using the <command>patchadd</command> Command (Tasks)</olink>.</para>
+<para>For information about applying patches to diskless client systems, see <olink remap="external" targetdoc="chapter-7.xml" targetptr="clientsetup-13">Patching Diskless Client OS Services</olink>. <indexterm xml:id="indexterm-382">
+<primary>applying patches</primary>
+<secondary>to diskless clients</secondary>
+</indexterm> <indexterm xml:id="indexterm-383">
+<primary>diskless clients</primary>
+<secondary>applying patches to</secondary>
+</indexterm>
+</para>
+<para>For information about recommended strategies and practices for using
+Solaris patches, see <olink remap="external" targetdoc="817-0574">
+<citetitle remap="book">Solaris Patch Management:  Recommended Strategies</citetitle>
+</olink>
+<indexterm xml:id="indexterm-384">
+<primary>strategies</primary>
+<secondary>for using Solaris patches</secondary>
+</indexterm>.</para>
+</toc>
+<sect1 xml:id="swmgrpatchconcepts-32371">
+<title>Types of Patches</title>
+<para>A <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_patch" type="custom-text">
+<emphasis>patch</emphasis>
+</olink> is
+a collection of files and directories that replaces or updates existing files
+and directories that are preventing proper execution of the existing software.
+The existing software is derived from a specified <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_package" type="custom-text">
+<emphasis>package</emphasis>
+</olink> format,
+which conforms to the Application Binary Interface (ABI). For details about
+packages, see <olink remap="external" targetdoc="chapter-16.xml" targetptr="swmgrpkgsconcepts-52619">Chapter 16, Managing Software (Overview)</olink>. <indexterm xml:id="indexterm-385">
+<primary>patches</primary>
+<secondary>definition of</secondary>
+</indexterm>
+</para>
+<para>An <emphasis>update</emphasis> is a change that you apply to software
+that corrects an existing problem or that introduces a feature. An update
+is also the steps that you perform to apply updates to a system.</para>
+<note>
+
+<para>The terms patch and update are used interchangeably in this book.</para>
+</note>
+<para>You can manage patches on your Solaris system by using the Sun Update
+Connection, System Edition software, the Patch Manager 2.0 software, or by
+using the <command>patchadd</command> command.</para>
+<note>
+
+<para>The Sun Update Connection, System Edition software has the same
+functionality as the Sun Patch Manager tools, with the addition of some new
+features and enhancements. If you are running the Solaris 10 initial release,
+and you want to use Sun Update Connection, install the appropriate patches
+or upgrade your system to the Solaris Express 10/05 release.
+For more information, see <olink remap="external" targetdoc="chapter-16.xml" targetptr="swmgrpkgsconcepts-52619">Chapter 16, Managing Software (Overview)</olink>.</para>
+</note>
+<sect2 xml:id="swmgrpatchconcepts-2">
+<title>Signed and Unsigned Patches</title>
+<para>A <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_signed_patch" type="custom-text">
+<emphasis>signed
+patch</emphasis>
+</olink> is one that has a <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_digital_signature" type="custom-text">
+<emphasis>digital signature</emphasis>
+</olink> applied
+to it. A patch that has its digital signature verified has not been modified
+since the signature was applied. The digital signature of a signed patch is
+verified after the patch is <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_download" type="custom-text">
+<emphasis>downloaded</emphasis>
+</olink> to your
+system. <indexterm xml:id="indexterm-386">
+<primary>signed patches</primary>
+<seealso>
+patches</seealso>
+</indexterm> <indexterm xml:id="indexterm-387">
+<primary>digital signature</primary>
+<secondary>of signed patches</secondary>
+</indexterm>
+</para>
+<para>Patches for the Solaris OS, starting with the Solaris 2.6 release, are
+available as signed patches and as <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_unsigned_patch" type="custom-text">
+<emphasis>unsigned patches</emphasis>
+</olink>.
+Unsigned patches do not have a digital signature. <indexterm xml:id="indexterm-388">
+<primary>unsigned patches</primary>
+</indexterm> <indexterm xml:id="indexterm-389">
+<primary>patches</primary>
+<secondary>unsigned</secondary>
+</indexterm> <indexterm xml:id="indexterm-390">
+<primary>signed patches</primary>
+</indexterm> <indexterm xml:id="indexterm-391">
+<primary>patches</primary>
+<secondary>signed</secondary>
+</indexterm>
+</para>
+<para>Signed patches are stored in Java archive format (JAR) files and are
+available from the <trademark class="service">SunSolve Online</trademark> web
+site. Unsigned patches are stored in directory format and are also available
+from the SunSolve Online web site as <filename>.zip</filename> files.</para>
+<para>For information about managing patches and updates in the current Solaris
+release, refer to the Sun Update Connection product documentation at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://docs.sun.com/app/docs/coll/1320.1">
+</link>.</para>
+<para>For information about applying patches to your system by using Patch
+Manager, see  <olink remap="external" targetdoc="chapter-22.xml" targetptr="managepatchesclitaskmap">Managing Patches by Using the Command-Line Interface (Task Map)</olink>.</para>
+<para>For information about applying patches to your system by using the <command>patchadd</command> command, see <olink remap="external" targetdoc="chapter-23.xml" targetptr="swmgrpatchtasks-14">Managing Solaris Patches by Using the <command>patchadd</command> Command (Task Map)</olink>.</para>
+<para>For additional overview information about signed patches, see <olink remap="external" targetdoc="chapter-16.xml" targetptr="swmgrpkgsconcepts-27">Signed Packages, Patches, and Updates</olink>.</para>
+</sect2>
+</sect1>
+<sect1 xml:id="swmgrpatchconcepts-13707">
+<title>Accessing Solaris Patches</title>
+<indexterm xml:id="indexterm-392">
+<primary>patches</primary>
+<secondary>accessing Solaris</secondary>
+</indexterm>
+<para>Sun customers can access patches from the SunSolve Online web site whether
+or not they are in the SunSpectrum program. These patches are updated nightly.</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="strong">If you are in the SunSpectrum program –</emphasis> You have access to the entire SunSolve database of patches and
+all patch information. <indexterm xml:id="indexterm-393">
+<primary>patches</primary>
+<secondary>availability of</secondary>
+</indexterm> <indexterm xml:id="indexterm-394">
+<primary>accessing</primary>
+<secondary>Solaris patches</secondary>
+</indexterm>
+</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">If you are</emphasis> <emphasis>not</emphasis> <emphasis role="strong">in the SunSpectrum program –</emphasis> As of this Solaris
+release, you have access to the entire SunSolve database of patches and all
+patch information except for patches that have third-party contract restrictions. <indexterm xml:id="indexterm-395">
+<primary>patches</primary>
+<secondary>availability of</secondary>
+</indexterm>
+</para>
+</listitem>
+</itemizedlist>
+<para>You can obtain Solaris patches in the following ways:</para>
+<itemizedlist>
+<listitem>
+<para>From  the <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://sunsolve.sun.com">
+</link> web
+site</para>
+<para>To access patches from the Patch Portal of the SunSolve Online
+site, your system must be connected to the Internet and be capable of running
+a web browser, such as the Mozilla software.</para>
+</listitem>
+<listitem>
+<para>By using anonymous <command>ftp</command> to download the
+patches to your system</para>
+<para>To obtain patches by using the anonymous <command>ftp</command> command, your system must be connected to the Internet and be
+capable of running the <command>ftp</command> command.</para>
+</listitem>
+<listitem>
+<para>By using the Sun Update Connection System Edition product
+suite that is described at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://docs.sun.com/app/docs/coll/1320.1">
+</link>.</para>
+</listitem>
+<listitem>
+<para>By using the Patch Manager tools that are described in this
+book</para>
+</listitem>
+</itemizedlist>
+<para>You can access individual patches or a set of patches from a patch cluster,
+or refer to patch reports. You can also use Sun Patch Manager to <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_analyze" type="custom-text">
+<emphasis>analyze</emphasis>
+</olink> your
+system to determine the appropriate patches. Patch Manager also can download
+and apply the patches to your system. See <olink remap="external" targetdoc="chapter-22.xml" targetptr="patchmanager-1">Chapter 22, Managing Solaris Patches by Using Sun Patch Manager (Tasks)</olink>.</para>
+<para>Each patch is associated with a README file that has information about
+the patch. <indexterm xml:id="indexterm-396">
+<primary>patches</primary>
+<secondary>patch README files</secondary>
+</indexterm>
+</para>
+<sect2 xml:id="swmgrpatchconcepts-20452">
+<title>Solaris Patch Numbering</title>
+<para>Patches are identified by unique <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_patch_id" type="custom-text">
+<emphasis>patch IDs</emphasis>
+</olink>. A patch
+ID is an alphanumeric string that is a patch base code and a number that represents
+the patch revision number joined with a hyphen. For example, patch 108528-10
+is the patch ID for the SunOS 5.8 kernel update patch. <indexterm xml:id="indexterm-397">
+<primary>patches</primary>
+<secondary>numbering scheme</secondary>
+</indexterm>
+</para>
+</sect2>
+</sect1>
+<sect1 xml:id="swmgrpatchconcepts-41788">
+<title>Tools for Managing Solaris Patches
+and Updates</title>
+<indexterm xml:id="indexterm-398">
+<primary>patches</primary>
+<secondary>tools for applying</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-399">
+<primary>applying patches</primary>
+<secondary>selecting best method for</secondary>
+</indexterm>
+<para>You can use the following tools to manage patches and updates on your
+Solaris systems:</para>
+<itemizedlist>
+<listitem>
+<para>Sun Update Connection web application</para>
+</listitem>
+<listitem>
+<para>Sun Update Manager application</para>
+<note>
+
+<para>The Sun Update Connection web application and the Sun Update Manager application
+are available, starting with the Solaris 10 1/06 and the Solaris Express
+10/05 releases.</para>
+</note>
+</listitem>
+<listitem>
+<para>
+<command>smpatch</command> command-line interface</para>
+</listitem>
+<listitem>
+<para>
+<command>patchadd</command>
+</para>
+</listitem>
+<listitem>
+<para>Solaris Management Console Patches tool (GUI, starting with
+Solaris 9)</para>
+</listitem>
+</itemizedlist>
+<para>If you need to apply a patch to a diskless client system, see <olink remap="external" targetdoc="chapter-7.xml" targetptr="clientsetup-13">Patching Diskless Client OS Services</olink>.</para>
+<para>The following table summarizes the availability of the Solaris patch
+management tools.</para>
+<para>For Sun Update Connection tool, see the Sun Update Connection product
+documentation at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://docs.sun.com/app/docs/coll/1320.1">
+</link>.</para>
+<informaltable frame="all">
+<tgroup cols="5" colsep="1" rowsep="1">
+<colspec colname="colspec1" colwidth="36.47*"/>
+<colspec colname="colspec2" colwidth="30.54*"/>
+<colspec colname="colspec0" colwidth="31.76*"/>
+<colspec colname="colspec3" colwidth="32.67*"/>
+<colspec colname="colspec5" colwidth="27.49*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Tool Availability</para>
+</entry>
+<entry>
+<para>
+<command>patchadd</command>/<command>patchrm</command> Commands<indexterm xml:id="indexterm-400">
+<primary>
+<command>patchadd</command> command</primary>
+</indexterm>
+</para>
+</entry>
+<entry>
+<para>Solaris 2.6 and Solaris 7 Patch Management Tools</para>
+</entry>
+<entry>
+<para>Sun Patch Manager 2.0 </para>
+</entry>
+<entry>
+<para>PatchPro Interactive or PatchPro Expert</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>How do I get this tool?</para>
+</entry>
+<entry>
+<para>Included with the Solaris release</para>
+</entry>
+<entry>
+<para>Download the tool from the Sun Download Center web site<footnote xml:id="patch-fn1">
+<para>The Sun Download Center web site is <literal>http://wwws.sun.com/software/download</literal>.</para>
+</footnote>
+</para>
+</entry>
+<entry>
+<para>Included with the Solaris 10 release (<literal>SUNWCprog</literal>, <literal>SUNWCall</literal>, and <literal>SUNWCXall</literal>)</para>
+<para>Download the Solaris 8 or Solaris 9 version of the tool from the Sun
+Download Center web site<footnoteref linkend="patch-fn1"/>
+</para>
+</entry>
+<entry>
+<para>Run tool from the PatchPro web site<footnote xml:id="patch-fn2">
+<para>The PatchPro web site is <literal>http://www.sun.com/PatchPro</literal>.</para>
+</footnote>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Solaris release availability<indexterm xml:id="indexterm-401">
+<primary>patch management tools</primary>
+<secondary>supported Solaris releases</secondary>
+</indexterm>
+</para>
+</entry>
+<entry>
+<para>Solaris 2.6, Solaris 7, Solaris 8, Solaris 9, Solaris 10, and
+Solaris Express releases</para>
+</entry>
+<entry>
+<para>Solaris 2.6 and Solaris 7 releases</para>
+</entry>
+<entry>
+<para>Solaris 8, Solaris 9, and Solaris 10 releases</para>
+</entry>
+<entry>
+<para>Solaris 2.6, Solaris 7, Solaris 8, Solaris 9, and Solaris 10 releases</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Applies signed patches?</para>
+</entry>
+<entry>
+<para>
+<emphasis role="strong">Starting with the Solaris 9 12/03 release –</emphasis> Yes,
+and automatically verifies the signed patch when it is downloaded</para>
+</entry>
+<entry>
+<para>Yes, and automatically verifies the signed patch when it is downloaded</para>
+</entry>
+<entry>
+<para>Yes, and automatically verifies the signed patch when it is downloaded</para>
+</entry>
+<entry>
+<para>No, these tools do not apply patches</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Applies unsigned patches?</para>
+</entry>
+<entry>
+<para>Yes</para>
+</entry>
+<entry>
+<para>No</para>
+</entry>
+<entry>
+<para>Yes, but the patches must be unzipped first</para>
+</entry>
+<entry>
+<para>No</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>GUI available?</para>
+</entry>
+<entry>
+<para>No</para>
+</entry>
+<entry>
+<para>No</para>
+</entry>
+<entry>
+<para>
+<indexterm xml:id="indexterm-402">
+<primary>
+<command>smc</command> command</primary>
+<secondary>graphical user interface</secondary>
+</indexterm>Yes, for Solaris 9 and Solaris 10 systems only</para>
+</entry>
+<entry>
+<para>Yes, these tools can only be run from the PatchPro web site<footnoteref linkend="patch-fn2"/>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Analyzes system to determine the appropriate patches and downloads signed
+or unsigned patches</para>
+</entry>
+<entry>
+<para>No</para>
+</entry>
+<entry>
+<para>Yes, signed patches only</para>
+</entry>
+<entry>
+<para>Yes, signed patches only</para>
+</entry>
+<entry>
+<para>Yes, unsigned patches only</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Local and remote system patch support</para>
+</entry>
+<entry>
+<para>Local</para>
+</entry>
+<entry>
+<para>Local</para>
+</entry>
+<entry>
+<para>Local and remote</para>
+<para>
+<emphasis role="strong">For Solaris 8 systems –</emphasis> Local</para>
+</entry>
+<entry>
+<para>No</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>RBAC support?</para>
+</entry>
+<entry>
+<para>Yes</para>
+</entry>
+<entry>
+<para>No</para>
+</entry>
+<entry>
+<para>Yes</para>
+</entry>
+<entry>
+<para>No</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<para>
+<emphasis role="strong">Starting with the Solaris 9 release –</emphasis> A
+graphical user interface Patches tool in the Solaris Management Console (<command>smc</command>), is also available. The Patches tool enables you to <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_analyze" type="custom-text">analyze</olink> systems to
+determine the appropriate patches, view patch properties, download patches,
+apply patches to systems, and remove patches. <indexterm xml:id="indexterm-403">
+<primary>
+<command>smc</command> command</primary>
+<secondary>graphical user interface</secondary>
+</indexterm> <indexterm xml:id="indexterm-404">
+<primary>
+<command>smpatch</command> command</primary>
+<secondary>command-line interface</secondary>
+</indexterm>
+</para>
+<sect2 xml:id="swmgrpatchtasks-36117">
+<title>Managing Solaris Patches</title>
+<para>When you apply a patch, the patch tools call the <command>pkgadd</command> command
+to apply the patch packages from the patch directory to a local system's disk.</para>
+<caution>
+
+<para>Do <emphasis>not</emphasis> run the <command>pkgadd</command> command
+directly to apply patches.</para>
+</caution>
+<para>More specifically, the patch tools do the following:</para>
+<itemizedlist>
+<listitem>
+<para>Determine the Solaris version number of the managing host
+and the target host</para>
+</listitem>
+<listitem>
+<para>Update the patch package's <filename>pkginfo</filename> file
+with this information:</para>
+<itemizedlist>
+<listitem>
+<para>Patches that have been <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_patch_obsolescence" type="custom-text">
+<emphasis>obsoleted</emphasis>
+</olink> by
+the patch being applied</para>
+</listitem>
+<listitem>
+<para>Other patches that are required by this patch</para>
+</listitem>
+<listitem>
+<para>Patches that are <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_patch_incompatibility" type="custom-text">
+<emphasis>incompatible</emphasis>
+</olink> with
+this patch</para>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+<para>While you apply patches, the <command>patchadd</command> command logs
+information in the <filename>/var/sadm/patch/</filename>
+<replaceable>patch-id</replaceable>
+<filename>/log</filename> file. <indexterm xml:id="indexterm-405">
+<primary>
+<filename>/var/sadm/patch</filename> directory</primary>
+</indexterm>
+</para>
+<note>
+
+<para>In this Solaris release, improvements have been made to the <command>patchadd</command> <option>
+M</option> command. When you use this command to
+apply patches to your system, you are no longer required to specify patch
+IDs in numeric order. If you use the <command>patchadd</command> <option>
+M</option> command
+without specifying a patch ID, all patches in the directory are installed
+on the system. For more information about these changes, see the <olink remap="external" targetdoc="819-2240" targetptr="patchadd-1m">
+<citerefentry>
+<refentrytitle>patchadd</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink>.</para>
+</note>
+<para>The <command>patchadd</command> command cannot apply a patch under the
+following conditions:</para>
+<itemizedlist>
+<listitem>
+<para>The package is not fully installed on the system.</para>
+</listitem>
+<listitem>
+<para>The patch package's architecture differs from the system's
+architecture.</para>
+</listitem>
+<listitem>
+<para>The patch package's version does not match the installed package's
+version.</para>
+</listitem>
+<listitem>
+<para>A patch with the same base code and a higher revision number
+has already been applied.</para>
+</listitem>
+<listitem>
+<para>A patch that obsoletes this patch has already been applied.</para>
+</listitem>
+<listitem>
+<para>The patch is incompatible with a patch that has already been
+applied to the system. Each patch that has been applied keeps this information
+in its <filename>pkginfo</filename> file.</para>
+</listitem>
+<listitem>
+<para>The patch being applied depends on another patch that has
+not yet been applied.</para>
+</listitem>
+</itemizedlist>
+</sect2>
+</sect1>
+<sect1 xml:id="swmgrpatchconcepts-169">
+<title>Selecting the Best Method for Applying
+Patches and Updates</title>
+<para>You can use several different methods to download or apply one or more
+patches or updates to your system. Use the following table to determine which
+method is best for your needs. <indexterm xml:id="indexterm-406">
+<primary>patches</primary>
+<secondary>selecting best method for applying</secondary>
+</indexterm> <indexterm xml:id="indexterm-407">
+<primary>applying patches</primary>
+<secondary>selecting best method for</secondary>
+</indexterm> <indexterm xml:id="indexterm-408">
+<primary>patch management tools</primary>
+<secondary>selecting</secondary>
+</indexterm>
+</para>
+<note>
+
+<para>Starting with the Solaris 10 1/06 and
+the Solaris Express 10/05 releases, the <command>smpatch</command> command-line
+interface has been updated for use with the Sun Update Connection software.
+If you are running the Solaris 10 initial release, and you want to use Sun
+Update Connection, install the appropriate patches or upgrade your system
+to the Solaris Express 10/05 release.
+For more information, see <olink remap="external" targetdoc="chapter-16.xml" targetptr="gazwe">What's New in Software Management in the Solaris Operating System?</olink>.</para>
+<para>For information
+about registering your system after you install the Solaris software, see
+the <olink remap="external" targetdoc="chapter-18.xml" targetptr="tasks-basics-2">Chapter 18, Registering Your Solaris Express 3/06 or 10/05 Software (Tasks)</olink>.</para>
+</note>
+<informaltable frame="all">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec0" colwidth="30.31*"/>
+<colspec colname="colspec1" colwidth="40.94*"/>
+<colspec colname="colspec2" colwidth="27.74*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Command or Tool</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For More Information</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>
+<indexterm xml:id="indexterm-409">
+<primary>patch management tools</primary>
+<secondary>command-line interface</secondary>
+<tertiary>
+<command>smpatch</command> command</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-410">
+<primary>command-line interface</primary>
+<secondary>
+<command>smpatch</command> command</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-411">
+<primary>command-line interface</primary>
+<secondary>Patch Manager</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-412">
+<primary>Patch Manager</primary>
+<secondary>command-line interface</secondary>
+<tertiary>
+<command>smpatch</command> command</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-413">
+<primary>
+<command>smpatch</command> command</primary>
+</indexterm>
+<command>smpatch update</command>
+</para>
+</entry>
+<entry>
+<para>
+<emphasis role="strong">Starting with the Solaris 8 release –</emphasis> Use
+this command to analyze your system to determine the appropriate patches and
+to automatically download and apply the patches. Note that this command will
+not apply a patch that has the <literal>interactive</literal> property set.</para>
+<note>
+
+<para>For Solaris 8 systems, only the local mode <command>smpatch</command> is
+available.</para>
+</note>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-22.xml" targetptr="updatecliproc">How to Update Your System With Patches (Command Line)</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="819-2240" targetptr="smpatch-1m">
+<citerefentry>
+<refentrytitle>smpatch</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<command>smpatch analyze</command> and <command>smpatch update</command>
+</para>
+</entry>
+<entry>
+<para>
+<emphasis role="strong">Starting with the Solaris 8 release –</emphasis> First,
+use <command>smpatch analyze</command> to analyze your system to determine
+the appropriate patches. Then, use <command>smpatch update</command> to download
+and apply one or more of the patches to your system.</para>
+<note>
+
+<para>For Solaris 8 systems, only the local mode <command>smpatch</command> is
+available.</para>
+</note>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-22.xml" targetptr="analyzecliproc">How to Analyze Your System to Obtain the List of Patches to Apply (Command Line)</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="chapter-22.xml" targetptr="updatecliproc">How to Update Your System With Patches (Command Line)</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="819-2240" targetptr="smpatch-1m">
+<citerefentry>
+<refentrytitle>smpatch</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<command>smpatch analyze</command>, <command>smpatch download</command>,
+and <command>smpatch add</command>
+</para>
+</entry>
+<entry>
+<para>
+<emphasis role="strong">Starting with the Solaris 8 release –</emphasis> First,
+use <command>smpatch analyze</command> to analyze your system to determine
+the appropriate patches. Then, use <command>smpatch download</command> to
+download them. This command also downloads any prerequisite patches. Then,
+use <command>smpatch add</command> to apply one or more of the patches to
+your system while the system is in single-user or multiuser mode.</para>
+<note>
+
+<para>For Solaris 8 systems, only the local mode <command>smpatch</command> is
+available.</para>
+</note>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-22.xml" targetptr="managepatchesclitaskmap">Managing Patches by Using the Command-Line Interface (Task Map)</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="819-2240" targetptr="smpatch-1m">
+<citerefentry>
+<refentrytitle>smpatch</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<indexterm xml:id="indexterm-414">
+<primary>
+<command>patchadd</command> command</primary>
+</indexterm>
+<indexterm xml:id="indexterm-415">
+<primary>patch management tools</primary>
+<secondary>
+<command>patchadd</command> command</secondary>
+</indexterm>
+<command>patchadd</command>
+</para>
+</entry>
+<entry>
+<para>
+<emphasis role="strong">Starting with the Solaris 2.6 release –</emphasis> Apply
+unsigned patches to your system.</para>
+<para>
+<emphasis role="strong">Starting with the Solaris 9 12/03 release –</emphasis> Use
+this command to apply either signed or unsigned patches to your system. To
+apply signed patches, you must first set up your package keystore.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-23.xml" targetptr="swmgrpatchtasks-1">Chapter 23, Managing Solaris Patches by Using the <command>patchadd</command> Command (Tasks)</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="819-2240" targetptr="patchadd-1m">
+<citerefentry>
+<refentrytitle>patchadd</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<indexterm xml:id="indexterm-416">
+<primary>
+<command>smc</command> command</primary>
+<secondary>graphical user interface</secondary>
+</indexterm>Solaris Management Console Patches tool</para>
+</entry>
+<entry>
+<para>
+<emphasis role="strong">Starting with the Solaris 9 release –</emphasis> Use
+this tool when you want the convenience of a GUI tool to manage signed patches.</para>
+</entry>
+<entry>
+<para>Solaris Management Console online help</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<note>
+
+<para>In this Solaris release, the <command>smpatch</command> command-line
+interface has been updated for use with the Sun Update Connection, System
+Edition software. For more information, see <olink remap="external" targetdoc="chapter-16.xml" targetptr="gazwe">What's New in Software Management in the Solaris Operating System?</olink>.</para>
+</note>
+</sect1>
+<sect1 xml:id="swmgrpatchtasks-11">
+<title>Managing Patches in the Solaris Operating
+System (Road Map)</title>
+<para>Use this road map to identify all the tasks for managing Solaris patches.
+Each task points to a series of additional tasks such as managing signed or
+unsigned patches. <indexterm xml:id="indexterm-417">
+<primary>patches</primary>
+<secondary>managing</secondary>
+</indexterm> <indexterm xml:id="indexterm-418">
+<primary>patch management tools</primary>
+<secondary>road map</secondary>
+</indexterm>
+</para>
+<informaltable frame="all">
+<tgroup cols="3" colsep="1">
+<colspec colname="colspec0" colwidth="30.31*"/>
+<colspec colname="colspec1" colwidth="40.94*"/>
+<colspec colname="colspec2" colwidth="27.74*"/>
+<thead>
+<row rowsep="1">
+<entry colname="colspec0">
+<para>Task</para>
+</entry>
+<entry colname="colspec1">
+<para>Description</para>
+</entry>
+<entry colname="colspec2">
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row rowsep="1">
+<entry>
+<para>Determine whether to apply signed or unsigned patches.</para>
+</entry>
+<entry>
+<para>Determine whether applying signed or unsigned patches is best for your
+environment.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="swmgrpatchtasks-32">Determining Whether to Apply Signed or Unsigned Patches to Your System</olink>
+</para>
+</entry>
+</row>
+<row rowsep="0">
+<entry>
+<para>Apply a patch to your system.</para>
+</entry>
+<entry>
+<para>You can apply patches in the following ways:</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row rowsep="0">
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>Use the <command>smpatch</command> command on Solaris 8, Solaris 9 ,Solaris
+10, or Solaris Express  systems to apply signed
+or unsigned patches.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-22.xml" targetptr="usepatchtoolsclitaskmap">Managing Solaris Patches by Using the Sun Patch Manager Command-Line Interface (Task Map)</olink>
+</para>
+</entry>
+</row>
+<row rowsep="0">
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>Use the <command>patchadd</command> command on Solaris 2.6, Solaris
+7, Solaris 8, Solaris 9, Solaris 10 or Solaris Express  systems to apply unsigned Solaris patches.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-23.xml" targetptr="swmgrpatchtasks-14">Managing Solaris Patches by Using the <command>patchadd</command> Command (Task Map)</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<sect2 xml:id="swmgrpatchtasks-32">
+<title>Determining Whether to Apply Signed
+or Unsigned Patches to Your System</title>
+<indexterm xml:id="indexterm-419">
+<primary>unsigned patches</primary>
+<secondary>when to use</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-420">
+<primary>signed patches</primary>
+<secondary>when to use</secondary>
+</indexterm>
+<para>The key factor when determining whether to apply signed or unsigned
+patches to your system is whether you trust the source of patches.</para>
+<para>If you trust the source of patches, for example, a patch CD from a known
+distributor or an <literal>HTTPS</literal> connection to a trusted web site,
+you can use unsigned patches. However, if you do not trust the source, use
+signed patches.</para>
+<para>If you are unsure about whether to trust the source of patches, use
+signed patches.</para>
+</sect2>
+</sect1>
+<sect1 xml:id="glossary">
+<title>Solaris Patch Management Terms and Definitions</title>
+<indexterm xml:id="indexterm-421">
+<primary>definitions of patch-related terms</primary>
+</indexterm>
+<indexterm xml:id="indexterm-422">
+<primary>glossary of patch-related terms</primary>
+</indexterm>
+<indexterm xml:id="indexterm-423">
+<primary>patches</primary>
+<secondary>terms used with</secondary>
+</indexterm>
+<para>The following terms are used throughout the patch management chapters.</para>
+<glosslist>
+<glossentry xml:id="glossary_analyze">
+<glossterm>analyze</glossterm>
+<glossdef>
+<para>To check a system to determine the list of patches that are
+appropriate for this system.</para>
+<para>Patch Manager uses analysis modules
+and a list of available patches from the Sun patch server to generate a list
+of patches for your Solaris system.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_apply">
+<glossterm>apply</glossterm>
+<glossdef>
+<para>To install a patch on a system.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_backout">
+<glossterm>back out</glossterm>
+<glossdef>
+<para>To remove a patch from a system.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_backout_data">
+<glossterm>backout data</glossterm>
+<glossdef>
+<para>Data that is created when a patch is applied to enable the
+system to return to its previous state if the patch is removed (backed out).</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_backout_directory">
+<glossterm>backout directory</glossterm>
+<glossdef>
+<para>Directory in which backout data is stored. By default, this
+is the <filename>save</filename> directory of each package that was installed
+by the patch.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_caching">
+<glossterm>caching</glossterm>
+<glossdef>
+<para>The ability of a server in a chain of patch servers to store
+a patch that has been downloaded to it from another server.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_dependency">
+<glossterm>dependency</glossterm>
+<glossdef>
+<para>See <olink remap="internal" targetdoc="chapter-21.xml" targetptr="glossary_patch_dependency" type="custom-text">
+<emphasis role="strong">patch dependency</emphasis>
+</olink>.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_digital_signature">
+<glossterm>digital signature</glossterm>
+<glossdef>
+<para>An electronic signature that can be used to ensure that a
+document has not been modified since the signature was applied.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_download">
+<glossterm>download</glossterm>
+<glossdef>
+<para>To copy one or more patches from a source of patches, such
+as the Sun patch server, to the system where the patches are to be applied.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_download_directory">
+<glossterm>download directory</glossterm>
+<glossdef>
+<para>Directory in which patches are stored when they are downloaded
+from the patch source. This is also the directory from which patches are applied.
+The default location is <filename>/var/sadm/spool</filename>.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_keystore">
+<glossterm>keystore</glossterm>
+<glossdef>
+<para>A repository of certificates and keys that is queried when
+you attempt to apply a signed patch.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_local_mode">
+<glossterm>local mode</glossterm>
+<glossdef>
+<para>A mode available for the <command>smpatch</command> command,
+which can only be run on the local system. This mode can be used to apply
+patches while the system is in single-user mode or in multiuser mode.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_nonstandard_patch">
+<glossterm>nonstandard patch</glossterm>
+<glossdef>
+<para>A patch that is associated with the <literal>interactive</literal> property,
+with one or more of the <literal>rebootafter</literal>, <literal>rebootimmediate</literal>, <literal>reconfigafter</literal>, <literal>reconfigimmediate</literal>, and <literal>singleuser</literal> properties, or a patch that cannot be applied by running the usual
+patch management tools.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_order">
+<glossterm>order</glossterm>
+<glossdef>
+<para>To sort a set of patches in an order suitable for applying
+patches.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_package">
+<glossterm>package</glossterm>
+<glossdef>
+<para>The form in which software products are delivered for installation
+on a system. The package contains a collection of files and directories in
+a defined format.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_patch">
+<glossterm>patch</glossterm>
+<glossdef>
+<para>An update to software that corrects an existing problem or
+that introduces a feature.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_patch_analysis">
+<glossterm>patch analysis</glossterm>
+<glossdef>
+<para>A method of checking a system to determine which patches are
+appropriate for the system.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_patch_dependency">
+<glossterm>patch dependency</glossterm>
+<glossdef>
+<para>An instance where a patch depends on the existence of another
+patch on a system. A patch that depends on one or more patches can only be
+applied to a system when those other patches have already been applied.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_patch_id">
+<glossterm>patch ID</glossterm>
+<glossdef>
+<para>A unique alphanumeric string, with the patch base code first,
+a hyphen, and a number that represents the patch revision number.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_patch_incompatibility">
+<glossterm>patch incompatibility</glossterm>
+<glossdef>
+<para>A rare situation where two patches cannot be on the same system.
+Each patch in the relationship is incompatible with the other. If you want
+to apply a patch that is incompatible with a patch already on the system,
+you must first remove the patch that is already on the system. Then, you can
+apply the new patch.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_patch_list">
+<glossterm>patch list</glossterm>
+<glossdef>
+<para>A file that contains a list of patches, one patch ID per line.
+Such a list can be used to perform patch operations. The list can be generated
+based on the analysis of a system or on user input.</para>
+<para>Each line
+in a patch list has two columns. The first column is the patch ID, and the
+second column is a synopsis of that patch.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_patch_management_process">
+<glossterm>patch management
+process</glossterm>
+<glossdef>
+<para>A process that involves analyzing a system to determine the
+appropriate patches, downloading the patches to that system, and applying
+the patches. Another part of the patch management process is the optional
+removal of patches.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_patch_obsolescence">
+<glossterm>patch obsolescence</glossterm>
+<glossdef>
+<para>An instance where a patch replaces another patch, even if
+it has not already been applied to a system. A patch that obsoletes one or
+more patches replaces those patches entirely and does not require that the
+obsolete patches be applied before the replacement patch is applied.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_patchpro">
+<glossterm>PatchPro</glossterm>
+<glossdef>
+<para>A product developed by Sun Network Storage to provide automated
+patch management technology, which is used by Sun Patch Manager.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_patch_server">
+<glossterm>patch server</glossterm>
+<glossdef>
+<para>A source of Solaris patches that can be used by your systems
+to perform patch analyses and from which to obtain the appropriate patches. </para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_patch_policy">
+<glossterm>policy for applying patches</glossterm>
+<glossdef>
+<para>A user-configurable policy that specifies the types of patches
+that can be applied during an update of your system.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_remote_mode">
+<glossterm>remote mode</glossterm>
+<glossdef>
+<para>A mode available for the <command>smpatch</command> command,
+which can be run on a local system to update another system with patches.
+This mode can only be used while the system is in multiuser mode.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_resolve">
+<glossterm>resolve</glossterm>
+<glossdef>
+<para>To determine the patch dependencies required for a list of
+patches. Each patch in the list is checked to determine whether any other
+patches must be added to the list. If any patches are required, they are added
+to the ordered patch list.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_signed_patch">
+<glossterm>signed patch</glossterm>
+<glossdef>
+<para>A patch that is signed with a valid digital signature. A signed
+patch offers greater security than an unsigned patch. The digital signature
+of the patch can be verified before the patch is applied to your system. A
+valid digital signature ensures that the signed patch has not been modified
+since the signature was applied. Signed patches are stored in Java Archive
+(JAR) format files.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_standard_patch">
+<glossterm>standard patch</glossterm>
+<glossdef>
+<para>A patch that can be applied to a Solaris system that is running
+in multiuser mode without having to reboot. Such a patch is associated with
+the <literal>standard</literal> patch property.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_sun_alert">
+<glossterm>Sun Alert</glossterm>
+<glossdef>
+<para>A notification to customers of a known product issue that
+might negatively impact customers' computing environments or productivity.
+A problem that warrants a Sun Alert notification meets the criteria for issues
+that are related to at least one of these concerns: availability, security,
+and data loss.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_sunsolve">
+<glossterm>SunSolve Online</glossterm>
+<glossdef>
+<para>The Sun Microsystems web site that provides access to patch
+data. Patch Manager uses the data to perform patch analyses of your systems.
+See <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://sunsolve.sun.com">
+</link>.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_unsigned_patch">
+<glossterm>unsigned patch</glossterm>
+<glossdef>
+<para>A patch that is not signed with a digital signature.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_update">
+<glossterm>update</glossterm>
+<glossdef>
+<para>(n.)  A change to software that you apply that corrects an
+existing problem or that introduces a feature.</para>
+<para>(v.) To perform
+the steps that are necessary to apply updates to a system. The system is analyzed,
+and the updates are downloaded and then applied. Also called patch.</para>
+</glossdef>
+</glossentry>
+<glossentry xml:id="glossary_web_proxy">
+<glossterm>web proxy</glossterm>
+<glossdef>
+<para>A system that is used to connect your system to the Internet.
+Your system cannot connect directly to the Internet, but must use the web
+proxy to establish the connection.</para>
+</glossdef>
+</glossentry>
+</glosslist>
+</sect1>
+</chapter>

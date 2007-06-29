@@ -1,0 +1,144 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Expanding a File System Using the growfs Command</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch20.html" title="Chapter 20. Maintaining Solaris Volume Manager (Tasks)"><link rel="prev" href="ch20s05.html" title="Changing Solaris Volume Manager Default Values"><link rel="next" href="ch20s07.html" title="Overview of Replacing and Enabling Components
+in RAID-1 and RAID-5 Volumes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Expanding a File System Using the <span><strong class="command">growfs</strong></span> Command</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch20s05.html">Prev</a> </td><th width="60%" align="center">Chapter 20. Maintaining Solaris Volume Manager (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch20s07.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-metadevices-41"></a>Expanding a File System Using the <span><strong class="command">growfs</strong></span> Command</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-205"></a>
+<a class="indexterm" name="indexterm-206"></a>
+<p>After a volume that contains a UFS file system is expanded (meaning
+that more space is added), you also need to expand the file system in order
+to recognize the added space. You must manually expand the file system with
+the <span><strong class="command">growfs</strong></span> command. The <span><strong class="command">growfs</strong></span> command
+expands the file system, even while the file system is mounted. However, write
+access to the file system is not possible while the <span><strong class="command">growfs</strong></span> command
+is running. </p>
+<p>An application, such as a database, that uses the raw device must have
+its own method to incorporate the added space. Solaris Volume Manager does not provide
+this capability. </p>
+<p>The <span><strong class="command">growfs</strong></span> command &#8220;write-locks&#8221; a mounted
+file system as it expands the file system. The length of time the file system
+is write-locked can be shortened by expanding the file system in stages. For
+instance, to expand a 1-Gbyte file system to 2 Gbytes, the file system can
+be grown in 16 Mbyte stages by using the <code class="option">
+s</code> option. This option
+specifies the total size of the new file system at each stage. </p>
+<p>During the expansion, the file system is not available for write access
+because of the write-lock feature. Write accesses are transparently suspended
+and are restarted when the <span><strong class="command">growfs</strong></span> command unlocks the file
+system. Read accesses are not affected. However, access times are not kept
+while the lock is in effect. </p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="basics-10"></a>Background Information for Expanding Slices and
+Volumes</h3></div></div></div>
+
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Solaris Volume Manager volumes can be expanded. However, volumes cannot
+be reduced in size.</p>
+</div>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>A volume can be expanded whether it is used for a file system,
+application, or database. You can expand RAID-0 (stripe and concatenation)
+volumes, RAID-1 (mirror) volumes, and RAID-5 volumes and soft partitions.</p>
+</li><li>
+<p>You can concatenate a volume that contains an existing file
+system while the file system is in use. As long as the file system is a UFS
+file system, the file system can be expanded (with the <span><strong class="command">growfs</strong></span> command)
+to fill the larger space. You can expand the file system without interrupting
+read access to the data.</p>
+</li><li>
+<p>Once a file system is expanded, it cannot be reduced in size,
+due to constraints in the UFS file system.</p>
+</li><li>
+<p>Applications and databases that use the raw device must have
+their own method to expand the added space so that they can recognize it. Solaris Volume Manager does
+not provide this capability.</p>
+</li><li>
+<p>When a component is added to a RAID-5 volume, it becomes a
+concatenation to the volume. The new component does not contain parity information.
+However, data on the new component is protected by the overall parity calculation
+that takes place for the volume.</p>
+</li><li>
+<p>You can expand a log device by adding additional components.
+You do not need to run the <span><strong class="command">growfs</strong></span> command, as Solaris Volume Manager automatically
+recognizes the additional space on reboot. </p>
+</li><li>
+<p>Soft partitions can be expanded by adding space from the underlying
+volume or slice. All other volumes can be expanded by adding slices.</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1771823"></a></h3></div></div></div>
+
+<div class="task"><a name="tasks-metadevices-7"></a><p class="title"><b>How to Expand a File System</b></p><div class="taskprerequisites">
+
+<p>Check <span class="olink">Prerequisites for Creating Solaris Volume Manager Components</span>.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Review the disk space associated with a file system.</p>
+<pre class="screen"># <strong class="userinput"><code>df -hk</code></strong>
+</pre>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">df</span>
+(
+1M
+)
+</span>
+</span> man
+page for more information.</p>
+</li><li><a name="tasks-metadevices-step-70"></a>
+<p>Expand a UFS file system on a logical
+volume.</p>
+<pre class="screen"># <strong class="userinput"><code>growfs -M <em class="replaceable"><code>/mount-point</code></em> /dev/md/rdsk/<em class="replaceable"><code>volume-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+M</code> <em class="replaceable"><code>/mount-point</code></em>
+</span></dt><dd>
+<p>Specifies the mount point for the file system to be expanded.</p>
+</dd><dt><span class="term">
+<code class="filename">/dev/md/rdsk/<em class="replaceable"><code>volume-name</code></em>
+</code>
+</span></dt><dd>
+<p>Specifies the name of the volume on which you want to expand.</p>
+</dd></dl></div>
+<p>See the following example and the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">growfs</span>
+(
+1M
+)
+</span>
+</span> man page for more information.</p>
+</li></ol></div><div class="example"><a name="egjvr"></a><p class="title"><b>Example 20.4. Expanding a File System</b></p>
+
+
+<p>In the following example, a new slice is added to a volume, <code class="filename">d10</code>,
+which contains the mounted file system, <code class="filename">/home2</code>. The <span><strong class="command">growfs</strong></span> command specifies the mount point with the <code class="option">
+M</code> option
+to be <code class="filename">/home2</code>, which is expanded onto the raw volume <code class="filename">/dev/md/rdsk/d10</code>. The file system will span the entire volume when
+the <span><strong class="command">growfs</strong></span> command is complete. You can use the <span><strong class="command">df</strong></span> <code class="option">
+hk</code> command before and after expanding the file system to verify the
+total disk capacity.</p>
+<pre class="screen"># <strong class="userinput"><code>df -hk</code></strong>
+Filesystem            kbytes    used   avail capacity  Mounted on
+...
+/dev/md/dsk/d10        69047   65426       0   100%    /home2
+...
+# <strong class="userinput"><code>growfs -M /home2 /dev/md/rdsk/d10</code></strong>
+/dev/md/rdsk/d10:       295200 sectors in 240 cylinders of 15 tracks, 82 sectors
+        144.1MB in 15 cyl groups (16 c/g, 9.61MB/g, 4608 i/g)
+super-block backups (for fsck -F ufs -o b=#) at:
+ 32, 19808, 39584, 59360, 79136, 98912, 118688, 138464, 158240, 178016, 197792,
+ 217568, 237344, 257120, 276896,
+# <strong class="userinput"><code>df -hk</code></strong>
+Filesystem            kbytes    used   avail capacity  Mounted on
+...
+/dev/md/dsk/d10       138703   65426   59407    53%    /home2
+...</pre>
+<p>
+<a class="indexterm" name="indexterm-207"></a>For mirror  volumes, always
+run the <span><strong class="command">growfs</strong></span> command on the top-level volume. Do not
+run the command on a submirror or master device, even though space is added
+to the submirror or master device.</p>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch20s05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch20.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch20s07.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Changing Solaris Volume Manager Default Values </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Overview of Replacing and Enabling Components
+in RAID-1 and RAID-5 Volumes</td></tr></table></div></body></html>

@@ -1,0 +1,52 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>System Log Rotation</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch22.html" title="Chapter 22. Managing System Messages"><link rel="prev" href="ch22.html" title="Chapter 22. Managing System Messages"><link rel="next" href="ch22s03.html" title="Customizing System Message Logging"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">System Log Rotation</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch22.html">Prev</a> </td><th width="60%" align="center">Chapter 22. Managing System Messages</th><td width="20%" align="right"> <a accesskey="n" href="ch22s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="emcby"></a>System Log Rotation</h2></div></div></div>
+
+<p>System log files are rotated by the <span><strong class="command">logadm</strong></span> command from an
+entry in the root <code class="filename">crontab</code> file. The <code class="filename">/usr/lib/newsyslog</code> script is no longer used.</p>
+<p>The system log rotation is defined in the <code class="filename">/etc/logadm.conf</code> file.
+This file includes log rotation entries for processes such as <span><strong class="command">syslogd</strong></span>.
+For example, one entry in the <code class="filename">/etc/logadm.conf</code> file specifies
+that the <code class="filename">/var/log/syslog</code> file is rotated weekly unless the file
+is empty. The most recent <code class="filename">syslog</code> file becomes <code class="filename">syslog.0</code>, the next most recent becomes <code class="filename">syslog.1</code>, and so on.
+Eight previous <code class="filename">syslog</code> log files are kept.</p>
+<p>The <code class="filename">/etc/logadm.conf</code> file also contains time stamps of
+when the last log rotation occurred.</p>
+<p>You can use the <span><strong class="command">logadm</strong></span> command to customize system logging
+and to add additional logging in the <code class="filename">/etc/logadm.conf</code> file as
+needed.</p>
+<p>For example, to rotate the Apache access and error logs, use the following commands:</p>
+<pre class="screen"># <strong class="userinput"><code>logadm -w /var/apache/logs/access_log -s 100m</code></strong>
+# <strong class="userinput"><code>logadm -w /var/apache/logs/error_log -s 10m</code></strong>
+</pre>
+<p>In this example, the Apache <code class="filename">access_log</code> file is rotated
+when it reaches 100 Mbytes in size, with a <code class="filename">.0</code>, <code class="filename">.1</code>,
+(and so on) suffix, keeping 10 copies of the old <code class="filename">access_log</code> file.
+The error_log is rotated when it reaches 10 Mbytes in size with the same suffixes
+and number of copies as the <code class="filename">access_log</code> file.</p>
+<p>The <code class="filename">/etc/logadm.conf</code> entries for the preceding Apache log
+rotation examples look similar to the following:</p>
+<pre class="screen"># <strong class="userinput"><code>cat /etc/logadm.conf</code></strong>
+.
+.
+.
+/var/apache/logs/error_log -s 10m
+/var/apache/logs/access_log -s 100m</pre>
+<p>For more information, see <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">logadm</span>
+(
+1M
+)
+</span>
+</span>.</p>
+<p>You can use the <span><strong class="command">logadm</strong></span> command as superuser or by assuming
+an equivalent role (with Log Management rights). With role-based access control (RBAC),
+you can grant non-root users the privilege of maintaining log files by providing access
+to the <span><strong class="command">logadm</strong></span> command. </p>
+<p>For example, add the following entry to the <code class="filename">/etc/user_attr</code> file
+to grant user <code class="literal">andy</code> the ability to use the <span><strong class="command">logadm</strong></span> command:</p>
+<pre class="screen">andy::::profiles=Log Management</pre>
+<p>Or, you can set up a role for log management by using the Solaris Management
+Console. For more information about setting up a role, see <span class="olink">
+<em class="citetitle">Role-Based Access Control (Overview)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch22.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch22.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch22s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 22. Managing System Messages </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Customizing System Message Logging</td></tr></table></div></body></html>

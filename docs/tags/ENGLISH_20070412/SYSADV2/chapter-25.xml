@@ -1,0 +1,990 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="tsgeneral-32935">
+
+
+
+<title>Troubleshooting Miscellaneous Software Problems (Tasks)</title>
+<toc>
+<para>This chapter describes miscellaneous software problems that might occur
+occasionally and are relatively easy to fix. Troubleshooting miscellaneous
+software problems includes solving problems that aren't related to a specific
+software application or topic, such as unsuccessful reboots and full file
+systems. Resolving these problems are described in the following sections.</para>
+<para>This is a list of the information in this chapter.</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-25.xml" targetptr="tsgeneral-8">What to Do if Rebooting Fails</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-25.xml" targetptr="fxcmh">
+What to Do if the SMF Boot Archive Service Fails During a System Reboot</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-25.xml" targetptr="tsgeneral-9">What to Do if a System Hangs</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-25.xml" targetptr="tsgeneral-10">What to Do if a File System Fills Up</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-25.xml" targetptr="tsgeneral-4">What to Do if File ACLs Are Lost After Copy or Restore</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-25.xml" targetptr="tsgeneral-12">Troubleshooting Backup Problems</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-25.xml" targetptr="gcbwx">Troubleshooting Common Agent Container Problems in the Solaris OS</olink>
+</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="tsgeneral-8">
+<title>What to Do if Rebooting Fails</title>
+<indexterm xml:id="tsgeneral-ix5426">
+<primary>rebooting</primary>
+<secondary>fails after crash</secondary>
+</indexterm>
+<indexterm xml:id="tsgeneral-ix5427">
+<primary>crashes</primary>
+<secondary>rebooting fails after</secondary>
+</indexterm>
+<para>If the system does not reboot completely, or if it reboots and then
+crashes again, there might be a software or hardware problem that is preventing
+the system from booting successfully.</para>
+<informaltable frame="topbot">
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="180*"/>
+<colspec colname="column2" colwidth="179*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Cause of System Not Booting</para>
+</entry>
+<entry>
+<para>How to Fix the Problem</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>The system can't find <filename>/platform/`uname -m`/kernel/unix.</filename>
+</para>
+</entry>
+<entry>
+<para>You may need to change the  <literal>boot-device</literal> setting in
+the PROM on a SPARC based system. For information on changing the default
+boot device, see <olink remap="external" targetdoc="819-2379" targetptr="hbsparcboot-79782">Chapter 10, <citetitle remap="chapter">Booting a System (Tasks),</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> There is no default boot
+device on an x86 based system. The message displayed is:</para>
+<para>
+<literal>Not a UFS filesystem.</literal>
+</para>
+</entry>
+<entry>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> Boot the system by using
+the Configuration Assistant/boot diskette and select the disk from which to
+boot.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<emphasis role="strong">Solaris Express 6/05:</emphasis> The GRUB boot archive has
+become corrupted. Or, the SMF boot archive service has failed. An error message
+is displayed if you run the <command>svcs</command> <option>
+x</option> command.</para>
+</entry>
+<entry>
+<para>
+<emphasis role="strong">Solaris Express 6/05:</emphasis> Boot the failsafe archive.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>There's an invalid entry in the <filename>/etc/passwd</filename> file.</para>
+</entry>
+<entry>
+<para>For information on recovering from an invalid <filename>passwd</filename> file
+in the Solaris 10 OS, see <olink remap="external" targetdoc="819-2379" targetptr="hbsparcboot-79782">Chapter 10, <citetitle remap="chapter">Booting a System (Tasks),</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink> or <olink remap="external" targetdoc="819-2379" targetptr="hbx86boot-aaa">Chapter 12, <citetitle remap="chapter">Booting a System (Tasks),</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>. For information
+on recovering from an invalid <filename>passwd</filename> file in the Solaris Express 6/05 release, see <olink remap="external" targetdoc="819-2379" targetptr="hbx86boot-68676">Chapter 11, <citetitle remap="chapter">GRUB Based Booting (Tasks),</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>There's a hardware problem with a disk or another device.</para>
+</entry>
+<entry>
+<para>Check the hardware connections:</para>
+<itemizedlist>
+<listitem>
+<para>Make sure the equipment is plugged in.</para>
+</listitem>
+<listitem>
+<para>Make sure all the switches are set properly.</para>
+</listitem>
+<listitem>
+<para>Look at all the connectors and cables, including the Ethernet
+cables.</para>
+</listitem>
+<listitem>
+<para>If all this fails, turn off the power to the system, wait
+10 to 20 seconds, and then turn on the power again.</para>
+</listitem>
+</itemizedlist>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<para>If none of the above suggestions solve the problem, contact your local
+service provider.</para>
+</sect1>
+<sect1 xml:id="tsgeneral-18">
+<title>What to Do if You Forgot Root Password</title>
+<para>If you forget the root password and you cannot log into the system,
+you will have to do the following:</para>
+<itemizedlist>
+<listitem>
+<para>Stop the system by using the keyboard stop sequence.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Solaris Express
+6/05:</emphasis> On x86 based systems, boot the system in the Solaris failsafe
+archive.</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> Boot the system
+from a boot server or an install server, or from a local CD-ROM.</para>
+</listitem>
+<listitem>
+<para>Mount the root (<filename>/</filename>) file system.</para>
+</listitem>
+<listitem>
+<para>Remove the root password from the <filename>/etc/shadow</filename> file.</para>
+</listitem>
+<listitem>
+<para>Reboot the system.</para>
+</listitem>
+<listitem>
+<para>Log in and set root's password.</para>
+</listitem>
+</itemizedlist>
+<para>These procedures are fully described in <olink remap="external" targetdoc="819-2379" targetptr="hbsparcboot-9">
+<citetitle remap="section">Booting a SPARC Based System</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>, <olink remap="external" targetdoc="819-2379" targetptr="fvzqe">
+<citetitle remap="section">Booting a System in the GRUB Based Boot Environment</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>, and <olink remap="external" targetdoc="819-2379" targetptr="hbx86boot-1">
+<citetitle remap="section">Booting an x86 Based System</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>.</para>
+<note>
+
+<para>GRUB
+based booting is not available on SPARC based systems in this Solaris release.</para>
+</note>
+<para>The following examples describe how to recover from a forgotten root
+password on both SPARC and x86 based systems.</para>
+<example arch="sparc" xml:id="tsgeneral-67">
+
+<title>
+What to Do if You Forgot Root
+Password</title>
+<para>
+<indexterm xml:id="indexterm-281">
+<primary>forget root password</primary>
+<secondary>SPARC</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-282">
+<primary>root password, forget</primary>
+<secondary>SPARC</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-283">
+<primary>recover root password</primary>
+<secondary>SPARC</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-284">
+<primary>superuser (root) password, forget</primary>
+<secondary>SPARC</secondary>
+</indexterm>The following example shows how to recover when you forget the
+root password by booting from the network. This example assumes that the boot
+server is already available. Be sure to apply a new root password after the
+system has rebooted.</para>
+<screen>(<emphasis>Use keyboard abort sequence--Press Stop A keys to stop the system</emphasis>)
+ok <userinput>boot net -s</userinput>
+# <userinput>mount /dev/dsk/c0t3d0s0 /a</userinput>
+# <userinput>cd /a/etc</userinput>
+# <userinput>TERM=vt100</userinput>
+# <userinput>export TERM</userinput>
+# <userinput>vi shadow</userinput>
+(<emphasis>Remove root's encrypted password string</emphasis>)
+# <userinput>cd /</userinput>
+# <userinput>umount /a</userinput>
+# <userinput>init 6</userinput>
+</screen>
+</example>
+<example arch="x86" xml:id="hbx86boot-71">
+
+<title>
+Performing a GRUB Based Boot
+When You Have Forgotten the Root Password</title>
+<indexterm xml:id="indexterm-285">
+<primary>root password, forget</primary>
+<secondary>x86</secondary>
+<tertiary>GRUB based booting</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-286">
+<primary>forget root password</primary>
+<secondary>x86</secondary>
+<tertiary>booting the failsafe archive for recovery</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-287">
+<primary>
+<command>kmdb</command> utility</primary>
+</indexterm>
+<para>
+<emphasis role="strong">Solaris Express 6/05:</emphasis>
+<indexterm xml:id="indexterm-288">
+<primary>forget root password</primary>
+<secondary>x86</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-289">
+<primary>root password, forget</primary>
+<secondary>x86</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-290">
+<primary>recover root password</primary>
+<secondary>x86</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-291">
+<primary>superuser (root) password, forget</primary>
+<secondary>x86</secondary>
+</indexterm> This example assumes that the boot server is already available.
+Be sure to apply a new root password after the system has rebooted.</para>
+<screen width="100">Press any key to reboot.
+Resetting...
+
+ GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | Solaris 10.1 nv_14 X86                                                  |
+ | Solaris failsafe                                                        |
+ |                                                                         |
+ |                                                                         |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+ 
+
+ GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | root (hd0,2,a)                                                          |  
+ | kernel /boot/multiboot -B console=ttya kernel/unix -s                   |
+ | module /boot/x86.miniroot-safe                                          |
+ |                                                                         |
+ |                                                                         |
+ |                                                                         | 
+ +-------------------------------------------------------------------------+
+
+ Booting command-list
+
+root (hd0,2,a)
+Filesystem type is ufs, partition type 0x000000bf
+kernel /boot/multiboot -B console=ttya kernel/unix -s
+[Multiboot-elf, &lt;0x1000000:0x13f3b:0x3941d&gt;, shtab=0x104e258, entry=0x100000
+0]...
+module /boot/x86.miniroot-safe
+SunOS Release 5.10.1 Version snv_14 32-bit
+Copyright 1983-2005 Sun Microsystems, Inc.  All rights reserved.
+Use is subject to license terms.
+Booting to milestone "milestone/single-user:default".
+Configuring devices.
+Searching for installed OS...
+        /dev/dsk/c1t0d0s0 --       Solaris 10.1 nv_14 X86
+
+Do you wish to automatically update boot archives? [y,n,?] <userinput>n</userinput>
+
+#<userinput>mount /dev/dsk/c0t0d0s0 /a</userinput>
+      .
+      .
+      .
+# <userinput>cd /a/etc</userinput>
+# <userinput>vi shadow</userinput>
+(<emphasis>Remove root's encrypted password string</emphasis>)
+# <userinput>cd /</userinput>
+# <userinput>umount /a</userinput>
+# <userinput>init 6</userinput>
+</screen>
+</example>
+<example arch="x86" xml:id="hbx86boot-71a">
+
+<title>
+Booting a System When You Have
+Forgotten the Root Password</title>
+<indexterm xml:id="indexterm-292">
+<primary>
+<command>kmdb</command> utility</primary>
+</indexterm>
+<para>
+<indexterm xml:id="indexterm-293">
+<primary>forget root password</primary>
+<secondary>x86</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-294">
+<primary>root password, forget</primary>
+<secondary>x86</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-295">
+<primary>recover root password</primary>
+<secondary>x86</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-296">
+<primary>superuser (root) password, forget</primary>
+<secondary>x86</secondary>
+</indexterm>
+<emphasis role="strong">Solaris 10:</emphasis> The following example
+shows how to recover when you forget root's password by booting from the network.
+This example assumes that the boot server is already available. Be sure to
+apply a new root password after the system has rebooted.</para>
+<screen width="100">Press any key to reboot.
+Resetting...
+.
+.
+.
+Initializing system                                                             
+Please wait...                                                                  
+                                                                                
+                                                                                
+                     &lt;&lt;&lt; Current Boot Parameters &gt;&gt;&gt;                            
+Boot path: /pci@0,0/pci-ide@7,1/ide@0/cmdk@0,0:a                                
+Boot args:                                                                      
+                                                                                
+Type    b [file-name] [boot-flags] &lt;ENTER&gt;     to boot with options            
+or      i &lt;ENTER&gt;                              to enter boot interpreter       
+or      &lt;ENTER&gt;                                to boot with defaults           
+                                                                               
+                  &lt;&lt;&lt; timeout in 5 seconds &gt;&gt;&gt;
+
+Select (b)oot or (i)nterpreter: <userinput>b -s</userinput>
+SunOS Release 5.10 Version amd64-gate-2004-09-30 32-bit
+Copyright 1983-2004 Sun Microsystems, Inc.  All rights reserved.
+Use is subject to license terms.
+DEBUG enabled
+Booting to milestone "milestone/single-user:default".
+Hostname: venus
+NIS domain name is example.com
+Requesting System Maintenance Mode
+SINGLE USER MODE
+
+Root password for system maintenance (control-d to bypass): <userinput>xxxxxx</userinput>
+Entering System Maintenance Mode
+.
+.
+.
+# <userinput>mount /dev/dsk/c0t0d0s0 /a</userinput>
+      .
+      .
+      .
+# <userinput>cd /a/etc</userinput>
+# <userinput>vi shadow</userinput>
+(<emphasis>Remove root's encrypted password string</emphasis>)
+# <userinput>cd /</userinput>
+# <userinput>umount /a</userinput>
+# <userinput>init 6</userinput>
+</screen>
+</example>
+</sect1>
+<sect1 arch="x86" xml:id="fxcmh">
+<title>
+What to Do if the
+SMF Boot Archive Service Fails During a System Reboot</title>
+<indexterm xml:id="indexterm-297">
+<primary>what to do if boot archive service fails</primary>
+<secondary>x86</secondary>
+<tertiary>booting the failsafe archive</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-298">
+<primary>boot archive service failure</primary>
+<secondary>x86</secondary>
+<tertiary>GRUB troubleshooting</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-299">
+<primary>troubleshooting failed SMF boot archive service</primary>
+<secondary>x86</secondary>
+<tertiary>GRUB failsafe archive</tertiary>
+</indexterm>
+<para>
+<emphasis role="strong">Solaris Express 6/05:</emphasis> If the system crashes, the
+boot archive SMF service, <filename>svc:/system/boot-archive:default</filename>,
+might fail when the system is rebooted.  If the boot archive service has failed,
+a message similar to the following is displayed when you run the <command>svcs</command> <option>
+x</option> command:</para>
+<screen>svc:/system/boot-archive:default (check boot archive content)
+ State: maintenance since Fri Jun 03 10:24:52 2005
+Reason: Start method exited with $SMF_EXIT_ERR_FATAL.
+   See: http://sun.com/msg/SMF-8000-KS
+   See: /etc/svc/volatile/system-boot-archive:default.log
+Impact: 48 dependent services are not running.  (Use -v for list.)
+
+svc:/network/rpc/gss:default (Generic Security Service)
+ State: uninitialized since Fri Jun 03 10:24:51 2005
+Reason: Restarter svc:/network/inetd:default is not running.
+   See: http://sun.com/msg/SMF-8000-5H
+   See: gssd(1M)
+Impact: 10 dependent services are not running.  (Use -v for list.)
+
+svc:/application/print/server:default (LP print server)
+ State: disabled since Fri Jun 03 10:24:51 2005
+Reason: Disabled by an administrator.
+   See: http://sun.com/msg/SMF-8000-05
+   See: lpsched(1M)
+Impact: 1 dependent service is not running.  (Use -v for list.)</screen>
+<para>To correct the problem, take the following action:</para>
+<orderedlist>
+<listitem>
+<para>Reboot the system and select the Solaris failsafe archive
+option from the GRUB boot menu.</para>
+</listitem>
+<listitem>
+<para>Answer <literal>y</literal> when prompted by the system to
+rebuild the boot archive.</para>
+<para>After the boot archive is rebuilt, the
+system is ready to boot.</para>
+</listitem>
+<listitem>
+<para>To continue booting, clear the SMF boot archive service by
+using the following command.</para>
+</listitem>
+</orderedlist>
+<screen># <userinput>svcadm clear boot-archive</userinput>
+</screen>
+<para>Note that you must become superuser or the equivalent to run this command.</para>
+<para>For more information on rebuilding the GRUB boot archive, see <olink remap="external" targetdoc="819-2379" targetptr="fvznb">
+<citetitle remap="section">How to Boot the Failsafe Archive for Recovery Purposes</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink> and
+the <olink remap="external" targetdoc="819-2240" targetptr="bootadm-1m">
+<citerefentry>
+<refentrytitle>bootadm</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+</sect1>
+<sect1 xml:id="tsgeneral-9">
+<title>What to Do if a System Hangs</title>
+<para>A system can freeze or hang rather than crash completely if some software
+process is stuck. Follow these steps to recover from a hung system.</para>
+<orderedlist>
+<listitem>
+<para>Determine whether the system is running a window environment
+and follow these suggestions. If these suggestions don't solve the problem,
+go to step 2.</para>
+<itemizedlist>
+<listitem>
+<para>Make sure the pointer is in the window where you are typing
+the commands.</para>
+</listitem>
+<listitem>
+<para>Press Control-q in case the user accidentally pressed Control-s,
+which freezes the screen. Control-s freezes only the window, not the entire
+screen. If a window is frozen, try using another window.</para>
+</listitem>
+<listitem>
+<para>If possible, log in remotely from another system on the network.
+Use the <command>pgrep</command> command to look for the hung process. If
+it looks like the window system is hung, identify the process and kill it.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="tsgeneral-ix5431">
+<primary>quitting</primary>
+<secondary>forcing programs to quit</secondary>
+</indexterm>
+<indexterm xml:id="tsgeneral-ix5432">
+<primary>programs</primary>
+<secondary>forcing to quit running</secondary>
+</indexterm>
+<indexterm xml:id="tsgeneral-ix5433">
+<primary>forcing programs to quit</primary>
+</indexterm>Press Control-\ to force a “quit” in the running program
+and (probably) write out a <filename>core</filename> file.   </para>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="tsgeneral-ix5434">
+<primary>programs</primary>
+<secondary>interrupting</secondary>
+</indexterm>
+<indexterm xml:id="tsgeneral-ix5435">
+<primary>interrupting programs</primary>
+</indexterm>Press Control-c to interrupt the program that might be running.
+ </para>
+</listitem>
+<listitem>
+<para>Log in remotely and attempt to identify and kill the process
+that is hanging the system.</para>
+</listitem>
+<listitem>
+<para>Log in remotely, become superuser or assume an equivalent
+role and reboot the system.</para>
+</listitem>
+<listitem>
+<para>If the system still does not respond, force a crash dump and
+reboot. For information on forcing a crash dump and booting, see <olink remap="external" targetdoc="819-2379" targetptr="hbsparcboot-37">
+<citetitle remap="section">Forcing a Crash Dump and Rebooting the System</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink> or <olink remap="external" targetdoc="819-2379" targetptr="hbx86boot-36">
+<citetitle remap="section">Forcing a Crash Dump and Reboot of the System</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>.</para>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="tsgeneral-ix5436">
+<primary>power cycling</primary>
+</indexterm>If the system still does not respond, turn the power off, wait
+a minute or so, then turn the power back on. </para>
+</listitem>
+<listitem>
+<para>
+<indexterm xml:id="tsgeneral-ix5437">
+<primary>crashes</primary>
+</indexterm>
+<indexterm xml:id="tsgeneral-ix5438">
+<primary>system resources</primary>
+<secondary>monitoring</secondary>
+<tertiary>crashes</tertiary>
+</indexterm>
+<indexterm xml:id="tsgeneral-ix5439">
+<primary>crashes</primary>
+<secondary>procedure following</secondary>
+</indexterm>If you cannot get the system to respond at all, contact your local
+service provider for help.</para>
+</listitem>
+</orderedlist>
+</sect1>
+<sect1 xml:id="tsgeneral-10">
+<title>What to Do if a File System Fills Up</title>
+<para>When the root (<filename>/</filename>) file system or any other file
+system fills up, you will see the following message in the console window:</para>
+<screen>.... file system full</screen>
+<para>There are several reasons why a file system fills up. The following
+sections describe several scenarios for recovering from a full file system.
+For information on routinely cleaning out old and unused files to prevent
+full file systems, see <olink remap="external" targetdoc="chapter-13.xml" targetptr="sysresdiskuse-61891">Chapter 13, Managing Disk Use (Tasks)</olink>.</para>
+<sect2 xml:id="tsgeneral-7">
+<title>File System Fills Up Because a Large File or
+Directory Was Created</title>
+<informaltable frame="topbot">
+<tgroup cols="2" colsep="0" rowsep="1">
+<colspec colname="column1" colwidth="180*"/>
+<colspec colname="column2" colwidth="179*"/>
+<thead>
+<row>
+<entry>
+<para>Reason Error Occurred</para>
+</entry>
+<entry>
+<para>How to Fix the Problem</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Someone accidentally copied a file or directory to the wrong location.
+This also happens when an application crashes and writes a large <filename>core</filename> file
+into the file system.</para>
+</entry>
+<entry>
+<para>Log in as superuser or assume an equivalent role and use the <command>ls
+-tl</command> command in the specific file system to identify which large
+file is newly created and remove it. For information on removing <filename>core</filename> files,
+see <olink remap="external" targetdoc="chapter-13.xml" targetptr="sysresdiskuse-85712">How to Find and Delete <filename>core</filename> Files</olink>.</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect2>
+<sect2 xml:id="tsgeneral-5">
+<title>A <literal>TMPFS</literal> File System is Full
+Because the System Ran Out of Memory</title>
+<informaltable frame="topbot">
+<tgroup cols="2" colsep="0" rowsep="1">
+<colspec colname="column1" colwidth="181*"/>
+<colspec colname="column2" colwidth="177*"/>
+<thead>
+<row>
+<entry>
+<para>Reason Error Occurred</para>
+</entry>
+<entry>
+<para>How to Fix the Problem</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>This can occur if <literal>TMPFS</literal> is trying to write more than
+it is allowed or some current processes are using a lot of memory.</para>
+</entry>
+<entry>
+<para>For information on recovering from <literal>tmpfs</literal>-related
+error messages, see the <olink remap="external" targetdoc="819-2254" targetptr="tmpfs-7fs">
+<citerefentry>
+<refentrytitle>tmpfs</refentrytitle>
+<manvolnum>
+7FS
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect2>
+</sect1>
+<sect1 xml:id="tsgeneral-4">
+<title>What to Do if File ACLs Are Lost After Copy
+or Restore</title>
+<informaltable frame="topbot">
+<tgroup cols="2" colsep="0" rowsep="1">
+<colspec colname="column1" colwidth="180*"/>
+<colspec colname="column2" colwidth="179*"/>
+<thead>
+<row>
+<entry>
+<para>Reason Error Occurred</para>
+</entry>
+<entry>
+<para>How to Fix the Problem</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>If files or directories with ACLs are copied or restored into the <filename>/tmp</filename> directory, the ACL attributes are lost. The <filename>/tmp</filename> directory
+is usually mounted as a temporary file system, which doesn't support UFS file
+system attributes such as ACLs.</para>
+</entry>
+<entry>
+<para>Copy or restore files into the <filename>/var/tmp</filename> directory
+instead.</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect1>
+<sect1 xml:id="tsgeneral-12">
+<title>Troubleshooting Backup Problems</title>
+<para>This section describes some basic troubleshooting techniques to use
+when backing up and restoring data.</para>
+<sect2 xml:id="tsgeneral-6">
+<title>The root (<filename>/</filename>) File System
+Fills Up After You Back Up a File System</title>
+<para>You back up a file system, and the root (<filename>/</filename>) file
+system fills up. Nothing is written to the media, and the <command>ufsdump</command> command
+prompts you to insert the second volume of media.</para>
+<informaltable frame="topbot">
+<tgroup cols="2" colsep="0" rowsep="1">
+<colspec colname="column1" colwidth="180*"/>
+<colspec colname="column2" colwidth="180*"/>
+<thead>
+<row>
+<entry>
+<para>Reason Error Occurred</para>
+</entry>
+<entry>
+<para>How to Fix the Problem</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>If you used an invalid destination device name with the <option>
+f</option> option,
+the <command>ufsdump</command> command wrote to a file in the <filename>/dev</filename> directory
+of the root (<filename>/</filename>) file system, filling it up. For example,
+if you typed <filename>/dev/rmt/st0</filename> instead of <filename>/dev/rmt/0</filename>,
+the backup file <filename>/dev/rmt/st0</filename> was created on the disk
+rather than being sent to the tape drive.</para>
+</entry>
+<entry>
+<para>Use the <command>ls -tl</command> command in the <filename>/dev</filename> directory
+to identify which file is newly created and abnormally large, and remove it.</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect2>
+<sect2 xml:id="tsgeneral-13">
+<title>Make Sure the Backup and Restore Commands
+Match</title>
+<indexterm xml:id="tsgeneral-ix3069">
+<primary>restore</primary>
+<secondary>using matching commands</secondary>
+</indexterm>
+<para>You can only use the <command>ufsrestore</command> command to restore
+files backed up with the <command>ufsdump</command> command. If you back up
+with the <command>tar</command> command, restore with the <command>tar</command> command.
+If you use the <command>ufsrestore</command> command to restore a tape that
+was written with another command, an error message tells you that the tape
+is not in <command>ufsdump</command> format.</para>
+</sect2>
+<sect2 xml:id="tsgeneral-14">
+<title>Check to Make Sure You Have the Right Current
+Directory</title>
+<para>It is easy to restore files to the wrong location. Because the <command>ufsdump</command> command always copies files with full path names relative to the
+root of the file system, you should usually change to the root directory of
+the file system before running the <command>ufsrestore</command> command.
+If you change to a lower-level directory, after you restore the files you
+will see a complete file tree created under that directory.</para>
+</sect2>
+<sect2 xml:id="tsgeneral-16">
+<title>Interactive Commands</title>
+<para>When you use the interactive command, a <literal>ufsrestore&gt;
+</literal> prompt
+is displayed, as shown in this example:</para>
+<screen># <userinput>ufsrestore ivf /dev/rmt/0</userinput>
+Verify volume and initialize maps
+Media block size is 126
+Dump   date: Fri Jan 30 10:13:46 2004
+Dumped from: the epoch
+Level 0 dump of /export/home on starbug:/dev/dsk/c0t0d0s7
+Label: none
+Extract directories from tape
+Initialize symbol table.
+ufsrestore &gt; </screen>
+<para>At the <filename>ufsrestore&gt;
+</filename> prompt, you can use the commands
+listed on <olink remap="external" targetdoc="819-2723" targetptr="bkupref-12756">Chapter 28, <citetitle remap="chapter">UFS Backup and Restore Commands (Reference),</citetitle> in <citetitle remap="book">System Administration Guide: Devices and File Systems</citetitle>
+</olink> to
+find files, create a list of files to be restored, and restore them.</para>
+</sect2>
+</sect1>
+<sect1 xml:id="gcbwx">
+<title>Troubleshooting Common Agent Container Problems in
+the Solaris OS</title>
+<indexterm xml:id="indexterm-300">
+<primary>Common Agent Container</primary>
+<secondary>troubleshooting</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-301">
+<primary>Common Agent Container shared</primary>
+<secondary>shared component</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-302">
+<primary>troubleshooting</primary>
+<secondary>Common Agent container shared component</secondary>
+<tertiary>types of problems</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-303">
+<primary>Common Agent container shared component</primary>
+<secondary>types of problems</secondary>
+<tertiary>port number conflicts</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-304">
+<primary>port number conflicts</primary>
+<secondary>Common Agent container shared component</secondary>
+<tertiary>troubleshooting</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-305">
+<primary>Common Agent Container shared component</primary>
+<secondary>types of problems</secondary>
+<tertiary>security around superuser password</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-306">
+<primary>security around superuser password</primary>
+<secondary>Common Agent Container shared component</secondary>
+<tertiary>troubleshooting</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-307">
+<primary>password security conflicts, superuser</primary>
+<secondary>Common Agent Container</secondary>
+</indexterm>
+<para>This section addresses problems that you might encounter with the Common
+Agent Container shared component. Starting with the Solaris Express 4/06 release, the Common Agent Container
+Java program is included in the Solaris OS. The program implements a container
+for Java management applications.  Typically, the Common Agent Container is
+not visible. The following are potential problems:</para>
+<itemizedlist>
+<listitem>
+<para>Port number conflicts</para>
+</listitem>
+<listitem>
+<para>Compromised security for the superuser password</para>
+</listitem>
+</itemizedlist>
+<sect2 xml:id="gcbwe">
+<title>Port Number Conflicts</title>
+<para>The Common Agent Container, version 2.0, inside the Java Enterprise
+Server (Java ES), occupies the following port numbers by default:</para>
+<itemizedlist>
+<listitem>
+<para>JMX port (TCP) = <literal>11162</literal>
+</para>
+</listitem>
+<listitem>
+<para>SNMPAdaptor port (UDP) = <literal>11161</literal>
+</para>
+</listitem>
+<listitem>
+<para>SNMPAdaptor port for traps (UDP) = <literal>11162</literal>
+</para>
+</listitem>
+<listitem>
+<para>Commandstream Adaptor port (TCP) = <literal>11163</literal>
+</para>
+</listitem>
+<listitem>
+<para>RMI connector port (TCP) = <literal>11164</literal>
+</para>
+</listitem>
+</itemizedlist>
+<note>
+
+<para>If you are troubleshooting
+an installation of Sun Cluster, the port assignments are different. For more
+information, see the <citetitle>Sun Java Enterprise System 2006Q3 Installation
+Guide for UNIX</citetitle> at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://docs.sun.com">
+</link>.</para>
+</note>
+<para>If your installation already reserves any of these port numbers, change
+the port numbers that are occupied by the Common Agent Container, as described
+in the following procedure.</para>
+</sect2>
+<sect2>
+<title/>
+<task id="gcbwu">
+
+<title>How to Check Port Numbering</title>
+<indexterm xml:id="indexterm-308">
+<primary>port numbering (how to check)</primary>
+<secondary>Common Agent Container shared component</secondary>
+<tertiary>cacao</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-309">
+<primary>Common Agent Container shared component</primary>
+<secondary>port numbering (how to check)</secondary>
+</indexterm>
+<tasksummary>
+<para>This procedure shows you how to verify the Solaris port.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Become superuser or assume an equivalent role.</para>
+<para>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-15">
+<citetitle remap="section">Configuring RBAC (Task Map)</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Stop the Common Agent Container management daemon.</para>
+<screen># /<userinput>/usr/sbin/cacaoadm stop</userinput>
+</screen>
+</step>
+<step>
+<para>Change the port number using the following syntax:</para>
+<screen># <userinput>/usr/sbin/cacaoadm set-param <replaceable>param=value</replaceable>
+</userinput>
+</screen>
+<para>For example, to change the port occupied by the <literal>SNMPAdaptor</literal> from
+the default of 11161 to 11165, type:</para>
+<screen># <userinput>/usr/sbin/cacaoadm set-param snmp-adaptor-port=11165</userinput> </screen>
+</step>
+<step>
+<para>Restart the Common Agent Container management daemon.</para>
+<screen># <userinput>/usr/sbin/cacaoadm start</userinput>
+</screen>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2 xml:id="gcbws">
+<title>Compromised Security for Superuser Password</title>
+<para>It might be necessary to regenerate security keys on a host that is
+running the Java ES. For example, if there is a risk that a superuser password
+has been exposed or compromised, you should regenerate the security keys.
+The keys that are used by the Common Agent Container services are stored in <filename>/etc/opt/SUNWcacao/security</filename> directory. The following task shows
+you how to generate security keys for the Solaris OS.</para>
+</sect2>
+<sect2>
+<title/>
+<task id="gcbwc">
+
+<title>How to Generate Security Keys for the Solaris OS</title>
+<procedure>
+<step>
+<para>Become superuser or assume an equivalent role.</para>
+<para>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-15">
+<citetitle remap="section">Configuring RBAC (Task Map)</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Stop the Common Agent Container management daemon. </para>
+<screen># <userinput>/opt/SUNWcacao/bin/cacaoadm stop</userinput>
+</screen>
+</step>
+<step>
+<para>Regenerate the security keys.</para>
+<screen># <userinput>/opt/SUNWcacao/bin/cacaoadm create-keys --force</userinput>
+</screen>
+</step>
+<step>
+<para>Restart the Common Agent Container management daemon.</para>
+<screen># <userinput>/opt/SUNWcacao/bin/cacaoadm start</userinput>
+</screen>
+<note>
+
+<para>For the Sun Cluster software, you must propagate this change across
+all nodes in the cluster. For further instructions, see the <citetitle>Sun
+Java Enterprise System 2006Q3 Installation Guide for UNIX</citetitle> at <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://docs.sun.com">
+</link>.</para>
+</note>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+</chapter>

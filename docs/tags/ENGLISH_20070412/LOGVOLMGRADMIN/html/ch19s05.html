@@ -1,0 +1,236 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Importing Disk Sets</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch19.html" title="Chapter 19. Disk
+Sets (Tasks)"><link rel="prev" href="ch19s04.html" title="Maintaining Disk Sets"><link rel="next" href="ch20.html" title="Chapter 20. Maintaining Solaris Volume Manager (Tasks)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Importing Disk Sets</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch19s04.html">Prev</a> </td><th width="60%" align="center">Chapter 19. Disk
+Sets (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch20.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="efnri"></a>Importing Disk Sets</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-191"></a>
+<a class="indexterm" name="indexterm-192"></a>
+<div class="blockquote"><blockquote class="blockquote">
+<p>importing a disk set</p>
+</blockquote></div>
+<p>The <span><strong class="command">metaimport</strong></span> command allows you to import disk
+sets from one system to another.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1768186"></a></h3></div></div></div>
+
+<div class="task"><a name="eoqsa"></a><p class="title"><b>How to Print a Report on Disk Sets Available for Import</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser.</p>
+</li><li>
+<p>Obtain a report on disk sets available for import.</p>
+<pre class="screen"># <strong class="userinput"><code>metaimport -r -v</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+r</code>
+</span></dt><dd>
+<p>Provides a report of the unconfigured disk sets available
+for import on the system.</p>
+</dd><dt><span class="term">
+<code class="option">
+v</code>
+</span></dt><dd>
+<p>Provides detailed information about the state database (metadb)
+replica location and status on the disks of unconfigured disk sets available
+for import on the system.</p>
+</dd></dl></div>
+</li></ol></div><div class="example"><a name="eoqrq"></a><p class="title"><b>Example 19.13. Reporting on Disk Sets Available for Import</b></p>
+
+
+<p>The following examples show how to print a report on disk sets available
+for import. The output from the <span><strong class="command">metaimport</strong></span> command
+distinguishes between regular disk sets and replicated disk sets.</p>
+<pre class="screen"># <strong class="userinput"><code>metaimport -r</code></strong>
+Disksets eligible for import:
+
+1)  Found replicated diskset containing disks :
+  c1t2d0
+  c1t3d0
+    Creation time:      Tue May 3 14:27:29 2006
+For more information about this set:
+  metaimport -r -v c1t2d0
+To import this set:
+  metaimport -s &lt;newsetname&gt; c1t2d0
+
+
+2)  Found replicated diskset containing disks :
+  c1t12d0
+  c1t9d0
+    Creation time:      Tue May 3 14:30:00 2006
+For more information about this set:
+  metaimport -r -v c1t12d0
+To import this set:
+  metaimport -s &lt;newsetname&gt; c1t12d0
+
+Number of disksets eligible for import: 2
+
+# <strong class="userinput"><code>metaimport -r -v c1t2d0</code></strong>
+Disksets eligible for import:
+
+1)  Found regular diskset containing disks:
+  c1t2d0
+  c1t3d0
+    Metadatabase information:
+        flags           first blk       block count
+         a        u     16              8192            /dev/dsk/c1t2d0s7
+         a        u     16              8192            /dev/dsk/c1t3d0s7
+
+    Metadevice information:
+
+    Creation time:      Tue May 23 13:05:39 2006
+    Last modified time: Tue May 23 13:05:39 2006
+    To import this diskset:
+      metaimport -s &lt;newsetname&gt; c1t2d0</pre>
+<p>The following output of <span><strong class="command">metaimport</strong></span> <code class="option">
+r</code> reports the following conditions in the system's
+disk set configuration.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>A partial disk set in which one or more disks are unavailable</p>
+</li><li>
+<p>Disk conflicts where the disk is detected in more than one
+disk set</p>
+</li><li>
+<p>A replicated disk set</p>
+</li><li>
+<p>The recommended disk set to import</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>A disk can also be reported as unavailable and in conflict at
+the same time.</p>
+</div>
+</li></ul></div>
+<pre class="screen"># <strong class="userinput"><code>metaimport -r</code></strong>
+
+Disksets eligible for import:
+
+1)  Found partial regular diskset containing disks:
+  c1t2d0 (CONFLICT)
+  c3t50020F230000FA57d0 (UNAVAIL)
+  c3t50020F230000FA57d1 (UNAVAIL)
+    (UNAVAIL) WARNING: This disk is unavailable on this system.
+    Import may corrupt data in the diskset.
+
+    (CONFLICT) WARNING: This disk has been reused 
+in another diskset or system c onfiguration.
+    Import may corrupt data in the diskset.
+
+    Creation time:      Tue May 23 13:05:39 2006
+    For more information about this diskset:
+      metaimport -r -v c1t2d0
+    To import this diskset:
+      metaimport -f -s &lt;newsetname&gt;  c1t2d0
+
+
+2)  Found regular diskset containing disks:
+  c1t2d0 (CONFLICT)
+  c1t3d0
+  c1t4d0
+    (CONFLICT) WARNING: This disk has been reused 
+in another diskset or system c onfiguration.
+    Import may corrupt data in the diskset.
+
+
+    Creation time:      Tue May 23 13:04:57 2006
+    For more information about this diskset:
+      metaimport -r -v c1t3d0
+    To import this diskset:
+      metaimport -f -s &lt;newsetname&gt; c1t3d0
+
+
+3)  Found replicated diskset containing disks:
+  c3t50020F23000100F7d13
+  c3t50020F23000100F7d15
+  c3t50020F23000100F7d14
+    Creation time:      Thu May 25 14:56:13 2006
+    For more information about this diskset:
+      metaimport -r -v c3t50020F23000100F7d13
+    To import this diskset:
+      metaimport -s &lt;newsetname&gt; c3t50020F23000100F7d13
+
+
+Number of disksets eligible for import: 3
+
+Warning:  The following disks have been detected in more than one set.
+Import recommendation based upon set creation time.
+Proceed with the import with caution.
+  c1t2d0  - must import with set created at : Tue May 23 13:05:39 2006
+#</pre>
+<p>Importing a disk set is blocked if the disk set has disk conflicts.
+The preceding example recommends that <code class="literal">c1t2d0</code> be imported
+with the set created at 13:05:39 on Tuesday, May 23. If you import a different
+disk set instead, the following message is displayed:</p>
+<pre class="screen"># <strong class="userinput"><code>metaimport -f -s &lt;setname&gt; c1t3d0</code></strong>
+
+  Importing regular diskset containing disks:
+   c1t2d0 (CONFLICT)
+   c1t3d0
+   c1t4d0
+
+     (CONFLICT) WARNING: This disk has been reused in another diskset 
+or system configuration.
+     Import may corrupt data in the diskset.
+
+      Creation time:      Tue May 23 13:04:57 2006
+
+   Warning:  The following disks have been detected in more than one set. 
+Import recommendation based upon set creation time. 
+Proceed with the import with caution.
+   c1t2d0  - must import with set created at : Tue May 23 13:05:39 2006 
+To import this set, c1t2d0 must be removed from the system 
+#</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1768480"></a></h3></div></div></div>
+
+<div class="task"><a name="eoqrs"></a><p class="title"><b>How to Import a Disk Set From One System to Another
+System</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser.</p>
+</li><li>
+<p>Verify that a disk set is available for import.</p>
+<pre class="screen"># <strong class="userinput"><code>metaimport -r -v</code></strong>
+</pre>
+</li><li>
+<p>Import an available disk set.</p>
+<pre class="screen"># <strong class="userinput"><code>metaimport -s <em class="replaceable"><code>diskset-name</code></em> <em class="replaceable"><code>disk-name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+ s</code> <em class="replaceable"><code>diskset-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the disk set being created.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>disk-name</code></em>
+</span></dt><dd>
+<p>Identifies a disk (<code class="literal">c#t#d#</code>)
+containing a state database replica from the disk set being imported.</p>
+</dd></dl></div>
+</li><li>
+<p>Verify that the disk set has been imported.</p>
+<pre class="screen"># <strong class="userinput"><code>metaset -s <em class="replaceable"><code>diskset-name</code></em>
+</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="eoqrw"></a><p class="title"><b>Example 19.14. Importing a Disk Set</b></p>
+
+
+<p>The following example shows how to import a disk set.</p>
+<pre class="screen"># <strong class="userinput"><code>metaimport -s red c1t2d0</code></strong>
+Drives in diskset including disk c1t2d0:
+  c1t2d0
+  c1t3d0
+  c1t8d0
+# <strong class="userinput"><code>metaset -s red</code></strong>
+
+
+Set name = red, Set number = 1
+
+Host                Owner
+  host1            Yes
+
+Drive    Dbase
+
+c1t2d0   Yes  
+
+c1t3d0   Yes  
+
+c1t8d0   Yes  </pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch19s04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch19.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch20.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Maintaining Disk Sets </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 20. Maintaining Solaris Volume Manager (Tasks)</td></tr></table></div></body></html>

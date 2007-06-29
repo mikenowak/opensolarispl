@@ -1,0 +1,92 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Creating Disk Sets</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch19.html" title="Chapter 19. Disk
+Sets (Tasks)"><link rel="prev" href="ch19.html" title="Chapter 19. Disk
+Sets (Tasks)"><link rel="next" href="ch19s03.html" title="Expanding Disk Sets"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Creating Disk Sets</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch19.html">Prev</a> </td><th width="60%" align="center">Chapter 19. Disk
+Sets (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch19s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-disksets-32"></a>Creating Disk Sets</h2></div></div></div>
+
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1764740"></a></h3></div></div></div>
+
+<div class="task"><a name="addtasks-10742"></a><p class="title"><b>How to Create a Disk Set</b></p><a class="indexterm" name="indexterm-163"></a><a class="indexterm" name="indexterm-164"></a><a class="indexterm" name="indexterm-165"></a><div class="taskprerequisites">
+
+<p>Check <span class="olink">Guidelines for Working With Disk Sets</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-metadevices-step-65a"></a>
+<p>To create a disk set, use one
+of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console,  open the Disk Sets node. Choose Action&#8658;Create
+Disk Set. Then, follow the instructions in the wizard. For more information,
+see the online help.</p>
+</li><li>
+<p>To create a disk set from scratch from the command line, use
+the following form of the <span><strong class="command">metaset</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>metaset -s <em class="replaceable"><code>diskset-name</code></em> -a -h -M <em class="replaceable"><code>hostname</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+s</code> <em class="replaceable"><code>diskset-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of a disk set on which the <span><strong class="command">metaset</strong></span> command
+will work.</p>
+</dd><dt><span class="term">
+<code class="option">
+a</code>
+</span></dt><dd>
+<p>Adds hosts to the named disk set. Solaris Volume Manager supports
+up to four hosts per disk set.</p>
+</dd><dt><span class="term">
+<code class="option">
+M</code>
+</span></dt><dd>
+<p>Specifies that the disk set being created is a multi-owner
+disk set.</p>
+</dd><dt><span class="term">
+<code class="option">
+h</code> <em class="replaceable"><code>hostname</code></em>
+</span></dt><dd>
+<p>Specifies one or more hosts to be added to a disk set. Adding
+the first host creates the set. The second host can be added later. However,
+the second host is not accepted if all the disks within the set cannot be
+found on the specified <em class="replaceable"><code>hostname</code></em>. <em class="replaceable"><code>hostname</code></em> is the same name found in the <code class="filename">/etc/nodename</code> file.</p>
+</dd></dl></div>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metaset</span>
+(
+1M
+)
+</span>
+</span> man
+page for more information.</p>
+</li></ul></div>
+</li><li><a name="addtasks-step-194"></a>
+<p>Check the status of the new disk set.</p>
+<pre class="screen"># <strong class="userinput"><code>metaset</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="egjvp"></a><p class="title"><b>Example 19.1. Creating a Disk Set</b></p>
+
+
+<p>In the following example, you create a shared disk set called <code class="filename">blue</code>, from the host <code class="filename">host1</code>. The <span><strong class="command">metaset</strong></span> command
+shows the status. At this point, the disk set has no owner. The host that
+adds disks to the set becomes the owner by default.</p>
+<pre class="screen"># <strong class="userinput"><code>metaset -s blue -a -h host1</code></strong>              
+# <strong class="userinput"><code>metaset</code></strong>
+Set name = blue, Set number = 1
+
+Host                Owner
+  host1                </pre>
+</div><div class="example"><a name="eqqeg"></a><p class="title"><b>Example 19.2. Creating a Multi-Owner Disk Set</b></p>
+
+
+<p>In the following example, you create a multi-owner disk set called <code class="filename">red</code>. The first line of the output from the <span><strong class="command">metaset</strong></span> command
+displays &#8220;Multi-owner,&#8221; indicating that the disk set is a multi-owner
+disk set.</p>
+<pre class="screen"># <strong class="userinput"><code>metaset -s red -a -M -h nodeone</code></strong>
+# <strong class="userinput"><code>metaset -s red</code></strong>
+Multi-owner Set name = red, Set number = 1, Master = 
+
+Host                Owner          Member
+  nodeone                          Yes </pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch19.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch19.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch19s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 19. Disk
+Sets (Tasks) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Expanding Disk Sets</td></tr></table></div></body></html>

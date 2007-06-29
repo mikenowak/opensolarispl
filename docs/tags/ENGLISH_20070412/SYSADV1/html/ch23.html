@@ -1,0 +1,352 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 23. Managing Solaris Patches by Using the patchadd Command (Tasks)</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="index.html" title="System Administration Guide: Basic Administration"><link rel="prev" href="ch22s09.html" title="Patch Manager Troubleshooting"><link rel="next" href="apa.html" title="Appendix A. SMF Services"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 23. Managing Solaris Patches by Using the <span><strong class="command">patchadd</strong></span> Command (Tasks)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch22s09.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="apa.html">Next</a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="swmgrpatchtasks-1"></a>Chapter 23. Managing Solaris Patches by Using the <span><strong class="command">patchadd</strong></span> Command (Tasks)</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="ch23.html#swmgrpatchtasks-14">Managing Solaris Patches by Using the <span><strong class="command">patchadd</strong></span> Command (Task Map)</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch23.html#id2153554"></a></span></dt><dt><span class="sect2"><a href="ch23.html#id2153997"></a></span></dt><dt><span class="sect2"><a href="ch23.html#id2154161"></a></span></dt><dt><span class="sect2"><a href="ch23.html#id2154633"></a></span></dt><dt><span class="sect2"><a href="ch23.html#id2154927"></a></span></dt></dl></dd></dl></div>
+
+
+
+
+
+<div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="swmgrpatchtasks-14"></a>Managing Solaris Patches by Using the <span><strong class="command">patchadd</strong></span> Command (Task Map)</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-541"></a>
+<div class="informaltable">
+<table border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>Task</p>
+</th><th>
+<p>Description</p>
+</th><th>
+<p>For Instructions</p>
+</th></tr></thead><tbody><tr><td>
+<p>1. (Optional) Set up the package keystore.</p>
+</td><td>
+<p>If you plan to apply signed patches to your system, you must first import
+Sun's Root CA certificate into your package keystore.</p>
+</td><td>
+<p>
+<span class="olink">How to Import a Trusted Certificate to Your Package Keystore</span>
+</p>
+</td></tr><tr><td>
+<p>2. (Optional) Specify a web proxy.</p>
+</td><td>
+<p>If your system is behind a firewall with a web proxy, you must specify
+the web proxy to obtain patches from the Sun patch server.</p>
+</td><td>
+<p>
+<span class="olink">How to Specify a Web Proxy</span>
+</p>
+</td></tr><tr><td>
+<p>3. Download and apply a patch.</p>
+</td><td>
+<p>You can download and apply a patch to your system by using the <span><strong class="command">patchadd</strong></span> command.</p>
+</td><td>
+<p>
+<span class="olink">How to Download and Apply a Solaris Patch</span>
+</p>
+</td></tr><tr><td>
+<p>4. (Optional) Display information about patches that have been applied
+to your system.</p>
+</td><td>
+<p>If you want information about the patches that have already been applied
+to your system, use the <span><strong class="command">patchadd</strong></span>, <span><strong class="command">showrev</strong></span>,
+or <span><strong class="command">pkgparam</strong></span> command.</p>
+</td><td>
+<p>
+<span class="olink">How to Display Information About Solaris Patches</span>
+</p>
+</td></tr><tr><td>
+<p>5. (Optional) Remove a patch from your system.</p>
+</td><td>
+<p>If necessary, remove a patch from your system by using the <span><strong class="command">patchrm</strong></span> command.</p>
+</td><td>
+<p>
+<span class="olink">How to Remove a Solaris Patch by Using the <span><strong class="command">patchrm</strong></span> Command</span>
+</p>
+</td></tr></tbody></table>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2153554"></a></h3></div></div></div>
+
+<div class="task"><a name="swmgrpatchtasks-8"></a><p class="title"><b>How to Import a Trusted Certificate to
+Your Package Keystore</b></p><div class="tasksummary">
+<p>To apply <span class="olink">
+<span class="emphasis"><em>signed patches</em></span>
+</span> to your system by using the <span><strong class="command">patchadd</strong></span> command,
+you must add Sun's Root CA certificate, at the very least, to verify the signature
+of your signed patch. You can import this certificate from the Java <span class="olink">
+<span class="emphasis"><em>keystore</em></span>
+</span> to
+the package keystore.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+</li><li>
+<p>Export the Root CA certificate from the Java keystore to a temporary
+file.</p>
+<p>For example:</p>
+<pre class="screen"># <strong class="userinput"><code>keytool -export -storepass changeit -alias gtecybertrustca \
+-keystore gtecybertrustca -keystore /usr/j2se/jre/lib/security/cacerts \
+-file /tmp/root.crt</code></strong>
+Certificate stored in file &lt;/tmp/root.crt&gt;
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+export</code>
+</span></dt><dd>
+<p>Exports the trusted certificate.</p>
+</dd><dt><span class="term">
+<code class="option">
+storepass</code> <em class="replaceable"><code>storepass</code></em>
+</span></dt><dd>
+<p>Specifies the password that protects the integrity of the
+Java keystore.</p>
+</dd><dt><span class="term">
+<code class="option">
+alias</code> <code class="literal">gtecybertrustca</code>
+</span></dt><dd>
+<p>Identifies the alias of the trusted certificate.</p>
+</dd><dt><span class="term">
+<code class="option">
+keystore</code> <em class="replaceable"><code>certfile</code></em>
+</span></dt><dd>
+<p>Specifies the name and location of the keystore file.</p>
+</dd><dt><span class="term">
+<code class="option">
+file</code> <em class="replaceable"><code>filename</code></em>
+</span></dt><dd>
+<p>Identifies the file in which to hold the exported certificate.</p>
+</dd></dl></div>
+</li><li>
+<p>Import the Root CA certificate from the temporary file to the
+package keystore.</p>
+<p>For example:</p>
+<pre class="screen"># <strong class="userinput"><code>pkgadm addcert -t -f der /tmp/root.crt</code></strong>
+Enter Keystore Password: <em class="replaceable"><code>storepass</code></em>
+      Keystore Alias: GTE CyberTrust Root
+         Common Name: GTE CyberTrust Root
+    Certificate Type: Trusted Certificate
+  Issuer Common Name: GTE CyberTrust Root
+      Validity Dates: &lt;Feb 23 23:01:00 2004 GMT&gt;-&lt;Feb 23 23:59:00 ... 
+     MD5 Fingerprint: C4:D7:F0:B2:A3:C5:7D:61:67:F0:04:CD:43:D3:BA:58
+    SHA1 Fingerprint: 90:DE:DE:9E:4C:4E:9F:6F:D8:86:17:57:9D:D3:91...
+
+Are you sure you want to trust this certificate? <strong class="userinput"><code>yes</code></strong>
+Trusting certificate &lt;GTE CyberTrust Root&gt;
+Type a Keystore protection Password.
+Press ENTER for no protection password (not recommended): 
+For Verification: Type a Keystore protection Password.
+Press ENTER for no protection password (not recommended): 
+Certificate(s) from &lt;/tmp/root.crt&gt; are now trusted</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+t</code>
+</span></dt><dd>
+<p>Indicates that the certificate is a trusted CA certificate.
+The command output includes the certificate details, which you are asked to
+verify.</p>
+</dd><dt><span class="term">
+<code class="option">
+f</code> <em class="replaceable"><code>format</code></em>
+</span></dt><dd>
+<p>Specifies the format of the certificate or private key. When
+importing a certificate, it must be encoded using either the PEM (<code class="literal">pem</code>)
+or binary DER (<code class="literal">der</code>) format.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>certfile</code></em>
+</span></dt><dd>
+<p>Specifies the file that contains the certificate.</p>
+</dd></dl></div>
+</li><li>
+<p>Display the certificate information.</p>
+<pre class="screen"># <strong class="userinput"><code>pkgadm listcert</code></strong>
+Enter Keystore Password: <em class="replaceable"><code>storepass</code></em>
+    Keystore Alias: GTE CyberTrust Root
+       Common Name: GTE CyberTrust Root
+  Certificate Type: Trusted Certificate
+Issuer Common Name: GTE CyberTrust Root
+    Validity Dates: &lt;Feb 23 23:01:00 2004 GMT&gt;-&lt;Feb 23 23:59:00 2006 GMT&gt;
+   MD5 Fingerprint: C4:D7:F0:B2:A3:C5:7D:61:67:F0:04:CD:43:D3:BA:58
+  SHA1 Fingerprint: 90:DE:DE:9E:4C:4E:9F:6F:D8:86:17:57:9D:D3:91:
+BC:65:A6:89:64</pre>
+</li><li>
+<p>Remove the temporary file.</p>
+<pre class="screen"># <strong class="userinput"><code>rm /tmp/root.crt</code></strong>
+</pre>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2153997"></a></h3></div></div></div>
+
+<div class="task"><a name="swmgrpatchtasks-21"></a><p class="title"><b>How to Specify a Web Proxy</b></p><div class="tasksummary">
+<p>If your system is behind a firewall with a web proxy, you must specify
+the web proxy to use <span><strong class="command">patchadd</strong></span> to <span class="olink">
+<span class="emphasis"><em>apply</em></span>
+</span> a patch.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+</li><li>
+<p>Use one of the following methods to specify a web proxy:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Specify the web proxy by using the <code class="literal">http_proxy</code>, <code class="literal">HTTPPROXY</code>, or <code class="literal">HTTPPROXYPORT</code> environment variable.</p>
+<p>For example:</p>
+<pre class="screen"># <strong class="userinput"><code>setenv http_proxy http:</code></strong>
+<em class="replaceable"><code>//mycache.domain:8080</code></em>
+</pre>
+<p>Or, specify one of the following:</p>
+<pre class="screen"># <strong class="userinput"><code>setenv HTTPPROXY</code></strong> <em class="replaceable"><code>mycache.domain</code></em>
+# <strong class="userinput"><code>setenv HTTPPROXYPORT</code></strong> <em class="replaceable"><code>8080</code></em>
+</pre>
+</li><li>
+<p>Specify the web proxy on the <span><strong class="command">patchadd</strong></span> command
+line.</p>
+<p>For example:</p>
+<pre class="screen"># <strong class="userinput"><code>patchadd -x mycache.domain:8080 \
+-M http://www.sun.com/solaris/patches/latest 101223-02 102323-02</code></strong>
+</pre>
+</li></ul></div>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2154161"></a></h3></div></div></div>
+
+<div class="task"><a name="swmgrpatchtasks-7"></a><p class="title"><b>How to Download and Apply a Solaris Patch</b></p><a class="indexterm" name="indexterm-542"></a><div class="tasksummary">
+<p>Use this procedure to <span class="olink">
+<span class="emphasis"><em>download</em></span>
+</span> either
+a signed or an <span class="olink">
+<span class="emphasis"><em>unsigned Solaris patch</em></span>
+</span> and then apply it to your system.</p>
+<p>If you want to apply signed patches, you must first set up the package
+keystore.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Gain access to the system in one of these ways:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Log in to the system where you want to apply the patch.</p>
+</li><li>
+<p>Download the patch and use the <span><strong class="command">ftp</strong></span> command
+to copy the patch to the target system. <a class="indexterm" name="indexterm-543"></a> <a class="indexterm" name="indexterm-544"></a>
+</p>
+</li></ul></div>
+</li><li>
+<p>Start a web browser and go to the Patch Portal at <a href="http://sunsolve.Sun.COM" target="_top">
+</a>.</p>
+</li><li>
+<p>Determine whether to download a specific patch or a patch cluster,
+then do one of the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Type the patch number (<em class="replaceable"><code>patch-id</code></em>)
+in the Find Patch search field, then click Find Patch.</p>
+<p>Entering <em class="replaceable"><code>patch-id</code></em> downloads the latest patch revision.</p>
+<p>If
+this patch is freely available, the patch README appears. If this patch is
+not freely available, an <code class="literal">ACCESS DENIED</code> message appears.</p>
+<p>Note that patch numbers for SPARC based and x86 based systems are different.
+The <span class="olink">
+<span class="emphasis"><em>patch
+IDs</em></span>
+</span> are listed in the patch README. Ensure that you apply
+the patch that matches your system architecture.</p>
+</li><li>
+<p>Select the Recommended Patch Cluster that matches the Solaris
+release that is running on the system that you want to patch.</p>
+</li></ul></div>
+</li><li>
+<p>Download the patch.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>To download a copy of the signed patch, click the Download
+Signed Patch (<em class="replaceable"><code>n</code></em> bytes) HTTPS button or the FTP
+button.</p>
+</li><li>
+<p>To download an unsigned patch, click the Download Patch (<em class="replaceable"><code>n</code></em> bytes) HTTP button or the FTP button.</p>
+</li></ul></div>
+<p>When the patch or patches are successfully downloaded, close the web
+browser.</p>
+</li><li>
+<p>Change to the directory that contains the downloaded patch.</p>
+</li><li>
+<p>Become superuser or assume an equivalent role.</p>
+</li><li>
+<p>(<span class="emphasis"><em>Unsigned patch</em></span>) If you downloaded an unsigned
+patch, unzip the patch.</p>
+<pre class="screen"># <strong class="userinput"><code>unzip <em class="replaceable"><code>patch-id</code></em>
+</code></strong>
+</pre>
+</li><li>
+<p>Apply the signed or unsigned patch.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>If you downloaded a signed patch, apply it.</p>
+<p>For
+example:</p>
+<pre class="screen"># <strong class="userinput"><code>patchadd /tmp/111879-01.jar</code></strong>
+</pre>
+</li><li>
+<p>If you downloaded an unsigned patch, apply it.</p>
+<p>For
+example:</p>
+<pre class="screen"># <strong class="userinput"><code>patchadd /tmp/111879-01</code></strong>
+</pre>
+</li></ul></div>
+</li><li>
+<p>Verify that the patch has been successfully applied.</p>
+<p>For
+example:</p>
+<pre class="screen"># <strong class="userinput"><code>patchadd -p | grep 111879</code></strong>
+Patch: 111879-01 Obsoletes:  Requires:  Incompatibles:  Packages: SUNWwsr</pre>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2154633"></a></h3></div></div></div>
+
+<div class="task"><a name="swmgrpatchconcepts-30"></a><p class="title"><b>How to Display Information About Solaris
+Patches</b></p><a class="indexterm" name="indexterm-545"></a><a class="indexterm" name="indexterm-546"></a><a class="indexterm" name="indexterm-547"></a><a class="indexterm" name="indexterm-548"></a><div class="tasksummary">
+<p>Before applying patches, you might want to know more about patches that
+have been previously applied. The following commands provide useful information
+about patches that are already applied to a system.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span><strong class="command">patchadd -p</strong></span> or <span><strong class="command">showrev -p</strong></span>
+</p>
+<p>Shows all patches that have been applied to the system.</p>
+</li><li>
+<p>
+<span><strong class="command">pkgparam</strong></span> <em class="replaceable"><code>pkgid</code></em> <span><strong class="command">PATCHLIST</strong></span>
+</p>
+<p>Shows all patches that have been applied to
+the package identified by <span class="emphasis"><em>pkgid</em></span>, for example, <code class="literal">SUNWadmap</code>.</p>
+</li><li>
+<p>
+<span><strong class="command">patchadd -S</strong></span> <em class="replaceable"><code>Solaris-OS</code></em> <code class="option">
+p</code>
+</p>
+<p>Shows all the <code class="filename">/usr</code> patches that
+have been applied to an OS server.</p>
+</li></ul></div>
+</div><div class="procedure"><ul><li>
+<p>Use one of the following <span><strong class="command">patchadd</strong></span> command lines
+to display information about patches that have been applied to your system.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>To obtain information about all patches that have been applied
+to your system, type:</p>
+<pre class="screen">$ <strong class="userinput"><code>patchadd -p</code></strong>
+</pre>
+</li><li>
+<p>To verify whether a particular patch has been applied to your
+system, type, for example:</p>
+<pre class="screen">$ <strong class="userinput"><code>patchadd -p | grep 111879</code></strong>
+</pre>
+</li></ul></div>
+</li></ul></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2154927"></a></h3></div></div></div>
+
+<div class="task"><a name="swmgrpatchtasks-18"></a><p class="title"><b>How to Remove a Solaris Patch by Using
+the <span><strong class="command">patchrm</strong></span> Command</b></p><a class="indexterm" name="indexterm-549"></a><div class="procedure"><ol type="1"><li>
+<p>Become superuser.</p>
+</li><li>
+<p>Remove the patch.</p>
+<pre class="screen"># <strong class="userinput"><code>patchrm 111879-01</code></strong>
+Checking installed patches...
+
+Backing out patch 111879-01...
+
+Patch 111879-01 has been backed out.</pre>
+</li><li>
+<p>Verify that the patch was removed.</p>
+<pre class="screen"># <strong class="userinput"><code>patchadd -p | grep 111879</code></strong>
+#</pre>
+</li></ol></div></div>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch22s09.html">Prev</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="apa.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Patch Manager Troubleshooting </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Appendix A. SMF Services</td></tr></table></div></body></html>

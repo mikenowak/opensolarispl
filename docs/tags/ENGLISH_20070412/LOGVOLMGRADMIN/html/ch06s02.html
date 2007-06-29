@@ -1,0 +1,39 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Understanding the Majority Consensus
+Algorithm</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch06.html" title="Chapter 6. State Database (Overview)"><link rel="prev" href="ch06.html" title="Chapter 6. State Database (Overview)"><link rel="next" href="ch06s03.html" title="Administering State Database Replicas"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Understanding the Majority Consensus
+Algorithm</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch06.html">Prev</a> </td><th width="60%" align="center">Chapter 6. State Database (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch06s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="config-guide-29115"></a>Understanding the Majority Consensus
+Algorithm</h2></div></div></div>
+
+<p>An inherent problem with replicated databases is that it can be difficult
+to determine which database has valid and correct data. To solve this problem, Solaris Volume Manager uses
+a majority consensus algorithm. This algorithm requires that a majority of
+the database replicas agree with each other before any of them are declared
+valid. This algorithm requires the presence of at least three initial replicas,
+which you create. A consensus can then be reached as long as at least two
+of the three replicas are available. If only one replica exists and the system
+crashes, it is possible that all volume configuration data will be lost.</p>
+<p>To protect data, Solaris Volume Manager does not function unless half of all
+state database replicas are available. The algorithm, therefore, ensures against
+corrupt data.</p>
+<p>The majority consensus algorithm provides the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The system continues to run if at least half of the state
+database replicas are available.</p>
+</li><li>
+<p>The system panics if fewer than half of the state database
+replicas are available.</p>
+</li><li>
+<p>The system cannot reboot into multiuser mode unless a majority
+(half + 1) of the total number of state database replicas is available.</p>
+</li></ul></div>
+<p>If insufficient state database replicas are available, you must boot
+into single-user mode and delete enough of the corrupted or missing replicas
+to achieve a quorum. See <span class="olink">How to Recover From Insufficient State Database Replicas</span>.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>When the total number of state database replicas is an odd number, Solaris Volume Manager computes
+the majority by dividing the number in half, rounding down to the nearest
+integer, then adding 1 (one). For example, on a system with seven replicas,
+the majority would be four (seven divided by two is three and one-half, rounded
+down is three, plus one is four).</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch06.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch06.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch06s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 6. State Database (Overview) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Administering State Database Replicas</td></tr></table></div></body></html>

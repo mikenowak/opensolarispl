@@ -1,0 +1,544 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Running Applications in Non-Global Zones - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage> > <a href="p95.html">26.&nbsp;&nbsp;Solaris Zones Administration (Overview)</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p99.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p101.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="z.admin.ov-42"></a><h3>Running Applications in Non-Global Zones</h3>
+<p>In general, all applications can run in a non-global zone. However,
+the following types of applications might not be suitable for this environment:</p>
+<ul><li><p>Applications that use privileged operations that affect the
+system as a whole. Examples include operations that set the global system
+clock or lock down physical memory.</p>
+</li>
+<li><p>The few applications dependent upon certain devices that do
+not exist in a non-global zone, such as <tt>/dev/kmem</tt>.</p>
+</li>
+<li><p>Applications that expect to be able to write into <tt>/usr</tt>,
+either at runtime or when being installed, patched, or upgraded. This is because <tt>/usr</tt> is read-only for a non-global zone by default. Sometimes the
+issues associated with this type of application can be mitigated without changing
+the application itself.</p>
+</li>
+<li><p>In a shared-IP zone, applications dependent upon devices in <tt>/dev/ip</tt>.</p>
+</li>
+</ul>
+<a name="z.admin.ov-3"></a><h3>Resource Controls Used in Non-Global Zones</h3>
+<p>For additional information about using a resource management feature
+in a zone, also refer to the chapter that describes the feature in Part 1
+of this guide.</p>
+<p>Any of the resource controls and attributes described in the resource
+management chapters can be set in the global and non-global zone <tt>/etc/project</tt> file, NIS map, or LDAP directory service. The settings for a given
+zone affect only that zone. A project running autonomously in different zones
+can have controls set individually in each zone. For example, Project A in
+the global zone can be set <tt>project.cpu-shares=10</tt> while
+Project A in a non-global zone can be set <tt>project.cpu-shares=5</tt>.
+You could have several instances of <tt>rcapd</tt> running on the
+system, with each instance operating only on its zone.</p>
+<p>The resource controls and attributes used in a zone to control projects,
+tasks, and processes within that zone are subject to the additional requirements
+regarding pools and the zone-wide resource controls.</p>
+<p>A &ldquo;one zone, one pool&rdquo; rule applies to non-global zones.
+Multiple non-global zones can share the resources of one pool. Processes in
+the global zone, however, can be bound by a sufficiently privileged process
+to any pool. The resource controller <tt>poold</tt> only runs in
+the global zone, where there is more than one pool for it to operate on. The <tt>poolstat</tt> utility run in a non-global zone displays only information
+about the pool associated with the zone. The <tt>pooladm</tt> command
+run without arguments in a non-global zone displays only information about
+the pool associated with the zone.</p>
+<p>Zone-wide resource controls do not take effect when they are set in
+the <tt>project</tt> file. A zone-wide resource control is set
+through the <tt>zonecfg</tt> utility.</p>
+<a name="z.admin.ov-43"></a><h3>Fair Share Scheduler on a Solaris System
+With Zones Installed</h3>
+<p>This section describes how to use the fair share scheduler (FSS) with
+zones.</p>
+<a name="z.admin.ov-44"></a><h4>FSS Share Division in a Global or Non-Global
+Zone</h4>
+<p>FSS CPU shares for a zone are hierarchical. The shares for the global
+and non-global zones are set by the global administrator through the zone-wide
+resource control <tt>zone.cpu-shares</tt>. The <tt>project.cpu-shares</tt> resource control can then be defined for each project within that
+zone to further subdivide the shares set through the zone-wide control.</p>
+<p>To assign zone shares by using the <tt>zonecfg</tt> command,
+see <a href="p65.html#gejpu">How to Set <tt>zone.cpu-shares</tt> in the Global Zone</a>.
+For more information on <tt>project.cpu-shares</tt>, see <a href="p16.html#rmctrls-4">Available Resource Controls</a>. Also see <a href="p110.html">Using the Fair Share Scheduler on a Solaris System With Zones Installed</a> for example procedures that show how to set shares
+on a temporary basis.</p>
+<a name="z.admin.ov-45"></a><h4>Share Balance Between Zones</h4>
+<p>You can use <tt>zone.cpu-shares</tt> to assign FSS shares
+in the global zone and in non-global zones. If FSS is the default scheduler
+on your system and shares are not assigned, each zone is given one share by
+default. If you have one non-global zone on your system and you give this
+zone two shares through <tt>zone.cpu-shares</tt>, that defines the
+proportion of CPU which the non-global zone will receive in relation to the
+global zone. The ratio of CPU between the two zones is 2:1.</p>
+<a name="z.admin.ov-6"></a><h3>Extended Accounting on a Solaris System With
+Zones Installed</h3>
+<p>The extended accounting subsystem collects and reports information for
+the entire system (including non-global zones) when run in the global zone.
+The global administrator can also determine resource consumption on a per-zone
+basis.</p>
+<p>The extended accounting subsystem permits different accounting settings
+and files on a per-zone basis for process-based and task-based accounting.
+The <tt>exacct</tt> records can be tagged with the zone name <tt>EXD
+PROC ZONENAME</tt> for processes, and the zone name <tt>EXD TASK
+ZONENAME</tt> for tasks. Accounting records are written to the global
+zone's accounting files as well as the per-zone accounting files. The <tt>EXD
+TASK HOSTNAME</tt>,  <tt>EXD PROC HOSTNAME</tt>, and <tt>EXD
+HOSTNAME</tt> records contain the <tt>uname</tt> <tt>-n</tt> value
+for the zone in which the process or task executed instead of the global zone's
+node name.</p>
+<p>For information about IPQoS flow accounting, see Chapter 38, Using
+Flow Accounting and Statistics Gathering (Tasks), in <i>System Administration Guide: IP Services</i>.</p>
+<a name="z.admin.ov-18"></a><h3>Privileges in a Non-Global Zone</h3>
+<p><a name="indexterm-317"></a><a name="indexterm-318"></a>Processes
+are restricted to a subset of privileges. Privilege restriction prevents a
+zone from performing operations that might affect other zones. The set of
+privileges limits the capabilities of privileged users within the zone. To
+display the list of privileges available from within a given zone, use the <tt>ppriv</tt> utility.</p>
+<p>The following table lists all of the Solaris privileges and the status
+of each privilege with respect to zones. Optional privileges are not part
+of the default set of privileges but can be specified through the <tt>limitpriv</tt> property. Required privileges must be included in the resulting
+privilege set. Prohibited privileges cannot be included in the resulting privilege
+set.</p>
+<a name="gcogn"></a>Table 26-1 Status of Privileges in Zones<table><tr><th><p>Privilege</p>
+</th><th><p>Status</p>
+</th><th><p>Notes</p>
+</th></tr>
+<tr><td><p><tt>cpc_cpu</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Access to certain <tt>cpc</tt>(3CPC) counters</p>
+</td></tr>
+<tr><td><p><tt>dtrace_proc</tt></p>
+</td><td><p>Optional</p>
+</td><td><p><tt>fasttrap</tt> and <tt>pid</tt> providers; <tt>plockstat</tt>(1M)</p>
+</td></tr>
+<tr><td><p><tt>dtrace_user</tt></p>
+</td><td><p>Optional</p>
+</td><td><p><tt>profile</tt> and <tt>syscall</tt> providers</p>
+</td></tr>
+<tr><td><p><tt>gart_access</tt></p>
+</td><td><p>Optional</p>
+</td><td><p><tt>ioctl</tt>(2) access to <tt>agpgart_io</tt>(7I)</p>
+</td></tr>
+<tr><td><p><tt>gart_map</tt></p>
+</td><td><p>Optional</p>
+</td><td><p><tt>mmap</tt>(2) access to <tt>agpgart_io</tt>(7I)</p>
+</td></tr>
+<tr><td><p><tt>net_rawaccess</tt></p>
+</td><td><p>Optional in shared-IP zones.</p>
+<p>Default in exclusive-IP zones.</p>
+</td><td><p>Raw <tt>PF_INET/PF_INET6</tt> packet access</p>
+</td></tr>
+<tr><td><p><tt>proc_clock_highres</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Use of high resolution timers</p>
+</td></tr>
+<tr><td><p><tt>proc_priocntl</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Scheduling control; <tt>priocntl</tt>(1)</p>
+</td></tr>
+<tr><td><p><tt>sys_ipc_config</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Raising IPC message queue buffer size</p>
+</td></tr>
+<tr><td><p><tt>sys_time</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>System time manipulation; <tt>xntp</tt>(1M)</p>
+</td></tr>
+<tr><td><p><tt>dtrace_kernel</tt></p>
+</td><td><p>Prohibited</p>
+</td><td><p>Currently unsupported</p>
+</td></tr>
+<tr><td><p><tt>proc_zone</tt></p>
+</td><td><p>Prohibited</p>
+</td><td><p>Currently unsupported</p>
+</td></tr>
+<tr><td><p><tt>sys_config</tt></p>
+</td><td><p>Prohibited</p>
+</td><td><p>Currently unsupported</p>
+</td></tr>
+<tr><td><p><tt>sys_devices</tt></p>
+</td><td><p>Prohibited</p>
+</td><td><p>Currently unsupported</p>
+</td></tr>
+<tr><td><p><tt>sys_linkdir</tt></p>
+</td><td><p>Prohibited</p>
+</td><td><p>Currently unsupported</p>
+</td></tr>
+<tr><td><p><tt>sys_net_config</tt></p>
+</td><td><p>Prohibited</p>
+</td><td><p>Currently unsupported</p>
+</td></tr>
+<tr><td><p><tt>sys_res_config</tt></p>
+</td><td><p>Prohibited</p>
+</td><td><p>Currently unsupported</p>
+</td></tr>
+<tr><td><p><tt>sys_suser_compat</tt></p>
+</td><td><p>Prohibited</p>
+</td><td><p>Currently unsupported</p>
+</td></tr>
+<tr><td><p><tt>proc_exec</tt></p>
+</td><td><p>Required, Default</p>
+</td><td><p>Used to start <tt>init</tt>(1M)</p>
+</td></tr>
+<tr><td><p><tt>proc_fork</tt></p>
+</td><td><p>Required, Default</p>
+</td><td><p>Used to start <tt>init</tt>(1M)</p>
+</td></tr>
+<tr><td><p><tt>sys_mount</tt></p>
+</td><td><p>Required, Default</p>
+</td><td><p>Needed to mount required file systems</p>
+</td></tr>
+<tr><td><p><tt>sys_ip_config</tt></p>
+</td><td><p>Required, Default in exclusive-IP zones</p>
+<p>Prohibited in shared-IP zones</p>
+</td><td><p>Required to boot zone and initialize IP networking in exclusive-IP zone</p>
+</td></tr>
+<tr><td><p><tt>contract_event</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Used by contract file system</p>
+</td></tr>
+<tr><td><p><tt>contract_observer</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Contract observation regardless of UID</p>
+</td></tr>
+<tr><td><p><tt>file_chown</tt></p>
+</td><td><p>Default</p>
+</td><td><p>File ownership changes</p>
+</td></tr>
+<tr><td><p><tt>file_chown_self</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Owner/group changes for own files</p>
+</td></tr>
+<tr><td><p><tt>file_dac_execute</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Execute access regardless of mode/ACL</p>
+</td></tr>
+<tr><td><p><tt>file_dac_read</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Read access regardless of mode/ACL</p>
+</td></tr>
+<tr><td><p><tt>file_dac_search</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Search access regardless of mode/ACL</p>
+</td></tr>
+<tr><td><p><tt>file_dac_write</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Write access regardless of mode/ACL</p>
+</td></tr>
+<tr><td><p><tt>file_link_any</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Link access regardless of owner</p>
+</td></tr>
+<tr><td><p><tt>file_owner</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Other access regardless of owner</p>
+</td></tr>
+<tr><td><p><tt>file_setid</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Permission changes for <tt>setid</tt>, <tt>setgid</tt>, <tt>setuid</tt> files</p>
+</td></tr>
+<tr><td><p><tt>ipc_dac_read</tt></p>
+</td><td><p>Default</p>
+</td><td><p>IPC read access regardless of mode</p>
+</td></tr>
+<tr><td><p><tt>ipc_dac_owner</tt></p>
+</td><td><p>Default</p>
+</td><td><p>IPC write access regardless of mode</p>
+</td></tr>
+<tr><td><p><tt>ipc_owner</tt></p>
+</td><td><p>Default</p>
+</td><td><p>IPC other access regardless of mode</p>
+</td></tr>
+<tr><td><p><tt>net_icmpaccess</tt></p>
+</td><td><p>Default</p>
+</td><td><p>ICMP packet access: <tt>ping</tt>(1M)</p>
+</td></tr>
+<tr><td><p><tt>net_privaddr</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Binding to privileged ports</p>
+</td></tr>
+<tr><td><p><tt>proc_audit</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Generation of audit records</p>
+</td></tr>
+<tr><td><p><tt>proc_chroot</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Changing of <tt>root</tt> directory</p>
+</td></tr>
+<tr><td><p><tt>proc_info</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Process examination</p>
+</td></tr>
+<tr><td><p><tt>proc_lock_memory</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Locking memory; <tt>shmctl</tt>(2)and <tt>mlock</tt>(3C)</p>
+</td></tr>
+<tr><td><p><tt>proc_owner</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Process control regardless of owner</p>
+</td></tr>
+<tr><td><p><tt>proc_session</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Process control regardless of session</p>
+</td></tr>
+<tr><td><p><tt>proc_setid</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Setting of user/group IDs at will</p>
+</td></tr>
+<tr><td><p><tt>proc_taskid</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Assigning of task IDs to caller</p>
+</td></tr>
+<tr><td><p><tt>sys_acct</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Management of accounting</p>
+</td></tr>
+<tr><td><p><tt>sys_admin</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Simple system administration tasks</p>
+</td></tr>
+<tr><td><p><tt>sys_audit</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Management of auditing</p>
+</td></tr>
+<tr><td><p><tt>sys_nfs</tt></p>
+</td><td><p>Default</p>
+</td><td><p>NFS client support</p>
+</td></tr>
+<tr><td><p><tt>sys_resource</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Resource limit manipulation</p>
+</td></tr>
+</table><p>The following table lists all of the Trusted Solaris privileges and
+the status of each privilege with respect to zones. Optional privileges are
+not part of the default set of privileges but can be specified through the <tt>limitpriv</tt> property. </p>
+<hr>
+<p><b>Note - </b>Trusted Solaris privileges are interpreted only if the system
+is configured with Trusted Extensions.</p>
+<hr>
+<a name="gdoiu"></a>Table 26-2 Status of Trusted Solaris Privileges
+in Zones<table><tr><th><p>Trusted Solaris Privilege</p>
+</th><th><p>Status</p>
+</th><th><p>Notes</p>
+</th></tr>
+<tr><td><p><tt>sys_trans_label</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Translate labels not dominated by sensitivity label</p>
+</td></tr>
+<tr><td><p><tt>win_colormap</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Colormap restrictions override</p>
+</td></tr>
+<tr><td><p><tt>win_config</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Configure or destroy resources that are permanently retained by the
+X server</p>
+</td></tr>
+<tr><td><p><tt>win_dac_read</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Read from window resource not owned by client's user ID</p>
+</td></tr>
+<tr><td><p><tt>win_dac_write</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Write to or create window resource not owned by client's user ID</p>
+</td></tr>
+<tr><td><p><tt>win_devices</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Perform operations on input devices.</p>
+</td></tr>
+<tr><td><p><tt>win_dga</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Use direct graphics access X protocol extensions; frame buffer privileges
+needed</p>
+</td></tr>
+<tr><td><p><tt>win_downgrade_sl</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Change sensitivity label of window resource to new label dominated by
+existing label</p>
+</td></tr>
+<tr><td><p><tt>win_fontpath</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Add an additional font path</p>
+</td></tr>
+<tr><td><p><tt>win_mac_read</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Read from window resource with a label that dominates the client's label</p>
+</td></tr>
+<tr><td><p><tt>win_mac_write</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Write to window resource with a label not equal to the client's label</p>
+</td></tr>
+<tr><td><p><tt>win_selection</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Request data moves without confirmer intervention</p>
+</td></tr>
+<tr><td><p><tt>win_upgrade_sl</tt></p>
+</td><td><p>Optional</p>
+</td><td><p>Change sensitivity label of window resource to a new label not dominated
+by existing label</p>
+</td></tr>
+<tr><td><p><tt>net_bindmlp</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Allows binding to a multilevel port (MLP)</p>
+</td></tr>
+<tr><td><p><tt>net_mac_aware</tt></p>
+</td><td><p>Default</p>
+</td><td><p>Allows reading down through NFS</p>
+</td></tr>
+</table><p>To alter privileges in a non-global zone configuration, see <a href="p63.html">Configuring, Verifying, and Committing a Zone</a></p>
+<p>To inspect privilege sets, see <a href="p104.html#z.admin.task-2">Using the <tt>ppriv</tt> Utility</a>. For more information about privileges, see the <tt>ppriv</tt>(1) man page and <i>System
+Administration Guide: Security Services</i>.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p99.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p101.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

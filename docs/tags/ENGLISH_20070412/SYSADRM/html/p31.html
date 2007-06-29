@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>How to Disable Resource Capping - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage> > <a href="p30.html">11.&nbsp;&nbsp;Administering the Resource Capping Daemon (Tasks)</a> > <a href="p30.html#rm.rcapd.task-2">Administering the Resource Capping Daemon With <tt>rcapadm</tt></a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p30.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p32.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="rm.rcapd.task-14"></a><h4><img src="graphics/procedure.gif"> How to Disable Resource Capping</h4>
+<p>There are three ways to disable resource capping on your system.</p>
+<ol><li><a name="rm.rcapd.task-step-16"></a><b>Become superuser, or assume a role
+that includes the Process Management profile.</b><p>The System Administrator
+role includes the Process Management profile. For information on how to create
+the role and assign the role to a user, see Managing RBAC (Task Map) in <i>System Administration Guide: Security Services</i>.</p></li><li><a name="rm.rcapd.task-step-17"></a><b>Disable the resource capping daemon
+in one of the following ways:</b><ul><li><b>Turn off resource capping using the <tt>svcadm</tt> command.</b><pre># <tt><b>svcadm disable rcap</b></tt></pre></li><li><b>To disable the resource capping daemon so that it will be stopped
+now and not be started when the system is booted, type:</b><pre># <tt><b>rcapadm -D</b></tt></pre></li><li><b>To disable the resource capping daemon without stopping it, also
+specify the <tt>-n</tt> option:</b><pre># <tt><b>rcapadm -n -D</b></tt></pre></li></ul><hr>
+<p><b>Tip - </b>Disabling the Resource Capping Daemon Safely</p>
+<hr>
+<p><a name="indexterm-86"></a><a name="indexterm-87"></a>Use <tt>rcapadm</tt> <tt>-D</tt> to safely disable <tt>rcapd</tt>. If the daemon is killed (see the <tt>kill</tt>(1) man page), processes
+might be left in a stopped state and need to be manually restarted. To resume
+a process running, use the <tt>prun</tt> command. See the <tt>prun</tt>(1) man page for more information.</p></li></ol><a name="rm.rcapd.task-19"></a><h3>Producing Reports With <tt>rcapstat</tt></h3>
+<p>Use <tt>rcapstat</tt> to report resource capping statistics. <a href="p28.html#rm.rcapd-22">Monitoring Resource Utilization With <tt>rcapstat</tt></a> explains
+how to use the <tt>rcapstat</tt> command to generate reports. That
+section also describes the column headings in the report. The <tt>rcapstat</tt>(1) man page also contains this
+information.</p>
+<p>The following subsections use examples to illustrate how to produce
+reports for specific purposes.</p>
+<a name="rm.rcapd.task-20"></a><h4>Reporting Cap and Project Information</h4>
+<p>In this example, caps are defined for two projects associated with two
+users. <tt>user1</tt> has a cap of 50 megabytes, and <tt>user2</tt> has
+a cap of 10 megabytes.</p>
+<p>The following command produces five reports at 5-second sampling intervals.</p>
+<pre>user1machine% <tt><b>rcapstat 5 5</b></tt>
+    id project  nproc     vm    rss   cap    at avgat    pg avgpg
+112270   user1     24   123M    35M   50M   50M    0K 3312K    0K
+ 78194   user2      1  2368K  1856K   10M    0K    0K    0K    0K
+    id project  nproc     vm    rss   cap    at avgat    pg avgpg
+112270   user1     24   123M    35M   50M    0K    0K    0K    0K
+ 78194   user2      1  2368K  1856K   10M    0K    0K    0K    0K
+    id project  nproc     vm    rss   cap    at avgat    pg avgpg
+112270   user1     24   123M    35M   50M    0K    0K    0K    0K
+ 78194   user2      1  2368K  1928K   10M    0K    0K    0K    0K
+    id project  nproc     vm    rss   cap    at avgat    pg avgpg
+112270   user1     24   123M    35M   50M    0K    0K    0K    0K
+ 78194   user2      1  2368K  1928K   10M    0K    0K    0K    0K
+    id project  nproc     vm    rss   cap    at avgat    pg avgpg
+112270   user1     24   123M    35M   50M    0K    0K    0K    0K
+ 78194   user2      1  2368K  1928K   10M    0K    0K    0K    0K </pre><p>The first three lines of output constitute the first report, which contains
+the cap and project information for the two projects and paging statistics
+since <tt>rcapd</tt> was started. The <tt>at</tt> and <tt>pg</tt> columns are a number greater than zero for <tt>user1</tt> and
+zero for <tt>user2</tt>, which indicates that at some time in the
+daemon's history, <tt>user1</tt> exceeded its cap but <tt>user2</tt> did
+not.</p>
+<p>The subsequent reports show no significant activity.</p>
+<a name="rm.rcapd.task-21"></a><h4>Monitoring the RSS of a Project</h4>
+<p>The following example uses project <tt>user1</tt>, which has
+an RSS in excess of its RSS cap.</p>
+<p>The following command produces five reports at 5-second sampling intervals.</p>
+<pre>user1machine% <tt><b>rcapstat 5 5</b></tt></pre><pre>    id project  nproc    vm   rss   cap    at avgat     pg  avgpg
+376565   user1      3 6249M 6144M 6144M  690M  220M  5528K  2764K
+376565   user1      3 6249M 6144M 6144M    0M  131M  4912K  1637K
+376565   user1      3 6249M 6171M 6144M   27M  147M  6048K  2016K
+376565   user1      3 6249M 6146M 6144M 4872M  174M  4368K  1456K
+376565   user1      3 6249M 6156M 6144M   12M  161M  3376K  1125K</pre><p>The <tt>user1</tt> project has three processes that are actively
+using physical memory. The positive values in the <tt>pg</tt> column
+indicate that <tt>rcapd</tt> is consistently paging out memory as
+it attempts to meet the cap by lowering the physical memory utilization of
+the project's processes. However, <tt>rcapd</tt> does not succeed
+in keeping the RSS below the cap value. This is indicated by the varying <tt>rss</tt> values that do not show a corresponding decrease. As soon as
+memory is paged out, the workload uses it again and the RSS count goes back
+up. This means that all of the project's resident memory is being actively
+used and the working set size (<b>WSS</b>) is greater than the
+cap. Thus, <tt>rcapd</tt> is forced to page out some of the working
+set to meet the cap. Under this condition, the system will continue to experience
+high page fault rates, and associated I/O, until one of the following occurs:</p>
+<ul><li><p>The WSS becomes smaller.</p>
+</li>
+<li><p>The cap is raised.</p>
+</li>
+<li><p>The application changes its memory access pattern.</p>
+</li>
+</ul>
+<p>In this situation, shortening the sample interval might reduce the discrepancy
+between the RSS value and the cap value by causing <tt>rcapd</tt> to
+sample the workload and enforce caps more frequently.</p>
+<hr>
+<p><b>Note - </b>A page fault occurs when either a new page must be created or
+the system must copy in a page from a swap device.</p>
+<hr>
+<a name="rm.rcapd.task-22"></a><h4>Determining the Working Set Size of a
+Project</h4>
+<p>The following example is a continuation of the previous example, and
+it uses the same project.</p>
+<p>The previous example shows that the <tt>user1</tt> project
+is using more physical memory than its cap allows. This example shows how
+much memory the project workload requires.</p>
+<pre>user1machine% <tt><b>rcapstat 5 5</b></tt>
+    id project  nproc    vm   rss   cap    at avgat     pg  avgpg
+376565   user1      3 6249M 6144M 6144M  690M    0K   689M     0K
+376565   user1      3 6249M 6144M 6144M    0K    0K     0K     0K
+376565   user1      3 6249M 6171M 6144M   27M    0K    27M     0K
+376565   user1      3 6249M 6146M 6144M 4872K    0K  4816K     0K
+376565   user1      3 6249M 6156M 6144M   12M    0K    12M     0K
+376565   user1      3 6249M 6150M 6144M 5848K    0K  5816K     0K
+376565   user1      3 6249M 6155M 6144M   11M    0K    11M     0K
+376565   user1      3 6249M 6150M   10G   32K    0K    32K     0K
+376565   user1      3 6249M 6214M   10G    0K    0K     0K     0K
+376565   user1      3 6249M 6247M   10G    0K    0K     0K     0K
+376565   user1      3 6249M 6247M   10G    0K    0K     0K     0K
+376565   user1      3 6249M 6247M   10G    0K    0K     0K     0K
+376565   user1      3 6249M 6247M   10G    0K    0K     0K     0K
+376565   user1      3 6249M 6247M   10G    0K    0K     0K     0K
+376565   user1      3 6249M 6247M   10G    0K    0K     0K     0K</pre><p>Halfway through the cycle, the cap on the <tt>user1</tt> project
+was increased from 6 gigabytes to 10 gigabytes. This increase stops cap enforcement
+and allows the resident set size to grow, limited only by other processes
+and the amount of memory in the machine. The <tt>rss</tt> column
+might stabilize to reflect the project working set size (WSS), 6247M in this
+example. This is the minimum cap value that allows the project's processes
+to operate without continuously incurring page faults.</p>
+<p>While the cap on <tt>user1</tt> is 6 gigabytes, in every 5&ndash;second
+sample interval the RSS decreases and I/O increases as <tt>rcapd</tt> pages
+out some of the workload's memory. Shortly after a page out completes, the
+workload, needing those pages, pages them back in as it continues running.
+This cycle repeats until the cap is raised to 10 gigabytes, approximately
+halfway through the example. The RSS then stabilizes at 6.1 gigabytes. Since
+the workload's RSS is now below the cap, no more paging occurs. The I/O associated
+with paging stops as well. Thus, the project required 6.1 gigabytes to perform
+the work it was doing at the time it was being observed.</p>
+<p>Also see the <tt>vmstat</tt>(1M) and <tt>iostat</tt>(1M) man pages.</p>
+<a name="rm.rcapd.task-23"></a><h4>Reporting Memory Utilization and the Memory
+Cap Enforcement Threshold</h4>
+<p>You can use the <tt>-g</tt> option of <tt>rcapstat</tt> to
+report the following:</p>
+<ul><li><p>Current physical memory utilization as a percentage of physical
+memory installed on the system</p>
+</li>
+<li><p>System memory cap enforcement threshold set by <tt>rcapadm</tt></p>
+</li>
+</ul>
+<p>The <tt>-g</tt> option causes a memory utilization and cap enforcement
+line to be printed at the end of the report for each interval.</p>
+<pre># <tt><b>rcapstat -g</b></tt>
+    id project   nproc    vm   rss   cap    at avgat   pg  avgpg
+376565    rcap       0    0K    0K   10G    0K    0K   0K     0K
+physical memory utilization: 55%   cap enforcement threshold: 0%
+    id project   nproc    vm   rss   cap    at avgat   pg  avgpg
+376565    rcap       0    0K    0K   10G    0K    0K   0K     0K
+physical memory utilization: 55%   cap enforcement threshold: 0%</pre>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p30.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p32.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

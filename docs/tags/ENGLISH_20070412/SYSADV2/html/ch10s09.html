@@ -1,0 +1,371 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Service Access Facility Administration
+(Reference)</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch10.html" title="Chapter 10. Managing Serial
+Ports With the Service Access Facility (Tasks)"><link rel="prev" href="ch10s08.html" title="Administering ttymon Services"><link rel="next" href="ch11.html" title="Chapter 11. Managing System Resources (Overview)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Service Access Facility Administration
+(Reference)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10s08.html">Prev</a> </td><th width="60%" align="center">Chapter 10. Managing Serial
+Ports With the Service Access Facility (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch11.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="modsafapp-92630"></a>Service Access Facility Administration
+(Reference)</h2></div></div></div>
+
+<p>This chapter includes reference information for administration of the
+Service Access Facility.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-65913"></a>Files Associated With the SAF</h3></div></div></div>
+
+<p>The SAF uses configuration files that can be modified by using the <span><strong class="command">sacadm</strong></span> and <span><strong class="command">pmadm</strong></span> commands. You should not need
+to manually edit the configuration files.</p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>File Name</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="filename">/etc/saf/_sysconfig</code>
+</p>
+</td><td>
+<p>Per-system configuration script.</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/etc/saf/_sactab</code>
+</p>
+</td><td>
+<p>The SAC's administrative file that contains configuration data for the
+port monitors that the SAC controls</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/etc/saf/</code>
+<em class="replaceable"><code>pmtag</code></em>
+</p>
+</td><td>
+<p>Home directory for port monitor <em class="replaceable"><code>pmtag</code></em>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/etc/saf/</code>
+<em class="replaceable"><code>pmtag</code></em>
+<code class="filename">/_config</code>
+</p>
+</td><td>
+<p>Per-port monitor configuration script for port monitor <em class="replaceable"><code>pmtag</code></em> if
+it exists</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/etc/saf/</code>
+<em class="replaceable"><code>pmtag</code></em>
+<code class="filename">/</code>
+<em class="replaceable"><code>_pmtab</code></em>
+</p>
+</td><td>
+<p>Port monitor <em class="replaceable"><code>pmtag</code></em>'s administrative file
+that contains port monitor-specific configuration data for the services <em class="replaceable"><code>pmtag</code></em> provides</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/etc/saf/</code>
+<em class="replaceable"><code>pmtag</code></em>
+<code class="filename">/</code>
+<em class="replaceable"><code>svctag</code></em>
+</p>
+</td><td>
+<p>Per-service configuration script for service <em class="replaceable"><code>svctag</code></em>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/var/saf/log</code>
+</p>
+</td><td>
+<p>The SAC's log file</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/var/saf/</code>
+<em class="replaceable"><code>pmtag</code></em>
+</p>
+</td><td>
+<p>Directory for files created by <em class="replaceable"><code>pmtag</code></em>, for
+example,  log files</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-39"></a>
+<code class="filename">/etc/saf/_sactab</code> File</h3></div></div></div>
+
+<p>The information in the <code class="filename">/etc/saf/_sactab</code> file is
+as follows:</p>
+<pre class="screen"># VERSION=1
+zsmon:ttymon::0:/usr/lib/saf/ttymon
+#</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="literal"># VERSION=1</code>
+</span></dt><dd>
+<p>Indicates the Service Access Facility version number.</p>
+</dd><dt><span class="term">
+<code class="literal">zsmon</code>
+</span></dt><dd>
+<p>Is the name of the port monitor.</p>
+</dd><dt><span class="term">
+<code class="literal">ttymon</code>
+</span></dt><dd>
+<p>Is the type of port monitor.</p>
+</dd><dt><span class="term">
+<code class="literal">::</code>
+</span></dt><dd>
+<p>Indicates whether the following two flags are set:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>d &#8212; Do not enable the port monitor.</p>
+</li><li>
+<p>x &#8212; Do not start the port monitor. No flags are set
+in this example.</p>
+</li></ul></div>
+</dd><dt><span class="term">
+<code class="literal">0</code>
+</span></dt><dd>
+<p>Indicates the return code value. A return count of <code class="literal">0</code> indicates
+that the port monitor is not be restarted if the port monitor fails.</p>
+</dd><dt><span class="term">
+<code class="literal">/usr/lib/saf/ttymon</code>
+</span></dt><dd>
+<p>Indicates the port monitor path name.</p>
+</dd></dl></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-40"></a>
+<code class="filename">/etc/saf/</code>
+<em class="replaceable"><code>pmtab/_pmtab</code></em> File</h3></div></div></div>
+
+<p>The <code class="filename">/etc/saf/</code>
+<em class="replaceable"><code>pmtab/_pmtab</code></em> file,
+such as <code class="filename">/etc/saf/zsmon/_pmtab</code>, is similar to the following:</p>
+<pre class="screen"># VERSION=1
+ttya:u:root:reserved:reserved:reserved:/dev/term/a:I::/usr/bin/login::9600:
+ldterm,ttcompat:ttya login\: ::tvi925:y:# </pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="literal"># VERSION=1</code>
+</span></dt><dd>
+<p>Indicates the Service Access Facility version number.</p>
+</dd><dt><span class="term">
+<code class="literal">ttya</code>
+</span></dt><dd>
+<p>Indicates the service tag.</p>
+</dd><dt><span class="term">
+<code class="literal">x,u</code>
+</span></dt><dd>
+<p>Identifies whether the following flags are set:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>x &#8212; Do not enable the service.</p>
+</li><li>
+<p>u &#8212; Create a <code class="filename">utmpx</code> entry for the
+service.</p>
+</li></ul></div>
+</dd><dt><span class="term">
+<code class="literal">root</code>
+</span></dt><dd>
+<p>Indicates the identity assigned to the service tag.</p>
+</dd><dt><span class="term">
+<code class="literal">reserved</code>
+</span></dt><dd>
+<p>This field is reserved for future use.</p>
+</dd><dt><span class="term">
+<code class="literal">reserved</code>
+</span></dt><dd>
+<p>This field is reserved for future use.</p>
+</dd><dt><span class="term">
+<code class="literal">reserved</code>
+</span></dt><dd>
+<p>This field is reserved for future use.</p>
+</dd><dt><span class="term">
+<code class="literal">/dev/term/a</code>
+</span></dt><dd>
+<p>Indicates the TTY port path name.</p>
+</dd><dt><span class="term">
+<code class="literal">/usr/bin/login</code>
+</span></dt><dd>
+<p>Identifies the full path name of the service to be invoked
+when a connection is received.</p>
+</dd><dt><span class="term">
+<code class="literal">:c,b,h,I,r:</code>
+</span></dt><dd>
+<p>Indicates whether the following flags are set:</p>
+<p>
+<code class="literal">c</code> &#8212; Sets the connect on carrier flag for the
+port.</p>
+<p>
+<code class="literal">b</code> &#8212; Sets the port as bidirectional, allowing
+both incoming and outgoing traffic.</p>
+<p>
+<code class="literal">h</code> &#8212; Suppresses an automatic hangup immediately
+after an incoming call is received.</p>
+<p>
+<code class="literal">I</code> &#8212; Initializes the port.</p>
+<p>
+<code class="literal">r</code> &#8212; Forces <code class="literal">ttymon</code> to wait
+until it receives a character from the port before <span><strong class="command">ttymon</strong></span> prints
+the <code class="literal">login:</code> message.</p>
+</dd><dt><span class="term">
+<code class="literal">9600</code>
+</span></dt><dd>
+<p>Identifies the TTY label defined in the <code class="filename">/etc/ttydefs</code> file.</p>
+</dd><dt><span class="term">
+<code class="literal">ldterm,ttcompat</code>
+</span></dt><dd>
+<p>Identifies the STREAMS modules to be pushed.</p>
+</dd><dt><span class="term">
+<code class="literal">ttya login\:</code>
+</span></dt><dd>
+<p>Identifies the prompt to be displayed.</p>
+</dd><dt><span class="term">
+<code class="literal">:y/n:</code>
+</span></dt><dd>
+<p>Indicates yes or no response.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>message</code></em>
+</span></dt><dd>
+<p>Identifies any inactive (disabled) response message.</p>
+</dd><dt><span class="term">
+<code class="literal">tvi925</code>
+</span></dt><dd>
+<p>Identifies the terminal type.</p>
+</dd><dt><span class="term">
+<code class="literal">y</code>
+</span></dt><dd>
+<p>Indicates whether the software carrier is set (<code class="literal">y</code>/<code class="literal">n</code>).</p>
+</dd></dl></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-66874"></a>Service States</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="modsafapp-ix1156"></a>The <span><strong class="command">sacadm</strong></span> command controls the states of services.
+The following table describes the possible states of services. </p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>State</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>Enabled</p>
+</td><td>
+<p>
+<span class="emphasis"><em>Default state</em></span> &#8211; When the port monitor is
+added, the service operates.</p>
+</td></tr><tr><td>
+<p>Disabled</p>
+</td><td>
+<p>
+<span class="emphasis"><em>Default state</em></span> &#8211; When the port monitor is
+removed, the service stops.</p>
+</td></tr></tbody></table>
+</div>
+<p>To determine the state of any particular service, use the following:</p>
+<pre class="screen"># <strong class="userinput"><code>pmadm -l -p</code></strong> <em class="replaceable"><code>portmon-name</code></em> <strong class="userinput"><code>-s</code></strong>
+<em class="replaceable"><code>svctag</code></em>
+</pre>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-98584"></a>Port Monitor States</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="modsafapp-ix1157"></a>The <span><strong class="command">sacadm</strong></span> command controls the states of the <code class="literal">ttymon</code> and <code class="literal">listen</code> port monitors. The following
+table describes the possible port monitor states. </p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>State</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">Started</code>
+</p>
+</td><td>
+<p>
+<span class="emphasis"><em>Default state</em></span> &#8211; When the port monitor is
+added, it is automatically started.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">Enabled</code>
+</p>
+</td><td>
+<p>
+<span class="emphasis"><em>Default state</em></span> &#8211; When the port monitor is
+added, it is automatically ready to accept requests for service.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">Stopped</code>
+</p>
+</td><td>
+<p>
+<span class="emphasis"><em>Default state</em></span> &#8211; When the port monitor is
+removed, it is automatically stopped.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">Disabled</code>
+</p>
+</td><td>
+<p>
+<span class="emphasis"><em>Default state</em></span> &#8211; When the port monitor is
+removed, it automatically continues existing services and refuses to add new
+services.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">Starting</code>
+</p>
+</td><td>
+<p>
+<span class="emphasis"><em>Intermediate state</em></span> &#8211; The port monitor is
+in the process of starting.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">Stopping</code>
+</p>
+</td><td>
+<p>
+<span class="emphasis"><em>Intermediate state</em></span> &#8211; The port monitor has
+been manually terminated, but it has not completed its shutdown procedure.
+The port monitor is on the way to becoming stopped.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">Notrunning</code>
+</p>
+</td><td>
+<p>
+<span class="emphasis"><em>Inactive state</em></span> &#8211; The port monitor has been
+killed. All ports previously monitored are inaccessible. An external user
+cannot tell whether a port is <code class="literal">disabled</code> or <code class="literal">notrunning</code>.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">Failed</code>
+</p>
+</td><td>
+<p>
+<span class="emphasis"><em>Inactive state</em></span> &#8211; The port monitor is unable
+to start and remain running.</p>
+</td></tr></tbody></table>
+</div>
+<p>To determine the state of any particular port monitor, use the following
+command:</p>
+<pre class="screen"># <strong class="userinput"><code>sacadm -l -p</code></strong> <em class="replaceable"><code>portmon-name</code></em>
+</pre>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="modsafapp-35"></a>Port States</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="modsafapp-ix1158"></a>Ports can be enabled or disabled depending on the state of the
+port monitor that controls the ports. </p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>State</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td colspan="2">
+<p>Serial (<code class="literal">ttymon</code>) port states</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">Enabled</code>
+</p>
+</td><td>
+<p>The <code class="literal">ttymon</code> port monitor sends a prompt message to
+the port and provides login service to it.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">Disabled</code>
+</p>
+</td><td>
+<p>Default state of all ports if <code class="literal">ttymon</code> is killed or
+disabled. If you specify this state, <code class="literal">ttymon</code> sends out the <code class="literal">disabled</code> message when it receives a connection request.</p>
+</td></tr></tbody></table>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10s08.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch10.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch11.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Administering <code class="literal">ttymon</code> Services </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 11. Managing System Resources (Overview)</td></tr></table></div></body></html>

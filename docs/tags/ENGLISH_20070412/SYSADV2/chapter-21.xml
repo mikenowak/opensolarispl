@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="tsoverview-10750">
+
+
+
+<title>Troubleshooting Software Problems (Overview)</title>
+<toc>
+<para>This chapter provides a general overview of troubleshooting software
+problems, including information on troubleshooting system crashes and viewing
+system messages.</para>
+<para>This is a list of information in this chapter.</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="exlvp">What's New in Troubleshooting?</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="tsoverview-12">Where to Find Software Troubleshooting Tasks</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="tsoverview-30557">Troubleshooting a System Crash</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="tsoverview-24917">Troubleshooting a System Crash Checklist</olink>
+</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="exlvp">
+<title>What's New in Troubleshooting?</title>
+<para>This section describes new or changed troubleshooting information in this
+Solaris release. For information on new or changed troubleshooting features
+in the Solaris 10 release, see the following:</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="frcbj">
+<command>kmdb</command> Replaces <command>kadb</command> as Standard Solaris Kernel Debugger</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-21.xml" targetptr="gcdcd">Solaris Dynamic Tracing Facility</olink>
+</para>
+</listitem>
+</itemizedlist>
+<para>For a complete listing of new Solaris features and a
+description of Solaris releases, see the <olink remap="external" targetdoc="819-2183">
+<citetitle remap="book">What’s New in Solaris Express</citetitle>
+</olink>.</para>
+<sect2 xml:id="gcbxe">
+<title>Possible Common Agent Container Problems in the Solaris
+OS</title>
+<indexterm xml:id="indexterm-235">
+<primary>Common Agent Container</primary>
+<secondary>troubleshooting in Solaris OS</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-236">
+<primary>troubleshooting</primary>
+<secondary>Common Agent Container</secondary>
+</indexterm>
+<para>
+<emphasis role="strong">Solaris Express 4/06:</emphasis> The Common Agent
+Container is a stand-alone Java program that is now included in the Solaris
+OS. This program implements a container for Java management applications.
+ The Common Agent Container provides a management infrastructure that is designed
+for Java Management Extensions (JMX) and Java Dynamic Management Kit (Java
+DMK) based functionality.  The software is installed by the <literal>SUNWcacaort</literal> package
+and resides in the <filename>/usr/lib/cacao</filename> directory.</para>
+<para>Typically, the container is not visible.  However, there are two instances
+when you might need to interact with the container daemon:</para>
+<itemizedlist>
+<listitem>
+<para>It is possible that another application might attempt to use
+a network port that is reserved for the Common Agent Container.</para>
+</listitem>
+<listitem>
+<para>In the event that a certificate store is compromised, you
+might have to regenerate the Common Agent Container certificate keys. </para>
+</listitem>
+</itemizedlist>
+<para>For information about how to troubleshoot these problems, see <olink remap="external" targetdoc="chapter-25.xml" targetptr="gcbwx">Troubleshooting Common Agent Container Problems in the Solaris OS</olink>.</para>
+</sect2>
+<sect2 arch="x86" xml:id="fxchw">
+<title>
+SMF Boot Archive Service Might Fail During
+System Reboot</title>
+<indexterm xml:id="indexterm-237">
+<primary>boot archive</primary>
+<secondary>SMF service failure on reboot</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-238">
+<primary>rebooting an x86 based system</primary>
+<secondary>boot archive SMF service fails</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-239">
+<primary>failed x86 based system reboot</primary>
+<secondary>SMF boot archive service</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-240">
+<primary>GRUB based booting</primary>
+<secondary>troubleshooting SMF boot archive service failure</secondary>
+</indexterm>
+<para>
+<emphasis role="strong">Solaris Express 6/05:</emphasis> If a system crash occurs
+in the GRUB based boot environment, it is possible that the SMF service <command>svc:/system/boot-archive:default</command> might fail when the system is rebooted.
+If this problem occurs, reboot the system and select the Solaris failsafe
+archive in the GRUB boot menu. Follow the prompts to rebuild the boot archive.
+After the archive is rebuilt, reboot the system. To continue the boot process,
+you can use the <command>svcadm</command> command to clear the <command>svc:/system/boot-archive:default</command> service. For instructions, see <olink remap="external" targetdoc="chapter-25.xml" targetptr="fxcmh">
+What to Do if the SMF Boot Archive Service Fails During a System Reboot</olink>. For
+more information on GRUB based booting, see <olink remap="external" targetdoc="819-2379" targetptr="hbx86boot-68676">Chapter 11, <citetitle remap="chapter">GRUB Based Booting (Tasks),</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>.</para>
+</sect2>
+<sect2 xml:id="exlvo">
+<title>Dynamic Tracing Facility</title>
+<indexterm xml:id="indexterm-241">
+<primary>DTrace facility</primary>
+</indexterm>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> The Solaris Dynamic Tracing
+(DTrace) facility is a comprehensive dynamic tracking facility that gives
+you a new level of observerability into the Solaris kernel and user processes.
+DTrace helps you understand your system by permitting you to dynamically instrument
+the OS kernel and user processes to record data that you specify at locations
+of interest, called, <emphasis>probes</emphasis>. Each probe can be associated
+with custom programs that are written in the new D programming language. All
+of DTrace's instrumentation is entirely dynamic and available for use on your
+production system. For more information, see the <olink remap="external" targetdoc="819-2240" targetptr="dtrace-1m">
+<citerefentry>
+<refentrytitle>dtrace</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man page and the <olink remap="external" targetdoc="817-6223">
+<citetitle remap="book">Solaris Dynamic Tracing Guide</citetitle>
+</olink>.</para>
+</sect2>
+<sect2 xml:id="gcdbz">
+<title>
+<command>kmdb</command> Replaces <command>kadb</command> as
+Standard Solaris Kernel Debugger</title>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> <command>kmdb</command> has
+replaced <command>kadb</command> as the standard “in situ” Solaris
+kernel debugger.</para>
+<para>
+<command>kmdb</command> brings all the power and flexibility of <command>mdb</command> to live kernel debugging. <command>kmdb</command> supports the
+following:</para>
+<itemizedlist>
+<listitem>
+<para>Debugger commands (dcmds)</para>
+</listitem>
+<listitem>
+<para>Debugger modules (dmods)</para>
+</listitem>
+<listitem>
+<para>Access to kernel type data</para>
+</listitem>
+<listitem>
+<para>Kernel execution control</para>
+</listitem>
+<listitem>
+<para>Inspection</para>
+</listitem>
+<listitem>
+<para>Modification</para>
+</listitem>
+</itemizedlist>
+<para>For more information, see the <olink remap="external" targetdoc="819-2239" targetptr="kmdb-1">
+<citerefentry>
+<refentrytitle>kmdb</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> man
+page. For step-by-step instructions on using <command>kmdb</command> to troubleshoot
+a system, see the <olink remap="external" targetdoc="819-2379" targetptr="euayz">
+<citetitle remap="section">How to Boot the System With the Kernel Debugger (kmdb)</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>.</para>
+</sect2>
+</sect1>
+<sect1 xml:id="tsoverview-12">
+<title>Where to Find Software Troubleshooting Tasks</title>
+<indexterm xml:id="indexterm-242">
+<primary>troubleshooting tasks</primary>
+<secondary>where to find</secondary>
+</indexterm>
+<informaltable frame="topbot">
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colname="colspec2" colwidth="50*"/>
+<colspec colname="colspec3" colwidth="50*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Troubleshooting Task</para>
+</entry>
+<entry>
+<para>For More Information</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Manage system crash information</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-24.xml" targetptr="tscrashdumps-40145">Chapter 24, Managing System Crash Information (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Manage core files</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-23.xml" targetptr="tscore-7">Chapter 23, Managing Core Files (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Troubleshoot software problems such as reboot failures and backup problems</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-25.xml" targetptr="tsgeneral-32935">Chapter 25, Troubleshooting Miscellaneous Software Problems (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Troubleshoot file access problems</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-26.xml" targetptr="tsfileaccess-28392">Chapter 26, Troubleshooting File Access Problems (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Troubleshoot printing problems</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-27.xml" targetptr="tsprint-34397">Chapter 27, Troubleshooting Printing Problems (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Resolve UFS file system inconsistencies</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-28.xml" targetptr="tsfsck-26279">Chapter 28, Resolving UFS File System Inconsistencies (Tasks)</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Troubleshoot software package problems</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-29.xml" targetptr="tsswmgr-40462">Chapter 29, Troubleshooting Software Package Problems (Tasks)</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect1>
+<sect1 xml:id="tsoverview-30557">
+<title>Troubleshooting a System Crash</title>
+<para>If a system running the Solaris Operating System crashes, provide your service provider
+with as much information as possible, including crash dump files.</para>
+<sect2 xml:id="frcbj">
+<title>
+<command>kmdb</command> Replaces <command>kadb</command> as
+Standard Solaris Kernel Debugger</title>
+<indexterm xml:id="indexterm-243">
+<primary>
+<command>kmdb</command> replaces <command>kadb</command> as standard kernel debugger</primary>
+<secondary>kernel debugger</secondary>
+</indexterm>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> <command>kmdb</command> has
+replaced <command>kadb</command> as the standard “in situ” Solaris
+kernel debugger. </para>
+<para>
+<command>kmdb</command> brings all the power and flexibility of <command>mdb</command> to live kernel debugging. <command>kmdb</command> supports the
+following:</para>
+<itemizedlist>
+<listitem>
+<para>Debugger commands (dcmds)</para>
+</listitem>
+<listitem>
+<para>Debugger modules (dmods)</para>
+</listitem>
+<listitem>
+<para>Access to kernel type data</para>
+</listitem>
+<listitem>
+<para>Kernel execution control</para>
+</listitem>
+<listitem>
+<para>Inspection</para>
+</listitem>
+<listitem>
+<para>Modification</para>
+</listitem>
+</itemizedlist>
+<para>For more information, see the <olink remap="external" targetdoc="819-2239" targetptr="kmdb-1">
+<citerefentry>
+<refentrytitle>kmdb</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> man
+page. For step-by-step instructions on using <command>kmdb</command> to troubleshoot
+a system, see the <olink remap="external" targetdoc="819-2379" targetptr="euayz">
+<citetitle remap="section">How to Boot the System With the Kernel Debugger (kmdb)</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>.</para>
+</sect2>
+<sect2 xml:id="gcdcd">
+<title>Solaris Dynamic Tracing
+Facility</title>
+<indexterm xml:id="indexterm-244">
+<primary>DTrace facility</primary>
+</indexterm>
+<para>
+<emphasis role="strong">Solaris 10:</emphasis> The Solaris DTrace facility
+is a comprehensive dynamic tracking facility that gives you a new level of
+observerability into the Solaris kernel and user processes. DTrace helps you
+understand your system by permitting you to dynamically instrument the OS
+kernel and user processes to record data that you specify at locations of
+interest, called, <emphasis>probes</emphasis>. Each probe can be associated
+with custom programs that are written in the new D programming language. All
+of DTrace's instrumentation is entirely dynamic and available for use on your
+production system. For more information, see the <olink remap="external" targetdoc="819-2240" targetptr="dtrace-1m">
+<citerefentry>
+<refentrytitle>dtrace</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man page and the <olink remap="external" targetdoc="817-6223">
+<citetitle remap="book">Solaris Dynamic Tracing Guide</citetitle>
+</olink>.</para>
+</sect2>
+<sect2 xml:id="tsoverview-18640">
+<title>What to Do if the System Crashes</title>
+<para>The most important things to remember are:</para>
+<orderedlist>
+<listitem>
+<para>Write down the system console messages.</para>
+<para>
+<indexterm xml:id="tsoverview-ix5304">
+<primary>crashes</primary>
+<secondary>procedure following</secondary>
+</indexterm>
+<indexterm xml:id="tsoverview-ix5305">
+<primary>
+<filename>/var/adm/messages</filename> file</primary>
+</indexterm>
+<indexterm xml:id="tsoverview-ix5306">
+<primary>
+<filename>/usr/adm/messages</filename> file</primary>
+</indexterm>
+<indexterm xml:id="tsoverview-ix5307">
+<primary>
+<filename>messages</filename> file</primary>
+</indexterm>
+<indexterm xml:id="tsoverview-ix5308">
+<primary>error messages</primary>
+<secondary>log file for</secondary>
+</indexterm>If a system crashes, making it run again might seem like your
+most pressing concern. However, before you reboot the system, examine the
+console screen for messages. These messages can provide some insight about
+what caused the crash. Even if the system reboots automatically and the console
+messages have disappeared from the screen, you might be able to check these
+messages by viewing the system error log, the<filename>/var/adm/messages</filename> file.
+For more information about viewing system error log files, see <olink remap="external" targetdoc="chapter-22.xml" targetptr="eeklc">How to View System Messages</olink>.</para>
+<para>
+<indexterm xml:id="tsoverview-ix5309">
+<primary>technical support</primary>
+<secondary>sending crash information</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-245">
+<primary>customer service</primary>
+<secondary>sending crash information</secondary>
+</indexterm>
+<indexterm xml:id="tsoverview-ix5311">
+<primary>crashes</primary>
+<secondary>customer service and</secondary>
+</indexterm>If you have frequent crashes and can't determine their cause,
+gather all the information you can from the system console or the <filename>/var/adm/messages</filename> files, and have it ready for a customer service representative
+to examine. For a complete list of troubleshooting information to gather for
+your service provider, see <olink remap="internal" targetdoc="chapter-21.xml" targetptr="tsoverview-30557">Troubleshooting a System Crash</olink>.   </para>
+<para>If the system fails to reboot successfully
+after a system crash, see <olink remap="external" targetdoc="chapter-25.xml" targetptr="tsgeneral-32935">Chapter 25, Troubleshooting Miscellaneous Software Problems (Tasks)</olink>.</para>
+</listitem>
+<listitem>
+<para>Synchronize the disks and reboot.</para>
+<screen>ok <userinput>sync</userinput>
+</screen>
+<para>If the system fails to reboot successfully after a system crash, see <olink remap="external" targetdoc="chapter-25.xml" targetptr="tsgeneral-32935">Chapter 25, Troubleshooting Miscellaneous Software Problems (Tasks)</olink>.</para>
+</listitem>
+</orderedlist>
+<para>Check to see if a system crash dump was generated after the system crash.
+System crash dumps are saved by default. For information about crash dumps,
+see <olink remap="external" targetdoc="chapter-24.xml" targetptr="tscrashdumps-40145">Chapter 24, Managing System Crash Information (Tasks)</olink>.</para>
+</sect2>
+<sect2 xml:id="tsoverview-23810">
+<title>Gathering Troubleshooting Data</title>
+<para>Answer the following questions to help isolate the system problem. Use <olink remap="internal" targetdoc="chapter-21.xml" targetptr="tsoverview-24917">Troubleshooting a System Crash Checklist</olink> for
+gathering troubleshooting data for a crashed system.</para>
+<table frame="topbot" xml:id="tsoverview-tbl-2">
+
+<title>Identifying System Crash
+Data</title>
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="144*"/>
+<colspec colname="column2" colwidth="216*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Question</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>
+<emphasis>Can you reproduce the problem?</emphasis>
+</para>
+</entry>
+<entry>
+<para>This is important because a reproducible test case is often essential
+for debugging really hard problems. By reproducing the problem, the service
+provider can build kernels with special instrumentation to trigger, diagnose,
+and fix the bug.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<emphasis>Are you using any third-party drivers?</emphasis>
+</para>
+</entry>
+<entry>
+<para>Drivers run in the same address space as the kernel, with all the same
+privileges, so they can cause system crashes if they have bugs.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<emphasis>What was the system doing just before it crashed?</emphasis>
+</para>
+</entry>
+<entry>
+<para>If the system was doing anything unusual like running a new stress test
+or experiencing higher-than-usual load, that might have led to the crash.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<emphasis>Were there any unusual console messages right before the crash?</emphasis>
+</para>
+</entry>
+<entry>
+<para>Sometimes the system will show signs of distress before it actually
+crashes; this information is often useful.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<emphasis>Did you add any tuning parameters to the</emphasis> <filename>/etc/system</filename> <emphasis>file</emphasis>?</para>
+</entry>
+<entry>
+<para>Sometimes tuning parameters, such as increasing shared memory segments
+so that the system tries to allocate more than it has, can cause the system
+to crash.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<emphasis>Did the problem start recently?</emphasis>
+</para>
+</entry>
+<entry>
+<para>If so, did the onset of problems coincide with any changes to the system,
+for example, new drivers, new software, different workload, CPU upgrade, or
+a memory upgrade.</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</sect2>
+</sect1>
+<sect1 xml:id="tsoverview-24917">
+<title>Troubleshooting a System Crash Checklist</title>
+<para>Use this checklist when gathering system data for a crashed system.</para>
+<informaltable frame="topbot">
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colname="column2" colwidth="180*"/>
+<colspec colname="column3" colwidth="180*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Item</para>
+</entry>
+<entry>
+<para>Your Data</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry rowsep="1">
+<para>Is a system crash dump available?</para>
+</entry>
+<entry rowsep="1">
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>Identify the operating system release and appropriate software application
+release levels.</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>Identify system hardware.</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry rowsep="1">
+<para>Include <command>prtdiag</command> output for sun4u systems. Include
+Explorer output for other systems.</para>
+</entry>
+<entry rowsep="1">
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>Are patches installed? If so, include <command>showrev -p</command> output.</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>Is the problem reproducible?</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>Does the system have any third-party drivers?</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>What was the system doing before it crashed?</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>Were there any unusual console messages right before the system crashed?</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="1">
+<para>Did you add any parameters to the <filename>/etc/system</filename> file?</para>
+</entry>
+<entry colsep="0" rowsep="1">
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry colsep="0" rowsep="0">
+<para>Did the problem start recently?</para>
+</entry>
+<entry colsep="0" rowsep="0">
+<para>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect1>
+</chapter>

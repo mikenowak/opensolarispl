@@ -1,0 +1,44 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Using Quotas</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch14.html" title="Chapter 14. Managing Quotas (Tasks)"><link rel="prev" href="ch14.html" title="Chapter 14. Managing Quotas (Tasks)"><link rel="next" href="ch14s03.html" title="Setting Up Quotas"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Using Quotas</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch14.html">Prev</a> </td><th width="60%" align="center">Chapter 14. Managing Quotas (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch14s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sysresquotas-11993"></a>Using Quotas</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-162"></a>
+<a class="indexterm" name="indexterm-163"></a>
+<p>Once quotas are in place, they can be changed to adjust the amount of disk space
+or the number of inodes that users can consume. Additionally, quotas can be added
+or removed as system needs change. For instructions on changing quotas or the amount
+of time that quotas can be exceeded, disabling individual quotas, or removing quotas
+from file systems, see <span class="olink">Changing and Removing Quotas</span>. </p>
+<p>In addition, quota status can be monitored. Quota commands enable administrators
+to display information about quotas on a file system, or search for users who have
+exceeded their quotas. For procedures that describe how to use these commands, see <span class="olink">Checking Quotas</span>.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sysresquotas-1"></a>Setting Soft Limits and Hard Limits for Quotas</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-164"></a>
+<a class="indexterm" name="indexterm-165"></a>
+<p>You can set both soft limits and hard limits. The system does not allow a user
+to exceed his or her hard limit. However, a system administrator might set a soft
+limit, which the user can temporarily exceed. The soft limit must be less than the
+hard limit. </p>
+<p>Once the user exceeds the soft limit, a quota timer begins. While the quota
+timer is ticking, the user is allowed to operate above the soft limit but cannot exceed
+the hard limit. Once the user goes below the soft limit, the timer is reset. However,
+if the user's usage remains above the soft limit when the timer expires, the soft
+limit is enforced as a hard limit. By default, the soft limit timer is set to seven
+days. </p>
+<p>The <code class="literal">timeleft</code> field in the <span><strong class="command">repquota</strong></span> and <span><strong class="command">quota</strong></span> commands shows the value of the timer.</p>
+<p>For example, let's say a user has a soft limit of 10,000 blocks and a hard limit
+of 12,000 blocks. If the user's block usage exceeds 10,000 blocks and the seven-day
+timer is also exceeded, the user cannot allocate more disk blocks on that file system
+until his or her usage drops below the soft limit. </p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sysresquotas-3"></a>The Difference Between Disk Block and File Limits</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-166"></a>
+<p>A file system provides two resources to the user, blocks for data and inodes
+for files. Each file consumes one inode. File data is stored in data blocks. Data
+blocks are usually made up of 1Kbyte blocks.</p>
+<p>Assuming no directories exist, a user can exceed his or her inode quota by creating
+all empty files without using any blocks. A user can also use one inode, yet exceed
+his or her block quota, by creating one file that is large enough to consume all the
+data blocks in the user's quota. </p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch14.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch14.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch14s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 14. Managing Quotas (Tasks) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Setting Up Quotas</td></tr></table></div></body></html>

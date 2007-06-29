@@ -1,0 +1,437 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Overview of Solaris Volume Manager Components</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch03.html" title="Chapter 3. Solaris Volume Manager Overview"><link rel="prev" href="ch03s04.html" title="Solaris Volume Manager Requirements"><link rel="next" href="ch03s06.html" title="Solaris Volume Manager Configuration Guidelines"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Overview of Solaris Volume Manager Components</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s04.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Solaris Volume Manager Overview</th><td width="20%" align="right"> <a accesskey="n" href="ch03s06.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="basics-42385"></a>Overview of Solaris Volume Manager Components</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="basics-ix24"></a>The five basic types of components that you create with Solaris Volume Manager are
+volumes, soft partitions, disk sets, state database replicas, and hot spare
+pools. The following table gives an overview of these Solaris Volume Manager features. </p>
+<div class="table"><a name="basics-32444"></a><p class="title"><b>Table 3.1. Summary of Solaris Volume Manager Features</b></p>
+
+
+<table summary="Summary of Solaris Volume Manager Features" width="100%" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>
+<p>Solaris Volume Manager Feature</p>
+</th><th>
+<p>Definition</p>
+</th><th>
+<p>Purpose</p>
+</th><th>
+<p>For More Information</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<a class="indexterm" name="exlwc"></a>
+</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>RAID-0 volume (stripe, concatenation, concatenated stripe)</p>
+</li><li>
+<p>RAID-1 (mirror) volume</p>
+</li><li>
+<p>RAID-5 volume</p>
+</li></ul></div>
+</td><td>
+<p>A group of physical slices that appear to the system as a single, logical
+device</p>
+</td><td>
+<p>To increase storage capacity, performance, or data availability.</p>
+</td><td>
+<p>
+<span class="olink">Overview of Volumes</span>
+</p>
+</td></tr><tr><td>
+<p>Soft partition</p>
+</td><td>
+<p> A subdivision of physical slices or logical volumes to provide smaller,
+more manageable storage units</p>
+</td><td>
+<p>To improve manageability of large storage volumes. </p>
+</td><td>
+<p>
+<span class="olink">Chapter 12, Soft Partitions (Overview)</span>
+</p>
+</td></tr><tr><td>
+<p>
+<a class="indexterm" name="basics-ix26"></a>State database  (state database replicas) </p>
+</td><td>
+<p>A database that contains configuration and status information for all
+volumes, hot spares, and disk sets. Solaris Volume Manager cannot operate until you
+have created the state database replicas.</p>
+</td><td>
+<p> To store information  about the state of your Solaris Volume Manager configuration</p>
+</td><td>
+<p>
+<span class="olink">State Database and State Database Replicas</span>
+</p>
+</td></tr><tr><td>
+<p>
+<a class="indexterm" name="basics-ix27"></a>Hot spare pool </p>
+</td><td>
+<p>A collection of slices (hot spares) reserved. These slices are automatically
+substituted when either a submirror or RAID-5 volume component fails.</p>
+</td><td>
+<p>To increase data availability for RAID-1 and RAID-5 volumes.</p>
+</td><td>
+<p>
+<span class="olink">Hot Spare Pools</span>
+</p>
+</td></tr><tr><td>
+<p>
+<a class="indexterm" name="indexterm-10"></a>Disk set</p>
+</td><td>
+<p>A set of shared disk drives in a separate namespace that contains volumes
+and hot spares and that can be shared non-concurrently by multiple hosts</p>
+</td><td>
+<p>To provide data redundancy and data availability and to provide a separate
+namespace for easier administration.</p>
+</td><td>
+<p>
+<span class="olink">Disk Sets</span>
+</p>
+</td></tr></tbody></table>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="basics-39"></a>Overview of Volumes</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="basics-ix28"></a>A <span class="emphasis"><em>volume</em></span> is a group of physical slices that
+appears to the system as a single, logical device. Volumes are actually pseudo,
+or virtual, devices in standard <span class="trademark">UNIX</span>® terms. </p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Historically, the <span class="trademark">Solstice DiskSuite</span>&#8482; product
+referred to these logical devices as metadevices. However, for simplicity
+and standardization, this book refers to these devices as volumes. </p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="basics-33"></a>Classes of Volumes</h4></div></div></div>
+
+<p>You create a volume as a RAID-0 (concatenation or stripe) volume, a
+RAID-1 (mirror) volume, a RAID-5 volume, .</p>
+<p>You can use either the Enhanced Storage tool within the Solaris Management Console or the command-line utilities to create
+and administer volumes.</p>
+<p>
+<a class="indexterm" name="basics-ix30"></a>The following table summarizes the classes of volumes.</p>
+<div class="table"><a name="ekjkr"></a><p class="title"><b>Table 3.2. Classes of Volumes</b></p>
+
+
+<table summary="Classes of Volumes" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Volume</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<a class="indexterm" name="ekjla"></a>RAID-0 (stripe or concatenation)</p>
+</td><td>
+<p>Can be used directly, or as the basic building block for mirrors. RAID-0
+volumes do not directly provide data redundancy. </p>
+</td></tr><tr><td>
+<p>
+<a class="indexterm" name="ekjkx"></a>RAID-1 (mirror)</p>
+</td><td>
+<p>Replicates data by maintaining multiple copies. A RAID-1 volume is composed
+of one or more RAID-0 volumes that are called submirrors.</p>
+</td></tr><tr><td>
+<p>
+<a class="indexterm" name="ekjky"></a>RAID-5 </p>
+</td><td>
+<p>Replicates data by using parity information. In the case of disk failure,
+the missing data can be regenerated by using available data and the parity
+information. A RAID-5 volume is generally composed of slices. One slice's
+worth of space is allocated to parity information, but the parity is distributed
+across all slices in the RAID-5 volume.</p>
+</td></tr><tr><td>
+<p>Soft partition</p>
+</td><td>
+<p>Divides a slice or logical volume into one or more smaller, extensible
+volumes.</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="basics-3"></a>How Volumes Are Used</h4></div></div></div>
+
+<a class="indexterm" name="basics-ix35"></a>
+<p>You use volumes to increase storage capacity, performance, and data
+availability. In some instances, volumes can also increase I/O performance.
+Functionally, volumes behave the same way as slices. Because volumes look
+like slices, the volumes are transparent to end users, applications, and file
+systems. As with physical devices, volumes are accessed through block or raw
+device names. The volume name changes, depending on whether the block or raw
+device is used. See <span class="olink">Volume Names</span> for
+details about volume names.</p>
+<p>
+<a class="indexterm" name="basics-ix36"></a>You can use most file system commands, including <span><strong class="command">mkfs</strong></span>, <span><strong class="command">mount</strong></span>, <span><strong class="command">umount</strong></span>, <span><strong class="command">ufsdump</strong></span>, <span><strong class="command">ufsrestore</strong></span>, and others, on volumes. You cannot use the <span><strong class="command">format</strong></span> command,
+however. You can read, write, and copy files to and from a volume, as long
+as the volume contains a mounted file system. </p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="basics-4"></a>Example&#8212;Volume That Consists of Two Slices</h4></div></div></div>
+
+<p>
+<span class="olink">Figure 3&#8211;2</span> shows a volume
+that contains two slices, one slice from Disk A and one slice from Disk B.
+An application or UFS treats the volume as if it were one physical disk. Adding
+more slices to the volume increases its storage capacity.</p>
+<div class="figure"><a name="basics-fig-5"></a><p class="title"><b>Figure 3.2. Relationship Among a Volume, Physical Disks,
+and Slices</b></p>
+
+
+<div class="mediaobject"><img src="../figures/ch1_basics.fig28.gif" alt="Relationship Among a Volume, Physical Disks, and Slices" longdesc="ld-id1724920.html"><div class="longdesc-link" align="right"><br clear="all"><span class="longdesc-link">[<a href="ld-id1724920.html" target="longdesc">D</a>]</span></div></div>
+</div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="basics-18534"></a>Volume and Disk Space Expansion Using the <span><strong class="command">growfs</strong></span> Command</h4></div></div></div>
+
+<a class="indexterm" name="basics-ix62"></a>
+<p>Solaris Volume Manager enables you to expand a volume by adding additional
+slices. You can use either the Enhanced Storage tool within the Solaris Management Console or the command-line interface to add
+a slice to an existing volume.</p>
+<p>
+<a class="indexterm" name="basics-ix63"></a>
+<a class="indexterm" name="basics-ix64"></a>You can expand a mounted or unmounted UFS file system that is
+contained within a volume without having to halt or back up your system. Nevertheless,
+backing up your data is always a good idea. After you expand the volume, use
+the <span><strong class="command">growfs</strong></span> command to grow the file system.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>After a file system has been expanded, the file system cannot
+be reduced in size. The inability to reduce the size of a file system is a
+UFS limitation. Similarly, after a Solaris Volume Manager partition has been increased
+in size, it cannot be reduced.</p>
+</div>
+<p>Applications and databases that use the raw volume must have their own
+method to &#8220;grow&#8221; the added space so that applications can recognize
+it. Solaris Volume Manager does not provide this capability.</p>
+<p>You can expand the disk space in volumes in the following ways:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Adding one or more slices to a RAID-0 volume</p>
+</li><li>
+<p>Adding one or more slices to all submirrors of a RAID-1 volume</p>
+</li><li>
+<p>
+<a class="indexterm" name="basics-ix65"></a>Adding one or more slices to a RAID-5 volume</p>
+</li><li>
+<p>
+<a class="indexterm" name="indexterm-11"></a>Expanding a soft partition with additional space from the underlying
+component</p>
+</li></ul></div>
+<p>The <span><strong class="command">growfs</strong></span> command expands a UFS file system without
+loss of service or data. However, write access to the volume is suspended
+while the <span><strong class="command">growfs</strong></span> command is running. You can expand the
+file system to the size of the slice or the volume that contains the file
+system. </p>
+<p>The file system can be expanded to use only part of the additional disk
+space by using the <code class="option">
+s</code> <em class="replaceable"><code>size</code></em> option
+to the <span><strong class="command">growfs</strong></span> command.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>When you expand a mirror, space is added to the mirror's underlying
+submirrors. The <span><strong class="command">growfs</strong></span> command
+is then run on the RAID-1 volume. The general rule is that space is added to the underlying
+devices, and the <span><strong class="command">growfs</strong></span> command is run on the top-level
+device.</p>
+</div>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="basics-34"></a>Volume Names</h4></div></div></div>
+
+<p>As with physical slices, volumes have logical names that appear in the
+file system. Logical volume names have entries in the <code class="filename">/dev/md/dsk</code> directory
+for block devices and the <code class="filename">/dev/md/rdsk</code> directory for
+raw devices. Instead of specifying the full volume name, such as <code class="filename">/dev/md/dsk/<em class="replaceable"><code>volume-name</code></em>
+</code>, you can often use an abbreviated volume
+name, such as <code class="filename">d1</code>, with any <code class="literal">meta*</code> command.
+You can generally rename a volume, as long as the volume is not currently
+being used and the new name is not being used by another volume. For more
+information, see <span class="olink">Exchanging Volume Names</span>.</p>
+<p>Originally, volume names had to begin with the letter &#8220;d&#8221;
+followed by a number (for example, <code class="filename">d0</code>). This format is
+still acceptable. The following are examples of volume names that use the &#8220;d*&#8221;
+naming construct:</p>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="filename">/dev/md/dsk/d0</code>
+</span></dt><dd>
+<p>Block volume <code class="literal">d0</code>
+</p>
+</dd><dt><span class="term">
+<code class="filename">/dev/md/dsk/d1</code>
+</span></dt><dd>
+<p>Block volume <code class="literal">d1</code>
+</p>
+</dd><dt><span class="term">
+<code class="filename">/dev/md/rdsk/d126</code>
+</span></dt><dd>
+<p>Raw volume <code class="literal">d126</code>
+</p>
+</dd><dt><span class="term">
+<code class="filename">/dev/md/rdsk/d127</code>
+</span></dt><dd>
+<p>Raw volume <code class="literal">d127</code>
+</p>
+</dd></dl></div>
+<p>Beginning
+with the Solaris Express 4/06 release, Solaris Volume Manager has been enhanced to include the use of
+descriptive names for naming volumes and hot spare pools. A <span class="emphasis"><em>descriptive
+name</em></span> for a volume is a name that can be composed of a combination
+of the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Alphanumeric characters</p>
+</li><li>
+<p>&#8220;-&#8221; (a dash)</p>
+</li><li>
+<p>&#8220;_&#8221; (an underscore)</p>
+</li><li>
+<p>&#8220;.&#8221; (a period)</p>
+</li></ul></div>
+<p>Descriptive names must begin with a letter. The words &#8220;all&#8221;
+and &#8220;none&#8221; are reserved and cannot be used as names for volumes
+or hot spare pools. You also cannot use only a &#8220;.&#8221; (period) or &#8220;..&#8221;
+(two periods) as the entire name. Finally, you cannot create a descriptive
+name that looks like a physical disk name, such as <code class="literal">c0t0d0s0</code>.
+As noted previously, you can also continue to use the &#8220;d*&#8221; naming
+convention. The following are examples of descriptive volume names:</p>
+<div class="informaltable"> <table border="1"><colgroup><col></colgroup><tbody><tr><td>
+<p>
+<code class="filename">account_stripe_1</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">mirror.3</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">d100</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">d-100</code>
+</p>
+</td></tr></tbody></table>
+</div>
+<p>When descriptive names are used in disk sets, each descriptive
+name must be unique within that disk set. Hot spare pools and volumes within
+the same disk set cannot have the same name. However, you can reuse names
+within different disk sets. For example, if you have two disk sets, one disk
+set called <code class="literal">admins</code> and one disk set called <code class="literal">managers</code>,
+you can create a volume named <code class="filename">employee_files</code> in each
+disk set.</p>
+<p>The functionality of the Solaris Volume Manager commands that
+are used to administer volumes with descriptive names remains unchanged. You
+can substitute a descriptive name in any <span><strong class="command">meta*</strong></span> command
+where you previously used the &#8220;d*&#8221; format. For example, to create
+a single-stripe volume of one slice with the name <code class="filename">employee_files</code>,
+you would type the following command at the command line:</p>
+<pre class="screen"># <strong class="userinput"><code>metainit employee_files 1 1 c0t1d0s4</code></strong>
+</pre>
+<p>If you create
+volumes and hot spare pools using descriptive names and then later determine
+that you need to use Solaris Volume Manager under previous releases of the
+Solaris OS, you must remove the components that are defined with descriptive
+names. To determine if the Solaris Volume Manager configuration on your system contains
+descriptive names, you can use the <code class="option">
+D</code> option of the <span><strong class="command">metastat</strong></span> command. The <span><strong class="command">metastat <code class="option">
+D</code>
+</strong></span> command
+lists volumes and hot spare pools that were created using descriptive names.
+These components must be removed from the Solaris Volume Manager configuration before
+the remaining configuration can be used with a release prior to the Solaris Express 4/06
+release. If these components are not removed, the Solaris Volume Manager in these prior
+Solaris releases does not start. For more information about the <code class="option">
+D</code> option,
+see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metastat</span>
+(
+1M
+)
+</span>
+</span> man
+page. For information about removing components from a configuration, see <span class="olink">Removing RAID-1 Volumes (Unmirroring)</span> and <span class="olink">Removing a RAID-0 Volume</span>.</p>
+<div class="sect4" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="basics-35"></a>Volume Name Guidelines</h5></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-12"></a>The use of a standard for your volume names can simplify administration
+and enable you at a glance to identify the volume type. Here are a few suggestions: </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Use ranges for each type of volume. For example, assign numbers
+0&#8211;20 for RAID-1 volumes, 21&#8211;40 for RAID-0 volumes, and so on.</p>
+</li><li>
+<p>Use a naming relationship for mirrors. For example, name mirrors
+with a number that ends in zero (0), and submirrors that end in one (1), two
+(2), and so on. For example, you might name mirrors as follows: mirror <code class="filename">d10</code>, submirrors <code class="filename">d11</code> and <code class="filename">d12</code>;
+mirror <code class="filename">d20</code>, submirrors <code class="filename">d21</code>, <code class="filename">d22</code>, <code class="filename">d23</code>, and <code class="filename">d24</code>. In an example using
+descriptive names, you could use a naming relationship such as <code class="filename">employee_mirror1</code> for a mirror with <code class="filename">employee_sub1</code> and <code class="filename">employee_sub2</code> comprising the submirrors.</p>
+</li><li>
+<p>Use a naming method that maps the slice number and disk number
+to volume numbers.</p>
+</li></ul></div>
+</div>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="basics-40"></a>State Database and State Database Replicas</h3></div></div></div>
+
+<a class="indexterm" name="basics-ix40"></a>
+<p>
+<a class="indexterm" name="basics-ix42"></a>The <span class="emphasis"><em>state database</em></span> is a database that stores
+information about the state of your Solaris Volume Manager configuration. The state
+database records and tracks changes made to your configuration. Solaris Volume Manager automatically
+updates the state database when a configuration or state change occurs. Creating
+a new volume is an example of a configuration change. A submirror failure
+is an example of a state change. </p>
+<p>
+<a class="indexterm" name="basics-ix43"></a>
+<a class="indexterm" name="basics-ix44"></a>
+<a class="indexterm" name="basics-ix45"></a>The state database is actually a collection of multiple, replicated
+database copies. Each copy, referred to as a <span class="emphasis"><em>state database replica</em></span>,
+ensures that the data in the database is always valid. Multiple copies of
+the state database protect against data loss from single points-of-failure.
+The state database tracks the location and status of all known state database
+replicas.   </p>
+<p>Solaris Volume Manager cannot operate until you have created the state database
+and its state database replicas. A Solaris Volume Manager configuration must have
+an operating state database.</p>
+<p>When you set up your configuration, you can locate the state database
+replicas on either of the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>On dedicated slices</p>
+</li><li>
+<p>On slices that will later become part of volumes</p>
+</li></ul></div>
+<p>
+<a class="indexterm" name="basics-ix46"></a>Solaris Volume Manager recognizes when a slice contains a state database
+replica, and automatically skips over the replica if the slice is used in
+a volume. The part of a slice reserved for the state database replica should
+not be used for any other purpose. </p>
+<p>You can keep more than one copy of a state database on one slice. However,
+you might make the system more vulnerable to a single point-of-failure by
+doing so.</p>
+<p>The Solaris operating system continues to function correctly if all
+state database replicas are deleted. However, the system loses all Solaris Volume Manager configuration
+data if a reboot occurs with no existing state database replicas on disk.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="basics-41"></a>Hot Spare Pools</h3></div></div></div>
+
+<a class="indexterm" name="basics-ix59"></a>
+<p>
+<a class="indexterm" name="basics-ix60"></a>A <span class="emphasis"><em>hot spare pool</em></span> is a collection of slices
+(<span class="emphasis"><em>hot spares</em></span>) reserved by Solaris Volume Manager to be automatically
+substituted for failed components. These hot spares can be used in either
+a submirror or RAID-5 volume. Hot spares provide increased data availability
+for RAID-1 and RAID-5 volumes. You can create a hot spare pool with either
+the Enhanced Storage tool within the Solaris Management Console or the command-line interface. </p>
+<p>
+<a class="indexterm" name="basics-ix61"></a>When component errors occur, Solaris Volume Manager checks for the first
+available hot spare whose size is equal to or greater than the size of the
+failed component. If found, Solaris Volume Manager automatically replaces the component
+and resynchronizes the data. If a slice of adequate size is not found in the
+list of hot spares, the submirror or RAID-5 volume is considered to have failed.
+For more information, see <span class="olink">Chapter 16, Hot Spare Pools (Overview)</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="eqbny"></a>Disk Sets</h3></div></div></div>
+
+<a class="indexterm" name="eqbou"></a>
+<p>A disk set is a set of physical storage volumes that contain logical
+volumes and hot spares. Volumes and hot spare pools must be built on drives
+from within that disk set. Once you have created a volume within the disk
+set, you can use the volume just as you would a physical slice.</p>
+<p>
+<a class="indexterm" name="basics-ix78"></a>A disk set provides data availability in a clustered environment.
+If one host fails,  another host can take over the failed host's disk set.
+(This type of configuration is known as a <span class="emphasis"><em>failover configuration</em></span>.)
+Additionally, disk sets can be used to help manage the Solaris Volume Manager namespace,
+and to provide ready access to network-attached storage devices. </p>
+<p>For more information, see <span class="olink">Chapter 18, Disk Sets (Overview)</span>.</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s06.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Solaris Volume Manager Requirements </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Solaris Volume Manager Configuration Guidelines</td></tr></table></div></body></html>

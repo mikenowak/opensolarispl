@@ -1,0 +1,842 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="tasks-snmp-1">
+
+
+
+<title>Monitoring and Error Reporting (Tasks)</title>
+<toc>
+<para>Sometimes Solaris Volume Manager encounters a problem, such as being unable to write
+to a volume due to physical errors at the slice level. When problems occur, Solaris Volume Manager changes
+the status of the volume so that system administrators can stay informed. However,
+unless you regularly check the status in the Solaris Volume Manager GUI through the Solaris
+Management Console, or by running the <command>metastat</command> command, you might
+not see these status changes promptly.</para>
+<para>This chapter provides information about various monitoring tools that are available
+for Solaris Volume Manager One tool is the Solaris Volume Manager SNMP agent, which is a subagent
+of the <trademark>Solstice Enterprise Agents</trademark> monitoring software. In addition
+to configuring the this tool to report SNMP traps, you can create a shell script to
+actively monitor many Solaris Volume Manager functions. This shell script could run as a <command>cron</command> job and be valuable in identifying issues before they become problems.</para>
+<para>This is a list of the information in this chapter:</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-24.xml" targetptr="tscrashdumps-26694">Solaris Volume Manager Monitoring and Reporting (Task Map)</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-24.xml" targetptr="tasks-snmp-10">Configuring the <command>mdmonitord</command> Command for Periodic Error Checking</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-24.xml" targetptr="tasks-snmp-7">Solaris Volume Manager SNMP Agents Overview</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-24.xml" targetptr="tasks-snmp-8">Configuring the Solaris Volume Manager SNMP Agents</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-24.xml" targetptr="tasks-snmp-9">Limitations of the Solaris Volume Manager SNMP Agent</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-24.xml" targetptr="tasks-basics-3">Monitoring Solaris Volume Manager With a <command>cron</command> Job</olink>
+</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="tscrashdumps-26694">
+<title>Solaris Volume Manager Monitoring and Reporting (Task
+Map)</title>
+<para>The following task map identifies the procedures that are needed to manage error
+reporting for Solaris Volume Manager.</para>
+<informaltable frame="all">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec0" colwidth="110.00*"/>
+<colspec colname="colspec1" colwidth="167.00*"/>
+<colspec colname="colspec2" colwidth="119.00*"/>
+<thead>
+<row>
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Configure the <command>mdmonitord</command> daemon to periodically check for
+errors</para>
+</entry>
+<entry>
+<para>Configure the error-checking interval used by the <command>mdmonitord</command> daemon
+by editing the <filename>/lib/svc/method/svc-mdmonitor</filename> script.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-24.xml" targetptr="tasks-snmp-10">Configuring the <command>mdmonitord</command> Command for Periodic Error Checking</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Configure the Solaris Volume Manager SNMP agent</para>
+</entry>
+<entry>
+<para>Edit the configuration files in the  <filename>/etc/snmp/conf</filename> directory
+so that Solaris Volume Manager will throw traps appropriately, to the correct system.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-24.xml" targetptr="tasks-snmp-8">Configuring the Solaris Volume Manager SNMP Agents</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Monitor Solaris Volume Manager with scripts run by the <command>cron</command> command</para>
+</entry>
+<entry>
+<para>Create or adapt a script to check for errors, then run the script from the <command>cron</command> command. </para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-24.xml" targetptr="tasks-basics-3">Monitoring Solaris Volume Manager With a <command>cron</command> Job</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect1>
+<sect1 xml:id="tasks-snmp-10">
+<title>Configuring the <command>mdmonitord</command> Command
+for Periodic Error Checking</title>
+<indexterm xml:id="indexterm-230">
+<primary>
+<command>mdmonitord</command> command</primary>
+</indexterm>
+<indexterm xml:id="indexterm-231">
+<primary>
+<filename>svc-mdmonitor</filename> script</primary>
+</indexterm>
+<indexterm xml:id="indexterm-232">
+<primary>error checking</primary>
+</indexterm>
+<para>Solaris Volume Manager includes the <command>/usr/sbin/mdmonitord</command> daemon.
+When a disk fails, Solaris Volume Manager detects the failure and generates an error. This
+error event triggers the <filename>mdmonitord</filename> daemon to perform a check
+of RAID-1 (mirror) volumes, RAID-5 volumes, and hot spares. However, you can also
+configure this program to actively check for errors at an interval that you specify.</para>
+<sect2>
+<title/>
+<task id="tasks-snmp-proc-11">
+
+<title>How to Configure the <command>mdmonitord</command> Command
+for Periodic Error Checking</title>
+<tasksummary>
+<para>Edit the <filename>/lib/svc/method/svc-mdmonitor</filename> script to add a
+time interval for periodic checking.</para>
+</tasksummary>
+<procedure>
+<step xml:id="tasks-snmp-step-14">
+<para>Become superuser.</para>
+</step>
+<step>
+<para>Open the <filename>/lib/svc/method/svc-mdmonitor</filename> script in
+the editor of your choice. Locate the following section in the script:</para>
+<screen>$MDMONITORD
+error=$?
+case $error in
+0)      exit 0
+        ;;
+
+*)      echo "Could not start $MDMONITORD. Error $error."
+        exit 0</screen>
+</step>
+<step xml:id="tasks-snmp-step-12">
+<para>Change the line that starts the <command>mdmonitord</command> command by adding a <command>-t</command> flag and the number of seconds
+between checks.</para>
+<screen>
+</screen>
+<screen>$MDMONITORD -t 3600
+error=$?
+case $error in
+0)      exit 0
+        ;;
+
+*)      echo "Could not start $MDMONITORD. Error $error."
+        exit 0
+        ;;
+esac</screen>
+</step>
+<step xml:id="tasks-snmp-step-13">
+<para>Restart the <command>mdmonitord</command> command
+to activate your changes.</para>
+<screen># <userinput>svcadm restart system/mdmonitor</userinput>
+</screen>
+<para>For more information, see the <olink remap="external" targetdoc="819-2240" targetptr="mdmonitord-1m">
+<citerefentry>
+<refentrytitle>mdmonitord</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="tasks-snmp-7">
+<title>Solaris Volume Manager SNMP Agents Overview</title>
+<para>The Solaris Volume Manager SNMP trap agents requires the core packages <filename>SUNWlvmr</filename>, and the packages for the <filename>SUNWlvma</filename> and the Solstice
+Enterprise Agents. These core packages include the following: </para>
+<itemizedlist>
+<listitem>
+<para>
+<filename>SUNWmibii</filename>
+</para>
+</listitem>
+<listitem>
+<para>
+<filename>SUNWsacom</filename>
+</para>
+</listitem>
+<listitem>
+<para>
+<filename>SUNWsadmi</filename>
+</para>
+</listitem>
+<listitem>
+<para>
+<filename>SUNWsasnm</filename>
+</para>
+</listitem>
+</itemizedlist>
+<para>These packages are part of the Solaris operating system. They are normally installed
+by default unless the package selection was modified at install time or a minimal
+set of packages was installed. To confirm that these packages are available, use the <command>pkginfo <replaceable>pkgname</replaceable>
+</command> command, as in <command>pkginfo
+SUNWsasnm</command>. After you confirm that all five packages are available, you need
+to configure the Solaris Volume Manager SNMP agent, as described in the following section.</para>
+</sect1>
+<sect1 xml:id="tasks-snmp-8">
+<title>Configuring the Solaris Volume Manager SNMP Agents</title>
+<para>The Solaris Volume Manager SNMP agents is not enabled by default. Use the following
+procedure to enable SNMP traps. </para>
+<para>Whenever you upgrade your Solaris operating system, you will probably need to
+edit the<filename>/etc/snmp/conf/enterprises.oid</filename> file and append the line
+in <olink remap="internal" targetdoc="chapter-24.xml" targetptr="tasks-snmp-step-5">Step 6</olink> again, then restart the
+Solaris Enterprise Agents server.</para>
+<para>After you have completed this procedure, your system will issue SNMP traps to
+the host or hosts that you specified. You will need to use an appropriate SNMP monitor,
+such as Solstice Enterprise Agents software, to view the traps as they are issued. </para>
+<para>Set the <command>mdmonitord</command> command to probe your system regularly
+to help ensure that you receive traps if problems arise. See <olink remap="internal" targetdoc="chapter-24.xml" targetptr="tasks-snmp-10">Configuring the <command>mdmonitord</command> Command for Periodic Error Checking</olink>. Also, refer
+to <olink remap="internal" targetdoc="chapter-24.xml" targetptr="tasks-basics-3">Monitoring Solaris Volume Manager With a <command>cron</command> Job</olink> for additional error-checking options.</para>
+<sect2>
+<title/>
+<task id="tasks-snmp-proc-1">
+
+<title>How to Configure the Solaris Volume Manager SNMP Agents</title>
+<procedure>
+<step xml:id="tasks-snmp-step-15">
+<para>Become superuser.</para>
+</step>
+<step xml:id="tasks-snmp-step-2">
+<para>Move the <filename>/etc/snmp/conf/mdlogd.rsrc–</filename> configuration file to <filename>/etc/snmp/conf/mdlogd.rsrc</filename>.</para>
+<screen># <userinput>mv /etc/snmp/conf/mdlogd.rsrc- /etc/snmp/conf/mdlogd.rsrc</userinput>
+</screen>
+</step>
+<step xml:id="tasks-snmp-step-16">
+<para>Edit the <filename>/etc/snmp/conf/mdlogd.acl</filename> file
+to specify which hosts should receive SNMP traps.  Look in the file for the following:</para>
+<screen>        trap = {
+             {
+                trap-community = SNMP-trap
+                hosts = corsair
+                {
+                    enterprise = "Solaris Volume Manager"
+                    trap-num = 1, 2, 3
+                }</screen>
+<para>Change the line that contains <literal>hosts = corsair</literal> to specify
+the host name that you want to receive Solaris Volume Manager SNMP traps. For example, to
+send SNMP traps to <literal>lexicon</literal>, you would change the line to <literal>hosts = lexicon</literal>. If you want to include multiple hosts, provide a comma-delimited
+list of host names, as in <literal>hosts = lexicon, idiom</literal>. </para>
+</step>
+<step xml:id="tasks-snmp-step-3">
+<para>Also edit the <filename>/etc/snmp/conf/snmpdx.acl</filename> file to specify which hosts should receive the SNMP traps.  </para>
+<para>Find the block that begins with <command>trap =</command> and add the same list of
+hosts that you added in the previous step.  This section might be commented out with
+#'s. If so, you must remove the # at the beginning of the required lines in this section.
+Additional lines in the trap section are also commented out. However, you can leave
+those lines alone or delete them for clarity. After uncommenting the required lines
+and updating the hosts line, this section could look similar to the following:</para>
+<screen>###################
+# trap parameters #
+###################
+
+trap = {
+  {
+        trap-community = SNMP-trap
+        hosts =lexicon
+        {
+          enterprise = "sun"
+          trap-num = 0, 1, 2-5, 6-16
+        }
+#       {
+#         enterprise = "3Com"
+#         trap-num = 4
+#       }
+#       {
+#         enterprise = "snmp"
+#         trap-num = 0, 2, 5
+#       }
+#  }
+#  {
+#       trap-community = jerry-trap
+#       hosts = jerry, nanak, hubble
+#       {
+#         enterprise = "sun"
+#         trap-num = 1, 3
+#       }
+#       {
+#         enterprise = "snmp"
+#         trap-num = 1-3
+#       }
+  }
+}</screen>
+<note>
+
+<para>Make sure that you have the same number of opening and closing brackets
+in the <filename>/etc/snmp/conf/snmpdx.acl</filename> file.</para>
+</note>
+</step>
+<step xml:id="tasks-snmp-step-4">
+<para>Add a new Solaris Volume Manager section to the <filename>/etc/snmp/conf/snmpdx.acl</filename> file, inside the section you that uncommented
+in the previous step. </para>
+<screen>        trap-community = SNMP-trap
+        hosts = lexicon
+        {
+          enterprise = "sun"
+          trap-num = 0, 1, 2-5, 6-16
+        }
+       <userinput> {
+            enterprise = "Solaris Volume Manager"
+            trap-num = 1, 2, 3
+        }</userinput>
+</screen>
+<para>Note that the added four lines are placed immediately after the <command>enterprise
+= “sun”</command> block.</para>
+</step>
+<step xml:id="tasks-snmp-step-5">
+<para>Append the following line to the <filename>/etc/snmp/conf/enterprises.oid</filename> file:</para>
+<screen>"Solaris Volume Manager"                           "1.3.6.1.4.1.42.104"</screen>
+</step>
+<step xml:id="tasks-snmp-step-6">
+<para>Stop and restart the Solstice Enterprise Agents
+server.</para>
+<screen># <userinput>/etc/init.d/init.snmpdx stop</userinput>
+# <userinput>/etc/init.d/init.snmpdx start</userinput>
+</screen>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="tasks-snmp-9">
+<title>Limitations of the Solaris Volume Manager SNMP Agent</title>
+<para>The Solaris Volume Manager SNMP agent does not issue traps for all of the Solaris Volume Manager problems
+that system administrators need to be aware oft. Specifically, the agent issues traps <emphasis>only</emphasis> in the following instances:</para>
+<itemizedlist>
+<listitem>
+<para>A RAID-1 or RAID-5 subcomponent goes into a “Needs Maintenance”
+state</para>
+</listitem>
+<listitem>
+<para>A hot spare is swapped into service</para>
+</listitem>
+<listitem>
+<para>A hot spare starts to resynchronize</para>
+</listitem>
+<listitem>
+<para>A hot spare completes resynchronization</para>
+</listitem>
+<listitem>
+<para>A mirror is taken offline</para>
+</listitem>
+<listitem>
+<para>A disk set is taken by another host and the current host panics</para>
+</listitem>
+</itemizedlist>
+<para>Many problems, such as an unavailable disk with RAID-0 volumes or soft partitions
+on it, do not result in SNMP traps, even when reads and writes to the device are attempted.
+SCSI or IDE errors are generally reported in these cases. However, other SNMP agents
+must issue traps for those errors to be reported to a monitoring console. </para>
+</sect1>
+<sect1 xml:id="tasks-basics-3">
+<title>Monitoring Solaris Volume Manager With a <command>cron</command> Job</title>
+<indexterm xml:id="troubleshoottasks-ix441">
+<primary>errors</primary>
+<secondary>checking for using a script</secondary>
+</indexterm>
+<sect2>
+<title/>
+<task id="tasks-basics-4">
+
+<title>How to Automate Checking for Errors in Volumes</title>
+<procedure role="single-step">
+<step xml:id="tasks-basics-step-6">
+<para>To automatically check your Solaris Volume Manager configuration
+for errors, create a script that the <command>cron</command> utility can periodically
+run.</para>
+<para>The following example shows a script that you can adapt and modify
+for your needs.</para>
+<note>
+
+<para>
+<indexterm xml:id="troubleshoottasks-ix443">
+<primary>cron command</primary>
+</indexterm>This script serves as a starting point for automating error checking for Solaris Volume Manager.
+You probably need to modify this script for your own configuration.</para>
+</note>
+<programlisting role="complete" width="100">#
+#!/bin/ksh
+#ident "@(#)metacheck.sh   1.3     96/06/21 SMI"
+# ident='%Z%%M%   %I%     %E% SMI'
+#
+# Copyright (c) 1999 by Sun Microsystems, Inc.
+#
+# metacheck
+#
+# Check on the status of the metadevice configuration.  If there is a problem
+# return a non zero exit code.  Depending on options, send email notification.
+#
+# -h
+#	help
+# -s setname
+#	Specify the set to check.  By default, the 'local' set will be checked.
+# -m recipient [recipient...]
+#	Send email notification to the specified recipients.  This
+#	must be the last argument. The notification shows up as a short 
+#	email message with a subject of 
+#		"Solaris Volume Manager Problem: metacheck.who.nodename.setname"
+#	which summarizes the problem(s) and tells how to obtain detailed 
+#	information. The "setname" is from the -s option, "who" is from 
+#	the -w option, and "nodename" is reported by uname(1).
+#	Email notification is further affected by the following options:
+#		-f	to suppress additional messages after a problem 
+#			has been found. 
+#		-d	to control the supression.
+#		-w	to identify who generated the email.
+#		-t	to force email even when there is no problem.
+# -w who
+#	indicate who is running the command. By default, this is the
+#	user-name as reported by id(1M). This is used when sending
+#	email notification (-m).
+# -f 
+#	Enable filtering.  Filtering applies to email notification (-m).
+#	Filtering requires root permission.  When sending email notification
+#	the file /etc/lvm/metacheck.setname.pending is used to 
+#	controll the filter.  The following matrix specifies the behavior
+#	of the filter:
+#
+#	problem_found	file_exists
+#	  yes		  no		Create file, send notification
+#	  yes		  yes		Resend notification if the current date 
+#					(as specified by -d datefmt) is 
+#					different than the file date.
+#	  no		  yes		Delete file, send notification 
+#					that the problem is resolved.
+#	  no		  no		Send notification if -t specified.
+#	
+# -d datefmt
+#	Specify the format of the date for filtering (-f).  This option 
+#	controls the how often re-notification via email occurs. If the 
+#	current date according to the specified format (strftime(3C)) is 
+#	identical to the date contained in the 
+#	/etc/lvm/metacheck.setname.pending file then the message is 
+#	suppressed. The default date format is "%D", which will send one 
+#	re-notification per day.
+# -t
+#	Test mode.  Enable email generation even when there is no problem.
+#	Used for end-to-end verification of the mechanism and email addresses.
+#	
+#
+# These options are designed to allow integration of metacheck
+# into crontab.  For example, a root crontab entry of:
+#
+# 0,15,30,45 * * * * /usr/sbin/metacheck -f -w SVMcron \
+#   -d '\%D \%h' -m notice@example.com 2148357243.8333033@pager.example.com
+#
+# would check for problems every 15 minutes, and generate an email to
+# notice@example.com (and send to an email pager service) every hour when 
+# there is a problem.  Note the \ prior to the '%' characters for a 
+# crontab entry.  Bounced email would come back to root@nodename.
+# The subject line for email generated by the above line would be
+# Solaris Volume Manager Problem: metacheck.SVMcron.nodename.local
+#
+
+# display a debug line to controlling terminal (works in pipes)
+decho()
+{
+    if [ "$debug" = "yes" ] ; then
+	echo "DEBUG: $*"	&lt; /dev/null &gt; /dev/tty 2&gt;&amp;1
+    fi
+}
+
+# if string $1 is in $2-* then return $1, else return ""
+strstr()
+{
+    typeset	look="$1"
+    typeset	ret=""
+
+    shift
+#   decho "strstr LOOK .$look. FIRST .$1."
+    while [ $# -ne 0 ] ; do
+	if [ "$look" = "$1" ] ; then
+	    ret="$look"
+	fi
+	shift
+    done
+    echo "$ret"
+}
+
+# if string $1 is in $2-* then delete it. return result
+strdstr()
+{
+    typeset	look="$1"
+    typeset	ret=""
+
+    shift
+#   decho "strdstr LOOK .$look. FIRST .$1."
+    while [ $# -ne 0 ] ; do
+	if [ "$look" != "$1" ] ; then
+	    ret="$ret $1"
+	fi
+	shift
+    done
+    echo "$ret"
+}
+
+merge_continued_lines()
+{
+    awk -e '\
+	BEGIN { line = "";} \
+	$NF == "\\" { \
+	    $NF = ""; \
+	    line = line $0; \
+	    next; \
+	} \
+	$NF != "\\" { \
+	    if ( line != "" ) { \
+		print line $0; \
+		line = ""; \
+	    } else { \
+		print $0; \
+	    } \
+	}'
+}
+
+# trim out stuff not associated with metadevices
+find_meta_devices()
+{
+    typeset	devices=""
+
+#   decho "find_meta_devices .$*."
+    while [ $# -ne 0 ] ; do
+	case $1 in
+	d+([0-9]) )	# metadevice name
+	    devices="$devices $1"
+	    ;;
+	esac
+	shift
+    done
+    echo "$devices"
+}
+
+# return the list of top level metadevices
+toplevel()
+{
+    typeset	comp_meta_devices=""
+    typeset	top_meta_devices=""
+    typeset	devices=""
+    typeset	device=""
+    typeset	comp=""
+
+    metastat$setarg -p | merge_continued_lines | while read line ; do
+	echo "$line"
+	devices=`find_meta_devices $line`
+	set -- $devices
+	if [ $# -ne 0 ] ; then
+	    device=$1
+	    shift
+	    # check to see if device already refered to as component
+	    comp=`strstr $device $comp_meta_devices`
+	    if [ -z $comp ] ; then 
+		top_meta_devices="$top_meta_devices $device"
+	    fi
+	    # add components to component list, remove from top list
+	    while [ $# -ne 0 ] ; do
+		comp=$1
+		comp_meta_devices="$comp_meta_devices $comp"
+		top_meta_devices=`strdstr $comp $top_meta_devices`
+		shift
+	    done
+	fi
+    done &gt; /dev/null 2&gt;&amp;1
+    echo $top_meta_devices
+}
+
+#
+# - MAIN
+#
+METAPATH=/usr/sbin
+PATH=//usr/bin:$METAPATH
+USAGE="usage: metacheck [-s setname] [-h] [[-t] [-f [-d datefmt]] \
+    [-w who] -m recipient [recipient...]]"
+
+datefmt="%D"
+debug="no"
+filter="no"
+mflag="no"
+set="local"
+setarg=""
+testarg="no"
+who=`id | sed -e 's/^uid=[0-9][0-9]*(//' -e 's/).*//'`
+
+while getopts d:Dfms:tw: flag
+do
+    case $flag in
+    d)	datefmt=$OPTARG;
+	;;
+    D)	debug="yes"
+	;;
+    f)	filter="yes"
+	;;
+    m)	mflag="yes"
+	;;
+    s)	set=$OPTARG;
+	if [ "$set" != "local" ] ; then
+		setarg=" -s $set";
+	fi
+	;;
+    t)	testarg="yes";
+	;;
+    w)	who=$OPTARG;
+	;;
+    \?)	echo $USAGE
+	exit 1
+	;;
+    esac
+done
+
+# if mflag specified then everything else part of recipient
+shift `expr $OPTIND - 1`
+if [ $mflag = "no" ] ; then
+    if [ $# -ne 0 ] ; then 
+	echo $USAGE
+	exit 1
+    fi
+else
+    if [ $# -eq 0 ] ; then 
+	echo $USAGE
+	exit 1
+    fi
+fi
+recipients="$*"
+
+curdate_filter=`date +$datefmt`
+curdate=`date`
+node=`uname -n`
+
+# establish files
+msg_f=/tmp/metacheck.msg.$$
+msgs_f=/tmp/metacheck.msgs.$$
+metastat_f=/tmp/metacheck.metastat.$$
+metadb_f=/tmp/metacheck.metadb.$$
+metahs_f=/tmp/metacheck.metahs.$$
+pending_f=/etc/lvm/metacheck.$set.pending 
+files="$metastat_f $metadb_f $metahs_f $msg_f $msgs_f"
+
+rm -f $files							&gt; /dev/null 2&gt;&amp;1
+trap "rm -f $files &gt; /dev/null 2&gt;&amp;1; exit 1" 1 2 3 15
+
+# Check to see if metadb is capable of running
+have_metadb="yes"
+metadb$setarg 							&gt; $metadb_f 2&gt;&amp;1
+if [ $? -ne 0 ] ; then
+    have_metadb="no"
+fi
+grep "there are no existing databases"  	&lt; $metadb_f	&gt; /dev/null 2&gt;&amp;1
+if [ $? -eq 0 ] ; then
+    have_metadb="no"
+fi
+grep "/dev/md/admin"				&lt; $metadb_f	&gt; /dev/null 2&gt;&amp;1
+if [ $? -eq 0 ] ; then
+    have_metadb="no"
+fi
+
+# check for problems accessing metadbs
+retval=0
+if [ "$have_metadb" = "no" ] ; then
+    retval=1
+    echo "metacheck: metadb problem, can't run '$METAPATH/metadb$setarg'" \
+								&gt;&gt; $msgs_f
+else
+    # snapshot the state
+    metadb$setarg 2&gt;&amp;1 | sed -e '1d' | merge_continued_lines	&gt; $metadb_f
+    metastat$setarg 2&gt;&amp;1 | merge_continued_lines		&gt; $metastat_f
+    metahs$setarg -i 2&gt;&amp;1 | merge_continued_lines		&gt; $metahs_f
+
+    #
+    # Check replicas for problems, capital letters in the flags
+    # indicate an error, fields are seperated by tabs.
+    #
+    problem=`awk &lt; $metadb_f -F\t '{if ($1 ~ /[A-Z]/) print $1;}'`
+    if [ -n "$problem" ] ; then
+	retval=`expr $retval + 64`
+	echo "\
+metacheck: metadb problem, for more detail run:\n\t$METAPATH/metadb$setarg -i" \
+								&gt;&gt; $msgs_f
+    fi
+
+    #
+    # Check the metadevice state
+    #
+    problem=`awk &lt; $metastat_f -e \
+		'/State:/ {if ($2 != "Okay" &amp;&amp; $2 != "Resyncing") print $0;}'`
+    if [ -n "$problem" ] ; then
+	retval=`expr $retval + 128`
+	echo "\
+metacheck: metadevice problem, for more detail run:" \
+								&gt;&gt; $msgs_f
+
+	# refine the message to toplevel metadevices that have a problem
+	top=`toplevel`
+	set -- $top
+	while [ $# -ne 0 ] ; do
+	    device=$1
+	    problem=`metastat $device | awk -e \
+		'/State:/ {if ($2 != "Okay" &amp;&amp; $2 != "Resyncing") print $0;}'`
+	    if [ -n "$problem" ] ; then
+		echo "\t$METAPATH/metastat$setarg $device"	&gt;&gt; $msgs_f
+		# find out what is mounted on the device
+		mp=`mount|awk -e '/\/dev\/md\/dsk\/'$device'[ \t]/{print $1;}'`
+		if [ -n "$mp" ] ; then
+		    echo "\t\t$mp mounted on $device"		&gt;&gt; $msgs_f
+		fi
+	    fi
+	    shift
+	done
+    fi
+
+    #
+    # Check the hotspares to see if any have been used.
+    #
+    problem=""
+    grep "no hotspare pools found"	&lt; $metahs_f		&gt; /dev/null 2&gt;&amp;1
+    if [ $? -ne 0 ] ; then
+	problem=`awk &lt; $metahs_f -e \
+	    '/blocks/ { if ( $2 != "Available" ) print $0;}'`
+    fi
+    if [ -n "$problem" ] ; then
+	retval=`expr $retval + 256`
+	echo "\
+metacheck: hot spare in use, for more detail run:\n\t$METAPATH/metahs$setarg -i" \
+								 &gt;&gt; $msgs_f
+    fi
+fi
+
+# If any errors occurred, then mail the report
+if [ $retval -ne 0 ] ; then
+    if [ -n "$recipients" ] ; then 
+	re=""
+	if [ -f $pending_f ] &amp;&amp; [ "$filter" = "yes" ] ; then
+	    re="Re: "
+	    # we have a pending notification, check date to see if we resend
+	    penddate_filter=`cat $pending_f | head -1`
+	    if [ "$curdate_filter" != "$penddate_filter" ] ; then
+		rm -f $pending_f				&gt; /dev/null 2&gt;&amp;1
+	    else
+	 	if [ "$debug" = "yes" ] ; then
+		    echo "metacheck: email problem notification still pending"
+		    cat $pending_f
+		fi
+	    fi
+	fi
+	if [ ! -f $pending_f ] ; then
+	    if [ "$filter" = "yes" ] ; then
+		echo "$curdate_filter\n\tDate:$curdate\n\tTo:$recipients" \
+								&gt; $pending_f
+	    fi
+	    echo "\
+Solaris Volume Manager: $node: metacheck$setarg: Report: $curdate"		&gt;&gt; $msg_f
+	    echo "\
+--------------------------------------------------------------" &gt;&gt; $msg_f
+	    cat $msg_f $msgs_f | mailx -s \
+		"${re}Solaris Volume Manager Problem: metacheck.$who.$set.$node" $recipients
+	fi
+    else
+	cat $msgs_f
+    fi
+else
+    # no problems detected,
+    if [ -n "$recipients" ] ; then
+	# default is to not send any mail, or print anything.
+	echo "\
+Solaris Volume Manager: $node: metacheck$setarg: Report: $curdate"		&gt;&gt; $msg_f
+	echo "\
+--------------------------------------------------------------" &gt;&gt; $msg_f
+	if [ -f $pending_f ] &amp;&amp; [ "$filter" = "yes" ] ; then
+	    # pending filter exista, remove it and send OK
+	    rm -f $pending_f					&gt; /dev/null 2&gt;&amp;1
+	    echo "Problem resolved"				&gt;&gt; $msg_f
+	    cat $msg_f | mailx -s \
+		"Re: Solaris Volume Manager Problem: metacheck.$who.$node.$set" $recipients
+	elif [ "$testarg" = "yes" ] ; then
+	    # for testing, send mail every time even thought there is no problem
+	    echo "Messaging test, no problems detected"		&gt;&gt; $msg_f
+	    cat $msg_f | mailx -s \
+		"Solaris Volume Manager Problem: metacheck.$who.$node.$set" $recipients
+	fi
+    else
+	echo "metacheck: Okay"
+    fi
+fi
+
+rm -f $files							&gt; /dev/null 2&gt;&amp;1
+exit $retval</programlisting>
+<para>For information on invoking scripts by using the <literal>cron</literal> utility,
+see the <olink remap="external" targetdoc="819-2240" targetptr="cron-1m">
+<citerefentry>
+<refentrytitle>cron</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man page. </para>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+</chapter>

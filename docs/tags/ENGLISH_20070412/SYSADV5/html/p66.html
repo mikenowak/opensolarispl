@@ -1,0 +1,366 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Masters and Replicas (NIS+ to LDAP) - System Administration Guide: Naming and Directory Services (DNS, NIS, and LDAP)</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2006-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Naming and Directory Services (DNS, NIS, and LDAP)<?GenHTML /ReferencePage> > <a href="p61.html">16.&nbsp;&nbsp;Transitioning From NIS+ to LDAP</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p65.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p67.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="nisplus2ldap-41"></a><h3>Masters and Replicas (NIS+ to LDAP)</h3>
+<p><a name="indexterm-582"></a><a name="indexterm-583"></a>Only NIS+ masters are allowed to write data to LDAP. NIS+ replicas
+can obtain updates either from the NIS+ master (which might or might not have
+obtained it from LDAP), or they can read data directly from an LDAP server.
+A combination of the two is also possible. Therefore, there are two principal
+ways to arrange for NIS+ replication.</p>
+<ul><li><p><b>Leave NIS+ replicas unchanged, and let them obtain
+their data updates from the NIS+ master.</b></p>
+<p>This arrangement
+has the advantage of configurational simplicity (only the NIS+ master need
+have a connection to an LDAP server), and also maintains the old replication
+relationship (master knows about new data first, replicas later). It is probably
+the most convenient solution while NIS+ remains authoritative for naming service
+data. However, it also lengthens the path between LDAP and NIS+ replica servers.</p>
+</li>
+<li><p><b>Let NIS+ replicas obtain their data directly from
+LDAP instead of from the NIS+ master.</b></p>
+<p>In this case,
+replicas could have updated data before or after the NIS+ master, depending
+on lookup traffic and TTLs for data derived from LDAP. This arrangement is
+more complicated, but can be convenient when LDAP is the authoritative naming
+services repository, and few or no updates are made directly to NIS+ data.</p>
+</li>
+</ul>
+<a name="nisplus2ldap-42"></a><h4>Replication Timestamps</h4>
+<p>When an NIS+ replica is obtaining data for at least one object in a
+particular NIS+ directory from LDAP, the update timestamps printed by <tt>nisping</tt>(1M) do not necessarily
+indicate the degree of data consistency between the NIS+ master and the replica.
+For example, assume that the NIS+ directory <tt>dir1</tt> contains
+the tables <tt>table1</tt> and <tt>table2</tt>. When the
+replica is obtaining data for both <tt>table1</tt> and <tt>table2</tt> from
+the NIS+ master, you might see an output like the following.</p>
+<pre># <tt><b>nisping dir1</b></tt></pre><pre>Master server is <i>"master.some.domain."</i>
+Last update occurred at Mon Aug  5 22:11:09 2002
+
+Replica server is <i>"replica.some.domain."</i>
+	Last Update seen was Mon Aug  5 22:11:09 2002</pre><p>The above indicates that the master and replica have exactly the same
+data. However, if the replica is getting data for either or both of <tt>table1</tt> and <tt>table2</tt> from LDAP, the output only shows
+that the replica has received an NIS_PING from the master, and updated its
+resynchronization time stamp for housekeeping purposes. The data in the table
+or tables mapped from LDAP might differ from that on the NIS+ master if either
+of the following are true.</p>
+<ul><li><p>The LDAP data differs from that on the NIS+ master.</p>
+</li>
+<li><p>The replica has data in its cache (its local version of the
+NIS+ database) that has not expired, but that is not up to date with LDAP.</p>
+</li>
+</ul>
+<p>If you cannot accept this type of data inconsistency, let all NIS+ replicas
+obtain their data from the NIS+ master only. Once you have configured the
+NIS+ master to get data from LDAP, you do not need to make modifications to
+the replicas. </p>
+<a name="nisplus2ldap-43"></a><h3>The Directory Server (NIS+ to LDAP)</h3>
+<p><a name="indexterm-584"></a>The LDAP mapping portion of the <tt>rpc.nisd</tt> daemon
+uses LDAP protocol version 3 to talk to the LDAP server. The default mapping
+configuration (<tt>/var/nis/NIS+LDAPmapping.template</tt>) expects
+that the LDAP server supports an extended version of RFC 2307. RFCs can be
+retrieved from <tt>http://www.ietf.org/rfc.html</tt>. While the
+mapping between NIS+ and LDAP data can be modified using <tt>NIS+LDAPmapping</tt>(4), there
+is a basic assumption that the LDAP data is organized along the principles
+laid out in RFC 2307.</p>
+<p>For example, in order to share account information between direct LDAP
+clients and NIS+ clients, the LDAP server must support storing account (user)
+passwords in the UNIX <tt>crypt</tt> format. If the LDAP server
+cannot be configured to do so, you can still store NIS+ data, including accounts,
+in LDAP. However, you will not be able to fully share account information
+between NIS+ users and LDAP <tt>bindDN</tt>s.</p>
+<a name="nisplus2ldap-44"></a><h4>Configuring the Sun Java System Directory Server</h4>
+<p>Refer to the Sun Java System Directory Server Collection for detailed instructions on the
+installation, setup and administration of Sun Java System Directory Server.</p>
+<p>You can use <tt>idsconfig</tt>(1M) to
+configure Sun Java System Directory Server for LDAP clients using LDAP as a naming service. The
+setup provided by <tt>idsconfig</tt>(1M) is
+also appropriate when using NIS+ with an LDAP data repository.</p>
+<hr>
+<p><b>Note - </b>If you are using an LDAP server other than Sun Java System Directory Server, you must
+manually configure the server to support the RFC 2307 schemas.</p>
+<hr>
+<a name="nisplus2ldap-45"></a><h4>Assigning Server Address and Port Number</h4>
+<p>The <tt>/etc/default/rpc.nisd</tt> file is set up to use
+a local LDAP server at port <tt>389</tt>. If this is not correct
+in your configuration, establish a new value for the <tt>preferredServerList</tt> attribute. For example, to use an LDAP server at IP address <tt>192.0.0.1</tt> and port <tt>65535</tt>, you specify the following.</p>
+<pre>preferredServerList=192.0.0.1:65535</pre><a name="nisplus2ldap-46"></a><h4>Security and Authentication</h4>
+<p>Authentication between NIS+ clients and the NIS+ server is not affected
+when the NIS+ server is obtaining data from LDAP. However, in order to maintain
+the integrity of the NIS+ data when it is stored in LDAP, consider configuring
+authentication between the <tt>rpc.nisd</tt> daemon and the LDAP
+server. Several different types of authentication are available, depending
+on the capabilities of the LDAP server.</p>
+<p>The LDAP authentication supported by the <tt>rpc.nisd</tt> daemon
+includes the following.</p>
+<ul><li><p><tt>none</tt></p>
+<p>The <tt>none</tt> authentication
+method is the default. While using <tt>none</tt> requires no setup,
+it also provides no security. It is only suitable for use in environments
+that have no security requirements at all.</p>
+<p>To use the <tt>none</tt> authentication,
+make sure that the <tt>authenticationMethod</tt> attribute has the
+following value.</p>
+<pre>authenticationMethod=none</pre></li>
+</ul>
+<p>The authentication methods that actually provide at least some security
+typically require that you associate a shared secret (a password or key) with
+a DN in LDAP. The DN you select for use by the <tt>rpc.nisd</tt> daemon
+can be unique, or can also be used for other purposes. It should have appropriate
+capabilities to support the expected LDAP traffic. For example, if the <tt>rpc.nisd</tt> daemon should be able to write data to LDAP, the selected DN must
+have the right to add/update/delete LDAP data in the containers used for the
+NIS+ data. Also, the LDAP server might, by default, impose limitations on
+resource usage (such as search time limits or search result size limitations).
+If this is the case, the selected DN must have sufficient capabilities to
+support enumeration of the NIS+ data containers.</p>
+<ul><li><p><tt>simple</tt></p>
+<p>The <tt>simple</tt> authentication
+method provides authentication by unencrypted exchange of a password string.
+Since the password is sent in the clear between the LDAP client (the <tt>rpc.nisd</tt> daemon) and LDAP server, the <tt>simple</tt> method
+is suitable only when information exchange between the NIS+ and LDAP servers
+is protected by some other method.</p>
+<p>For instance, transport layer
+encryption of LDAP traffic, or the special case where the NIS+ and LDAP server
+is one and the same system, and the NIS+/LDAP traffic stays in the kernel,
+protected from the eyes of unauthorized users.</p>
+<p>Modify the configuration
+of the <tt>rpc.nisd</tt> daemon with the DN and password to use
+for the <tt>simple</tt> authentication. For example, if the DN is <tt>cn=nisplusAdmin,ou=People,dc=some,dc=domain</tt>, and the password <tt>aword</tt>, establish the following.</p>
+<pre>authenticationMethod=simple
+nisplusLDAPproxyUser=cn=nisplusAdmin,ou=People,dc=some,dc=domain
+nisplusLDAPproxyPassword=aword</pre><p>Be sure to protect the place where the password is stored from unauthorized
+access. Remember that if the password is specified on the <tt>rpc.nisd</tt> command
+line, it might be visible to any user on the system via commands such as <tt>ps</tt>(1).</p>
+</li>
+<li><p><tt>sasl/digest-md5</tt></p>
+<p>The <tt>sasl/digest-md5</tt> authentication method provides authentication using the <tt>digest/md5</tt> algorithm.</p>
+<p>Consult your LDAP server documentation for
+information on how to set up an authorization identity for use with <tt>digest-md5</tt>, and modify the <tt>/etc/default/rpc.nisd</tt> file
+to specify this identity and its associated password.</p>
+<pre>authenticationMethod=sasl/digest-md5
+nisplusLDAPproxyUser=cn=nisplusAdmin,ou=People,dc=some,dc=domain
+nisplusLDAPproxyPassword=aword</pre><p>Be sure to protect the file where the password is stored from unauthorized
+access.</p>
+</li>
+<li><p><tt>sasl/cram-md5</tt></p>
+<p>Authentication
+using the <tt>cram/md5</tt> algorithm. Probably only supported by
+the obsolete SunDS LDAP server.</p>
+<p>Consult your LDAP server documentation
+for information on how to set up a bind DN for use with <tt>cram-md5</tt>,
+and modify the <tt>/etc/default/rpc.nisd</tt> file to specify
+this DN and its associated password.</p>
+<pre>authenticationMethod=sasl/cram-md5
+nisplusLDAPproxyUser=cn=nisplusAdmin,ou=People,dc=some,dc=domain
+nisplusLDAPproxyPassword=aword</pre><p>Be sure to protect the file where the password is stored from unauthorized
+access.</p>
+</li>
+</ul>
+<a name="nisplus2ldap-47"></a><h5>Using SSL</h5>
+<p>The <tt>rpc.nisd</tt> daemon also supports transport layer
+encryption of LDAP traffic using SSL. Consult your LDAP server documentation
+to generate an SSL certificate for LDAP server authentication. Store the certificate
+in a file on the NIS+ server (<tt>/var/nis/cert7.db</tt>, for
+example) and modify <tt>/etc/default/rpc.nisd</tt> as follows.</p>
+<pre>nisplusLDAPTLS=ssl
+nisplusLDAPTLSCertificateDBPath=/var/nis/cert7.db</pre><p>Be sure to protect the certificate file from unauthorized access.  Note
+that the above provides session encryption and authentication of the LDAP
+server to the <tt>rpc.nisd</tt>. It does not provide authentication
+of the <tt>rpc.nisd</tt> to the LDAP server, since the certificate
+does not	contain anything that identifies the LDAP client (<tt>rpc.nisd</tt>).
+However, you can combine SSL with another authentication method (<tt>simple</tt>, <tt>sasl/digest-md5</tt> ) in order to achieve mutual authentication.</p>
+<a name="nisplus2ldap-48"></a><h4>Performance and Indexing</h4>
+<p>When the <tt>rpc.nisd</tt> daemon is asked to enumerate an
+NIS+ table (using <tt>niscat</tt>(1) for
+example) that is mapped from LDAP, it will enumerate the corresponding LDAP
+container if at least one entry in the table has an expired TTL. Although
+this container enumeration is done in the background, so that LDAP performance
+is of limited importance, it can nevertheless be beneficial to establish LDAP
+indices to speed up container enumeration for large containers.</p>
+<p>To obtain an estimate of the amount of time required for enumeration
+of a particular container, you can use a command like the following.</p>
+<p>% <tt><b>/bin/time ldapsearch</b></tt> <tt>-h</tt> <tt><b></tt><i>server-address</i><tt></b></tt> <tt>-D</tt> <tt><b></tt><i>bind-DN</i><tt></b></tt> <tt>-w</tt> <tt><b></tt><i>password</i><tt> \</b></tt></p>
+<p><tt><b></b></tt><tt>-b</tt> <tt><b></tt><i>container</i><tt>, </tt><i>search-base 'cn=*'</i><tt> /dev/null</b></tt></p>
+<p>where</p>
+<ul><li><p><i>server-address</i></p>
+<p>IP address
+portion of <tt>preferredServerList</tt> value from <tt>/etc/default/rpc.nisd</tt></p>
+</li>
+<li><p><i>bind-DN</i></p>
+<p><tt>nisplusLDAPproxyUser</tt> value from <tt>/etc/default/rpc.nisd</tt></p>
+</li>
+<li><p><i>password</i></p>
+<p><tt>nisplusLDAPproxyPassword</tt> value from <tt>/etc/default/rpc.nisd</tt></p>
+</li>
+<li><p><i>container</i></p>
+<p>One of the
+RFC 2307 container names (<tt>ou=Services</tt>, <tt>ou=Rpc</tt>,
+and so on)</p>
+</li>
+<li><p><i>search-base</i></p>
+<p><tt>defaultSearchBase</tt> value from <tt>/etc/default/rpc.nisd</tt></p>
+</li>
+</ul>
+<p>The &ldquo;real&rdquo; value printed by <tt>/bin/time</tt> is
+the elapsed (wall-clock) time. If this value exceeds a significant fraction
+(25 percent or more) of the TTL for the corresponding table entries (see <a href="p62.html#nisplus2ldap-10">Authentication and Security</a>),  it might
+be beneficial to index the LDAP container.</p>
+<p>The <tt>rpc.nisd</tt> supports the <tt>simple page</tt> and
+VLV indexing methods. Refer to your LDAP server documentation to find out
+which indexing methods it supports, and how to create such indices.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p65.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p67.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2006 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

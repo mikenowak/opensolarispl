@@ -1,0 +1,574 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Setting and Displaying ACLs on ZFS Files in Verbose
+Format</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="up" href="ch07.html" title="Chapter 7. Using ACLs to Protect ZFS Files"><link rel="prev" href="ch07s02.html" title="Setting ACLs on ZFS Files"><link rel="next" href="ch07s04.html" title="Setting and Displaying ACLs on ZFS Files in Compact
+Format"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Setting and Displaying ACLs on ZFS Files in Verbose
+Format</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch07s02.html">Prev</a> </td><th width="60%" align="center">Chapter 7. Using ACLs to Protect ZFS Files</th><td width="20%" align="right"> <a accesskey="n" href="ch07s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gbabw"></a>Setting and Displaying ACLs on ZFS Files in Verbose
+Format</h2></div></div></div>
+
+<p>You can use the <span><strong class="command">chmod</strong></span> command to modify ACLs on ZFS
+files. The following <span><strong class="command">chmod</strong></span> syntax for modifying ACLs uses <span class="emphasis"><em>acl-specification</em></span> to identify the format of the ACL. For a description
+of <span class="emphasis"><em>acl-specification</em></span>, see <span class="olink">Syntax Descriptions for Setting ACLs</span>.<a class="indexterm" name="indexterm-443"></a>
+<a class="indexterm" name="indexterm-444"></a>
+<a class="indexterm" name="indexterm-445"></a>
+</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Adding ACL entries</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>Adding an ACL entry for a user</p>
+<pre class="screen">% chmod A+<span class="emphasis"><em>acl-specification</em></span> <span class="emphasis"><em>filename</em></span>
+</pre>
+</li><li>
+<p>Adding an ACL entry by <em class="replaceable"><code>index-ID</code></em>
+</p>
+<pre class="screen">% chmod A<span class="emphasis"><em>index-ID</em></span>+<span class="emphasis"><em>acl-specification</em></span> <span class="emphasis"><em>filename</em></span>
+</pre>
+<p>This syntax inserts the new ACL entry at the specified <em class="replaceable"><code>index-ID</code></em> location.</p>
+</li></ul></div>
+</li><li>
+<p>Replacing an ACL entry</p>
+<pre class="screen">% chmod A<span class="emphasis"><em>index-ID</em></span>=<span class="emphasis"><em>acl-specification</em></span> <span class="emphasis"><em>filename</em></span>
+</pre>
+<pre class="screen">% chmod A=<span class="emphasis"><em>acl-specification</em></span> <span class="emphasis"><em>filename</em></span>
+</pre>
+</li><li>
+<p>Removing ACL entries</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>Removing an ACL entry by <em class="replaceable"><code>index-ID</code></em>
+</p>
+<pre class="screen">% chmod A<span class="emphasis"><em>index-ID</em></span>- <span class="emphasis"><em>filename</em></span>
+</pre>
+</li><li>
+<p>Removing an ACL entry by user</p>
+<pre class="screen">% chmod A-<span class="emphasis"><em>acl-specification</em></span> <span class="emphasis"><em>filename</em></span>
+</pre>
+</li><li>
+<p>Removing all explicit ACEs from a file</p>
+<pre class="screen">% chmod A- <span class="emphasis"><em>filename</em></span>
+</pre>
+</li></ul></div>
+</li></ul></div>
+<p>Verbose ACL information is displayed by using the <span><strong class="command">ls</strong></span> <code class="option">
+v</code> command. For example:</p>
+<pre class="screen"># <strong class="userinput"><code>ls -v file.1</code></strong>
+-rw-r--r--   1 root     root      206663 Feb 16 11:00 file.1
+     0:owner@:execute:deny
+     1:owner@:read_data/write_data/append_data/write_xattr/write_attributes
+         /write_acl/write_owner:allow
+     2:group@:write_data/append_data/execute:deny
+     3:group@:read_data:allow
+     4:everyone@:write_data/append_data/write_xattr/execute/write_attributes
+         /write_acl/write_owner:deny
+     5:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
+         :allow</pre>
+<p>For information about using the compact ACL format, see <span class="olink">Setting and Displaying ACLs on ZFS Files in Compact Format</span>.</p>
+<div class="example"><a name="gbsdc"></a><p class="title"><b>Example 7.1. Modifying Trivial ACLs on ZFS Files</b></p>
+
+
+<p>This section provides examples of setting and displaying trivial ACLs.<a class="indexterm" name="indexterm-446"></a>
+<a class="indexterm" name="indexterm-447"></a>
+<a class="indexterm" name="indexterm-448"></a>
+</p>
+<p>In the following example, a trivial ACL exists on <code class="filename">file.1</code>:</p>
+<pre class="screen"># <strong class="userinput"><code>ls -v file.1</code></strong>
+-rw-r--r--   1 root     root      206663 Feb 16 11:00 file.1
+     0:owner@:execute:deny
+     1:owner@:read_data/write_data/append_data/write_xattr/write_attributes
+         /write_acl/write_owner:allow
+     2:group@:write_data/append_data/execute:deny
+     3:group@:read_data:allow
+     4:everyone@:write_data/append_data/write_xattr/execute/write_attributes
+         /write_acl/write_owner:deny
+     5:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
+         :allow</pre>
+<p>In the following example, <code class="literal">write_data</code> permissions
+are granted for <code class="literal">group@</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A2=group@:append_data/execute:deny file.1</code></strong>
+# <strong class="userinput"><code>chmod A3=group@:read_data/write_data:allow file.1</code></strong>
+# <strong class="userinput"><code>ls -v file.1</code></strong>
+-rw-rw-r--   1 root     root           206663 May  3 16:36 file.1
+     0:owner@:execute:deny
+     1:owner@:read_data/write_data/append_data/write_xattr/write_attributes
+         /write_acl/write_owner:allow
+     2:group@:append_data/execute:deny
+     3:group@:read_data/write_data:allow
+     4:everyone@:write_data/append_data/write_xattr/execute/write_attributes
+         /write_acl/write_owner:deny
+     5:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
+         :allow</pre>
+<p>In the following example, permissions on <code class="filename">file.1</code> are
+set back to 644.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod 644 file.1</code></strong>
+# <strong class="userinput"><code>ls -v file.1</code></strong>
+-rw-r--r--   1 root     root           206663 May  3 16:36 file.1
+     0:owner@:execute:deny
+     1:owner@:read_data/write_data/append_data/write_xattr/write_attributes
+         /write_acl/write_owner:allow
+     2:group@:write_data/append_data/execute:deny
+     3:group@:read_data:allow
+     4:everyone@:write_data/append_data/write_xattr/execute/write_attributes
+         /write_acl/write_owner:deny
+     5:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
+         :allow</pre>
+</div>
+<div class="example"><a name="gcpsk"></a><p class="title"><b>Example 7.2. Setting Explicit ACLs on ZFS Files</b></p>
+
+
+<p>This section provides examples of setting and displaying trivial ACLs.</p>
+<p>In the following example, <code class="literal">read_data/execute</code> permissions
+are added for the user <code class="literal">gozer</code> on the <code class="filename">test.dir</code> directory.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A+user:gozer:read_data/execute:allow test.dir</code></strong>
+# <strong class="userinput"><code>ls -dv test.dir</code></strong>
+drwxr-xr-x+  2 root     root           2 Feb 16 11:12 test.dir
+     0:user:gozer:list_directory/read_data/execute:allow
+     1:owner@::deny
+     2:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     3:group@:add_file/write_data/add_subdirectory/append_data:deny
+     4:group@:list_directory/read_data/execute:allow
+     5:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+<p>In the following example, <code class="literal">read_data/execute</code> permissions
+are removed for user <code class="literal">gozer</code>. </p>
+<pre class="screen"># <strong class="userinput"><code>chmod A0- test.dir</code></strong>
+# <strong class="userinput"><code>ls -dv test.dir</code></strong>
+drwxr-xr-x   2 root     root           2 Feb 16 11:12 test.dir
+     0:owner@::deny
+     1:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     2:group@:add_file/write_data/add_subdirectory/append_data:deny
+     3:group@:list_directory/read_data/execute:allow
+     4:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     5:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+</div>
+<div class="example"><a name="gbsby"></a><p class="title"><b>Example 7.3. ACL Interaction With Permissions on ZFS Files</b></p>
+
+
+<p>These ACL examples illustrate the interaction between setting explicit
+ACLs and then changing the file or directory's permission bits.</p>
+<p>In the following example, a trivial ACL exists on <code class="filename">file.2</code>:</p>
+<pre class="screen"># <strong class="userinput"><code>ls -v file.2</code></strong>
+-rw-r--r--   1 root     root        2703 Feb 16 11:16 file.2
+     0:owner@:execute:deny
+     1:owner@:read_data/write_data/append_data/write_xattr/write_attributes
+         /write_acl/write_owner:allow
+     2:group@:write_data/append_data/execute:deny
+     3:group@:read_data:allow
+     4:everyone@:write_data/append_data/write_xattr/execute/write_attributes
+         /write_acl/write_owner:deny
+     5:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
+         :allow</pre>
+<p>In the following example, ACL allow permissions are removed from <code class="literal">everyone@</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A5- file.2</code></strong>
+# <strong class="userinput"><code>ls -v file.2</code></strong>
+-rw-r-----   1 root     root        2703 Feb 16 11:16 file.2
+     0:owner@:execute:deny
+     1:owner@:read_data/write_data/append_data/write_xattr/write_attributes
+         /write_acl/write_owner:allow
+     2:group@:write_data/append_data/execute:deny
+     3:group@:read_data:allow
+     4:everyone@:write_data/append_data/write_xattr/execute/write_attributes
+         /write_acl/write_owner:deny</pre>
+<p>In this output, the file's permission bits are reset from 655 to 650.
+Read permissions for <code class="literal">everyone@</code> have been effectively removed
+from the file's permissions bits when the ACL allow permissions are removed
+for <code class="literal">everyone@</code>.</p>
+<p>In the following example, the existing ACL is replaced with <code class="literal">read_data/write_data</code> permissions for <code class="literal">everyone@</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A=everyone@:read_data/write_data:allow file.3</code></strong>
+# <strong class="userinput"><code>ls -v file.3</code></strong>
+-rw-rw-rw-+  1 root     root        1532 Feb 16 11:18 file.3
+     0:everyone@:read_data/write_data:allow</pre>
+<p>In this output, the <span><strong class="command">chmod</strong></span> syntax effectively replaces
+the existing ACL with <code class="literal">read_data/write_data:allow</code> permissions
+to read/write permissions for owner, group, and <code class="literal">everyone@</code>.
+In this model, <code class="literal">everyone@</code> specifies access to any user or
+group. Since no <code class="literal">owner@</code> or <code class="literal">group@</code> ACL
+entry exists to override the permissions for owner and group, the permission
+bits are set to 666.</p>
+<p>In the following example, the existing ACL is replaced with read permissions
+for user <code class="literal">gozer</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A=user:gozer:read_data:allow file.3</code></strong>
+# <strong class="userinput"><code>ls -v file.3</code></strong>
+----------+  1 root     root        1532 Feb 16 11:18 file.3
+     0:user:gozer:read_data:allow</pre>
+<p>In this output, the file permissions are computed to be 000 because
+no ACL entries exist for <code class="literal">owner@</code>, <code class="literal">group@</code>,
+or <code class="literal">everyone@</code>, which represent the traditional permission
+components of a file. The owner of the file can resolve this problem by resetting
+the permissions (and the ACL) as follows:</p>
+<pre class="screen"># <strong class="userinput"><code>chmod 655 file.3</code></strong>
+# <strong class="userinput"><code>ls -v file.3</code></strong>
+-rw-r-xr-x+  1 root     root           0 Mar  8 13:24 file.3
+     0:user:gozer::deny
+     1:user:gozer:read_data:allow
+     2:owner@:execute:deny
+     3:owner@:read_data/write_data/append_data/write_xattr/write_attributes
+         /write_acl/write_owner:allow
+     4:group@:write_data/append_data:deny
+     5:group@:read_data/execute:allow
+     6:everyone@:write_data/append_data/write_xattr/write_attributes
+         /write_acl/write_owner:deny
+     7:everyone@:read_data/read_xattr/execute/read_attributes/read_acl
+         /synchronize:allow</pre>
+</div>
+<div class="example"><a name="gbsdg"></a><p class="title"><b>Example 7.4. Restoring Trivial ACLs on ZFS Files</b></p>
+
+
+<p>You can use the <span><strong class="command">chmod</strong></span> command to remove all explicit
+ACLs on a file or directory.<a class="indexterm" name="indexterm-449"></a>
+<a class="indexterm" name="indexterm-450"></a>
+<a class="indexterm" name="indexterm-451"></a>
+</p>
+<p>In the following example, 2 explicit ACEs exist on <code class="literal">test5.dir</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>ls -dv test5.dir</code></strong>
+drwxr-xr-x+  2 root     root           2 Feb 16 11:23 test5.dir
+     0:user:gozer:read_data:file_inherit:deny
+     1:user:lp:read_data:file_inherit:deny
+     2:owner@::deny
+     3:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     4:group@:add_file/write_data/add_subdirectory/append_data:deny
+     5:group@:list_directory/read_data/execute:allow
+     6:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     7:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+<p>In the following example, the explicit ACLs for users <code class="literal">gozer</code> and <code class="literal">lp</code> are removed. The remaining ACL contains the six default values
+for <code class="literal">owner@</code>, <code class="literal">group@</code>, and <code class="literal">everyone@</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A- test5.dir</code></strong>
+# <strong class="userinput"><code>ls -dv test5.dir</code></strong>
+drwxr-xr-x   2 root     root           2 Feb 16 11:23 test5.dir
+     0:owner@::deny
+     1:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     2:group@:add_file/write_data/add_subdirectory/append_data:deny
+     3:group@:list_directory/read_data/execute:allow
+     4:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     5:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbabx"></a>Setting ACL Inheritance on ZFS Files in Verbose Format</h3></div></div></div>
+
+<p>You can determine how ACLs are inherited or not inherited on files and
+directories. By default, ACLs are not propagated. If you set an explicit ACL
+on a directory, the ACL is not inherited by any subsequent directory. You
+must specify the inheritance of an ACL on a file or directory.<a class="indexterm" name="indexterm-452"></a>
+<a class="indexterm" name="indexterm-453"></a>
+<a class="indexterm" name="indexterm-454"></a>
+</p>
+<p>In addition, two ACL properties are provided that can be set globally
+on file systems: <code class="literal">aclinherit</code> and <code class="literal">aclmode</code>.
+By default, <span class="property">aclinherit</span> is set to <code class="literal">secure</code> and <span class="property">aclmode</span> is set to <code class="literal">groupmask</code>.</p>
+<p>For more information, see <span class="olink">ACL Inheritance</span>.</p>
+<div class="example"><a name="gcakr"></a><p class="title"><b>Example 7.5. Default ACL Inheritance</b></p>
+
+
+<p>By default, ACLs are not propagated through a directory structure.</p>
+<p>In the following example, an explicit ACE of <code class="literal">read_data/write_data/execute</code> is applied for user <code class="literal">gozer</code> on <code class="literal">test.dir</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A+user:gozer:read_data/write_data/execute:allow test.dir</code></strong>
+# <strong class="userinput"><code>ls -dv test.dir</code></strong>
+drwxr-xr-x+  2 root     root           2 Feb 17 14:45 test.dir
+     0:user:gozer:list_directory/read_data/add_file/write_data/execute:allow
+     1:owner@::deny
+     2:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     3:group@:add_file/write_data/add_subdirectory/append_data:deny
+     4:group@:list_directory/read_data/execute:allow
+     5:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+<p>If a <code class="filename">test.dir</code> subdirectory is created, the ACE
+for user <code class="literal">gozer</code> is not propagated. User <code class="literal">gozer</code> would
+only have access to <code class="filename">sub.dir</code> if the permissions on <code class="filename">sub.dir</code> granted him access as the file owner, group member, or <code class="literal">everyone@</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>mkdir test.dir/sub.dir</code></strong>
+# <strong class="userinput"><code>ls -dv test.dir/sub.dir</code></strong>
+drwxr-xr-x   2 root     root           2 Feb 17 14:46 test.dir/sub.dir
+     0:owner@::deny
+     1:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     2:group@:add_file/write_data/add_subdirectory/append_data:deny
+     3:group@:list_directory/read_data/execute:allow
+     4:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     5:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+</div>
+<div class="example"><a name="gcale"></a><p class="title"><b>Example 7.6. Granting ACL Inheritance on Files and Directories</b></p>
+
+
+<p>This series of examples identify the file and directory ACEs that are
+applied when the <code class="literal">file_inherit</code> flag is set.</p>
+<p>In the following example, <code class="literal">read_data/write_data</code> permissions
+are added for files in the <code class="filename">test.dir</code> directory for user <code class="literal">gozer</code> so that he has read access on any newly created files.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A+user:gozer:read_data/write_data:file_inherit:allow test2.dir</code></strong>
+# <strong class="userinput"><code>ls -dv test2.dir</code></strong>
+drwxr-xr-x+  2 root     root           2 Feb 17 14:47 test2.dir
+     0:user:gozer:read_data/write_data:file_inherit:allow
+     1:owner@::deny
+     2:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     3:group@:add_file/write_data/add_subdirectory/append_data:deny
+     4:group@:list_directory/read_data/execute:allow
+     5:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+<p>In the following example, user gozer's permissions are applied on the
+newly created <code class="filename">test2.dir/file.2</code> file. The ACL inheritance
+granted, <code class="filename">read_data:file_inherit:allow</code>, means user <code class="literal">gozer</code> can read the contents of any newly created file.</p>
+<pre class="screen"># <strong class="userinput"><code>touch test2.dir/file.2</code></strong>
+# <strong class="userinput"><code>ls -v test2.dir/file.2</code></strong>
+-rw-r--r--+  1 root     root           0 Feb 17 14:49 test2.dir/file.2
+     0:user:gozer:write_data:deny
+     1:user:gozer:read_data/write_data:allow
+     2:owner@:execute:deny
+     3:owner@:read_data/write_data/append_data/write_xattr/write_attributes+
+         /write_acl/write_owner:allow
+     4:group@:write_data/append_data/execute:deny
+     5:group@:read_data:allow
+     6:everyone@:write_data/append_data/write_xattr/execute/write_attributes
+         /write_acl/write_owner:deny
+     7:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
+         :allow</pre>
+<p>Because the <span class="property">aclmode</span> for this file is set to the
+default mode, <code class="literal">groupmask</code>, user <code class="literal">gozer</code> does
+not have <code class="literal">write_data</code> permission on <code class="filename">file.2</code> because
+the group permission of the file does not allow it.</p>
+<p>Note the <code class="literal">inherit_only</code> permission, which is applied
+when the <code class="literal">file_inherit</code> or <code class="literal">dir_inherit</code> flags
+are set, is used to propagate the ACL through the directory structure. As
+such, user <code class="literal">gozer</code> is only granted or denied permission from <code class="literal">everyone@</code> permissions unless he is the owner of the file or a member
+of the owning group of the file. For example:</p>
+<pre class="screen"># <strong class="userinput"><code>mkdir test2.dir/subdir.2</code></strong>
+# <strong class="userinput"><code>ls -dv test2.dir/subdir.2</code></strong>
+drwxr-xr-x+  2 root     root           2 Feb 17 14:50 test2.dir/subdir.2
+     0:user:gozer:list_directory/read_data/add_file/write_data:file_inherit
+         /inherit_only:allow
+     1:owner@::deny
+     2:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     3:group@:add_file/write_data/add_subdirectory/append_data:deny
+     4:group@:list_directory/read_data/execute:allow
+     5:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+<p>The following series of examples identify the file and directory ACLs
+that are applied when both the <code class="literal">file_inherit</code> and <code class="literal">dir_inherit</code> flags are set.</p>
+<p>In the following example, user <code class="literal">gozer</code> is granted read,
+write, and execute permissions that are inherited for newly created files
+and directories.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A+user:gozer:read_data/write_data/execute:file_inherit/dir_inherit:allow test3.dir</code></strong>
+# <strong class="userinput"><code>ls -dv test3.dir</code></strong>
+drwxr-xr-x+  2 root     root           2 Feb 17 14:51 test3.dir
+     0:user:gozer:list_directory/read_data/add_file/write_data/execute
+         :file_inherit/dir_inherit:allow
+     1:owner@::deny
+     2:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     3:group@:add_file/write_data/add_subdirectory/append_data:deny
+     4:group@:list_directory/read_data/execute:allow
+     5:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+<pre class="screen"># <strong class="userinput"><code>touch test3.dir/file.3</code></strong>
+# <strong class="userinput"><code>ls -v test3.dir/file.3</code></strong>
+-rw-r--r--+  1 root     root           0 Feb 17 14:53 test3.dir/file.3
+     0:user:gozer:write_data/execute:deny
+     1:user:gozer:read_data/write_data/execute:allow
+     2:owner@:execute:deny
+     3:owner@:read_data/write_data/append_data/write_xattr/write_attributes
+         /write_acl/write_owner:allow
+     4:group@:write_data/append_data/execute:deny
+     5:group@:read_data:allow
+     6:everyone@:write_data/append_data/write_xattr/execute/write_attributes
+         /write_acl/write_owner:deny
+     7:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
+         :allow</pre>
+<pre class="screen"># <strong class="userinput"><code>mkdir test3.dir/subdir.1</code></strong>
+# <strong class="userinput"><code>ls -dv test3.dir/subdir.1</code></strong>
+drwxr-xr-x+  2 root     root           2 May  4 15:00 test3.dir/subdir.1
+     0:user:gozer:list_directory/read_data/add_file/write_data/execute
+         :file_inherit/dir_inherit/inherit_only:allow
+     1:user:gozer:add_file/write_data:deny
+     2:user:gozer:list_directory/read_data/add_file/write_data/execute:allow
+     3:owner@::deny
+     4:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     5:group@:add_file/write_data/add_subdirectory/append_data:deny
+     6:group@:list_directory/read_data/execute:allow
+     7:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     8:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+<p>In these examples, because the permission bits of the parent directory
+for <code class="literal">group@</code> and <code class="literal">everyone@</code> deny write
+and execute permissions, user <code class="literal">gozer</code> is denied write and
+execute permissions. The default <span class="property">aclmode</span> property is <code class="literal">secure</code>, which means that <code class="literal">write_data</code> and <code class="literal">execute</code> permissions are not inherited.</p>
+<p>In the following example, user <code class="literal">gozer</code> is granted 
+read, write, and execute permissions that are inherited for newly created
+files, but are not propagated to subsequent contents of the directory.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod A+user:gozer:read_data/write_data/execute:file_inherit/no_propagate:allow test4.dir</code></strong>
+# <strong class="userinput"><code>ls -dv test4.dir</code></strong>
+drwxr-xr-x+  2 root     root           2 Feb 17 14:54 test4.dir
+     0:user:gozer:list_directory/read_data/add_file/write_data/execute
+         :file_inherit/no_propagate:allow
+     1:owner@::deny
+     2:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     3:group@:add_file/write_data/add_subdirectory/append_data:deny
+     4:group@:list_directory/read_data/execute:allow
+     5:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+<p>As the following example illustrates, when a new subdirectory is created,
+user <code class="literal">gozer</code>'s <code class="literal">read_data/write_data/execute</code> permission
+for files are not propagated to the new <code class="literal">sub4.dir</code> directory.</p>
+<pre class="screen"># <strong class="userinput"><code>mkdir test4.dir/sub4.dir</code></strong>
+# <strong class="userinput"><code>ls -dv test4.dir/sub4.dir</code></strong>
+drwxr-xr-x   2 root     root           2 Feb 17 14:57 test4.dir/sub4.dir
+     0:owner@::deny
+     1:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     2:group@:add_file/write_data/add_subdirectory/append_data:deny
+     3:group@:list_directory/read_data/execute:allow
+     4:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     5:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+<p>As the following example illustrates, <code class="literal">gozer</code>'s <code class="literal">read_data/write_data/execute</code> permission for files is propagated to the newly created file.</p>
+<pre class="screen"># <strong class="userinput"><code>touch test4.dir/file.4</code></strong>
+# <strong class="userinput"><code>ls -v test4.dir/file.4</code></strong>
+-rw-r--r--+  1 root     root           0 May  4 15:02 test4.dir/file.4
+     0:user:gozer:write_data/execute:deny
+     1:user:gozer:read_data/write_data/execute:allow
+     2:owner@:execute:deny
+     3:owner@:read_data/write_data/append_data/write_xattr/write_attributes
+         /write_acl/write_owner:allow
+     4:group@:write_data/append_data/execute:deny
+     5:group@:read_data:allow
+     6:everyone@:write_data/append_data/write_xattr/execute/write_attributes
+         /write_acl/write_owner:deny
+     7:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
+         :allow</pre>
+</div>
+<div class="example"><a name="gbcid"></a><p class="title"><b>Example 7.7. ACL Inheritance With ACL Mode Set to Passthrough</b></p>
+
+
+<p>If the <code class="literal">aclmode</code> property on the <code class="filename">tank/cindy</code> file
+system is set to <code class="literal">passthrough</code>, then user <code class="literal">gozer</code> would
+inherit the ACL applied on <code class="filename">test4.dir</code> for the newly created <code class="filename">file.4</code> as follows:</p>
+<pre class="screen"># <strong class="userinput"><code>zfs set aclmode=passthrough tank/cindy</code></strong>
+# <strong class="userinput"><code>touch test4.dir/file.4</code></strong>
+# <strong class="userinput"><code>ls -v test4.dir/file.4</code></strong>
+-rw-r--r--+  1 root     root           0 Feb 17 15:15 test4.dir/file.4
+     0:user:gozer:read_data/write_data/execute:allow
+     1:owner@:execute:deny
+     2:owner@:read_data/write_data/append_data/write_xattr/write_attributes
+         /write_acl/write_owner:allow
+     3:group@:write_data/append_data/execute:deny
+     4:group@:read_data:allow
+     5:everyone@:write_data/append_data/write_xattr/execute/write_attributes
+         /write_acl/write_owner:deny
+     6:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
+         :allow</pre>
+<p>This output illustrates that the <code class="literal">read_data/write_data/execute:allow:file_inherit/dir_inherit</code> ACL that was set on the parent directory, <code class="filename">test4.dir</code>,
+is passed through to user <code class="literal">gozer</code>.</p>
+</div>
+<div class="example"><a name="gbchq"></a><p class="title"><b>Example 7.8. ACL Inheritance With ACL Mode Set to Discard</b></p>
+
+
+<p>If the <span class="property">aclmode</span> property on a file system is set
+to <code class="literal">discard</code>, then ACLs can potentially be discarded when
+the permission bits on a directory change. For example:</p>
+<pre class="screen"># <strong class="userinput"><code>zfs set aclmode=discard tank/cindy</code></strong>
+# <strong class="userinput"><code>chmod A+user:gozer:read_data/write_data/execute:dir_inherit:allow test5.dir</code></strong>
+# <strong class="userinput"><code>ls -dv test5.dir</code></strong>
+drwxr-xr-x+  2 root     root           2 Feb 16 11:23 test5.dir
+     0:user:gozer:list_directory/read_data/add_file/write_data/execute
+         :dir_inherit:allow
+     1:owner@::deny
+     2:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     3:group@:add_file/write_data/add_subdirectory/append_data:deny
+     4:group@:list_directory/read_data/execute:allow
+     5:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+<p>If, at a later time, you decide to tighten the permission bits on a
+directory, the explicit ACL is discarded. For example:</p>
+<pre class="screen"># <strong class="userinput"><code>chmod 744 test5.dir</code></strong>
+# <strong class="userinput"><code>ls -dv test5.dir</code></strong>
+drwxr--r--   2 root     root           2 Feb 16 11:23 test5.dir
+     0:owner@::deny
+     1:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     2:group@:add_file/write_data/add_subdirectory/append_data/execute:deny
+     3:group@:list_directory/read_data:allow
+     4:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /execute/write_attributes/write_acl/write_owner:deny
+     5:everyone@:list_directory/read_data/read_xattr/read_attributes/read_acl
+         /synchronize:allow</pre>
+</div>
+<div class="example"><a name="gbche"></a><p class="title"><b>Example 7.9. ACL Inheritance With ACL Inherit Mode Set to Noallow</b></p>
+
+
+<p>In the following example, two explicit ACLs with file inheritance are
+set. One ACL allows <code class="literal">read_data</code> permission, and one ACL denies <code class="literal">read_data</code> permission. This example also illustrates how you can
+specify two ACEs in the same <span><strong class="command">chmod</strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>zfs set aclinherit=nonallow tank/cindy</code></strong>
+# <strong class="userinput"><code>chmod A+user:gozer:read_data:file_inherit:deny,user:lp:read_data:file_inherit:allow test6.dir</code></strong>
+# <strong class="userinput"><code>ls -dv test6.dir</code></strong>
+drwxr-xr-x+  2 root     root           2 May  4 14:23 test6.dir
+     0:user:gozer:read_data:file_inherit:deny
+     1:user:lp:read_data:file_inherit:allow
+     2:owner@::deny
+     3:owner@:list_directory/read_data/add_file/write_data/add_subdirectory
+         /append_data/write_xattr/execute/write_attributes/write_acl
+         /write_owner:allow
+     4:group@:add_file/write_data/add_subdirectory/append_data:deny
+     5:group@:list_directory/read_data/execute:allow
+     6:everyone@:add_file/write_data/add_subdirectory/append_data/write_xattr
+         /write_attributes/write_acl/write_owner:deny
+     7:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
+         /read_acl/synchronize:allow</pre>
+<p>As the following example shows, when a new file is created, the ACL
+that allows <code class="literal">read_data</code> permission is discarded.</p>
+<pre class="screen"># <strong class="userinput"><code>touch test6.dir/file.6</code></strong>
+# <strong class="userinput"><code>ls -v test6.dir/file.6</code></strong>
+-rw-r--r--+  1 root     root           0 May  4 13:44 test6.dir/file.6
+     0:user:gozer:read_data:deny
+     1:owner@:execute:deny
+     2:owner@:read_data/write_data/append_data/write_xattr/write_attributes
+         /write_acl/write_owner:allow
+     3:group@:write_data/append_data/execute:deny
+     4:group@:read_data:allow
+     5:everyone@:write_data/append_data/write_xattr/execute/write_attributes
+         /write_acl/write_owner:deny
+     6:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
+         :allow</pre>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch07s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch07.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch07s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Setting ACLs on ZFS Files </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Setting and Displaying ACLs on ZFS Files in Compact
+Format</td></tr></table></div></body></html>

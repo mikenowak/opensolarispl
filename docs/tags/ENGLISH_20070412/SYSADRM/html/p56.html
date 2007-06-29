@@ -1,0 +1,318 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>File Systems Mounted in Zones - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage> > <a href="p54.html">17.&nbsp;&nbsp;Non-Global Zone Configuration (Overview)</a> > <a href="p54.html#z.config.ov-3">Zone Components</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p55.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p57.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="z.config.ov-7"></a><h4>File Systems Mounted in Zones</h4>
+<p>Generally, the file systems mounted in a zone include the following:</p>
+<ul><li><p>The set of file systems mounted when the virtual platform
+is initialized</p>
+</li>
+<li><p>The set of file systems mounted from within the application
+environment itself</p>
+</li>
+</ul>
+<p>This can include, for example, the following file systems:</p>
+<ul><li><p>File systems specified in a zone's <tt>/etc/vfstab</tt> file</p>
+</li>
+<li><p><tt>AutoFS</tt> and <tt>AutoFS</tt>-triggered
+mounts</p>
+</li>
+<li><p>Mounts explicitly performed by a zone administrator</p>
+</li>
+</ul>
+<p>Certain restrictions are placed on mounts performed from within the
+application environment. These restrictions prevent the zone administrator
+from denying service to the rest of the system, or otherwise negatively impacting
+other zones.</p>
+<p>There are security restrictions associated with mounting certain file
+systems from within a zone. Other file systems exhibit special behavior when
+mounted in a zone. See <a href="p96.html#z.admin.ov-2">File Systems and Non-Global Zones</a> for more information.</p>
+<a name="z.config.ov-8"></a><h4>Configured Devices in Zones</h4>
+<p>The <tt>zonecfg</tt> command uses a rule-matching system to
+specify which devices should appear in a particular zone. Devices matching
+one of the rules are included in the zone's <tt>/dev</tt> file system.
+For more information, see <a href="p63.html#z.conf.start-29">How to Configure the Zone</a>.</p>
+<a name="z.config.ov-13"></a><h4>Setting Zone-Wide Resource Controls</h4>
+<p><a name="indexterm-175"></a><a name="indexterm-176"></a><a name="indexterm-177"></a>The
+global administrator can set privileged zone-wide resource controls for a
+zone. Zone-wide resource controls limit the total resource usage of all process
+entities within a zone.</p>
+<p>These limits are specified for both the global and non-global zones
+by using the <tt>zonecfg</tt> command. See <a href="p63.html#z.conf.start-29">How to Configure the Zone</a>.</p>
+<p>The preferred, simpler method for setting a zone-wide resource control
+is to use the property name instead of the <tt>rctl</tt> resource.</p>
+<p><a name="indexterm-178"></a>The <tt>zone.cpu-cap</tt> resource control sets an absolute
+limit on the amount of CPU resources that can be consumed by a zone. A value
+of <tt>100</tt> means 100 percent of one CPU as the <tt>project.cpu-cap</tt> setting. A value of <tt>125</tt> is 125 percent, because
+100 percent corresponds to one full CPU on the system when using CPU caps.</p>
+<hr>
+<p><b>Note - </b>When setting the <tt>capped-cpu</tt> resource, you can
+use a decimal number for the unit. The value correlates to the <tt>zone.capped-cpu</tt> resource control, but the setting is scaled down by 100. A setting
+of <tt>1</tt> is equivalent to a setting of <tt>100</tt> for
+the resource control.</p>
+<hr>
+<p><a name="indexterm-179"></a>The <tt>zone.cpu-shares</tt> resource control sets a
+limit on the number of fair share scheduler (FSS) CPU shares for a zone. CPU
+shares are first allocated to the zone, and then further subdivided among
+projects within the zone as specified in the <tt>project.cpu-shares</tt> entries.
+For more information, see <a href="p110.html">Using the Fair Share Scheduler on a Solaris System With Zones Installed</a>. The global
+property name for this control is <tt>cpu-shares</tt>.</p>
+<p><a name="indexterm-180"></a>The <tt>zone.max-locked-memory</tt> resource
+control limits the amount of locked physical memory available to a zone The
+allocation of the locked memory resource across projects within the zone can
+be controlled by using the <tt>project.max-locked-memory</tt> resource
+control. See <a href="p16.html#rmctrls-tbl-5">Table 6-1</a> for
+more information.</p>
+<p><a name="indexterm-181"></a>The <tt>zone.max-lwps</tt> resource control enhances
+resource isolation by preventing too many LWPs in one zone from affecting
+other zones. The allocation of the LWP resource across projects within the
+zone can be controlled by using the <tt>project.max-lwps</tt> resource
+control. See <a href="p16.html#rmctrls-tbl-5">Table 6-1</a> for
+more information. The global property name for this control is <tt>max-lwps</tt>.</p>
+<p><a name="indexterm-182"></a><a name="indexterm-183"></a><a name="indexterm-184"></a><a name="indexterm-185"></a>The <tt>zone.max-msg-ids</tt>, <tt>zone.max-sem-ids</tt>, <tt>zone.max-shm-ids</tt>, and <tt>zone.max-shm-memory</tt> resource controls are used to limit System V resources used by
+all processes within a zone. The allocation of System V resources across projects
+within the zone can be controlled by using the project versions of these resource
+controls. The global property names for these controls are <tt>max-msg-ids</tt>, <tt>max-sem-ids</tt>, <tt>max-shm-ids</tt>, and <tt>max-shm-memory</tt>.</p>
+<p><a name="indexterm-186"></a>The <tt>zone.max-swap</tt> resource control limits swap
+consumed by user process address space mappings and <tt>tmpfs</tt> mounts
+within a zone. The output of <tt>prstat</tt> <tt>-Z</tt> displays
+a SWAP column. The swap reported is the total swap consumed by the zone's
+processes and <tt>tmpfs</tt> mounts. This value assists in monitoring
+the swap reserved by each zone, which can be used to choose an appropriate <tt>zone.max-swap</tt> setting.</p>
+<a name="gdswz"></a>Table 17-1 Zone-Wide Resource Controls<table><tr><th><p>Control Name</p>
+</th><th><p>Global Property Name</p>
+</th><th><p>Description</p>
+</th><th><p>Default Unit</p>
+</th><th><p>Value Used For</p>
+</th></tr>
+<tr><td><p><tt>zone.cpu-cap</tt></p>
+</td><td></td><td><p>Absolute limit on the amount of CPU resources for this zone</p>
+</td><td><p>Quantity (number of CPUs), expressed as a percentage</p>
+<hr>
+<p><b>Note - </b>When setting as the <tt>capped-cpu</tt> resource, you
+can use a decimal number for the unit.</p>
+<hr>
+</td><td></td></tr>
+<tr><td><p><tt>zone.cpu-shares</tt></p>
+</td><td><p><tt>cpu-shares</tt></p>
+</td><td><p>Number of fair share scheduler (FSS) CPU shares for this zone</p>
+</td><td><p>Quantity (shares)</p>
+</td><td></td></tr>
+<tr><td><p><tt>zone.max-locked-memory</tt></p>
+</td><td></td><td><p>Total amount of physical locked memory available to a zone.</p>
+</td><td><p>Size (bytes)</p>
+</td><td><p><tt>locked</tt> property of <tt>capped-memory</tt></p>
+</td></tr>
+<tr><td><p><tt>zone.max-lwps</tt></p>
+</td><td><p><tt>max-lwps</tt></p>
+</td><td><p>Maximum number of LWPs simultaneously available to this zone</p>
+</td><td><p>Quantity (LWPs)</p>
+</td><td></td></tr>
+<tr><td><p><tt>zone.max-msg-ids</tt></p>
+</td><td><p><tt>max-msg-ids</tt></p>
+</td><td><p>Maximum number of message queue IDs allowed for this zone</p>
+</td><td><p>Quantity (message queue IDs)</p>
+</td><td></td></tr>
+<tr><td><p><tt>zone.max-sem-ids</tt></p>
+</td><td><p><tt>max-sem-ids</tt></p>
+</td><td><p>Maximum number of semaphore IDs allowed for this zone</p>
+</td><td><p>Quantity (semaphore IDs)</p>
+</td><td></td></tr>
+<tr><td><p><tt>zone.max-shm-ids</tt></p>
+</td><td><p><tt>max-shm-ids</tt></p>
+</td><td><p>Maximum number of shared memory IDs allowed for this zone</p>
+</td><td><p>Quantity (shared memory IDs)</p>
+</td><td></td></tr>
+<tr><td><p><tt>zone.max-shm-memory</tt></p>
+</td><td><p><tt>max-shm-memory</tt></p>
+</td><td><p>Total amount of System V shared memory allowed for this zone</p>
+</td><td><p>Size (bytes)</p>
+</td><td></td></tr>
+<tr><td><p><tt>zone.max-swap</tt></p>
+</td><td></td><td><p>Total amount of swap that can be consumed by user process address space
+mappings and <tt>tmpfs</tt> mounts for this zone.</p>
+</td><td><p>Size (bytes)</p>
+</td><td><p><tt>swap</tt> property of <tt>capped-memory</tt></p>
+</td></tr>
+</table><p>These limits can be specified for running processes by using the <tt>prctl</tt> command. An example is provided in <a href="p110.html#z.admin.task-76">How to Set FSS Shares in the Global Zone Using the <tt>prctl</tt> Command</a>.
+Limits specified through the <tt>prctl</tt> command are not persistent.
+The limits are only in effect until the system is rebooted.</p>
+<a name="gcnwa"></a><h4>Configurable Privileges</h4>
+<p><a name="indexterm-187"></a><a name="indexterm-188"></a>When a zone is booted, a default set of <b>safe</b> privileges
+is included in the configuration. These privileges are considered safe because
+they prevent a privileged process in the zone from affecting processes in
+other non-global zones on the system or in the global zone. You can use the <tt>zonecfg</tt> command to do the following: </p>
+<ul><li><p>Add to the default set of privileges, understanding that such
+changes might allow processes in one zone to affect processes in other zones
+by being able to control a global resource.</p>
+</li>
+<li><p>Remove from the default set of privileges, understanding that
+such changes might prevent some processes from operating correctly if they
+require those privileges to run.</p>
+</li>
+</ul>
+<hr>
+<p><b>Note - </b>There are a few privileges that cannot be removed from the zone's
+default privilege set, and there are also a few privileges that cannot be
+added to the set at this time.</p>
+<hr>
+<p>For more information, see <a href="p100.html#z.admin.ov-18">Privileges in a Non-Global Zone</a>, <a href="p63.html#z.conf.start-29">How to Configure the Zone</a>, and <tt>privileges</tt>(5).</p>
+<a name="z.config.ov-14"></a><h4>Including a Comment for a Zone</h4>
+<p>You can add a comment for a zone by using the <tt>attr</tt> resource
+type. For more information, see <a href="p63.html#z.conf.start-29">How to Configure the Zone</a>.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p55.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p57.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

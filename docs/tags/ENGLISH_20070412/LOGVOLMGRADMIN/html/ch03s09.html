@@ -1,0 +1,72 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Upgrading to Solaris Volume Manager</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch03.html" title="Chapter 3. Solaris Volume Manager Overview"><link rel="prev" href="ch03s08.html" title="Overview of Multi-Terabyte Support
+in Solaris Volume Manager"><link rel="next" href="ch04.html" title="Chapter 4. Solaris Volume Manager for Sun Cluster (Overview)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Upgrading to Solaris Volume Manager</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s08.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Solaris Volume Manager Overview</th><td width="20%" align="right"> <a accesskey="n" href="ch04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="basics-157"></a>Upgrading to Solaris Volume Manager</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-15"></a>
+<a class="indexterm" name="indexterm-16"></a>
+<a class="indexterm" name="indexterm-17"></a>
+<p>Solaris Volume Manager fully supports seamless upgrade from Solstice DiskSuite
+versions 4.1, 4.2, and 4.2.1. Make sure that all volumes are in Okay state
+(not &#8220;Needs Maintenance&#8221; or &#8220;Last Erred&#8221;) and that
+no hot spares are in use. You do not need to do anything else special to Solaris Volume Manager for
+the upgrade to work&#8212;it is not necessary to change the configuration
+or break down the root mirror. When you upgrade your system, the Solstice
+DiskSuite configuration will be brought forward and will be accessible after
+upgrade through Solaris Volume Manager tools. </p>
+<p>The Solaris 10 OS introduced the Service Management Facility (SMF),
+which provides an infrastructure that augments the traditional UNIX start-up
+scripts, <code class="literal">init</code> run levels, and configuration files. When
+upgrading from a previous version of the Solaris OS, verify that the SMF services
+associated with Solaris Volume Manager are online. If the SMF services are not online,
+you might encounter problems when administering Solaris Volume Manager.</p>
+<p>To check the SMF services associated with Solaris Volume Manager, use the following
+form of the <span><strong class="command">svcs</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>svcs -a |egrep "md|meta"</code></strong>
+disabled       12:05:45 svc:/network/rpc/mdcomm:default
+disabled       12:05:45 svc:/network/rpc/metamed:default
+disabled       12:05:45 svc:/network/rpc/metamh:default
+online         12:05:39 svc:/system/metainit:default
+online         12:05:46 svc:/network/rpc/meta:default
+online         12:05:48 svc:/system/fmd:default
+online         12:05:51 svc:/system/mdmonitor:default</pre>
+<p>If the Solaris Volume Manager configuration consists of a local set only, then
+these services should be online:</p>
+<div class="informaltable"> <table border="1"><colgroup><col></colgroup><tbody><tr><td>
+<p>
+<code class="literal">svc:/system/metainit</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">svc:/network/rpc/meta</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">svc:/system/mdmonitor</code>
+</p>
+</td></tr></tbody></table>
+</div>
+<p>If the Solaris Volume Manager configuration includes disk sets, then these additional
+services should be online:</p>
+<div class="informaltable"> <table border="1"><colgroup><col></colgroup><tbody><tr><td>
+<p>
+<code class="literal">svc:/network/rpc/metamed</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">svc:/network/rpc/metamh</code>
+</p>
+</td></tr></tbody></table>
+</div>
+<p>If the Solaris Volume Manager includes multi-node disk sets, then this service
+should be online in addition to the other services already mentioned:</p>
+<div class="informaltable"> <table border="1"><colgroup><col></colgroup><tbody><tr><td>
+<p>
+<code class="literal">svc:/network/rpc/mdcomm</code>
+</p>
+</td></tr></tbody></table>
+</div>
+<p>For more information on SMF, see <span class="olink">Chapter 14, <em class="citetitle">Managing
+Services (Overview),</em> in <em class="citetitle">System Administration
+Guide: Basic Administration</em>
+</span>.</p>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s08.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Overview of Multi-Terabyte Support
+in Solaris Volume Manager </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 4. Solaris Volume Manager for Sun Cluster (Overview)</td></tr></table></div></body></html>

@@ -1,0 +1,184 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Configuration Planning Guidelines</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch02.html" title="Chapter 2. Storage
+Management Concepts"><link rel="prev" href="ch02.html" title="Chapter 2. Storage
+Management Concepts"><link rel="next" href="ch02s03.html" title="General Performance Guidelines"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuration Planning Guidelines</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><th width="60%" align="center">Chapter 2. Storage
+Management Concepts</th><td width="20%" align="right"> <a accesskey="n" href="ch02s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="config-guide-18145"></a>Configuration Planning Guidelines</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="config-guide-ix338"></a>When you are planning your storage management configuration, keep
+in mind that for any given configuration, there are trade-offs in <span class="emphasis"><em>performance</em></span>, <span class="emphasis"><em>availability</em></span>, and <span class="emphasis"><em>hardware costs</em></span>.
+You might need to experiment with the different variables to determine what
+works best for your configuration. </p>
+<p>
+<a class="indexterm" name="config-guide-ix340"></a>This section provides guidelines for working with the following
+types of volumes:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>RAID-0 (concatenation and stripe) volumes</p>
+</li><li>
+<p>RAID-1 (mirror) volumes</p>
+</li><li>
+<p>RAID-5 volumes</p>
+</li><li>
+<p>Soft partitions</p>
+</li><li>
+<p>File systems that are constructed on Solaris Volume Manager volumes</p>
+</li></ul></div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="storage-overview-7"></a>Choosing Storage</h3></div></div></div>
+
+<p>Before you implement your storage management approach, you need to decide
+what kinds of storage devices to use. This set of guidelines compares the
+various types of storage to help you choose. Additional sets of guidelines
+apply to specific types of storage as implemented in Solaris Volume Manager. See
+specific chapters about each volume type for details.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The types of storage that are listed here are not mutually exclusive.
+You can use these volumes in combination to meet multiple goals. For example,
+you could first create a RAID-1 volume for redundancy. Next, you could create
+soft partitions on that RAID-1 volume to increase the possible number of discrete
+file systems.</p>
+</div>
+<p>The following table provides a comparison between the features available
+for each type of storage.</p>
+<div class="table"><a name="storage-overview-tbl-8"></a><p class="title"><b>Table 2.1. Comparison of Types
+of Storage</b></p>
+
+
+<table summary="Comparison of Types
+of Storage" border="1"><colgroup><col><col><col><col><col><col></colgroup><thead><tr><th>
+<p>Requirements</p>
+</th><th>
+<p>RAID-0 (Concatenation)</p>
+</th><th>
+<p>RAID-0 (Stripe)</p>
+</th><th>
+<p>RAID-1 (Mirror)</p>
+</th><th>
+<p>RAID-5</p>
+</th><th>
+<p>Soft Partitions</p>
+</th></tr></thead><tbody><tr><td>
+<p>Redundant data</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>No</p>
+</td></tr><tr><td>
+<p>Improved read performance</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>Depends on underlying device</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>No</p>
+</td></tr><tr><td>
+<p>Improved write performance</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>No</p>
+</td></tr><tr><td>
+<p>More than 8 slices per device</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>Yes</p>
+</td></tr><tr><td>
+<p>Larger available storage space</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>No</p>
+</td><td>
+<p>Yes</p>
+</td><td>
+<p>No</p>
+</td></tr></tbody></table>
+</div>
+<p>The following table outlines the trade-offs in write operations, random
+reads, and hardware costs between RAID-1 and RAID&#8211;5 volumes.</p>
+<div class="table"><a name="storage-overview-tbl-9"></a><p class="title"><b>Table 2.2. Optimizing Redundant
+Storage</b></p>
+
+
+<table summary="Optimizing Redundant
+Storage" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+</th><th>
+<p>RAID-1 (Mirror)</p>
+</th><th>
+<p>RAID-5</p>
+</th></tr></thead><tbody><tr><td>
+<p>Write operations</p>
+</td><td>
+<p>Faster</p>
+</td><td>
+<p>Slower</p>
+</td></tr><tr><td>
+<p>Random read</p>
+</td><td>
+<p>Faster</p>
+</td><td>
+<p>Slower</p>
+</td></tr><tr><td>
+<p>Hardware cost</p>
+</td><td>
+<p>Higher</p>
+</td><td>
+<p>Lower</p>
+</td></tr></tbody></table>
+</div>
+<p>The following list summarizes the information outlined in the tables:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>RAID-0 volumes (stripes and concatenations) and soft partitions
+do not provide any redundancy of data.</p>
+</li><li>
+<p>Concatenation works well for small random I/O operations.</p>
+</li><li>
+<p>Striping performs well for large sequential I/O operations
+and for random I/O operations.</p>
+</li><li>
+<p>
+<a class="indexterm" name="config-guide-ix344"></a>Mirroring might improve read performance, but write performance
+is always degraded in mirrors. </p>
+</li><li>
+<p>Because of the read-modify-write nature of RAID-5 volumes,
+volumes with over 20 percent writes should not be RAID-5. If redundancy is
+required, consider mirroring.</p>
+</li><li>
+<p>RAID-5 writes cannot be as fast as mirrored writes, which
+in turn cannot be as fast as unprotected writes.</p>
+</li><li>
+<p>Soft partitions are useful for managing very large storage
+devices.</p>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>In addition to these generic storage options, see <span class="olink">Hot Spare Pools</span> for more information about using Solaris Volume Manager to
+support redundant devices.</p>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 2. Storage
+Management Concepts </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> General Performance Guidelines</td></tr></table></div></body></html>

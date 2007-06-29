@@ -1,0 +1,298 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Solaris Volume Manager Disk Set Administration</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch18.html" title="Chapter 18. Disk
+Sets (Overview)"><link rel="prev" href="ch18s03.html" title="Types of Disk Sets"><link rel="next" href="ch18s05.html" title="Guidelines for Working With Disk Sets"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Solaris Volume Manager Disk Set Administration</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch18s03.html">Prev</a> </td><th width="60%" align="center">Chapter 18. Disk
+Sets (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch18s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="about-disksets-39970"></a>Solaris Volume Manager Disk Set Administration</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-145"></a>
+<a class="indexterm" name="indexterm-146"></a>
+<p>Unlike local disk set administration, you do not need to manually create
+or delete disk set state databases. Solaris Volume Manager places one state database
+replica (on slice 7) on each disk across all disks in the disk set, up to
+a maximum of 50 total replicas in the disk set.</p>
+<p>When you add disks to a disk set, Solaris Volume Manager automatically creates
+the state database replicas on the disk set. When a disk is accepted into
+a disk set, Solaris Volume Manager might repartition the disk so that the state database
+replica for the disk set can be placed on the disk (see <span class="olink">Automatic Disk Partitioning</span>).</p>
+<p>A file system that resides on a volume in a disk set normally is not
+mounted automatically at boot time with the <code class="filename">/etc/vfstab</code> file.
+The necessary Solaris Volume Manager RPC daemons (<code class="filename">rpc.metad</code> and <code class="filename">rpc.metamhd</code>) do not start early enough in the boot process to permit
+this. Additionally, the ownership of a disk set is lost during a reboot. Do
+not disable the Solaris Volume Manager RPC daemons in the <code class="filename">/etc/inetd.conf</code> file.
+They are configured to start by default. These daemons must remain enabled
+to allow Solaris Volume Manager to use its full functionality.</p>
+<p>When the autotake feature is enabled using the <code class="option">
+A</code> option
+of the <span><strong class="command">metaset</strong></span> command, the disk set is automatically taken
+at boot time. Under these circumstances, a file system that resides on a volume
+in a disk set can be automatically mounted with the <code class="filename">/etc/vfstab</code> file.
+To enable an automatic take during the boot process, the disk set must be
+associated with only a single host, and must have the autotake feature enabled.
+A disk set can be enabled either during or after disk set creation. For more
+information on the autotake feature, see <span class="olink">Autotake Disk Sets</span>.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Although disk sets are supported in single-host configurations,
+they are often not appropriate for &#8220;local&#8221; (not dual-connected)
+use. Two common exceptions are the use of disk sets to provide a more manageable
+namespace for logical volumes, and to more easily manage storage on a Storage
+Area Network (SAN) fabric (see <span class="olink">Scenario&#8212;Disk Sets</span>.</p>
+</div>
+<p>Disk sets can be created and configured by using the Solaris Volume Manager command-line
+interface (the <span><strong class="command">metaset</strong></span> command) or the Enhanced Storage tool within the Solaris Management Console.  </p>
+<p>After disks are added to a disk set, the disk set can be <span class="emphasis"><em>reserved</em></span> (or <span class="emphasis"><em>taken</em></span>) and <span class="emphasis"><em>released</em></span> by
+hosts in the disk set. When a disk set is reserved by a host, the other host
+in the disk set cannot access the data on the disks in the disk set. To perform
+maintenance on a disk set, a host must be the owner of the disk set or have
+reserved the disk set. A host takes implicit ownership of the disk set by
+putting the first disk into the set.</p>
+<p>Disk sets, including disk sets created on a different system, can be
+imported into existing Solaris Volume Manager configurations using the <span><strong class="command">metaimport</strong></span> command.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="eqbic"></a>Reserving a Disk Set</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-147"></a>
+<a class="indexterm" name="indexterm-148"></a>
+<p>Before a host can use the disks in a disk set, the host must reserve
+the disk set. There are two methods of reserving a disk set: </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="strong"><strong>Safely -</strong></span> When you safely
+reserve a disk set, Solaris Volume Manager attempts to take the disk set, and the
+other host attempts to release the disk set. The release (and therefore the
+reservation) might fail. </p>
+</li><li>
+<p>
+<span class="strong"><strong>Forcibly -</strong></span> When you forcibly
+reserve a disk set, Solaris Volume Manager reserves the disk set whether or not another
+host currently has the set reserved. This method is generally used when a
+host in the disk set is down or not communicating. All disks within the disk
+set are taken over. The state database is read in on the host performing the
+reservation and the shared volumes configured in the disk set become accessible.
+If the other host had the disk set reserved at this point, it would panic
+due to reservation loss.</p>
+<p>Normally, two hosts in a disk set cooperate
+with each other to ensure that the disks in a disk set are reserved by only
+one host at a time. A normal situation is defined as both hosts being up and
+communicating with each other.</p>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>If a disk has been determined unexpectedly not to be reserved
+(perhaps because another host using the disk set forcibly took the disk),
+the host will panic. This behavior helps to minimize data loss which would
+occur if two hosts were to simultaneously access the same disk.</p>
+</div>
+<p>For more information about taking or reserving a disk set, see <span class="olink">How to Take a Disk Set</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="eqbij"></a>Releasing a Disk Set</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-149"></a>
+<a class="indexterm" name="indexterm-150"></a>
+<p>Releasing a disk set can be useful when you perform maintenance on the
+physical disks in the disk set. When a disk set is released, it cannot be
+accessed by the host. If both hosts in a disk set release the set, neither
+host in the disk set can access the disks in the disk set.</p>
+<p>For more information about releasing a disk set, see <span class="olink">How to Release a Disk Set</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="eqbji"></a>Importing a Disk Set</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-151"></a>
+<a class="indexterm" name="indexterm-152"></a>
+<a class="indexterm" name="indexterm-153"></a>
+<p>Beginning with the Solaris 9 9/04 release, the <span><strong class="command">metaimport</strong></span> command
+enables you to import disk sets, including replicated disk sets, into existing
+Solaris Volume Manager configurations that have device ID support in the disk
+set. You can also use the <span><strong class="command">metaimport</strong></span> command to report
+on disk sets that are available for import.</p>
+<p>Replicated disk sets are created using remote replication software.
+In order for a replicated disk set to be imported with the <span><strong class="command">metaimport</strong></span> command,
+the slice containing the state database replica for each disk in the disk
+set must also be replicated onto the same slice of the replicated disk set.
+This corresponds to slice 7 for non-EFI disks and slice 6 for EFI disks. Before
+replicating a disk set, make sure that the disk configurations of the data
+to be replicated and of the remote site match. This step ensures that both
+the state database replica and the data are replicated accurately.</p>
+<p>The <span><strong class="command">metaimport</strong></span> command also does not import a disk
+in a disk set if the disk does not contain a volume or a state database replica.
+This scenario occurs if a volume or a state database replica have not been
+added to a disk or have been deleted from a disk. In this case, when you import
+the disk set to another system, you would find that the disk is missing from
+the disk set. For example, maximum of 50 state database replicas are allowed
+per Solaris Volume Manager disk set. If you have 60 disks in a disk set, the 10 disks
+that do not contain a state database replica must contain a volume in order
+to be imported with the disk set.</p>
+<p>For tasks associated with importing a disk set, see <span class="olink">Importing Disk Sets</span>.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>In a Sun Cluster environment, the <span><strong class="command">metaimport</strong></span> command
+is not available.</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="about-disksets-123"></a>Automatic Disk Partitioning</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-154"></a>
+<a class="indexterm" name="indexterm-155"></a>
+<a class="indexterm" name="indexterm-156"></a>
+<a class="indexterm" name="indexterm-157"></a>
+<a class="indexterm" name="indexterm-158"></a>
+<p>When you add a new disk to a disk set, Solaris Volume Manager checks the disk
+format. If necessary, Solaris Volume Manager repartitions the disk to ensure that the
+disk has an appropriately configured slice 7 with adequate space for a state
+database replica. The precise size of slice 7 depends on the disk geometry.
+However, the size will be no less than 4 Mbytes, and probably closer to 6
+Mbytes (depending on where the cylinder boundaries lie). </p>
+<p>By default, Solaris Volume Manager places one state database replica on slice
+7. You can increase the default size of slice 7 or decrease the size of the
+state database replica in order to fit more than one state database replica
+onto the slice.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The minimal size for slice 7 will likely change in the future,
+based on a variety of factors, including the size of the state database replica
+and information to be stored in the state database replica. The default size
+for a state database replica in a multi-owner disk set is 16 Mbytes.</p>
+</div>
+<p>For use in disk sets, disks must have a slice 7 that meets these criteria:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Starts at sector 0</p>
+</li><li>
+<p>Includes enough space for a disk label and state database
+replicas</p>
+</li><li>
+<p>Cannot be mounted</p>
+</li><li>
+<p>Does not overlap with any other slices, including slice 2</p>
+</li></ul></div>
+<p>If the existing partition table does not meet these criteria, Solaris Volume Manager repartitions
+the disk. A small portion of each drive is reserved in slice 7 for use by Solaris Volume Manager.
+The remainder of the space on each drive is placed into slice 0. Any existing
+data on the disks is lost by repartitioning. </p>
+<div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3>
+
+<p>After you add a drive to a disk set, you may repartition it  as
+necessary, with the exception that slice 7 is not altered in any way. </p>
+</div>
+<p>The following output from the <span><strong class="command">prtvtoc</strong></span> command shows
+a disk before it is added to a disk set.</p>
+<pre class="screen">[root@lexicon:apps]$ prtvtoc /dev/rdsk/c1t6d0s0
+* /dev/rdsk/c1t6d0s0 partition map
+*
+* Dimensions:
+*     512 bytes/sector
+*     133 sectors/track
+*      27 tracks/cylinder
+*    3591 sectors/cylinder
+*    4926 cylinders
+*    4924 accessible cylinders
+*
+* Flags:
+*   1: unmountable
+*  10: read-only
+*
+*                          First     Sector    Last
+* Partition  Tag  Flags    Sector     Count    Sector  Mount Directory
+       0      2    00          0   4111695   4111694
+       1      3    01    4111695   1235304   5346998
+       2      5    01          0  17682084  17682083
+       3      0    00    5346999   4197879   9544877
+       4      0    00    9544878   4197879  13742756
+       5      0    00   13742757   3939327  17682083</pre>
+<p>The above output shows that the disk does not contain a slice 7. Therefore,
+when the disk is added to a disk set, Solaris Volume Manager repartitions the disk.
+The following output from the <span><strong class="command">prtvtoc</strong></span> command shows the
+disk after it is added to a disk set.</p>
+<pre class="screen">[root@lexicon:apps]$ prtvtoc /dev/rdsk/c1t6d0s0
+* /dev/rdsk/c1t6d0s0 partition map
+*
+* Dimensions:
+*     512 bytes/sector
+*     133 sectors/track
+*      27 tracks/cylinder
+*    3591 sectors/cylinder
+*    4926 cylinders
+*    4924 accessible cylinders
+*
+* Flags:
+*   1: unmountable
+*  10: read-only
+*
+*                          First     Sector    Last
+* Partition  Tag  Flags    Sector     Count    Sector  Mount Directory
+       0      0    00      10773  17671311  17682083
+<span class="strong"><strong>       7      0    01          0     10773     10772</strong></span>
+[root@lexicon:apps]$ </pre>
+<p>The output shows that the disk has been repartitioned to include a slice
+7 that starts at cylinder 0 and that has sufficient space for the state database
+replica. If disks you add to a disk set each have an acceptable slice 7, they
+are not reformatted.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>If you have disk sets that you upgraded from Solstice DiskSuite
+software, the default state database replica size on those sets is 1034 blocks,
+not the 8192 block size from Solaris Volume Manager. Also, slice 7 on the disks that
+were added under Solstice DiskSuite software are correspondingly smaller than
+slice 7 on disks that were added under Solaris Volume Manager. </p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="basics-disk-set-name-requirements"></a>Disk Set Name Requirements</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-159"></a>
+<p>Disk set volume names are similar to other Solaris Volume Manager component
+names. However, the disk set name is included as part of the name. For example,
+volume path names include the disk set name after <code class="filename">/dev/md/</code> and
+before the actual volume name in the path.</p>
+<p>The following table shows some example disk set volume names.</p>
+<div class="table"><a name="basics-disk-set-names"></a><p class="title"><b>Table 18.1. Example Volume Names
+for Disk Sets</b></p>
+
+
+<table summary="Example Volume Names
+for Disk Sets" border="1"><colgroup><col><col></colgroup><tbody><tr><td>
+<p>
+<code class="filename">/dev/md/blue/dsk/d0</code>
+</p>
+</td><td>
+<p>Block volume <code class="literal">d0</code> in disk set <code class="literal">blue</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/dev/md/blue/dsk/d1</code>
+</p>
+</td><td>
+<p>Block volume <code class="literal">d1</code> in disk set <code class="literal">blue</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/dev/md/blue/rdsk/d126</code>
+</p>
+</td><td>
+<p>Raw volume <code class="literal">d126</code> in disk set <code class="literal">blue</code>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="filename">/dev/md/blue/rdsk/d127</code>
+</p>
+</td><td>
+<p>Raw volume <code class="literal">d127</code> in disk set <code class="literal">blue</code>
+</p>
+</td></tr></tbody></table>
+</div>
+<p>Similarly, hot spare pools have the disk set name as part of the hot
+spare name.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="about-disksets-1"></a>Example&#8212;Two Shared Disk Sets</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="about-disksets-ix319"></a>
+<span class="olink">Figure 18&#8211;1</span> shows
+an example configuration that uses two disk sets. </p>
+<p>In this configuration, Host A and Host B share the disk sets red and
+blue. They each have their own local disk set, which is not shared. If Host
+A fails, Host B can take over control of Host A's shared disk set, the disk
+set red. Likewise, if Host B fails, Host A can take control of Host B's shared
+disk set, the disk set blue.</p>
+<div class="figure"><a name="about-disksets-fig-2"></a><p class="title"><b>Figure 18.1. Disk Sets Example</b></p>
+
+
+<div class="mediaobject"><img src="../figures/disksets-figure.gif" alt="Disk Sets Example" longdesc="ld-id1763605.html"><div class="longdesc-link" align="right"><br clear="all"><span class="longdesc-link">[<a href="ld-id1763605.html" target="longdesc">D</a>]</span></div></div>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch18s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch18.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch18s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Types of Disk Sets </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Guidelines for Working With Disk Sets</td></tr></table></div></body></html>

@@ -1,0 +1,380 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Configuring the Java Web Console</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch03.html" title="Chapter 3. Working With the Sun Java Web Console (Tasks)"><link rel="prev" href="ch03s05.html" title="Managing
+the Console Service"><link rel="next" href="ch03s07.html" title="Installing the Java Web Console Software"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuring the Java Web Console</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s05.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Working With the Sun Java Web Console (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch03s07.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="eyamf"></a>Configuring the Java Web Console</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-32"></a>
+<a class="indexterm" name="indexterm-33"></a>The Java Web Console is preconfigured to run without administrator
+intervention. However, you might choose to change some of the web console's
+default behavior by overriding
+the console's configuration properties. </p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>
+<span class="strong"><strong>Starting
+with the Solaris Express 5/06 OS,</strong></span> you must use the <span><strong class="command">wcadmin</strong></span> command to change
+these properties. Previously, the <span><strong class="command">smreg</strong></span> command was used.
+For more information about the <span><strong class="command">wcadmin</strong></span> command, see the <span class="citerefentry">
+<span class="refentrytitle">wcadmin</span>
+(
+1M
+)
+</span> man
+page.</p>
+</div>
+<p>Properties in the
+console's configuration files control the behavior of the
+console.  To change the behavior, you define new values for properties
+to override the default values. The default values of most
+properties should not be overridden unless there is a specific need that the default values do not
+provide, such as specifying your own login service. In general, the  property values that you might consider changing  are the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="strong"><strong>Console session timeout</strong></span>
+</p>
+<p>
+<a class="indexterm" name="indexterm-34"></a>
+<a class="indexterm" name="indexterm-35"></a>The web console's session timeout period is controlled
+by the <code class="literal">session.timeout.value</code> property. This property controls
+how long a web console page can be displayed without user
+interaction before the session times out. After the timeout
+is reached, the user must log in again. The default value is 15 minutes. You
+can set a new value, in minutes, to conform to your own security policy. However,
+keep in mind that this property controls the timeout period for all console users and all registered
+applications. </p>
+<p>See <span class="olink">Example 3&#8211;1</span> for an example of how to change
+the session timeout.</p>
+</li><li>
+<p>
+<span class="strong"><strong>Logging level</strong></span>
+</p>
+<p>
+<a class="indexterm" name="indexterm-36"></a>
+<a class="indexterm" name="indexterm-37"></a>
+<a class="indexterm" name="indexterm-38"></a>You use
+logging properties to configure the logging service. The console log files are created in the <code class="filename">/var/log/webconsole/console</code> directory. The <code class="literal">logging.default.level</code> property determines  which messages are logged. The console
+logs
+provide
+valuable information for troubleshooting problems. The following property
+values are available
+for <code class="literal">logging.default.level</code>:</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>
+<code class="literal">all</code>
+</p>
+</li><li>
+<p>
+<code class="literal">info</code>
+</p>
+</li><li>
+<p>
+<code class="literal">off</code>
+</p>
+</li><li>
+<p>
+<code class="literal">severe</code>
+</p>
+</li><li>
+<p>
+<code class="literal">warning</code>
+</p>
+</li></ul></div>
+<p>See <span class="olink">Example 3&#8211;2</span> for an example that shows how
+to change the logging level.</p>
+</li><li>
+<p>
+<span class="strong"><strong>Auditing implementation</strong></span>
+</p>
+<p>
+<a class="indexterm" name="indexterm-39"></a>
+<a class="indexterm" name="indexterm-40"></a>
+<a class="indexterm" name="indexterm-41"></a>Auditing
+is the process of generating and logging security-related management events.
+An event signifies that a specific user has updated the management information
+on a system.  The auditing implementation is used by  services and
+applications that generate audit events. The following audit events are defined
+by the web console:</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>Login</p>
+</li><li>
+<p>Logout</p>
+</li><li>
+<p>Role assumption</p>
+</li><li>
+<p>Authorization</p>
+</li></ul></div>
+<p>When audit events
+occur, a record of the event is made in an audit log. The location of the
+audit log varies with the auditing implementation that is in use. The web
+console's auditing service uses an auditing implementation that is provided
+by the underlying operating system.</p>
+<p>The web console supports three auditing implementations: <code class="literal">Solaris</code>, <code class="literal">Log</code>, and <code class="literal">None</code>. You
+can select an auditing implementation by specifying one of these keywords
+for the value of the <code class="literal">audit.default.type</code> configuration property.
+Only one auditing implementation is in effect at a time. </p>
+<p>The supported auditing implementation types are:</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>
+<code class="literal">Solaris</code>
+</p>
+<p>The <code class="literal">Solaris</code>implementation is the default..
+This implementation supports the BSM auditing mechanism. The auditing mechanism
+writes audit records into a system file in the <code class="filename">/var/audit</code> directory.</p>
+<p>You
+can display the records with the <span><strong class="command">praudit</strong></span> command. For events
+to be captured, you must enable the BSM auditing mechanism on the system.
+In addition, the <code class="filename">/etc/security/audit_control</code> file must
+contain entries that indicate which events should be generated. You must set
+the <code class="literal">lo</code> event as the flag option to see login and logout
+events for each user. For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">praudit</span>
+(
+1M
+)
+</span>
+</span> and <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">bsmconv</span>
+(
+1M
+)
+</span>
+</span> man pages and <span class="olink">Part VII, <em class="citetitle">Solaris Auditing,</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>
+<code class="literal">Log</code>
+</p>
+<p>You can configure this
+implementation to write to the system's <code class="filename">syslog</code> service.
+Audit messages are written to the console log if the logging service has been
+enabled at the <code class="literal">info</code> level. See <span class="olink">Example 3&#8211;2</span> for more information.</p>
+</li><li>
+<p>
+<code class="literal">None</code>
+</p>
+<p>
+<a class="indexterm" name="indexterm-42"></a>No audit events are generated. Audit messages
+are written to the debug
+trace  log, if enabled.</p>
+</li></ul></div>
+</li></ul></div>
+<p>See <span class="olink">Example 3&#8211;5</span> for an example of specifying the
+auditing implementation.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2019270"></a></h3></div></div></div>
+
+<div class="task"><a name="eyame"></a><p class="title"><b>How to Change Java Web Console Properties</b></p><a class="indexterm" name="indexterm-43"></a><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Depending on which Solaris release you are running, change the
+selected property value
+as follows:</p>
+<ul>
+<li>
+<p>If you are running at least the Solaris
+Express 5/06 release, use this command:</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin add -p -a console <em class="replaceable"><code>name=value</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code>
+</span></dt><dd>
+<p>Specifies that the object type is a property.</p>
+</dd><dt><span class="term">
+<code class="option">
+a console</code>
+</span></dt><dd>
+<p>Specifies that the property changes are for the application
+named <code class="literal">console</code>. The <code class="option">
+a console</code> option must
+always be used when you are changing console properties.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>name=value</code></em>
+</span></dt><dd>
+<p>Specifies the property name and the new value for that property.</p>
+</dd></dl></div>
+</li>
+<li>
+<p>If you are <span class="emphasis"><em>not</em></span> running at least
+the Solaris Express 5/06 release, use this command:</p>
+<pre class="screen"># <strong class="userinput"><code>smreg add -p -c <em class="replaceable"><code>name=value</code></em>
+</code></strong>
+</pre>
+</li>
+</ul>
+</li><li>
+
+<p>Reset a console property to its default
+value.</p>
+<ul>
+<li>
+<p>If you are running at least the Solaris
+Express 5/06 release, use this command:</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin remove -p -a console <em class="replaceable"><code>name</code></em>
+</code></strong>
+</pre>
+</li>
+<li>
+<p>If you are <span class="emphasis"><em>not</em></span> running at least
+the Solaris Express 5/06 release,  use this command:</p>
+<pre class="screen"># <strong class="userinput"><code>smreg remove -p -c <em class="replaceable"><code>name</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code>
+</span></dt><dd>
+<p>Specifies that the object type is a property.</p>
+</dd><dt><span class="term">
+<code class="option">
+c</code>
+</span></dt><dd>
+<p>Specifies that the property changes are for the console application.
+The <code class="option">
+c</code> option must always be used when you are changing console
+properties.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>name=value</code></em>
+</span></dt><dd>
+<p>Specifies the property name and the new value for that property.</p>
+</dd></dl></div>
+</li>
+</ul>
+</li></ol></div><div class="example"><a name="eyamm"></a><p class="title"><b>Example 3.1. Changing the Java Web Console's Session Timeout Property</b></p>
+
+
+<p>
+<a class="indexterm" name="indexterm-44"></a>
+<a class="indexterm" name="indexterm-45"></a>This example shows how to set the session time out value to 5
+minutes.</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin add -p -a console session.timeout.value=5</code></strong>
+</pre>
+</div><div class="example"><a name="eyamu"></a><p class="title"><b>Example 3.2. Configuring the Java Web Console Logging Level</b></p>
+
+
+<p>This example shows you how to set the logging level to <code class="literal">all</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin add -p -a console logging.default.level=all</code></strong>
+</pre>
+</div><div class="example"><a name="gdhbw"></a><p class="title"><b>Example 3.3. Resetting the Java Web Console Logging Level to the Default Value</b></p>
+
+
+<p>This example shows how to reset the logging level to the default.</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin remove -p -a console logging.default.level</code></strong>
+</pre>
+</div><div class="example"><a name="gdhhd"></a><p class="title"><b>Example 3.4. Specifying a Java Version for the Java Web Console</b></p>
+
+
+<p>This example shows how to set the Java version for the console.</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin add -p -a console java.home=/usr/java</code></strong>
+</pre>
+</div><div class="example"><a name="eyamv"></a><p class="title"><b>Example 3.5. Choosing an Auditing Implementation for the Java Web Console</b></p>
+
+
+<p>This example shows you how to set the auditing implementation to <code class="literal">None</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin add -p -a console audit.default.type=None</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="frjpw"></a>Java Web Console User Identity</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-46"></a>
+<a class="indexterm" name="indexterm-47"></a>
+<a class="indexterm" name="indexterm-48"></a>By default, the web console runs under the user
+identity, <code class="literal">noaccess</code>. However, some system configurations
+disable the <code class="literal">noaccess</code> user, or set the login shell for the <code class="literal">noaccess</code> user to an invalid entry to make this user identity unusable. </p>
+<p>When the <code class="literal">noaccess</code> user
+is not usable, the web console server cannot be started or configured, so
+an alternative user identity must be specified. Ideally, the user identity
+should be changed only once, before the console server is configured at initial
+startup. While the identity can be changed after configuration is completed,
+the changes that then must be made to the console infrastructure are complex
+and time consuming.</p>
+<p>You can configure the web console to run under
+an alternative non-root user identity by using either of the following commands: </p>
+<pre class="screen"># <strong class="userinput"><code>smcwebserver -U <em class="replaceable"><code>username</code></em>
+</code></strong>
+</pre>
+<p>This command starts the web console server under the specified user
+identity. The web console server runs under this identity each time the server  is subsequently
+started.</p>
+<p>If
+you are running at least the <span class="strong"><strong>Solaris
+Express 5/06 release, </strong></span> use this command:</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin add -p -a console com.sun.web.console.user=<em class="replaceable"><code>username</code></em>
+</code></strong>
+</pre>
+<p>If you are <span class="emphasis"><em>not</em></span> running
+at least the Solaris Express 5/06 release, use this command:</p>
+<pre class="screen"># <strong class="userinput"><code>smreg add -p -c com.sun.web.console.user=<em class="replaceable"><code>username</code></em>
+</code></strong>
+</pre>
+<p>This command causes the web console server to run under the specified  user identity the next time the server starts, and each time the server is started.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="faaor"></a>Using the Console Debug Trace Log</h3></div></div></div>
+
+<p>By default, the console does
+not log debug messages. You can turn on debug logging to help troubleshoot
+console service problems.</p>
+<p>Use the <code class="literal">debug.trace.level</code> property
+to turn on debug logging by setting the property to a value other than 0.
+Available choices include the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="strong"><strong>1</strong></span> - Use this setting to
+record potentially severe errors.</p>
+</li><li>
+<p>
+<span class="strong"><strong>2</strong></span> - Use this setting to
+record important messages, as well as error messages of the 1 level.</p>
+</li><li>
+<p>
+<span class="strong"><strong>3</strong></span> - Use this setting to
+record all possible messages with full details.</p>
+</li></ul></div>
+<p>By default, the debug
+trace  log is created in the <code class="filename">/var/log/webconsole</code> directory and is named <code class="filename">console_debug_log</code>. Historical logs,
+such as <code class="filename">console_debug_log.1</code> and <code class="filename">console_debug_log.2</code> might also exist in this directory.  There can be up to five (default setting) historical
+logs stored in this directory before the earliest log is deleted and a new
+log is created.</p>
+<div class="example"><a name="faaoq"></a><p class="title"><b>Example 3.6. Setting the Console Debug Trace Log Level</b></p>
+
+
+<p>Use the following command to set the debug trace  log level to 3.</p>
+<p>For the <span class="strong"><strong>Solaris Express 5/06</strong></span> release, use this command:</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin add -p -a console debug.trace.level=3</code></strong>
+</pre>
+<p>If
+you are <span class="emphasis"><em>not</em></span> running at least the Solaris
+Express 5/06 release, use this command:<span class="strong"><strong>
+</strong></span>
+</p>
+<pre class="screen"># <strong class="userinput"><code>smreg add -p -c debug.trace.level=3</code></strong>
+</pre>
+</div>
+<div class="example"><a name="faaox"></a><p class="title"><b>Example 3.7. Checking the Status of the <span>debug.trace.level</span> Property</b></p>
+
+
+<p>To check the status of the <code class="literal">debug.trace.level</code> property,
+use the <span><strong class="command">wcadmin
+list</strong></span> or <span><strong class="command">smreg list</strong></span> command.</p>
+<p>
+<span class="strong"><strong>Solaris Express
+5/06:</strong></span>
+</p>
+<pre class="screen"># <strong class="userinput"><code>wcadmin list -p | grep "debug.trace.level"</code></strong>
+</pre>
+<p>If you are <span class="emphasis"><em>not</em></span> running
+at least the Solaris Express 5/06 release, use this command:</p>
+<pre class="screen"># <strong class="userinput"><code>smreg list -p | grep "debug.trace.level"</code></strong>
+</pre>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s07.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Managing
+the Console Service </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Installing the Java Web Console Software</td></tr></table></div></body></html>

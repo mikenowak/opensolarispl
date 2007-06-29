@@ -1,0 +1,198 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Run Levels</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch14.html" title="Chapter 14. Managing Services (Overview)"><link rel="prev" href="ch14s07.html" title="SMF Compatibility"><link rel="next" href="ch14s09.html" title="
+/etc/inittab File"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Run Levels</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch14s07.html">Prev</a> </td><th width="60%" align="center">Chapter 14. Managing Services (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch14s09.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="hbrunlevels-13026"></a>Run Levels</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="hbrunlevels-ix934"></a>
+<a class="indexterm" name="hbrunlevels-ix935"></a>
+<a class="indexterm" name="hbrunlevels-ix936"></a>A system's <span class="emphasis"><em>run level</em></span> (also
+known as an <span class="emphasis"><em>init state</em></span>) defines what services and resources
+are available to users. A system can be in only one run level at a time. 
+ </p>
+<p>The Solaris OS has eight run levels, which are described in the following
+table. The default run level is specified in the <code class="filename">/etc/inittab</code> file
+as run level 3.</p>
+<div class="table"><a name="hbrunlevels-72176"></a><p class="title"><b>Table 14.2. Solaris Run
+Levels</b></p>
+
+
+<table summary="Solaris Run
+Levels" width="100%" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>
+<p>Run Level</p>
+</th><th>
+<p>Init State</p>
+</th><th>
+<p>Type</p>
+</th><th>
+<p>Purpose</p>
+</th></tr></thead><tbody><tr><td>
+<p>0</p>
+</td><td>
+<p>Power-down state</p>
+</td><td>
+<p>Power-down</p>
+</td><td>
+<p>
+<a class="indexterm" name="hbrunlevels-ix937"></a>To shut down the operating system so that it is safe to turn off
+power to the system. </p>
+</td></tr><tr><td>
+<p>
+<a class="indexterm" name="hbrunlevels-ix943"></a>s or S </p>
+</td><td>
+<p>
+<a class="indexterm" name="hbrunlevels-ix944"></a>Single-user state </p>
+</td><td>
+<p>Single-user</p>
+</td><td>
+<p>To run as a single user with some file systems mounted and accessible. </p>
+</td></tr><tr><td>
+<p>1</p>
+</td><td>
+<p>Administrative state</p>
+</td><td>
+<p>Single-user</p>
+</td><td>
+<p>
+<a class="indexterm" name="hbrunlevels-ix938"></a>To access all available file systems. User logins are disabled.</p>
+</td></tr><tr><td>
+<p>2</p>
+</td><td>
+<p>Multiuser state</p>
+</td><td>
+<p>Multiuser</p>
+</td><td>
+<p>
+<a class="indexterm" name="hbrunlevels-ix939"></a>For normal operations. Multiple users can access the system and
+all file system. All daemons are running except for the NFS server daemons. </p>
+</td></tr><tr><td>
+<p>3</p>
+</td><td>
+<p>
+<a class="indexterm" name="hbrunlevels-ix940"></a>Multiuser level with NFS resources shared </p>
+</td><td>
+<p>Multiuser</p>
+</td><td>
+<p>
+<a class="indexterm" name="hbrunlevels-ix941"></a>For normal operations with NFS resources shared. This is the default
+run level for the Solaris OS.</p>
+</td></tr><tr><td>
+<p>4</p>
+</td><td>
+<p>Alternative multiuser state</p>
+</td><td>
+<p>
+</p>
+</td><td>
+<p>Not configured by default, but available for customer use.</p>
+</td></tr><tr><td>
+<p>5</p>
+</td><td>
+<p>Power-down state</p>
+</td><td>
+<p>Power-down</p>
+</td><td>
+<p>To shut down the operating system so that it is safe to turn off power
+to the system. If possible, automatically turns off power on systems that
+support this feature.</p>
+</td></tr><tr><td>
+<p>6</p>
+</td><td>
+<p>Reboot state</p>
+</td><td>
+<p>Reboot</p>
+</td><td>
+<p>
+<a class="indexterm" name="hbrunlevels-ix942"></a>To shut down the system to run level 0, and then reboot to multiuser
+level with NFS resources shared (or whatever level is the default in the <code class="filename">inittab</code> file). </p>
+</td></tr></tbody></table>
+</div>
+<p>In addition, the <span><strong class="command">svcadm</strong></span> command can be used to change
+the run level of a system, by selecting a milestone at which to run. The following
+table shows which run level corresponds to each milestone.</p>
+<div class="table"><a name="fahqq"></a><p class="title"><b>Table 14.3. Solaris Run Levels and SMF Milestones</b></p>
+
+
+<table summary="Solaris Run Levels and SMF Milestones" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Run Level</p>
+</th><th>
+<p>SMF Milestone FMRI</p>
+</th></tr></thead><tbody><tr><td>
+<p>S</p>
+</td><td>
+<p>
+<code class="literal">milestone/single-user:default</code>
+</p>
+</td></tr><tr><td>
+<p>2</p>
+</td><td>
+<p>
+<code class="literal">milestone/multi-user:default</code>
+</p>
+</td></tr><tr><td>
+<p>3</p>
+</td><td>
+<p>
+<code class="literal">milestone/multi-user-server:default</code>
+</p>
+</td></tr></tbody></table>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="hbrunlevels-25070"></a>Determining a System's Run Level</h3></div></div></div>
+
+<p>Display run level information by using the <span><strong class="command">who -r</strong></span> command.</p>
+<pre class="screen">$ <strong class="userinput"><code>who -r</code></strong>
+</pre>
+<p>
+<a class="indexterm" name="hbrunlevels-ix945"></a>
+<a class="indexterm" name="hbrunlevels-ix946"></a>
+<a class="indexterm" name="indexterm-257"></a>Use the <span><strong class="command">who -r</strong></span> command to determine a system's
+current run level for any level. </p>
+<div class="example"><a name="hbrunlevels-1"></a><p class="title"><b>Example 14.1. Determining a System's Run Level</b></p>
+
+
+<p>This example displays information about a system's current run level
+and previous run levels.</p>
+<pre class="screen">$ <strong class="userinput"><code>who -r</code></strong>
+ .    run-level 3  Dec 13 10:10  3  0 S
+$</pre>
+<div class="informaltable">
+<table border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Output of <span><strong class="command">who</strong></span> <code class="option">
+r</code> command</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">run-level 3</code>
+</p>
+</td><td>
+<p>Identifies the current run level</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">Dec 13 10:10</code>
+</p>
+</td><td>
+<p>Identifies the date of last run level change</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">3</code>
+</p>
+</td><td>
+<p>Also identifies the current run level</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">0</code>
+</p>
+</td><td>
+<p>Identifies the number of times the system has been at this run level
+since the last reboot</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">S</code>
+</p>
+</td><td>
+<p>Identifies the previous run level</p>
+</td></tr></tbody></table>
+</div>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch14s07.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch14.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch14s09.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">SMF Compatibility </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 
+<code class="filename">/etc/inittab</code> File</td></tr></table></div></body></html>

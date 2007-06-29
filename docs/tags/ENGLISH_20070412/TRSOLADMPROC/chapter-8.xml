@@ -1,0 +1,740 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="remotead-1">
+
+
+
+<title>Remote Administration in Trusted Extensions</title>
+<indexterm xml:id="indexterm-479">
+<primary>administering</primary>
+<secondary>remotely</secondary>
+</indexterm>
+<toc>
+<para>This chapter describes how to use Trusted Extensions administrative tools
+to administer a remote host.</para>
+<itemizedlist remap="jumplist">
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-2">Secure Remote Administration
+in Trusted Extensions</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-4">Methods for Administering Remote
+Systems</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-54">Remote Login by a Role</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-21">Administering Remotely (Tasks)</olink>
+</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="remotead-2">
+<title>Secure Remote Administration in Trusted Extensions</title>
+<indexterm xml:id="indexterm-480">
+<primary>remote administration</primary>
+<secondary>defaults</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-481">
+<primary>restricting</primary>
+<secondary>remote access</secondary>
+</indexterm>
+<para>By default, Trusted Extensions does not allow remote administration. Remote
+administration would present a significant security risk if remote untrusted
+systems could administer a system that is configured with Trusted Extensions.
+Therefore, the system is initially installed without the ability for it to
+be remotely administered.</para>
+<para>Until the network is configured, all remote hosts are assigned the <literal>admin_low</literal> security template. Therefore, the CIPSO protocol is not
+used or accepted for any connections. While in this initial state, the system
+is protected from remote attacks by several mechanisms. Mechanisms include
+netservices settings, default login policy, and PAM policy.</para>
+<itemizedlist>
+<listitem>
+<para>When the <literal>netservices</literal> Service Management
+Facility (SMF) profile is set to <literal>limited</literal>, no remote services
+except secure shell are enabled. However, the <command>ssh</command> service
+cannot be used for remote logins because of the login and PAM policies.</para>
+</listitem>
+<listitem>
+<para>The <literal>root</literal> account cannot be used for remote
+logins because the default policy for <literal>CONSOLE</literal> in <filename>/etc/default/login</filename> prevents remote logins by <literal>root</literal>.</para>
+</listitem>
+<listitem>
+<para>Two PAM settings also affect remote logins.</para>
+<para>The <literal>pam_roles</literal> module always rejects local logins from accounts of type <literal>role</literal>. By default, this module also rejects remote logins. However,
+the system can be configured to accept remote logins by specifying <literal>allow_remote</literal> in the system's <filename>pam.conf</filename> entry.</para>
+<para>Additionally,
+the <literal>pam_tsol_account</literal> module rejects remote logins into
+the global zone unless the CIPSO protocol is used. The intent for this policy
+is that remote administration should be done using another Trusted Extensions system.</para>
+</listitem>
+</itemizedlist>
+<para>To enable remote login functionality, both systems must assign their
+peer to a CIPSO security template. If this approach is not practical, the
+network protocol policy can be relaxed by specifying the <literal>allow_unlabeled</literal> option in the <filename>pam.conf</filename> file. If either one
+of these two policies are relaxed, the default network template should be
+changed so that arbitrary machines cannot access the global zone. The <literal>admin_low</literal> template should be used sparingly, and the <filename>tnrhdb</filename> database
+should be modified so that the wildcard address <literal>0.0.0.0</literal> does
+not default to the <literal>admin_low</literal> label. For details, see <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-21">Administering Remotely (Tasks)</olink> and <olink remap="external" targetdoc="chapter-13.xml" targetptr="managetnet-8">How to Limit the Hosts That Can Be Contacted on the
+Trusted Network</olink>.</para>
+</sect1>
+<sect1 xml:id="remotead-4">
+<title>Methods for Administering Remote Systems</title>
+<indexterm xml:id="indexterm-482">
+<primary>remote administration</primary>
+<secondary>methods</secondary>
+</indexterm>
+<para>Typically, administrators use the <command>rlogin</command> and <command>ssh</command> commands to administer remote systems from the command line. The Solaris Management Console can
+also be used. In CDE, the <command>dtappsession</command> program can launch
+Trusted CDE actions remotely.</para>
+<itemizedlist>
+<listitem>
+<para>The root user can log in to a remote host from a terminal.
+For the steps, see <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-18">How to Log In Remotely From
+the Command Line</olink>. This method works as it does on a Solaris system.
+This method is insecure.</para>
+</listitem>
+<listitem>
+<para>A role can log in to a remote host from a terminal in their
+role workspace. For the steps, see <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-18">How to Log
+In Remotely From the Command Line</olink>.</para>
+</listitem>
+<listitem>
+<para>Administrators can launch a Solaris Management Console server that is running on
+a remote host. For the steps, see <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-12">How to Remotely
+Administer With the Solaris Management Console</olink>.</para>
+</listitem>
+<listitem>
+<para>Actions in the Trusted_Extensions folder can be started remotely
+by using the <command>dtappsession</command> command. For the steps, see <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-13">How to Remotely Administer With dtappsession</olink>.</para>
+</listitem>
+</itemizedlist>
+</sect1>
+<sect1 xml:id="remotead-54">
+<title>Remote Login by a Role</title>
+<indexterm xml:id="indexterm-483">
+<primary>roles</primary>
+<secondary>remote login</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-484">
+<primary>login</primary>
+<secondary>remote by roles</secondary>
+</indexterm>
+<para>As in the Solaris OS, a setting in the <filename>/etc/default/login</filename> file
+on each host must be changed to allow remote logins. In Trusted Extensions, the
+Security Administrator role is responsible for the change. For the procedure,
+see <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-33">How to Enable root to Log In Remotely</olink>.</para>
+<para>On both Trusted Extensions and Solaris hosts, remote logins might
+or might not require authorization. <olink remap="internal" targetdoc="chapter-8.xml" targetptr="manageusers-89">Remote
+Login Management</olink> describes the conditions and types of logins that
+require authorization. By default, roles have the Remote Login authorization.</para>
+<sect2 xml:id="remotead-63">
+<title>Remote Role-Based Administration From Unlabeled
+Hosts</title>
+<indexterm xml:id="indexterm-485">
+<primary>roles</primary>
+<secondary>role assumption from unlabeled host</secondary>
+</indexterm>
+<para>In Trusted Extensions, users assume roles through the Trusted Path menu.
+The roles then operate in protected trusted workspaces. By default, roles
+cannot be assumed outside of the trusted path. If site policy permits, the
+Security Administrator role can change the default policy. Administrators
+on unlabeled hosts that are running Solaris Management Console 2.1 client software can then administer
+trusted hosts.</para>
+<itemizedlist>
+<listitem>
+<para>To change the default, see <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-72">How
+to Enable Remote Administration by a Role</olink>.</para>
+</listitem>
+<listitem>
+<para>To administer remotely, see <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-18">How
+to Log In Remotely From the Command Line</olink>.</para>
+</listitem>
+</itemizedlist>
+<para>This policy change only applies when the user on the remote unlabeled
+computer has a user account on the Trusted Extensions host. The Trusted Extensions user
+account must have the ability to assume the administrative role. The role
+can then also use the Solaris Management Console to administer the remote system.</para>
+<caution>
+
+<para>If remote administration from a non-Trusted Extensions host is
+enabled, the administrative environment is less protected than a Trusted Extensions administrative
+workspace. Be cautious when entering passwords and other secure data. As a
+precaution, shut down all untrusted applications before starting the Solaris Management Console.</para>
+</caution>
+</sect2>
+<sect2 xml:id="manageusers-89">
+<title>Remote Login Management</title>
+<para>A remote login between two Trusted Extensions hosts is considered to be
+an extension of the current login session.</para>
+<para>An authorization is not required when the <command>rlogin</command> command
+does not prompt for a password. If an <filename>/etc/hosts.equiv</filename> or
+a <filename>.rhosts</filename> file in the user's home directory on the remote
+host lists either the username or the host from which the remote login is
+being attempted, no password is required. For more information, see the <olink remap="external" targetdoc="819-2251" targetptr="rhosts-4">
+<citerefentry>
+<refentrytitle>rhosts</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> and <olink remap="external" targetdoc="819-2239" targetptr="rlogin-1">
+<citerefentry>
+<refentrytitle>rlogin</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> man pages.</para>
+<para>For all other remote logins, including logins with the <olink remap="external" targetdoc="819-2239" targetptr="ftp-1">
+<citerefentry>
+<refentrytitle>ftp</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> command, the Remote Login
+authorization is required.</para>
+<para>To create a profile that includes the Remote Login authorizations, see <olink remap="external" targetdoc="chapter-7.xml" targetptr="usermgr-13">Managing Users and Rights With Solaris Management Console
+(Tasks)</olink>.</para>
+</sect2>
+</sect1>
+<sect1 xml:id="remotead-21">
+<title>Administering Remotely (Tasks)</title>
+<indexterm xml:id="indexterm-486">
+<primary>Administering Remotely (Tasks)</primary>
+</indexterm>
+<indexterm xml:id="indexterm-487">
+<primary>tasks and task maps</primary>
+<secondary>Administering Remotely (Tasks)</secondary>
+</indexterm>
+<para>The following table describes how to administer a remote Trusted Extensions host.</para>
+<informaltable frame="all" pgwide="1">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec0" colwidth="32.94*"/>
+<colspec colname="colspec1" colwidth="33.09*"/>
+<colspec colname="colspec2" colwidth="32.97*"/>
+<thead>
+<row>
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Enable root to remotely log in to a Trusted Extensions host</para>
+</entry>
+<entry>
+<para>Enable the <literal>root</literal> user to work remotely from a labeled
+host.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-33">How to Enable root to Log In Remotely</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Enable a role to remotely log in to a Trusted Extensions host</para>
+</entry>
+<entry>
+<para>Allow any role to work remotely from a labeled host.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-72">How to Enable Remote Administration by
+a Role</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Enable remote login from an unlabeled host to a Trusted Extensions host</para>
+</entry>
+<entry>
+<para>Allow any user or role to work remotely from an unlabeled host.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-10">How to Enable Remote Logins From an Unlabeled
+Host</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Log in remotely to a Trusted Extensions host</para>
+</entry>
+<entry>
+<para>Log in as a role to a Trusted Extensions.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-18">How to Log In Remotely From the Command
+Line</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry morerows="1" rowsep="1">
+<para>Administer a host remotely</para>
+</entry>
+<entry>
+<para>Use the <command>dtappsession</command> command to administer the remote
+host with Trusted_Extensions actions.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-13">How to Remotely Administer With dtappsession</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Use the Solaris Management Console to administer the remote host.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-12">How to Remotely Administer With the Solaris
+Management Console</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Enable specific users to log in to the global zone</para>
+</entry>
+<entry>
+<para>Use user and network tools in the Solaris Management Console to enable specific users to
+access the global zone.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-14">How to Enable Specific Users to Log in
+Remotely to the Global Zone</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<sect2>
+<title/>
+<task id="remotead-33">
+
+<title>How to Enable <literal>root</literal> to Log
+In Remotely</title>
+<tasksummary>
+<para>As in the Solaris OS, root can log in remotely from a labeled host when
+the <literal>CONSOLE</literal> entry is disabled. To log in from an unlabeled
+host, the <literal>allow_unlabeled</literal> option must be added to the <filename>pam.conf</filename> file.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You must be in the Security Administrator role in the global zone.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Edit the <filename>/etc/default/login</filename> file.</para>
+<para>Use
+the Admin Editor action. For details, see <olink remap="external" targetdoc="chapter-3.xml" targetptr="roles-10">How
+to Edit Administrative Files in Trusted Extensions</olink>.</para>
+<substeps>
+<step>
+<para>Insert a pound sign (#) to comment out the line: <literal>CONSOLE=/dev/console</literal>.</para>
+<screen>#CONSOLE=/dev/console</screen>
+</step>
+<step>
+<para>Save and quit the file.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>To use <command>ssh</command>, you must permit root logins.</para>
+<para>Modify the <filename>/etc/ssh/sshd_config</filename> file.</para>
+<screen>PermitRootLogin <userinput>yes</userinput>
+</screen>
+</step>
+<step>
+<para>To log in from an unlabeled host, you relax PAM policy.</para>
+<para>For
+the procedure, see <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-10">How to Enable Remote Logins
+From an Unlabeled Host</olink>.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="remotead-72">
+
+<title>How to Enable Remote Administration by a Role</title>
+<indexterm xml:id="indexterm-488">
+<primary>roles</primary>
+<secondary>logging in remotely</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-489">
+<primary>login</primary>
+<secondary>remote</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-490">
+<primary>remote logins</primary>
+<secondary>enabling for roles</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-491">
+<primary>administering</primary>
+<secondary>remotely by a role</secondary>
+</indexterm>
+<tasksummary>
+<para>Follow this procedure to enable a role, including the <literal>root</literal> role,
+to remotely log in from a labeled host.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You must be in the Security Administrator role in the global zone.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Launch a terminal.</para>
+<para>Bring up the Workspace Menu by
+clicking with mouse button 3 on the screen background. Select Tools -&gt;
+Terminal.</para>
+</step>
+<step>
+<para>Relax the PAM policy for <literal>pam_tsol_account.so.1</literal>.</para>
+<substeps>
+<step>
+<para>Edit the <filename>/etc/pam.conf</filename> file.</para>
+</step>
+<step>
+<para>Add <literal>allow_remote</literal> to the <literal>account</literal> module
+for <literal>pam_roles.so.1</literal>.</para>
+<screen>other   account   required    pam_roles.so.1   <userinput>allow_remote</userinput>
+</screen>
+<para>The fields are separated by tabs.</para>
+</step>
+<step>
+<para>Save and quit the file.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>To log in as the <literal>root</literal> role, complete <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-33">How to Enable root to Log In Remotely</olink>.</para>
+</step>
+<step>
+<para>To log in from an unlabeled host, you relax PAM policy.</para>
+<para>For
+the procedure, see <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-10">How to Enable Remote Logins
+From an Unlabeled Host</olink>.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="remotead-10">
+
+<title>How to Enable Remote Logins From an
+Unlabeled Host</title>
+<tasksummary>
+<para>For any user or role to log in from an unlabeled host, the <literal>allow_unlabeled</literal> option must be added to the <filename>pam.conf</filename> file.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You should have completed <olink remap="external" targetdoc="chapter-13.xml" targetptr="managetnet-8">How to Limit
+the Hosts That Can Be Contacted on the Trusted Network</olink>.</para>
+<para>You must be in the Security Administrator role in the global zone.</para>
+</taskprerequisites>
+<procedure role="single-step">
+<step>
+<para>Relax the policy for <literal>pam_tsol_account.so.1</literal> in
+the <filename>/etc/pam.conf</filename> file.</para>
+<substeps>
+<step>
+<para>Add <literal>allow_unlabeled</literal> to the <literal>account</literal> module
+for <literal>pam_tsol_account.so.1</literal>.</para>
+<screen>other   account   required    pam_tsol_account.so.1   <userinput>allow_unlabeled</userinput>
+</screen>
+<para>The fields are separated by tabs.</para>
+</step>
+<step>
+<para>Save and quit the file.</para>
+</step>
+</substeps>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="remotead-18">
+
+<title>How to Log In Remotely From the Command Line</title>
+<indexterm xml:id="indexterm-492">
+<primary>administering</primary>
+<secondary>remotely from command line</secondary>
+</indexterm>
+<tasksummary>
+<note>
+
+<para>The <command>telnet</command> cannot be used for remote role assumption
+because this command cannot pass the primary and role identities to the <literal>pam_roles</literal> module.</para>
+</note>
+</tasksummary>
+<taskprerequisites>
+
+<para>The role must have the Remote Login authorization. By default, this
+authorization is in the Remote Administration and Maintenance and Repair rights
+profiles.</para>
+<para>The Security Administrator has completed the procedure <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-72">How to Enable Remote Administration by a Role</olink> on
+every host that is going to be remotely administered. If the computer can
+be administered from an unlabeled host, the procedure <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-10">How to Enable Remote Logins From an Unlabeled Host</olink> has
+also been completed.</para>
+</taskprerequisites>
+<procedure role="single-step">
+<step>
+<para>From a role workspace, log in to the remote host.</para>
+<para>Use
+the <command>rlogin</command> command, the <command>ssh</command> command,
+or the <command>ftp</command> command.</para>
+<itemizedlist>
+<listitem>
+<para>If the <command>rlogin</command> command is used to log in,
+all commands that are in the current role's rights profiles are available.</para>
+</listitem>
+<listitem>
+<para>If the <command>ftp</command> command is used, see the <olink remap="external" targetdoc="819-2239" targetptr="ftp-1">
+<citerefentry>
+<refentrytitle>ftp</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> man page for the commands
+that are available.</para>
+</listitem>
+</itemizedlist>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="remotead-13">
+
+<title>How to Remotely Administer With <command>dtappsession</command>
+</title>
+<indexterm xml:id="indexterm-493">
+<primary>administering</primary>
+<secondary>remotely with <command>dtappsession</command>
+</secondary>
+</indexterm>
+<tasksummary>
+<para>The <command>dtappsession</command> program enables an administrator
+to administer a remote system that is running CDE. You can also invoke <command>dtappsession</command> from a Solaris Management Console that is administering a remote system. For details,
+see <olink remap="internal" targetdoc="chapter-8.xml" targetptr="remotead-12">How to Remotely Administer With the Solaris
+Management Console</olink>.</para>
+<para>
+<command>dtappsession</command> is useful when a remote host does not
+have a monitor. For example, <command>dtappsession</command> is often used
+when to administer domains on large servers. For more information, see the <olink remap="external" targetdoc="819-7307" targetptr="dtappsession-1">
+<citerefentry>
+<refentrytitle>dtappsession</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> man page.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>On a labeled host, you must be in an administrative role in the global
+zone. On an unlabeled host, you must assume a role that is defined on the
+remote host. You must then run the remote login from the role's profile shell.</para>
+</taskprerequisites>
+<procedure>
+<step performance="optional">
+
+<para>Create a workspace that is dedicated to
+the remote session.</para>
+<para>To avoid confusion between the remote CDE
+applications and any local applications, dedicate an administrative role workspace
+to this procedure.</para>
+</step>
+<step>
+<para>Log in to the remote host.</para>
+<para>You can use the <command>rlogin</command> command or the <command>ssh</command> command.</para>
+<screen>$ <userinput>ssh <replaceable>remote-host</replaceable>
+</userinput>
+</screen>
+</step>
+<step>
+<para>Start remote administration.</para>
+<para>In the terminal, type
+the <command>dtappsession</command> command followed by the name of the local
+host.</para>
+<screen>$ <userinput>/usr/dt/bin/dtappsession <replaceable>local-host</replaceable>
+</userinput>
+</screen>
+<para>An Application Manager that is running on the remote host displays on
+the local host. Also, an Exit dialog box appears.</para>
+</step>
+<step>
+<para>Administer the remote host.</para>
+<para>If you invoked the remote
+session from CDE, you can use actions in the Trusted_Extensions folder.</para>
+</step>
+<step>
+<para>When finished, click the <literal>Exit</literal> button.</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="figures/dtappexit.gif"/>
+</imageobject>
+<textobject>
+<simpara>Dialog box shows the name of a remote host and an Exit
+button.</simpara>
+</textobject>
+</mediaobject>
+<caution>
+
+<para>Closing the Application Manager does not end the login session
+and is not recommended.</para>
+</caution>
+</step>
+<step>
+<para>In the terminal, exit the remote login session.</para>
+<screen>$ <userinput>exit</userinput>
+$ <userinput>hostname</userinput>
+<replaceable>local-host</replaceable>
+</screen>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="remotead-12">
+
+<title>How to Remotely Administer With the Solaris Management Console</title>
+<indexterm xml:id="indexterm-494">
+<primary>roles</primary>
+<secondary>administering remotely</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-495">
+<primary>administrative actions</primary>
+<secondary>launching remotely</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-496">
+<primary>administering</primary>
+<secondary>remotely with Solaris Management Console</secondary>
+</indexterm>
+<tasksummary>
+<para>The Solaris Management Console provides a remote administration interface.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You must be in an administrative role in the global zone.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Launch the Solaris Management Console.</para>
+<para>For details, see <olink remap="external" targetdoc="chapter-3.xml" targetptr="roles-15">How to Launch the Solaris Management Console</olink>.</para>
+<substeps>
+<step>
+<para>From the Console menu, choose Open Toolbox.</para>
+</step>
+<step>
+<para>In the Open Toolbox dialog box, select the appropriate server.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>Administer the remote system.</para>
+<para>To run <command>dtappsession</command>, double-click the Legacy Applications icon in the left panel.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="remotead-14">
+
+<title>How to Enable Specific Users to Log in Remotely
+to the Global Zone</title>
+<indexterm xml:id="indexterm-497">
+<primary>users</primary>
+<secondary>logging in remotely to the global zone</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-498">
+<primary>global zone</primary>
+<secondary>remote login by users</secondary>
+</indexterm>
+<tasksummary>
+<para>You might want to do this procedure for a tester who is using a labeled
+host remotely. For security, the host should be running a disjoint label from
+other users.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You should have a very good reason why this user can log in to the global
+zone.</para>
+<para>You must be in the Security Administrator role in the global zone.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>For specific users to log in to the global zone, assign to them
+an administrative label range.</para>
+<para>Use the Solaris Management Console to assign a clearance
+of <constant>ADMIN_HIGH</constant> and a minimum label of <constant>ADMIN_LOW</constant> to
+each user. For details, see <olink remap="external" targetdoc="chapter-7.xml" targetptr="manageusers-14">How to Modify
+a User's Label Range in the Solaris Management Console</olink>.</para>
+</step>
+<step>
+<para>To enable remote login from a labeled zone into the global zone,
+do the following.</para>
+<substeps>
+<step>
+<para>Enable remote login to the global zone.</para>
+<para>Use the Solaris Management Console to
+add a multilevel port to the global zone. Port 513 over the TCP protocol enables
+remote login. For an example, see <olink remap="external" targetdoc="chapter-10.xml" targetptr="managezones-5">How to
+Create a Multilevel Port for a Zone</olink>.</para>
+</step>
+<step>
+<para>Read the <filename>tnzonecfg</filename> changes into the kernel.</para>
+<screen># <userinput>tnctl -fz /etc/security/tsol/tnzonecfg</userinput>
+</screen>
+</step>
+<step>
+<para>Restart the remote login service.</para>
+<screen># <userinput>svcadm restart svc:/network/login:rlogin</userinput>
+</screen>
+</step>
+</substeps>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+</chapter>

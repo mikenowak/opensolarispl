@@ -1,0 +1,67 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Creating a ZFS Storage Pool</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="up" href="ch02.html" title="Chapter 2. Getting Started With ZFS"><link rel="prev" href="ch02s02.html" title="Creating a Basic ZFS File System"><link rel="next" href="ch02s04.html" title="Creating a ZFS File System Hierarchy"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Creating a ZFS Storage Pool</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s02.html">Prev</a> </td><th width="60%" align="center">Chapter 2. Getting Started With ZFS</th><td width="20%" align="right"> <a accesskey="n" href="ch02s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gayob"></a>Creating a ZFS Storage Pool</h2></div></div></div>
+
+<p>The previous example illustrates the simplicity of ZFS. The remainder
+of this chapter demonstrates a more complete example similar to what you would
+encounter in your environment. The first tasks are to identify your storage
+requirements and create a storage pool. The pool describes the physical characteristics
+of the storage and must be created before any file systems are created.</p>
+<div class="task"><a name="gayol"></a><p class="title"><b>Identifying Storage Requirements</b></p><div class="procedure"><ol type="1"><li>
+<p>Determine available devices.</p>
+<p>Before creating a storage
+pool, you must determine which devices will store your data. These devices
+must be disks of at least 128 Mbytes in size, and they must not be in use
+by other parts of the operating system. The devices can be individual slices
+on a preformatted disk, or they can be entire disks that ZFS formats as a
+single large slice.<a class="indexterm" name="indexterm-50"></a>
+<a class="indexterm" name="indexterm-51"></a>
+</p>
+<p>For the storage example used in <span class="olink">Creating the ZFS Storage Pool</span>, assume that the whole disks <code class="filename">/dev/dsk/c1t0d0</code> and <code class="filename">/dev/dsk/c1t0d0</code> are available for use.</p>
+<p>For more information about disks and how they are used and labeled,
+see <span class="olink">Using Disks in a ZFS Storage Pool</span>.</p>
+</li><li>
+<p>Choose data replication.</p>
+<p>ZFS supports multiple types
+of data replication, which determines what types of hardware failures the
+pool can withstand. ZFS supports nonredundant (striped) configurations, as
+well as mirroring and RAID-Z (a variation on RAID-5). </p>
+<p>For the
+storage example used in <span class="olink">Creating the ZFS Storage Pool</span>, basic mirroring of two available disks is used.</p>
+<p>For
+more information about ZFS replication features, see <span class="olink">Replication Features of a ZFS Storage Pool</span>.</p>
+</li></ol></div></div>
+<div class="task"><a name="gayok"></a><p class="title"><b>Creating the ZFS Storage Pool</b></p><div class="procedure"><ol type="1"><li>
+<p>Become root or assume an equivalent role with the appropriate
+ZFS rights profile.</p>
+<p>For more information about the ZFS rights
+profiles, see <span class="olink">ZFS Rights Profiles</span>.</p>
+</li><li>
+<p>Pick a pool name.</p>
+<p>The pool name is used to identify
+the storage pool when you are using the <span><strong class="command">zpool</strong></span> or <span><strong class="command">zfs</strong></span> commands.
+Most systems require only a single pool, so you can pick any name that you
+prefer, provided it satisfies the naming requirements outlined in <span class="olink">ZFS Component Naming Requirements</span>. </p>
+</li><li>
+<p>Create the pool.</p>
+<p>For example, create a mirrored pool
+that is named <code class="literal">tank</code>.<a class="indexterm" name="indexterm-52"></a>
+</p>
+<pre class="screen"># <strong class="userinput"><code>zpool create tank mirror c1t0d0 c1t1d0</code></strong>
+</pre>
+<p>If one or more devices contains another file system or is otherwise
+in use, the command cannot create the pool.</p>
+<p>For more information
+about creating storage pools, see <span class="olink">Creating a ZFS Storage Pool</span>.</p>
+<p>For more information about how device usage
+is determined, see <span class="olink">Detecting in Use Devices</span>.</p>
+</li><li>
+<p>View the results.</p>
+<p>You can determine if your pool was
+successfully created by using the <span><strong class="command">zpool list</strong></span> command.<a class="indexterm" name="indexterm-53"></a>
+<a class="indexterm" name="indexterm-54"></a>
+</p>
+<pre class="screen"># <strong class="userinput"><code>zpool list</code></strong>
+NAME                    SIZE    USED   AVAIL    CAP  HEALTH     ALTROOT
+tank                     80G    137K     80G     0%  ONLINE     -</pre>
+<p>For more information about viewing pool status, see <span class="olink">Querying ZFS Storage Pool Status</span>.</p>
+</li></ol></div></div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Creating a Basic ZFS File System </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Creating a ZFS File System Hierarchy</td></tr></table></div></body></html>

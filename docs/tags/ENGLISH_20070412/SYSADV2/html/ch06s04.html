@@ -1,0 +1,305 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Customizing the Printer Interface Program</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch06.html" title="Chapter 6. Customizing the LP Print Service
+(Tasks)"><link rel="prev" href="ch06s03.html" title="Adding a terminfo Entry for
+an Unsupported Printer"><link rel="next" href="ch06s05.html" title="Creating a New Print Filter"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Customizing the Printer Interface Program</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch06s03.html">Prev</a> </td><th width="60%" align="center">Chapter 6. Customizing the LP Print Service
+(Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch06s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printcust-49492"></a>Customizing the Printer Interface Program</h2></div></div></div>
+
+<a class="indexterm" name="printcust-ix720"></a>
+<a class="indexterm" name="printcust-ix721"></a>
+<a class="indexterm" name="printcust-ix722"></a>
+<p>If you have a printer that is not supported by the standard printer interface
+program, you can furnish your own printer interface program. You can copy the standard
+program and then tell the LP print service to use it for a specified printer. First,
+you need to understand what is in the standard program. The following section describes
+the standard program.</p>
+<p>A printer interface program should perform the following tasks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Initialize the printer port, if necessary. The standard printer interface
+program uses the <span><strong class="command">stty</strong></span> command to initialize the printer port.</p>
+</li><li>
+<p>Initialize the printer hardware. The standard printer interface program
+receives the control sequences from the <code class="filename">terminfo</code> database and
+the <span><strong class="command">TERM</strong></span> shell variable.</p>
+</li><li>
+<p>Print a banner page, if necessary.</p>
+</li><li>
+<p>Print the number of copies that are specified by the print request.</p>
+</li></ul></div>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>If you have a printer interface program from a release of UNIX System
+V prior to release 3.2, it will probably work with the Solaris Express  or compatible LP print service. However, several <code class="option">
+o</code> options
+have been standardized in the Solaris Express or
+compatible LP print service. These options will be passed to every printer interface
+program. These options might interfere with similarly named options used by the old
+interface.</p>
+</div>
+<p>The LP print service, not a printer interface program, is responsible for opening
+the printer port. The printer port is given to the printer interface program as standard
+output. In addition, the printer is identified as the &#8220;controlling terminal&#8221;
+for the printer interface program so that a &#8220;hang-up&#8221; of the port causes
+a SIGHUP signal to be sent to the printer interface program.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printcust-52759"></a>The Standard Printer Interface Program</h3></div></div></div>
+
+<a class="indexterm" name="printcust-ix723"></a>
+<p>The standard (model) printer interface program is <code class="filename">/usr/lib/lp/model/standard</code>. This program is used by the LP print service to set the printing defaults
+shown in the following table.</p>
+<div class="table"><a name="printcust-16763"></a><p class="title"><b>Table 6.5. Default Printer Port Characteristics</b></p>
+
+
+<table summary="Default Printer Port Characteristics" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Characteristic</p>
+</th><th>
+<p>Default Setting</p>
+</th></tr></thead><tbody><tr><td>
+<p>Default filter</p>
+</td><td>
+<p>
+<code class="literal">None</code>
+</p>
+</td></tr><tr><td>
+<p>Character pitch</p>
+</td><td>
+<p>
+<code class="literal">None</code>
+</p>
+</td></tr><tr><td>
+<p>Line pitch</p>
+</td><td>
+<p>
+<code class="literal">None</code>
+</p>
+</td></tr><tr><td>
+<p>Page width</p>
+</td><td>
+<p>
+<code class="literal">None</code>
+</p>
+</td></tr><tr><td>
+<p>Page length</p>
+</td><td>
+<p>
+<code class="literal">None</code>
+</p>
+</td></tr><tr><td>
+<p>Character set</p>
+</td><td>
+<p>
+<code class="literal">None</code>
+</p>
+</td></tr><tr><td>
+<p>
+<span><strong class="command">stty</strong></span> options</p>
+</td><td>
+<p>
+<code class="literal">9600 cs8 -cstopb -parenb -parodd ixon -ixany opost -olcuc onlcr -ocrnl
+-onocr -onlret -ofill nl0 cr0 tab0 bs0 vt0 ff0</code>
+</p>
+</td></tr><tr><td>
+<p>
+<a class="indexterm" name="printcust-ix724"></a>Exit code </p>
+</td><td>
+<p>
+<code class="literal">0</code>
+</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printcust-13"></a>Customizing <span><strong class="command">stty</strong></span> Modes</h3></div></div></div>
+
+<a class="indexterm" name="printcust-ix725"></a>
+<p>
+<a class="indexterm" name="printcust-ix726"></a>
+<a class="indexterm" name="printcust-ix727"></a>
+<a class="indexterm" name="printcust-ix728"></a>If you need to change the terminal characteristics, such as baud rate
+or output options, find the section of the standard printer interface program that
+begins with the following comment:</p>
+<p>
+<code class="literal">## Initialize the printer port</code>
+</p>
+<p>For more information, see the <span class="olink">Adjusting Printer Port Characteristics</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printcust-14"></a>Exit Codes</h3></div></div></div>
+
+<a class="indexterm" name="printcust-ix729"></a>
+<a class="indexterm" name="printcust-ix730"></a>
+<a class="indexterm" name="printcust-ix731"></a>
+<p>When printing is complete, your interface program should exit with a code that
+shows the status of the print job. The exit code is the last entry in the printer
+interface program.</p>
+<p>
+<a class="indexterm" name="printcust-ix732"></a>
+<a class="indexterm" name="printcust-ix733"></a>The following table shows the exit codes and how they are interpreted
+by the LP print service.</p>
+<div class="table"><a name="printcust-74466"></a><p class="title"><b>Table 6.6. Printer Interface Program Exit Codes</b></p>
+
+
+<table summary="Printer Interface Program Exit Codes" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Exit Code</p>
+</th><th>
+<p>Meaning to the LP Print Service</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">0</code> </p>
+</td><td>
+<p>The print request has been successfully completed. If a printer fault occurred,
+it has been cleared.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">1</code> to <code class="literal">127</code>
+</p>
+</td><td>
+<p>A problem was encountered when printing a request. For example, there were too
+many nonprintable characters or the request exceeds the printer's capabilities. The
+LP print service notifies the person who submitted the request that an error occurred
+when printing it. This error does not affect future print requests. If a printer fault
+has occurred, it has been cleared.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">128</code>
+</p>
+</td><td>
+<p>This code is reserved for use by the LP print service. Interface programs must
+not exit with this code.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">129</code>
+</p>
+</td><td>
+<p>A printer fault was encountered when printing the request. This fault does affect
+future print requests. If the fault recovery for the printer directs the LP print
+service to wait for the administrator to correct the problem, the LP print service
+disables the printer. If the fault recovery is to continue printing, the LP print
+service does not disable the printer. However, the print service will try printing
+again in a few minutes.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">&gt;129</code>
+</p>
+</td><td>
+<p>These codes are reserved for use by the LP print service. Interface programs
+must not exit with codes in this range.</p>
+</td></tr></tbody></table>
+</div>
+<p>If the program exits with a code of 129, <code class="literal">root</code> is alerted
+of a printer fault. The LP print service must also reprint the request from the beginning,
+after the fault has been cleared. If you do not want the entire request to be reprinted,
+you can have the interface program send a fault message to the LP print service. (First
+wait for the fault to be cleared.) When the fault is cleared, the interface program
+can resume printing the file. When printing is finished, the printer interface program
+can give a <code class="literal">0</code> exit code, just as if the fault had never occurred.
+An added advantage of this approach: The interface program can detect when the fault
+is cleared automatically. Thus, the administrator does not need to re-enable the printer.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printcust-15"></a>Fault Messages</h3></div></div></div>
+
+<a class="indexterm" name="printcust-ix734"></a>
+<p>You can use the <span><strong class="command">lp.tell</strong></span> program to send fault messages to
+the LP print service. This program is referenced by the <span><strong class="command">LPTELL</strong></span> shell
+variable in the standard printer interface code. The program takes standard input
+and sends it to the LP print service. The LP print service puts standard input into
+the message that alerts the administrator to the printer fault. If its standard input
+is empty, the <span><strong class="command">lp.tell</strong></span> program does not initiate an alert. For an
+example of how the <span><strong class="command">lp.tell</strong></span> program is used, examine the standard
+printer interface code immediately after the following comment:</p>
+<p>
+<code class="literal"># Set up the $LPTELL program to capture fault messages here</code>
+</p>
+<p>If you use the special exit code <code class="literal">129</code> or the <span><strong class="command">lp.tell</strong></span> program, the printer interface program does not need to disable the printer
+itself. The interface program can disable the printer directly. However, doing so
+overrides the fault-alerting mechanism. Alerts are sent only if the LP print service
+detects that the printer has a fault, and the special exit code and the <span><strong class="command">lp.tell</strong></span> program are its main detection tools.</p>
+<p>If the LP print service has to interrupt printing of a file at any time, it
+kills the interface program with a signal TERM (trap number 15). For more information,
+see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">kill</span>
+(
+1
+)
+</span>
+</span> and <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">signal</span>
+(
+3C
+)
+</span>
+</span> man pages. If the printer interface program
+dies from receipt of any other signal, the LP print service assumes that future print
+requests will not be affected. As a result, the LP print service continues to use
+the printer. The LP print service notifies the user who submitted the request that
+the request has not been finished successfully.</p>
+<p>When the interface is first invoked, the signals HUP, INT, QUIT, and PIPE (trap
+numbers 1, 2, 3, and 13) are ignored. The standard interface changes this default
+behavior, so that the signals are trapped at appropriate times. The standard interface
+interprets receipt of these signals as warnings that the printer has a problem. When
+the standard interface receives a signal, it issues a fault alert.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printcust-16"></a>Using a Customized Printer Interface Program</h3></div></div></div>
+
+<p>You can create a customized printer interface program and use it instead of
+the standard printer interface program on the print server. To do so, you use the <span><strong class="command">lpadmin</strong></span> command to register the program with the LP print service for a
+specific printer.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2153276"></a></h3></div></div></div>
+
+<div class="task"><a name="printcust-47894"></a><p class="title"><b>How to Set Up a Custom Printer Interface Program</b></p><a class="indexterm" name="indexterm-117"></a><a class="indexterm" name="indexterm-118"></a><a class="indexterm" name="indexterm-119"></a><div class="procedure"><ol type="1"><li><a name="printcust-step-18"></a>
+<p>Log in as superuser, <code class="literal">lp</code>,  or
+assume an equivalent role on the print server.</p>
+</li><li><a name="printcust-step-20"></a>
+<p>
+<a class="indexterm" name="printcust-ix741"></a>
+<a class="indexterm" name="printcust-ix742"></a>
+<a class="indexterm" name="printcust-ix743"></a>Copy the standard printer interface program.</p>
+<pre class="screen"># <strong class="userinput"><code>cp /var/spool/lp/model/standard</code></strong>  <em class="replaceable"><code>custom-interface</code></em>
+</pre>
+</li><li>
+
+<p>If you already have a custom printer interface
+program, go to  <span class="olink">Step 5</span>
+</p>
+</li><li><a name="printcust-step-21"></a>
+<p>Change the copy of the standard printer interface
+program to meet your needs.</p>
+<p>Refer to the description of the program in <span class="olink">The Standard Printer Interface Program</span> to determine
+what you need to change.</p>
+</li><li><a name="printcust-step-22"></a>
+<p>Set up the custom printer interface program for
+a specific printer.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p</code></strong> <em class="replaceable"><code>printer-name</code></em> <strong class="userinput"><code>-i</code></strong> <em class="replaceable"><code>custom-interface</code></em>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+p</code>
+</span></dt><dd>
+<p>Specifies the printer that will use the custom printer interface program.</p>
+</dd><dt><span class="term">
+<code class="option">
+i</code>
+</span></dt><dd>
+<p>Is the name of the custom printer interface program.</p>
+</dd></dl></div>
+<p>The custom printer interface program is registered with the LP print service,
+and will be used by that printer when users submit print requests.</p>
+</li><li><a name="printcust-step-49"></a>
+<p>Verify that the custom printer interface program
+has been added in the <code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em>
+<code class="filename">/configuration</code> file.</p>
+</li></ol></div><div class="example"><a name="emjhw"></a><p class="title"><b>Example 6.3. Setting Up a Custom Printer Interface Program</b></p>
+
+
+<p>This example shows how to set up a custom printer interface program named <code class="literal">custom</code> for the printer <code class="literal">luna</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p luna -i custom</code></strong>
+</pre>
+</div><div class="example"><a name="emjiu"></a><p class="title"><b>Example 6.4. Copying a Custom Printer Interface Program</b></p>
+
+
+<p>This example shows how to copy a custom printer interface program from the printer <code class="literal">venus</code> to the printer <code class="literal">asteroid</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>lpadmin -p asteroid -e venus</code></strong>
+</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch06s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch06.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch06s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Adding a <code class="literal">terminfo</code> Entry for
+an Unsupported Printer </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Creating a New Print Filter</td></tr></table></div></body></html>

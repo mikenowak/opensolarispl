@@ -1,0 +1,139 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Creating State Database Replicas</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch07.html" title="Chapter 7. State Database (Tasks)"><link rel="prev" href="ch07.html" title="Chapter 7. State Database (Tasks)"><link rel="next" href="ch07s03.html" title="Maintaining State Database Replicas"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Creating State Database Replicas</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch07.html">Prev</a> </td><th width="60%" align="center">Chapter 7. State Database (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch07s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-state-db-replicas-9"></a>Creating State Database Replicas</h2></div></div></div>
+
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>If you upgraded from the Solstice DiskSuite product to Solaris Volume Manager and
+you have state database replicas sharing slices with file systems or logical
+volumes (as opposed to on separate slices), do not delete existing replicas
+and replace them with new default replicas in the same location.</p>
+<p>The default state database replica size in Solaris Volume Manager is 8192 blocks,
+while the default size in the Solstice DiskSuite product is 1034 blocks. Use
+caution if you delete a default-sized state database replica created in the
+Solstice DiskSuite product, and then add a new default-sized replica with Solaris Volume Manager.
+You will overwrite the first 7158 blocks of any file system that occupies
+the rest of the shared slice, thus destroying the data. </p>
+</div>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>Do not place state database replicas on fabric-attached storage,
+SANs, or other storage that is not directly attached to the system. You might
+not be able to boot Solaris Volume Manager. Replicas must be on storage devices that
+are available at the same point in the boot process as traditional SCSI or
+IDE drives. </p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1730623"></a></h3></div></div></div>
+
+<div class="task"><a name="tasks-state-db-replicas-3"></a><p class="title"><b>How to Create State Database Replicas</b></p><div class="taskprerequisites">
+
+<p>Check <span class="olink">Prerequisites for Creating Solaris Volume Manager Components</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-state-db-replicas-step-13"></a>
+<p>Become superuser.</p>
+</li><li><a name="tasks-state-db-replicas-step-14"></a>
+<p>To create state database
+replicas, use one of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the State Database Replicas node.
+Choose Action&#8658;Create Replicas and follow the onscreen instructions. For
+more information, see the online help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metadb</strong></span> command.
+See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metadb</span>
+(
+1M
+)
+</span>
+</span>.</p>
+<pre class="screen"># <strong class="userinput"><code>metadb  -a -c <em class="replaceable"><code>number</code></em> -l <em class="replaceable"><code>length-of replica</code></em> -f <em class="replaceable"><code>ctds-of-slice</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+a</code>
+</span></dt><dd>
+<p>Specifies to add or create a state database replica.</p>
+</dd><dt><span class="term">
+<code class="option">
+f</code>
+</span></dt><dd>
+<p>Specifies to force the operation, even if no replicas exist.
+Use the <code class="option">
+f</code> to force the creation of the initial replicas.</p>
+</dd></dl></div>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+c</code> <em class="replaceable"><code>number</code></em>
+</span></dt><dd>
+<p>Specifies the number of replicas to add to the specified slice.</p>
+</dd><dt><span class="term">
+<code class="option">
+l</code> <em class="replaceable"><code>length-of-replica</code></em>
+</span></dt><dd>
+<p>Specifies the size of the new replicas, in blocks. The default
+size is 8192. This size should be appropriate for virtually all configurations,
+including those configurations with thousands of logical volumes.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>ctds-of-slice</code></em>
+</span></dt><dd>
+<p>Specifies the name of the component that will hold the replica.</p>
+</dd></dl></div>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The <span><strong class="command">metadb</strong></span> command entered on the command line
+without options reports the status of all state database replicas.</p>
+</div>
+</li></ol></div><div class="example"><a name="egjwg"></a><p class="title"><b>Example 7.1. Creating the First State Database Replica</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metadb -a -f c0t0d0s7</code></strong>
+# <strong class="userinput"><code>metadb</code></strong>
+        flags         first blk      block count
+...
+     a      u         16             8192            /dev/dsk/c0t0d0s7</pre>
+<p>You must use the <code class="option">
+f</code> option along with the <code class="option">
+a</code> option to create the first state database replica. The <code class="option">
+a</code> option adds state database replicas to the system.The <code class="option">
+f</code> option forces the creation of the first replica (and may be omitted
+when you add supplemental replicas to the system). </p>
+</div><div class="example"><a name="egjwz"></a><p class="title"><b>Example 7.2. Adding Two State Database Replicas to the Same Slice</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metadb -a -c 2 c1t3d0s1</code></strong>
+<strong class="userinput"><code># metadb</code></strong>
+        flags         first blk      block count
+...
+     a        u         16              8192            /dev/dsk/c1t3d0s1
+     a        u         8208            8192            /dev/dsk/c1t3d0s1</pre>
+<p>The <code class="option">
+a</code> option adds state database replicas to the system.
+The <code class="option">
+c 2</code> option places two replicas on the specified slice.
+The <span><strong class="command">metadb</strong></span> command checks that the replicas are active,
+as indicated by the <code class="literal">a</code> flag in the <span><strong class="command">metadb</strong></span> command
+output.</p>
+</div><div class="example"><a name="egjwb"></a><p class="title"><b>Example 7.3. Adding State Database Replicas of a Specific Size</b></p>
+
+
+<p>If you are replacing existing state database replicas, you might need
+to specify a replica size. Particularly if you have existing state database
+replicas (on a system upgraded from the Solstice DiskSuite product, perhaps)
+that share a slice with a file system, you must replace existing replicas
+with other replicas of the same size or add new replicas in a different location.</p>
+<pre class="screen"># <strong class="userinput"><code>metadb -a -c 3 -l 1034 c0t0d0s7</code></strong>
+<strong class="userinput"><code># metadb</code></strong>
+        flags         first blk      block count
+...
+     a      u         16             1034            /dev/dsk/c0t0d0s7
+     a      u         1050           1034            /dev/dsk/c0t0d0s7
+     a      u         2084           1034            /dev/dsk/c0t0d0s7</pre>
+<p>The <code class="option">
+a</code> option adds state database replicas to the system.
+The <code class="option">
+l</code> option specifies the length in blocks of the replica
+to add.</p>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch07.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch07.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch07s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 7. State Database (Tasks) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Maintaining State Database Replicas</td></tr></table></div></body></html>

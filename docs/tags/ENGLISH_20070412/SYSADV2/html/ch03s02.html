@@ -1,0 +1,141 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Starting Solaris Print Manager</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch03.html" title="Chapter 3. Setting Up Printers (Tasks)"><link rel="prev" href="ch03.html" title="Chapter 3. Setting Up Printers (Tasks)"><link rel="next" href="ch03s03.html" title="Setting Up a Print Server"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Starting Solaris Print Manager</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Setting Up Printers (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch03s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printsetup-5"></a>Starting Solaris Print Manager</h2></div></div></div>
+
+<p>To start Solaris Print Manager, either select Printer Administrator from the
+CDE Workspace menu or start the Print Manager from the command line. See the following
+procedure for details.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2116444"></a></h3></div></div></div>
+
+<div class="task"><a name="printsetup-6"></a><p class="title"><b>How to Start Solaris Print Manager</b></p><a class="indexterm" name="indexterm-30"></a><a class="indexterm" name="indexterm-31"></a><a class="indexterm" name="indexterm-32"></a><div class="procedure"><ol type="1"><li><a name="printsetup-step-1"></a>
+<p>
+<a class="indexterm" name="printsetup-ix264"></a>Verify that the following prerequisites are met. To use Solaris Print
+Manager, you must meet the following requirements: </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Have a bitmapped display monitor, such as the standard display monitor
+that comes with a Sun workstation. Solaris Print Manager can be used only on a system
+with a console that is a bitmapped screen.</p>
+</li><li>
+<p>Be running an X Window System, such as the CDE environment, or be
+using the remote display feature on a system running an <span><strong class="command">xhost</strong></span> environment.</p>
+</li><li>
+<p>Be logged in as superuser or assume an equivalent role on the print
+server to install an attached or network printer, or on the print client to add access
+to a printer.</p>
+</li><li>
+<p>Have the required access privileges for managing
+the LDAP, NIS, or NIS+ database.</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>If your name service is LDAP, you must have the following items.</p>
+<div class="itemizedlist"><ul type="square"><li>
+<p>The distinguished name (DN) of a printer administrator and password
+in the directory.</p>
+</li><li>
+<p>The name or IP address of an LDAP server hosting the administered
+domain. This information is usually displayed and selected automatically.</p>
+</li></ul></div>
+</li><li>
+<p>If your name service is NIS, you must have the root password for the
+NIS master.</p>
+</li><li>
+<p>If you name service is NIS+, you might need to complete the following
+steps.</p>
+<div class="orderedlist"><ol type="1"><li>
+<p>Log in to the NIS+ master as superuser.</p>
+</li><li>
+<p>Identify the group that owns the printers table.</p>
+<pre class="screen"># <strong class="userinput"><code>niscat -o printers.org_dir.</code></strong>
+<em class="replaceable"><code>domain-name</code></em>
+<strong class="userinput"><code>.com</code></strong>
+            .
+            .
+            .
+         Group		: "admin.<em class="replaceable"><code>domain-name</code></em>.com"</pre>
+</li><li>
+<p>If necessary, add the system that runs Solaris Print Manager to the
+NIS+ admin group authorized to update the <code class="filename">printers.org_dir.</code>
+<em class="replaceable"><code>&lt;domain&gt;
+</code></em> file.</p>
+<pre class="screen"># <strong class="userinput"><code>nisgrpadm -a admin.</code></strong>
+<em class="replaceable"><code>domain-name</code></em>
+<strong class="userinput"><code>.com</code></strong> <em class="replaceable"><code>hostname</code></em>
+</pre>
+</li><li>
+<p>As superuser, log in to the system that runs Solaris Print Manager.
+Your NIS+ configuration might make it necessary to run the <span><strong class="command">/usr/bin/keylogin</strong></span> command. For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">keylogin</span>
+(
+1
+)
+</span>
+</span> man
+page.</p>
+</li></ol></div>
+</li></ul></div>
+</li><li>
+<p>Have the <code class="literal">SUNWppm</code> package installed.</p>
+<pre class="screen"># <strong class="userinput"><code>pkginfo | grep SUNWppm</code></strong>
+system      SUNWppm        Solaris Print Manager</pre>
+</li></ul></div>
+</li><li><a name="printsetup-step-2"></a>
+<p>Start Solaris Print Manager by using one of the
+following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Select Printer Administrator from the Tools option of the CDE Workspace
+menu. </p>
+</li><li>
+<p>Select the Applications menu from the CDE front panel. Then, click
+the Printer Administrator icon in the Application Manager's System Admin window.</p>
+</li><li>
+<p>Type the following command.</p>
+<pre class="screen"># <strong class="userinput"><code>/usr/sadm/admin/bin/printmgr &amp;</code></strong>
+</pre>
+<p>The Select Naming Service window overlays the Solaris Print Manager main window.</p>
+</li><li>
+<p>If you want to use Solaris Print Manager from a remote system, use
+the <span><strong class="command">xhost</strong></span> command on the local system to give the remote system
+display access.</p>
+<pre class="screen"># <strong class="userinput"><code>xhost +</code></strong>
+<em class="replaceable"><code>remote-system</code></em>
+</pre>
+<p>Then log in to the remote system, set the <code class="literal">DISPLAY</code> environment
+variable, and start Solaris Print Manager:</p>
+<pre class="screen"># <strong class="userinput"><code>DISPLAY=</code></strong>
+<em class="replaceable"><code>local-system:display-number</code></em>
+# <strong class="userinput"><code>export DISPLAY</code></strong>
+# <strong class="userinput"><code>/usr/sadm/admin/bin/printmgr &amp;</code></strong>
+</pre>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>If Solaris Print Manager fails to start from the CDE menu or from the
+command line, check the following: </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Superuser (<code class="literal">root</code>) might not have permission to connect
+to the X-server process on the local system or the remote system. In this case, type
+the following:</p>
+<pre class="screen">$ <strong class="userinput"><code>xhost +</code></strong>
+<em class="replaceable"><code>hostname</code></em>
+$ <strong class="userinput"><code>su</code></strong>
+(<span class="emphasis"><em>Enter root's password</em></span>)
+# <strong class="userinput"><code>/usr/sadm/admin/bin/printmgr &amp;</code></strong>
+</pre>
+<p>Replace <em class="replaceable"><code>hostname</code></em> with either the local system name
+or the remote system name before restarting Solaris Print Manager.</p>
+</li><li>
+<p>Verify that the <code class="literal">SUNWppm</code> package is installed on
+the local system or the remote system.</p>
+<pre class="screen">$ <strong class="userinput"><code>pkginfo | grep SUNWppm</code></strong>
+</pre>
+</li></ul></div>
+</div>
+</li><li><a name="printsetup-step-3"></a>
+<p>Select the name service that is used in your network
+from the Select Naming Service window. The choices are:  LDAP,
+NIS, NIS+, or files.     </p>
+</li><li><a name="printsetup-step-4"></a>
+<p>Check that the domain name is correct. </p>
+<p>The Solaris Print Manager main menu is displayed after the name service is loaded
+successfully. </p>
+</li></ol></div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 3. Setting Up Printers (Tasks) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Setting Up a Print Server</td></tr></table></div></body></html>

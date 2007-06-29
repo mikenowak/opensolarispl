@@ -1,0 +1,658 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>
+GRUB Based Booting (Overview)</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch11.html" title="Chapter 11. 
+GRUB Based Booting (Tasks)"><link rel="prev" href="ch11.html" title="Chapter 11. 
+GRUB Based Booting (Tasks)"><link rel="next" href="ch11s03.html" title="
+GRUB Based Booting (Task Map)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">
+GRUB Based Booting (Overview)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch11.html">Prev</a> </td><th width="60%" align="center">Chapter 11. 
+GRUB Based Booting (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch11s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="fvbsc"></a>
+GRUB Based Booting (Overview)</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-120"></a>
+<a class="indexterm" name="indexterm-121"></a>
+<a class="indexterm" name="indexterm-122"></a>
+<p>In this Solaris release, GRUB is the open source boot loader that is
+the default for x86 based systems.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>GRUB based booting is not available on SPARC based systems in
+this Solaris release.</p>
+</div>
+<p>The <span class="emphasis"><em>boot loader</em></span> is the first software program that
+runs after you turn on a system. This program begins the boot process. After
+an x86 based system is powered on, the Basic Input/Output System (BIOS) initializes
+the CPU, the memory, and the platform hardware. When the initialization phase
+has completed, the BIOS loads the boot loader from the configured boot device,
+and then gives control of the system to the boot loader.</p>
+<p>GRUB implements a simple menu interface that includes boot options that
+are predefined in a configuration file. GRUB also has a command-line interface
+that is accessible from the menu interface for performing various boot commands.
+The GRUB implementation on x86 based systems in the Solaris OS is compliant
+with the Multiboot Specification, which is described in detail at <a href="http://www.gnu.org/software/grub/grub.html" target="_top">
+</a>.</p>
+<p>Because the Solaris kernel is fully compliant with the Multiboot Specification,
+you can boot x86 based systems by using GRUB. With GRUB, you can more easily
+boot the various operating systems that are installed on your system. For
+example, on one x86 based system, you could individually boot the following
+operating systems:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Solaris OS</p>
+</li><li>
+<p>Linux</p>
+</li><li>
+<p>Microsoft Windows</p>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>GRUB detects Microsoft Windows partitions but does not verify
+that the OS can be booted.</p>
+</div>
+<p>Because GRUB is intuitive about file systems and kernel executable formats,
+you can load an operating system without recording the physical position of
+the kernel on the disk. With GRUB based booting, the kernel is loaded by specifying
+its file name, and the drive, and the partition where the kernel resides.</p>
+<p>When you boot an x86 based system, the GRUB menu is displayed. This
+menu provides a list of boot entries to choose from. A <span class="emphasis"><em>boot entry</em></span> is
+an OS instance that is installed on your system. The GRUB main menu is based
+on a configuration file that you can modify. </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>If you install or upgrade the Solaris OS, the GRUB menu is
+ automatically updated. The Solaris OS is displayed as a new boot entry.</p>
+</li><li>
+<p>If you install an operating system other than the Solaris
+OS,  you must modify the <code class="filename">menu.lst</code> configuration file
+to include the  new OS instance. Adding the new OS instance enables the new
+boot entry to appear in the GRUB menu the next time that you boot the system.</p>
+<p>See the section, <span class="olink">
+GRUB Menu</span> for more
+information.</p>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>In this release, the GRUB menu replaces the Solaris Device Configuration
+Assistant.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fvbsg"></a>
+How GRUB Based Booting Works</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-123"></a>
+<a class="indexterm" name="indexterm-124"></a>
+<p>After GRUB gains control of the system, a menu is displayed on the console.
+In the GRUB main menu, you can do the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Select a boot entry.</p>
+</li><li>
+<p>Modify a boot entry by using the GRUB edit menu.</p>
+</li><li>
+<p>Load an OS kernel from the command line manually.</p>
+</li></ul></div>
+<p>The following is a sample of a typical GRUB main menu. This menu consists
+of two boot entries to choose from. If you do not choose an entry, the system
+boots the default OS. The default OS is usually the first entry that is displayed
+in the GRUB main menu.<a class="indexterm" name="indexterm-125"></a>
+<a class="indexterm" name="indexterm-126"></a>
+<a class="indexterm" name="indexterm-127"></a>
+</p>
+<pre class="screen">GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+ +-------------------------------------------------------------------------+
+ | Solaris 10.1 ... X86                                                    |
+ | Solaris failsafe                                                        |
+ |                                                                         |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+      Use the ^ and v keys to select which entry is highlighted.
+      Press enter to boot the selected OS, 'e' to edit the
+      commands before booting, or 'c' for a command-line.</pre>
+<p>Use the arrows keys to highlight a boot entry, then press Enter to boot
+the selected entry. If you want to edit a boot entry by using the GRUB edit
+menu, use the arrow keys to highlight a boot entry in the GRUB main menu.
+Then, type <span><strong class="command">e</strong></span> to display the GRUB edit menu. If you want
+to use the command-line interface, use the arrow keys to select a boot entry
+in the GRUB main menu, then type <span><strong class="command">c</strong></span>.</p>
+<p>For a complete list of GRUB terms and definitions, see <span class="olink">GRUB Terminology</span>.</p>
+<p>A configurable timeout is available to boot the default OS entry. Press
+any key to abort the default OS entry boot.</p>
+<p>When the system is booted, GRUB loads the primary boot archive and the
+multiboot program. The primary boot archive is a ram image of the file system
+that contains the Solaris kernel modules and data. See <span class="olink">
+Management of the GRUB Boot Archive</span> for more information. GRUB puts this information
+in memory, without any interpretations. The multiboot program is an <span><strong class="command">ELF32</strong></span> executable that contains a multiboot-compliant header. After the
+operation has completed, GRUB gives control of the system to the multiboot
+program. GRUB itself then becomes inactive, and system memory is reclaimed.</p>
+<p>By reading the boot archive and passing boot-related information to
+the kernel, the multiboot program is responsible for assembling core kernel
+modules into memory. The boot-related information is specified by the Multiboot
+Specification.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The multiboot program works together with the boot archive. You
+cannot combine the use of a multiboot program from one OS instance with the
+boot archive from another OS instance.</p>
+</div>
+<p>For more information, see <span class="olink">
+Solaris Kernel Initialization Process in the GRUB Boot Environment</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gbxeh"></a>Changes to the Solaris OS Installation Process</h3></div></div></div>
+
+<p>
+<span class="strong"><strong>Solaris 10 1/06:</strong></span> The Solaris installation
+process has changed in the following ways:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="strong"><strong>Minimum memory requirements</strong></span> &#8211;
+To support GRUB, x86 based systems must have at least 256 MBytes of main memory
+to boot the install miniroot. On systems with insufficient memory, the following
+message is displayed:</p>
+<pre class="screen">Selected item can not fit in memory</pre>
+</li><li>
+<p>
+<span class="strong"><strong>USB drive support</strong></span> &#8211;
+Installation from CD and DVD drives that are connected through USB interfaces
+is now fully supported.</p>
+</li><li>
+<p>
+<span class="strong"><strong>Network installation procedure</strong></span> &#8211;
+The standard procedure for setting up net install images for x86 based systems
+remains the same. These systems boot with the Preboot eXecution Environment
+(PXE) mechanism. Systems that are not capable of a PXE boot can use a GRUB
+floppy.</p>
+</li><li>
+<p>
+<span class="strong"><strong>Configuring devices</strong></span> &#8211;
+The GRUB menu replaces the Device Configuration Assistant in this Solaris
+release. After GRUB loads the Solaris OS, the following installation menu
+is displayed:</p>
+<pre class="screen">Select the type of installation you want to perform:
+
+1 Solaris Interactive
+2 Custom JumpStart
+3 Solaris Interactive Text (Desktop session)
+4 Solaris Interactive Text (Console session)
+5 Apply driver updates
+6 Single user shell
+
+Enter the number of your choice followed by the &lt;ENTER&gt; key.
+Alternatively, enter custom boot arguments directly.
+
+If you wait 30 seconds without typing anything,
+an interactive installation will be started.</pre>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The Device Configuration Assistant and the associated interactive
+shell is no longer available, starting with the Solaris 10 1/06 release. To
+add any required drivers during the installation process, select Option 5.</p>
+</div>
+<p>Note that you must supply an Install Time Update (ITU) floppy diskette,
+CD, or DVD when applying driver updates during the installation process. The
+ITU will likely contain a package, but it also might contain a patch.  When
+adding the contents of an ITU image, check the README file for additional
+instructions.</p>
+<p>To add drivers to the miniroot during installation,
+follow the steps for patching the x86 miniroot. For step-by-step instructions,
+see the following documentation:</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>For DVD media, see <span class="olink">
+<em class="citetitle">To Create an x86 Install Server With SPARC or x86 DVD Media</em> in <em class="citetitle">Solaris Express Installation Guide: Network-Based Installations</em>
+</span>,
+Step 9. </p>
+</li><li>
+<p> For CD media, see <span class="olink">
+<em class="citetitle">Creating an x86 Install Server With CD Media</em> in <em class="citetitle">Solaris Express Installation Guide: Network-Based Installations</em>
+</span>, Step
+19. </p>
+</li></ul></div>
+<p>Option 6 is available for system recovery. This option provides quick
+access to a root prompt without having to go through the system identification
+process. Note that option 6 is identical to booting the Solaris failsafe archive
+option from the GRUB main menu that is displayed when the system is booted.</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fvbsh"></a>
+GRUB Device Naming Conventions</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-128"></a>
+<a class="indexterm" name="indexterm-129"></a>
+<a class="indexterm" name="indexterm-130"></a>
+<p>GRUB uses device naming conventions that are slightly different from
+previous Solaris OS versions. Understanding the GRUB device naming conventions
+can assist you in correctly specifying drive and partition information when
+you configure GRUB on your system.</p>
+<p>The following table describes the GRUB device naming conventions.</p>
+<div class="table"><a name="fvbsm"></a><p class="title"><b>Table 11.1. Naming Conventions for GRUB Devices</b></p>
+
+
+<table summary="Naming Conventions for GRUB Devices" border="1"><colgroup><col><col></colgroup><thead><tr><th>
+<p>Device Name</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>(<code class="literal">fd0</code>), (<code class="literal">fd1</code>)</p>
+</td><td>
+<p>First diskette, second diskette</p>
+</td></tr><tr><td>
+<p>(<code class="literal">nd</code>)</p>
+</td><td>
+<p>Network device</p>
+</td></tr><tr><td>
+<p>(<code class="literal">hd0,0</code>), (<code class="literal">hd0,1</code>)</p>
+</td><td>
+<p>First and second <code class="filename">fdisk</code> partition of first <code class="filename">bios</code> disk</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">(hd0,0,a</code>), (<code class="literal">hd0,0,b</code>)</p>
+</td><td>
+<p>Solaris/BSD slice 0 and 1 on first <code class="filename">fdisk</code> partition
+on the first <code class="filename">bios</code> disk</p>
+</td></tr></tbody></table>
+</div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>All GRUB device names must be enclosed in parentheses. Partition
+numbers are counted from 0 (zero), not from 1.</p>
+</div>
+<p>For more information about <code class="literal">fdisk</code> partitions, see <span class="olink">
+<em class="citetitle">Guidelines for Creating an fdisk Partition</em> in <em class="citetitle">System Administration Guide: Devices and File Systems</em>
+</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fvbsp"></a>
+Functional Components of GRUB</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-131"></a>
+<a class="indexterm" name="indexterm-132"></a>
+<a class="indexterm" name="indexterm-133"></a>
+<a class="indexterm" name="indexterm-134"></a>
+<a class="indexterm" name="indexterm-135"></a>
+<p>GRUB consists of the following functional components:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="filename">stage1</code> &#8211; Is installed on the first
+sector of the Solaris <code class="filename">fdisk</code> partition. You can optionally
+install <code class="filename">stage1</code> on the master boot sector by specifying
+the <code class="option">
+m</code> option with the <span><strong class="command">installgrub</strong></span> command.
+See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">installgrub</span>
+(
+1M
+)
+</span>
+</span> man page and <span class="olink">
+<em class="citetitle">Disk Management in the GRUB Boot Environment</em> in <em class="citetitle">System Administration Guide: Devices and File Systems</em>
+</span> for
+more information.</p>
+</li><li>
+<p>
+<code class="filename">stage2</code> &#8211; Is installed in a reserved
+area in the Solaris <code class="filename">fdisk</code> partition. <code class="filename">stage2</code> is
+the core image of GRUB.</p>
+</li><li>
+<p>
+<code class="filename">menu.lst</code> &#8211; Is a file that is typically
+located in the <code class="filename">/boot/grub</code> directory. This file is read
+by the GRUB <code class="filename">stage2</code> file. See the section, <span class="olink">GRUB Terminology</span> for more information.</p>
+</li></ul></div>
+<p>You cannot use the <span><strong class="command">dd</strong></span> command to write <code class="filename">stage1</code> and <code class="filename">stage2</code> to disk. <code class="filename">stage1</code> must be able to receive
+information about the location of <code class="filename">stage2</code> on the disk.
+Use the <span><strong class="command">installgrub</strong></span> command, which is the supported method
+for installing GRUB boot blocks.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fvbsi"></a>
+GRUB Menu</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-136"></a>
+<a class="indexterm" name="indexterm-137"></a>
+<p>By default, the Solaris menu file resides in <code class="filename">/boot/grub/menu.lst</code>.
+If the Solaris OS is booted from a <code class="literal">pcfs</code> partition, the
+effective menu is then loaded from the <code class="filename">/stubboot/boot/grub/menu.lst</code> file.
+You might also get the same configuration when performing a software upgrade.
+The contents of this file dictate what is displayed in the GRUB menu when
+you boot the system. The GRUB menu file contains entries for all the OS instances
+that are installed on your system, as well as other important boot directives.
+ See <span class="olink">
+How Multiple Operating Systems Are Supported in the GRUB Boot Environment</span>. </p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>In
+some situations, the GRUB <code class="filename">menu.lst</code> file resides elsewhere.
+For example, if you upgrade your system, the GRUB <code class="filename">menu.lst</code> file
+might exist on a boot environment that is not the currently running boot environment.
+Or, if you have upgraded a system with an x86 based boot partition, the <code class="filename">menu.lst</code> file might reside in the <code class="filename">/stubboot</code> directory.</p>
+<p>Only the active GRUB <code class="filename">menu.lst</code> file is used
+to boot the system.  In order to modify the GRUB menu that is displayed when
+you boot the system, the active GRUB  <code class="filename">menu.lst</code> file must
+be modified. Changing any other GRUB <code class="filename">menu.lst</code> file has
+no effect on the menu that is displayed when you boot the system.</p>
+<p>To
+determine the location of the active GRUB <code class="filename">menu.lst</code> file,
+use the <span><strong class="command">bootadm</strong></span> command.  The <span><strong class="command">list-menu</strong></span> subcommand
+displays the location of the active GRUB menu. For more information, see  the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">bootadm</span>
+(
+1M
+)
+</span>
+</span> man
+page.</p>
+</div>
+<p>You might need to customize the <code class="filename">menu.lst</code> file for
+one of the following reasons:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>To add new OS entries</p>
+</li><li>
+<p>To add GRUB console redirection information</p>
+</li></ul></div>
+<p>The instructions for the syntax to use to edit the file can be found
+in the <code class="filename">/boot/grub/menu.lst</code> file comments.  Because these
+changes are not directly related to the Solaris OS, you cannot make them by
+using the <span><strong class="command">eeprom</strong></span> command. The Solaris software upgrade
+process preserves any changes that you make to this file.</p>
+<p>The following is a partial sample of the <code class="filename">/boot/grub/menu.lst</code> file.
+The list that follows includes a description of the line entries.</p>
+<pre class="screen">default 0
+timeout 10
+.
+.
+.
+
+title Solaris
+  root (hd0,0,a)
+  kernel /platform/i86pc/multiboot -B console=ttya
+  module /platform/i86pc/boot_archive
+title Solaris (test)
+  root (hd0,0,a)
+  kernel /boot/grub/multiboot -B console=ttya
+  module /platform/i86pc/boot_archive
+title Solaris fail-safe single user
+  root (hd0,0,a)
+  kernel /boot/multiboot -B console=ttya -s
+  module /boot/x86.miniroot.safe</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="literal">title</code> <em class="replaceable"><code>OS name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the operating system.</p>
+</dd><dt><span class="term">
+<code class="literal">default 0</code>
+</span></dt><dd>
+<p>Specifies which item to boot, if the timeout expires.</p>
+</dd><dt><span class="term">
+<code class="literal">timeout 10</code>
+</span></dt><dd>
+<p>Specifies the number of seconds to wait for user input before
+booting the default entry. If no timeout is specified, you are required to
+choose an entry.</p>
+</dd><dt><span class="term">
+<code class="literal">serial --unit=0 --speed=9600</code>
+</span></dt><dd>
+<p>Switches the GRUB output to the tip line. Works in conjunction
+with the <span><strong class="command">terminal</strong></span> command.</p>
+</dd><dt><span class="term">
+<code class="literal">terminal serial</code>
+</span></dt><dd>
+<p>Switches the GRUB output to the tip line. Works in conjunction
+with the <span><strong class="command">serial</strong></span> command.</p>
+</dd><dt><span class="term">
+<code class="literal">root (hd0,0,a)</code>
+</span></dt><dd>
+<p>Specifies on which disk, which partition, and which slice
+to load the files. GRUB automatically detects the file system type.</p>
+</dd><dt><span class="term">
+<code class="literal">kernel /platform/i86pc/multiboot -B console=ttya</code>
+</span></dt><dd>
+<p>Specifies the multiboot program. The <span><strong class="command">kernel</strong></span> command
+must always be followed by the multiboot program. The string after multiboot
+is passed to the Solaris OS without interpretation.</p>
+</dd></dl></div>
+<p>Any changes that you make to the file take effect at the next system
+reboot.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fwbee"></a>
+Modifying Boot Behavior in the Solaris
+OS</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-138"></a>
+<a class="indexterm" name="indexterm-139"></a>
+<a class="indexterm" name="indexterm-140"></a>
+<a class="indexterm" name="indexterm-141"></a>
+<a class="indexterm" name="indexterm-142"></a>
+<p>The primary methods for modifying boot behavior in the Solaris OS are
+as follows:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>By using the <span><strong class="command">eeprom</strong></span> command.</p>
+<p>The <span><strong class="command">eeprom</strong></span> command is used to assign a different value to a standard
+set of properties. These values, which are the equivalent to the SPARC OpenBoot
+PROM NVRAM variables, are stored in the <code class="filename">/boot/solaris/bootenv.rc</code> file.
+Changes that are made to the Solaris boot behavior by using the <span><strong class="command">eeprom</strong></span> command
+persist over each system reboot. See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">eeprom</span>
+(
+1M
+)
+</span>
+</span> man page for more information.</p>
+</li><li>
+<p>By using the <span><strong class="command">kernel</strong></span> command, which is available
+in the GRUB menu when the system is booted.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Changes that are made with the <span><strong class="command">kernel</strong></span> command
+override options that you set by using the <span><strong class="command">eeprom</strong></span> command.
+These changes remain in effect until the next time you boot the system. See
+the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">kernel</span>
+(
+1M
+)
+</span>
+</span> man
+page for more information.</p>
+</div>
+</li></ul></div>
+<p>You can also modify the Solaris boot behavior in the GRUB <code class="filename">menu.lst</code> file, similarly to how you would use the <span><strong class="command">eeprom</strong></span> command.
+However, this method is not preferred, because the Solaris OS entries in the <code class="filename">menu.lst</code> file could be modified during a software upgrade. In this
+instance, any changes that you made to the file are lost. In contrast, changes
+made by using the <span><strong class="command">eeprom</strong></span> command are added to the <code class="filename">/boot/solaris/bootenv.rc</code> file. This file is handled properly during an upgrade.</p>
+<p>For instructions, see <span class="olink">
+Modifying the Solaris Boot Behavior by Editing the GRUB Menu</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fvjbs"></a>
+GRUB Based Disk Boot</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-143"></a>
+<a class="indexterm" name="indexterm-144"></a>
+<a class="indexterm" name="indexterm-145"></a>
+<p>When you install the Solaris OS, two GRUB menu entries are installed
+on the system by default. The first entry is the Solaris OS entry. The second
+entry is the miniroot (failsafe) archive, which is intended to be used for
+system recovery. The GRUB menu entries are installed and then updated automatically
+as part of the Solaris software installation and upgrade process. These entries
+are directly managed by the OS and should not be manually edited. For a detailed
+description of these and other GRUB terms, see <span class="olink">GRUB Terminology</span>.</p>
+<p>During a standard Solaris OS installation, GRUB is installed on the
+Solaris <code class="literal">fdisk</code> partition, without modifying the system BIOS
+setting. If the OS is not on the BIOS boot disk, you need to do one of the
+following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Modify the BIOS setting.</p>
+</li><li>
+<p>Use a boot manager to bootstrap to the Solaris partition.
+For more details, see your boot manager.</p>
+</li></ul></div>
+<p>The preferred method is to always install the Solaris OS on the boot
+disk. If multiple operating systems are installed on the machine, you can
+add entries to the <code class="filename">/boot/grub/menu.lst</code> file. These entries
+are then displayed in the GRUB menu the next time that the system is booted.</p>
+<p>For additional information, see <span class="olink">
+How Multiple Operating Systems Are Supported in the GRUB Boot Environment</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fvjch"></a>
+GRUB Based Booting From the Network</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-146"></a>
+<a class="indexterm" name="indexterm-147"></a>
+<a class="indexterm" name="indexterm-148"></a>
+<a class="indexterm" name="indexterm-149"></a>
+<a class="indexterm" name="indexterm-150"></a>
+<p>This section describes the requirements and warnings for performing
+a GRUB based boot from the network. For overview information and additional
+details on booting an x86 based system from the network, see <span class="olink">
+GRUB Based Booting From the Network</span>.</p>
+<p>To perform a GRUB based network boot, a DHCP server that is configured
+for PXE clients is required. A boot server that provides <span><strong class="command">tftp</strong></span> service
+is also required. The DHCP server supplies the information that the client
+needs to configure its network interface. The DHCP server must be able to
+respond to the DHCP classes, <code class="literal">PXEClient</code> and <code class="literal">GRUBClient</code> with the following information:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>IP address of the file server</p>
+</li><li>
+<p>Name of the boot file (<span><strong class="command">pxegrub</strong></span>)</p>
+</li></ul></div>
+<p>The file server is responsible for providing the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span><strong class="command">pxegrub</strong></span> binary</p>
+</li><li>
+<p>GRUB menu</p>
+</li><li>
+<p>Multiboot program</p>
+</li><li>
+<p>
+<code class="filename">x86.miniroot</code>
+</p>
+</li></ul></div>
+<p>The sequence for performing a PXE network boot of the Solaris OS is
+as follows:</p>
+<div class="orderedlist"><ol type="1"><li>
+<p>The BIOS is configured to boot from a network interface.</p>
+</li><li>
+<p>The BIOS sends a DHCP request.</p>
+</li><li>
+<p>The DHCP server replies with the server address and the name
+of the boot file.</p>
+</li><li>
+<p>The BIOS downloads <span><strong class="command">pxegrub</strong></span> by using <span><strong class="command">tftp</strong></span> and executes <span><strong class="command">pxegrub</strong></span>.</p>
+</li><li>
+<p>The system downloads a GRUB menu file by using <span><strong class="command">tftp</strong></span>.</p>
+<p>This file displays the boot menu entries that are available.</p>
+</li><li>
+<p>After you select a menu entry, the system begins to load the
+Solaris OS.</p>
+</li></ol></div>
+<p>
+<a class="indexterm" name="indexterm-151"></a>
+<a class="indexterm" name="indexterm-152"></a>See <span class="olink">
+<em class="citetitle">How to Set Up a Network Configuration Server</em> in <em class="citetitle">System Administration Guide: IP Services</em>
+</span> for
+more information.</p>
+<p>Running the <span><strong class="command">add_install_client</strong></span> command creates the <code class="filename">/tftpboot_01</code>
+<em class="replaceable"><code>ethernet-address</code></em> file. This
+file is linked to <span><strong class="command">pxegrub</strong></span> and the<code class="filename">/tftpboot/menu.lst.01</code>
+<em class="replaceable"><code>ethernet-address</code></em> file. The <code class="filename">/tftpboot/menu.lst.01</code>
+<em class="replaceable"><code>ethernet-address</code></em> file is the GRUB menu
+file. If this file does not exist, then <span><strong class="command">pxegrub</strong></span> reverts
+to using DHCP Option 150, if this option is specified, or the <code class="filename">/tftpboot/boot/grub/menu.lst</code> file. Typically, a single system is set up to serve both functions.
+In this instance, the <span><strong class="command">add_install_client</strong></span> command sets up
+the <code class="filename">/tftpboot</code> file with the correct <code class="filename">pxegrub</code> menu
+file and the Solaris files. DHCP service is handled separately by using the <span><strong class="command">add_install_client</strong></span> command. The setup only needs to be completed
+once per client. See <span class="olink">About DHCP Macros</span> and <span class="olink">
+How to Perform a GRUB Based Boot From the Network</span> for
+more information.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The <span><strong class="command">rpc.bootparamd</strong></span> daemon is usually required
+on the server side for performing a network boot. However, <span><strong class="command">rpc.bootparamd</strong></span> is <span class="emphasis"><em>not</em></span> required to perform a network based
+boot with GRUB.</p>
+</div>
+<p>If no PXE or DHCP server is available, you can load GRUB from a diskette,
+a CD-ROM, or the local disk. You can then manually configure the network in
+GRUB and download the multiboot program and the boot archive from the file
+server.</p>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcfnx"></a>PXE Network Boot Sequence</h4></div></div></div>
+
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The <span><strong class="command">rpc.bootparamd</strong></span> daemon is usually required
+on the server side for performing a network boot. However, <span><strong class="command">rpc.bootparamd</strong></span> is <span class="emphasis"><em>not</em></span> required to perform a network based
+boot with GRUB.</p>
+</div>
+<p>If no PXE or DHCP server is available, you can load GRUB from a diskette,
+a CD-ROM, or the local disk. You can then manually configure the network in
+GRUB and download the multiboot program and the boot archive from the file
+server.</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="grubterm"></a>GRUB Terminology</h3></div></div></div>
+
+<p>The following GRUB terms are used throughout this documentation. To
+grasp GRUB concepts, an understanding of these terms is essential.</p>
+<div class="variablelist"><dl><dt><span class="term">
+<span class="strong"><strong>boot archive</strong></span>
+</span></dt><dd>
+<p>A boot archive is a collection of critical files that is used
+to boot the Solaris OS. These files are needed during system startup before
+the root (<code class="filename">/</code>) file system is mounted. Two boot archives
+are maintained on a system:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The boot archive that is used to boot the Solaris OS on a
+system. This boot archive is sometimes called the primary boot archive.</p>
+</li><li>
+<p>The boot archive that is used for recovery when the primary
+boot archive is damaged. This boot archive starts the system without   mounting
+the root (<code class="filename">/</code>) file system. On the GRUB menu, this boot
+archive is called failsafe. The archive's essential purpose is to regenerate
+the primary boot archive, which is usually used   to boot the system.</p>
+</li></ul></div>
+</dd><dt><span class="term">
+<span class="strong"><strong>boot loader</strong></span>
+</span></dt><dd>
+<p>The boot loader is the first software program that runs after
+you turn on a system. This program begins the booting process.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>failsafe archive</strong></span>
+</span></dt><dd>
+<p>See boot archive.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>GRUB</strong></span>
+</span></dt><dd>
+<p>GNU GRand Unified Bootloader (GRUB) is an open source boot
+loader with a simple menu interface.  The menu displays a list of the operating
+systems that are installed on a system. GRUB enables you to easily boot these
+various operating systems,  such as the Solaris OS, Linux, or Microsoft Windows.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>GRUB edit menu</strong></span>
+</span></dt><dd>
+<p>A boot menu that is a submenu of the GRUB main menu. GRUB
+commands are displayed on this menu. These commands can be edited to change
+ boot behavior.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>GRUB main menu</strong></span>
+</span></dt><dd>
+<p>A boot menu that lists the operating systems that are installed
+ on a system. From this menu, you can easily boot an operating  system without
+modifying the BIOS or fdisk partition settings.</p>
+</dd><dt><span class="term">
+<code class="filename">menu.lst</code> <span class="strong"><strong>file</strong></span>
+</span></dt><dd>
+<p>A file that lists all the operating systems that are installed
+on a system.  The contents of this file dictate the list of operating systems
+that is displayed on the GRUB menu.  From the GRUB menu, you can easily boot
+an operating system without modifying the BIOS or fdisk partition settings.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>miniroot</strong></span>
+</span></dt><dd>
+<p>A minimal, bootable root (<code class="filename">/</code>) file system
+that resides on the Solaris installation media. A miniroot consists of the
+Solaris software that is required to install and upgrade systems. On x86 based
+systems, the miniroot is copied to the system to be used as the failsafe boot
+archive. See boot archive for details.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>primary boot archive</strong></span>
+</span></dt><dd>
+<p>See boot archive.</p>
+</dd></dl></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch11.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch11.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch11s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 11. 
+GRUB Based Booting (Tasks) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 
+GRUB Based Booting (Task Map)</td></tr></table></div></body></html>

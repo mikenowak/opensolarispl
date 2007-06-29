@@ -1,0 +1,124 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Maintaining State Database Replicas</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch07.html" title="Chapter 7. State Database (Tasks)"><link rel="prev" href="ch07s02.html" title="Creating State Database Replicas"><link rel="next" href="ch08.html" title="Chapter 8. RAID-0
+(Stripe and Concatenation) Volumes (Overview)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Maintaining State Database Replicas</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch07s02.html">Prev</a> </td><th width="60%" align="center">Chapter 7. State Database (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch08.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-state-db-replicas-8"></a>Maintaining State Database Replicas</h2></div></div></div>
+
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1731143"></a></h3></div></div></div>
+
+<div class="task"><a name="maintaintasksnew-25437"></a><p class="title"><b>How to Check the Status of State
+Database Replicas</b></p><div class="procedure"><ol type="1"><li>
+<p>Become superuser.</p>
+</li><li><a name="tasks-state-db-replicas-step-17"></a>
+<p>To check the status of state
+database replicas, use one of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the State Database Replicas node to
+view all existing state database replicas. For more information, see the online
+help.</p>
+</li><li>
+<p>Use the <span><strong class="command">metadb</strong></span> command to view the status
+of state database replicas. Add the <code class="option">
+i</code> option to display an
+explanation of the status flags, as shown in the following example. See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metadb</span>
+(
+1M
+)
+</span>
+</span>.</p>
+</li></ul></div>
+</li></ol></div><div class="example"><a name="egjvv"></a><p class="title"><b>Example 7.4. Checking the Status of All State Database Replicas</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metadb -i</code></strong>
+        flags           first blk       block count
+     a m  p  luo        16              8192            /dev/dsk/c0t0d0s7
+     a    p  luo        8208            8192            /dev/dsk/c0t0d0s7
+     a    p  luo        16400           8192            /dev/dsk/c0t0d0s7
+     a    p  luo        16              8192            /dev/dsk/c1t3d0s1
+      W   p  l          16              8192            /dev/dsk/c2t3d0s1
+     a    p  luo        16              8192            /dev/dsk/c1t1d0s3
+     a    p  luo        8208            8192            /dev/dsk/c1t1d0s3
+     a    p  luo        16400           8192            /dev/dsk/c1t1d0s3
+ r - replica does not have device relocation information
+ o - replica active prior to last mddb configuration change
+ u - replica is up to date
+ l - locator for this replica was read successfully
+ c - replica's location was in /etc/lvm/mddb.cf
+ p - replica's location was patched in kernel
+ m - replica is master, this is replica selected as input
+ W - replica has device write errors
+ a - replica is active, commits are occurring to this replica
+ M - replica had problem with master blocks
+ D - replica had problem with data blocks
+ F - replica had format problems
+ S - replica is too small to hold current data base
+ R - replica had device read errors</pre>
+<p>
+<a class="indexterm" name="maintaintasksnew-ix180"></a>A legend of all the flags follows the status. The characters in
+front of the device name represent the status. Uppercase letters indicate
+a problem status. Lowercase letters indicate an &#8220;Okay&#8221; status. </p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1731310"></a></h3></div></div></div>
+
+<div class="task"><a name="tasks-state-db-replicas-12"></a><p class="title"><b>How to Delete State Database
+Replicas</b></p><div class="tasksummary">
+<p>You might need to delete state database replicas to maintain your Solaris Volume Manager configuration.
+For example, if you will be replacing disk drives, you want to delete the
+state database replicas before you remove the drives. Otherwise Solaris Volume Manager will
+report them as having errors.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser.</p>
+</li><li><a name="tasks-state-db-replicas-step-21"></a>
+<p>To remove state database
+replicas, use one of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the State Database Replicas node to
+view all existing state database replicas. Select replicas to delete, then
+choose Edit&#8658;Delete to remove them. For more information, see the online
+help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metadb</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>metadb -d -f <em class="replaceable"><code>ctds-of-slice</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+d</code>
+</span></dt><dd>
+<p>Specifies to delete a state database replica.</p>
+</dd><dt><span class="term">
+<code class="option">
+f</code>
+</span></dt><dd>
+<p>Specifies to force the operation, even if no replicas exist.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>ctds-of-slice</code></em>
+</span></dt><dd>
+<p>Specifies the name of the component that contains the replica.</p>
+</dd></dl></div>
+<p>
+<a class="indexterm" name="indexterm-40"></a>Note that you need to specify each
+slice from which you want to remove the state database replica. See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metadb</span>
+(
+1M
+)
+</span>
+</span> man page
+for more information. </p>
+</li></ul></div>
+</li></ol></div><div class="example"><a name="egjvx"></a><p class="title"><b>Example 7.5. Deleting State Database Replicas</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metadb -d -f c0t0d0s7</code></strong>
+</pre>
+<p>This example shows the last replica being deleted from a slice. </p>
+<p>You must add the <code class="option">
+f</code> option to force the deletion of
+the last replica on the system.</p>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch07s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch07.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch08.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Creating State Database Replicas </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 8. RAID-0
+(Stripe and Concatenation) Volumes (Overview)</td></tr></table></div></body></html>

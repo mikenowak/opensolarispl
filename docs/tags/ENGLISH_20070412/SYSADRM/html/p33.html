@@ -1,0 +1,247 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Introduction to Dynamic Resource Pools - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage> > <a href="p32.html">12.&nbsp;&nbsp;Resource Pools (Overview)</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p32.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p34.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="gbtkx"></a><h3>Introduction to Dynamic Resource Pools</h3>
+<p><a name="indexterm-92"></a><a name="indexterm-93"></a>Dynamic resource pools provide a mechanism for dynamically adjusting
+each pool's resource allocation in response to system events and application
+load changes. DRPs simplify and reduce the number of decisions required from
+an administrator. Adjustments are automatically made to preserve the system
+performance goals specified by an administrator. The changes made to the configuration
+are logged. These features are primarily enacted through the resource controller <tt>poold</tt>, a system daemon that should always be active when dynamic
+resource allocation is required. Periodically, <tt>poold</tt> examines
+the load on the system and determines whether intervention is required to
+enable the system to maintain optimal performance with respect to resource
+consumption. The <tt>poold</tt> configuration is held in the  <tt>libpool</tt> configuration. For more information on <tt>poold</tt>,
+see the <tt>poold</tt>(1M) man
+page.</p>
+<a name="gbvil"></a><h3>About Enabling and Disabling Resource Pools and Dynamic
+Resource Pools</h3>
+<p>To enable and disable resource pools and dynamic resource pools, see <a href="p42.html#rmpool.task-57">Enabling and Disabling the Pools Facility</a>.</p>
+<a name="rmpool-114"></a><h3>Resource Pools Used in Zones</h3>
+<p>As an alternative to associating a zone with a configured resource pool
+on your system, you can use the <tt>zonecfg</tt> command to create
+a temporary pool that is in effect while the zone is running. See <a href="p54.html#gejlw"><tt>dedicated-cpu</tt> Resource</a> for more information.</p>
+<p>On a system that has zones enabled, a non-global zone can
+be associated with one resource pool, although the pool need not be exclusively
+assigned to a particular zone. Moreover, you cannot bind individual processes
+in non-global zones to a different pool by using the <tt>poolbind</tt> command
+from the global zone. To associate a non-global zone with a pool, see <a href="p63.html">Configuring, Verifying, and Committing a Zone</a>.</p>
+<p>Note that if you set a scheduling class for a pool and you associate
+a non-global zone with that pool, the zone uses that scheduling class by default.</p>
+<p>If you are using dynamic resource pools, the scope of an executing instance
+of <tt>poold</tt> is limited to the global zone.</p>
+<p>The <tt>poolstat</tt> utility run in a non-global zone displays
+only information about the pool associated with the zone. The <tt>pooladm</tt> command
+run without arguments in a non-global zone displays only information about
+the pool associated with the zone.</p>
+<p>For information about resource pool commands, see <a href="p41.html">Commands Used With the Resource Pools Facility</a>.</p>
+<a name="rmpool-3"></a><h3>When to Use Pools</h3>
+<p>Resource pools offer a versatile mechanism that can be applied to many
+administrative scenarios.</p>
+<dl><dt>Batch compute server</dt>
+<dd><p>Use pools functionality to split a server into two pools.
+One pool is used for login sessions and interactive work by timesharing users.
+The other pool is used for jobs that are submitted through the batch system.</p>
+</dd>
+<dt>Application or database server</dt>
+<dd><p>Partition the resources for interactive applications in accordance
+with the applications' requirements.</p>
+</dd>
+<dt>Turning on applications in phases</dt>
+<dd><p>Set user expectations.</p>
+<p>You might initially deploy a machine that is running only a fraction
+of the services that the machine is ultimately expected to deliver. User difficulties
+can occur if reservation-based resource management mechanisms are not established
+when the machine comes online.</p>
+<p>For example, the fair share scheduler optimizes CPU utilization. The
+response times for a machine that is running only one application can be misleadingly
+fast. Users will not see these response times with multiple applications loaded.
+By using separate pools for each application, you can place a ceiling on the
+number of CPUs available to each application before you deploy all applications.</p>
+</dd>
+<dt>Complex timesharing server</dt>
+<dd><p>Partition a server that supports large user populations. Server
+partitioning provides an isolation mechanism that leads to a more predictable
+per-user response.</p>
+<p>By dividing users into groups that bind to separate pools, and using
+the fair share scheduling (FSS) facility, you can tune CPU allocations to
+favor sets of users that have priority. This assignment can be based on user
+role, accounting chargeback, and so forth.</p>
+</dd>
+<dt>Workloads that change seasonally</dt>
+<dd><p>Use resource pools to adjust to changing demand.</p>
+<p>Your site might experience predictable shifts in workload demand over
+long periods of time, such as monthly, quarterly, or annual cycles. If your
+site experiences these shifts,  you can alternate between multiple pools configurations
+by invoking <tt>pooladm</tt> from a <tt>cron</tt> job.
+(See <a href="p34.html">Resource Pools Framework</a>.)</p>
+</dd>
+<dt>Real-time applications</dt>
+<dd><p>Create a real-time pool by using the RT scheduler and designated
+processor resources.</p>
+</dd>
+<dt>System utilization</dt>
+<dd><p>Enforce system goals that you  establish.</p>
+<p>Use the automated pools daemon feature to identify available resources
+and then monitor workloads to detect when your specified objectives are no
+longer being satisfied. The daemon can take corrective action if possible,
+or the condition can be logged.</p>
+</dd>
+</dl>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p32.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p34.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

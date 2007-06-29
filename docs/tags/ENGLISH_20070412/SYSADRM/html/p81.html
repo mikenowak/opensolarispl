@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Moving and Migrating Non-Global Zones (Tasks) - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p80.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p82.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="gcgnc"></a>Chapter&nbsp;23<h3>Moving and Migrating Non-Global Zones (Tasks)</h3><p>This chapter describes how to:</p>
+<ul><li><p>Move an existing non-global zone to a new location on the
+same machine</p>
+</li>
+<li><p>Validate what will happen in a non-global zone migration before
+the actual migration is performed.</p>
+</li>
+<li><p>Migrate an existing non-global zone to a new machine</p>
+</li>
+</ul>
+<p>For information on moving and migrating <tt>lx</tt> branded
+zones, see <a href="p135.html">Chapter&nbsp;35, Moving and Migrating <tt>lx</tt> Branded Zones (Tasks)</a>.</p>
+<a name="gbwym"></a><h3>Moving a Non-Global Zone</h3>
+<a name="indexterm-290"></a><a name="indexterm-291"></a><p>This procedure is used to move the zone to a new location on the same
+system by changing the <tt>zonepath</tt>. The zone must be halted.
+The new <tt>zonepath</tt> must be on a local file system. The normal <tt>zonepath</tt> criteria described in <a href="p58.html#z.config.ov-16">Resource and Property Types</a> apply.</p>
+<a name="gbwls"></a><h4><img src="graphics/procedure.gif"> How to Move a Zone</h4>
+<p>You must be the global administrator in the global zone to perform this
+procedure.</p>
+<ol><li><a name="gbwlv"></a><b>Become superuser, or assume the Primary Administrator
+role.</b><p>To create the role and assign the role to a user, see Using
+the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i>.</p></li><li><b>Halt the zone to be moved, <tt>db-zone</tt> in this
+procedure.</b><pre>global# <tt><b>zoneadm -z db-zone halt</b></tt></pre></li><li><b>Use the <tt>zoneadm</tt> command with the <tt>move</tt> subcommand
+to move the zone to a new <tt>zonepath</tt>, <tt>/export/zones/db-zone</tt>.</b><pre>global# <tt><b>zoneadm -z db-zone move /export/zones/db-zone</b></tt></pre></li><li><b>Verify the path.</b><pre>ID  NAME     STATUS       PATH                           BRAND      IP
+ 0  global   running      /                              native     shared
+ -  my-zone  installed    /export/home/my-zone           native     shared
+ -  db-zone  installed    /export/zones/db-zone          native     shared</pre></li></ol><h3>Migrating a Non-Global Zone to a Different Machine</h3>
+<p>Note that you can do a trial run of a zone migration before you actually
+move the zone to a different machine. For more information, see <a href="p82.html#gcxfx">About Validating a Zone Migration Before the Migration Is  Performed</a>.</p>
+<a name="gcxgj"></a><h4>About Migrating a Zone</h4>
+<p><a name="indexterm-292"></a><a name="indexterm-293"></a>The <tt>zonecfg</tt> and <tt>zoneadm</tt> commands can be used to migrate
+an existing non-global zone from one system to another. The zone is halted
+and detached from its current host. The <tt>zonepath</tt> is moved
+to the target host, where it is attached.</p>
+<p>The following requirements apply to zone migration:</p>
+<ul><li><p>The global zone on the target system must be running the same
+Solaris release as the original host.</p>
+</li>
+<li><p>To ensure that the zone will run properly, the target system
+must have the same versions of the following required operating system packages
+and patches as those installed on the original host.</p>
+<ul><li><p>Packages that deliver files under an <tt>inherit-pkg-dir</tt> resource</p>
+</li>
+<li><p>Packages where <tt>SUNW_PKG_ALLZONES=true</tt></p>
+</li>
+</ul>
+<p>Other packages and patches, such as those for third-party products,
+can be different.</p>
+</li>
+<li><p>The host and target systems must have the same machine architecture.</p>
+</li>
+</ul>
+<p>To verify the Solaris release and the machine architecture, type:</p>
+<pre>uname -m</pre><p>The <tt>zoneadm</tt> <tt>detach</tt> process creates
+the information necessary to attach the zone on a different system. The <tt>zoneadm</tt> <tt>attach</tt> process verifies that the target
+machine has the correct configuration to host the zone. Because there are
+several ways to make the <tt>zonepath</tt> available on the new
+host, the actual movement of the <tt>zonepath</tt> from one system
+to another is a manual process that is performed by the global administrator.</p>
+<p>When attached to the new system, the zone is in the installed state.</p>
+<a name="gcghu"></a><h4><img src="graphics/procedure.gif"> How to Migrate A Non-Global Zone</h4>
+<p>You must be the global administrator in the global zone to perform this
+procedure.</p>
+<ol><li><b>Become superuser, or assume the Primary Administrator role.</b><p>To create the role and assign the role to a user, see Using
+the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i>.</p></li><li><b>Halt the zone to be migrated, <tt>my-zone</tt> in this
+procedure.</b><pre>host1# <tt><b>zoneadm -z my-zone halt</b></tt></pre></li><li><b>Detach the zone.</b><pre>host1# <tt><b>zoneadm -z my-zone detach</b></tt></pre><p>The detached zone is now in the configured state.</p></li><li><b>Move the <tt>zonepath</tt> for <tt>my-zone</tt> to
+the new host.</b><p>See <a href="p82.html">How to Move the <tt>zonepath</tt> to a new Host</a> for more information.</p></li><li><b>On the new host, configure the zone.</b><pre>host2# <tt><b>zonecfg -z my-zone</b></tt></pre><p>You will see the following system message:</p><pre>my-zone: No such zone configured
+Use 'create' to begin configuring a new zone.</pre></li><li><b>To create the zone <tt>my-zone</tt> on the new host,
+use the <tt>zonecfg</tt> command with the <tt>-a</tt> option
+and the <tt>zonepath</tt> on the new host.</b><pre>zonecfg:my-zone> <tt><b>create -a /export/zones/my-zone</b></tt></pre></li><li><b>(Optional) View the configuration.</b><pre>zonecfg:my-zone> <tt><b>info</b></tt>
+zonename: my-zone
+zonepath: /export/zones/my-zone
+autoboot: false
+pool:
+inherit-pkg-dir:
+         dir: /lib
+inherit-pkg-dir:
+         dir: /platform
+inherit-pkg-dir:
+         dir: /sbin
+inherit-pkg-dir:
+         dir: /usr
+net:
+         address: 192.168.0.90
+         physical: bge0</pre></li><li><b>Make any required adjustments to the configuration.</b><p>For
+example, the network physical device is different on the new host, or devices
+that are part of the configuration might have different names on the new host.</p><pre>zonecfg:my-zone> <tt><b>select net physical=bge0</b></tt>
+zonecfg:my-zone:net> <tt><b>set physical=e1000g0</b></tt>
+zonecfg:my-zone:net> <tt><b>end</b></tt></pre></li><li><b>Commit the configuration and exit.</b><pre>zonecfg:my-zone> <tt><b>commit</b></tt>
+zonecfg:my-zone> <tt><b>exit</b></tt></pre></li><li><b>Attach the zone on the new host.</b><ul><li><b>Attach the zone with a validation check. </b><pre>host2# <tt><b>zoneadm -z my-zone attach</b></tt></pre><p>The system administrator is notified of required actions to be taken
+if either or both of the following conditions are present:</p><ul><li><p>Required packages and patches are not present on the new machine.</p>
+</li>
+<li><p>The software levels are different between machines.</p>
+</li>
+</ul>
+</li><li><b>Force the attach operation without performing the validation.</b><pre>host2# <tt><b>zoneadm -z my-zone attach -F</b></tt></pre><hr>
+<p><b>Caution - </b>The <tt>-F</tt> option allows you to force the <tt>attach</tt> with no validation performed. This is useful in certain cases,
+such as in a clustered environment or for backup and restore operations, but
+it does require that the system be properly configured to host the zone. An
+incorrect configuration could result in undefined behavior later.</p>
+<hr>
+</li></ul></li></ol>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p80.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p82.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

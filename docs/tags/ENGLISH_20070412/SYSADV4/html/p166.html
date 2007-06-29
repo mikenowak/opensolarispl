@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>How to Start a Standalone FTP Server in the Foreground - System Administration Guide: Network Services</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-02-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Network Services<?GenHTML /ReferencePage> > <a href="p158.html">28.&nbsp;&nbsp;Administering the FTP Server (Tasks)</a> > <a href="p165.html#wuftp-189">Starting the FTP Server Automatically</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p165.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p167.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="egcoo"></a><h4><img src="graphics/procedure.gif"> How to Start a Standalone FTP Server in the Foreground</h4>
+<ol><li><b>Become superuser or assume an equivalent role.</b><p>Roles contain authorizations and privileged commands. For more information
+about roles, see Configuring RBAC (Task Map) in <i>System Administration Guide: Security Services</i>. To configure
+a role with the Primary Administrator profile, see Chapter 2, Working With the Solaris Management Console (Tasks), in <i>System Administration Guide: Basic Administration</i>.</p></li><li><b>Disable the FTP server.</b><pre># <tt><b>svcadm disable network/ftp</b></tt></pre></li><li><a name="egcol"></a><b>Add an entry to the <tt>inittab</tt> file
+to start the service.</b><p>The new entry in <tt>/etc/inittab</tt> should
+look something like the following:</p><pre><tt><b>ftpd:3:respawn:/usr/sbin/in.ftpd -a -s</b></tt></pre></li><li><b>Tell <tt>init</tt> to re-examine <tt>/etc/inittab</tt>.</b><p>This command should start the FTP service.</p><pre># <tt><b>init q</b></tt></pre></li></ol><a name="wuftp-203"></a><h3>Shutting Down the FTP Server</h3>
+<p>The <tt>ftpshut</tt>(1M) command
+closes down the FTP server at a particular time.</p>
+<p>When you run <tt>ftpshut</tt>, a file is generated from command-line
+options that specify when shutdown occurs, the point at which new connections
+are refused, and when existing connections are dropped. Users are notified
+of a server shutdown based on this information. The location of the file that
+is created by <tt>ftpshut</tt> is specified by the <tt>shutdown</tt> directive
+in the <tt>ftpaccess</tt> file.</p>
+<a name="wuftp-204"></a><h4><img src="graphics/procedure.gif"> How to Shut Down the FTP Server</h4>
+<p>Follow the steps in this procedure to run <tt>ftpshut</tt> and
+to add the <tt>shutdown</tt> directive to the <tt>ftpaccess</tt> file.</p>
+<ol><li><b>Become superuser or assume an equivalent role.</b><p>Roles contain authorizations and privileged commands. For more information
+about roles, see Configuring RBAC (Task Map) in <i>System Administration Guide: Security Services</i>. To configure
+a role with the Primary Administrator profile, see Chapter 2, Working With the Solaris Management Console (Tasks), in <i>System Administration Guide: Basic Administration</i>.</p></li><li><a name="wuftp-step-208"></a><b>Add the following entries to the <tt>ftpaccess</tt> file.</b><pre>shutdown <i>path</i></pre><dl><dt><tt>shutdown</tt></dt>
+<dd><p>Keyword that is used to specify the <i>path</i> to
+a file that is checked regularly for whether the FTP server is scheduled to
+be shut down </p>
+</dd>
+<dt><i>path</i></dt>
+<dd><p>Location of the file that was created by <tt>ftpshut</tt> command</p>
+</dd>
+</dl>
+</li><li><a name="wuftp-step-207"></a><b>Run the <tt>ftpshut</tt> command.</b><pre>ftpshut [ -V ] [ -l min] [ -d min] time [warning-message...]</pre><dl><dt><tt>ftpshut</tt></dt>
+<dd><p>Command that provides a procedure for notifying users that
+the FTP server is shutting down.</p>
+</dd>
+<dt><tt>-V</tt></dt>
+<dd><p>Option that is specified to display copyright and version
+information, then terminate</p>
+</dd>
+<dt><tt>-l</tt></dt>
+<dd><p>Flag that is used to adjust the time that new connections
+to the FTP server are denied</p>
+</dd>
+<dt><tt>-d</tt></dt>
+<dd><p>Flag that is used to adjust the time that existing connections
+to the FTP server are disconnected.</p>
+</dd>
+<dt><tt>time</tt></dt>
+<dd><p>Shutdown time that is specified by the word <tt>now</tt> for
+immediate shutdown, or in one of two formats (+ <i>number</i> or <i>HHMM</i>) for a future shutdown</p>
+</dd>
+<dt><tt>[warning-message...]</tt></dt>
+<dd><p>Shutdown notification message</p>
+</dd>
+</dl>
+</li><li><a name="wuftp-step-209"></a><b>Use the <tt>ftprestart</tt> command
+to restart the FTP server after shutdown.</b><p>For further information,
+see <tt>ftpshut</tt>(1M), <tt>ftpaccess</tt>(4), and <tt>ftprestart</tt>(1M).</p></li></ol>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p165.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p167.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

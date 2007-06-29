@@ -1,0 +1,567 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 4. Using DTrace</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="DTrace User Guide"><link rel="up" href="index.html" title="DTrace User Guide"><link rel="prev" href="ch03s02.html" title="DTrace Built-in Variables"><link rel="next" href="ch04s02.html" title="Tracing User Processes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 4. Using DTrace</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s02.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch04s02.html">Next</a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="gbxwz"></a>Chapter 4. Using DTrace</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="ch04.html#gcggv">Performance Monitoring</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch04.html#gcgfx">Examining Performance Problems With The <code class="literal">sysinfo</code> Provider</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch04s02.html">Tracing User Processes</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch04s02.html#gcglu">Using the <code class="function">copyin
+</code> and <code class="function">copyinstr
+</code> Subroutines</a></span></dt><dt><span class="sect2"><a href="ch04s02.html#gcgmh">Eliminating <span><strong class="command">dtrace</strong></span> Interference</a></span></dt><dt><span class="sect2"><a href="ch04s02.html#gcgld">
+<code class="literal">syscall</code> Provider</a></span></dt><dt><span class="sect2"><a href="ch04s02.html#gcgma">The <code class="function">ustack
+</code> Action</a></span></dt><dt><span class="sect2"><a href="ch04s02.html#gcgmc">The <code class="literal">pid</code> Provider</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch04s03.html">Anonymous Tracing</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch04s03.html#gcglb">Anonymous Enablings</a></span></dt><dt><span class="sect2"><a href="ch04s03.html#gcgkj">Claiming Anonymous State</a></span></dt><dt><span class="sect2"><a href="ch04s03.html#gcgki">Anonymous Tracing Examples</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch04s04.html">Speculative Tracing</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch04s04.html#gcgmb">Speculation Interfaces</a></span></dt><dt><span class="sect2"><a href="ch04s04.html#gcgkl">Creating a Speculation</a></span></dt><dt><span class="sect2"><a href="ch04s04.html#gcgli">Using a Speculation</a></span></dt><dt><span class="sect2"><a href="ch04s04.html#gcglw">Committing a Speculation</a></span></dt><dt><span class="sect2"><a href="ch04s04.html#gcgkq">Discarding a Speculation</a></span></dt><dt><span class="sect2"><a href="ch04s04.html#gcglc">Speculation Example</a></span></dt></dl></dd></dl></div>
+
+
+
+
+
+<div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gcggv"></a>Performance Monitoring</h2></div></div></div>
+
+<p>Several DTrace providers implement probes that correspond to existing
+performance monitoring tools:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The <code class="literal">vminfo</code> provider implements probes that
+correspond to the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">vmstat</span>
+(
+1M
+)
+</span>
+</span> tool</p>
+</li><li>
+<p>The <code class="literal">sysinfo</code> provider implements probes
+that correspond to the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">mpstat</span>
+(
+1M
+)
+</span>
+</span> tool</p>
+</li><li>
+<p>The <code class="literal">io</code> provider implements probes that
+correspond to the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">iostat</span>
+(
+1M
+)
+</span>
+</span> tool</p>
+</li><li>
+<p>The <code class="literal">syscall</code> provider implements probes
+that correspond to the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">truss</span>
+(
+1
+)
+</span>
+</span> tool</p>
+</li></ul></div>
+<p>You can use the DTrace facility to extract the same information that
+the bundled tools provide, but with greater flexibility. The DTrace facility
+provides arbitrary kernel information that is available at the time that the
+probes fire. The DTrace facility enables you to receive information such as
+process identification, thread identification, and stack traces.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcgfx"></a>Examining Performance Problems With The <code class="literal">sysinfo</code> Provider</h3></div></div></div>
+
+<p>The <code class="literal">sysinfo</code> provider makes available probes that
+correspond to the <code class="literal">sys</code> kernel statistics. These statistics
+provide the input for system monitoring utilities such as <code class="literal">mpstat</code>.
+The <code class="literal">sysinfo</code> provider probes fire immediately before the <code class="literal">sys</code> named <code class="literal">kstat</code> increments. The probes that are
+provided by the <code class="literal">sysinfo</code> provider are in the following list.</p>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="literal">bawrite</code>
+</span></dt><dd>
+<p>Probe that fires whenever a buffer is about to be asynchronously
+written out to a device.</p>
+</dd><dt><span class="term">
+<code class="literal">bread</code>
+</span></dt><dd>
+<p>Probe that fires whenever a buffer is physically read from
+a device. <code class="literal">bread</code> fires <span class="emphasis"><em>after</em></span> the buffer
+has been requested from the device, but <span class="emphasis"><em>before</em></span> blocking
+pending its completion.</p>
+</dd><dt><span class="term">
+<code class="literal">bwrite</code>
+</span></dt><dd>
+<p>Probe that fires whenever a buffer is about to be written
+out to a device, whether synchronously <span class="emphasis"><em>or</em></span> asynchronously.</p>
+</dd><dt><span class="term">
+<code class="literal">cpu_ticks_idle</code>
+</span></dt><dd>
+<p>Probe that fires when the periodic system clock has made the
+determination that a CPU is <span class="emphasis"><em>idle</em></span>. Note that this probe
+fires in the context of the system clock and therefore fires on the CPU running
+the system clock. The <code class="literal">cpu_t</code> argument (<code class="literal">arg2</code>)
+indicates the CPU that has been deemed idle.</p>
+</dd><dt><span class="term">
+<code class="literal">cpu_ticks_kernel</code>
+</span></dt><dd>
+<p>Probe that fires when the periodic system clock has made the
+determination that a CPU is executing in the <span class="emphasis"><em>kernel</em></span>.
+This probe fires in the context of the system clock and therefore fires on
+the CPU running the system clock. The <code class="literal">cpu_t</code> argument (<code class="literal">arg2</code>) indicates the CPU that has been deemed to be executing in
+the kernel.</p>
+</dd><dt><span class="term">
+<code class="literal">cpu_ticks_user</code>
+</span></dt><dd>
+<p>Probe that fires when the periodic system clock has made the
+determination that a CPU is executing in <span class="emphasis"><em>user mode</em></span>. This
+probe fires in the context of the system clock and therefore fires on the
+CPU running the system clock. The <code class="literal">cpu_t</code> argument (<code class="literal">arg2</code>) indicates the CPU that has been deemed to be running in user-mode.</p>
+</dd><dt><span class="term">
+<code class="literal">cpu_ticks_wait</code>
+</span></dt><dd>
+<p>Probe that fires when the periodic system clock has made the
+determination that a CPU is otherwise idle, but some threads are waiting for
+I/O on the CPU. This probe fires in the context of the system clock and therefore
+fires on the CPU running the system clock. The <code class="literal">cpu_t</code> argument
+(<code class="literal">arg2</code>) indicates the CPU that has been deemed waiting on
+I/O.</p>
+</dd><dt><span class="term">
+<code class="literal">idlethread</code>
+</span></dt><dd>
+<p>Probe that fires whenever a CPU enters the idle loop.</p>
+</dd><dt><span class="term">
+<code class="literal">intrblk</code>
+</span></dt><dd>
+<p>Probe that fires whenever an interrupt thread blocks.</p>
+</dd><dt><span class="term">
+<code class="literal">inv_swtch</code>
+</span></dt><dd>
+<p>Probe that fires whenever a running thread is forced to involuntarily
+give up the CPU.</p>
+</dd><dt><span class="term">
+<code class="literal">lread</code>
+</span></dt><dd>
+<p>Probe that fires whenever a buffer is logically read from
+a device.</p>
+</dd><dt><span class="term">
+<code class="literal">lwrite</code>
+</span></dt><dd>
+<p>Probe that fires whenever a buffer is logically written to
+a device</p>
+</dd><dt><span class="term">
+<code class="literal">modload</code>
+</span></dt><dd>
+<p>Probe that fires whenever a kernel module is loaded.</p>
+</dd><dt><span class="term">
+<code class="literal">modunload</code>
+</span></dt><dd>
+<p>Probe that fires whenever a kernel module is unloaded.</p>
+</dd><dt><span class="term">
+<code class="literal">msg</code>
+</span></dt><dd>
+<p>Probe that fires whenever a <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">msgsnd</span>
+(
+2
+)
+</span>
+</span> or <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">msgrcv</span>
+(
+2
+)
+</span>
+</span> system call is made, but before
+the message queue operations have been performed.</p>
+</dd><dt><span class="term">
+<code class="literal">mutex_adenters</code>
+</span></dt><dd>
+<p>Probe that fires whenever an attempt is made to acquire an
+owned adaptive lock. If this probe fires, one of the <code class="literal">lockstat</code> provider's <code class="literal">adaptive-block</code> or <code class="literal">adaptive-spin</code> probes also fires.</p>
+</dd><dt><span class="term">
+<code class="literal">namei</code>
+</span></dt><dd>
+<p>Probe that fires whenever a name lookup is attempted in the
+filesystem.</p>
+</dd><dt><span class="term">
+<code class="literal">nthreads</code>
+</span></dt><dd>
+<p>Probe that fires whenever a thread is created.</p>
+</dd><dt><span class="term">
+<code class="literal">phread</code>
+</span></dt><dd>
+<p>Probe that fires whenever a raw I/O read is about to be performed.</p>
+</dd><dt><span class="term">
+<code class="literal">phwrite</code>
+</span></dt><dd>
+<p>Probe that fires whenever a raw I/O write is about to be performed.</p>
+</dd><dt><span class="term">
+<code class="literal">procovf</code>
+</span></dt><dd>
+<p>Probe that fires whenever a new process cannot be created
+because the system is out of process table entries.</p>
+</dd><dt><span class="term">
+<code class="literal">pswitch</code>
+</span></dt><dd>
+<p>Probe that fires whenever a CPU switches from executing one
+thread to executing another.</p>
+</dd><dt><span class="term">
+<code class="literal">readch</code>
+</span></dt><dd>
+<p>Probe that fires after each successful read, but before control
+is returned to the thread that is performing the read. A read can occur through
+the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">read</span>
+(
+2
+)
+</span>
+</span>, <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">readv</span>
+(
+2
+)
+</span>
+</span> or <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">pread</span>
+(
+2
+)
+</span>
+</span> system calls. <code class="literal">arg0</code> contains
+the number of bytes that were successfully read.</p>
+</dd><dt><span class="term">
+<code class="literal">rw_rdfails</code>
+</span></dt><dd>
+<p>Probe that fires whenever an attempt is made to read-lock
+a reader or writer when the lock is held by a writer or desired by a writer.
+If this probe fires, the <code class="literal">lockstat</code> provider's <code class="literal">rw-block</code> probe also fires.</p>
+</dd><dt><span class="term">
+<code class="literal">rw_wrfails</code>
+</span></dt><dd>
+<p>Probe that fires whenever an attempt is made to write-lock
+a reader or writer lock when the lock is held by readers or by another writer.
+If this probe fires, the <code class="literal">lockstat</code> provider's <code class="literal">rw-block</code> probe also fires.</p>
+</dd><dt><span class="term">
+<code class="literal">sema</code>
+</span></dt><dd>
+<p>Probe that fires whenever a <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">semop</span>
+(
+2
+)
+</span>
+</span> system call is made, but before
+any semaphore operations have been performed.</p>
+</dd><dt><span class="term">
+<code class="literal">sysexec</code>
+</span></dt><dd>
+<p>Probe that fires whenever an <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">exec</span>
+(
+2
+)
+</span>
+</span> system call is made.</p>
+</dd><dt><span class="term">
+<code class="literal">sysfork</code>
+</span></dt><dd>
+<p>Probe that fires whenever a <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">fork</span>
+(
+2
+)
+</span>
+</span> system call is made.</p>
+</dd><dt><span class="term">
+<code class="literal">sysread</code>
+</span></dt><dd>
+<p>Probe that fires whenever a <span><strong class="command">read</strong></span>, <span><strong class="command">readv</strong></span>, or <span><strong class="command">pread</strong></span> system call is made.</p>
+</dd><dt><span class="term">
+<code class="literal">sysvfork</code>
+</span></dt><dd>
+<p>Probe that fires whenever a <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">vfork</span>
+(
+2
+)
+</span>
+</span> system call is made.</p>
+</dd><dt><span class="term">
+<code class="literal">syswrite</code>
+</span></dt><dd>
+<p>Probe that fires whenever a <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">write</span>
+(
+2
+)
+</span>
+</span>, <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">writev</span>
+(
+2
+)
+</span>
+</span>, or <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">pwrite</span>
+(
+2
+)
+</span>
+</span> system call is made.</p>
+</dd><dt><span class="term">
+<code class="literal">trap</code>
+</span></dt><dd>
+<p>Probe that fires whenever a processor trap occurs. Note that
+some processors, in particular UltraSPARC variants, handle some lightweight
+traps through a mechanism that does not cause this probe to fire.</p>
+</dd><dt><span class="term">
+<code class="literal">ufsdirblk</code>
+</span></dt><dd>
+<p>Probe that fires whenever a directory block is read from the
+UFS file system. See <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">ufs</span>
+(
+7FS
+)
+</span>
+</span> for
+details on UFS.</p>
+</dd><dt><span class="term">
+<code class="literal">ufsiget</code>
+</span></dt><dd>
+<p>Probe that fires whenever an inode is retrieved. See <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">ufs</span>
+(
+7FS
+)
+</span>
+</span> for details on UFS.</p>
+</dd><dt><span class="term">
+<code class="literal">ufsinopage</code>
+</span></dt><dd>
+<p>Probe that fires after an in-core inode <span class="emphasis"><em>without</em></span> any
+associated data pages has been made available for reuse. See <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">ufs</span>
+(
+7FS
+)
+</span>
+</span> for details on UFS.</p>
+</dd><dt><span class="term">
+<code class="literal">ufsipage</code>
+</span></dt><dd>
+<p>Probe that fires after an in-core inode <span class="emphasis"><em>with</em></span> associated
+data pages has been made available for reuse. This probe fires after the associated
+data pages have been flushed to disk. See <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">ufs</span>
+(
+7FS
+)
+</span>
+</span> for details on UFS.</p>
+</dd><dt><span class="term">
+<code class="literal">wait_ticks_io</code>
+</span></dt><dd>
+<p>Probe that fires when the periodic system clock has made the
+determination that a CPU is otherwise idle but some threads are waiting for
+I/O on the CPU. This probe fires in the context of the system clock and therefore
+fires on the CPU running the system clock. The <code class="literal">cpu_t</code> argument
+(<code class="literal">arg2</code>) indicates the CPU that is described as waiting for
+I/O. No semantic difference between <code class="literal">wait_ticks_io</code> and <code class="literal">cpu_ticks_wait</code>; <code class="literal">wait_ticks_io</code> exists solely for
+historical reasons.</p>
+</dd><dt><span class="term">
+<code class="literal">writech</code>
+</span></dt><dd>
+<p>Probe that fires after each successful write, but before control
+is returned to the thread performing the write. A write can occur through
+the <span><strong class="command">write</strong></span>, <span><strong class="command">writev</strong></span>, or <span><strong class="command">pwrite</strong></span> system
+calls. <code class="literal">arg0</code> contains the number of bytes that were successfully
+written.</p>
+</dd><dt><span class="term">
+<code class="literal">xcalls</code>
+</span></dt><dd>
+<p>Probe that fires whenever a cross-call is about to be made.
+A cross-call is the operating system's mechanism for one CPU to request immediate
+work of another CPU.</p>
+</dd></dl></div>
+<div class="example"><a name="gcgii"></a><p class="title"><b>Example 4.1. Using the <code class="literal">quantize</code> Aggregation
+Function With the <code class="literal">sysinfo</code> Probes</b></p>
+
+
+<p>The quantize aggregation function displays a power-of-two frequency
+distribution bar graph of its argument. The following example uses the <code class="literal">quantize</code> function to determine the size of the <code class="literal">read</code> calls
+that are performed by all processes on the system over a period of ten seconds.
+The <code class="literal">arg0</code> argument for the <code class="literal">sysinfo</code> probes
+states the amount by which to increment the statistic. This value is <code class="literal">1</code> for
+most <code class="literal">sysinfo</code> probes. Two exceptions are the <code class="literal">readch</code> and <code class="literal">writech</code> probes. For these probes, the <code class="literal">arg0</code> argument
+is set to the actual number of bytes that are read or are written, respectively.</p>
+<pre class="screen"># <strong class="userinput"><code>cat -n read.d</code></strong>
+   1  #!/usr/sbin/dtrace -s
+   2  sysinfo:::readch
+   3  {
+   4     @[execname] = quantize(arg0);
+   5  }
+   6
+   7  tick-10sec
+   8  {
+   9     exit(0);
+  10  }
+
+# <strong class="userinput"><code>dtrace -s read.d</code></strong>
+dtrace: script 'read.d' matched 5 probes
+CPU        ID                    FUNCTION:NAME
+  0     36754                      :tick-10sec
+
+  bash
+         value  ---------- Distribution ---------- count
+             0 |                                   0
+             1 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 13
+             2 |                                   0
+
+  file
+         value  ---------- Distribution ---------- count
+            -1 |                                   0
+             0 |                                   2
+             1 |                                   0
+             2 |                                   0
+             4 |                                   6
+             8 |                                   0
+            16 |                                   0
+            32 |                                   6
+            64 |                                   6
+           128 |@@                                 16
+           256 |@@@@                               30
+           512 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      199
+          1024 |                                   0
+          2048 |                                   0
+          4096 |                                   1
+          8192 |                                   1
+         16384 |                                   0
+
+  grep
+         value  ---------- Distribution ---------- count
+            -1 |                                   0
+             0 |@@@@@@@@@@@@@@@@@@@                99
+             1 |                                   0
+             2 |                                   0
+             4 |                                   0
+             8 |                                   0
+            16 |                                   0
+            32 |                                   0
+            64 |                                   0
+           128 |                                   1
+           256 |@@@@                               25
+           512 |@@@@                               23
+          1024 |@@@@                               24
+          2048 |@@@@                               22
+          4096 |                                   4
+          8192 |                                   3
+         16384 |                                   0</pre>
+</div>
+<div class="example"><a name="gcgis"></a><p class="title"><b>Example 4.2. Finding the Source of Cross-Calls</b></p>
+
+
+<p>In this example, consider the following output form the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">mpstat</span>
+(
+1M
+)
+</span>
+</span> command:</p>
+<pre class="screen">CPU minf mjf xcal  intr ithr  csw icsw migr smtx  srw syscl  usr sys  wt idl
+  0 2189   0 1302    14    1  215   12   54   28    0 12995   13  14   0  73
+  1 3385   0 1137   218  104  195   13   58   33    0 14486   19  15   0  66
+  2 1918   0 1039    12    1  226   15   49   22    0 13251   13  12   0  75
+  3 2430   0 1284   220  113  201   10   50   26    0 13926   10  15   0  75</pre>
+<p>The values in the <code class="literal">xcal</code> and <code class="literal">syscl</code> columns
+are atypically high, reflecting a possible drain on system performance. The
+system is relatively idle and is not spending an unusual amount of time waiting
+for I/O. The numbers in the <code class="literal">xcal</code> column are scaled per
+second and are read from the <code class="literal">xcalls</code> field of the <code class="literal">sys</code> kstat.
+To see which executables are responsible for the cross-calls, enter the following <span><strong class="command">dtrace</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>dtrace -n 'xcalls {@[execname] = count()}'</code></strong>
+dtrace: description 'xcalls ' matched 3 probes
+<strong class="userinput"><code>^C</code></strong>
+  find                                                   2
+  cut                                                    2
+  snmpd                                                  2
+  mpstat                                                22
+  sendmail                                             101
+  grep                                                 123
+  bash                                                 175
+  dtrace                                               435
+  sched                                                784
+  xargs                                              22308
+  file                                               89889
+#</pre>
+<p>This output indicates that the bulk of the cross calls are originating
+from <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">file</span>
+(
+1
+)
+</span>
+</span> and <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">xargs</span>
+(
+1
+)
+</span>
+</span> processes. You can find these
+processes with the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">pgrep</span>
+(
+1
+)
+</span>
+</span> and <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">ptree</span>
+(
+1
+)
+</span>
+</span> commands.</p>
+<pre class="screen"># <strong class="userinput"><code>pgrep xargs</code></strong>
+15973
+# <strong class="userinput"><code>ptree 15973</code></strong>
+204   /usr/sbin/inetd -s
+  5650  in.telnetd
+    5653  -sh
+      5657  bash
+        15970 /bin/sh ./findtxt configuration
+          15971 cut -f1 -d:
+            15973 xargs file
+              16686 file /usr/bin/tbl /usr/bin/troff /usr/bin/ul /usr/bin/vgrind /usr/bin/catman</pre>
+<p>This output indicates that the <span><strong class="command">xargs</strong></span> and <span><strong class="command">file</strong></span> commands
+form part of a custom user shell script. To locate this script, you can perform
+the following commands:</p>
+<pre class="screen"># <strong class="userinput"><code>find / -name findtxt</code></strong>
+/usrs1/james/findtxt
+# <strong class="userinput"><code>cat /usrs1/james/findtxt</code></strong>
+#!/bin/sh
+find / -type f | xargs file | grep text | cut -f1 -d: &gt; /tmp/findtxt$$
+cat /tmp/findtxt$$ | xargs grep $1
+rm /tmp/findtxt$$
+#</pre>
+<p>This script runs many process concurrently. A large amount of interprocess
+communication is happening through pipes. The number of pipes makes the script
+resource intensive. The script attempts to find every text file on the system
+and then searches each file for a specific text.</p>
+</div>
+</div>
+</div>
+
+
+
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s02.html">Prev</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="ch04s02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">DTrace Built-in Variables </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Tracing User Processes</td></tr></table></div></body></html>

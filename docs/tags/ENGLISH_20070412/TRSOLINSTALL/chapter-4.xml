@@ -1,0 +1,4125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="txconf-1">
+
+
+
+<title>Configuring Trusted Extensions</title>
+<indexterm xml:id="indexterm-86">
+<primary>configuring</primary>
+<secondary>Trusted Extensions software</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-87">
+<primary>configuring Trusted Extensions</primary>
+<secondary>initial procedures</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-88">
+<primary>Trusted Extensions configuration</primary>
+<secondary>initial procedures</secondary>
+</indexterm>
+<toc>
+<para>This chapter covers how to configure Trusted Extensions on a system with
+a monitor. To work properly, Trusted Extensions software requires label, zones,
+network, role, and tools configuration.</para>
+<itemizedlist remap="jumplist">
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-60">Getting Started</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="confsys-8">Protecting Hardware, Loading
+Labels, and Using a Naming Service (Tasks)</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-62">Associating Network Interfaces
+With Zones (Tasks)</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-40">Preparing to Create Zones (Tasks)</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-20">Creating the Labeled Zones (Tasks)</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-14">Creating Roles and Users</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-50">Creating Home Directories</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-64">Adding Users and Hosts to an
+Existing Trusted Network</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-trouble-1">Troubleshooting Your Trusted Extensions Configuration</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-18">Finishing Up Trusted Extensions
+Configuration (Task Map)</olink>
+</para>
+</listitem>
+</itemizedlist>
+</toc>
+<sect1 xml:id="txconf-60">
+<title>Getting Started</title>
+<para>You should already have made decisions about your configuration. For
+the decisions, see <olink remap="external" targetdoc="chapter-3.xml" targetptr="startinst-6">Collecting Information and
+Making Decisions Before Installing Trusted Extensions (Tasks)</olink>.</para>
+</sect1>
+<sect1 xml:id="confsys-8">
+<title>Protecting Hardware, Loading Labels, and Using
+a Naming Service (Tasks)</title>
+<indexterm xml:id="indexterm-89">
+<primary>tasks and task maps</primary>
+<secondary>Protecting Hardware, Loading Labels, and Using a Naming Service (Tasks)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-90">
+<primary>Protecting Hardware, Loading Labels, and Using a Naming Service (Tasks)</primary>
+</indexterm>
+<informaltable frame="topbot" pgwide="1">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec2" colwidth="18.21*"/>
+<colspec colname="colspec1" colwidth="43.13*"/>
+<colspec colname="colspec0" colwidth="37.65*"/>
+<thead>
+<row>
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Protect the hardware.</para>
+</entry>
+<entry>
+<para>Machine hardware can be protected by requiring a password to change
+hardware settings.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-3321" targetptr="secsystask-46">
+<citetitle remap="section">Controlling Access to System Hardware</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Configure labels.</para>
+</entry>
+<entry>
+<para>Labels <emphasis>must</emphasis> be configured for your site. If you
+plan to use the default <filename>label_encodings</filename> file, you can
+skip this step.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="confsys-17">Check and Install Your Label Encodings
+File</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>For IPv6, modify <filename>/etc/system</filename> file.</para>
+</entry>
+<entry>
+<para>If your network uses IPv6, this task is required. If your network uses
+IPv4, skip this step.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-35">Enable IPv6 Networking</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Reboot and log in.</para>
+</entry>
+<entry>
+<para>Upon login, you are in the global zone, in an environment that recognizes
+and enforces mandatory access control (MAC).</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="confsys-3">Reboot and Log In</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Configure LDAP service for the trusted domain.</para>
+</entry>
+<entry>
+<para>If you have an existing LDAP server, you add Trusted Extensions databases
+to the server. Then you make a Trusted Extensions host a proxy of the LDAP server.</para>
+<para>If you do not have an LDAP server, then you configure a Trusted Extensions host
+as the server.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-5.xml" targetptr="txldap-1">Chapter 5, Configuring LDAP for Trusted
+Extensions</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Make the global zone an LDAP client.</para>
+</entry>
+<entry>
+<para>For systems that are not the LDAP server or proxy server, make them
+an LDAP client.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txldap-8">Make the Global Zone an LDAP Client</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Identify zone interfaces, names, and labels.</para>
+</entry>
+<entry>
+<para>Before creating the first labeled zone, identify the IP addresses, labels,
+and names of all the labeled zones that you plan to create.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-40">Preparing to Create Zones (Tasks)</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<sect2>
+<title/>
+<task id="confsys-17">
+
+<title>Check and Install Your Label Encodings
+File</title>
+<indexterm xml:id="indexterm-91">
+<primary>installing</primary>
+<secondary>
+<filename>label_encodings</filename> file</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-92">
+<primary>
+<filename>label_encodings</filename> file</primary>
+<secondary>installing</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-93">
+<primary>
+<filename>label_encodings</filename> file</primary>
+<secondary>modifying</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-94">
+<primary>modifying</primary>
+<secondary>
+<filename>label_encodings</filename> file</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-95">
+<primary>checking</primary>
+<secondary>
+<filename>label_encodings</filename> file</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-96">
+<primary>
+<filename>label_encodings</filename> file</primary>
+<secondary>checking</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-97">
+<primary>encodings file</primary>
+<see>
+
+<filename>label_encodings</filename> file</see>
+</indexterm>
+<indexterm xml:id="indexterm-98">
+<primary>Check Encodings action</primary>
+</indexterm>
+<indexterm xml:id="indexterm-99">
+<primary>administrative actions</primary>
+<secondary>Check Encodings</secondary>
+</indexterm>
+<tasksummary>
+<para>Your encodings file must be compatible with any Trusted Extensions host
+with which you are communicating.</para>
+<note>
+
+<para>Trusted Extensions installs a default <filename>label_encodings</filename> file.
+This default file is useful for demos. However, this file might not be a good
+choice for your use. If you plan to use the default file, you can skip this
+step.</para>
+</note>
+<itemizedlist>
+<listitem>
+<para>If you are familiar with encodings files, you can use the
+following procedure.</para>
+</listitem>
+<listitem>
+<para>If you are not familiar with encodings files, consult <olink remap="external" targetdoc="819-7308">
+<citetitle remap="book">Solaris Trusted Extensions Label Administration</citetitle>
+</olink> for requirements, procedures, and
+examples.</para>
+</listitem>
+</itemizedlist>
+<caution>
+
+<para>You <emphasis>must</emphasis> successfully install labels before
+continuing or the configuration will fail.</para>
+</caution>
+</tasksummary>
+<taskprerequisites>
+
+<para>You have just added the Trusted Extensions packages, so you are already
+logged in. “You” refers to the security administrator.</para>
+<para>The <olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-111">security administrator</olink> is
+responsible for editing, checking, and maintaining the <filename>label_encodings</filename> file.
+If you plan to edit the <filename>label_encodings</filename> file, make sure
+that the file itself is writable.</para>
+<para>For more information, see the <olink remap="external" targetdoc="819-7307" targetptr="label-encodings-4">
+<citerefentry>
+<refentrytitle>label_encodings</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> man page.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Allocate the appropriate device.</para>
+<para>To allocate a device,
+see <olink remap="external" targetdoc="chapter-7.xml" targetptr="confsys-15">How to Allocate a Device</olink>
+</para>
+</step>
+<step>
+<para>Load the <filename>label_encodings</filename> file from the allocated
+device.</para>
+</step>
+<step>
+<para>Check the syntax of the new label encodings file.</para>
+<substeps>
+<step>
+<para>Open the Trusted_Extensions folder.</para>
+<para>Click mouse button
+3 on the background.</para>
+</step>
+<step>
+<para>In the Workspace menu, choose Applications -&gt; Application
+Manager.</para>
+</step>
+<step>
+<para>Double-click the Trusted_Extensions folder icon.</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="figures/Dtagen.m.color.gif"/>
+</imageobject>
+<textobject>
+<simpara>Illustration shows the Trusted_Extensions folder icon.</simpara>
+</textobject>
+</mediaobject>
+</step>
+</substeps>
+</step>
+<step>
+<para>Double-click the Check Encodings action.</para>
+<para>In the dialog
+box, enter the full path name to the file:</para>
+<screen>
+<replaceable>/full-pathname-of-label-encodings-file</replaceable>
+</screen>
+</step>
+<step>
+<para>Read the contents of the Check Encodings dialog box that is displayed.</para>
+<para>The <command>chk_encodings</command> command checks the syntax
+of the file.</para>
+</step>
+<step>
+<para>Do one of the following:</para>
+<variablelist>
+<varlistentry>
+<term>CONTINUE</term>
+<listitem>
+<para>Only if Check Encodings reports no errors can you continue
+configuring. Go to <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-encode-ok-1">Step 7</olink>.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>RESOLVE ERRORS</term>
+<listitem>
+<para>If Check Encodings reports errors, the errors <emphasis>must</emphasis> be
+resolved before continuing. For assistance, see <olink remap="external" targetdoc="819-7308" targetptr="modifyenc-1">Chapter 3, <citetitle remap="chapter">Making a Label Encodings File (Tasks),</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Label Administration</citetitle>
+</olink>.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</step>
+<step xml:id="txconf-encode-ok-1">
+<para>If the file passes the check, click Yes.</para>
+<para>The Check Encodings action creates a backup copy of the original file,
+then installs the checked version. The action then restarts the label daemon.</para>
+<caution>
+
+<para>Your label encodings file <emphasis>must</emphasis> pass the
+Check Encodings test before you continue.</para>
+</caution>
+</step>
+<step>
+<para>Deallocate the device.</para>
+<para>To deallocate the device, see <olink remap="external" targetdoc="chapter-7.xml" targetptr="confsys-19">How to Deallocate a Device</olink>.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-35">
+
+<title>Enable IPv6 Networking</title>
+<indexterm xml:id="indexterm-100">
+<primary>enabling</primary>
+<secondary>IPv6 network</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-101">
+<primary>
+<filename>/etc/system</filename> file</primary>
+<secondary>modifying for IPv6 network</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-102">
+<primary>IPv6</primary>
+<secondary>entry in <filename>/etc/system</filename> file</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-103">
+<primary>Trusted Extensions network</primary>
+<secondary>enabling IPv6</secondary>
+</indexterm>
+<tasksummary>
+<para>When IPv6 is disabled, Trusted Extensions cannot forward IPv6 packets with
+CIPSO options. To enable an IPv6 network in Trusted Extensions requires an entry
+in <filename>/etc/system</filename>.</para>
+</tasksummary>
+<procedure role="single-step">
+<step>
+<para>Type the following entry into the <filename>/etc/system</filename> file.</para>
+<screen>set ip:ip6opt_ls = 0x0a</screen>
+</step>
+</procedure>
+<taskrelated role="troubleshooting">
+
+<itemizedlist>
+<para>
+<indexterm xml:id="indexterm-104">
+<primary>troubleshooting</primary>
+<secondary>IPv6 configuration</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-105">
+<primary>IPv6</primary>
+<secondary>troubleshooting</secondary>
+</indexterm>Error messages when booting indicate that your IPv6 configuration
+is incorrect. To correct the entry, do the following:</para>
+<listitem>
+<para>Check that the entry is spelled correctly.</para>
+</listitem>
+<listitem>
+<para>Check that the system has been rebooted after adding the correct
+entry to the <literal>/etc/system</literal> file.</para>
+</listitem>
+</itemizedlist>
+<para>If you install Trusted Extensions on a Solaris system that currently
+has IPv6 enabled, but fail to add the IP entry in <filename>/etc/system</filename>,
+you see the following error message: <literal>t_optmgmt: System error: Cannot
+assign requested address</literal> <replaceable>time-stamp</replaceable>
+</para>
+<itemizedlist>
+<para>If you install Trusted Extensions on a Solaris system that has not
+enabled IPv6, and fail to add the IP entry in <filename>/etc/system</filename>,
+you see the following types of error messages:</para>
+<listitem>
+<para>
+<literal>WARNING: IPv6 not enabled via /etc/system</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Failed to configure IPv6 interface(s): hme0</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>rpcbind: Unable to join IPv6 multicast group for
+rpc broadcast</literal> <replaceable>broadcast-number</replaceable>
+</para>
+</listitem>
+</itemizedlist>
+</taskrelated>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="confsys-3">
+
+<title>Reboot and Log In</title>
+<indexterm xml:id="indexterm-106">
+<primary>Trusted Extensions installation</primary>
+<secondary>reboot to activate labels</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-107">
+<primary>labeling</primary>
+<secondary>turning on labels</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-108">
+<primary>rebooting</primary>
+<secondary>activating labels</secondary>
+</indexterm>
+<tasksummary>
+<para>At most sites, two or more administrators, an <olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-59">install team</olink>, are present when configuring
+the system. “You”, in the following procedures, refers to the
+install team.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Reboot.</para>
+<screen># <userinput>/usr/sbin/reboot</userinput>
+</screen>
+</step>
+<step>
+<para>Log in.</para>
+<para>You are logging in to the Solaris Trusted Extensions (CDE) desktop.</para>
+</step>
+<step>
+<para>Log in as superuser.</para>
+<para>Type <literal>root</literal> and
+the root password.</para>
+<para>Users must not disclose their passwords to another person, as that person
+might then have access to the data of the user and will not be uniquely identified
+or accountable. Note that disclosure can be direct, through the user deliberately
+disclosing his/her password to another person, or indirect, such as through
+writing it down, or choosing an insecure password. Solaris Trusted Extensions software provides
+protection against insecure passwords, but cannot prevent a user disclosing
+his/her password or writing it down.</para>
+</step>
+<step>
+<para>Read the Last Login dialog box.</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="figures/last.login.gif"/>
+</imageobject>
+<textobject>
+<simpara>Illustration shows the Last Login dialog box.</simpara>
+</textobject>
+</mediaobject>
+<para>Then click OK to dismiss the box.</para>
+</step>
+<step>
+<para>Read the Label Builder.</para>
+<para>Click OK to accept the default
+label.</para>
+<para>
+<indexterm xml:id="indexterm-109">
+<primary>labels</primary>
+<secondary>on trusted stripe</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-110">
+<primary>screens</primary>
+<secondary>initial display</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-111">
+<primary>workspaces</primary>
+<secondary>initial display</secondary>
+</indexterm>Once the login process
+is complete, the Trusted Extensions screen appears briefly, and you are in a CDE
+session with four workspaces. The <constant>Trusted Path</constant> symbol
+is displayed in the <olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-133">trusted stripe</olink>.</para>
+<note>
+
+<para>You
+must log off or activate the lockscreen functionality before leaving a system
+unattended. Otherwise, a person can access the system without having to pass
+identification and authentication, and that person would not be uniquely identified
+or accountable.</para>
+</note>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txldap-8">
+
+<title>Make the Global Zone an LDAP Client</title>
+<indexterm xml:id="indexterm-112">
+<primary>creating</primary>
+<secondary>LDAP client</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-113">
+<primary>LDAP configuration</primary>
+<secondary>creating client</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-114">
+<primary>Create LDAP Client action</primary>
+</indexterm>
+<indexterm xml:id="indexterm-115">
+<primary>administrative actions</primary>
+<secondary>Create LDAP Client</secondary>
+</indexterm>
+<tasksummary>
+<para>This completes the naming service configuration for the global zone.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>The Sun Java System Directory Server, that is, the LDAP server, must exist. The server must be
+populated with Trusted Extensions databases, and this system must be able to contact
+the server. So, this system must be an entry in the <filename>tnrhdb</filename> database
+on the LDAP server, or must be included in a wildcard entry.</para>
+<para>If an LDAP server that is configured with Trusted Extensions does not exist,
+you must complete <olink remap="external" targetdoc="chapter-5.xml" targetptr="txldap-1">Chapter 5, Configuring
+LDAP for Trusted Extensions</olink> before you attempt this procedure.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Save a copy of the original <filename>nsswitch.ldap</filename> file.</para>
+<para>The standard naming service switch file for LDAP is too restrictive.</para>
+<screen># <userinput>cd /etc</userinput>
+# <userinput>cp nsswitch.ldap nsswitch.ldap.orig</userinput>
+</screen>
+</step>
+<step>
+<para>If you are using DNS, change the entries for the following services
+in the <filename>nsswitch.ldap</filename> file.</para>
+<para>The correct entries
+are similar to the following:</para>
+<screen>hosts:    files dns ldap
+
+ipnodes:    files dns ldap
+
+networks:   ldap files
+protocols:  ldap files
+rpc:        ldap files
+ethers:     ldap files
+netmasks:   ldap files
+bootparams: ldap files
+publickey:  ldap files
+
+services:   files</screen>
+<para>Note that Trusted Extensions adds two entries:</para>
+<screen>tnrhtp:    files ldap
+tnrhdb:    files ldap</screen>
+</step>
+<step>
+<para>Copy the modified <filename>nsswitch.ldap</filename> file to <filename>nsswitch.conf</filename>.</para>
+<screen># <userinput>cp nsswitch.ldap nsswitch.conf</userinput>
+</screen>
+</step>
+<step>
+<para>Navigate to the Trusted_Extensions folder.</para>
+<substeps>
+<step>
+<para>Click mouse button 3 on the background.</para>
+</step>
+<step>
+<para>From the Workspace menu, choose Applications -&gt; Application
+Manager.</para>
+</step>
+<step>
+<para>Double-click the Trusted_Extensions folder icon.</para>
+<para>This
+folder contains actions that set up interfaces, LDAP clients, and labeled
+zones.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>Double-click the Create LDAP Client action.</para>
+<para>Answer
+the prompts.</para>
+<screen>Domain Name:               <lineannotation>Type the domain name</lineannotation>
+Hostname of LDAP Server:   <lineannotation>Type the name of the server</lineannotation>
+IP Address of LDAP Server: <lineannotation>Type the IP address</lineannotation>
+LDAP Proxy Password:       <lineannotation>Type the password to the server</lineannotation>
+Profile Name:              <lineannotation>Type the profile name</lineannotation>
+</screen>
+</step>
+<step>
+<para>When a completion message appears, close the action window.</para>
+<screen>global zone will be LDAP client of <replaceable>LDAP-server</replaceable>
+System successfully configured.
+
+*** Select Close or Exit from the window menu to close this window ***</screen>
+</step>
+<step>
+<para>Verify that the information is correct on the server.</para>
+<substeps>
+<step>
+<para>Open a terminal, and query the LDAP server.</para>
+<screen># <userinput>ldapclient list</userinput>
+</screen>
+<para>The output looks similar to the following:</para>
+<screen>NS_LDAP_FILE_VERSION= 2.0
+NS_LDAP_BINDDN= cn=proxyagent,ou=profile,dc=<replaceable>domain-name</replaceable>
+...
+NS_LDAP_BIND_TIME= <replaceable>number</replaceable>
+</screen>
+</step>
+<step>
+<para>Correct any errors.</para>
+<para>If you get an error, run the Create
+LDAP Client action with the correct values. For example, the following error
+can indicate that the system does not have an entry on the LDAP server:</para>
+<screen>LDAP ERROR (91): Can't connect to the LDAP server.
+Failed to find defaultSearchBase for domain <replaceable>domain-name</replaceable>
+</screen>
+<para>Check the LDAP server.</para>
+</step>
+</substeps>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="txconf-62">
+<title>Associating Network Interfaces With Zones (Tasks)</title>
+<indexterm xml:id="indexterm-116">
+<primary>tasks and task maps</primary>
+<secondary>Associating Network Interfaces With Zones (Tasks)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-117">
+<primary>Associating Network Interfaces With Zones (Tasks)</primary>
+</indexterm>
+<para>Do only one of the following tasks. For the trade-offs, see <olink remap="external" targetdoc="chapter-1.xml" targetptr="ovw-12">Planning for Multilevel Access</olink>.</para>
+<informaltable frame="topbot" pgwide="1">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec2" colwidth="18.21*"/>
+<colspec colname="colspec1" colwidth="43.13*"/>
+<colspec colname="colspec0" colwidth="37.65*"/>
+<thead>
+<row>
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Share a logical interface</para>
+</entry>
+<entry>
+<para>Map the global zone to one IP address, and all labeled zones to a different
+IP address.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-57">Specify Two IP Addresses for the System</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Do not share any IP addresses</para>
+</entry>
+<entry>
+<para>Assign one IP address to every zone.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-58">Specify One IP Address Per Zone on the
+System</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Do not share any interfaces</para>
+</entry>
+<entry>
+<para>Assign one network interface card (NIC) to every zone.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-68">Specify One NIC Per Zone on the System</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Share a physical interface</para>
+</entry>
+<entry>
+<para>Map all zones to one IP address.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-32">Specify One IP Address for the System</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<sect2>
+<title/>
+<task id="txconf-57">
+
+<title>Specify Two IP Addresses for the System</title>
+<indexterm xml:id="indexterm-118">
+<primary>addresses</primary>
+<secondary>sharing between global and labeled zones</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-119">
+<primary>zones</primary>
+<secondary>specifying a shared IP address</secondary>
+</indexterm>
+<tasksummary>
+<para>In this configuration, the host's address applies only to the global
+zone. Labeled zones share a second IP address with the global zone. In CDE,
+an action is provided to simplify this procedure.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You are superuser in the global zone.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Open the Trusted_Extensions folder.</para>
+<para>For details, see <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txldap-8">Make the Global Zone an LDAP Client</olink>. </para>
+</step>
+<step>
+<para>
+<indexterm xml:id="indexterm-120">
+<primary>Share Logical Interface action</primary>
+</indexterm>
+<indexterm xml:id="indexterm-121">
+<primary>administrative actions</primary>
+<secondary>Share Logical Interface</secondary>
+</indexterm>Run the Share Logical Interface action.</para>
+<para>Double-click
+Share Logical Interface and answer the prompts.</para>
+<note>
+
+<para>The system must already have been assigned two IP addresses. For
+this action, provide the second address and a host name for that address.
+The second address is the shared address.</para>
+</note>
+<screen>Hostname:   <lineannotation>Type the name for your labeled zones interface</lineannotation>
+IP Address: <lineannotation>Type the IP address for the interface</lineannotation>
+</screen>
+<para>This action configures a host with more than one IP address. The IP
+address for the global zone is the name of the host. The IP address for a
+labeled zone has a different host name. In addition, the IP address for the
+labeled zones is shared with the global zone. When this configuration is used,
+labeled zones are able to reach a network printer.</para>
+<tip>
+
+<para>Use a standard naming convention for labeled zones. For example,
+add <literal>-zones</literal> to the host name.</para>
+</tip>
+</step>
+<step performance="optional">
+
+<para>Verify the results of the action.</para>
+<para>Use the <command>ifconfig -a</command> command. For example, the following
+output shows a shared logical interface, <literal>hme0:3</literal> on network
+interface <literal>192.168.0.12</literal> for the labeled zones. The <literal>hme0</literal> interface is the unique IP address of the global zone.</para>
+<screen># <userinput>ifconfig -a</userinput>
+ lo0: flags=2001000849&lt;UP,LOOPBACK,RUNNING,MULTICAST,IPv4,VIRTUAL&gt; mtu 8232 index 1
+         inet 127.0.0.1 netmask ff000000 
+ hme0: flags=1000843&lt;BROADCAST,RUNNING,MULTICAST,IPv4&gt; mtu 1500 index 2
+         inet 192.168.0.11 netmask ffffff00 broadcast 192.168.0.255
+ hme0:3 flags=1000843&lt;BROADCAST,RUNNING,MULTICAST,IPv4&gt; mtu 1500 index 2
+         inet 192.168.0.12 netmask ffffff00 broadcast 192.168.0.255</screen>
+</step>
+</procedure>
+<example xml:id="txconf-38">
+
+<title>Assigning Two Interfaces – One for the Global Zone and One for
+the Labeled Zones</title>
+<para>On a system where the global zone has a unique interface, and labeled
+zones share a second interface with the global zone, the <filename>/etc/hosts</filename> file
+would appear similar to the following:</para>
+<screen># cat /etc/hosts
+...
+127.0.0.1  localhost
+192.168.0.11 machine1 loghost
+192.168.0.12 machine1-zones</screen>
+<para>In the default configuration, the <filename>tnrhdb</filename> file would
+appear similar to the following:</para>
+<screen># cat /etc/security/tsol/tnrhdb
+...
+127.0.0.1:cipso
+192.168.0.11:cipso
+192.168.0.12:cipso
+0.0.0.0:admin_low</screen>
+</example>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-58">
+
+<title>Specify One IP Address Per Zone on the
+System</title>
+<indexterm xml:id="indexterm-122">
+<primary>addresses</primary>
+<secondary>specifying one IP address per zone</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-123">
+<primary>zones</primary>
+<secondary>specifying one IP address per labeled zone</secondary>
+</indexterm>
+<tasksummary>
+<para>If you have an IP address for every labeled zone, follow this procedure.
+You configure the interfaces as you would configure them on a Solaris system.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You are superuser in the global zone. You must have decided on the names
+of every labeled zone, as described in <olink remap="external" targetdoc="chapter-3.xml" targetptr="startinst-13">Make
+System and Security Decisions Before Installing Trusted Extensions</olink>.</para>
+<tip>
+
+<para>Use a standard naming convention for labeled zones. For example,
+add <replaceable>-label</replaceable> to the host name.</para>
+</tip>
+</taskprerequisites>
+<procedure>
+<step>
+<para>In a terminal, configure each computer interface.</para>
+<para>Use
+the <command>zonecfg -z</command> <replaceable>zone-name</replaceable> command.
+For details, see the <olink remap="external" targetdoc="819-2240" targetptr="zonecfg-1m">
+<citerefentry>
+<refentrytitle>zonecfg</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page. The following are examples only. The command is interactive. The interactive
+display is shown in the first example.</para>
+<screen># <userinput>zonecfg -z public
+zonecfg:public&gt; add net
+zonecfg:public:net&gt; set address=10.8.57.131/24
+zonecfg:public:net&gt; set physical=ce0
+zonecfg:public:net&gt; end
+zonecfg:public&gt; add net
+zonecfg:public:net&gt; set address=fe80::130:1/10
+zonecfg:public:net&gt; set physical=ce0
+zonecfg:public:net&gt; end
+zonecfg:public&gt; add net
+zonecfg:public:net&gt; set address=2001:a08:3903:1::130:1/64
+zonecfg:public:net&gt; set physical=ce0
+zonecfg:public:net&gt; end
+zonecfg:public&gt; commit
+zonecfg:public&gt; exit</userinput>
+</screen>
+<screen># <userinput>zonecfg -z internal
+add net
+        set address=10.8.57.133/24
+        set physical=ce0
+end
+add net
+        set address=fe80::130:2/10
+        set physical=ce0
+end
+add net
+        set address=2001:a08:3903:1::130:2/64
+        set physical=ce0
+end
+commit
+exit</userinput>
+</screen>
+<screen># <userinput>zonecfg -z needtoknow
+add net
+        set address=10.8.57.134/24
+        set physical=ce0
+end
+add net
+        set address=fe80::130:3/10
+        set physical=ce0
+end
+add net
+        set address=2001:a08:3903:1::130:3/64
+        set physical=ce0
+end
+commit
+exit</userinput>
+</screen>
+<screen># <userinput>zonecfg -z restricted
+add net
+        set address=10.8.57.135/24
+        set physical=ce0
+end
+add net
+        set address=fe80::130:4/10
+        set physical=ce0
+end
+add net
+        set address=2001:a08:3903:1::130:4/64
+        set physical=ce0
+end
+commit
+exit</userinput>
+</screen>
+</step>
+<step performance="optional">
+
+<para>Verify the results of the action.</para>
+<para>Use the <command>ifconfig -a</command> command. For example, the following
+excerpts show the <literal>INTERNAL</literal> interfaces.</para>
+<screen># <userinput>ifconfig -a</userinput>
+lo0: flags=2001000849&lt;UP,LOOPBACK,RUNNING,MULTICAST,IPv4,VIRTUAL&gt; mtu 8232 index 1
+        inet 127.0.0.1 netmask ff000000
+...
+lo0:2: flags=2001000849&lt;UP,LOOPBACK,RUNNING,MULTICAST,IPv4,VIRTUAL&gt; mtu 8232 index 1
+        zone internal
+        inet 127.0.0.1 netmask ff000000
+...
+ce0: flags=1004843&lt;UP,BROADCAST,RUNNING,MULTICAST,DHCP,IPv4&gt; mtu 1500 index 2
+        inet 10.8.57.130 netmask ffffff00 broadcast 10.8.57.255
+        ether 0:e:c:8:0:fc
+...
+ce0:2: flags=1000843&lt;UP,BROADCAST,RUNNING,MULTICAST,IPv4&gt; mtu 1500 index 2
+        zone internal
+        inet 10.8.57.133 netmask ffffff00 broadcast 10.8.57.255
+...
+lo0: flags=2001000849&lt;UP,LOOPBACK,RUNNING,MULTICAST,IPv6,VIRTUAL&gt; mtu 8252 index 1
+        inet6 ::1/128
+...
+lo0:2: flags=2001000849&lt;UP,LOOPBACK,RUNNING,MULTICAST,IPv6,VIRTUAL&gt; mtu 8252 index 1
+        zone internal
+        inet6 ::1/128
+...
+ce0: flags=2000841&lt;UP,RUNNING,MULTICAST,IPv6&gt; mtu 1500 index 2
+        inet6 fe80::20e:cff:fe08:fc/10
+        ether 0:e:c:8:0:fc
+...
+ce0:3: flags=2000841&lt;UP,RUNNING,MULTICAST,IPv6&gt; mtu 1500 index 2
+        zone internal
+        inet6 fe80::130:2/10
+ce0:4: flags=2000841&lt;UP,RUNNING,MULTICAST,IPv6&gt; mtu 1500 index 2
+        zone internal
+        inet6 2001:a08:3903:1::130:2/64
+...</screen>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-68">
+
+<title>Specify One NIC Per Zone on the System</title>
+<indexterm xml:id="indexterm-124">
+<primary>addresses</primary>
+<secondary>specifying one interface per zone</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-125">
+<primary>zones</primary>
+<secondary>specifying one interface per labeled zone</secondary>
+</indexterm>
+<tasksummary>
+<para>If you have a separate physical interface for every labeled zone, follow
+this procedure. In this configuration, you isolate networks by dedicating
+a network interface card (NIC) to each network. Each network is single-label.
+Therefore, each NIC is dedicated to a zone.</para>
+<note>
+
+<para>
+<indexterm xml:id="indexterm-126">
+<primary>troubleshooting</primary>
+<secondary>booting labeled zone</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-127">
+<primary>zones</primary>
+<secondary>troubleshooting when not booting</secondary>
+</indexterm>Before you can boot a labeled zone with a dedicated network interface, the interface must
+be plumbed in the global zone.</para>
+</note>
+</tasksummary>
+<taskprerequisites>
+
+<para>You are superuser in the global zone. You must have decided on the names
+of every labeled zone, as described in <olink remap="external" targetdoc="chapter-3.xml" targetptr="startinst-13">Make
+System and Security Decisions Before Installing Trusted Extensions</olink>.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>In the global zone, add each network interface to the <filename>hosts</filename> and <filename>tnrhdb</filename> databases.</para>
+<para>Follow
+the procedure in <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-19">Specify Labels for Network Interfaces</olink>.</para>
+</step>
+<step>
+<para>Create persistent hostname files for the labeled zones interfaces.</para>
+<para>The file names must exist so that the labeled zones are plumbed during
+boot. The files can be empty.</para>
+<screen># touch /etc/hostname.<replaceable>interface</replaceable>
+</screen>
+</step>
+<step>
+<para>Create a hostname file for an all-zones interface for the global
+zone.</para>
+<para>You
+need an <literal>all-zones</literal> interface that the labeled zones can
+use to connect to the X server in the global zone. You have two options. You
+can create a logical  instance of the global zone's interface. Or, you can
+create a virtual interface,  <literal>vni0</literal>. The virtual interface
+provides more isolation, because this type of interface is not associated
+with any hardware. A virtual interface can only be accessed locally. The <literal>all-zones</literal> interface is specified in an appropriate <literal>hostname</literal> file.</para>
+<para>You have two options when creating this file.</para>
+<stepalternatives>
+<step>
+<para>Create an interface name that is based on the name of the physical interface.</para>
+<screen># cat /etc/hostname.<replaceable>interface</replaceable>:<replaceable>n</replaceable>
+<replaceable>IP-address</replaceable> all-zones</screen>
+</step>
+<step>
+<para>
+<indexterm xml:id="indexterm-128">
+<primary>
+<literal>vni</literal> interface</primary>
+</indexterm>Create a virtual
+network interface that can only be reached by the zones on this system.</para>
+<para>For more information, see the <olink remap="external" targetdoc="819-2254" targetptr="vni-7d">
+<citerefentry>
+<refentrytitle>vni</refentrytitle>
+<manvolnum>
+7d
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+<screen># cat /etc/hostname.vni0
+<replaceable>IP-address</replaceable> all-zones</screen>
+</step>
+</stepalternatives>
+</step>
+<step>
+<para>In the global zone, plumb the interfaces that you have created.</para>
+<para>Choose one of the following options to plumb the interfaces.</para>
+<stepalternatives>
+<step>
+<para>Reboot.</para>
+</step>
+<step>
+<para>Or, use the <command>ifconfig</command> command.</para>
+<para>First, plumb the labeled zones.</para>
+<screen># ifconfig <replaceable>labeled-zone-interface</replaceable> plumb</screen>
+<para>Second, bring up the global
+zone's <literal>all-zones</literal> interface.</para>
+<screen># ifconfig <replaceable>global-zone-all-zones-interface</replaceable> plumb
+# ifconfig <replaceable>all-zones-interface IP-address-of-all-zones</replaceable> all-zones up</screen>
+</step>
+</stepalternatives>
+</step>
+<step>
+<para>Continue with <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-20">Creating the Labeled
+Zones (Tasks)</olink>.</para>
+</step>
+</procedure>
+<example xml:id="txconf-59">
+
+<title>Configuring Three NICs for Three Separate Networks</title>
+<para>In the following example, the administrator is configuring a system
+that physically separates its labeled zones by using NICs.</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>qfe1</literal> is the interface (NIC) for the global zone</para>
+</listitem>
+<listitem>
+<para>
+<literal>vni0</literal> is the all-zones interface for the global zone</para>
+</listitem>
+<listitem>
+<para>
+<literal>qfe2</literal> is the interface for the <constant>CONFIDENTIAL: INTERNAL
+USE ONLY</constant> zone</para>
+</listitem>
+<listitem>
+<para>
+<literal>qfe3</literal> is for the interface for the <constant>CONFIDENTIAL:
+RESTRICTED</constant> zone</para>
+</listitem>
+</itemizedlist>
+<para>In the global zone, the administrator creates the empty hostname files
+for the labeled zones interfaces.</para>
+<screen># <userinput>touch /etc/hostname.qfe2</userinput>
+# <userinput>touch /etc/hostname.qfe3</userinput>
+</screen>
+<para>In the global zone, the administrator creates an all-zones interface
+for the global zone by using a <literal>vni0</literal> pseudo device. The following
+shows the contents of the file.</para>
+<screen># <userinput>cat /etc/hostname.vni0</userinput>
+192.168.0.7 all-zones</screen>
+<para>After defining the IP addresses in the Solaris Management Console, the <filename>tnrhdb</filename> database
+is similar to the following. The annotation is provided for assistance.</para>
+<screen>192.168.0.1:cipso     #### qfe1 Global Zone
+192.168.0.7:cipso     #### qfe1:1 or vni0 Global Zone all-zones
+192.168.1.1:cipso     #### qfe2  CNF: IUO zone
+192.168.2.1:cipso     #### qfe3  CNF: R zone
+192.168.0.11/24:admin_low   #### qfe1 Global Zone network
+192.168.1.11/24:iuo         #### qfe2 single-label IUO network
+192.168.2.11/24:restrict    #### qfe3 single-label restricted network</screen>
+<para>The administrator runs the <command>ifconfig</command> command to plumb
+the interfaces.</para>
+<screen># <userinput>ifconfig qfe2 plumb</userinput>
+# <userinput>ifconfig qfe3 plumb</userinput>
+# <userinput>ifconfig vni0 plumb</userinput>
+# <userinput>ifconfig vni0 192.168.0.7 all-zones up</userinput>
+</screen>
+<para>The first two <command>ifconfig</command> commands enable the labeled
+zones to boot after the zones are configured and are installed. The second and third <command>ifconfig</command> commands enable the labeled zones to communicate with the X server. The
+administrator chose the <literal>vni0</literal> interface for its security
+advantage over a <literal>qfe1:1</literal> interface. Because the <literal>vni0</literal> interface
+has no physical presence, it cannot be seen outside of the zones on the system.</para>
+</example>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-32">
+
+<title>Specify One IP Address for the System</title>
+<indexterm xml:id="indexterm-129">
+<primary>addresses</primary>
+<secondary>specifying one IP address per system</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-130">
+<primary>zones</primary>
+<secondary>specifying one IP address for all zones</secondary>
+</indexterm>
+<tasksummary>
+<para>In this configuration, the host's address applies to all the zones,
+including the labeled zones. In CDE, an action is provided to simplify this
+procedure.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You are superuser in the global zone.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Open the Trusted_Extensions folder.</para>
+<para>For details, see <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txldap-8">Make the Global Zone an LDAP Client</olink>. </para>
+</step>
+<step>
+<para>
+<indexterm xml:id="indexterm-131">
+<primary>Share Physical Interface action</primary>
+</indexterm>
+<indexterm xml:id="indexterm-132">
+<primary>administrative actions</primary>
+<secondary>Share Physical Interface</secondary>
+</indexterm>Run the Share Physical Interface action.</para>
+<para>Double-click
+Share Physical Interface.</para>
+<para>This action configures a host with one
+IP address. The global zone does not have a unique address. This system cannot
+be used as a multilevel print server or an NFS server.</para>
+</step>
+<step performance="optional">
+
+<para>Verify the results of the action.</para>
+<para>The Share Physical Interface action configures all zones to have logical
+NICs that share a single physical NIC in the global zone.</para>
+<para>Use
+the <command>ifconfig -a</command> command. For example, the following output
+shows the shared physical interface, <literal>hme0</literal> on network interface <literal>192.168.0.11</literal> for all the zones.</para>
+<screen># <userinput>ifconfig -a</userinput>
+ lo0: flags=2001000849&lt;UP,LOOPBACK,RUNNING,MULTICAST,IPv4,VIRTUAL&gt; mtu 8232 index 1
+         inet 127.0.0.1 netmask ff000000
+ hme0: flags=1000843&lt;BROADCAST,RUNNING,MULTICAST,IPv4&gt; mtu 1500 index 2
+         inet 192.168.0.11 netmask ffffff00 broadcast 192.168.0.255</screen>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="txconf-40">
+<title>Preparing to Create Zones (Tasks)</title>
+<indexterm xml:id="indexterm-133">
+<primary>tasks and task maps</primary>
+<secondary>Preparing to Create Zones (Tasks)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-134">
+<primary>Preparing to Create Zones (Tasks)</primary>
+</indexterm>
+<para>The following task map prepares the system for zone creation. For a
+discussion of zone creation methods, see <olink remap="external" targetdoc="chapter-1.xml" targetptr="ovw-11">Planning
+for Zones</olink>.</para>
+<informaltable frame="topbot" pgwide="1">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec2" colwidth="25.99*"/>
+<colspec colname="colspec1" colwidth="40.25*"/>
+<colspec colname="colspec0" colwidth="32.76*"/>
+<thead>
+<row>
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Name each zone, and link the zone name and the zone label.</para>
+</entry>
+<entry>
+<para>Name each labeled zone with a version of its label, then associate the
+name with the label in the Solaris Management Console.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-11">Specify Zone Names and Zone Labels</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Configure the network before creating the zones.</para>
+</entry>
+<entry>
+<para>Assign a label to the network interface on every host, and do further
+configuration.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-19">Specify Labels for Network Interfaces</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Create space for a ZFS snapshot.</para>
+</entry>
+<entry>
+<para>Perform this task if you are going to use the Clone Zone action to create
+zones.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-42">Create ZFS Pool for Cloning Zones</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Create labeled zones.</para>
+</entry>
+<entry>
+<para>Create your first labeled zone. Then, create the rest by the method
+that you have chosen.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-20">Creating the Labeled Zones (Tasks)</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<sect2>
+<title/>
+<task id="txconf-11">
+
+<title>Specify Zone Names and Zone Labels</title>
+<indexterm xml:id="indexterm-135">
+<primary>labels</primary>
+<secondary>specifying for zones</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-136">
+<primary>zones</primary>
+<secondary>specifying labels</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-137">
+<primary>names</primary>
+<secondary>specifying for zones</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-138">
+<primary>zones</primary>
+<secondary>specifying names</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-139">
+<primary>naming</primary>
+<secondary>zones</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-140">
+<primary>labeling</primary>
+<secondary>zones</secondary>
+</indexterm>
+<tasksummary>
+<para>You do not have to create a zone for every label in your <filename>label_encodings</filename> file, but you can. The <filename>tnzonecfg</filename> database
+enumerates the labels that can have zones created for them on this computer.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>
+<indexterm xml:id="indexterm-141">
+<primary>Configure Zone action</primary>
+</indexterm>
+<indexterm xml:id="indexterm-142">
+<primary>administrative actions</primary>
+<secondary>Configure Zone</secondary>
+</indexterm>In the Trusted_Extensions folder, find and run the Configure Zone
+action.</para>
+<para>The action prompts you for a name.</para>
+<tip>
+
+<para>Give the zone the same name as the zone's label. So, the name of
+a zone whose label is <filename>public</filename> would be <filename>public</filename>.</para>
+</tip>
+</step>
+<step>
+<para>Repeat the Configure Zone action for every zone.</para>
+<para>For
+example, the default <filename>label_encodings</filename> file contains the
+following labels:</para>
+<screen>PUBLIC
+CONFIDENTIAL: INTERNAL USE ONLY
+CONFIDENTIAL: NEED TO KNOW
+CONFIDENTIAL: RESTRICTED
+SANDBOX: PLAYGROUND
+MAX LABEL</screen>
+<para>You could run the Configure Zone action six times to create one zone
+per label. However, because <constant>MAX LABEL</constant> is defined to be
+a clearance, you probably would not create a zone for <constant>MAX LABEL</constant>. <constant>SANDBOX</constant> is defined as a disjoint label for developers. Therefore,
+many machines would not create a zone for this label. On a system for an ordinary
+user, you might create one zone for the <constant>PUBLIC</constant> label,
+and three zones for the <constant>CONFIDENTIAL</constant> labels.</para>
+</step>
+<step xml:id="txconf-smc-1">
+<para>Use the Trusted Network Zone Configuration tool.</para>
+<para>The tools in the Solaris Management Console  are designed to prevent user error. These tools
+check for syntax errors and automatically run commands in the correct order
+to update databases.</para>
+<substeps>
+<step>
+<para>
+<indexterm xml:id="indexterm-143">
+<primary>Solaris Management Console</primary>
+<secondary>using Trusted Network Zone Configuration tool</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-144">
+<primary>Trusted Network Zone Configuration tool</primary>
+<secondary>assigning labels to named zones</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-145">
+<primary>labels</primary>
+<secondary>assigning to named zones</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-146">
+<primary>zones</primary>
+<secondary>associating zone names with labels</secondary>
+</indexterm>Launch the Solaris Management Console.</para>
+<screen># <userinput>/usr/sbin/smc &amp;</userinput>
+</screen>
+<para>Wait for the Welcome screen.</para>
+</step>
+<step>
+<para>Open the Trusted Extensions toolbox for the local system.</para>
+<substeps>
+<step>
+<para>Use the Console -&gt; Open Toolbox menu item.</para>
+</step>
+<step>
+<para>Select the toolbox that is named This Computer (<replaceable>this-host</replaceable>: <literal>Scope=Files, Policy=TSOL</literal>).</para>
+</step>
+<step>
+<para>Click Open.</para>
+</step>
+</substeps>
+</step>
+<step performance="optional">
+
+<para>
+<indexterm xml:id="indexterm-147">
+<primary>Solaris Management Console</primary>
+<secondary>making a Trusted Extensions toolbox the default toolbox</secondary>
+</indexterm>Make this toolbox the Home toolbox.</para>
+<substeps>
+<step>
+<para>Use the Console  -&gt; Preferences menu item.</para>
+</step>
+<step>
+<para>To make the Trusted Extensions toolbox the Home Toolbox, click Use
+Current Toolbox.</para>
+</step>
+<step>
+<para>Click OK.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>Click System Configuration.</para>
+</step>
+<step>
+<para>Double-click the Computers and Networks tool.</para>
+<para>Provide
+a password when prompted.</para>
+</step>
+<step>
+<para>Double-click the Trusted Network Zone Configuration tool.</para>
+</step>
+</substeps>
+</step>
+<step xml:id="txconf-zone-label-1">
+<para>For each zone, associate the appropriate
+label with a zone name.</para>
+<substeps>
+<step>
+<para>Use the Action  -&gt; Add Zone Configuration menu item.</para>
+<para>The dialog box displays the name of a zone that does not have an assigned
+label.</para>
+</step>
+<step>
+<para>Look at the zone name before clicking Edit.</para>
+</step>
+<step>
+<para>In the Label Builder, click the appropriate label for the zone
+name.</para>
+<para>If you click the wrong label, click the label again to deselect
+it, then click the correct label.</para>
+</step>
+<step>
+<para>Save the assignment.</para>
+<para>Click OK in the Label Builder,
+then OK in the Trusted Network Zone Properties dialog box.</para>
+</step>
+</substeps>
+<para>You are finished when every zone that you want is listed in the panel,
+or the Add Zone Configuration menu item opens a dialog box that does not have
+a value for Zone Name.</para>
+</step>
+</procedure>
+<taskrelated role="troubleshooting">
+
+<itemizedlist>
+<para>
+<indexterm xml:id="indexterm-148">
+<primary>troubleshooting</primary>
+<secondary>Trusted Network Zone Properties</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-149">
+<primary>Trusted Network Zone Configuration tool</primary>
+<secondary>troubleshooting</secondary>
+</indexterm>If the Trusted Network Zone Properties dialog box does not prompt
+for a zone that you want to create, either the zone network configuration
+file does not exist, or you have already created the file.</para>
+<listitem>
+<para>Check that the zone network configuration file does not already
+exist. Look in the panel for the name.</para>
+</listitem>
+<listitem>
+<para>If the file does not exist, run the Configure Zone action
+to supply the zone name. Then repeat <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-zone-label-1">Step 4</olink> to create the file.</para>
+</listitem>
+</itemizedlist>
+</taskrelated>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-19">
+
+<title>Specify Labels for Network Interfaces</title>
+<indexterm xml:id="indexterm-150">
+<primary>Trusted Extensions network</primary>
+<secondary>specifying labels for interfaces</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-151">
+<primary>Trusted Extensions network</primary>
+<secondary>specifying labeles for IP addresses</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-152">
+<primary>labels</primary>
+<secondary>specifying for hosts</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-153">
+<primary>hosts</primary>
+<secondary>specifying labels</secondary>
+</indexterm>
+<tasksummary>
+<para>You turn your host, and other already-defined hosts into labeled hosts.
+These hosts are defined as sending and receiving labeled CIPSO packets. You
+need only add systems that are not known by your LDAP server.</para>
+</tasksummary>
+<procedure>
+<step xml:id="txconf-specify-comp-1">
+<para>Display the computers that are known
+by the system.</para>
+<para>In the Solaris Management Console, navigate to Computers.</para>
+<para>This
+tool is in the Computers and Networks tool set.</para>
+</step>
+<step>
+<para>In the panel, double-click your host.</para>
+</step>
+<step>
+<para>Copy the IP address.</para>
+</step>
+<step>
+<para>Open Security Templates, then cipso.</para>
+</step>
+<step xml:id="txconf-specify-comp-2">
+<para>Explicitly assign the host to the cipso
+template</para>
+<substeps>
+<step>
+<para>Click the Hosts Assigned to Template tab.</para>
+<para>If you completed <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txldap-8">Make the Global Zone an LDAP Client</olink>, the LDAP
+server is assigned to the cipso security template.</para>
+</step>
+<step>
+<para>Paste the host's IP address into the IP Address field.</para>
+</step>
+<step>
+<para>Type the host name into the Hostname field.</para>
+</step>
+<step>
+<para>Click the Add button.</para>
+</step>
+<step>
+<para>Click OK.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>Repeat <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-specify-comp-1">Step 1</olink> to <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-specify-comp-2">Step 5</olink> for every host.</para>
+<para>In the default configuration, every host that is not explicitly labeled
+is defined as an unlabeled host. Every unlabeled host can be contacted at
+boot at the label <constant>ADMIN_LOW</constant>. This is not a secure configuration.
+To modify the default configuration, see <olink remap="external" targetdoc="819-7309" targetptr="managetnet-8">
+<citetitle remap="section">How to Limit the Hosts That Can Be Contacted on the Trusted Network</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>.</para>
+</step>
+</procedure>
+<taskrelated role="additional-action">
+
+<itemizedlist>
+<para>You can also modify the default configuration by doing some or all of
+the following:</para>
+<listitem>
+<para>Create remote host templates for labeled hosts.</para>
+</listitem>
+<listitem>
+<para>Create remote host templates for unlabeled hosts.</para>
+</listitem>
+<listitem>
+<para>Remove the <literal>0.0.0.0</literal> wildcard address from
+the <literal>admin_low</literal> Unlabeled template, and explicitly assign
+the unlabeled computers that can be contacted at <constant>ADMIN_LOW</constant>.</para>
+</listitem>
+</itemizedlist>
+</taskrelated>
+<taskrelated role="see-also">
+
+<para>For procedures, see <olink remap="external" targetdoc="819-7309" targetptr="managetnet-3">
+<citetitle remap="section">Configuring Trusted Network Databases (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>. For overview information,
+see <olink remap="external" targetdoc="819-7309" targetptr="txnet-1">Chapter 12, <citetitle remap="chapter">Trusted Networking,</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>.</para>
+</taskrelated>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-42">
+
+<title>Create ZFS Pool for Cloning Zones</title>
+<indexterm xml:id="indexterm-154">
+<primary>zones</primary>
+<secondary>creating ZFS pool for cloning</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-155">
+<primary>ZFS pools</primary>
+<secondary>creating for cloning zones</secondary>
+</indexterm>
+<tasksummary>
+<para>If you plan to use a ZFS snapshot as your zone template, you need to
+create a ZFS pool from a ZFS file or a ZFS device. This pool holds the snapshot
+for cloning each zone.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You set aside space during Solaris installation for a Zetabyte
+file system (ZFS). For details, see <olink remap="external" targetdoc="chapter-1.xml" targetptr="ovw-11">Planning for
+Zones</olink>.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Use a file or a ZFS device as the source of your pool.</para>
+<stepalternatives>
+<step>
+<para>Use the <filename class="devicefile">/zone</filename> device for
+your ZFS pool.</para>
+<para>During installation, you created a <filename class="devicefile">/zone</filename> partition with sufficient space, about
+1000 MBytes.</para>
+<substeps>
+<step>
+<para>Comment out the <filename class="devicefile">/zone</filename> entry
+in the <filename>vfstab</filename> file.</para>
+<substeps>
+<step>
+<para>Open the Admin Editor from the Trusted_Extensions folder.</para>
+</step>
+<step>
+<para>Type <filename>/etc/vfstab</filename> in the Pathname field.</para>
+</step>
+<step>
+<para>Prevent the <filename class="devicefile">/zone</filename> entry
+from being read.</para>
+<para>Prefix the entry with a comment sign.</para>
+<screen>
+<userinput>#</userinput>/dev/dsk/c<replaceable>n</replaceable>t<replaceable>n</replaceable>d<replaceable>n</replaceable>s<replaceable>n</replaceable>  /dev/dsk/c<replaceable>n</replaceable>t<replaceable>n</replaceable>d<replaceable>n</replaceable>s<replaceable>n</replaceable>  /zone  ufs  2  yes  -</screen>
+</step>
+<step>
+<para>Copy the disk slice, <literal>c</literal>
+<replaceable>n</replaceable>
+<literal>t</literal>
+<replaceable>n</replaceable>
+<literal>d</literal>
+<replaceable>n</replaceable>
+<literal>s</literal>
+<replaceable>n</replaceable>, to the clipboard.</para>
+</step>
+<step>
+<para>Save the file and close the editor.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>Unmount the <filename class="devicefile">/zone</filename> partition.</para>
+<screen># <userinput>umount /zone</userinput>
+</screen>
+</step>
+<step>
+<para>Remove the <filename class="devicefile">/zone</filename> mount
+point.</para>
+<screen># <userinput>cd /</userinput>
+# <userinput>rmdir /zone</userinput>
+</screen>
+</step>
+<step>
+<para>Use the disk slice to recreate <filename class="devicefile">/zone</filename> as
+a ZFS pool.</para>
+<screen># zpool create -f zone c<replaceable>n</replaceable>t<replaceable>n</replaceable>d<replaceable>n</replaceable>s<replaceable>n</replaceable>
+</screen>
+<para>For example, if your <filename class="devicefile">/zone</filename> entry
+used disk slice <literal>c0t0d0s5</literal>, then the command would be similar
+to the following:</para>
+<screen># <userinput>zpool create -f zone c0t0d0s5</userinput>
+</screen>
+</step>
+<step>
+<para>Continue with <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-zfs-1">Step 2</olink>.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>From the <filename class="directory">/export</filename> directory,
+create a ZFS pool.</para>
+<para>During installation, you created an <filename class="directory">/export</filename> partition with sufficient space, about
+1000 MBytes. The template for all of your zones is created in this file.</para>
+<screen># <userinput>mkfile 1000m /export/zone</userinput>
+# <userinput>zpool create zone /export/zone</userinput>
+</screen>
+<para>To verify the health of the zone, see <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-zpool-verify-1">Step 3</olink>. Otherwise, continue
+with <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-zfs-1">Step 2</olink>.</para>
+</step>
+</stepalternatives>
+</step>
+<step xml:id="txconf-zfs-1">
+<para>Create a new file system as the root for one
+of your configured zones.</para>
+<screen># zfs create zone/<replaceable>zonename</replaceable>
+# chmod 0700 /zone/<replaceable>zonename</replaceable>
+</screen>
+<para>For a configured zone that is named <literal>public</literal>, the commands
+would be similar to the following:</para>
+<screen># <userinput>zfs create zone/public</userinput>
+# <userinput>chmod 0700 /zone/public</userinput>
+</screen>
+</step>
+<step xml:id="txconf-zpool-verify-1" performance="optional">
+
+<para>Verify that
+the ZFS pool is healthy.</para>
+<para>Use one of the following commands.</para>
+<screen># <userinput>zpool status -x zone</userinput>
+pool 'zone' is healthy</screen>
+<screen># <userinput>zpool list</userinput>
+NAME   SIZE   USED   AVAIL   CAP   HEALTH   ALTROOT
+/zone  992M  67.4M   92.5M    7%   ONLINE   -</screen>
+<para>For more information, see the <olink remap="external" targetdoc="819-2240" targetptr="zpool-1m">
+<citerefentry>
+<refentrytitle>zpool</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man page.</para>
+</step>
+<step>
+<para>Continue with <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-20">Creating the Labeled
+Zones (Tasks)</olink>.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="txconf-20">
+<title>Creating the Labeled Zones (Tasks)</title>
+<indexterm xml:id="indexterm-156">
+<primary>tasks and task maps</primary>
+<secondary>Creating the Labeled Zones (Tasks)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-157">
+<primary>Creating the Labeled Zones (Tasks)</primary>
+</indexterm>
+<para>
+<indexterm xml:id="indexterm-158">
+<primary>
+<filename>/usr/sbin/txzonemgr</filename> script</primary>
+</indexterm>
+<indexterm xml:id="indexterm-159">
+<primary>zones</primary>
+<secondary>
+<filename>/usr/sbin/txzonemgr</filename> script</secondary>
+</indexterm>For every entry that you made in the Trusted
+Network Zone Configuration database, one zone can be created. You made the entries in <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-11">Specify Zone Names and Zone Labels</olink>, by running
+the Configure Zone action.
+You also might have used the <olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-147">txzonemgr script</olink> to
+handle zone configuration and creation.</para>
+<itemizedlist>
+<para>The Trusted_Extensions folder in the Application Manager contains actions
+that create labeled zones for Trusted Extensions.</para>
+<listitem>
+<para>Configure Zone – Creates a zone configuration file for
+every zone name.</para>
+</listitem>
+<listitem>
+<para>Install Zone – Adds the correct packages and file systems
+to the zone.</para>
+</listitem>
+<listitem>
+<para>Zone Terminal Console – Provides a window for watching
+events in a zone.</para>
+</listitem>
+<listitem>
+<para>Initialize Zone for LDAP – Makes the zone an LDAP client
+and prepares the zone for booting.</para>
+</listitem>
+<listitem>
+<para>Start Zone – Boots the zone, then starts all the service
+management framework (SMF) services.</para>
+</listitem>
+<listitem>
+<para>Shut Down Zone – Changes the state of the zone from
+Started to Halted.</para>
+</listitem>
+</itemizedlist>
+<informaltable frame="topbot" pgwide="1">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec2" colwidth="21.52*"/>
+<colspec colname="colspec1" colwidth="38.69*"/>
+<colspec colname="colspec0" colwidth="38.78*"/>
+<thead>
+<row>
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Install and boot one zone.</para>
+</entry>
+<entry>
+<para>Create the first labeled zone. Install the packages, make the zone an
+LDAP client, and start all services in the zone.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-24">Install, Initialize, and Boot a Labeled
+Zone</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Customize the zone.</para>
+</entry>
+<entry>
+<para>Remove unwanted services. If you plan to copy or clone the zone, remove
+zone-specific information.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-48">Customize a Booted Zone</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry morerows="3" rowsep="1">
+<para>Create the other zones.</para>
+</entry>
+<entry colsep="1" nameend="colspec0" namest="colspec1">
+<para>Use one of the following methods to create the other zones. You chose
+the method in <olink remap="external" targetdoc="chapter-3.xml" targetptr="startinst-13">Make System and Security Decisions
+Before Installing Trusted Extensions</olink>.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Create each zone from scratch.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-24">Install, Initialize, and Boot a Labeled
+Zone</olink>
+</para>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-48">Customize a Booted Zone</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Copy the first labeled zone to another label. Repeat for all zones.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-54">Use the Copy Zone Method</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Use a ZFS snapshot to clone the other zones from the first labeled zone.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-53">Use the Clone Zone Method</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<sect2>
+<title/>
+<task id="txconf-24">
+
+<title>Install, Initialize, and Boot a Labeled Zone</title>
+<indexterm xml:id="indexterm-160">
+<primary>zones</primary>
+<secondary>creating</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-161">
+<primary>creating</primary>
+<secondary>zones</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-162">
+<primary>zones</primary>
+<secondary>installing</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-163">
+<primary>installing</primary>
+<secondary>zones</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-164">
+<primary>zones</primary>
+<secondary>initializing for LDAP</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-165">
+<primary>initializing</primary>
+<secondary>zones for LDAP</secondary>
+</indexterm>
+<tasksummary>
+<para>Because zone creation involves copying an entire operating system, the
+process is time-consuming. A faster process is to create one zone, make the
+zone a template for other zones, then copy or clone that zone template.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You
+have completed <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-11">Specify Zone Names and Zone Labels</olink>.</para>
+<para>If you are using LDAP as your naming
+service, you have completed <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txldap-8">Make
+the Global Zone an LDAP Client</olink>.</para>
+<para>If you are going to clone zones, you have completed <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-42">Create ZFS Pool for Cloning Zones</olink>. Install the
+zone that you prepared.</para>
+</taskprerequisites>
+<procedure>
+<step xml:id="txconf-step-install1">
+<para>
+<indexterm xml:id="indexterm-166">
+<primary>Install Zone action</primary>
+</indexterm>
+<indexterm xml:id="indexterm-167">
+<primary>administrative actions</primary>
+<secondary>Install Zone</secondary>
+</indexterm>Double-click the Install Zone action.</para>
+<substeps>
+<step>
+<para>Type the name of the zone that you are installing.</para>
+<para>This
+action creates a labeled virtual operating system. This step takes some time
+to finish. Do not do other tasks on the system while Install Zone is running.</para>
+<screen># <replaceable>Zonename</replaceable>: Install Zone
+Preparing to install zone &lt;<replaceable>zonename</replaceable>&gt;
+Creating list of files to copy from the global zone
+Copying &lt;<replaceable>total</replaceable>&gt; files to the zone
+Initializing zone product registry
+Determining zone package initialization order.
+Preparing to initialize &lt;<replaceable>subtotal</replaceable>&gt; packages on the zone.
+Initializing package &lt;<replaceable>number</replaceable>&gt; of &lt;<replaceable>subtotal</replaceable>&gt;: percent complete: <replaceable>percent</replaceable>
+
+Initialized &lt;<replaceable>subtotal</replaceable>&gt; packages on zone.
+Zone &lt;<replaceable>zonename</replaceable>&gt; is initialized.
+The file /zone/internal/root/var/sadm/system/logs/install_log 
+contains a log of the zone installation.
+
+*** Select Close or Exit from the window menu to close this window ***</screen>
+</step>
+<step>
+<para>Open a console to monitor events in the installed zone.</para>
+<substeps>
+<step>
+<para>
+<indexterm xml:id="indexterm-168">
+<primary>Zone Terminal Console action</primary>
+<secondary>using</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-169">
+<primary>administrative actions</primary>
+<secondary>Zone Terminal Console</secondary>
+</indexterm>When the Install Zone action finishes, click the Zone Terminal
+Console action.</para>
+</step>
+<step>
+<para>Type the name of the zone that was just installed.</para>
+</step>
+</substeps>
+</step>
+</substeps>
+</step>
+<step>
+<para>
+<indexterm xml:id="indexterm-170">
+<primary>Initialize Zone for LDAP action</primary>
+</indexterm>
+<indexterm xml:id="indexterm-171">
+<primary>zones</primary>
+<secondary>initializing</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-172">
+<primary>initializing</primary>
+<secondary>zones</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-173">
+<primary>administrative actions</primary>
+<secondary>Initialize Zone for LDAP</secondary>
+</indexterm>Initialize
+the zone.</para>
+<stepalternatives>
+<step>
+<para>If you are
+using LDAP, double-click the Initialize Zone for LDAP action.</para>
+<screen>Zone name:              <lineannotation>Type the name of the installed zone</lineannotation>
+Host name for the zone: <lineannotation>Type the host name for this zone</lineannotation>
+</screen>
+<para>For example, on a system with a shared logical interface, the values
+would be similar to the following:</para>
+<screen>Zone name:              <userinput>public</userinput>
+Host name for the zone: <userinput>machine1-zones</userinput>
+</screen>
+<para>This action makes the labeled zone an LDAP client of the same LDAP server
+that serves the global zone. The action is complete when the following information
+appears:</para>
+<screen>
+<replaceable>zonename</replaceable> zone will be  LDAP client of <replaceable>IP-address</replaceable>
+<replaceable>zonename</replaceable> is ready for booting
+Zone label is <replaceable>LABEL</replaceable>
+
+*** Select Close or Exit from the window menu to close this window ***</screen>
+</step>
+<step>
+<para>If
+you are not using LDAP, initialize the zone manually.</para>
+<para>The manual
+procedure in Trusted Extensions is identical to the procedure for the Solaris OS.
+If the system has at least one all-zones interface, then the hostname for
+all the zones should match the global zone's hostname. In general, the answers
+to the questions during zone initialization are the same as the answers for
+the global zone.</para>
+<stepalternatives>
+<step>
+<para>Place a custom <filename>sysidcfg</filename> file in the zone's <filename class="directory">/etc</filename> directory before booting the zone in <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-step-start1">Step 3</olink>.</para>
+</step>
+<step>
+<para>After you start the zone in <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-step-start1">Step 3</olink>, answer the questions in the Zone Terminal Console.</para>
+</step>
+</stepalternatives>
+</step>
+</stepalternatives>
+</step>
+<step xml:id="txconf-step-start1">
+<para>
+<indexterm xml:id="indexterm-174">
+<primary>zones</primary>
+<secondary>booting</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-175">
+<primary>booting</primary>
+<secondary>zones</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-176">
+<primary>starting</primary>
+<secondary>zones</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-177">
+<primary>zones</primary>
+<secondary>starting</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-178">
+<primary>Start Zone action</primary>
+</indexterm>
+<indexterm xml:id="indexterm-179">
+<primary>administrative actions</primary>
+<secondary>Start Zone</secondary>
+</indexterm>Double-click the Start Zone action.</para>
+<para>Answer the prompt.</para>
+<screen>Zone name: <lineannotation>Type the name of the zone that you are configuring</lineannotation>
+</screen>
+<para>This action boots the zone, and starts all the services that run in
+the zone. For details on the services, see the <olink remap="external" targetdoc="819-2252" targetptr="smf-5">
+<citerefentry>
+<refentrytitle>smf</refentrytitle>
+<manvolnum>
+5
+</manvolnum>
+</citerefentry>
+</olink> man page.</para>
+<para>
+<indexterm xml:id="indexterm-180">
+<primary>Zone Terminal Console action</primary>
+<secondary>output</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-181">
+<primary>zones</primary>
+<secondary>showing zone activity</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-182">
+<primary>administrative actions</primary>
+<secondary>Zone Terminal Console</secondary>
+</indexterm>The Zone Terminal Console tracks the progress of booting the zone.
+Messages that are similar to the following appear in the console:</para>
+<screen>[Connected to zone 'public' console]
+
+[NOTICE: Zone booting up]
+...
+Hostname: <replaceable>zonename</replaceable>
+Loading smf(5) service descriptions: <replaceable>number</replaceable>/<replaceable>total</replaceable>
+Creating new rsa public/private host key pair
+Creating new dsa public/private host key pair
+
+rebooting system due to change(s) in /etc/default/init
+
+[NOTICE: Zone rebooting]</screen>
+</step>
+<step>
+<para>Monitor the console output.</para>
+<para>Before continuing with <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-48">Customize a Booted Zone</olink>, make sure that the
+zone has rebooted. The following console login prompt indicates that the zone
+has rebooted.</para>
+<screen>
+<replaceable>hostname</replaceable> console login:</screen>
+</step>
+</procedure>
+<taskrelated role="troubleshooting">
+
+<para>
+<indexterm xml:id="indexterm-183">
+<primary>troubleshooting</primary>
+<secondary>
+<literal>Installation of these packages generated errors: SUNW</literal>
+<replaceable>pkgname</replaceable>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-184">
+<primary>Install Zone action</primary>
+<secondary>troubleshooting</secondary>
+</indexterm>For Install Zone: If you get warnings that are similar to the
+following: <literal>Installation of these packages generated errors: SUNW</literal>
+<replaceable>pkgname</replaceable>, read the install log and finish installing the packages.</para>
+</taskrelated>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-48">
+
+<title>Customize a Booted Zone</title>
+<tasksummary>
+<para>If you are going to clone zones, this procedure configures a zone to
+be a template for other zones. If you are not going to clone zones, this procedure
+configures the zone for use.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>Ensure that the zone has been completely started.</para>
+<substeps>
+<step>
+<para>In the <replaceable>zonename</replaceable>: Zone Terminal Console,
+log in as root.</para>
+<screen>
+<replaceable>hostname</replaceable> console login: <userinput>root</userinput>
+Password: <lineannotation>Type root password</lineannotation>
+</screen>
+</step>
+<step>
+<para>Check that the zone is running.</para>
+<para>The status <literal>running</literal> indicates
+that at least one process is running in the zone.</para>
+<screen># <userinput>zoneadm list -v</userinput>
+ID NAME        STATUS         PATH
+ 2 public      running        /</screen>
+</step>
+<step>
+<para>Check
+that the zone can communicate with the global zone.</para>
+<para>The X server
+runs in the global zones. Each labeled zone must be able to connect with the
+global zone to use this service. Therefore, zone networking must work before
+the zone can be used. For assistance, see <olink remap="internal" targetdoc="chapter-4.xml" targetptr="labeledzonecannotaccessxserver">Labeled Zone Is Unable to Access
+the X Server</olink>.</para>
+</step>
+</substeps>
+</step>
+<step performance="optional">
+
+<para>Disable services that you do not want to
+run.</para>
+<para>If you are copying or cloning this zone, the services that
+you disable are disabled in every zone that is cloned from this zone. The
+services that are online on your system depend on the service manifest that
+the install team chose during installation. The <literal>limited</literal> option
+leaves very few services to be turned off. The <literal>open</literal> option
+leaves many services that can be turned off.</para>
+<para>For more information
+on the service management framework, see the <olink remap="external" targetdoc="819-2252" targetptr="smf-5">
+<citerefentry>
+<refentrytitle>smf</refentrytitle>
+<manvolnum>
+5
+</manvolnum>
+</citerefentry>
+</olink> man page.</para>
+<screen># svcadm disable <replaceable>service</replaceable>
+</screen>
+<para>For example, you might want to disable graphical login:</para>
+<screen># <userinput>svcs cde-login</userinput>
+STATE        STIME      FMRI
+online       13:05:00   svc:/application/graphical-login/cde-login:default
+# <userinput>svcadm disable svc:/application/graphical-login/cde-login</userinput>
+# <userinput>svcs cde-login</userinput>
+STATE        STIME      FMRI
+disabled     13:06:22   svc:/application/graphical-login/cde-login:default</screen>
+</step>
+<step>
+<para>
+<indexterm xml:id="indexterm-185">
+<primary>Shut Down Zone action</primary>
+</indexterm>
+<indexterm xml:id="indexterm-186">
+<primary>administrative actions</primary>
+<secondary>Shut Down Zone</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-187">
+<primary>zones</primary>
+<secondary>shutting down</secondary>
+</indexterm>Shut down the zone.</para>
+<para>You can shut down the zone in
+one of two ways.</para>
+<stepalternatives>
+<step>
+<para>Run the Shut Down Zone action.</para>
+<para>Provide the name of
+the zone.</para>
+</step>
+<step>
+<para>In a terminal in the global zone, use the <command>zlogin</command> command.</para>
+<screen># zlogin <replaceable>zonename</replaceable> init 0</screen>
+<para>For more information, see the <olink remap="external" targetdoc="819-2239" targetptr="zlogin-1">
+<citerefentry>
+<refentrytitle>zlogin</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> man page.</para>
+</step>
+</stepalternatives>
+</step>
+<step>
+<para>Verify that the zone is shut down.</para>
+<para>In the <replaceable>zonename</replaceable>: Zone Terminal Console, the following notice indicates that
+the zone is shut down.</para>
+<screen>[ NOTICE: Zone halted]</screen>
+<para>If you are not copying or cloning this zone, create the remaining zones
+in the way that you created this first zone.</para>
+</step>
+<step>
+<para>If you are using this zone as a template for other zones, do the
+following:</para>
+<substeps>
+<step>
+<para>Remove the <filename>auto_home_</filename>
+<replaceable>zonename</replaceable> file.</para>
+<para>In a terminal in the global zone, remove this file from the <replaceable>zonename</replaceable> zone.</para>
+<screen>cd /zone/<replaceable>zonename</replaceable>/root/etc
+# ls auto_home*
+auto_home  auto_home_<replaceable>zonename</replaceable>
+# rm auto_home_<replaceable>zonename</replaceable>
+</screen>
+<para>For example, if the <literal>public</literal> zone were the basis for
+cloning other zones, remove its <filename>auto_home</filename> file:</para>
+<screen># <userinput>cd /zone/public/root/etc</userinput>
+# <userinput>rm auto_home_public</userinput>
+</screen>
+</step>
+<step>
+<para>If you are copying a zone, go to <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-54">Use
+the Copy Zone Method</olink>.</para>
+</step>
+<step>
+<para>If you are cloning a zone, go to <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-53">Use
+the Clone Zone Method</olink>.</para>
+</step>
+</substeps>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-54">
+
+<title>Use the Copy Zone Method</title>
+<indexterm xml:id="indexterm-188">
+<primary>Copy Zone action</primary>
+</indexterm>
+<indexterm xml:id="indexterm-189">
+<primary>administrative actions</primary>
+<secondary>Copy Zone</secondary>
+</indexterm>
+<taskprerequisites>
+
+<itemizedlist>
+<listitem>
+<para>You have completed <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-11">Specify Zone
+Names and Zone Labels</olink>.</para>
+</listitem>
+<listitem>
+<para>You have customized a zone that is a source for cloning in <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-20">Creating the Labeled Zones (Tasks)</olink>.</para>
+</listitem>
+<listitem>
+<para>You are not currently running the zone that is your source
+for cloning.</para>
+</listitem>
+</itemizedlist>
+</taskprerequisites>
+<procedure>
+<step xml:id="txconf-copyz-1">
+<para>Create a new zone from the original zone.</para>
+<para>Run the Copy Zone action and answer the prompts.</para>
+<screen>New Zone Name:     <lineannotation>Type name of target zone</lineannotation>
+From Zone Name:    <lineannotation>Type name of source zone</lineannotation>
+</screen>
+</step>
+<step xml:id="txconf-copyz-2">
+<para>Wait for the Copy Zone action to finish.</para>
+</step>
+<step>
+<para>Repeat <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-copyz-1">Step 1</olink> and <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-copyz-2">Step 2</olink> for every zone.</para>
+</step>
+<step>
+<para>Check the status of every zone.</para>
+<substeps>
+<step>
+<para>Run the Zone Terminal Console action.</para>
+</step>
+<step>
+<para>Log in to each zone.</para>
+</step>
+<step>
+<para>Check the status of the zone.</para>
+<screen># zoneadm list -v
+ID NAME         STATUS         PATH
+ 3 internal     running        /
+ 4 needtoknow   running        /
+ 5 restricted   running        /
+ </screen>
+</step>
+</substeps>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-53">
+
+<title>Use the Clone Zone Method</title>
+<indexterm xml:id="indexterm-190">
+<primary>Clone Zone action</primary>
+</indexterm>
+<indexterm xml:id="indexterm-191">
+<primary>administrative actions</primary>
+<secondary>Clone Zone</secondary>
+</indexterm>
+<taskprerequisites>
+
+<itemizedlist>
+<listitem>
+<para>You have completed <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-11">Specify Zone
+Names and Zone Labels</olink>.</para>
+</listitem>
+<listitem>
+<para>You have completed <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-42">Create ZFS
+Pool for Cloning Zones</olink>.</para>
+</listitem>
+<listitem>
+<para>You have customized a zone that is a source for cloning in <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-20">Creating the Labeled Zones (Tasks)</olink>.</para>
+</listitem>
+<listitem>
+<para>The zone that is your source for cloning is shut down.</para>
+</listitem>
+</itemizedlist>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Create a ZFS snapshot of the zone template.</para>
+<para>You created
+the zone template in <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-42">Create ZFS Pool for Cloning
+Zones</olink>.</para>
+<screen># cd /
+# zfs snapshot zone/<replaceable>zonename</replaceable>@snapshot</screen>
+<para>For a configured zone that is named <literal>public</literal>, the snapshot
+command would be similar to the following:</para>
+<screen># <userinput>zfs snapshot zone/public@snapshot</userinput>
+</screen>
+<para>This is the snapshot that you use to clone the remaining zones.</para>
+</step>
+<step xml:id="txconf-clone-1">
+<para>Clone a zone.</para>
+<para>Run the Clone Zone
+action and answer the prompts.</para>
+<screen>New Zone Name:      <lineannotation>Type name of source zone</lineannotation>
+ZFS Snapshot:         <lineannotation>Type name of snapshot</lineannotation>
+</screen>
+</step>
+<step>
+<para>Read the information in the dialog box.</para>
+<screen>Zone label is &lt;<replaceable>LABEL</replaceable>&gt;
+<replaceable>zonename</replaceable> is ready for booting
+
+*** Select Close or Exit from the window menu to close this window ***</screen>
+</step>
+<step>
+<para>Repeat <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-clone-1">Step 2</olink> for
+each remaining zone.</para>
+</step>
+<step>
+<para>Check the status of every zone.</para>
+<substeps>
+<step>
+<para>By using the Zone Terminal Console action, log in to each zone.</para>
+</step>
+<step>
+<para>For each zone, run the Start Zone action.</para>
+<para>Complete
+each startup before running the action for another zone.</para>
+</step>
+<step>
+<para>Check the status of the zone.</para>
+<screen># zoneadm list -v</screen>
+</step>
+</substeps>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-34">
+
+<title>Enable Users to Log In to a Zone</title>
+<indexterm xml:id="indexterm-192">
+<primary>rebooting</primary>
+<secondary>enabling login to labeled zone</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-193">
+<primary>enabling</primary>
+<secondary>login to labeled zone</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-194">
+<primary>zones</primary>
+<secondary>enabling login to</secondary>
+</indexterm>
+<tasksummary>
+<para>When the host is rebooted, the association between the devices and the
+underlying storage must be re-established.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You have created at least one labeled zone. That zone is not being used
+for cloning.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Reboot the system.</para>
+</step>
+<step>
+<para>Log in as the <literal>root</literal> user.</para>
+</step>
+<step>
+<para>Restart the zones service.</para>
+<screen># <userinput>svcs zones</userinput>
+STATE          STIME    FMRI
+offline        -        svc:/system/zones:default</screen>
+<screen># <userinput>svcadm restart svc:/system/zones:default</userinput>
+</screen>
+</step>
+<step>
+<para>Log out.</para>
+<para>Ordinary users can now log in. Their session
+is in a labeled zone.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="txconf-14">
+<title>Creating Roles and Users</title>
+<indexterm xml:id="indexterm-195">
+<primary>accounts</primary>
+<secondary>creating</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-196">
+<primary>creating</primary>
+<secondary>accounts</secondary>
+</indexterm>
+<para>If you are already using <olink remap="external" targetdoc="glossary-1.xml" targetptr="glossary-5">administrative
+role</olink>s, you might want to add a Security Administrator role. For sites
+that have not yet implemented roles, the procedure for creating them is similar
+to the procedure in the Solaris OS. Trusted Extensions adds the Security Administrator
+role, and requires the use of the Solaris Management Console to administer a Trusted Extensions domain.</para>
+<sect2>
+<title/>
+<task id="txconf-23">
+
+<title>Create the Security Administrator Role</title>
+<indexterm xml:id="indexterm-197">
+<primary>adding</primary>
+<secondary>roles</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-198">
+<primary>creating</primary>
+<secondary>roles</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-199">
+<primary>roles</primary>
+<secondary>creating Security Administrator</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-200">
+<primary>Security Administrator role</primary>
+<secondary>creating</secondary>
+</indexterm>
+<tasksummary>
+<para>Role creation in Trusted Extensions is identical to role creation in the Solaris OS.
+However, in Trusted Extensions, a Security Administrator role is required. To
+create a local Security Administrator role, you can also use the command line
+interface, as in <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-61">Example 4–3</olink>.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You must be superuser, or in the <literal>root</literal> role, or in
+the Primary Administrator role.</para>
+<para>To create the role on the network, you must have completed <olink remap="external" targetdoc="chapter-5.xml" targetptr="confsys-10">Configuring the Solaris Management Console for LDAP
+(Tasks)</olink>.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>If the Solaris Management Console is not running, start it.</para>
+<screen># <userinput>/usr/sbin/smc &amp;</userinput>
+</screen>
+</step>
+<step>
+<para>Select the appropriate toolbox.</para>
+<stepalternatives>
+<step>
+<para>To create the role locally, use This Computer (<replaceable>this-host</replaceable>: <literal>Scope=Files, Policy=TSOL</literal>).</para>
+</step>
+<step>
+<para>To create the role in the LDAP service, use This Computer (<replaceable>this-host</replaceable>: <literal>Scope=LDAP, Policy=TSOL</literal>).</para>
+</step>
+</stepalternatives>
+</step>
+<step>
+<para>Click System Configuration, then click Users.</para>
+</step>
+<step>
+<para>When prompted, enter the appropriate password.</para>
+</step>
+<step>
+<para>Double-click Administrative... (Administrative Roles).</para>
+</step>
+<step>
+<para>Choose Add Administrative Role from the Action menu.</para>
+</step>
+<step>
+<para>Create the Security Administrator role.</para>
+<itemizedlist>
+<para>Use the following information as a guide.</para>
+<listitem>
+<para>Role name – <literal>secadmin</literal>
+</para>
+</listitem>
+<listitem>
+<para>Full name – <literal>Security Administrator</literal>
+</para>
+</listitem>
+<listitem>
+<para>Description – Site Security Officer <emphasis>No proprietary
+information here</emphasis>.</para>
+</listitem>
+<listitem>
+<para>Role ID Number –  ≥100</para>
+</listitem>
+<listitem>
+<para>Role shell – Administrator's Bourne (profile shell)</para>
+</listitem>
+<listitem>
+<para>Create a role mailing list – Leave checkmarked.</para>
+</listitem>
+<listitem>
+<para>Password and confirm – Assign a password of at least
+6 alphanumeric characters.</para>
+<para>The password for the Security Administrator role, and
+all passwords, should be one that is not easy to guess, thus reducing the
+chance of an adversary gaining unauthorized access by attempting to guess
+passwords.</para>
+<note>
+
+<para>For all administrative roles, make the account Always Available,
+and do not set password expiration dates.</para>
+</note>
+</listitem>
+<listitem>
+<para>Available and Granted Rights – Information Security,
+User Security</para>
+</listitem>
+<listitem>
+<para>Home Directory Server – <replaceable>home directory
+server</replaceable>
+</para>
+</listitem>
+<listitem>
+<para>Home Directory Path – /<replaceable>mount-path</replaceable>
+</para>
+</listitem>
+<listitem>
+<para>Assign Users– This field is automatically filled in
+when you assign a role to a user.</para>
+</listitem>
+</itemizedlist>
+</step>
+<step>
+<para>After creating the role, check that the settings are correct.</para>
+<para>Select the role, then double-click it.</para>
+<itemizedlist>
+<para>Use the following information as a guide to review the values for the
+fields.</para>
+<listitem>
+<para>Available Groups – Add groups if required.</para>
+</listitem>
+<listitem>
+<para>Trusted Extensions Attributes – Defaults are correct.</para>
+<para>If this system is single-label, and labels should not be visible, choose
+Hide for Label: Show or Hide.</para>
+</listitem>
+<listitem>
+<para>Audit Excluded and Included – Set audit flags only if
+the role's audit flags are exceptions to the system settings in the <filename>audit_control</filename> file.</para>
+</listitem>
+</itemizedlist>
+</step>
+<step>
+<para>To create other roles, use the Security Administrator role as
+a guide.</para>
+<itemizedlist>
+<para>For examples, see <olink remap="external" targetdoc="819-3321" targetptr="rbactask-32">
+<citetitle remap="section">How to Create and Assign a Role By Using the GUI</citetitle> in <citetitle remap="book">System Administration Guide: Security Services</citetitle>
+</olink>.
+Give each role a unique ID, and assign to it the correct rights profile. Possible
+roles include the following:</para>
+<listitem>
+<para>admin Role – <literal>System Administrator</literal> Granted
+Rights</para>
+</listitem>
+<listitem>
+<para>primaryadmin Role – <literal>Primary Administrator</literal> Granted
+Rights</para>
+</listitem>
+<listitem>
+<para>oper Role – <literal>Operator</literal> Granted Rights</para>
+</listitem>
+</itemizedlist>
+</step>
+</procedure>
+<example xml:id="txconf-61">
+
+<title>Using the <command>roleadd</command> Command to Create a Local Security
+Administrator Role</title>
+<indexterm xml:id="indexterm-201">
+<primary>
+<command>roleadd</command> command</primary>
+</indexterm>
+<indexterm xml:id="indexterm-202">
+<primary>adding</primary>
+<secondary>local role with <command>roleadd</command>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-203">
+<primary>creating</primary>
+<secondary>local role with <command>roleadd</command>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-204">
+<primary>roles</primary>
+<secondary>adding local role with <command>roleadd</command>
+</secondary>
+</indexterm>
+<para>In this example, <literal>root</literal> adds the Security Administrator
+role to the local system. For details, see the <olink remap="external" targetdoc="819-2240" targetptr="roleadd-1m">
+<citerefentry>
+<refentrytitle>roleadd</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man page. <literal>root</literal> consults <olink remap="external" targetdoc="chapter-1.xml" targetptr="ovw-tbl-4">Table 1–2</olink> before creating the role.</para>
+<screen># <userinput>roleadd -c "Local Security Administrator" -d /export/home1 \</userinput>
+<userinput>-u 110 -P "Information Security,User Security" -K lock_after_retries=no \</userinput>
+<userinput>-K idletime=5 -K idlecmd=lock -K labelview=showsl \</userinput>
+<userinput>-K min_label=ADMIN_LOW -K clearance=ADMIN_HIGH secadmin</userinput>
+</screen>
+<para>
+<literal>root</literal> provides an initial password for the role.</para>
+<screen># <userinput>passwd -r files secadmin</userinput>
+New Password:        <lineannotation>&lt;Type password&gt;
+</lineannotation>
+Re-enter new Password: <lineannotation>&lt;Retype password&gt;
+</lineannotation>
+passwd: password successfully changed for secadmin
+#</screen>
+<para>To assign the role to a local user, see <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-63">Example
+4–4</olink>.</para>
+</example>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-25">
+
+<title>Create Users Who Can Assume Roles</title>
+<indexterm xml:id="indexterm-205">
+<primary>adding</primary>
+<secondary>users who can assume roles</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-206">
+<primary>creating</primary>
+<secondary>users who can assume roles</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-207">
+<primary>users</primary>
+<secondary>creating initial users</secondary>
+</indexterm>
+<tasksummary>
+<para>To create a local user, you can also use the command line interface,
+as in <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-63">Example 4–4</olink>. Where site security
+policy permits, you can choose to create a user who can assume more than one
+administrative role.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>You must be superuser, or in the <literal>root</literal> role, or in
+the Security Administrator role, or in the Primary Administrator role. The
+Security Administrator role has the least amount of privilege that is required
+for user creation.</para>
+<para>For secure user creation, the System Administrator role creates the
+user, and the Security Administrator role assigns security-relevant attributes,
+such as password.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Double-click User Accounts in the Solaris Management Console.</para>
+</step>
+<step>
+<para>Choose Add User -&gt; Use Wizard from the Action menu.</para>
+<caution>
+
+<para>Role and user IDs come from the same pool of IDs. Do not use
+existing names or IDs for the users that you add.</para>
+</caution>
+</step>
+<step>
+<para>Follow the online help.</para>
+<para>You can also follow the procedures
+in <olink remap="external" targetdoc="819-2379" targetptr="usersetup-21">
+<citetitle remap="section">How to Add a User With the Solaris Management Console’s Users Tool</citetitle> in <citetitle remap="book">System Administration Guide: Basic Administration</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>After creating the user, double-click the created user to modify
+the settings.</para>
+<itemizedlist>
+<para>For users who can assume roles, ensure that the user is always available.
+Make sure the following fields are correctly set:</para>
+<listitem>
+<para>Description – No proprietary information here.</para>
+</listitem>
+<listitem>
+<para>Password and confirm – Assign a password of at least
+6 alphanumeric characters.</para>
+<note>
+
+<para>When
+the install team chooses a password, the team must select one that is not
+easy to guess, thus reducing the chance of an attacker gaining unauthorized
+access by attempting to guess passwords.</para>
+</note>
+</listitem>
+<listitem>
+<para>Account Availability – Always Available.</para>
+</listitem>
+<listitem>
+<para>Trusted Extensions Attributes – Defaults are correct.</para>
+<para>If this system is single-label, and labels should not be visible, choose
+Hide for Label: Show or Hide.</para>
+</listitem>
+<listitem>
+<para>Account Usage – Set Idle time and Idle action.</para>
+<para>Lock account … – Set to No for any user who can assume
+a role.</para>
+</listitem>
+</itemizedlist>
+</step>
+<step>
+<para>Customize the user's environment.</para>
+<stepalternatives>
+<step>
+<para>Assign Convenient Authorizations –</para>
+<para>After checking
+your site security policy, you might want to grant your first users the Convenient
+Authorizations rights profile. With this right, users can allocate devices,
+print PostScript files, print without labels, remotely log in, and shut down
+the system.</para>
+</step>
+<step>
+<para>Customize user initialization files –</para>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="manageusers-1">Chapter 7, <citetitle remap="chapter">Managing Users, Rights, and Roles in Trusted Extensions,</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="usermgr-13">
+<citetitle remap="section">Managing Users and Rights With Solaris Management Console (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</step>
+<step>
+<para>Create multilabel copy and link files –</para>
+<para>On a
+multilabel system, users and roles can be set up with files that list user
+initialization files to be copied or linked to other labels. For further discussion,
+see <olink remap="external" targetdoc="819-7309" targetptr="manageusers-28">
+<citetitle remap="section">.copy_files and .link_files Files</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>.</para>
+</step>
+</stepalternatives>
+</step>
+</procedure>
+<example xml:id="txconf-63">
+
+<title>Using the <command>useradd</command> Command to Create a Local User</title>
+<indexterm xml:id="indexterm-208">
+<primary>
+<command>useradd</command> command</primary>
+</indexterm>
+<indexterm xml:id="indexterm-209">
+<primary>adding</primary>
+<secondary>local user with <command>useradd</command>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-210">
+<primary>creating</primary>
+<secondary>local user with <command>useradd</command>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-211">
+<primary>users</primary>
+<secondary>adding local user with <command>useradd</command>
+</secondary>
+</indexterm>
+<para>In this example, <literal>root</literal> creates a local user who can
+assume the Security Administrator role. For details, see the <olink remap="external" targetdoc="819-2240" targetptr="useradd-1m">
+<citerefentry>
+<refentrytitle>useradd</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> and <olink remap="external" targetdoc="819-7307" targetptr="atohexlabel-1m">
+<citerefentry>
+<refentrytitle>atohexlabel</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man pages.</para>
+<para>First, <literal>root</literal> determines the hexadecimal format of
+the user's minimum label and clearance label.</para>
+<screen># <userinput>atohexlabel public</userinput>
+0x0002-08-08
+# <userinput>atohexlabel -c "confidential restricted"</userinput>
+0x0004-08-78</screen>
+<para>
+<literal>root</literal> consults <olink remap="external" targetdoc="chapter-1.xml" targetptr="ovw-tbl-4">Table
+1–2</olink> before creating the user.</para>
+<screen># <userinput>useradd -c "Local user for Security Admin" -d /export/home1 \</userinput>
+<userinput>-K  idletime=10 -K idlecmd=logout -K lock_after_retries=no</userinput>
+<userinput>-K min_label=0x0002-08-08 -K clearance=0x0004-08-78 -K labelview=showsl jandoe</userinput>
+</screen>
+<para>Then, <literal>root</literal> provides an initial password.</para>
+<screen># <userinput>passwd -r files jandoe</userinput>
+New Password:    <lineannotation>&lt;Type password&gt;
+</lineannotation>
+Re-enter new Password: <lineannotation>&lt;Retype password&gt;
+</lineannotation>
+passwd: password successfully changed for jandoe
+#</screen>
+<para>Finally, <literal>root</literal> adds the Security Administrator role
+to the user's definition. The role was created in <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-23">Create
+the Security Administrator Role</olink>.</para>
+<screen># <userinput>usermod -R secadmin jandoe</userinput>
+</screen>
+</example>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-29">
+
+<title>Verify That the Roles Work</title>
+<indexterm xml:id="indexterm-212">
+<primary>checking</primary>
+<secondary>roles are working</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-213">
+<primary>verifying</primary>
+<secondary>roles are working</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-214">
+<primary>roles</primary>
+<secondary>verifying they work</secondary>
+</indexterm>
+<tasksummary>
+<para>For each role, assume the role. Then, perform tasks that only that role
+can perform.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>If you have set up DNS or static routing, you must reboot between creating
+the roles and verifying that the roles work.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>For each role, log in as a user who can assume the role.</para>
+</step>
+<step>
+<para>In CDE, bring up the Trusted Path menu from the Workspace Switch
+Area.</para>
+<para>From the menu, assume the role.</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="figures/tpmenu.gif"/>
+</imageobject>
+<textobject>
+<simpara>Illustration shows the Trusted Path menu.</simpara>
+</textobject>
+</mediaobject>
+</step>
+<step>
+<para>In the role workspace, launch the Solaris Management Console.</para>
+<screen>$ <userinput>/usr/sbin/smc &amp;</userinput>
+</screen>
+</step>
+<step>
+<para>Select the appropriate scope for the role that you are testing.</para>
+</step>
+<step>
+<para>Click System Services and navigate to Users.</para>
+<substeps>
+<step>
+<para>Provide the role password when prompted.</para>
+</step>
+<step>
+<para>Double-click User Accounts.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>Click a user.</para>
+<itemizedlist>
+<listitem>
+<para>The System Administrator role should be able to modify fields
+under the tabs General, Home Directory, and Group.</para>
+</listitem>
+<listitem>
+<para>The Security Administrator role should be able to modify fields
+under all tabs.</para>
+</listitem>
+<listitem>
+<para>The Primary Administrator role should be able to modify fields
+under all tabs.</para>
+</listitem>
+</itemizedlist>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="txconf-50">
+<title>Creating Home Directories</title>
+<indexterm xml:id="indexterm-215">
+<primary>home directories</primary>
+<secondary>creating</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-216">
+<primary>creating</primary>
+<secondary>home directories</secondary>
+</indexterm>
+<para>In Trusted Extensions, users can have home directories at every label at
+which the users work. To make every home directory available to the user requires
+that you create a multilevel home directory server, run the automounter on
+the server, and export the home directories. On the client side, you can run
+scripts to find the home directory for every zone for each user, or you can
+have the user log in to the home directory server.</para>
+<sect2>
+<title/>
+<task id="txconf-52">
+
+<title>Create the Home Directory Server</title>
+<indexterm xml:id="indexterm-217">
+<primary>creating</primary>
+<secondary>home directory server</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-218">
+<primary>home directories</primary>
+<secondary>creating server for</secondary>
+</indexterm>
+<taskprerequisites>
+
+<para>You must be superuser, or in the <literal>root</literal> role, or in
+the Primary Administrator role.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Install and configure the home directory server.</para>
+<itemizedlist>
+<para>Follow the instructions for installing and configuring a system with Trusted Extensions software.</para>
+<listitem>
+<para>If you are cloning zones, make sure that you use a snapshot
+that has empty home directories.</para>
+</listitem>
+<listitem>
+<para>Because users require a home directory at every label they
+they can log in to, create every zone that a user can log in to. For example,
+if you use the default label_encodings file, you would create a zone for the <literal>SANDBOX</literal> label.</para>
+</listitem>
+</itemizedlist>
+</step>
+<step>
+<para>If you are using UFS and not ZFS, enable the NFS server to serve
+itself.</para>
+<substeps>
+<step>
+<para>In the global zone, modify the <literal>automount</literal> entry
+in the <filename>nsswitch.conf</filename> file.</para>
+<para>Use the Admin
+Editor to edit the <filename>/etc/nsswitch.conf</filename> file.</para>
+<screen>automount: files</screen>
+</step>
+<step>
+<para>In the global zone, run the <command>automount</command> command.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>For every labeled zone, create a new <filename>dfstab</filename> file.</para>
+<para>Each zone shares the home directories at the label of the zone.</para>
+<substeps>
+<step>
+<para>Go to the zone's <filename class="directory">/etc/dfs</filename> directory.</para>
+<screen># cd <filename class="directory">/zone/<replaceable>zone-name</replaceable>/root/etc/dfs</filename>
+</screen>
+</step>
+<step>
+<para>Open the Admin Editor.</para>
+</step>
+<step>
+<para>Type the full pathname of the <filename>dfstab</filename> file
+into the editor.</para>
+<screen># /zone/<replaceable>zone-name</replaceable>/etc/dfs/dfstab</screen>
+</step>
+<step>
+<para>Add an entry to share home directories.</para>
+<screen>share -F nfs -o rw /export/home</screen>
+</step>
+</substeps>
+</step>
+<step>
+<para>In the global zone, run the <command>shareall</command> command.</para>
+<para>The actual sharing occurs when each zone is brought into the <literal>ready</literal> or <literal>running</literal> state.</para>
+</step>
+<step>
+<para>Display the status of the labeled zones.</para>
+<screen># zoneadm list -cv</screen>
+</step>
+<step>
+<para>For each zone, share the directories.</para>
+<para>As root in the
+global zone, run one of the following commands for each zone. Each zone can
+share its directories in any of these ways.</para>
+<stepalternatives>
+<step>
+<para>If the zone is not in the running state and you do not want users
+to log in to the server at the label of the zone, set the zone state to <literal>ready</literal>.</para>
+<screen># zoneadm -z <replaceable>zonename</replaceable> ready</screen>
+</step>
+<step>
+<para>If the zone is not in the running state and users are allowed
+to log in to the server at the label of the zone, boot the zone.</para>
+<screen># zoneadm -z <replaceable>zonename</replaceable> boot</screen>
+</step>
+<step>
+<para>If the zone is already running, reboot the zone.</para>
+<screen># zoneadm -z <replaceable>zonename</replaceable> reboot</screen>
+</step>
+</stepalternatives>
+</step>
+<step>
+<para>Verify that the home directories are shared.</para>
+<para>In the
+global zone, use the <command>showmount</command> command.</para>
+<screen># showmount -e
+export list for <replaceable>home-directory-server</replaceable>:
+/zone/<replaceable>zone-1</replaceable>/root/export/home (everyone)
+/zone/<replaceable>zone-2</replaceable>/root/export/home (everyone)
+
+...
+/zone/<replaceable>zone-n</replaceable>
+</screen>
+</step>
+<step>
+<para>Verify the home directories setup.</para>
+<substeps>
+<step>
+<para>Log out.</para>
+</step>
+<step>
+<para>As an ordinary user, log in to the home directory server.</para>
+</step>
+<step>
+<para>In the login zone, open a terminal.</para>
+</step>
+<step>
+<para>In the terminal, check that the user's home directory is created.</para>
+<para>If an “Action Failed” dialog box appears, click OK. A terminal
+then displays.</para>
+</step>
+<step>
+<para>Create workspaces for every zone that the user can work in.</para>
+</step>
+<step>
+<para>In each zone, open a terminal to check that the user's home directory
+is created.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>Log out.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-56">
+
+<title>Enable Users to Access Their Home Directories</title>
+<indexterm xml:id="indexterm-219">
+<primary>logging in</primary>
+<secondary>to a home directory server</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-220">
+<primary>home directories</primary>
+<secondary>logging in and getting</secondary>
+</indexterm>
+<tasksummary>
+<para>Users can log in to the home directory server initially to create a
+home directory that can be exported. To create a home directory at every label,
+the user must log in to the home directory server at every label.</para>
+<para>Alternatively, you as administrator can create a script to create a
+mount point for users' home directories on the user's home machine before
+the user first logs in. The script would create mount points at every label
+at which the user is permitted to work.</para>
+</tasksummary>
+<taskprerequisites>
+
+<para>If you have set up DNS or static routing, you must reboot between creating
+the roles and verifying that the roles work.</para>
+</taskprerequisites>
+<procedure role="single-step">
+<step>
+<para>Choose whether to allow direct login to the server, or whether
+to run a script.</para>
+<stepalternatives>
+<step>
+<para>Enable users to log in directly to the home directory server.</para>
+<para>This is an administrative choice.</para>
+<substeps>
+<step>
+<para>Instruct each user to log in to the home directory server.</para>
+<para>After successful login, the user should log out.</para>
+</step>
+<step>
+<para>Instruct each user to log in again, and this time, to choose a
+different login label.</para>
+<para>The user uses the label builder to choose
+a different login label. After successful login, the user should log out.</para>
+</step>
+<step>
+<para>Each user repeats the login process for every label that the user
+is permitted to use.</para>
+</step>
+<step>
+<para>The users then go to their home machine, and log in.</para>
+<para>Their
+home directory for their default label should be available. When a user changes
+the label of a session, or adds a workspace at a different label, the user's
+home directory for that label should be mounted.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>Write a script that creates a home directory mount point for every
+user.</para>
+<para>From the global zone, run this script on the NFS server.
+Then, run this script on every multilevel desktop that the user is going to
+log in to.</para>
+<screen>#!/bin/sh
+#
+for zoneroot in `/usr/sbin/zoneadm list -p | cut -d ":" -f4` ; do
+	if [ $zoneroot != / ]; then
+		prefix=$zoneroot/root/export
+	
+		for j in `getent passwd|tr ' ' _` ; do
+			uid=`echo $j|cut -d ":" -f3`
+			if [ $uid -ge 100 ]; then
+				gid=`echo $j|cut -d ":" -f4`
+				homedir=`echo $j|cut -d ":" -f6`
+				mkdir -m 711 -p $prefix$homedir
+				chown $uid:$gid $prefix$homedir
+			fi
+		done
+	fi
+done</screen>
+</step>
+</stepalternatives>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="txconf-64">
+<title>Adding Users and Hosts to an Existing
+Trusted Network</title>
+<para>If you have users who are defined in NIS maps, you can add them to your
+network. To add a host, you use the Computers and Networks tool set in the Solaris Management Console.</para>
+<sect2>
+<title/>
+<task id="txconf-65">
+
+<title>Add a NIS User to the LDAP Server</title>
+<indexterm xml:id="indexterm-221">
+<primary>users</primary>
+<secondary>adding from NIS server</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-222">
+<primary>adding</primary>
+<secondary>users by using <command>lpaddent</command>
+</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-223">
+<primary>
+<command>lpaddent</command> command</primary>
+</indexterm>
+<taskprerequisites>
+
+<para>You must be superuser, or in the <literal>root</literal> role, or in
+the Primary Administrator role.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>From the NIS database, gather the information that you need.</para>
+<substeps>
+<step>
+<para>Create a file from the user's entry in the <literal>aliases</literal> database.</para>
+<screen>% ypcat -k aliases | grep <replaceable>login-name</replaceable> &gt; aliases.<replaceable>name</replaceable>
+</screen>
+</step>
+<step>
+<para>Create a file from the user's entry in the <literal>passwd</literal> database.</para>
+<screen>% ypcat -k passwd | grep "<replaceable>Full Name</replaceable>" &gt; passwd.<replaceable>name</replaceable>
+</screen>
+</step>
+<step>
+<para>Create a file from the user's entry in the <literal>auto_home_</literal> database.</para>
+<screen>% ypcat -k auto_home | grep <replaceable>login-name</replaceable> &gt; <literal>auto_home_</literal>
+<replaceable>label</replaceable>
+</screen>
+</step>
+</substeps>
+</step>
+<step>
+<para>Reformat the information for LDAP and Trusted Extensions.</para>
+<substeps>
+<step>
+<para>Use the <command>sed</command> command to reformat the <literal>aliases</literal> entry.</para>
+<screen>% sed 's/ /:/g' aliases.<replaceable>login-name</replaceable> &gt; aliases</screen>
+</step>
+<step>
+<para>Use the <command>nawk</command> command to reformat the <literal>passwd</literal> entry.</para>
+<screen>% nawk -F: '{print $1":x:"$3":"$4":"$5":"$6":"$7}' passwd.<replaceable>name</replaceable> &gt; passwd</screen>
+</step>
+<step>
+<para>Use the <command>nawk</command> command to create a <literal>shadow</literal> entry.</para>
+<screen>% nawk -F: '{print $1":"$2":6445::::::"}' passwd.<replaceable>name</replaceable> &gt; shadow</screen>
+</step>
+<step>
+<para>Use the <command>nawk</command> command to create a <literal>user_attr</literal> entry.</para>
+<screen>% nawk -F: '{print $1"::::lock_after_retries=<replaceable>yes-or-no</replaceable>;profiles=<replaceable>user-profile, ...</replaceable>;
+labelview=<replaceable>int-or-ext</replaceable>,<replaceable>show-or-hide</replaceable>;min_label=<replaceable>min-label</replaceable>;
+clearance=<replaceable>max-label</replaceable>;type=normal;roles=<replaceable>role-name,...</replaceable>;
+auths=<replaceable>auth-name,...</replaceable>"}' passwd.<replaceable>name</replaceable> &gt; user_attr</screen>
+</step>
+</substeps>
+</step>
+<step xml:id="txconf-ldentries-1">
+<para>Copy the modified files to the <filename>/tmp</filename> directory on the LDAP server.</para>
+<screen># cp aliases auto_home_internal passwd shadow user_attr /tmp/<replaceable>name</replaceable>
+</screen>
+</step>
+<step>
+<para>Add the entries in the files in <olink remap="internal" targetdoc="chapter-4.xml" targetptr="txconf-ldentries-1">Step 3</olink> to the LDAP server.</para>
+<screen># /usr/sbin/ldapaddent -D "cn=directory manager" -w <replaceable>DM-password</replaceable> \
+-a simple -f /tmp/<replaceable>name</replaceable>/aliases aliases
+# /usr/sbin/ldapaddent -D "cn=directory manager" -w <replaceable>DM-password</replaceable> \
+-a simple -f /tmp/<replaceable>name</replaceable>/auto_home_internal auto_home_internal
+# /usr/sbin/ldapaddent -D "cn=directory manager" -w <replaceable>DM-password</replaceable> \
+-a simple -f /tmp/<replaceable>name</replaceable>/passwd passwd
+# /usr/sbin/ldapaddent -D "cn=directory manager" -w <replaceable>DM-password</replaceable> \
+-a simple -f /tmp/<replaceable>name</replaceable>/shadow shadow
+# /usr/sbin/ldapaddent -D "cn=directory manager" -w <replaceable>DM-password</replaceable> \
+-a simple -f /tmp/<replaceable>name</replaceable>/user_attr user_attr</screen>
+</step>
+</procedure>
+<example xml:id="txconf-67">
+
+<title>Adding a User From a NIS Database to the LDAP Server</title>
+<para>In the following example, the administrator adds a new user to the trusted
+network. The user's information is stored originally in a NIS database. To
+protect the LDAP server password, the administrator runs the <command>ldapaddent</command> commands
+on the server.</para>
+<para>In Trusted Extensions, the new user can allocate devices, and can assume
+the Operator role. Because the user can assume a role, the user account does
+not get locked out. The user's minimum label is <constant>PUBLIC</constant>.
+The label at which the user works is <constant>INTERNAL</constant>, so <literal>jan</literal> is added to the <filename>auto_home_internal</filename> file. The <filename>auto_home_internal</filename> file automounts <literal>jan</literal>'s home
+directory read-write.</para>
+<orderedlist>
+<listitem>
+<para>On the LDAP server, extract user information from NIS databases.</para>
+<screen># <userinput>ypcat -k aliases | grep jan.doe &gt; aliases.jan</userinput>
+# <userinput>ypcat passwd | grep "Jan Doe" &gt; passwd.jan</userinput>
+# <userinput>ypcat -k auto_home | grep jan.doe &gt; auto_home_internal</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>Reformat the entries for LDAP.</para>
+<screen># <userinput>sed 's/ /:/g' aliases.jan &gt; aliases</userinput>
+# <userinput>nawk -F: '{print $1":x:"$3":"$4":"$5":"$6":"$7}' passwd.jan &gt; passwd</userinput>
+# <userinput>nawk -F: '{print $1":"$2":6445::::::"}' passwd.jan &gt; shadow</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>Create a <filename>user_attr</filename> entry for Trusted Extensions.</para>
+<screen># <userinput>nawk -F: '{print $1"::::lock_after_retries=no;profiles=Media User;</userinput>
+<userinput>labelview=internal,showsl;min_label=0x0002-08-08;</userinput>
+<userinput>clearance=0x0004-08-78;type=normal;roles=oper;</userinput>
+<userinput>auths=solaris.device.allocate"}' passwd.jan &gt; user_attr</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>Copy the files to the <filename class="directory">/tmp/jan</filename> directory.</para>
+<screen># <userinput>cp aliases auto_home_internal passwd shadow user_attr /tmp/jan</userinput>
+</screen>
+</listitem>
+<listitem>
+<para>Populate the server with the files in the <filename class="directory">/tmp/jan</filename> directory.</para>
+<screen># <userinput>/usr/sbin/ldapaddent -D "cn=directory manager" -w a2b3c4d5e6 \</userinput>
+<userinput>-a simple -f /tmp/jan/aliases aliases</userinput>
+# <userinput>/usr/sbin/ldapaddent -D "cn=directory manager" -w a2b3c4d5e6 \</userinput>
+<userinput>-a simple -f /tmp/jan/auto_home_internal auto_home_internal</userinput>
+# <userinput>/usr/sbin/ldapaddent -D "cn=directory manager" -w a2b3c4d5e6 \</userinput>
+<userinput>-a simple -f /tmp/jan/passwd passwd</userinput>
+# <userinput>/usr/sbin/ldapaddent -D "cn=directory manager" -w a2b3c4d5e6 \</userinput>
+<userinput>-a simple -f /tmp/jan/shadow shadow</userinput>
+# <userinput>/usr/sbin/ldapaddent -D "cn=directory manager" -w a2b3c4d5e6 \</userinput>
+<userinput>-a simple -f /tmp/jan/user_attr user_attr</userinput>
+</screen>
+</listitem>
+</orderedlist>
+</example>
+</task>
+</sect2>
+<sect2>
+<title/>
+<task id="txconf-66">
+
+<title>Add a Host to the LDAP Server</title>
+<indexterm xml:id="indexterm-224">
+<primary>creating</primary>
+<secondary>additional hosts on a trusted network</secondary>
+</indexterm>
+<procedure role="single-step">
+<step>
+<para>Follow the procedures in <olink remap="external" targetdoc="819-7309" targetptr="managetnet-3">
+<citetitle remap="section">Configuring Trusted Network Databases (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>.</para>
+<note>
+
+<para>Remember to add all IP addresses that are associated with the
+host. All-zones addresses, including addresses for labeled zones, must be
+added to the LDAP server.</para>
+</note>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="txconf-trouble-1">
+<title>Troubleshooting Your Trusted Extensions Configuration</title>
+<indexterm xml:id="indexterm-225">
+<primary>troubleshooting</primary>
+<secondary>Trusted Extensions configuration</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-226">
+<primary>Trusted Extensions configuration</primary>
+<secondary>troubleshooting</secondary>
+</indexterm>
+<para>In Trusted Extensions, the labeled zones communicate with the X server through
+the global zone. Therefore, the labeled zones must have usable routes to the
+global zone. Also, options in a Solaris installation can prevent Trusted Extensions from
+using interfaces to the global zone.</para>
+<sect2 xml:id="txconf-70">
+<title>
+<command>netservices limited</command> Was Run
+After Trusted Extensions Was Installed</title>
+<variablelist termlength="wholeline">
+<varlistentry>
+<term>
+<emphasis role="strong">Description:</emphasis>
+</term>
+<listitem>
+<para>Instead of running the <command>netservices limited</command> command
+before you added the Trusted Extensions packages, you ran the command after you
+added the packages. Therefore, your labeled zones are unable to connect to
+the X server in the global zone.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<emphasis role="strong">Workaround:</emphasis>
+</term>
+<listitem>
+<para>Run the following commands to open the services that Trusted Extensions requires
+to communicate between zones.</para>
+<screen># <userinput>svccfg -s x11-server setprop options/tcp_listen = true</userinput>
+# <userinput>svcadm enable svc:/network/rpc/rstat:default</userinput>
+</screen>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+<sect2 xml:id="cannotopenconsolewindowinlabeledzone">
+<title>Cannot Open the Console
+Window in a Labeled Zone</title>
+<indexterm xml:id="indexterm-227">
+<primary>troubleshooting</primary>
+<secondary>console window not opening</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-228">
+<primary>console window</primary>
+<secondary>troubleshooting not opening</secondary>
+</indexterm>
+<variablelist termlength="wholeline">
+<varlistentry>
+<term>
+<emphasis role="strong">Description:</emphasis>
+</term>
+<listitem>
+<para>When attempting to open a console window in a labeled zone,
+the following error appears in a dialog box:</para>
+<screen>Action:DttermConsole,*,*,*,0 [Error]
+Action not authorized.</screen>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<emphasis role="strong">Workaround:</emphasis>
+</term>
+<listitem>
+<para>Verify that these two lines are present in each of the zone
+entries in the <filename>/etc/security/exec_attr</filename> file:</para>
+<screen>All Actions:solaris:act:::*;*;*;*;*:
+All:solaris:act:::*;*;*;*;*:</screen>
+<para>If these lines are not present, the Trusted Extensions package that installs
+them was not installed in the labeled zones. In this case, recreate the labeled
+zones.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+<sect2 xml:id="labeledzonecannotaccessxserver">
+<title>Labeled Zone Is Unable to
+Access the X Server</title>
+<indexterm xml:id="indexterm-229">
+<primary>troubleshooting</primary>
+<secondary>accessing X server</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-230">
+<primary>zones</primary>
+<secondary>troubleshooting access</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-231">
+<primary>accessing the X server</primary>
+</indexterm>
+<indexterm xml:id="indexterm-232">
+<primary>error messages</primary>
+<secondary>troubleshooting</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-233">
+<primary>
+<literal>Action failed. Reconnect to Solaris Zone?</literal>
+</primary>
+</indexterm>
+<indexterm xml:id="indexterm-234">
+<primary>
+<literal>No route available</literal>
+</primary>
+</indexterm>
+<indexterm xml:id="indexterm-235">
+<primary>
+<literal>Cannot reach globalzon</literal>
+</primary>
+</indexterm>
+<variablelist termlength="wholeline">
+<varlistentry>
+<term>
+<emphasis role="strong">Description:</emphasis>
+</term>
+<listitem>
+<para>If a labeled zone cannot successfully access the X server,
+you might see messages such as the following:</para>
+<itemizedlist>
+<listitem>
+<para>
+<literal>Action failed. Reconnect to Solaris Zone?</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>No route available</literal>
+</para>
+</listitem>
+<listitem>
+<para>
+<literal>Cannot reach globalzone-</literal>
+<replaceable>hostname</replaceable>
+<literal>:0</literal>
+</para>
+</listitem>
+</itemizedlist>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<emphasis role="strong">Cause:</emphasis>
+</term>
+<listitem>
+<para>The labeled zones might not be able to access the X server
+for any of the following reasons:</para>
+<itemizedlist>
+<listitem>
+<para>The zone is not initialized and is waiting for the <command>sysidcfg</command> process to complete.</para>
+</listitem>
+<listitem>
+<para>The labeled zone's host name is not recognized by the naming
+service that runs in the global zone.</para>
+</listitem>
+<listitem>
+<para>No interface is specified as <literal>all-zones</literal>.</para>
+</listitem>
+<listitem>
+<para>The labeled zone's network interface is down.</para>
+</listitem>
+<listitem>
+<para>LDAP name lookups fail.</para>
+</listitem>
+<listitem>
+<para>NFS mounts do not work.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<emphasis role="strong">Workaround:</emphasis>
+</term>
+<listitem>
+<para>Do the following:</para>
+<orderedlist>
+<listitem>
+<para>Log in to the zone.</para>
+<para>You can use the <command>zlogin</command> command
+or the Zone Terminal Console action.</para>
+<screen># <userinput>zlogin -z <replaceable>zonename</replaceable>
+</userinput>
+</screen>
+<para>If you cannot log in as superuser, use the <command>zlogin -S</command> command
+to bypass authentication.</para>
+</listitem>
+<listitem>
+<para>Verify that the zone is running.</para>
+<para>If a zone has
+a status of Running, the zone is running at least one process.</para>
+</listitem>
+<listitem>
+<para>Address any problems that prevent the labeled zones from accessing
+the X server.</para>
+<itemizedlist>
+<listitem>
+<para>Initialize the zone by completing the <command>sysidcfg</command> process.</para>
+<para>Run the <command>sysidcfg</command> program interactively. Answer
+the prompts in the Zone Terminal Console, or in the terminal where you ran
+the <command>zlogin</command> command.</para>
+<itemizedlist>
+<para>
+<indexterm xml:id="indexterm-236">
+<primary>
+<filename>/usr/sbin/txzonemgr</filename> script</primary>
+</indexterm>
+<indexterm xml:id="indexterm-237">
+<primary>
+<filename>txzonemgr</filename> script</primary>
+</indexterm>
+<indexterm xml:id="indexterm-238">
+<primary>zones</primary>
+<secondary>
+<filename>txzonemgr</filename> script</secondary>
+</indexterm>To run the <command>sysidcfg</command> process noninteractively,
+you can do one of the following:</para>
+<listitem>
+<para>Specify the Initialize item for the <filename>/usr/sbin/txzonemgr</filename> script.</para>
+<para>The Initialize item enables you to supply
+default values to the <command>sysidcfg</command> questions.</para>
+</listitem>
+<listitem>
+<para>Write your own <command>sysidcfg</command> script.</para>
+<para>For
+more information, see the <olink remap="external" targetdoc="819-2251" targetptr="sysidcfg-4">
+<citerefentry>
+<refentrytitle>sysidcfg</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<para>Verify that the X server is available to the zone.</para>
+<para>Log
+in to the labeled zone. Set the <systemitem class="resource">DISPLAY</systemitem> variable
+to point to the X server, and bring up a window.</para>
+<screen># DISPLAY=<replaceable>global-zone-hostname</replaceable>:<replaceable>n</replaceable>
+# export DISPLAY
+# /usr/openwin/xclock</screen>
+<para>If a labeled window does not appear, the zone networking has not been
+configured correctly for that labeled zone.</para>
+</listitem>
+<listitem>
+<para>Configure the zone's host name with the naming service.</para>
+<para>The zone's local <filename>/etc/hosts</filename> and <filename>/etc/inet/ipnodes</filename> files are not used. Instead, equivalent information must be specified
+in the global zone or on the LDAP server. The information must include the
+IP address of the host name assigned to the zone.</para>
+</listitem>
+<listitem>
+<para>No interface is specified as <literal>all-zones</literal>.</para>
+<para>Unless all your zones have IP addresses on the same subnet as the global
+zone, you might need to configure an <literal>all-zones</literal> (shared)
+interface. This configuration enables a labeled zone to connect to the X server
+of the global zone. If you want to restrict remote connections to the X server
+of the global zone, you can use <literal>vni0</literal> as the <literal>all-zones</literal> address.</para>
+<para>If you do <emphasis>not</emphasis> want an <literal>all-zones</literal> interface configured, you must provide a route to the
+global zone X server for each zone. These routes must be configured in the
+global zone.</para>
+</listitem>
+<listitem>
+<para>The labeled zone's network interface is down.</para>
+<para>Use
+the <command>ifconfig</command> command to verify that labeled zone's network
+interface both <literal>UP</literal> and <literal>RUNNING</literal>.</para>
+</listitem>
+<listitem>
+<para>LDAP name lookups fail.</para>
+<para>Use the <command>ldaplist</command> command
+to verify that each zone can communicate with the LDAP server or the LDAP
+proxy server. On the LDAP server, verify that the zone is listed in the <filename>tnrhdb</filename> database.</para>
+</listitem>
+<listitem>
+<para>NFS mounts do not work.</para>
+<para>As superuser, restart <command>automount</command> in the zone. Or, add a <command>crontab</command> entry
+to run the <command>automount</command> command every five minutes.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+</orderedlist>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+</sect1>
+<sect1 xml:id="txconf-18">
+<title>Finishing Up Trusted Extensions Configuration (Task
+Map)</title>
+<indexterm xml:id="indexterm-239">
+<primary>tasks and task maps</primary>
+<secondary>Finishing Up Trusted Extensions Configuration (Task Map)</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-240">
+<primary>Finishing Up Trusted Extensions Configuration (Task Map)</primary>
+</indexterm>
+<para>For other configuration tasks, see <olink remap="external" targetdoc="819-7309">
+<citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>.</para>
+<informaltable frame="topbot" pgwide="1">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec2" colwidth="21.42*"/>
+<colspec colname="colspec1" colwidth="31.64*"/>
+<colspec colname="colspec0" colwidth="45.92*"/>
+<thead>
+<row>
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Configure auditing.</para>
+</entry>
+<entry>
+<para>The security administrator is responsible for auditing decisions.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="audtask-3">
+<citetitle remap="section">Audit Management by Role in Trusted Extensions</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Copy configuration files for distribution.</para>
+</entry>
+<entry>
+<para>You must be root.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="chapter-7.xml" targetptr="basic-7">Copying To and From Portable Media</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Do some common tasks.</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="commontasks-18">
+<citetitle remap="section">Common Tasks in Trusted Extensions (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Configure machine security settings.</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="commontasks-36">
+<citetitle remap="section">How to Change Security Defaults in System Files</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Configure mounting.</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="managefiles-6">
+<citetitle remap="section">Managing Files and File Systems (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Administer remotely.</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="remotead-21">
+<citetitle remap="section">Administering Remotely (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Administer zones.</para>
+</entry>
+<entry>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="managezones-6">
+<citetitle remap="section">Managing Zones (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Administer networking.</para>
+</entry>
+<entry>
+<para>Identify remote hosts. Determine their label, multilevel ports, and
+control message policy.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="managetnet-6">
+<citetitle remap="section">Managing the Trusted Network (Task Map)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Administer users.</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="manageusers-59">
+<citetitle remap="section">Customizing the User Environment for Security (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Troubleshoot a system that cannot be logged in to.</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="manageusers-18">
+<citetitle remap="section">How to Log In to a Failsafe Session in CDE</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Administer printing</para>
+</entry>
+<entry>
+<para>.</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="manageprint-24">
+<citetitle remap="section">Managing Printing in Trusted Extensions (Task Map)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Administer devices</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="managedev-2">
+<citetitle remap="section">Handling Devices in Trusted Extensions (Task Map)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Administer third-party software</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<olink remap="external" targetdoc="819-7309" targetptr="addsoft-41">
+<citetitle remap="section">Managing Software (Tasks)</citetitle> in <citetitle remap="book">Solaris Trusted Extensions Administrator’s Procedures</citetitle>
+</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<sect2>
+<title/>
+<task id="txconf-72">
+
+<title> How to Remove Trusted Extensions From the System</title>
+<indexterm xml:id="indexterm-241">
+<primary>uninstalling Trusted Extensions</primary>
+</indexterm>
+<indexterm xml:id="indexterm-242">
+<primary>removing Trusted Extensions</primary>
+</indexterm>
+<indexterm xml:id="indexterm-243">
+<primary>Trusted Extensions</primary>
+<secondary>uninstalling</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-244">
+<primary>Trusted Extensions installation</primary>
+<secondary>uninstalling</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-245">
+<primary>deleting</primary>
+<secondary>Trusted Extensions</secondary>
+</indexterm>
+<tasksummary>
+<para>To remove Trusted Extensions from your Solaris system, you perform
+specific steps to remove Trusted Extensions configuration settings.</para>
+</tasksummary>
+<procedure>
+<step>
+<para>As in the Solaris OS, archive any data in the labeled zones that
+you want to keep.</para>
+</step>
+<step>
+<para>
+<indexterm xml:id="indexterm-246">
+<primary>zones</primary>
+<secondary>deleting</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-247">
+<primary>deleting</primary>
+<secondary>labeled zones</secondary>
+</indexterm>Remove the labeled zones from the system.</para>
+<para>For details,
+see <olink remap="external" targetdoc="819-2450" targetptr="z.inst.task-44">
+<citetitle remap="section">How to Remove a Non-Global Zone</citetitle> in <citetitle remap="book">System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</citetitle>
+</olink>.</para>
+</step>
+<step>
+<para>Remove the Trusted Extensions packages from the system.</para>
+<stepalternatives>
+<step>
+<para>If you added the Trusted Extensions packages by using the install
+wizard, use the uninstall wizard.</para>
+<para>The wizard can be found in the <filename class="directory">/var/sadm/tx</filename> directory.</para>
+<screen># <userinput>java uninstall_Solaris_Trusted_Extensions</userinput>
+</screen>
+<para>You can also use the <command>prodreg</command> command. For details, see  <olink remap="external" targetdoc="819-2240" targetptr="prodreg-1m">
+<citerefentry>
+<refentrytitle>prodreg</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> command.</para>
+</step>
+<step>
+<para>If you added the Trusted Extensions packages by using the <command>pkgadd</command> command, use the <command>pkgrm</command> command.</para>
+<para>For
+details, see the <olink remap="external" targetdoc="819-2240" targetptr="pkgrm-1m">
+<citerefentry>
+<refentrytitle>pkgrm</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+</step>
+</stepalternatives>
+</step>
+<step>
+<para>Run the <command>bsmunconv</command> command.</para>
+<para>For
+the effect of this command, see the <olink remap="external" targetdoc="819-2240" targetptr="bsmunconv-1m">
+<citerefentry>
+<refentrytitle>bsmunconv</refentrytitle>
+<manvolnum>
+1M
+</manvolnum>
+</citerefentry>
+</olink> man page.</para>
+</step>
+<step performance="optional">
+
+<para>Reboot.</para>
+</step>
+<step>
+<para>Configure the system.</para>
+<para>Various services on the system,
+such as auditing, basic networking, name services, and file system mounts,
+might need to be configured for your Solaris system.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+</chapter>
