@@ -1,0 +1,3044 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="printcust-66310">
+
+
+
+<title>Customizing the LP Print Service
+(Tasks)</title>
+<toc>
+<para>This chapter provides overview information and procedures for customizing the
+LP print service.</para>
+<para>For more information about printers, see <olink remap="external" targetdoc="chapter-1.xml" targetptr="printconcept-76595">Chapter 1, Managing Printing Services (Overview)</olink>.</para>
+<para>For information on the step-by-step procedures associated with the LP Print
+Service, see <olink remap="internal" targetdoc="chapter-6.xml" targetptr="emjin">Customizing the LP Print Service (Task Map)</olink>.</para>
+</toc>
+<sect1 xml:id="emjin">
+<title>Customizing the LP Print Service (Task Map)</title>
+<informaltable frame="all">
+<tgroup cols="3" colsep="1" rowsep="1">
+<colspec colname="colspec0" colwidth="33*"/>
+<colspec colwidth="33*"/>
+<colspec colname="colspec1" colwidth="33*"/>
+<thead>
+<row>
+<entry>
+<para>Task</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+<entry>
+<para>For Instructions</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Add a <literal>terminfo</literal> entry of an unsupported printer.</para>
+</entry>
+<entry>
+<para>Add an entry to the <literal>terminfo</literal> database to initialize an unsupported
+printer and establish required settings.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-24894">How to Add a <filename>terminfo</filename> Entry for an Unsupported Printer</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Create a new print filter.</para>
+</entry>
+<entry>
+<para>Create a new print filter for file types that the LP print service cannot interpret.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-53777">How to Create a New Print Filter</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Set up a custom printer interface program.</para>
+</entry>
+<entry>
+<para>You can furnish a custom printer interface program if you have a printer that
+is not supported by the standard printer interface program.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-47894">How to Set Up a Custom Printer Interface Program</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Adjust the printer port characteristics.</para>
+</entry>
+<entry>
+<para>Make printer port characteristics the are set by the LP print service compatible
+with the printer communication settings. </para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-46383">How to Adjust the Printer Port Characteristics</olink>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Create a new form definition.</para>
+</entry>
+<entry>
+<para>Provide a new form definition by specifying information for nine required printer
+characteristics.</para>
+</entry>
+<entry>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-65472">How to Create a New Printer Form Definition</olink>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</sect1>
+<sect1 xml:id="printcust-72543">
+<title>Adjusting Printer Port Characteristics</title>
+<indexterm xml:id="printcust-ix707">
+<primary>printer port</primary>
+<secondary>characteristics, adjusting (overview)</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix708">
+<primary>adjusting printer port characteristics (overview)</primary>
+</indexterm>
+<para>The printer port characteristics set by the LP print service must be compatible
+with the printer communication settings. If the default printer port settings provided
+by the LP print service do not work with a printer, refer to the printer manual from
+the manufacturer to determine what settings the printer requires from the LP print
+service. Use the <command>stty</command> command to set and display printer communication
+settings.</para>
+<para>
+<indexterm xml:id="printcust-ix709">
+<primary>stty settings</primary>
+<secondary>defaults</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix710">
+<primary>printer(s)</primary>
+<secondary>settings</secondary>
+<tertiary>stty</tertiary>
+</indexterm>The following table shows the default <command>stty</command> settings
+that are used by the LP print service.</para>
+<table frame="topbot" xml:id="printcust-23215">
+
+<title>Default <command>stty</command> Settings
+Used by the LP Print Service</title>
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="108*"/>
+<colspec colname="column2" colwidth="252*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Option</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>
+<option>
+9600</option>
+</para>
+</entry>
+<entry>
+<para>Sets baud to 9600</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+cs8</option>
+</para>
+</entry>
+<entry>
+<para>Sets 8-bit bytes</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+cstopb</option>
+</para>
+</entry>
+<entry>
+<para>Sends one stop bit per byte</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+parity</option>
+</para>
+</entry>
+<entry>
+<para>Does not generate parity</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+ixon</option>
+</para>
+</entry>
+<entry>
+<para>Enables XON/XOFF (also known as START/STOP or DC1/DC3)</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+opost</option>
+</para>
+</entry>
+<entry>
+<para>Does  “output post-processing” using all the settings that follow
+in this table</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+olcuc</option>
+</para>
+</entry>
+<entry>
+<para>Do not map lowercase to uppercase</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+onlcr</option>
+</para>
+</entry>
+<entry>
+<para>Changes linefeed to carriage return/linefeed</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+ocrnl</option>
+</para>
+</entry>
+<entry>
+<para>Does not change carriage returns into linefeeds</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+onocr</option>
+</para>
+</entry>
+<entry>
+<para>Outputs carriage returns even at column 0</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+n10</option>
+</para>
+</entry>
+<entry>
+<para>Provides no delay after linefeeds</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+cr0</option>
+</para>
+</entry>
+<entry>
+<para>Provides no delay after carriage returns</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+tab0</option>
+</para>
+</entry>
+<entry>
+<para>Provides no delay after tabs</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+bs0</option>
+</para>
+</entry>
+<entry>
+<para>Provides no delay after backspace characters</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+vt0</option>
+</para>
+</entry>
+<entry>
+<para>Provides no delay after vertical tabs</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<option>
+ff0</option>
+</para>
+</entry>
+<entry>
+<para>Provides no delay after form feeds</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<sect2>
+<title/>
+<task id="printcust-46383">
+
+<title>How to Adjust the Printer Port Characteristics</title>
+<indexterm xml:id="indexterm-115">
+<primary>printer port</primary>
+</indexterm>
+<procedure>
+<step xml:id="printcust-step-2">
+<para>Log in as superuser, <literal>lp</literal>, or assume
+an equivalent role on the print server.</para>
+</step>
+<step xml:id="printcust-step-3">
+<para>
+<indexterm xml:id="printcust-ix712">
+<primary>
+<command>lpadmin</command> command</primary>
+<secondary>adjusting printer port characteristics with (how to)</secondary>
+</indexterm>Adjust the printer port characteristics.</para>
+<screen># <userinput>lpadmin -p</userinput> <replaceable>printer-name</replaceable> <userinput>-o "stty=</userinput>
+<replaceable>options</replaceable>
+<userinput>"</userinput>
+</screen>
+<variablelist>
+<varlistentry>
+<term>
+<option>
+p</option>
+</term>
+<listitem>
+<para>Specifies the name of the printer for which you are adjusting the
+port characteristics.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<option>
+o</option> “stty=<replaceable>options”</replaceable>
+</term>
+<listitem>
+<para>Sets the port characteristic (<command>stty</command> option) specified
+by <replaceable>options</replaceable>. You can change more than one <command>stty</command> option setting with this command. Enclose each option in single quotation
+marks, and use a space to separate the options.  For a complete list of options, see
+the<olink remap="external" targetdoc="819-2239" targetptr="stty-1">
+<citerefentry>
+<refentrytitle>stty</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> man page. <olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-23215">Table 6–1</olink> shows the default <command>stty</command> settings used by
+the LP print service. </para>
+</listitem>
+</varlistentry>
+</variablelist>
+</step>
+<step xml:id="printcust-step-47">
+<para>Verify that the printer port characteristics have
+been changed.</para>
+<screen># <userinput>lpstat -p</userinput> <replaceable>printer-name</replaceable> <userinput>-l</userinput>
+</screen>
+</step>
+</procedure>
+<example xml:id="emjgx">
+
+<title>Adjusting the Printer Port Characteristics</title>
+<para>This example shows how to set the port characteristics for the printer <literal>luna</literal>. The <literal>parenb</literal> option enables parity checking/generation.
+The <literal>parodd</literal> option sets odd parity generation. The <literal>cs7</literal> option sets the character size to 7 bits.</para>
+<screen># <userinput>lpadmin -p luna -o "stty='parenb parodd cs7'"</userinput>
+</screen>
+</example>
+<example xml:id="emjij">
+
+<title>Setting the Terminal Baud Rate</title>
+<para>This example shows how to set the terminal baud rate to 19200 for the printer <literal>venus</literal>. </para>
+<screen># <userinput>lpadmin -p venus -o "stty=19200"</userinput>
+</screen>
+</example>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="printcust-11157">
+<title>Adding a <literal>terminfo</literal> Entry for
+an Unsupported Printer</title>
+<indexterm xml:id="printcust-ix714">
+<primary>printer(s)</primary>
+<secondary>adding an unsupported (overview)</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix715">
+<primary>adding</primary>
+<secondary>
+<literal>terminfo</literal> entry (overview)</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix716">
+<primary>
+<literal>terminfo</literal> entry</primary>
+<secondary>adding (overview)</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix717">
+<primary>unsupported printers</primary>
+</indexterm>
+<para>The LP print service uses an interface program and the <filename>terminfo</filename> database
+to initialize each printer and establish the following:</para>
+<itemizedlist>
+<listitem>
+<para>Selected page size</para>
+</listitem>
+<listitem>
+<para>Character pitch</para>
+</listitem>
+<listitem>
+<para>Line pitch</para>
+</listitem>
+<listitem>
+<para>Character set</para>
+</listitem>
+</itemizedlist>
+<para>Each printer is identified in the <filename>terminfo</filename> database with
+a short name. The short name required by the <filename>terminfo</filename> database
+is identical to the name used to set the <command>TERM</command> shell variable. This
+name is also the printer type that you specify when setting up a printer. For example,
+the entries for different types of PostScript printers are in the <filename>/usr/share/lib/terminfo/P</filename> directory. The default entries provided with the SunOS software release
+are <literal>PS</literal> (for PostScript) and <literal>PSR</literal> (for PostScript
+Reverse). </para>
+<para>If you cannot find a <literal>terminfo</literal> entry for your printer, you
+still might be able to use the printer with the LP print service without the automatic
+selection of page size, pitch, and character sets. However, you might have trouble
+keeping the printer set in the correct modes for each print request.</para>
+<para>
+<indexterm xml:id="printcust-ix718">
+<primary>
+<filename>terminfo</filename> entry</primary>
+<secondary>list of required items</secondary>
+</indexterm>If no <literal>terminfo</literal> entry exists for your type of printer
+and you want to keep the printer set in the correct modes, you can do one of the following:</para>
+<itemizedlist>
+<listitem>
+<para>Customize the interface program used with the printer.</para>
+</listitem>
+<listitem>
+<para>Add an entry to the <literal>terminfo</literal> database.</para>
+</listitem>
+</itemizedlist>
+<para>A terminal or printer entry in the <literal>terminfo</literal> database contains
+and defines hundreds of items. The LP print service, however, uses fewer than 50 of
+these items. The following table lists the required <filename>terminfo</filename> items
+for a printer.</para>
+<table frame="topbot" xml:id="printcust-89662" pgwide="1">
+
+<title>Required <literal>terminfo</literal> Items for a Printer (Booleans)</title>
+<tgroup cols="3" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="43*"/>
+<colspec colname="column2" colwidth="64*"/>
+<colspec colname="column3" colwidth="249*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Item</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Booleans:</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>cpix</literal>
+</para>
+</entry>
+<entry>
+<para>Changing character pitch changes resolution</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>daisy</literal>
+</para>
+</entry>
+<entry>
+<para>Printer requires an operator to change character set</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>lpix</literal>
+</para>
+</entry>
+<entry>
+<para>Changing line pitch changes resolution</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="topbot" xml:id="frylo" pgwide="1">
+
+<title>Required <literal>terminfo</literal> Items
+for a Printer (Numbers)</title>
+<tgroup cols="3" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="43*"/>
+<colspec colname="column2" colwidth="64*"/>
+<colspec colname="column3" colwidth="249*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Item</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Numbers:</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>bufsx</literal>
+</para>
+</entry>
+<entry>
+<para>Number of bytes buffered before printing</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>cols</literal>
+</para>
+</entry>
+<entry>
+<para>Number of columns in a line</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>cps</literal>
+</para>
+</entry>
+<entry>
+<para>Average print rate in characters per second</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>it</literal>
+</para>
+</entry>
+<entry>
+<para>Tabs initially every <replaceable>n</replaceable> spaces</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>lines</literal>
+</para>
+</entry>
+<entry>
+<para>Number of lines on a page</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>orc</literal>
+</para>
+</entry>
+<entry>
+<para>Horizontal resolution, in units per character</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>orhi</literal>
+</para>
+</entry>
+<entry>
+<para>Horizontal resolution, in units per inch</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>orl</literal>
+</para>
+</entry>
+<entry>
+<para>Vertical resolution, in units per line</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>orvi</literal>
+</para>
+</entry>
+<entry>
+<para>Vertical resolution, in units per inch</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="topbot" xml:id="fryly" pgwide="1">
+
+<title>Required <literal>terminfo</literal> Items
+for a Printer (Strings)</title>
+<tgroup cols="3" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="43*"/>
+<colspec colname="column2" colwidth="64*"/>
+<colspec colname="column3" colwidth="249*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Item</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Strings:</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>chr</literal>
+</para>
+</entry>
+<entry>
+<para>Changes horizontal resolution</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>cpi</literal>
+</para>
+</entry>
+<entry>
+<para>Changes number of characters per inch</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>cr</literal>
+</para>
+</entry>
+<entry>
+<para>Carriage return</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>csnm</literal>
+</para>
+</entry>
+<entry>
+<para>List of character set names</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>cudl</literal>
+</para>
+</entry>
+<entry>
+<para>Moves carriage down one line</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>cud</literal>
+</para>
+</entry>
+<entry>
+<para>Moves carriage down <replaceable>n</replaceable> lines</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>cuf</literal>
+</para>
+</entry>
+<entry>
+<para>Moves carriage to the right <replaceable>n</replaceable> columns</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>cvr</literal>
+</para>
+</entry>
+<entry>
+<para>Changes vertical resolution</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>ff</literal>
+</para>
+</entry>
+<entry>
+<para>Ejects page</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>hpa</literal>
+</para>
+</entry>
+<entry>
+<para>Horizontal position absolute</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>ht</literal>
+</para>
+</entry>
+<entry>
+<para>Tabs to next 8-space tab stop</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>if</literal>
+</para>
+</entry>
+<entry>
+<para>Is the name of initialization file</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>iprog</literal>
+</para>
+</entry>
+<entry>
+<para>Is the path name of initialization program</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>is1</literal>
+</para>
+</entry>
+<entry>
+<para>Is a printer initialization string</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>is2</literal>
+</para>
+</entry>
+<entry>
+<para>Is a printer initialization string</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>is3</literal>
+</para>
+</entry>
+<entry>
+<para>Is a printer initialization string</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>lpi</literal>
+</para>
+</entry>
+<entry>
+<para>Changes number of lines per inch</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>mgc</literal>
+</para>
+</entry>
+<entry>
+<para>Clears all margins (top, bottom, and sides)</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>rep</literal>
+</para>
+</entry>
+<entry>
+<para>Repeats a character <replaceable>n</replaceable> times</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>rwidm</literal>
+</para>
+</entry>
+<entry>
+<para>Disables double-wide printing</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>scs</literal>
+</para>
+</entry>
+<entry>
+<para>Selects character set</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>scsd</literal>
+</para>
+</entry>
+<entry>
+<para>Starts definition of a character set</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>slines</literal>
+</para>
+</entry>
+<entry>
+<para>Set page length to <replaceable>n</replaceable> lines per page</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>smgl</literal>
+</para>
+</entry>
+<entry>
+<para>Sets left margin at current column</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>smglp</literal>
+</para>
+</entry>
+<entry>
+<para>Set left margin</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>smgr</literal>
+</para>
+</entry>
+<entry>
+<para>Sets right margin at current column</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>smgrp</literal>
+</para>
+</entry>
+<entry>
+<para>Sets right margin</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>smglr</literal>
+</para>
+</entry>
+<entry>
+<para>Sets both left and right margins</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>msgt</literal>
+</para>
+</entry>
+<entry>
+<para>Sets top margin at current line</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>smgtp</literal>
+</para>
+</entry>
+<entry>
+<para>Sets top margin</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>smgb</literal>
+</para>
+</entry>
+<entry>
+<para>Sets bottom margin at current line</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>smgbp</literal>
+</para>
+</entry>
+<entry>
+<para>Sets bottom margin</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>smgtb</literal>
+</para>
+</entry>
+<entry>
+<para>Sets both top and bottom margins</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>swidm</literal>
+</para>
+</entry>
+<entry>
+<para>Enables double-wide printing</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+</para>
+</entry>
+<entry>
+<para>
+<literal>vpa</literal>
+</para>
+</entry>
+<entry>
+<para>Sets vertical position to absolute</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<sect2>
+<title/>
+<task id="printcust-24894">
+
+<title>How to Add a <filename>terminfo</filename> Entry
+for an Unsupported Printer</title>
+<indexterm xml:id="indexterm-116">
+<primary>
+<filename>terminfo</filename> entry</primary>
+</indexterm>
+<tasksummary>
+<note>
+
+<para>Before you create a <filename>terminfo</filename> entry for a printer,
+make sure that none of the existing <filename>terminfo</filename> entries will support
+the printer. To do so, try to set up the printer with an entry for a similar printer,
+if a similar printer exists.</para>
+</note>
+</tasksummary>
+<procedure>
+<step xml:id="printcust-step-7">
+<para>Log in as superuser, <literal>lp</literal>,  or
+assume an equivalent role on the print server.</para>
+</step>
+<step xml:id="printcust-step-9">
+<para>Determine a <filename>terminfo</filename> entry
+name for the printer.</para>
+<para>The directories in the <filename>/usr/share/lib/terminfo</filename> directory contain all the valid <filename>terminfo</filename> entries.
+Use these entries as a guide for choosing a name for the printer.</para>
+</step>
+<step xml:id="printcust-step-10">
+<para>Create a <filename>terminfo</filename> entry file
+for the printer.</para>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-89662">Table 6–2</olink> shows
+the items you must define in the <command>terminfo</command> entry to add a new printer
+to the LP print service. For more details about the structure of the <command>terminfo</command> database, see the <olink remap="external" targetdoc="819-2251" targetptr="terminfo-4">
+<citerefentry>
+<refentrytitle>terminfo</refentrytitle>
+<manvolnum>
+4
+</manvolnum>
+</citerefentry>
+</olink> man
+page.</para>
+<para>To help you start writing a new <filename>terminfo</filename> entry,
+use the <command>infocmp</command> command to save an existing <filename>terminfo</filename> entry to a file. This command is helpful if there is a <filename>terminfo</filename> entry that is similar to entry you want to create. For example, the following
+command saves the <literal>ps</literal> entry to the <filename>ps_cust</filename> file,
+which will become the new <filename>terminfo</filename> entry.</para>
+<para>
+<filename>infocmp ps &gt; ps_cust</filename>
+</para>
+</step>
+<step xml:id="printcust-step-11">
+<para>Compile the <filename>terminfo</filename> entry
+file into the <filename>terminfo</filename> database.</para>
+<screen># <userinput>tic</userinput> <replaceable>terminfo_entry</replaceable>
+</screen>
+<para>where <replaceable>terminfo-entry</replaceable> variable is the <filename>terminfo</filename> entry file you created.</para>
+</step>
+<step xml:id="printcust-step-48">
+<para>Check for the new <filename>terminfo</filename> entry
+file in the <filename>/usr/share/lib/terminfo</filename> directory.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="printcust-49492">
+<title>Customizing the Printer Interface Program</title>
+<indexterm xml:id="printcust-ix720">
+<primary>printer(s)</primary>
+<secondary>customizing interface program (overview)</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix721">
+<primary>interface program (printer)</primary>
+<secondary>customizing (overview)</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix722">
+<primary>customizing</primary>
+<secondary>printer interface program (overview)</secondary>
+</indexterm>
+<para>If you have a printer that is not supported by the standard printer interface
+program, you can furnish your own printer interface program. You can copy the standard
+program and then tell the LP print service to use it for a specified printer. First,
+you need to understand what is in the standard program. The following section describes
+the standard program.</para>
+<para>A printer interface program should perform the following tasks:</para>
+<itemizedlist>
+<listitem>
+<para>Initialize the printer port, if necessary. The standard printer interface
+program uses the <command>stty</command> command to initialize the printer port.</para>
+</listitem>
+<listitem>
+<para>Initialize the printer hardware. The standard printer interface program
+receives the control sequences from the <filename>terminfo</filename> database and
+the <command>TERM</command> shell variable.</para>
+</listitem>
+<listitem>
+<para>Print a banner page, if necessary.</para>
+</listitem>
+<listitem>
+<para>Print the number of copies that are specified by the print request.</para>
+</listitem>
+</itemizedlist>
+<caution>
+
+<para>If you have a printer interface program from a release of UNIX System
+V prior to release 3.2, it will probably work with the Solaris Express  or compatible LP print service. However, several <option>
+o</option> options
+have been standardized in the Solaris Express or
+compatible LP print service. These options will be passed to every printer interface
+program. These options might interfere with similarly named options used by the old
+interface.</para>
+</caution>
+<para>The LP print service, not a printer interface program, is responsible for opening
+the printer port. The printer port is given to the printer interface program as standard
+output. In addition, the printer is identified as the “controlling terminal”
+for the printer interface program so that a “hang-up” of the port causes
+a SIGHUP signal to be sent to the printer interface program.</para>
+<sect2 xml:id="printcust-52759">
+<title>The Standard Printer Interface Program</title>
+<indexterm xml:id="printcust-ix723">
+<primary>printer(s)</primary>
+<secondary>interface program</secondary>
+<tertiary>standard</tertiary>
+</indexterm>
+<para>The standard (model) printer interface program is <filename>/usr/lib/lp/model/standard</filename>. This program is used by the LP print service to set the printing defaults
+shown in the following table.</para>
+<table frame="topbot" xml:id="printcust-16763">
+
+<title>Default Printer Port Characteristics</title>
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="107*"/>
+<colspec colname="column2" colwidth="252*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Characteristic</para>
+</entry>
+<entry>
+<para>Default Setting</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Default filter</para>
+</entry>
+<entry>
+<para>
+<literal>None</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Character pitch</para>
+</entry>
+<entry>
+<para>
+<literal>None</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Line pitch</para>
+</entry>
+<entry>
+<para>
+<literal>None</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Page width</para>
+</entry>
+<entry>
+<para>
+<literal>None</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Page length</para>
+</entry>
+<entry>
+<para>
+<literal>None</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Character set</para>
+</entry>
+<entry>
+<para>
+<literal>None</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<command>stty</command> options</para>
+</entry>
+<entry>
+<para>
+<literal>9600 cs8 -cstopb -parenb -parodd ixon -ixany opost -olcuc onlcr -ocrnl
+-onocr -onlret -ofill nl0 cr0 tab0 bs0 vt0 ff0</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<indexterm xml:id="printcust-ix724">
+<primary>exit codes (printer interface)</primary>
+<secondary>standard</secondary>
+</indexterm>Exit code </para>
+</entry>
+<entry>
+<para>
+<literal>0</literal>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</sect2>
+<sect2 xml:id="printcust-13">
+<title>Customizing <command>stty</command> Modes</title>
+<indexterm xml:id="printcust-ix725">
+<primary>customizing</primary>
+<secondary>stty modes</secondary>
+</indexterm>
+<para>
+<indexterm xml:id="printcust-ix726">
+<primary>terminal characteristics</primary>
+</indexterm>
+<indexterm xml:id="printcust-ix727">
+<primary>stty settings</primary>
+<secondary>customizing</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix728">
+<primary>printer(s)</primary>
+<secondary>stty settings</secondary>
+</indexterm>If you need to change the terminal characteristics, such as baud rate
+or output options, find the section of the standard printer interface program that
+begins with the following comment:</para>
+<para>
+<literal>## Initialize the printer port</literal>
+</para>
+<para>For more information, see the <olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-72543">Adjusting Printer Port Characteristics</olink>.</para>
+</sect2>
+<sect2 xml:id="printcust-14">
+<title>Exit Codes</title>
+<indexterm xml:id="printcust-ix729">
+<primary>exit codes (printer interface)</primary>
+</indexterm>
+<indexterm xml:id="printcust-ix730">
+<primary>printer(s)</primary>
+<secondary>interface program</secondary>
+<tertiary>exit codes</tertiary>
+</indexterm>
+<indexterm xml:id="printcust-ix731">
+<primary>customizing</primary>
+<secondary>exit codes, printer</secondary>
+</indexterm>
+<para>When printing is complete, your interface program should exit with a code that
+shows the status of the print job. The exit code is the last entry in the printer
+interface program.</para>
+<para>
+<indexterm xml:id="printcust-ix732">
+<primary>exit codes (printer interface)</primary>
+<secondary>table of</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix733">
+<primary>printer(s)</primary>
+<secondary>interface program</secondary>
+<tertiary>exit codes</tertiary>
+</indexterm>The following table shows the exit codes and how they are interpreted
+by the LP print service.</para>
+<table frame="topbot" xml:id="printcust-74466">
+
+<title>Printer Interface Program Exit Codes</title>
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="72*"/>
+<colspec colname="column2" colwidth="288*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Exit Code</para>
+</entry>
+<entry>
+<para>Meaning to the LP Print Service</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>
+<literal>0</literal> </para>
+</entry>
+<entry>
+<para>The print request has been successfully completed. If a printer fault occurred,
+it has been cleared.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>1</literal> to <literal>127</literal>
+</para>
+</entry>
+<entry>
+<para>A problem was encountered when printing a request. For example, there were too
+many nonprintable characters or the request exceeds the printer's capabilities. The
+LP print service notifies the person who submitted the request that an error occurred
+when printing it. This error does not affect future print requests. If a printer fault
+has occurred, it has been cleared.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>128</literal>
+</para>
+</entry>
+<entry>
+<para>This code is reserved for use by the LP print service. Interface programs must
+not exit with this code.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>129</literal>
+</para>
+</entry>
+<entry>
+<para>A printer fault was encountered when printing the request. This fault does affect
+future print requests. If the fault recovery for the printer directs the LP print
+service to wait for the administrator to correct the problem, the LP print service
+disables the printer. If the fault recovery is to continue printing, the LP print
+service does not disable the printer. However, the print service will try printing
+again in a few minutes.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<literal>&gt;129</literal>
+</para>
+</entry>
+<entry>
+<para>These codes are reserved for use by the LP print service. Interface programs
+must not exit with codes in this range.</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>If the program exits with a code of 129, <literal>root</literal> is alerted
+of a printer fault. The LP print service must also reprint the request from the beginning,
+after the fault has been cleared. If you do not want the entire request to be reprinted,
+you can have the interface program send a fault message to the LP print service. (First
+wait for the fault to be cleared.) When the fault is cleared, the interface program
+can resume printing the file. When printing is finished, the printer interface program
+can give a <literal>0</literal> exit code, just as if the fault had never occurred.
+An added advantage of this approach: The interface program can detect when the fault
+is cleared automatically. Thus, the administrator does not need to re-enable the printer.</para>
+</sect2>
+<sect2 xml:id="printcust-15">
+<title>Fault Messages</title>
+<indexterm xml:id="printcust-ix734">
+<primary>printer(s)</primary>
+<secondary>faults</secondary>
+<tertiary>messages</tertiary>
+</indexterm>
+<para>You can use the <command>lp.tell</command> program to send fault messages to
+the LP print service. This program is referenced by the <command>LPTELL</command> shell
+variable in the standard printer interface code. The program takes standard input
+and sends it to the LP print service. The LP print service puts standard input into
+the message that alerts the administrator to the printer fault. If its standard input
+is empty, the <command>lp.tell</command> program does not initiate an alert. For an
+example of how the <command>lp.tell</command> program is used, examine the standard
+printer interface code immediately after the following comment:</para>
+<para>
+<literal># Set up the $LPTELL program to capture fault messages here</literal>
+</para>
+<para>If you use the special exit code <literal>129</literal> or the <command>lp.tell</command> program, the printer interface program does not need to disable the printer
+itself. The interface program can disable the printer directly. However, doing so
+overrides the fault-alerting mechanism. Alerts are sent only if the LP print service
+detects that the printer has a fault, and the special exit code and the <command>lp.tell</command> program are its main detection tools.</para>
+<para>If the LP print service has to interrupt printing of a file at any time, it
+kills the interface program with a signal TERM (trap number 15). For more information,
+see the <olink remap="external" targetdoc="819-2239" targetptr="kill-1">
+<citerefentry>
+<refentrytitle>kill</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> and <olink remap="external" targetdoc="819-2243" targetptr="signal-3c">
+<citerefentry>
+<refentrytitle>signal</refentrytitle>
+<manvolnum>
+3C
+</manvolnum>
+</citerefentry>
+</olink> man pages. If the printer interface program
+dies from receipt of any other signal, the LP print service assumes that future print
+requests will not be affected. As a result, the LP print service continues to use
+the printer. The LP print service notifies the user who submitted the request that
+the request has not been finished successfully.</para>
+<para>When the interface is first invoked, the signals HUP, INT, QUIT, and PIPE (trap
+numbers 1, 2, 3, and 13) are ignored. The standard interface changes this default
+behavior, so that the signals are trapped at appropriate times. The standard interface
+interprets receipt of these signals as warnings that the printer has a problem. When
+the standard interface receives a signal, it issues a fault alert.</para>
+</sect2>
+<sect2 xml:id="printcust-16">
+<title>Using a Customized Printer Interface Program</title>
+<para>You can create a customized printer interface program and use it instead of
+the standard printer interface program on the print server. To do so, you use the <command>lpadmin</command> command to register the program with the LP print service for a
+specific printer.</para>
+</sect2>
+<sect2>
+<title/>
+<task id="printcust-47894">
+
+<title>How to Set Up a Custom Printer Interface Program</title>
+<indexterm xml:id="indexterm-117">
+<primary>printer(s)</primary>
+</indexterm>
+<indexterm xml:id="indexterm-118">
+<primary>customizing</primary>
+</indexterm>
+<indexterm xml:id="indexterm-119">
+<primary>interface program (printer)</primary>
+</indexterm>
+<procedure>
+<step xml:id="printcust-step-18">
+<para>Log in as superuser, <literal>lp</literal>,  or
+assume an equivalent role on the print server.</para>
+</step>
+<step xml:id="printcust-step-20">
+<para>
+<indexterm xml:id="printcust-ix741">
+<primary>printer(s)</primary>
+<secondary>interface program</secondary>
+<tertiary>standard</tertiary>
+</indexterm>
+<indexterm xml:id="printcust-ix742">
+<primary>interface program (printer)</primary>
+<secondary>standard</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix743">
+<primary>standard printer interface program</primary>
+</indexterm>Copy the standard printer interface program.</para>
+<screen># <userinput>cp /var/spool/lp/model/standard</userinput>  <replaceable>custom-interface</replaceable>
+</screen>
+</step>
+<step performance="optional">
+
+<para>If you already have a custom printer interface
+program, go to  <olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-step-22">Step 5</olink>
+</para>
+</step>
+<step xml:id="printcust-step-21">
+<para>Change the copy of the standard printer interface
+program to meet your needs.</para>
+<para>Refer to the description of the program in <olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-52759">The Standard Printer Interface Program</olink> to determine
+what you need to change.</para>
+</step>
+<step xml:id="printcust-step-22">
+<para>Set up the custom printer interface program for
+a specific printer.</para>
+<screen># <userinput>lpadmin -p</userinput> <replaceable>printer-name</replaceable> <userinput>-i</userinput> <replaceable>custom-interface</replaceable>
+</screen>
+<variablelist>
+<varlistentry>
+<term>
+<option>
+p</option>
+</term>
+<listitem>
+<para>Specifies the printer that will use the custom printer interface program.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>
+<option>
+i</option>
+</term>
+<listitem>
+<para>Is the name of the custom printer interface program.</para>
+</listitem>
+</varlistentry>
+</variablelist>
+<para>The custom printer interface program is registered with the LP print service,
+and will be used by that printer when users submit print requests.</para>
+</step>
+<step xml:id="printcust-step-49">
+<para>Verify that the custom printer interface program
+has been added in the <filename>/etc/lp/printers/</filename>
+<replaceable>printer-name</replaceable>
+<filename>/configuration</filename> file.</para>
+</step>
+</procedure>
+<example xml:id="emjhw">
+
+<title>Setting Up a Custom Printer Interface Program</title>
+<para>This example shows how to set up a custom printer interface program named <literal>custom</literal> for the printer <literal>luna</literal>.</para>
+<screen># <userinput>lpadmin -p luna -i custom</userinput>
+</screen>
+</example>
+<example xml:id="emjiu">
+
+<title>Copying a Custom Printer Interface Program</title>
+<para>This example shows how to copy a custom printer interface program from the printer <literal>venus</literal> to the printer <literal>asteroid</literal>.</para>
+<screen># <userinput>lpadmin -p asteroid -e venus</userinput>
+</screen>
+</example>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="printcust-45830">
+<title>Creating a New Print Filter</title>
+<indexterm xml:id="printcust-ix744">
+<primary>print filters</primary>
+<secondary>creating (overview)</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix745">
+<primary>creating</primary>
+<secondary>print filters (overview)</secondary>
+</indexterm>
+<para>A filter is used by the LP print service each time it has to print a type of
+file that the printer cannot interpret. Creating a new print filter is not easy, and
+it usually requires extensive experimentation. The process of defining a new print
+filter consists of two steps:</para>
+<itemizedlist>
+<listitem>
+<para>Writing a print filter program</para>
+</listitem>
+<listitem>
+<para>Creating a print filter definition</para>
+</listitem>
+</itemizedlist>
+<para>A print filter can be as simple or as complex as needed. Filters contain input
+types, output types, and complex options that provide a language to process command-line
+arguments within the filter.</para>
+<para>
+<indexterm xml:id="printcust-ix746">
+<primary>printer(s)</primary>
+<secondary>non-PostScript</secondary>
+</indexterm>If you have nonPostScript printers, you have to create and add print filters
+as required. First, you need to understand what print filters are and the requirements
+that must be met by a filter program. </para>
+<sect2 xml:id="printcust-13170">
+<title>Writing a Print Filter Program</title>
+<para>The LP print service provides filter programs in the <filename>/usr/lib/lp/postscript</filename> directory. These filters cover most PostScript printing situations, where
+the destination printer requires the data to be in PostScript format. A print filter
+program must be a binary executable file.</para>
+<sect3 xml:id="printcust-12213">
+<title>Types of Filters</title>
+<indexterm xml:id="printcust-ix747">
+<primary>print filters</primary>
+<secondary>types of</secondary>
+</indexterm>
+<para>There are two types of print filters: fast filters and slow filters. </para>
+<para>
+<emphasis>Fast filters</emphasis> do not require much processing time to prepare
+a file for printing. They must have access to the printer when they run. To be capable
+of detecting printer faults, a print filter must be a fast filter. Any filter that
+uses the <literal>PRINTER</literal> keyword as a filter option must be installed as
+a fast filter.</para>
+<para>
+<emphasis>Slow filters</emphasis> require a great deal of processing time to
+prepare a file for printing. They do not require access to the printer when they run.
+Slow filters are run in the background so they do not tie up the printer, allowing
+other files that do not need slow filtering to be printed.</para>
+</sect3>
+<sect3 xml:id="printcust-25">
+<title>Converting Files</title>
+<indexterm xml:id="printcust-ix748">
+<primary>print filters</primary>
+<secondary>used to convert files</secondary>
+</indexterm>
+<para>The LP print service uses print filters to convert files from one content type
+to another content type. You can specify the accepted file content types for each
+printer. The user specifies the file content type when submitting a print request.
+Then, the LP print service finds a printer that can print files of that content type.
+Because many applications can generate files for various printers, this method is
+often sufficient. However, some applications can generate files that cannot be printed
+on any available printers.</para>
+<para>
+<indexterm xml:id="printcust-ix749">
+<primary>file content type</primary>
+<secondary>converted by print filters</secondary>
+</indexterm>Each time the LP print service receives a request to print a type of file
+that is in a format that cannot be accepted directly by a printer, the LP print service
+tries to match the content type of the print request with the content type of the
+available (or specified) printer. If there is a match, the file can be sent directly
+to the printer without filtering. If no match is found, or if the content type specifies
+that a filter be used, the LP print service tries to match the content type of the
+file with the input content type of available filters. In addition, the LP print service
+tries to match the output type of the filter with the content type of the printer.
+When an appropriate filter is found, the print request is passed through the filter.</para>
+</sect3>
+<sect3 xml:id="printcust-26">
+<title>Handling Special Printing Modes</title>
+<indexterm xml:id="printcust-ix750">
+<primary>printing</primary>
+<secondary>special modes</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix751">
+<primary>print filters</primary>
+<secondary>handling special modes</secondary>
+</indexterm>
+<para>A print filter handles special printing modes and requests to print specific
+pages. A special printing mode is needed to print any characteristics of print requests
+that require a customized filter. Filters handle the following characteristics:</para>
+<itemizedlist>
+<listitem>
+<para>Printer type</para>
+</listitem>
+<listitem>
+<para>Character pitch</para>
+</listitem>
+<listitem>
+<para>Line pitch</para>
+</listitem>
+<listitem>
+<para>Page length</para>
+</listitem>
+<listitem>
+<para>Page width</para>
+</listitem>
+<listitem>
+<para>Pages to print</para>
+</listitem>
+<listitem>
+<para>Character set</para>
+</listitem>
+<listitem>
+<para>Form name</para>
+</listitem>
+<listitem>
+<para>Number of copies</para>
+</listitem>
+</itemizedlist>
+<para>The LP print service provides default settings for these characteristics. However,
+a print filter can handle some characteristics more efficiently. For example, some
+printers can handle multiple copies more efficiently than the LP print service. So,
+in this case, you can provide a filter for multiple-copy page control.</para>
+</sect3>
+<sect3 xml:id="printcust-27">
+<title>Detecting Printer Faults</title>
+<indexterm xml:id="printcust-ix752">
+<primary>printer(s)</primary>
+<secondary>faults</secondary>
+<tertiary>detecting</tertiary>
+</indexterm>
+<para>Each printer has its own way of detecting printer faults and transmitting fault
+signals to the LP print service. The LP print service only checks for hang-ups (loss
+of carrier) and excessive delays in printing.</para>
+<para>Some printers provide good fault coverage and can send a message that describes
+the reason for a fault. Other printers indicate a fault by using signals other than
+the signals for loss of carrier signal or shut off of data flow. A filter is required
+to interpret this additional printer fault information.</para>
+<para>
+<indexterm xml:id="printcust-ix753">
+<primary>print filters</primary>
+<secondary>used to put request on hold</secondary>
+</indexterm>A filter can also put a print request on hold, wait for a printer fault
+to clear, and then resume printing. With this capability, the print request that was
+interrupted does not need to be reprinted in its entirety. Only a filter that knows
+the control sequences used by a printer can determine where to break a file into pages.
+Consequently, only such a filter can find the place in the file where printing should
+start after a fault is cleared. </para>
+<para>When a print filter generates messages, those messages are handled by the LP
+print service. If alerts are enabled, the LP print service sends alerts to the system
+administrator. For further information, see <olink remap="external" targetdoc="chapter-4.xml" targetptr="printplan-23">Setting Up Printer Fault Alerts</olink>.</para>
+</sect3>
+<sect3 xml:id="printcust-45714">
+<title>Requirements for a Print Filter Program</title>
+<indexterm xml:id="printcust-ix754">
+<primary>print filters</primary>
+<secondary>requirements for</secondary>
+</indexterm>
+<para>A print filter can be simple or complex, but it has to meet the following requirements:</para>
+<itemizedlist>
+<listitem>
+<para>The filter should get the contents of a file from its standard input
+and send the converted file to the standard output.</para>
+</listitem>
+<listitem>
+<para>A program cannot be used as a filter if it references external files.
+You might be tempted to use a program such as<command>troff</command>, <command>nroff</command>, or a similar word processing program as a filter. The LP print service
+does not recognize references to other files, known as <emphasis>include files</emphasis>,
+from a filter program. Because <command>troff</command> and <command>nroff</command> programs
+allow include files, they can fail when used as filters. If the program needs other
+files to complete its processing. The program t should not be used as a filter.</para>
+</listitem>
+<listitem>
+<para>The filter should not depend on files that normally would not be accessible
+to a user. If a filter fails when run directly by a user, it will fail when run by
+the LP print service.</para>
+</listitem>
+<listitem>
+<para>A slow filter can send messages about errors in the file to standard
+error. a fast filter should not. Error messages from a slow filter are collected and
+sent to the user who submitted the print request.</para>
+</listitem>
+<listitem>
+<para>If a slow filter dies because it received a signal, the print request
+is stopped and the user who submitted the request is notified. Likewise, if a slow
+filter exits with a nonzero exit code, the print request is stopped and the user is
+notified. The exit codes from fast filters are treated differently.</para>
+</listitem>
+</itemizedlist>
+<para>If you want the filter to detect printer faults, it should also meet the following
+requirements:</para>
+<itemizedlist>
+<listitem>
+<para>If possible, the filter should wait for a fault to be cleared before
+exiting. The filter should also continue to print at the top of the page where printing
+stopped after the fault is cleared. If you do not want use the continuation feature,
+the LP print service stops the filter before alerting the administrator.</para>
+</listitem>
+<listitem>
+<para>The filter should send printer fault messages to its standard error
+as soon as the fault is recognized. The filter does not have to exit, but can wait
+for the fault to be cleared.</para>
+</listitem>
+<listitem>
+<para>The filter should not send messages about errors in the file to standard
+error. These messages should be included in the standard output, where they can be
+read by the user.</para>
+</listitem>
+<listitem>
+<para>The filter should exit with a zero exit code if the file is finished
+printing (even if errors in the file have prevented it from being printed correctly).</para>
+</listitem>
+<listitem>
+<para>The filter should exit with a nonzero exit code, only if a printer
+fault has prevented the filter from finishing a print request.</para>
+</listitem>
+<listitem>
+<para>When added to the filter table, the filter must be added as a fast
+filter.</para>
+</listitem>
+</itemizedlist>
+</sect3>
+</sect2>
+<sect2 xml:id="printcust-69439">
+<title>Creating a Print Filter Definition</title>
+<indexterm xml:id="printcust-ix755">
+<primary>print filters</primary>
+<secondary>creating definitions</secondary>
+</indexterm>
+<para>A print filter definition tells the LP print service about the filter, what
+print filter program to run, what kind of conversion the print filter does, and so
+on. A set of filter descriptor files are provided in the <filename>/etc/lp/fd</filename> directory.
+These files describe the characteristics of the filters (for example, fast filter
+or slow filter), and point to the filter programs (for example, <filename>/usr/lib/lp/postscript/postdaisy</filename>). </para>
+<para>When defining a new print filter, you must create a print filter definition.
+A print filter definition contains the following information used by the LP print
+service:</para>
+<itemizedlist>
+<listitem>
+<para>Name of the filter program to run</para>
+</listitem>
+<listitem>
+<para>Input types the filter program accepts</para>
+</listitem>
+<listitem>
+<para>Output types the filter program produces</para>
+</listitem>
+<listitem>
+<para>Printer types to which the filter program can send jobs</para>
+</listitem>
+<listitem>
+<para>Names of specific printers to which the filter program can send jobs</para>
+</listitem>
+<listitem>
+<para>Filter types (either fast or slow)</para>
+</listitem>
+<listitem>
+<para>Options</para>
+</listitem>
+</itemizedlist>
+<para>You can type the characteristics as direct input to the <filename>lpfilter</filename> command.
+You also can create a file that specifies the filter's characteristics, and use the
+file name as input to the <command>lpfilter</command> command arguments. Such a file
+is called a <emphasis>filter descriptor file</emphasis> and should be located in the <filename>/etc/lp/fd</filename> directory. These files are not the filters themselves. Rather,
+these files point to the filters.</para>
+<para>Whether you store the information in a file, or type the information directly
+on the command line, use the following format:</para>
+<screen>Command: <replaceable>command-pathname [options]</replaceable>
+Input types: <replaceable>input-type-list</replaceable>
+Output types: <replaceable>output-type-list</replaceable>
+Printer types: <replaceable>printer-type-list</replaceable>
+Printers: <replaceable>printer-list</replaceable>
+Filter type: fast or slow
+Options: <replaceable>template-list</replaceable>
+</screen>
+<note>
+
+<para>If you provide more than one definition (that is, more than one line)
+for any filter characteristic other than <filename>Options</filename>, only the second
+definition is used by the print service.</para>
+</note>
+<para>The information can be arranged in any order, and not all the information is
+required. When you do not specify values, the values shown in the following table
+are assigned by default. These values are not very useful, which is why you should
+specify values.</para>
+<table frame="topbot" xml:id="printcust-60235">
+
+<title>Default Values for <command>lpfilter</command> Command</title>
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="158*"/>
+<colspec colname="column2" colwidth="238*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Item</para>
+</entry>
+<entry>
+<para>Default Value</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Input types</para>
+</entry>
+<entry>
+<para>
+<literal>any</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Output type</para>
+</entry>
+<entry>
+<para>
+<literal>any</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Printer types</para>
+</entry>
+<entry>
+<para>
+<literal>any</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Printers</para>
+</entry>
+<entry>
+<para>
+<literal>any</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Filter type</para>
+</entry>
+<entry>
+<para>
+<literal>slow</literal>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<sect3 xml:id="printcust-28">
+<title>
+<command>lpfilter</command> Command</title>
+<para>Use the full path of the filter program. If there are any fixed options that
+the program always needs, include them here.</para>
+</sect3>
+<sect3 xml:id="printcust-29">
+<title>
+<command>lpfilter</command> Input Types Argument</title>
+<para>Input types is a list of file content types that the print filter can process.
+The LP print service does limit the number of input types, but most filters can accept
+only one input type. Several file types can be similar enough, such that the filter
+can deal with them. You can use whatever names you prefer, with a maximum of 14 alphanumeric
+characters and dashes. Do not use underscores as part of the input type name.</para>
+<para>The LP print service uses these names to match a filter to a file type, so follow
+a consistent naming convention. For example, if more than one filter can accept the
+same input type, use the same name for that input type when you specify it for each
+filter. Inform your users of these names so that they know how to identify the file
+type when submitting a file for printing.</para>
+</sect3>
+<sect3 xml:id="printcust-30">
+<title>
+<command>lpfilter</command> Output Types Argument</title>
+<para>Output types is list of file types that the filter can produce as output. For
+each input type, the filter produces a single output type. The output type can vary,
+however, from job to job. The name of the output type is restricted to 14 alphanumeric
+characters and dashes.</para>
+<para>The output type names should either match the types of available (local or remote)
+printers, or match the input types handled by other filters. The LP print service
+groups filters in a shell pipeline if it finds that several passes by different filters
+are needed to convert a file. You will unlikely need this level of sophistication,
+but the LP print service allows it. Try to find a set of filters that takes as input
+types all the different files the users might want printed, and that converts those
+files directly into file types the printer can handle.</para>
+</sect3>
+<sect3 xml:id="printcust-31">
+<title>
+<command>lpfilter</command> Printer Types Argument</title>
+<para>Printer types is a list of the types of printers into which the print filter
+can convert files. For most printers and filters, you can leave this part of the filter
+definition blank, because this list is identical to the list of output types. However,
+this list can be different. For example, you could have a printer with a single printer
+type for purposes of initialization. However, that printer can recognize several different
+file content types. Essentially, this printer has an internal filter that converts
+the various file types into a filter type that it can handle. Thus, a filter might
+produce one of several output types that match the file types that the printer can
+handle. The print filter should be marked as working with that printer type.</para>
+<para>As another example, you might have two different models of printers that are
+listed as accepting the same file types. Due to slight differences in manufacture,
+however, one printer deviates in the results it produces. You label the printers as
+being of different printer types, say A and B, where B is the printer that deviates.
+You create a filter that adjusts files to account for the deviation produced by printers
+of type B. Because this filter is needed only for those printer types, you would list
+this filter as working only on type B printers.</para>
+</sect3>
+<sect3 xml:id="printcust-32">
+<title>
+<command>lpfilter</command> Printers Argument</title>
+<para>A print filter normally can work with all printers that accept its output, so
+you can usually skip this part of the filter definition.</para>
+<para>You might, however, have some printers that are inappropriate for the output
+that the filter produces. For example, you might want to dedicate one printer for
+fast turnaround, only sending files that require no filtering to that printer. Other
+printers of identical type can be used for files that need extensive filtering before
+they can be printed.</para>
+</sect3>
+<sect3 xml:id="printcust-33">
+<title>
+<command>lpfilter</command> Filter Type Argument</title>
+<para>The LP print service recognizes fast filters and slow filters, as described
+in <olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-12213">Types of Filters</olink>.</para>
+<para>Slow filters that are invoked by printing modes, by using the <command>lp</command> <option>
+y</option> command, must be run on the system from which the print request originated.
+The LP print service cannot pass values for modes to print servers. It can, however,
+match a file content type (specified after the <command>-T</command> option of the <command>lp</command> command) to a content type on a print server. Therefore, if you want
+to activate special modes on a print server, you must specify content types that permit
+the LP print service to match input types and output types.</para>
+</sect3>
+<sect3 xml:id="printcust-34">
+<title>
+<command>lpfilter</command> Options Argument</title>
+<para>Options specify how different types of information are converted into command-line
+arguments to the filter command. This information can include specifications from
+a user (with the print request), the printer definition, and the specifications implemented
+by any filters that are used to process the request.</para>
+</sect3>
+<sect3 xml:id="printcust-35">
+<title>Defining Print Filter Options With Templates</title>
+<indexterm xml:id="printcust-ix756">
+<primary>templates (print filters)</primary>
+</indexterm>
+<indexterm xml:id="printcust-ix757">
+<primary>print filters</primary>
+<secondary>templates to define options</secondary>
+</indexterm>
+<para>There are 13 sources of information for defining print filter options, each
+of which is represented by a <emphasis>keyword</emphasis>. Each option is defined
+in a <emphasis>template</emphasis>. A template is a statement in a filter definition
+that defines an option to be passed to the filter command, based on the value of one
+of the filter characteristics</para>
+<para>
+<indexterm xml:id="printcust-ix758">
+<primary>print filters</primary>
+<secondary>options keywords</secondary>
+</indexterm>The options specified in a filter definition can include none, all, or
+any subset of the 13 keywords. In addition, a single keyword can be defined more than
+once, if multiple definitions are required for a complete filter definition. The following
+table contains descriptions of the 13 keywords available for defining options in a
+print filter definition.</para>
+<table frame="topbot" xml:id="printcust-45015">
+
+<title>Keywords for Print Filter Options</title>
+<tgroup cols="4" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="90*"/>
+<colspec colname="column2" colwidth="90*"/>
+<colspec colname="column3" colwidth="89*"/>
+<colspec colname="column4" colwidth="90*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>
+<indexterm xml:id="printcust-ix759">
+<primary>print filters</primary>
+<secondary>characteristics of</secondary>
+</indexterm>Option Characteristic </para>
+</entry>
+<entry>
+<para>Keyword</para>
+</entry>
+<entry>
+<para>Patterns</para>
+</entry>
+<entry>
+<para>Example</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Content type (input)</para>
+</entry>
+<entry>
+<para>
+<literal>INPUT</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>content-type</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>troff</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Content type (output)</para>
+</entry>
+<entry>
+<para>
+<literal>OUTPUT</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>content-type</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>postscript,  impress</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Printer type</para>
+</entry>
+<entry>
+<para>
+<literal>TERM</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>printer-type</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>att495</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Printer name</para>
+</entry>
+<entry>
+<para>
+<literal>PRINTER</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>printer-name</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>lp1</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Character pitch</para>
+</entry>
+<entry>
+<para>
+<literal>CPI</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>scaled-decimal</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>10</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Line pitch</para>
+</entry>
+<entry>
+<para>
+<literal>LPI</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>scaled-decimal</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>6</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Page length</para>
+</entry>
+<entry>
+<para>
+<literal>LENGTH</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>scaled-decimal</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>66</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Page width</para>
+</entry>
+<entry>
+<para>
+<literal>WIDTH</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>scaled-decimal</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>80</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Pages to print</para>
+</entry>
+<entry>
+<para>
+<literal>PAGES</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>page-list</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>1-5,13-20</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Character set</para>
+</entry>
+<entry>
+<para>
+<literal>CHARSET</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>character-set</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>finnish</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Form name</para>
+</entry>
+<entry>
+<para>
+<literal>FORM</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>form-name</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>invoice2</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Number of copies</para>
+</entry>
+<entry>
+<para>
+<literal>COPIES</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>integer</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>3</literal>
+</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<indexterm xml:id="printcust-ix760">
+<primary>print filters</primary>
+<secondary>characteristics of</secondary>
+</indexterm>Special modes </para>
+</entry>
+<entry>
+<para>
+<literal>MODES</literal>
+</para>
+</entry>
+<entry>
+<para>
+<replaceable>mode</replaceable>
+</para>
+</entry>
+<entry>
+<para>
+<literal>landscape</literal>
+</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>A print filter definition can include more than one template. Multiple templates
+are entered on a single line and separated with commas, or they are entered on separate
+lines, preceded by the Options: prefix.</para>
+<para>The format of a template is as follows: <emphasis>keyword</emphasis>
+<replaceable>pattern</replaceable> = <replaceable>replacement</replaceable>
+</para>
+<para>The <emphasis>keyword</emphasis> identifies the type of option being registered
+for a particular characteristic of the filter.</para>
+<para>The <replaceable>pattern</replaceable> is a specific option for the keyword. </para>
+<para>The <replaceable>replacement</replaceable> is what happens when the keyword
+has the noted value.</para>
+<para>For an example of how an option is defined for a particular filter, suppose
+you want to have the print service scheduler assign print requests to filters following
+this criteria: </para>
+<itemizedlist>
+<listitem>
+<para>If the type of <literal>OUTPUT</literal> to be produced by the filter
+is <literal>impress</literal>, then pass the <command>-I</command> option to the filter. </para>
+</listitem>
+<listitem>
+<para>If the type of <literal>OUTPUT</literal> to be produced by the filter
+is <literal>postscript</literal>, then pass the <command>-P</command> option to the
+filter. </para>
+</listitem>
+</itemizedlist>
+<para>To specify these criteria, provide the following templates as options to the <command>lpfilter</command> command:</para>
+<screen>Options: OUTPUT impress=-I, OUTPUT postscript=-P</screen>
+<para>If the <command>Options</command> line becomes too long, put each template on
+a separate line, as follows: </para>
+<screen>Options: OUTPUT impress=-I
+Options: OUTPUT postscript=-P </screen>
+<para>In both templates, the <replaceable>keyword</replaceable> is defined as <literal>OUTPUT</literal>. In the first template, the pattern is <literal>impress</literal>,
+and the value of the <emphasis>replacement</emphasis> is <option>
+-I</option>. In the
+second template, the value of <emphasis>pattern</emphasis> is <literal>postscript</literal>, and the value of <emphasis>replacement</emphasis> is <option>
+P</option>.</para>
+<para>To determine which values to supply for each type of template (that is, for
+the <replaceable>pattern</replaceable> and <replaceable>replacement</replaceable> arguments
+for each keyword), consider the following: </para>
+<itemizedlist>
+<listitem>
+<para>The values for the <literal>INPUT</literal> templates come from the
+file content type that needs to be converted by the filter.</para>
+</listitem>
+<listitem>
+<para>The values for the <literal>OUTPUT</literal> templates come from the
+output type that has to be produced by the filter.</para>
+</listitem>
+<listitem>
+<para>The value for the <literal>TERM</literal> template is the printer
+type. </para>
+</listitem>
+<listitem>
+<para>The value for the <literal>PRINTER</literal> template is the name
+of the printer that will print the final output. </para>
+</listitem>
+<listitem>
+<para>The values for the <literal>CPI</literal>, <literal>LPI</literal>, <literal>LENGTH</literal>, and <literal>WIDTH</literal> templates come from the user's print
+request, the form being used, or the default values for the printer. </para>
+</listitem>
+<listitem>
+<para>The value for the <literal>PAGES</literal> template is a list of pages
+that should be printed. Typically, the value consists of a list of page ranges separated
+by commas. Each page range consists of a pair of numbers separated by a dash, or a
+single number. (For example, 1–5,6,8,10 indicates pages 1 through 5, plus pages
+6, 8, and 10.) However, whatever value was given in the <option>
+P</option> option
+to a print request is passed unchanged. </para>
+</listitem>
+<listitem>
+<para>The value for the <literal>CHARSET</literal> template is the name
+of the character set to be used. </para>
+</listitem>
+<listitem>
+<para>The value for the <literal>FORM</literal> template is the name of
+the form requested by the  <command>lp</command> <option>
+f</option> command (the command
+used to submit a print request). </para>
+</listitem>
+<listitem>
+<para>The value of the <command>COPIES</command> template is the number
+of copies of the file to print. If the filter uses this template, the LP print service
+reduces to one the number of copies of the filtered file it prints. This “single
+copy” includes the multiple copies that are produced by the filter. </para>
+</listitem>
+<listitem>
+<para>The value of the <command>MODES</command> template comes from the <command>lp</command> <option>
+y</option> command. Because a user can specify several <option>
+y</option> options, the <literal>MODES</literal> template might have several values.
+The values are applied in the left-to-right order given by the user. </para>
+</listitem>
+</itemizedlist>
+<para>The <replaceable>replacement</replaceable> option shows how the value of a template
+should be given to the filter program. This part typically a literal option, sometimes
+with the placeholder asterisk (*) included to show where the value goes. The <replaceable>pattern</replaceable> and <replaceable>replacement</replaceable> options also can
+use the regular expression syntax of the <command>ed</command> command for more complex
+conversion of user input options into filter options. All regular expression syntax
+of <command>ed</command> is supported, including the <command>\( ... \)</command> and <command>\n</command> constructions. These constructions can be used to extract portions of
+the <replaceable>pattern</replaceable> option for copying into the <replaceable>replacement</replaceable> option, and the <command>&amp;</command> option, which can be used
+to copy the entire <replaceable>pattern</replaceable> option into the <replaceable>replacement</replaceable> option. For more information, see the <olink remap="external" targetdoc="819-2239" targetptr="ed-1">
+<citerefentry>
+<refentrytitle>ed</refentrytitle>
+<manvolnum>
+1
+</manvolnum>
+</citerefentry>
+</olink> man page.</para>
+<note>
+
+<para>If a comma or an equal sign (<command>=</command>) is included in a <replaceable>pattern</replaceable> or a <replaceable>replacement</replaceable> option, precede
+it with a backslash (<command>\</command>). A backslash in front of any of these characters
+is removed when the <replaceable>pattern</replaceable> or <replaceable>replacement</replaceable> option is used.</para>
+</note>
+</sect3>
+</sect2>
+<sect2>
+<title/>
+<task id="printcust-53777">
+
+<title>How to Create a New Print Filter</title>
+<indexterm xml:id="indexterm-120">
+<primary>print filters</primary>
+</indexterm>
+<indexterm xml:id="indexterm-121">
+<primary>creating</primary>
+</indexterm>
+<procedure>
+<step xml:id="printcust-step-37">
+<para>Log in as superuser, <literal>lp</literal>,  or
+assume an equivalent role on the print server.</para>
+</step>
+<step xml:id="printcust-step-38">
+<para>Create a print filter program.</para>
+<para>For
+information on print filter programs, see <olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-13170">Writing a Print Filter Program</olink>. By convention, filter programs for PostScript printers
+are located in the <filename>/usr/lib/lp/postscript</filename> directory. You should
+put programs you create under the <filename>/usr/lib/lp</filename> directory in a
+directory of your choosing. </para>
+</step>
+<step xml:id="printcust-step-39">
+<para>Create a print filter definition.</para>
+<para>For information on print filter definitions, see <olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-69439">Creating a Print Filter Definition</olink>. You should save the print filter definition
+in a text file. By convention, filter definitions are located in the <filename>/etc/lp/fd</filename> directory and are identified with the <filename>.fd</filename> suffix.</para>
+</step>
+<step xml:id="printcust-step-40">
+<para>Add the print filter to a print server.</para>
+<para>For instructions, see <olink remap="external" targetdoc="chapter-5.xml" targetptr="printforms-96887">How to Add a Print Filter</olink>.</para>
+</step>
+</procedure>
+<example xml:id="emqre">
+
+<title>Creating a New Print Filter</title>
+<para>This example shows a print filter definition that is used to convert <literal>N37</literal> or <literal>Nlp</literal> to <literal>simple</literal>.</para>
+<screen>Input types: N37, Nlp, simple
+Output types: simple
+Command: /usr/bin/col
+Options: MODES expand = -x
+Options: INPUT simple = -p -f</screen>
+<para>In this example, the print filter program is named <literal>col</literal>. Once
+you add the new print filter to a print server, a user's print requests are handled
+as follows: </para>
+<para>When a user types the following command:</para>
+<screen>$ <userinput>lp -y expand report.doc</userinput>
+</screen>
+<para>The print filter program is run with the following arguments to convert the
+file: </para>
+<screen>/usr/bin/col -x -p -f</screen>
+<para>When a user types the following command: </para>
+<screen>$ <userinput>lp -T N37 -y expand report.doc</userinput>
+</screen>
+<para>The print filter program is run with the following arguments to convert the
+file: </para>
+<screen>/usr/bin/col -x</screen>
+</example>
+<example xml:id="emqpo">
+
+<title>Creating a New Print Filter by Converting One Input Type to Another Output
+Type</title>
+<para>
+<indexterm xml:id="printcust-ix763">
+<primary>print filters</primary>
+<secondary>to convert from troff to PostScript</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix764">
+<primary>troff filter to convert to PostScript</primary>
+</indexterm>This example shows a print filter definition that is used to convert from <literal>troff</literal> to a PostScript file.</para>
+<screen>Input types: troff
+ Output types: postscript
+ Printer types: PS
+ Filter type: slow
+ Command: /usr/lib/lp/postscript/dpost
+ Options: LENGTH * = -l*
+ Options: MODES port = -pp, MODES land = -pl
+ Options: MODES group \=\([1-9]\) = -n\l</screen>
+<para>In this example, the filter program is named <filename>dpost</filename>. The
+filter program takes one input type, <filename>troff</filename>, produces a <literal>postscript</literal> output, and works with any printer of type <literal>PS</literal> (PostScript).
+Users need to give just the abbreviation <literal>port</literal> or <literal>land</literal> when they ask for the paper orientation to be in either portrait mode or
+landscape mode. Because these options are not intrinsic to the LP print service, users
+must specify them by using the <command>lp -y</command> command. </para>
+<para>After you add the new print filter to a print server, print requests will be
+handled as follows:</para>
+<itemizedlist>
+<listitem>
+<para>When a user types the following command to submit a <literal>troff</literal> file type for printing on a PostScript printer (type <literal>PS</literal>),
+with requests for landscape orientation and a page length of 60 lines: </para>
+<screen>$ <userinput>lp -T troff -o length=60 -y land -d luna ch1.doc</userinput>
+</screen>
+<para>The print filter program <command>dpost</command> is run with the following
+arguments to convert the file:</para>
+<screen>/usr/lib/lp/postscript/dpost -l60 -pl </screen>
+</listitem>
+<listitem>
+<para>When a user enters the following command: </para>
+<screen>$ <userinput>lp -T troff -y group=4 -d luna ch1.doc</userinput>
+</screen>
+<para>The print filter program <command>dpost</command> is run with the following
+arguments to convert the file: </para>
+<screen>/usr/lib/lp/postscript/dpost -n4</screen>
+</listitem>
+</itemizedlist>
+</example>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="printcust-30290">
+<title>Creating a New Printer Form</title>
+<indexterm xml:id="printcust-ix765">
+<primary>forms</primary>
+<secondary>creating</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix766">
+<primary>creating</primary>
+<secondary>forms</secondary>
+</indexterm>
+<para>When you want to provide a new form, you must define its characteristics by
+specifying information for nine required printer characteristics (such as page length
+and page width) as input to the <filename>lpforms</filename> command. The LP print
+service uses this information to perform the following tasks:</para>
+<itemizedlist>
+<listitem>
+<para>Initialize the printer so that printing is done properly on the form</para>
+</listitem>
+<listitem>
+<para>Send reminders to the system administrator about how to handle the
+form</para>
+</listitem>
+</itemizedlist>
+<para>The form name can be anything you choose, as long as it does not contain more
+than 14 alphanumeric characters or any underscores. The information must use the following
+format:</para>
+<screen>Page length: <replaceable>scaled-number</replaceable>
+Page width: <replaceable>scaled-number</replaceable>
+Number of pages: <replaceable>integer</replaceable>
+Line pitch: <replaceable>scaled-number</replaceable>
+Character pitch: <replaceable>scaled-number</replaceable>
+Character set choice: <replaceable>character-set-name</replaceable> [,mandatory]
+Ribbon color: <replaceable>ribbon-color</replaceable>
+Comment:
+<replaceable>informal notes about the form</replaceable>
+Alignment pattern: <replaceable>[content-type] alignment pattern</replaceable>
+</screen>
+<para>The optional word <literal>[,mandatory]</literal>, means that the user cannot
+override the character set choice in the form. The <replaceable>content-type</replaceable> can
+be given, although this information is optional, with an alignment pattern. If this
+value is given, the print service uses it to determine, as necessary, how to filter
+and print the file.</para>
+<para>Aside from following two exceptions, the information can appear in any order:</para>
+<itemizedlist>
+<listitem>
+<para>The <literal>Alignment pattern</literal> (which must always be last).</para>
+</listitem>
+<listitem>
+<para>The <literal>comment</literal> (which must always follow the line
+with the <literal>Comment:</literal> prompt).</para>
+<para>If the comment
+contains a line that begins with a key phrase, such as <literal>Page length</literal>, <literal>Page width</literal>, and so on, precede that line with a &gt; character so that the
+key phrase is not at the beginning of the line. The initial &gt; character is stripped
+from the comment and is not displayed.</para>
+</listitem>
+</itemizedlist>
+<para>
+<indexterm xml:id="printcust-ix767">
+<primary>forms</primary>
+<secondary>default values for</secondary>
+</indexterm>Not all of the information must be given. When you do not specify values,
+the default values in the following table are assigned. Before running the <filename>lpforms</filename> command, gather the following information about the new form that
+is described in this table.</para>
+<table frame="topbot" xml:id="printcust-19368">
+
+<title>Default Values for Printer Forms</title>
+<tgroup cols="3" colsep="0" rowsep="0">
+<colspec colname="column1" colwidth="90*"/>
+<colspec colname="column2" colwidth="90*"/>
+<colspec colname="column3" colwidth="177*"/>
+<thead>
+<row rowsep="1">
+<entry>
+<para>Value</para>
+</entry>
+<entry>
+<para>Default</para>
+</entry>
+<entry>
+<para>Description</para>
+</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para>Page length</para>
+</entry>
+<entry>
+<para>66 lines</para>
+</entry>
+<entry>
+<para>The length of the form, or the length of each page in a multipage form. This
+information can be the number of lines, or the size in inches or centimeters.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Page width</para>
+</entry>
+<entry>
+<para>80 columns</para>
+</entry>
+<entry>
+<para>The width of the form, in characters, inches, or centimeters.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Number of pages</para>
+</entry>
+<entry>
+<para>1</para>
+</entry>
+<entry>
+<para>The number of pages in a multipage form. The LP print service uses this number
+with a print filter (if available) to restrict the alignment pattern to a length of
+one form. See the description of alignment pattern below. If no filter is available,
+the LP print service does not truncate the output.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Line pitch</para>
+</entry>
+<entry>
+<para>6 lines per inch</para>
+</entry>
+<entry>
+<para>A measurement of how close lines appear on the form. Line pitch is also called <emphasis>leading</emphasis>. Character pitch is the distance between two lines, from baseline
+to baseline, measured by either lines per inch or lines per centimeter.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Character pitch</para>
+</entry>
+<entry>
+<para>10 characters per inch</para>
+</entry>
+<entry>
+<para>A measurement of how close together characters appear on the form. It is the
+distance between characters, measured by either characters per inch or characters
+per centimeter.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Character set choice</para>
+</entry>
+<entry>
+<para>Any</para>
+</entry>
+<entry>
+<para>The character set, print wheel, or font cartridge that should be used when this
+form is used. Users can choose a different character set for their own print requests
+when using this form. Or, you can require that only one character set be used.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Ribbon color</para>
+</entry>
+<entry>
+<para>Any</para>
+</entry>
+<entry>
+<para>If the form should always be printed using a certain color ribbon, the LP print
+service can give a mount alert message indicating which color to use.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>Comment </para>
+</entry>
+<entry>
+<para>(No default)</para>
+</entry>
+<entry>
+<para>Any remarks that might help users understand the form. For example, the remarks
+could indicate the name of the form, its revision, its purpose, or restrictions on
+its use.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para>
+<indexterm xml:id="printcust-ix768">
+<primary>alignment pattern</primary>
+<secondary>defining</secondary>
+</indexterm>Alignment pattern </para>
+</entry>
+<entry>
+<para>(No default)</para>
+</entry>
+<entry>
+<para>A sample file that the LP print service uses to fill one blank form. When mounting
+the form, you can print this pattern on the form to align it properly. You can also
+define a content type for this pattern so that the print service knows how to print
+it.</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<note>
+
+<para>The LP print service does not try to mask sensitive information in the
+alignment pattern. If you do not want sensitive information printed on sample forms,
+for example when you align checks, then you should mask the appropriate data. The
+LP print service keeps the alignment pattern stored in a safe place, where only users
+logged in as superuser or <literal>lp</literal> user can read it.</para>
+</note>
+<para>When you have gathered the information for the form, specify it as input to
+the <command>lpforms</command> command. You should record this information first in
+a separate file so that you can edit it before specifying it with the <command>lpforms</command> command. You can then use the file as input instead of typing each piece
+of information separately after a prompt.</para>
+<sect2>
+<title/>
+<task id="printcust-65472">
+
+<title>How to Create a New Printer Form Definition</title>
+<indexterm xml:id="indexterm-122">
+<primary>forms</primary>
+</indexterm>
+<indexterm xml:id="indexterm-123">
+<primary>creating</primary>
+</indexterm>
+<procedure>
+<step xml:id="printcust-step-43">
+<para>Log in as superuser, <literal>lp</literal>,  or
+assume an equivalent role on the print server.</para>
+</step>
+<step xml:id="printcust-step-44">
+<para>Create a form definition file.</para>
+<para>For
+a description on creating printer forms, see <olink remap="internal" targetdoc="chapter-6.xml" targetptr="printcust-30290">Creating a New Printer Form</olink>. You should save the printer definition in a text file. </para>
+</step>
+<step xml:id="printcust-step-45">
+<para>Add the form to the LP print service.</para>
+<screen># <userinput>lpadmin -p</userinput> <replaceable>printer-name</replaceable> <userinput>-M -f</userinput> <replaceable>form-name</replaceable>
+</screen>
+</step>
+<step xml:id="printcust-step-46">
+<para>Add the form to a print server.</para>
+<para>
+<indexterm xml:id="printcust-ix771">
+<primary>LP print service</primary>
+<secondary>customizing</secondary>
+</indexterm>
+<indexterm xml:id="printcust-ix772">
+<primary>customizing</primary>
+<secondary>LP print service</secondary>
+</indexterm>For instructions, see <olink remap="external" targetdoc="chapter-5.xml" targetptr="printforms-70477">How to Add a Form</olink>.  </para>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+</chapter>

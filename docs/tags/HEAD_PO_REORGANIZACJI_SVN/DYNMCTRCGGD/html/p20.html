@@ -1,0 +1,383 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Printing Aggregations - Solaris Dynamic Tracing Guide</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2005-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >Solaris Dynamic Tracing Guide<?GenHTML /ReferencePage> > <a href="p19.html">9.&nbsp;&nbsp;Aggregations</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p19.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p21.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="chp-aggs-7"></a><h3>Printing Aggregations</h3>
+<p><a name="indexterm-159"></a>By default, multiple aggregations are displayed in the order they are introduced in the D program. You can override this behavior using the <tt>printa()</tt> function to print the aggregations. The <tt>printa()</tt> function also enables you to precisely format the aggregation data using a format string, as described in <a href="p27.html">Chapter&nbsp;12, Output Formatting</a>.</p>
+<p>If an aggregation is not formatted with a <tt>printa()</tt> statement in your D program, the <tt>dtrace</tt> command will snapshot the aggregation data and print the results once after tracing has completed using the default aggregation format. If a given aggregation is formatted using a <tt>printa()</tt> statement, the default behavior is disabled. You can achieve equivalent results by adding the statement <tt>printa(@</tt><i>aggregation-name</i><tt>)</tt> to a <tt>dtrace:::END</tt> probe clause in your program. The default output format for the <tt>avg()</tt>, <tt>count()</tt>, <tt>min()</tt>, <tt>max()</tt>, and <tt>sum()</tt> aggregating functions displays an integer decimal value corresponding to the aggregated value for each tuple. The default output format for the <tt>lquantize()</tt> and <tt>quantize()</tt> aggregating functions displays an ASCII table of the results. Aggregation tuples are printed as if <tt>trace()</tt> had been applied to each tuple element.</p>
+<a name="chp-aggs-normalization"></a><h3>Data Normalization</h3>
+<p><a name="indexterm-160"></a>When aggregating data over some period of time, you might want to <b>normalize</b> the data with respect to some constant factor. This technique enables you to compare disjoint data more easily. For example, when aggregating system calls, you might want to output system calls as a per-second rate instead of as an absolute value over the course of the run. The DTrace <tt>normalize()</tt> action enables you to normalize data in this way. The parameters to <tt>normalize()</tt> are an aggregation and a normalization factor. The output of the aggregation shows each value divided by the normalization factor.</p>
+<p>The following example shows how to aggregate data by system call:</p>
+<pre>#pragma D option quiet
+
+BEGIN
+{
+	/*
+	 * Get the start time, in nanoseconds.
+	 */
+	start = timestamp;
+}
+
+syscall:::entry
+{
+	@func[execname] = count();
+}
+
+END
+{
+	/*
+	 * Normalize the aggregation based on the number of seconds we have
+	 * been running.  (There are 1,000,000,000 nanoseconds in one second.)
+	 */	
+	normalize(@func, (timestamp - start) / 1000000000);
+}</pre><p>Running the above script for a brief period of time results in the following output on a desktop machine:</p>
+<pre><tt><b># dtrace -s ./normalize.d</b></tt>
+ <tt><b>^C</b></tt>
+  syslogd                                                           0
+  rpc.rusersd                                                       0
+  utmpd                                                             0
+  xbiff                                                             0
+  in.routed                                                         1
+  sendmail                                                          2
+  echo                                                              2
+  FvwmAuto                                                          2
+  stty                                                              2
+  cut                                                               2
+  init                                                              2
+  pt_chmod                                                          3
+  picld                                                             3
+  utmp_update                                                       3
+  httpd                                                             4
+  xclock                                                            5
+  basename                                                          6
+  tput                                                              6
+  sh                                                                7
+  tr                                                                7
+  arch                                                              9
+  expr                                                             10
+  uname                                                            11
+  mibiisa                                                          15
+  dirname                                                          18
+  dtrace                                                           40
+  ksh                                                              48
+  java                                                             58
+  xterm                                                           100
+  nscd                                                            120
+  fvwm2                                                           154
+  prstat                                                          180
+  perfbar                                                         188
+  Xsun                                                           1309
+  .netscape.bin                                                  3005</pre><p><tt>normalize()</tt> sets the normalization factor for the specified aggregation, but this action does not modify the underlying data. This behavior the data to be <b>denormalized</b> with the <tt>denormalize()</tt> function. <tt>denormalize()</tt> takes only an aggregation. Adding the denormalize action to the preceding example returns both raw system call counts and per-second rates:</p>
+<pre>#pragma D option quiet
+
+BEGIN
+{
+	start = timestamp;
+}
+
+syscall:::entry
+{
+	@func[execname] = count();
+}
+
+END
+{
+	this->seconds = (timestamp - start) / 1000000000;
+	printf("Ran for %d seconds.\n", this->seconds);
+
+	printf("Per-second rate:\n");
+	normalize(@func, this->seconds);
+	printa(@func);
+
+	printf("\nRaw counts:\n");
+	denormalize(@func);
+	printa(@func);
+}</pre><p>Running the above script for a brief period of time produces output similar to the following example:</p>
+<pre><tt><b># dtrace -s ./denorm.d</b></tt>
+<tt><b>^C</b></tt>
+Ran for 14 seconds.
+Per-second rate:
+
+  syslogd                                                           0
+  in.routed                                                         0
+  xbiff                                                             1
+  sendmail                                                          2
+  elm                                                               2
+  picld                                                             3
+  httpd                                                             4
+  xclock                                                            6
+  FvwmAuto                                                          7
+  mibiisa                                                          22
+  dtrace                                                           42
+  java                                                             55
+  xterm                                                            75
+  adeptedit                                                       118
+  nscd                                                            127
+  prstat                                                          179
+  perfbar                                                         184
+  fvwm2                                                           296
+  Xsun                                                            829
+
+Raw counts:
+
+  syslogd                                                           1
+  in.routed                                                         4
+  xbiff                                                            21
+  sendmail                                                         30
+  elm                                                              36
+  picld                                                            43
+  httpd                                                            56
+  xclock                                                           91
+  FvwmAuto                                                        104
+  mibiisa                                                         314
+  dtrace                                                          592
+  java                                                            774
+  xterm                                                          1062
+  adeptedit                                                      1665
+  nscd                                                           1781
+  prstat                                                         2506
+  perfbar                                                        2581
+  fvwm2                                                          4156
+  Xsun                                                          11616</pre><p>Aggregations can also be renormalized. If <tt>normalize()</tt> is called more than once for the same aggregation, the normalization factor will be the factor specified in the most recent call. The following example prints per-second rates over time:</p>
+<a name="ex-renormalize.d"></a>Example 9-1 <tt>renormalize.d</tt>: Renormalizing an Aggregation<pre>#pragma D option quiet
+
+BEGIN
+{
+	start = timestamp;
+}
+
+syscall:::entry
+{
+	@func[execname] = count();
+}
+
+tick-10sec
+{
+	normalize(@func, (timestamp - start) / 1000000000);
+	printa(@func);
+}</pre><a name="chp-aggs-clear"></a><h3>Clearing Aggregations</h3>
+<p><a name="indexterm-161"></a>When using DTrace to build simple monitoring scripts, you can periodically clear the values in an aggregation using the <tt>clear()</tt> function. This function takes an aggregation as its only parameter. The <tt>clear()</tt> function clears only the aggregation's <b>values</b>; the aggregation's keys are retained. Therefore, the presence of a key in an aggregation that has an associated value of zero indicates that the key <b>had</b> a non-zero value that was subsequently set to zero as part of a <tt>clear()</tt>. To discard both an aggregation's values and its keys, use the <tt>trunc()</tt>. See <a href="p20.html#chp-aggs-trunc">Truncating aggregations</a> for details.</p>
+<p>The following example adds <tt>clear()</tt> to <a href="p20.html#ex-renormalize.d">Example 9-1</a>:</p>
+<pre>#pragma D option quiet
+
+BEGIN
+{
+	last = timestamp;
+}
+
+syscall:::entry
+{
+	@func[execname] = count();
+}
+
+tick-10sec
+{
+	normalize(@func, (timestamp - last) / 1000000000);
+	printa(@func);
+	clear(@func);
+	last = timestamp;
+}</pre><p>While <a href="p20.html#ex-renormalize.d">Example 9-1</a> shows the system call rate over the lifetime of the <tt>dtrace</tt> invocation, the preceding example shows the system call rate only for the most recent ten-second period.</p>
+<a name="chp-aggs-trunc"></a><h3>Truncating aggregations</h3>
+<p><a name="indexterm-162"></a>When looking at aggregation results, you often care only about the top several results. The keys and values associated with anything other than the highest values are not interesting. You might also wish to discard an entire aggregation result, removing both keys <b>and</b> values. The DTrace <tt>trunc()</tt> function is used for both of these situations.</p>
+<p>The parameters to <tt>trunc()</tt> are an aggregation and an optional truncation value. Without the truncation value, <tt>trunc()</tt> discards <b>both</b> aggregation values <b>and</b> aggregation keys for the entire aggregation. When a truncation value <i>n</i> is present, <tt>trunc()</tt> discards aggregation values and keys <b>except</b> for those values and keys associated with the highest <i>n</i> values. That is, <tt>trunc(@foo, 10)</tt> truncates the aggregation named <tt>foo</tt> after the top ten values, where <tt>trunc(@foo)</tt> discards the entire aggregation. The entire aggregation is also discarded if <tt>0</tt> is specified as the truncation value.</p>
+<p>To see the bottom <i>n</i> values instead of the top <i>n</i>, specify a negative truncation value to <tt>trunc()</tt>. For example, <tt>trunc(@foo, -10)</tt> truncates the aggregation named <tt>foo</tt> after the bottom ten values.</p>
+<p>The following example augments the system call example to only display the per-second system call rates of the top ten system-calling applications in a ten-second period:</p>
+<pre>#pragma D option quiet
+
+BEGIN
+{
+	last = timestamp;
+}
+
+syscall:::entry
+{
+	@func[execname] = count();
+}
+
+tick-10sec
+{
+	trunc(@func, 10);
+	normalize(@func, (timestamp - last) / 1000000000);
+	printa(@func);
+	clear(@func);
+	last = timestamp;
+}</pre><p>The following example shows output from running the above script on a lightly loaded laptop:</p>
+<pre>  FvwmAuto                                                          7
+  telnet                                                           13
+  ping                                                             14
+  dtrace                                                           27
+  xclock                                                           34
+  MozillaFirebird-                                                 63
+  xterm                                                           133
+  fvwm2                                                           146
+  acroread                                                        168
+  Xsun                                                            616
+
+  telnet                                                            4
+  FvwmAuto                                                          5
+  ping                                                             14
+  dtrace                                                           27
+  xclock                                                           35
+  fvwm2                                                            69
+  xterm                                                            70
+  acroread                                                        164
+  MozillaFirebird-                                                491
+  Xsun                                                           1287</pre><a name="chp-aggs-4"></a><h3>Minimizing Drops</h3>
+<p><a name="indexterm-163"></a>Because DTrace buffers some aggregation data in the kernel, space might not be available when a new key is added to an aggregation. In this case, the data will be dropped, a counter will be incremented, and <tt>dtrace</tt> will generate a message indicating an aggregation drop. This situation rarely occurs because DTrace keeps long-running state (consisting of the aggregation's key and intermediate result) at user-level where space may grow dynamically. In the unlikely event that aggregation drops occur, you can increase the aggregation buffer size with the <tt>aggsize</tt> option to reduce the likelihood of drops. You can also use this option to minimize the memory footprint of DTrace. As with any size option, <tt>aggsize</tt> may be specified with any size suffix. The resizing policy of this buffer is dictated by the <tt>bufresize</tt> option. For more details on buffering, see <a href="p25.html">Chapter&nbsp;11, Buffers and Buffering</a>. For more details on options, see <a href="p35.html">Chapter&nbsp;16, Options and Tunables</a>.</p>
+<p>An alternative method to eliminate aggregation drops is to increase the rate at which aggregation data is consumed at user-level. This rate defaults to once per second, and may be explicitly tuned with the <tt>aggrate</tt> option. As with any rate option, <tt>aggrate</tt> may be specified with any time suffix, but defaults to rate-per-second. For more details on the <tt>aggsize</tt> option, see <a href="p35.html">Chapter&nbsp;16, Options and Tunables</a>.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p19.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p21.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

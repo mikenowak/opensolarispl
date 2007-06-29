@@ -1,0 +1,696 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>ZFS Properties</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="up" href="ch05.html" title="Chapter 5. Managing ZFS File Systems"><link rel="prev" href="ch05.html" title="Chapter 5. Managing ZFS File Systems"><link rel="next" href="ch05s03.html" title="Querying ZFS File System Information"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">ZFS Properties</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch05.html">Prev</a> </td><th width="60%" align="center">Chapter 5. Managing ZFS File Systems</th><td width="20%" align="right"> <a accesskey="n" href="ch05s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gazss"></a>ZFS Properties</h2></div></div></div>
+
+<p>Properties are the main mechanism that you use to control the behavior
+of file systems, volumes, snapshots, and clones. Unless stated otherwise,
+the properties defined in the section apply to all the dataset types.<a class="indexterm" name="indexterm-216"></a>
+<a class="indexterm" name="indexterm-217"></a>
+</p>
+<p>Properties are either read-only statistics or settable properties. Most
+settable properties are also inheritable. An inheritable property is a property
+that, when set on a parent, is propagated down to all of its descendants.</p>
+<p>All inheritable properties have an associated source. The source indicates
+how a property was obtained. The source of a property can have the following
+values:<a class="indexterm" name="indexterm-218"></a>
+<a class="indexterm" name="indexterm-219"></a>
+</p>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="literal">local</code>
+</span></dt><dd>
+<p>A <code class="literal">local</code> source indicates that the property
+was explicitly set on the dataset by using the <span><strong class="command">zfs set</strong></span> command
+as described in <span class="olink">Setting ZFS Properties</span>.</p>
+</dd><dt><span class="term">
+<code class="literal">inherited from</code> <em class="replaceable"><code>dataset-name</code></em>
+</span></dt><dd>
+<p>A value of <code class="literal">inherited from</code> <em class="replaceable"><code>dataset-name</code></em> means that the property was inherited from the named ancestor.</p>
+</dd><dt><span class="term">
+<code class="literal">default</code>
+</span></dt><dd>
+<p>A value of <code class="literal">default</code> means that the property
+setting was not inherited or set locally. This source is a result of no ancestor
+having the property as source <code class="literal">local</code>.</p>
+</dd></dl></div>
+<p>The following table identifies both read-only and settable ZFS file
+system properties. Read-only properties are identified as such. All other
+properties are settable.</p>
+<div class="table"><a name="gcfgr"></a><p class="title"><b>Table 5.1. ZFS Property Descriptions</b></p>
+
+
+<table summary="ZFS Property Descriptions" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th>
+<p>Property Name</p>
+</th><th>
+<p>Type</p>
+</th><th>
+<p>Default Value</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">aclinherit</code>
+</p>
+</td><td>
+<p>String</p>
+</td><td>
+<p>
+<code class="literal">secure</code>
+</p>
+</td><td>
+<p>Controls how ACL entries are inherited when files and directories are
+created. The values are <code class="literal">discard</code>, <code class="literal">noallow</code>, <code class="literal">secure</code>, and <code class="literal">passthrough</code>. For a description of
+these values, see <span class="olink">ACL Property Modes</span>.<a class="indexterm" name="indexterm-220"></a>
+<a class="indexterm" name="indexterm-221"></a>
+<a class="indexterm" name="indexterm-222"></a>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">aclmode</code>
+</p>
+</td><td>
+<p>String</p>
+</td><td>
+<p>
+<code class="literal">groupmask</code>
+</p>
+</td><td>
+<p>Controls how an ACL entry is modified during a <code class="literal">chmod</code> operation.
+The values are <code class="literal">discard</code>, <code class="literal">groupmask</code>, and <code class="literal">passthrough</code>. For a description of these values, see <span class="olink">ACL Property Modes</span>.<a class="indexterm" name="indexterm-223"></a>
+<a class="indexterm" name="indexterm-224"></a>
+<a class="indexterm" name="indexterm-225"></a>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">atime</span>
+</p>
+</td><td>
+<p>Boolean</p>
+</td><td>
+<p>
+<code class="literal">on</code>
+</p>
+</td><td>
+<p>Controls whether the access time for files is updated when they are
+read. Turning this property off avoids producing write traffic when reading
+files and can result in significant performance gains, though it might confuse
+mailers and other similar utilities.<a class="indexterm" name="indexterm-226"></a>
+<a class="indexterm" name="indexterm-227"></a>
+<a class="indexterm" name="indexterm-228"></a>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">available</span>
+</p>
+</td><td>
+<p>Number</p>
+</td><td>
+<p>N/A</p>
+</td><td>
+<p>Read-only property that identifies the amount of space available to
+the dataset and all its children, assuming no other activity in the pool.
+ Because space is shared within a pool, available space can be limited by
+various factors including physical pool size, quotas, reservations, or other
+datasets within the pool.<a class="indexterm" name="indexterm-229"></a>
+<a class="indexterm" name="indexterm-230"></a>
+<a class="indexterm" name="indexterm-231"></a>
+</p>
+<p>This property can also be referenced by its shortened column name, <code class="literal">avail</code>.</p>
+<p>For more information about space accounting, see <span class="olink">ZFS Space Accounting</span>.</p>
+</td></tr><tr><td>
+<p>
+<span class="property">checksum</span>
+</p>
+</td><td>
+<p>String</p>
+</td><td>
+<p>
+<code class="literal">on</code>
+</p>
+</td><td>
+<p>Controls the checksum used to verify data integrity. The default value
+is <code class="literal">on</code>, which automatically selects an appropriate algorithm,
+currently <code class="literal">fletcher2</code>. The values are <code class="literal">on, off, fletcher2</code>, <code class="literal">fletcher4</code>, and <code class="literal">sha256</code>. A
+value of <code class="literal">off</code> disables integrity checking on user data.
+A value of <code class="literal">off</code> is not recommended.<a class="indexterm" name="indexterm-232"></a>
+<a class="indexterm" name="indexterm-233"></a>
+<a class="indexterm" name="indexterm-234"></a>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">compression</span>
+</p>
+</td><td>
+<p>String</p>
+</td><td>
+<p>
+<code class="literal">off</code>
+</p>
+</td><td>
+<p>Controls the compression algorithm used for this dataset. Currently,
+only one algorithm, <code class="literal">lzjb</code>, exists.<a class="indexterm" name="indexterm-235"></a>
+<a class="indexterm" name="indexterm-236"></a>
+<a class="indexterm" name="indexterm-237"></a>
+</p>
+<p>This property can also be referred to by its shortened column name, <code class="literal">compress</code>.</p>
+</td></tr><tr><td>
+<p>
+<span class="property">compressratio</span>
+</p>
+</td><td>
+<p>Number</p>
+</td><td>
+<p>N/A</p>
+</td><td>
+<p>Read-only property that identifies the compression ratio achieved for
+this dataset, expressed as a multiplier. Compression can be turned on by running <code class="literal">zfs set compression=on</code> <em class="replaceable"><code>dataset</code></em>.<a class="indexterm" name="indexterm-238"></a>
+<a class="indexterm" name="indexterm-239"></a>
+<a class="indexterm" name="indexterm-240"></a>
+</p>
+<p>Calculated from the logical size of all files and the amount of referenced
+physical data. Includes explicit savings through the use of the <span class="property">compression</span> property.</p>
+</td></tr><tr><td>
+<p>
+<span class="property">creation</span>
+</p>
+</td><td>
+<p>Number</p>
+</td><td>
+<p>N/A</p>
+</td><td>
+<p>Read-only property that identifies the date and time that this dataset
+was created.<a class="indexterm" name="indexterm-241"></a>
+<a class="indexterm" name="indexterm-242"></a>
+<a class="indexterm" name="indexterm-243"></a>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">devices</span>
+</p>
+</td><td>
+<p>Boolean</p>
+</td><td>
+<p>
+<code class="literal">on</code>
+</p>
+</td><td>
+<p>Controls whether device nodes found within this file system can be opened.<a class="indexterm" name="indexterm-244"></a>
+<a class="indexterm" name="indexterm-245"></a>
+<a class="indexterm" name="indexterm-246"></a>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">exec</span>
+</p>
+</td><td>
+<p>Boolean</p>
+</td><td>
+<p>
+<code class="literal">on</code>
+</p>
+</td><td>
+<p>Controls whether programs within this file system are allowed to be
+executed. Also, when set to <code class="literal">off</code>, <span><strong class="command">mmap(2)</strong></span> calls
+with <code class="literal">PROT_EXEC</code> are disallowed.<a class="indexterm" name="indexterm-247"></a>
+<a class="indexterm" name="indexterm-248"></a>
+<a class="indexterm" name="indexterm-249"></a>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">mounted</span>
+</p>
+</td><td>
+<p>boolean</p>
+</td><td>
+<p>N/A</p>
+</td><td>
+<p>Read-only property that indicates whether this file system, clone, or
+snapshot is currently mounted. This property does not apply to volumes. Value
+can be either yes or no.<a class="indexterm" name="indexterm-250"></a>
+<a class="indexterm" name="indexterm-251"></a>
+<a class="indexterm" name="indexterm-252"></a>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">mountpoint</span>
+</p>
+</td><td>
+<p>String</p>
+</td><td>
+<p>N/A</p>
+</td><td>
+<p>Controls the mount point used for this file system. When the <span class="property">mountpoint</span> property is changed for a file system, the file system and any
+children that inherit the mount point are unmounted. If the new value is <code class="literal">legacy</code>, then they remain unmounted. Otherwise, they are automatically
+remounted in the new location if the property was previously <code class="literal">legacy</code> or <code class="literal">none</code>, or if they were mounted before the property was changed. In
+addition, any shared file systems are unshared and shared in the new location.<a class="indexterm" name="indexterm-253"></a>
+<a class="indexterm" name="indexterm-254"></a>
+<a class="indexterm" name="indexterm-255"></a>
+</p>
+<p>For more information about using this property, see <span class="olink">Managing ZFS Mount Points</span>.</p>
+</td></tr><tr><td>
+<p>
+<span class="property">origin</span>
+</p>
+</td><td>
+<p>String</p>
+</td><td>
+<p>N/A</p>
+</td><td>
+<p>Read-only property for cloned file systems or volumes that identifies
+the snapshot from which the clone was created. The origin cannot be destroyed
+(even with the <code class="option">
+r</code> or <code class="option">
+f</code> options) as long as
+a clone exists.</p>
+<p>Non-cloned file systems have an origin of none.<a class="indexterm" name="indexterm-256"></a>
+<a class="indexterm" name="indexterm-257"></a>
+<a class="indexterm" name="indexterm-258"></a>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">quota</span>
+</p>
+</td><td>
+<p>Number (or <code class="literal">none</code>)</p>
+</td><td>
+<p>
+<code class="literal">none</code>
+</p>
+</td><td>
+<p>Limits the amount of space a dataset and its descendents can consume.
+This property enforces a hard limit on the amount of space used, including
+all space consumed by descendents, including file systems and snapshots. Setting
+a quota on a descendent of a dataset that already has a quota does not override
+the ancestor's quota, but rather imposes an additional limit. Quotas cannot
+be set on volumes, as the <span class="property">volsize</span> property acts as an
+implicit quota.<a class="indexterm" name="indexterm-259"></a>
+<a class="indexterm" name="indexterm-260"></a>
+<a class="indexterm" name="indexterm-261"></a>
+</p>
+<p>For information about setting quotas, see <span class="olink">Setting Quotas on ZFS File Systems</span>.</p>
+</td></tr><tr><td>
+<p>
+<span class="property">readonly</span>
+</p>
+</td><td>
+<p>Boolean</p>
+</td><td>
+<p>
+<code class="literal">off</code>
+</p>
+</td><td>
+<p>Controls whether this dataset can be modified. When set to <code class="literal">on</code>,
+no modifications can be made to the dataset.<a class="indexterm" name="indexterm-262"></a>
+<a class="indexterm" name="indexterm-263"></a>
+<a class="indexterm" name="indexterm-264"></a>
+</p>
+<p>This property can also be referred to by its shortened column name, <code class="literal">rdonly</code>.</p>
+</td></tr><tr><td>
+<p>
+<span class="property">recordsize</span>
+</p>
+</td><td>
+<p>Number</p>
+</td><td>
+<p>
+<code class="literal">128K</code>
+</p>
+</td><td>
+<p>Specifies a suggested block size for files in the file system.<a class="indexterm" name="indexterm-265"></a>
+<a class="indexterm" name="indexterm-266"></a>
+<a class="indexterm" name="indexterm-267"></a>
+</p>
+<p>This property can also be referred to by its shortened column name, <span class="property">recsize</span>. For a detailed description, see <span class="olink">The <span class="property">recordsize</span> Property</span>.</p>
+</td></tr><tr><td>
+<p>
+<span class="property">referenced</span>
+</p>
+</td><td>
+<p>Number</p>
+</td><td>
+<p>N/A</p>
+</td><td>
+<p>Read-only property that identifies the amount of data accessible by
+this dataset, which might or might not be shared with other datasets in the
+pool.<a class="indexterm" name="indexterm-268"></a>
+<a class="indexterm" name="indexterm-269"></a>
+<a class="indexterm" name="indexterm-270"></a>
+</p>
+<p>When a snapshot or clone is created, it initially references the same
+amount of space as the file system or snapshot it was created from, because
+its contents are identical.</p>
+<p>This property can also be referred to by its shortened column name, <span class="property">refer</span>.</p>
+</td></tr><tr><td>
+<p>
+<span class="property">reservation</span>
+</p>
+</td><td>
+<p>Number (or <code class="literal">none)</code>
+</p>
+</td><td>
+<p>
+<code class="literal">none</code>
+</p>
+</td><td>
+<p>The minimum amount of space guaranteed to a dataset and its descendents.
+When the amount of space used is below this value, the dataset is treated
+as if it were using the amount of space specified by its reservation. Reservations
+are accounted for in the parent datasets' space used, and count against the
+parent datasets' quotas and reservations.<a class="indexterm" name="indexterm-271"></a>
+<a class="indexterm" name="indexterm-272"></a>
+<a class="indexterm" name="indexterm-273"></a>
+</p>
+<p>This property can also be referred to by its shortened column name, <span class="property">reserv</span>.</p>
+<p>For more information, see <span class="olink">Setting Reservations on ZFS File Systems</span>.</p>
+</td></tr><tr><td>
+<p>
+<span class="property">sharenfs</span>
+</p>
+</td><td>
+<p>String</p>
+</td><td>
+<p>
+<code class="literal">off</code>
+</p>
+</td><td>
+<p>Controls whether the file system is available over NFS, and what options
+are used.  If set to <code class="literal">on</code>, the <span><strong class="command">zfs share</strong></span> command
+is invoked with no options.  Otherwise, the <span><strong class="command">zfs share</strong></span> command
+is invoked with options equivalent to the contents of this property.  If set
+to <code class="literal">off</code>, the file system is managed by using the legacy <span><strong class="command">share</strong></span> and <span><strong class="command">unshare</strong></span> commands and the <code class="filename">dfstab</code> file.<a class="indexterm" name="indexterm-274"></a>
+<a class="indexterm" name="indexterm-275"></a>
+<a class="indexterm" name="indexterm-276"></a>
+</p>
+<p>For more information on sharing ZFS file systems, see <span class="olink">Sharing ZFS File Systems</span>.</p>
+</td></tr><tr><td>
+<p>
+<span class="property">setuid</span>
+</p>
+</td><td>
+<p>Boolean</p>
+</td><td>
+<p>
+<code class="literal">on</code>
+</p>
+</td><td>
+<p>Controls whether the <code class="literal">setuid</code> bit is honored in the
+file system.<a class="indexterm" name="indexterm-277"></a>
+<a class="indexterm" name="indexterm-278"></a>
+<a class="indexterm" name="indexterm-279"></a>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">snapdir</code>
+</p>
+</td><td>
+<p>String</p>
+</td><td>
+<p>
+<code class="literal">hidden</code>
+</p>
+</td><td>
+<p>Controls whether the <code class="filename">.zfs</code> directory is hidden or
+visible in the root of the file system. For more information on using snapshots,
+see <span class="olink">ZFS Snapshots</span>.<a class="indexterm" name="indexterm-280"></a>
+<a class="indexterm" name="indexterm-281"></a>
+<a class="indexterm" name="indexterm-282"></a>
+</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">type</code>
+</p>
+</td><td>
+<p>String</p>
+</td><td>
+<p>N/A</p>
+</td><td>
+<p>Read-only property that identifies the dataset type as <code class="literal">filesystem</code> (file
+system or clone), <code class="literal">volume</code>, or <code class="literal">snapshot</code>.<a class="indexterm" name="indexterm-283"></a>
+<a class="indexterm" name="indexterm-284"></a>
+<a class="indexterm" name="indexterm-285"></a>
+</p>
+</td></tr><tr><td>
+<p>
+<span class="property">used</span>
+</p>
+</td><td>
+<p>Number</p>
+</td><td>
+<p>N/A</p>
+</td><td>
+<p>Read-only property that identifies the amount of space consumed by the
+dataset and all its descendants.<a class="indexterm" name="indexterm-286"></a>
+<a class="indexterm" name="indexterm-287"></a>
+<a class="indexterm" name="indexterm-288"></a>
+</p>
+<p>For a detailed description, see <span class="olink">The <span class="property">used</span> Property</span>.</p>
+</td></tr><tr><td>
+<p>
+<span class="property">volsize</span>
+</p>
+</td><td>
+<p>Number</p>
+</td><td>
+<p>N/A</p>
+</td><td>
+<p>For volumes, specifies the logical size of the volume.<a class="indexterm" name="indexterm-289"></a>
+<a class="indexterm" name="indexterm-290"></a>
+<a class="indexterm" name="indexterm-291"></a>
+</p>
+<p>For a detailed description, see <span class="olink">The <span class="property">volsize</span> Property</span>.</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">volblocksize</code>
+</p>
+</td><td>
+<p>Number</p>
+</td><td>
+<p>8 Kbytes</p>
+</td><td>
+<p>For volumes, specifies the block size of the volume. The block size
+cannot be changed once the volume has been written, so set the block size
+at volume creation time. The default block size for volumes is 8 Kbytes. Any
+power of 2 from 512 bytes to 128 Kbytes is valid.<a class="indexterm" name="indexterm-292"></a>
+<a class="indexterm" name="indexterm-293"></a>
+<a class="indexterm" name="indexterm-294"></a>
+</p>
+<p>This property can also be referred to by its shortened column name, <span class="property">volblock</span>.</p>
+</td></tr><tr><td>
+<p>
+<span class="property">zoned</span>
+</p>
+</td><td>
+<p>Boolean</p>
+</td><td>
+<p>N/A</p>
+</td><td>
+<p>Indicates whether this dataset has been added to a non-global zone.
+If this property is set, then the mount point is not honored in the global
+zone, and ZFS cannot mount such a file system when requested. When a zone
+is first installed, this property is set for any added file systems.<a class="indexterm" name="indexterm-295"></a>
+<a class="indexterm" name="indexterm-296"></a>
+<a class="indexterm" name="indexterm-297"></a>
+</p>
+<p>For more information about using ZFS with zones installed, see <span class="olink">Using ZFS on a Solaris System With Zones Installed</span>.</p>
+</td></tr></tbody></table>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gazsy"></a>Read-Only ZFS Properties</h3></div></div></div>
+
+<p>Read-only properties are properties that can be retrieved but cannot
+be set. Read-only properties are not inherited. Some properties are specific
+to a particular type of dataset. In such cases, the particular dataset type
+is mentioned in the description.<a class="indexterm" name="indexterm-298"></a>
+<a class="indexterm" name="indexterm-299"></a>
+</p>
+<p>The read-only properties are listed here and are described in <span class="olink">Table 5&#8211;1</span>.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="property">available</span>
+</p>
+</li><li>
+<p>
+<span class="property">creation</span> </p>
+</li><li>
+<p>
+<span class="property">mounted</span>
+</p>
+</li><li>
+<p>
+<span class="property">origin</span>
+</p>
+</li><li>
+<p>
+<span class="property">compressratio</span>
+</p>
+</li><li>
+<p>
+<span class="property">referenced</span> </p>
+</li><li>
+<p>
+<span class="property">type</span>
+</p>
+</li><li>
+<p>
+<span class="property">used</span>
+</p>
+<p>For detailed information,
+see <span class="olink">The <span class="property">used</span> Property</span>.</p>
+</li></ul></div>
+<p>For more information on space accounting, including the <span class="property">used</span>, <span class="property">referenced</span>, and <span class="property">available</span> properties, see <span class="olink">ZFS Space Accounting</span>.</p>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcfgz"></a>The <span class="property">used</span> Property</h4></div></div></div>
+
+<p>The amount of space consumed by this dataset and all its descendants.
+This value is checked against the dataset's quota and reservation. The space
+used does not include the dataset's reservation, but does consider the reservation
+of any descendant datasets. The amount of space that a dataset consumes from
+its parent, as well as the amount of space that is freed if the dataset is
+recursively destroyed, is the greater of its space used and its reservation.<a class="indexterm" name="indexterm-300"></a>
+<a class="indexterm" name="indexterm-301"></a>
+<a class="indexterm" name="indexterm-302"></a>
+</p>
+<p>When snapshots are created, their space is initially shared between
+the snapshot and the file system, and possibly with previous snapshots. As
+the file system changes, space that was previously shared becomes unique to
+the snapshot, and counted in the snapshot's space used. Additionally, deleting
+snapshots can increase the amount of space unique to (and used by) other snapshots.
+For more information about snapshots and space issues, see <span class="olink">Out of Space Behavior</span>.</p>
+<p>The amount of space used, available, or referenced does not take into
+account pending changes. Pending changes are generally accounted for within
+a few seconds. Committing a change to a disk using <code class="literal">fsync(3c)</code> or <code class="literal">O_SYNC</code> does not necessarily guarantee that the space usage information
+will be updated immediately.</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gazsd"></a>Settable ZFS Properties</h3></div></div></div>
+
+<p>Settable properties are properties whose values can be both retrieved
+and set. Settable properties are set by using the <span><strong class="command">zfs set</strong></span> command,
+as described in <span class="olink">Setting ZFS Properties</span>. With
+the exceptions of quotas and reservations, settable properties are inherited.
+For more information about quotas and reservations, see <span class="olink">ZFS Quotas and Reservations</span>.<a class="indexterm" name="indexterm-303"></a>
+<a class="indexterm" name="indexterm-304"></a>
+</p>
+<p>Some settable properties are specific to a particular type of dataset.
+In such cases, the particular dataset type is mentioned in the description.
+If not specifically mentioned, a property applies to all dataset types: file
+systems, volumes, clones, and snapshots.</p>
+<p>The settable properties are listed here and are described in <span class="olink">Table 5&#8211;1</span>.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<span class="property">aclinherit</span>
+</p>
+<p>For a detailed
+description, see <span class="olink">ACL Property Modes</span>.</p>
+</li><li>
+<p>
+<span class="property">aclmode</span>
+</p>
+<p>For a detailed description,
+see <span class="olink">ACL Property Modes</span>.</p>
+</li><li>
+<p>
+<span class="property">atime</span>
+</p>
+</li><li>
+<p>
+<span class="property">checksum</span>
+</p>
+</li><li>
+<p>
+<span class="property">compression</span>
+</p>
+</li><li>
+<p>
+<span class="property">devices</span>
+</p>
+</li><li>
+<p>
+<span class="property">exec</span>
+</p>
+</li><li>
+<p>
+<span class="property">mountpoint</span> </p>
+</li><li>
+<p>
+<span class="property">quota</span>
+</p>
+</li><li>
+<p>
+<span class="property">readonly</span>
+</p>
+</li><li>
+<p>
+<span class="property">recordsize</span>
+</p>
+<p>For a detailed
+description, see <span class="olink">The <span class="property">recordsize</span> Property</span>.</p>
+</li><li>
+<p>
+<span class="property">reservation</span>
+</p>
+</li><li>
+<p>
+<span class="property">sharenfs</span>
+</p>
+</li><li>
+<p>
+<span class="property">setuid</span>
+</p>
+</li><li>
+<p>
+<span class="property">snapdir</span>
+</p>
+</li><li>
+<p>
+<span class="property">volsize</span>
+</p>
+<p>For a detailed description,
+see <span class="olink">The <span class="property">volsize</span> Property</span>.</p>
+</li><li>
+<p>
+<span class="property">volblocksize</span>
+</p>
+</li><li>
+<p>
+<span class="property">zoned</span>
+</p>
+</li></ul></div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcfgv"></a>The <span class="property">recordsize</span> Property</h4></div></div></div>
+
+<p>Specifies a suggested block size for files in the file system.<a class="indexterm" name="indexterm-305"></a>
+<a class="indexterm" name="indexterm-306"></a>
+<a class="indexterm" name="indexterm-307"></a>
+</p>
+<p>This property is designed solely for use with database workloads that
+access files in fixed-size records. ZFS automatically adjust block sizes according
+to internal algorithms optimized for typical access patterns. For databases
+that create very large files but access the files in small random chunks,
+these algorithms may be suboptimal. Specifying a <span class="property">recordsize</span> greater
+than or equal to the record size of the database can result in significant
+performance gains. Use of this property for general purpose file systems is
+strongly discouraged, and may adversely affect performance. The size specified
+must be a power of two greater than or equal to 512 and less than or equal
+to 128 Kbytes. Changing the file system's <code class="literal">recordsize</code> only
+affects files created afterward. Existing files are unaffected.</p>
+<p>This property can also be referred to by its shortened column name, <span class="property">recsize</span>.</p>
+</div>
+<div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="gcfhk"></a>The <span class="property">volsize</span> Property</h4></div></div></div>
+
+<p>The logical size of the volume. By default, creating a volume establishes
+a reservation for the same amount. Any changes to <span class="property">volsize</span> are
+reflected in an equivalent change to the reservation. These checks are used
+to prevent unexpected behavior for users. A volume that contains less space
+than it claims is available can result in undefined behavior or data corruption,
+depending on how the volume is used. These effects can also occur when the
+volume size is changed while it is in use, particularly when you shrink the
+size.  Extreme care should be used when adjusting the volume size.<a class="indexterm" name="indexterm-308"></a>
+<a class="indexterm" name="indexterm-309"></a>
+<a class="indexterm" name="indexterm-310"></a>
+</p>
+<p>Though not recommended, you can create a sparse volume by specifying
+the <code class="option">
+s</code> flag to <span><strong class="command">zfs create -V</strong></span>, or by changing
+the reservation once the volume has been created. A <span class="emphasis"><em>sparse volume</em></span> is
+defined as a volume where the reservation is not equal to the volume size.
+ For a sparse volume, changes to <span class="property">volsize</span> are not reflected
+in the reservation.</p>
+<p>For more information about using volumes, see <span class="olink">Emulated Volumes</span>.</p>
+</div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch05.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch05s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 5. Managing ZFS File Systems </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Querying ZFS File System Information</td></tr></table></div></body></html>

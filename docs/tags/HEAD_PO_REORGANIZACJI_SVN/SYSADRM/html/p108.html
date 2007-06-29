@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>How to Export Home Directories in the Global Zone
+Into a Non-Global Zone - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage> > <a href="p104.html">27.&nbsp;&nbsp;Administering Solaris Zones (Tasks)</a> > <a href="p107.html#gbrkt">Adding Non-Global Zone Access to Specific File Systems in the Global Zone</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p107.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p109.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="gbrlq"></a><h4><img src="graphics/procedure.gif"> How to Export Home Directories in the Global Zone
+Into a Non-Global Zone</h4>
+<p>This procedure is used to export home directories or other file systems
+from the global zone into non-global zones on the same system.</p>
+<p>You must be the global administrator in the global zone to perform this
+procedure.</p>
+<ol><li><b>Become superuser, or assume the Primary Administrator role.</b><p>To create the role and assign the role to a user, see Using
+the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i>.</p></li><li><b>Add the loopback-mounted filesystem.</b><pre>global# <tt><b>zonecfg -z my-zone</b></tt>
+zonecfg:my-zone> <tt><b>add fs</b></tt>
+zonecfg:my-zone:fs> <tt><b>set dir=/export/home</b></tt>
+zonecfg:my-zone:fs> <tt><b>set special=/export/home</b></tt>
+zonecfg:my-zone:fs> <tt><b>set type=lofs</b></tt>
+zonecfg:my-zone:fs> <tt><b>set options=nodevices</b></tt>
+zonecfg:my-zone:fs> <tt><b>end</b></tt>
+zonecfg:my-zone> <tt><b>commit</b></tt>
+zonecfg:my-zone> <tt><b>exit</b></tt></pre></li><li><b>Add the following line to the zone's <tt>/etc/auto_home</tt> file:</b><pre>$HOST:/export/home/&amp;</pre></li></ol><a name="z.admin.task-54"></a><h3>Using IP Network Multipathing on a Solaris
+System With Zones Installed</h3>
+<a name="geofy"></a><h4><img src="graphics/procedure.gif"> How to Use IP Network Multipathing in Exclusive-IP
+Non-Global Zones</h4>
+<p>IP Network Multipathing (IPMP) in an exclusive-IP zone is configured
+as it is in the global zone.</p>
+<p>You can configure one or more physical interfaces into an IP multipathing
+group, or IPMP group. After configuring IPMP, the system automatically monitors
+the interfaces in the IPMP group for failure. If an interface in the group
+fails or is removed for maintenance, IPMP automatically migrates, or fails
+over, the failed interface's IP addresses. The recipient of these addresses
+is a functioning interface in the failed interface's IPMP group. The failover
+feature of IPMP preserves connectivity and prevents disruption of any existing
+connections. Additionally, IPMP improves overall network performance by automatically
+spreading out network traffic across the set of interfaces in the IPMP group.
+This process is called load spreading.</p>
+<ol><li><b>Become superuser, or assume the Primary Administrator role.</b><p>To create the role and assign the role to a user, see Using
+the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i>.</p></li><li><b>Configure IPMP groups as described in Configuring IPMP Groups in <i>System Administration Guide: IP Services</i>.</b></li></ol><a name="z.admin.task-60"></a><h4><img src="graphics/procedure.gif"> How to Extend IP Network Multipathing Functionality
+to Shared-IP Non-Global Zones</h4>
+<p>Use this procedure to configure IPMP in the global zone and extend the
+IPMP functionality to non-global zones.</p>
+<p>Each address, or logical interface, should be associated with a non-global
+zone when you configure the zone. See <a href="p57.html">Using the <tt>zonecfg</tt> Command</a> and <a href="p63.html#z.conf.start-29">How to Configure the Zone</a> for instructions.</p>
+<p>This procedure accomplishes the following:</p>
+<ul><li><p>The cards <tt>bge0</tt> and <tt>hme0</tt> are
+configured together in a group.</p>
+</li>
+<li><p>Address 192.168.0.1 is associated with the non-global zone <i>my-zone</i>.</p>
+</li>
+<li><p>The <tt>bge0</tt> card is set as the physical interface.
+Thus, the IP address is hosted in the group that contains the <tt>bge0</tt> and <tt>hme0</tt> cards.</p>
+</li>
+</ul>
+<p>In a running zone, you can use the <tt>ifconfig</tt> command
+to make the association. See <a href="p98.html#z.admin.ov-12">Shared-IP Network Interfaces</a> and the <tt>ifconfig</tt>(1M) man
+page.</p>
+<p>You must be the global administrator in the global zone to perform this
+procedure.</p>
+<ol><li><a name="z.admin.task-step-56"></a><b>Become superuser, or assume the Primary
+Administrator role.</b><p>To create the role and assign the role to
+a user, see Using the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i>.</p></li><li><a name="z.admin.task-step-57"></a><b>In the global zone, configure IPMP groups
+as described in Configuring IPMP Groups in <i>System
+Administration Guide: IP Services</i>.</b></li><li><a name="z.admin.task-step-58"></a><b>Use the <tt>zonecfg</tt> command
+to configure the zone. When you configure the <tt>net</tt> resource,
+add address <tt>192.168.0.1</tt> and physical interface <tt>bge0</tt> to
+the zone <i>my-zone</i>:</b><pre>zonecfg:my-zone> <tt><b>add net</b></tt>
+zonecfg:my-zone:net> <tt><b>set address=192.168.0.1</b></tt>
+zonecfg:my-zone:net> <tt><b>set physical=bge0</b></tt>
+zonecfg:my-zone:net> <tt><b>end</b></tt></pre><p>Only <tt>bge0</tt> would be visible in non-global zone <i>my-zone</i>.</p></li></ol><h6><h6>More Information</h6>If <tt>bge0</tt> Subsequently Fails<p>If <tt>bge0</tt> subsequently fails and the <tt>bge0</tt> data
+addresses fail over to <tt>hme0</tt> in the global zone, the <i>my-zone</i> addresses migrate as well.</p>
+<p>If address <tt>192.168.0.1</tt> moves to <tt>hme0</tt>,
+then only <tt>hme0</tt> would now be visible in non-global zone <i>my-zone</i>. This card would be associated with address <tt>192.168.0.1</tt>, and <tt>bge0</tt> would no longer be visible.</p>
+</h6>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p107.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p109.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

@@ -1,0 +1,39 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Handling State Database Replica
+Errors</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch06.html" title="Chapter 6. State Database (Overview)"><link rel="prev" href="ch06s03.html" title="Administering State Database Replicas"><link rel="next" href="ch06s05.html" title="Scenario&#8212;State Database
+Replicas"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Handling State Database Replica
+Errors</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch06s03.html">Prev</a> </td><th width="60%" align="center">Chapter 6. State Database (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch06s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="about-state-db-replicas-8a"></a>Handling State Database Replica
+Errors</h2></div></div></div>
+
+<a class="indexterm" name="config-guide-ix361"></a>
+<p>If a state database replica fails, the system continues to run if at
+least half of the remaining replicas are available. The system panics when
+fewer than half of the replicas are available.</p>
+<p>The system can into reboot multiuser mode when at least one more than
+half of the replicas are available. If fewer than a majority of replicas are
+available, you must reboot into single-user mode and delete the unavailable
+replicas (by using the <span><strong class="command">metadb</strong></span> command).</p>
+<p>For example, assume you have four replicas. The system continues to
+run as long as two replicas (half the total number) are available. However,
+to reboot the system, three replicas (half the total + 1) must be available.</p>
+<p>In a two-disk configuration, you should always create at least two replicas
+on each disk. For example, assume you have a configuration with two disks,
+and you only create three replicas (two replicas on the first disk and one
+replica on the second disk). If the disk with two replicas fails, the system
+panics because the remaining disk only has one replica. This is less than
+half the total number of replicas.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>
+<a class="indexterm" name="basics-ix58"></a>If you create two replicas on each
+disk in a two-disk configuration, Solaris Volume Manager still functions if one disk
+fails. But because you must have one more than half of the total replicas
+available for the system to reboot, you cannot reboot.</p>
+</div>
+<p>If a slice that contains a state database replica fails, the rest of
+your configuration should remain in operation. Solaris Volume Manager finds a valid
+state database during boot (as long as at least half +1 valid state database
+replicas are available).</p>
+<p>When you manually repair or enable state database replicas, Solaris Volume Manager updates
+them with valid data.</p>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch06s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch06.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch06s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Administering State Database Replicas </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Scenario&#8212;State Database
+Replicas</td></tr></table></div></body></html>

@@ -1,0 +1,75 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Specifying Printer Banners</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Trusted Extensions Label Administration"><link rel="up" href="ch04.html" title="Chapter 4. Labeling Printer Output (Tasks)"><link rel="prev" href="ch04s03.html" title="Specifying the Protect As Classification"><link rel="next" href="ch04s05.html" title="Specifying Channels"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Specifying Printer Banners</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s03.html">Prev</a> </td><th width="60%" align="center">Chapter 4. Labeling Printer Output (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch04s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printl-7"></a>Specifying Printer Banners</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-227"></a>The <code class="literal">PRINTER BANNERS</code> field occupies the first
+line or lines that can appear in the handling instructions in the lower third
+of the banner and trailer pages.</p>
+<p>At commercial sites, the Security Administrator role can associate any
+text in the <code class="literal">PRINTER BANNERS</code> section with any compartment
+bit. The compartment bit must also be assigned to a word in the <code class="literal">SENSITIVITY
+LABELS</code> section of the <code class="filename">label_encodings</code> file.
+In the following example, the printer banner is the line that reads <code class="literal">COMPANY
+CONFIDENTIAL: NEED_TO_KNOW HR</code>.</p>
+<p>Compartments from the print job's label are printed in the <code class="literal">protect as</code> field
+along with the print job's <code class="literal">protect as</code> classification. In
+the following example, the compartment <code class="literal">HR</code> from the label
+is printed as an access-related word along with the <code class="literal">protect as</code> classification
+because all compartments are treated as access-related.</p>
+<div class="figure"><a name="printl-fig-12"></a><p class="title"><b>Figure 4.5. Commercial Use of <code class="literal">PRINTER BANNERS</code> on
+Banner Page</b></p>
+
+
+<div class="mediaobject"><img src="../figures/PrintBanrBotmBanners.gif" alt="Commercial Use of PRINTER BANNERS on Banner Page" longdesc="ld-id1630101.html"><div class="longdesc-link" align="right"><br clear="all"><span class="longdesc-link">[<a href="ld-id1630101.html" target="longdesc">D</a>]</span></div></div>
+</div>
+<p>By convention in U.S. government installations, the printer banner line
+displays any warnings that are associated with the <span class="emphasis"><em>subcompartments</em></span> of
+the job's sensitivity label. The following example shows a typical <code class="literal">PRINTER
+BANNER</code> at a government installation. Any string could be specified
+instead of the string that is shown here: <code class="literal">(FULL SA NAME)</code>.</p>
+<div class="figure"><a name="printl-fig-13"></a><p class="title"><b>Figure 4.6. Government Use of <code class="literal">PRINTER BANNERS</code> on
+Banner Page</b></p>
+
+
+<div class="mediaobject"><img src="../figures/la3-11.gif" alt="Government Use of PRINTER BANNERS on Banner Page" longdesc="ld-id1630180.html"><div class="longdesc-link" align="right"><br clear="all"><span class="longdesc-link">[<a href="ld-id1630180.html" target="longdesc">D</a>]</span></div></div>
+</div>
+<p>Following are the encodings for the printer banner line <code class="literal">(FULL
+SA NAME)</code> in <span class="olink">Figure 4&#8211;6</span>.</p>
+<p>First, the word <code class="literal">(FULL SA NAME</code>) is associated in the <code class="literal">PRINTER BANNERS</code> section of the <code class="filename">label_encodings</code> with
+compartment bit 2.</p>
+<div class="example"><a name="printl-ex-14"></a><p class="title"><b>Example 4.1. Defining Words in the <code class="literal">PRINTER BANNERS</code> Section</b></p>
+
+
+<pre class="screen">PRINTER BANNERS:
+
+WORDS:
+. . .
+name= (FULL SA NAME);                      compartments= 2;</pre>
+</div>
+<p>
+<span class="olink">Example 4&#8211;2</span> shows the <code class="literal">SENSITIVITY LABELS</code> definitions for the same compartments that are
+used in the <code class="literal">PRINTER BANNER</code> definitions in <span class="olink">Figure 4&#8211;6</span>. In the example, compartment
+bit 2 is associated with the subcompartment word <code class="literal">SA</code>.</p>
+<div class="itemizedlist"><p>The printer banner displays as <code class="literal">(FULL SA NAME)</code> because:</p><ul type="disc"><li>
+<p>The label contains the subcompartment word <code class="literal">SA</code>.</p>
+</li><li>
+<p>Compartment bit 2 is associated with the subcompartment word <code class="literal">SA</code>.</p>
+</li><li>
+<p>Compartment bit 2 is associated with the string <code class="literal">(FULL
+SA NAME)</code> in the <code class="literal">PRINTER BANNERS</code> encodings.</p>
+</li></ul></div>
+<div class="example"><a name="printl-ex-15"></a><p class="title"><b>Example 4.2. Sensitivity Labels <code class="literal">WORDS</code> Associated
+With <code class="literal">PRINTER BANNERS</code> Definitions</b></p>
+
+
+<pre class="screen">SENSITIVITY LABELS:
+
+WORDS:
+  .
+  .
+  .
+name= SB;                       minclass= TS; compartments= 3-5;
+<strong class="userinput"><code>name= SA;                       minclass= TS; compartments= 2;</code></strong>
+</pre>
+</div>
+<p>For a sample <code class="literal">PRINTER BANNERS</code> planner, see <span class="olink">Planning the Printer Banners in a Worksheet</span>.</p>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Specifying the Protect As Classification </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Specifying Channels</td></tr></table></div></body></html>

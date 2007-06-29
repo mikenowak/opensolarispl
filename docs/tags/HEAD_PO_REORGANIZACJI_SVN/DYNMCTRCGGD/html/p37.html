@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title><tt>lockstat</tt> Provider - Solaris Dynamic Tracing Guide</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2005-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >Solaris Dynamic Tracing Guide<?GenHTML /ReferencePage>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p36.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p38.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="chp-lockstat"></a>Chapter&nbsp;18<h3><tt>lockstat</tt> Provider</h3><p>The <tt>lockstat</tt> provider makes available probes that can be used to discern lock contention statistics, or to understand virtually any aspect of locking behavior. The <tt>lockstat</tt>(1M) command is actually a DTrace consumer that uses the <tt>lockstat</tt> provider to gather its raw data.</p>
+<a name="chp-lockstat-1"></a><h3>Overview</h3>
+<p><a name="indexterm-295"></a><a name="indexterm-296"></a><a name="indexterm-297"></a>The <tt>lockstat</tt> provider makes available two kinds of probes: content-event probes and hold-event probes.</p>
+<p><a name="indexterm-298"></a><a name="indexterm-299"></a><a name="indexterm-300"></a><b>Contention-event</b> probes correspond to contention on a synchronization primitive, and fire when a thread is forced to wait for a resource to become available. Solaris is generally optimized for the non-contention case, so prolonged contention is not expected. These probes should be used to understand those cases where contention does arise. Because contention is relatively rare, enabling contention-event probes generally doesn't substantially affect performance.</p>
+<p><a name="indexterm-301"></a><a name="indexterm-302"></a><a name="indexterm-303"></a><b>Hold-event</b> probes correspond to acquiring, releasing, or otherwise manipulating a synchronization primitive. These probes can be used to answer arbitrary questions about the way synchronization primitives are manipulated. Because Solaris acquires and releases synchronization primitives very often (on the order of millions of times per second per CPU on a busy system), enabling hold-event probes has a much higher probe effect than does enabling contention-event probes. While the probe effect induced by enabling them can be substantial, it is not pathological; they may still be enabled with confidence on production systems.</p>
+<p>The <tt>lockstat</tt> provider makes available probes that correspond to the different synchronization primitives in Solaris; these primitives and the probes that correspond to them are discussed in the remainder of this chapter.</p>
+<a name="chp-lockstat-2"></a><h3>Adaptive Lock Probes</h3>
+<p><a name="indexterm-304"></a><a name="indexterm-305"></a><b>Adaptive locks</b> enforce mutual exclusion to a critical section, and may be acquired in most contexts in the kernel. Because adaptive locks have few context restrictions, they comprise the vast majority of synchronization primitives in the Solaris kernel. These locks are adaptive in their behavior with respect to contention: when a thread attempts to acquire a held adaptive lock, it will determine if the owning thread is currently running on a CPU. If the owner is running on another CPU, the acquiring thread will <b>spin</b>. If the owner is not running, the acquiring thread will <b>block</b>.</p>
+<p>The four lockstat probes pertaining to adaptive locks are in <a href="p37.html#tbl-adaptive">Table 18-1</a>. For each probe, <tt>arg0</tt> contains a pointer to the <tt>kmutex_t</tt> structure that represents the adaptive lock.</p>
+<a name="tbl-adaptive"></a>Table 18-1 Adaptive Lock Probes<table><tr><td><p><tt>adaptive-acquire</tt></p>
+</td><td><p>Hold-event probe that fires immediately after an adaptive lock is acquired.</p>
+</td></tr>
+<tr><td><p><tt>adaptive-block</tt></p>
+</td><td><p>Contention-event probe that fires after a thread that has blocked on a held adaptive mutex has reawakened and has acquired the mutex. If both probes are enabled, <tt>adaptive-block</tt> fires <b>before</b> <tt>adaptive-acquire</tt>. At most one of <tt>adaptive-block</tt> and <tt>adaptive-spin</tt> will fire for a single lock acquisition. <tt>arg1</tt> for <tt>adaptive-block</tt> contains the sleep time in nanoseconds.</p>
+</td></tr>
+<tr><td><p><tt>adaptive-spin</tt></p>
+</td><td><p>Contention-event probe that fires after a thread that has spun on a held adaptive mutex has successfully acquired the mutex. If both are enabled, <tt>adaptive-spin</tt> fires <b>before</b> <tt>adaptive-acquire</tt>. At most one of <tt>adaptive-spin</tt> and <tt>adaptive-block</tt> will fire for a single lock acquisition. <tt>arg1</tt> for <tt>adaptive-spin</tt> contains the <b>spin count</b>: the number of iterations that were taken through the spin loop before the lock was acquired. The spin count has little meaning on its own, but can be used to compare spin times.</p>
+</td></tr>
+<tr><td><p><tt>adaptive-release</tt></p>
+</td><td><p>Hold-event probe that fires immediately after an adaptive lock is released.</p>
+</td></tr>
+</table><a name="chp-lockstat-5"></a><h3>Spin Lock Probes</h3>
+<p><a name="indexterm-306"></a><a name="indexterm-307"></a>Threads cannot block in some contexts in the kernel, such as high-level interrupt context and any context manipulating dispatcher state. In these contexts, this restriction prevents the use of adaptive locks. <b>Spin locks</b> are instead used to effect mutual exclusion to critical sections in these contexts. As the name implies, the behavior of these locks in the presence of contention is to spin until the lock is released by the owning thread. The three probes pertaining to spin locks are in <a href="p37.html#tbl-spin">Table 18-2</a>.</p>
+<a name="tbl-spin"></a>Table 18-2 Spin Lock Probes<table><tr><td><p><tt>spin-acquire</tt></p>
+</td><td><p>Hold-event probe that fires immediately after a spin lock is acquired.</p>
+</td></tr>
+<tr><td><p><tt>spin-spin</tt></p>
+</td><td><p>Contention-event probe that fires after a thread that has spun on a held spin lock has successfully acquired the spin lock. If both are enabled, <tt>spin-spin</tt> fires <b>before</b> <tt>spin-acquire</tt>. <tt>arg1</tt> for <tt>spin-spin</tt> contains the <b>spin count</b>: the number of iterations that were taken through the spin loop before the lock was acquired. The spin count has little meaning on its own, but can be used to compare spin times.</p>
+</td></tr>
+<tr><td><p><tt>spin-release</tt></p>
+</td><td><p>Hold-event probe that fires immediately after a spin lock is released.</p>
+</td></tr>
+</table><p>Adaptive locks are much more common than spin locks. The following script displays totals for both lock types to provide data to support this observation.</p>
+<pre>lockstat:::adaptive-acquire
+/execname == "date"/
+{
+	@locks["adaptive"] = count();
+}
+
+lockstat:::spin-acquire
+/execname == "date"/
+{
+	@locks["spin"] = count();
+}</pre><p>Run this script in one window, and a <tt>date</tt>(1) command in another. When you terminate the DTrace script, you will see output similar to the following example:</p>
+<pre><tt><b># dtrace -s ./whatlock.d</b></tt>
+dtrace: script './whatlock.d' matched 5 probes 
+<tt><b>^C</b></tt>
+spin                                                             26
+adaptive                                                       2981</pre><p>As this output indicates, over 99 percent of the locks acquired in running the <tt>date</tt> command are adaptive locks. It may be surprising that <b>so</b> many locks are acquired in doing something as simple as a <tt>date</tt>. The large number of locks is a natural artifact of the fine-grained locking required of an extremely scalable system like the Solaris kernel.</p>
+<a name="chp-lockstat-7"></a><h3>Thread Locks</h3>
+<p><a name="indexterm-308"></a><a name="indexterm-309"></a><b>Thread locks</b> are a special kind of spin lock that are used to lock a thread for purposes of changing thread state. Thread lock hold events are available as spin lock hold-event probes (that is, <tt>spin-acquire</tt> and <tt>spin-release</tt>), but contention events have their own probe specific to thread locks. The thread lock hold-event probe is in <a href="p37.html#tbl-thrlock">Table 18-3</a>.</p>
+<a name="tbl-thrlock"></a>Table 18-3 Thread Lock Probe<table><tr><td><p><tt>thread-spin</tt></p>
+</td><td><p>Contention-event probe that fires after a thread has spun on a thread lock. Like other contention-event probes, if both the contention-event probe and the hold-event probe are enabled, <tt>thread-spin</tt> will fire before <tt>spin-acquire</tt>. Unlike other contention-event probes, however, thread-spin fires <b>before</b> the lock is actually acquired. As a result, multiple <tt>thread-spin</tt> probe firings may correspond to a single <tt>spin-acquire</tt> probe firing.</p>
+</td></tr>
+</table><a name="chp-lockstat-9"></a><h3>Readers/Writer Lock Probes</h3>
+<p><a name="indexterm-310"></a><a name="indexterm-311"></a><b>Readers/writer locks</b> enforce a policy of allowing multiple readers <b>or</b> a single writer &mdash; but not both &mdash; to be in a critical section. These locks are typically used for structures that are searched more frequently than they are modified and for which there is substantial time in the critical section. If critical section times are short, readers/writer locks will implicitly serialize over the shared memory used to implement the lock, giving them no advantage over adaptive locks. See <tt>rwlock</tt>(9F) for more details on readers/writer locks.</p>
+<p>The probes pertaining to readers/writer locks are in <a href="p37.html#tbl-rwlock">Table 18-4</a>. For each probe, <tt>arg0</tt> contains a pointer to the <tt>krwlock_t</tt> structure that represents the adaptive lock.</p>
+<a name="tbl-rwlock"></a>Table 18-4 Readers/Writer Lock Probes<table><tr><td><p><tt>rw-acquire</tt></p>
+</td><td><p>Hold-event probe that fires immediately after a readers/writer lock is acquired. <tt>arg1</tt> contains the constant <tt>RW_READER</tt> if the lock was acquired as a reader, and <tt>RW_WRITER</tt> if the lock was acquired as a writer.</p>
+</td></tr>
+<tr><td><p><tt>rw-block</tt></p>
+</td><td><p>Contention-event probe that fires after a thread that has blocked on a held readers/writer lock has reawakened and has acquired the lock. <tt>arg1</tt> contains the length of time (in nanoseconds) that the current thread had to sleep to acquire the lock. <tt>arg2</tt> contains the constant <tt>RW_READER</tt> if the lock was acquired as a reader, and <tt>RW_WRITER</tt> if the lock was acquired as a writer. <tt>arg3</tt> and <tt>arg4</tt> contain more information on the reason for blocking. <tt>arg3</tt> is non-zero if and only if the lock was held as a writer when the current thread blocked. <tt>arg4</tt> contains the readers count when the current thread blocked. If both the <tt>rw-block</tt> and <tt>rw-acquire</tt> probes are enabled, <tt>rw-block</tt> fires <b>before</b> <tt>rw-acquire</tt>.</p>
+</td></tr>
+<tr><td><p><tt>rw-upgrade</tt></p>
+</td><td><p>Hold-event probe that fires after a thread has successfully upgraded a readers/writer lock from a reader to a writer. Upgrades do not have an associated contention event because they are only possible through a non-blocking interface, <tt>rw_tryupgrade</tt>(9F).</p>
+</td></tr>
+<tr><td><p><tt>rw-downgrade</tt></p>
+</td><td><p>Hold-event probe that fires after a thread had downgraded its ownership of a readers/writer lock from writer to reader. Downgrades do not have an associated contention event because they always succeed without contention.</p>
+</td></tr>
+<tr><td><p><tt>rw-release</tt></p>
+</td><td><p>Hold-event probe that fires immediately after a readers/writer lock is released. <tt>arg1</tt> contains the constant <tt>RW_READER</tt> if the released lock was held as a reader, and <tt>RW_WRITER</tt> if the released lock was held as a writer. Due to upgrades and downgrades, the lock may <b>not</b> have been released as it was acquired.</p>
+</td></tr>
+</table><a name="chp-lockstat-stability"></a><h3>Stability</h3>
+<p><a name="indexterm-312"></a><a name="indexterm-313"></a><a name="indexterm-314"></a>The <tt>lockstat</tt> provider uses DTrace's stability mechanism* to describe its stabilities as shown in the following table. For more information about the stability mechanism, see <a href="p64.html">Chapter&nbsp;39, Stability</a>.</p>
+<table><tr><th><p>Element</p>
+</th><th><p>Name stability</p>
+</th><th><p>Data stability</p>
+</th><th><p>Dependency class</p>
+</th></tr>
+<tr><td><p>Provider</p>
+</td><td><p>Evolving</p>
+</td><td><p>Evolving</p>
+</td><td><p>Common</p>
+</td></tr>
+<tr><td><p>Module</p>
+</td><td><p>Private</p>
+</td><td><p>Private</p>
+</td><td><p>Unknown</p>
+</td></tr>
+<tr><td><p>Function</p>
+</td><td><p>Private</p>
+</td><td><p>Private</p>
+</td><td><p>Unknown</p>
+</td></tr>
+<tr><td><p>Name</p>
+</td><td><p>Evolving</p>
+</td><td><p>Evolving</p>
+</td><td><p>Common</p>
+</td></tr>
+<tr><td><p>Arguments</p>
+</td><td><p>Evolving</p>
+</td><td><p>Evolving</p>
+</td><td><p>Common</p>
+</td></tr>
+</table>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p36.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p38.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

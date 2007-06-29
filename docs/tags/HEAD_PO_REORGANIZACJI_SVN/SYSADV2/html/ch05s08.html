@@ -1,0 +1,247 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Managing Fonts</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch05.html" title="Chapter 5. Managing Character Sets, Filters,
+Forms, and Fonts (Tasks)"><link rel="prev" href="ch05s07.html" title="Managing Fonts (Task Map)"><link rel="next" href="ch06.html" title="Chapter 6. Customizing the LP Print Service
+(Tasks)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Managing Fonts</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch05s07.html">Prev</a> </td><th width="60%" align="center">Chapter 5. Managing Character Sets, Filters,
+Forms, and Fonts (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch06.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printforms-26075"></a>Managing Fonts</h2></div></div></div>
+
+<a class="indexterm" name="printforms-ix667"></a>
+<p>
+<a class="indexterm" name="printforms-ix668"></a>
+<a class="indexterm" name="printforms-ix669"></a>If you have a laser printer, you might need to install and maintain PostScript
+fonts. For many printers, the fonts are set up as part of the printer installation
+process.  </p>
+<p>
+<a class="indexterm" name="printforms-ix670"></a>
+<a class="indexterm" name="printforms-ix671"></a>PostScript fonts are stored in outline form, either on the printer or
+on a system that communicates with the printer. When a document is printed, the PostScript
+interpreter generates each character as needed in the appropriate size from the outline
+description of it. If a font required for a document is not stored on the printer
+being used, the font must be transmitted to that printer before the document can be
+printed. This transmission process is called <span class="emphasis"><em>downloading fonts</em></span>.
+ </p>
+<p>Fonts are stored and accessed in several ways:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<a class="indexterm" name="printforms-ix672"></a>
+<span class="emphasis"><em>Printer-resident</em></span> <span class="emphasis"><em>fonts</em></span> are stored
+permanently on a printer. These fonts are installed in read-only memory (ROM) on the
+printer by the manufacturer. If the printer has a disk, you can install fonts on that
+disk. Most PostScript printers are shipped with 35 standard fonts. </p>
+</li><li>
+<p>
+<a class="indexterm" name="printforms-ix673"></a>A <span class="emphasis"><em>permanently downloaded</em></span> <span class="emphasis"><em>font</em></span> is
+transmitted to a printer with a PostScript <span><strong class="command">exitserver</strong></span> program.
+A permanently downloaded font remains in printer memory until the printer is turned
+off. Memory allocated to a downloaded font reduces the memory available on the server
+for PostScript print requests. Use of an <span><strong class="command">exitserver</strong></span> program requires
+the printer system password and can be reserved for the printer administrator. You
+should permanently download a font if most print requests serviced by the printer
+use that font. </p>
+</li><li>
+<p>Fonts that are used infrequently or for special purposes can be stored
+on a user's system. The user can specify these fonts when submitting the print request.
+The fonts are appended to the print request and transmitted to the printer. When the
+print request is processed, the space allocated for the font is freed for other print
+requests.</p>
+</li><li>
+<p>
+<a class="indexterm" name="printforms-ix674"></a>
+<a class="indexterm" name="indexterm-108"></a>
+<span class="emphasis"><em>Host-resident fonts</em></span> are stored on a system that is
+shared by many users. The system that stores the fonts can be a print server or a
+print client. Each user can request fonts in the document to be printed. This method
+is useful when numerous fonts are available, or when these fonts are not used by all
+print requests. If the fonts will be used only on printers attached to a print server,
+they should be stored on the print server. If the fonts will be used by the users
+on one system and those users can submit requests to multiple printers on a network,
+the fonts should be stored on the users' system. </p>
+<p>
+<a class="indexterm" name="printforms-ix676"></a>
+<a class="indexterm" name="indexterm-109"></a>The LP print service provides a special download filter to manage host-resident
+fonts. The LP print service also supplies <code class="literal">troff</code> width tables for
+the 35 standard PostScript fonts that reside on many PostScript printers. For more
+information about the <code class="literal">troff</code> program, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">troff</span>
+(
+1
+)
+</span>
+</span> man page.</p>
+</li></ul></div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printforms-92"></a>Managing Printer-Resident Fonts</h3></div></div></div>
+
+<a class="indexterm" name="printforms-ix678"></a>
+<a class="indexterm" name="printforms-ix679"></a>
+<p>Most PostScript printers come equipped with fonts that are resident in the printer
+ROM. Some printers have a disk on which additional fonts are stored. When a printer
+is installed, you should add the list of printer-resident fonts to the font list for
+that printer. By identifying printer-resident fonts, you prevent fonts from being
+transmitted unnecessarily across a network. Each printer has its own list of resident
+fonts, which is contained in this file:</p>
+<pre class="screen">/etc/lp/printers/<em class="replaceable"><code>printer-name</code></em>/residentfonts</pre>
+<p>
+<a class="indexterm" name="printforms-ix698"></a>When the printer is attached to a print server, ensure that the list in
+the <code class="filename">residentfonts</code> file includes fonts that are on the print server.
+The file must also include fonts that are available for downloading to the printer.</p>
+<p>You must edit the files that contain the list of printer-resident fonts by using
+a text editor such as <span><strong class="command">vi</strong></span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printforms-93"></a>Downloading Host-Resident Fonts</h3></div></div></div>
+
+<a class="indexterm" name="printforms-ix681"></a>
+<a class="indexterm" name="printforms-ix682"></a>
+<a class="indexterm" name="printforms-ix683"></a>
+<p>
+<a class="indexterm" name="printforms-ix684"></a>When a PostScript document contains a request for fonts not loaded on
+the printer, the download filter manages this request. The download filter uses PostScript
+document structuring conventions to determine which fonts to download.  </p>
+<p>
+<a class="indexterm" name="printforms-ix686"></a>
+<a class="indexterm" name="printforms-ix687"></a>
+<a class="indexterm" name="printforms-ix688"></a>
+<a class="indexterm" name="printforms-ix689"></a>LP print filters are either fast or slow. A <span class="emphasis"><em>fast filter</em></span> quickly
+prepares a file for printing. Also, a fast filter must have access to the printer
+while the filter is processing. A <span class="emphasis"><em>slow filter</em></span> takes longer to
+convert a file. However, a slow filter does not need to access the printer while the
+filter is processing. An example of a slow filter is a filter that converts an ASCII
+document to a PostScript document.</p>
+<p>
+<a class="indexterm" name="printforms-ix690"></a>The <span class="emphasis"><em>download filter</em></span> is a fast filter. This filter
+downloads fonts automatically if the fonts are on the print server. The download filter
+can also be used to send fonts to a print server. To do so, you can create a new filter
+table entry that calls the download filter as a slow filter by using the <span><strong class="command">lp</strong></span> <code class="option">
+y</code> command. Alternatively, you can force selection of
+this filter by changing the input type. </p>
+<p>The download filter performs five tasks:</p>
+<div class="orderedlist"><ol type="1"><li>
+<p>The filter searches the PostScript document to determine which fonts
+are requested. These requests are documented with the following PostScript structuring
+comments: <code class="literal">%%DocumentFonts:</code> <em class="replaceable"><code>font1 font2 &#8230;</code></em> in
+the header comments.</p>
+</li><li>
+<p>The download filter searches the list of printer-resident fonts to
+determine if the requested font must be downloaded.</p>
+</li><li>
+<p>If the font is not resident on the printer, the download filter searches
+the host-resident font directory table to determine if the requested font is available.
+This filter performs this search by getting the appropriate file name from the map.</p>
+</li><li>
+<p>If the font is available, the download filter takes the file for that
+font and appends it to the file to be printed.</p>
+</li><li>
+<p>The download filter sends the font definition file and the source
+file to the PostScript printer. The <span class="emphasis"><em>source file</em></span> is the file to
+be printed.</p>
+</li></ol></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="printforms-94"></a>Installing and Maintaining Host-Resident Fonts</h3></div></div></div>
+
+<p>Some fonts reside on the host system and are transmitted to the printer as needed
+for particular print requests. As the administrator, you make PostScript fonts available
+to all users on a system. To do so, you must know how and where to install these fonts.
+Because fonts are requested by name and stored in files, the LP print service keeps
+a <span class="emphasis"><em>map file</em></span>. A map file shows the correspondence between the names
+of fonts and the names of the files that contain those fonts. Both the map file and
+the font list must be updated when you install host-resident fonts.</p>
+<p>The fonts available for use with PostScript printers are stored in directories
+that you create. These directories are called <code class="filename">/usr/share/lib/hostfontdir/</code>
+<em class="replaceable"><code>typeface</code></em>
+<code class="filename">/</code>
+<em class="replaceable"><code>font</code></em>. The variable <em class="replaceable"><code>typeface</code></em> is replaced by
+a name, such as <code class="literal">palatino</code> or <code class="literal">helvetica</code>. The variable <em class="replaceable"><code>font</code></em> is replaced by a an attribute name, such as <code class="literal">bold</code> or <code class="literal">italic</code>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2147499"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-12681"></a><p class="title"><b>How to Install Downloaded PostScript Fonts</b></p><a class="indexterm" name="indexterm-110"></a><a class="indexterm" name="indexterm-111"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-96"></a>
+<p>Log in as superuser, <code class="literal">lp</code> user,
+or assume an equivalent role on the print server or print client.</p>
+</li><li><a name="printforms-step-97"></a>
+<p>Change directory to the <code class="filename">/etc/lp/printers/</code>
+<em class="replaceable"><code>printer-name</code></em> directory.</p>
+<pre class="screen"># <strong class="userinput"><code>cd /etc/lp/printers/</code></strong>
+<em class="replaceable"><code>printer-name</code></em>
+</pre>
+<p>The variable <span class="emphasis"><em>printer-name</em></span> specifies the name of the printer
+on which you want to install downloaded PostScript fonts.</p>
+</li><li><a name="printforms-step-98"></a>
+<p>Create the <code class="filename">residentfonts</code> file,
+if this file does not already exist. </p>
+<pre class="screen"># <strong class="userinput"><code>touch residentfonts</code></strong>
+</pre>
+<p>This file might not exist if you are adding permanently downloaded fonts for
+the first time. </p>
+</li><li><a name="printforms-step-99"></a>
+<p>Edit the <code class="filename">residentfonts</code> file.
+Add all the printer-resident fonts and the fonts to be permanently downloaded.</p>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2147647"></a></h3></div></div></div>
+
+<div class="task"><a name="printforms-34675"></a><p class="title"><b>How to Install Host-Resident PostScript Fonts</b></p><a class="indexterm" name="indexterm-112"></a><a class="indexterm" name="indexterm-113"></a><a class="indexterm" name="indexterm-114"></a><div class="procedure"><ol type="1"><li><a name="printforms-step-102"></a>
+<p>Log in as superuser, <code class="literal">lp</code>, or
+assume an equivalent role on the print server or print client.</p>
+</li><li><a name="printforms-step-103"></a>
+<p>Create the <code class="filename">hostfontdir</code> directory.</p>
+<pre class="screen"># <strong class="userinput"><code>cd /usr/share/lib</code></strong>
+</pre>
+<ol type="a">
+<li>
+<p>Change to the <code class="filename">/usr/share/lib</code>directory.</p>
+<pre class="screen"># <strong class="userinput"><code>cd /usr/share/lib</code></strong>
+</pre>
+</li>
+<li>
+<p>Create the <code class="filename">hostfontdir</code> directory, if this directory
+does not already exist.</p>
+<pre class="screen"># <strong class="userinput"><code>mkdir hostfontdir</code></strong>
+</pre>
+</li>
+<li>
+<p>Change the permissions on the <code class="filename">hostfontdir</code> directory
+to 775.</p>
+<pre class="screen"># <strong class="userinput"><code>chmod 775 hostfontdir</code></strong>
+</pre>
+</li>
+</ol>
+</li><li><a name="printforms-step-104"></a>
+<p>Create a directory for a new typeface, if the
+directory does not already exist. </p>
+<pre class="screen"># <strong class="userinput"><code>mkdir</code></strong> <em class="replaceable"><code>typeface</code></em>
+</pre>
+</li><li><a name="printforms-step-105"></a>
+<p>Copy the font file to the appropriate directory.</p>
+<pre class="screen"># <strong class="userinput"><code>cp</code></strong> <em class="replaceable"><code>filename</code></em> <strong class="userinput"><code>/usr/share/lib/hostfontdir</code></strong>/<em class="replaceable"><code>typeface</code></em>/<em class="replaceable"><code>font</code></em>
+</pre>
+</li><li><a name="printforms-step-106"></a>
+<p>Add to the map file the name of the font and
+the name of the file in which it resides.</p>
+<ol type="a">
+<li><a name="printforms-step-107"></a>
+<p>Change to the <code class="filename">/usr/share/lib/hostfontdir</code> directory.</p>
+</li>
+<li><a name="printforms-step-108"></a>
+<p>Edit the <code class="filename">map</code> file by using
+a text editor such as the <span><strong class="command">vi</strong></span> editor.</p>
+<p>Add a one-line
+entry for each font that you want to add to the file. Put the font name first, followed
+by a space, followed by the name of the file where the font resides. For example:</p>
+<pre class="screen">
+<strong class="userinput"><code>Palatino-Bold /usr/share/lib/hostfontdir/palatino/bold</code></strong>
+</pre>
+</li>
+<li><a name="printforms-step-109"></a>
+<p>Save the file.</p>
+<p>When an example entry
+exists in the map file on the appropriate system, users can apply the font (for example,
+Palatino Bold) to their print jobs. When users submit a print request that contains
+this font, the LP print service appends a copy of the <code class="filename">/usr/share/lib/hostfontdir/palatino/bold</code> file to that file before sending it to the printer.</p>
+</li>
+</ol>
+</li><li><a name="printforms-step-110"></a>
+<p>If you are using the <span><strong class="command">troff</strong></span> program,
+you must create new width tables for this font in the standard <span><strong class="command">troff</strong></span> font
+directory. </p>
+</li></ol></div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch05s07.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch05.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch06.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Managing Fonts (Task Map) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 6. Customizing the LP Print Service
+(Tasks)</td></tr></table></div></body></html>

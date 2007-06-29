@@ -1,0 +1,480 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Maintaining RAID-1 Volumes</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch11.html" title="Chapter 11. RAID-1
+(Mirror) Volumes (Tasks)"><link rel="prev" href="ch11s03.html" title="Working With Submirrors"><link rel="next" href="ch11s05.html" title="Responding to RAID-1 Volume Component
+Failures"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Maintaining RAID-1 Volumes</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch11s03.html">Prev</a> </td><th width="60%" align="center">Chapter 11. RAID-1
+(Mirror) Volumes (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch11s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-mirrors-24"></a>Maintaining RAID-1 Volumes</h2></div></div></div>
+
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1746088"></a></h3></div></div></div>
+
+<div class="task"><a name="maintaintasksnew-34973"></a><p class="title"><b>How to View the Status of Mirrors
+and Submirrors</b></p><div class="taskprerequisites">
+
+<p>For an overview of the status information associated with RAID-1 volumes
+and submirrors, see <span class="olink">Understanding Submirror Status to Determine Maintenance Actions</span>.</p>
+</div><div class="procedure"><ul><li><a name="tasks-mirrors-step-91"></a>
+<p>Use one of the following methods to
+the check mirror or submirror status. </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node. Choose the mirror.
+Then, choose Action&#8658;Properties. Follow the onscreen instructions. For
+more information, see the online help.</p>
+</li><li>
+<p>Run the <span><strong class="command">metastat</strong></span> command on the mirror
+to view the status of each submirror.</p>
+<pre class="screen"># <strong class="userinput"><code>metastat <em class="replaceable"><code>mirror</code></em>
+</code></strong>
+</pre>
+<p>See <span class="olink">How to Change RAID-1 Volume Options</span> to change a mirror's pass number, read option, or write option.</p>
+<p>See <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metastat</span>
+(
+1M
+)
+</span>
+</span> for
+more information about checking device status.</p>
+</li></ul></div>
+</li></ul></div><div class="example"><a name="egjyu"></a><p class="title"><b>Example 11.12. Checking Status of RAID-1 Volumes</b></p>
+
+
+<p>
+<a class="indexterm" name="maintaintasksnew-ix194"></a>Here is sample output from the <span><strong class="command">metastat</strong></span> command.
+Use <span><strong class="command">metastat</strong></span> command without a mirror name to display all
+the status of all mirrors.</p>
+<pre class="screen"># <strong class="userinput"><code>metastat</code></strong>d70: Mirror
+    Submirror 0: d71
+      State: Okay         
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: parallel (default)
+    Size: 12593637 blocks
+
+d71: Submirror of d70
+    State: Okay         
+    Size: 12593637 blocks
+    Stripe 0:
+        Device              Start Block  Dbase State        Reloc  Hot Spare
+        c1t3d0s3                   0     No    Okay         Yes    
+    Stripe 1:
+        Device              Start Block  Dbase State        Reloc  Hot Spare
+        c1t3d0s4                   0     No    Okay         Yes    
+    Stripe 2:
+        Device              Start Block  Dbase State        Reloc  Hot Spare
+        c1t3d0s5                   0     No    Okay         Yes    
+d0: Mirror
+    Submirror 0: d1
+      State: Okay        
+    Submirror 1: d2
+      State: Okay        
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: parallel (default)
+    Size: 5600 blocks
+ 
+d1: Submirror of d0
+    State: Okay        
+    Size: 5600 blocks
+    Stripe 0:
+        Device              Start Block  Dbase State        Hot Spare
+        c0t2d0s7                   0     No    Okay        
+ 
+...</pre>
+<p>Use the <span><strong class="command">metastat</strong></span> command with a mirror name argument
+to display output for a specific mirror.</p>
+<pre class="screen">
+<strong class="userinput"><code>metastat d70</code></strong>
+d70: Mirror
+    Submirror 0: d71
+      State: Okay         
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: parallel (default)
+    Size: 12593637 blocks
+
+d71: Submirror of d70
+    State: Okay         
+    Size: 12593637 blocks
+    Stripe 0:
+        Device              Start Block  Dbase State        Reloc  Hot Spare
+        c1t3d0s3                   0     No    Okay         Yes    
+    Stripe 1:
+        Device              Start Block  Dbase State        Reloc  Hot Spare
+        c1t3d0s4                   0     No    Okay         Yes    
+    Stripe 2:
+        Device              Start Block  Dbase State        Reloc  Hot Spare
+        c1t3d0s5                   0     No    Okay         Yes    </pre>
+<p>
+<a class="indexterm" name="maintaintasksnew-ix195"></a>For each submirror in the mirror, the <span><strong class="command">metastat</strong></span> command
+shows the status, an &#8220;invoke&#8221; line if there is an error, the assigned
+hot spare pool (if any), the size in blocks, and information about each slice
+in the submirror.</p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1746365"></a></h3></div></div></div>
+
+<div class="task"><a name="tasks-mirrors-15"></a><p class="title"><b>How to Change RAID-1 Volume Options</b></p><div class="taskprerequisites">
+
+<p>Check <span class="olink">About RAID-1 Volume Options</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-mirrors-step-145"></a>
+<p>Make sure that you have root privilege
+and that you have a current backup of all data.</p>
+</li><li><a name="tasks-mirrors-step-95"></a>
+<p>Use one of the following methods to
+change the RAID-1 options. </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node. Choose the mirror.
+Then, choose Action&#8658;Properties. Follow the onscreen instructions. For
+more information, see the online help.</p>
+</li><li>
+<p>Use the <span><strong class="command">metaparam</strong></span> command to display and
+change a mirror's options.</p>
+<pre class="screen"># <strong class="userinput"><code>metaparam [<em class="replaceable"><code>mirror options</code></em>] <em class="replaceable"><code>mirror</code></em>
+</code></strong>
+</pre>
+<p>See <span class="olink">About RAID-1 Volume Options</span> for
+a description of mirror options. Also, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metaparam</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</li></ul></div>
+</li></ol></div><div class="example"><a name="egjyj"></a><p class="title"><b>Example 11.13. Changing a RAID-1 Volume's Read Policy</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metaparam -r geometric d30</code></strong>
+# <strong class="userinput"><code>metaparam d30</code></strong>
+d30: mirror current parameters are:
+    Pass: 1
+    Read option: geometric (-g)
+    Write option: parallel (default)</pre>
+<p>
+<a class="indexterm" name="indexterm-81"></a>In this example, the <code class="option">
+r</code> option changes a mirror's
+read policy to <code class="literal">geometric</code>. </p>
+</div><div class="example"><a name="egjyy"></a><p class="title"><b>Example 11.14. Changing a RAID-1 Volume's Write Policy</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metaparam -w serial d40</code></strong>
+# <strong class="userinput"><code>metaparam d40</code></strong>
+d40: mirror current parameters are:
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: serial (-S)</pre>
+<p>In this example, the <code class="option">
+w</code> option changes a mirror's write
+policy to <code class="literal">serial</code>.</p>
+</div><div class="example"><a name="egjyr"></a><p class="title"><b>Example 11.15. Changing a RAID-1 Volume's Pass Number</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metaparam -p 5 d50</code></strong>
+# <strong class="userinput"><code>metaparam d50</code></strong>
+d50: mirror current parameters are:
+    Pass: 5
+    Read option: roundrobin (default)
+    Write option: parallel (default)</pre>
+<p>
+<a class="indexterm" name="indexterm-82"></a>In this example, the <code class="option">
+p</code> option changes a mirror's
+pass number to <code class="literal">5</code>. </p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1746687"></a></h3></div></div></div>
+
+<div class="task"><a name="maintaintasksnew-15601"></a><p class="title"><b>How to Expand a RAID-1 Volume</b></p><a class="indexterm" name="indexterm-83"></a><div class="taskprerequisites">
+
+<p>Read <span class="olink">Creating and Maintaining RAID-1 Volumes</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-mirrors-step-146"></a>
+<p>Make sure that you have root privilege
+and that you have a current backup of all data.</p>
+</li><li><a name="tasks-mirrors-step-98"></a>
+<p>Use one of the following methods to
+expand a mirror. </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node. Choose the mirror.
+Then, choose Action-&gt;Properties and click the Submirror tab. Follow the onscreen
+instructions. For more information, see the online help.</p>
+</li><li>
+<p>Use the <span><strong class="command">metattach</strong></span> command to attach additional
+slices to each submirror.</p>
+<pre class="screen"># <strong class="userinput"><code>metattach <em class="replaceable"><code>submirror</code></em> <em class="replaceable"><code>slice</code></em>
+</code></strong>
+</pre>
+<p>Each submirror in a mirror must be expanded. See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metattach</span>
+(
+1M
+)
+</span>
+</span> man page
+for more information.</p>
+</li></ul></div>
+</li><li>
+<p>Use the <span><strong class="command">metattach</strong></span> command to cause the mirror
+to recompute its size based on the size of the submirror.</p>
+<pre class="screen"># <strong class="userinput"><code>metattach <em class="replaceable"><code>mirror</code></em>
+</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="egjxw"></a><p class="title"><b>Example 11.16. Expanding a Two-Way Mirror That Contains a Mounted File System</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metastat</code></strong>
+d8: Mirror
+    Submirror 0: d9
+      State: Okay        
+    Submirror 1: d10
+      State: Okay        
+...
+# <strong class="userinput"><code>metattach</code></strong> <strong class="userinput"><code>d9 c0t2d0s5</code></strong>
+d9: component is attached
+# <strong class="userinput"><code>metattach</code></strong> <strong class="userinput"><code>d10 c0t3d0s5</code></strong>
+d10: component is attached
+# <strong class="userinput"><code>metattach d8</code></strong>
+</pre>
+<p>
+<a class="indexterm" name="maintaintasksnew-ix284"></a>
+<a class="indexterm" name="maintaintasksnew-ix285"></a>This example shows how to expand a mirrored, mounted file system
+by concatenating two disk drives to the mirror's two submirrors. The mirror
+is named <code class="filename">d8</code> and contains two submirrors named <code class="filename">d9</code> and <code class="filename">d10</code>.  </p>
+</div><div class="taskrelated">
+
+<p>For a UFS, run the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">growfs</span>
+(
+1M
+)
+</span>
+</span> command
+on the mirror volume. See <span class="olink">How to Expand a File System</span>.</p>
+<p>An application, such as a database, that uses the raw volume must have
+its own way of expanding the added storage.</p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1747033"></a></h3></div></div></div>
+
+<div class="task"><a name="fpklu"></a><p class="title"><b>How to Cancel a Volume Resynchronization
+Process</b></p><a class="indexterm" name="indexterm-84"></a><a class="indexterm" name="indexterm-85"></a><div class="procedure"><ol type="1"><li>
+<p>Assume the Primary Administrator role, or become superuser.</p>
+<p>The Primary Administrator role includes the Primary Administrator profile. To create
+the role and assign the role to a user, see <span class="olink">Chapter 2, <em class="citetitle">Working With the Solaris Management Console (Tasks),</em> in <em class="citetitle">System Administration Guide: Basic Administration</em>
+</span>.</p>
+</li><li>
+<p>Use the <span><strong class="command">metastat</strong></span> command to view the status
+of the RAID-1 volume and associated submirrors.</p>
+<pre class="screen"># <strong class="userinput"><code>metastat <em class="replaceable"><code>mirror-name</code></em>
+</code></strong>
+</pre>
+<p>or</p>
+<pre class="screen">
+<strong class="userinput"><code>metastat -a</code></strong>
+</pre>
+</li><li>
+<p>Use the <span><strong class="command">metasync <code class="option">
+c</code> <em class="replaceable"><code>volume</code></em>
+</strong></span> command
+to cancel the resynchronization process.</p>
+</li></ol></div><div class="example"><a name="fpkln"></a><p class="title"><b>Example 11.17. Canceling a Volume Resynchronization Process</b></p>
+
+
+<p>The following example illustrates how to cancel the resynchronization
+process on a volume that is part of the disk set <code class="filename">blue</code>.
+Notice that the submirrors are in the &#8220;Resync cancelled&#8221; state
+after running the <span><strong class="command">metasync</strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metastat -a</code></strong>
+
+
+blue/d10: Mirror
+    Submirror 0: blue/d1
+      State: Resyncing
+    Submirror 1: blue/d2
+      State: Okay
+    Resync in progress: 0 % done
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: parallel (default)
+    Size: 10485760 blocks (5.0 GB)
+
+blue/d1: Submirror of blue/d10
+    State: Resyncing
+    Size: 10485760 blocks (5.0 GB)
+    Stripe 0:
+        Device                             Start Block  Dbase        State Reloc
+ Hot Spare
+        /dev/dsk/c3t50020F230000FA57d0s0          0     No            Okay   Yes
+
+
+
+
+blue/d2: Submirror of blue/d10
+    State: Okay
+    Size: 10485760 blocks (5.0 GB)
+    Stripe 0:
+        Device                             Start Block  Dbase        State Reloc
+ Hot Spare
+        /dev/dsk/c3t50020F230000FA57d0s1          0     No            Okay   Yes
+
+
+
+Device Relocation Information:
+Device                           Reloc  Device ID
+/dev/dsk/c3t50020F230000FA57d0   Yes    id1,ssd@n60020f200000fa574033661f000c641
+4
+
+# <strong class="userinput"><code>metasync -s blue -c d10</code></strong>
+Mar  1 12:46:18 SunSystem1 md_mirror: WARNING: md: blue/d10: Resync cancelled
+
+# <strong class="userinput"><code>metastat -a</code></strong>
+
+
+blue/d10: Mirror
+    Submirror 0: blue/d1
+      State: Resync cancelled
+    Submirror 1: blue/d2
+      State: Okay
+    Resync cancelled: 3 % done
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: parallel (default)
+    Size: 10485760 blocks (5.0 GB)
+
+blue/d1: Submirror of blue/d10
+    State: Resync cancelled
+    Invoke: metasync blue/d10
+    Size: 10485760 blocks (5.0 GB)
+    Stripe 0:
+        Device                             Start Block  Dbase        State Reloc
+ Hot Spare
+        /dev/dsk/c3t50020F230000FA57d0s0          0     No            Okay   Yes
+
+
+blue/d2: Submirror of blue/d10
+    State: Okay
+    Size: 10485760 blocks (5.0 GB)
+    Stripe 0:
+        Device                             Start Block  Dbase        State Reloc
+ Hot Spare
+        /dev/dsk/c3t50020F230000FA57d0s1          0     No            Okay   Yes
+
+
+
+Device Relocation Information:
+Device                           Reloc  Device ID
+/dev/dsk/c3t50020F230000FA57d0   Yes    id1,ssd@n60020f200000fa574033661f000c641
+4</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1747300"></a></h3></div></div></div>
+
+<div class="task"><a name="fpkkx"></a><p class="title"><b>How to Resume a Volume Resynchronization Process</b></p><a class="indexterm" name="indexterm-86"></a><a class="indexterm" name="indexterm-87"></a><div class="procedure"><ol type="1"><li>
+<p>Assume the Primary Administrator role, or become superuser.</p>
+<p>The Primary Administrator role includes the Primary Administrator profile. To create
+the role and assign the role to a user, see <span class="olink">Chapter 2, <em class="citetitle">Working With the Solaris Management Console (Tasks),</em> in <em class="citetitle">System Administration Guide: Basic Administration</em>
+</span>.</p>
+</li><li>
+<p>Use the <span><strong class="command">metastat</strong></span> command to view the status
+of the RAID-1 volume and associated submirrors.</p>
+<pre class="screen"># <strong class="userinput"><code>metastat <em class="replaceable"><code>mirror-name</code></em>
+</code></strong>
+</pre>
+<p>or</p>
+<pre class="screen">
+<strong class="userinput"><code>metastat -a</code></strong>
+</pre>
+</li><li>
+<p>Use the <span><strong class="command">metasync <em class="replaceable"><code>volume</code></em>
+</strong></span> command
+to resume the resynchronization process.</p>
+<pre class="screen"># <strong class="userinput"><code>metasync <em class="replaceable"><code>volume</code></em>
+</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="fpklo"></a><p class="title"><b>Example 11.18. Resuming a Volume Resynchronization Process</b></p>
+
+
+<p>The following example illustrates how to resume the resynchronization
+process on a volume that is part of the disk set <code class="filename">blue</code>.
+Notice that the submirrors are in the &#8220;Resync cancelled&#8221; state
+before running the <span><strong class="command">metasync</strong></span> command. Once the <span><strong class="command">metasync</strong></span> command is issued, the resynchronization process resumes.</p>
+<pre class="screen"># <strong class="userinput"><code>metastat -a</code></strong>
+
+blue/d10: Mirror
+    Submirror 0: blue/d1
+      State: Resync cancelled
+    Submirror 1: blue/d2
+      State: Okay
+    Resync cancelled: 3 % done
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: parallel (default)
+    Size: 10485760 blocks (5.0 GB)
+
+blue/d1: Submirror of blue/d10
+    State: Resync cancelled
+    Invoke: metasync blue/d10
+    Size: 10485760 blocks (5.0 GB)
+    Stripe 0:
+        Device                             Start Block  Dbase        State Reloc
+ Hot Spare
+        /dev/dsk/c3t50020F230000FA57d0s0          0     No            Okay   Yes
+
+
+blue/d2: Submirror of blue/d10
+    State: Okay
+    Size: 10485760 blocks (5.0 GB)
+    Stripe 0:
+        Device                             Start Block  Dbase        State Reloc
+ Hot Spare
+        /dev/dsk/c3t50020F230000FA57d0s1          0     No            Okay   Yes
+
+
+
+Device Relocation Information:
+Device                           Reloc  Device ID
+/dev/dsk/c3t50020F230000FA57d0   Yes    id1,ssd@n60020f200000fa574033661f000c641
+4
+
+# <strong class="userinput"><code>metasync -s blue d10</code></strong>
+# <strong class="userinput"><code>metastat -a</code></strong>
+
+
+blue/d10: Mirror
+    Submirror 0: blue/d1
+      State: Resyncing
+    Submirror 1: blue/d2
+      State: Okay
+    Resync in progress: 3 % done
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: parallel (default)
+    Size: 10485760 blocks (5.0 GB)
+
+blue/d1: Submirror of blue/d10
+    State: Resyncing
+    Size: 10485760 blocks (5.0 GB)
+    Stripe 0:
+        Device                             Start Block  Dbase        State Reloc
+ Hot Spare
+        /dev/dsk/c3t50020F230000FA57d0s0          0     No            Okay   Yes
+
+
+blue/d2: Submirror of blue/d10
+    State: Okay
+    Size: 10485760 blocks (5.0 GB)
+    Stripe 0:
+        Device                             Start Block  Dbase        State Reloc
+ Hot Spare
+        /dev/dsk/c3t50020F230000FA57d0s1          0     No            Okay   Yes
+
+
+
+Device Relocation Information:
+Device                           Reloc  Device ID
+/dev/dsk/c3t50020F230000FA57d0   Yes    id1,ssd@n60020f200000fa574033661f000c641
+4</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch11s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch11.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch11s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Working With Submirrors </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Responding to RAID-1 Volume Component
+Failures</td></tr></table></div></body></html>

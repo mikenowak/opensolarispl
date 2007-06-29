@@ -1,0 +1,279 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Anonymous Tracing - Solaris Dynamic Tracing Guide</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2005-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >Solaris Dynamic Tracing Guide<?GenHTML /ReferencePage>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p60.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p62.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="chp-anon"></a>Chapter&nbsp;36<h3>Anonymous Tracing</h3><p>This chapter describes anonymous tracing, tracing that is not associated with any DTrace consumer. Anonymous tracing is used in situations when no DTrace consumer processes can run. The most common use of anonymous tracing is to permit device driver developers to debug and trace activity that occurs during system boot. Any tracing that you can do interactively you can do anonymously. However, only the super user may create an anonymous enabling, and only one anonymous enabling can exist at any time.</p>
+<a name="chp-anon-1"></a><h3>Anonymous Enablings</h3>
+<p><a name="indexterm-485"></a><a name="indexterm-486"></a>To create an anonymous enabling, use the <tt>-A</tt> option with a <tt>dtrace</tt>(1M) invocation that specifies the desired probes, predicates, actions and options. <tt>dtrace</tt> will add a series of driver properties representing your request to the <tt>dtrace</tt>(7D) driver's configuration file, typically <tt>/kernel/drv/dtrace.conf</tt>. These properties will be read by the <tt>dtrace</tt>(7D) driver when it is loaded. The driver will enable the specified probes with the specified actions, and create an anonymous state to associate with the new enabling. Normally, the <tt>dtrace</tt>(7D) driver is loaded on-demand, as are any drivers that act as DTrace providers. To allow tracing during boot, the <tt>dtrace</tt>(7D) driver must be loaded as early as possible. <tt>dtrace</tt> adds the necessary <tt>forceload</tt> statements to <tt>/etc/system</tt> (see <tt>system</tt>(4)) for each required DTrace provider and for <tt>dtrace</tt>(7D) itself.</p>
+<p>Thereafter, when the system boots, a message is emitted by <tt>dtrace</tt>(7D) to indicate that the configuration file has been successfully processed.</p>
+<p>All options may be set with an anonymous enabling, including buffer size, dynamic variable size, speculation size, number of speculations, and so on.</p>
+<p>To remove an anonymous enabling, specify <tt>-A</tt> to <tt>dtrace</tt> without any probe descriptions.</p>
+<a name="chp-anon-2"></a><h3>Claiming Anonymous State</h3>
+<p><a name="indexterm-487"></a>Once the machine has completely booted, any anonymous state may be claimed by specifying the <tt>-a</tt> option with <tt>dtrace</tt>. By default, <tt>-a</tt> claims the anonymous state, processes the existing data, and continues to run. To consume the anonymous state and then exit, add the <tt>-e</tt> option.</p>
+<p>Once anonymous state has been consumed from the kernel, it cannot be replaced: the in-kernel buffers that contained it are reused. If you attempt to claim anonymous tracing state where none exists, <tt>dtrace</tt> will generate a message similar to the following example:</p>
+<pre>dtrace: could not enable tracing: No anonymous tracing state</pre><p>If drops or errors have occurred, <tt>dtrace</tt> will generate the appropriate messages when the anonymous state is claimed. The messages for drops and errors are the same for both anonymous and non-anonymous state.</p>
+<a name="chp-anon-3"></a><h3>Anonymous Tracing Examples</h3>
+<p><a name="indexterm-488"></a><a name="indexterm-489"></a>The following example shows an anonymous DTrace enabling for every probe in the <tt>iprb</tt>(7D) module:</p>
+<pre><tt><b># dtrace -A -m iprb</b></tt>
+dtrace: saved anonymous enabling in /kernel/drv/dtrace.conf
+dtrace: added forceload directives to /etc/system
+dtrace: run update_drv(1M) or reboot to enable changes
+<tt><b># reboot</b></tt></pre><p>After rebooting, <tt>dtrace</tt>(7D) prints a message on the console to indicate that it is enabling the specified probes:</p>
+<pre>  ...
+  Copyright 1983-2003 Sun Microsystems, Inc.  All rights reserved.
+  Use is subject to license terms.
+  NOTICE: enabling probe 0 (:iprb::)
+  NOTICE: enabling probe 1 (dtrace:::ERROR)
+  configuring IPv4 interfaces: iprb0.
+  ...</pre><p>When the machine has rebooted, the anonymous state may be consumed by specifying the <tt>-a</tt> option with <tt>dtrace</tt>:</p>
+<pre><tt><b># dtrace -a</b></tt>
+  CPU     ID                    FUNCTION:NAME
+    0  22954                      _init:entry 
+    0  22955                     _init:return 
+    0  22800                  iprbprobe:entry 
+    0  22934          iprb_get_dev_type:entry 
+    0  22935         iprb_get_dev_type:return 
+    0  22801                 iprbprobe:return 
+    0  22802                 iprbattach:entry 
+    0  22874               iprb_getprop:entry 
+    0  22875              iprb_getprop:return 
+    0  22934          iprb_get_dev_type:entry 
+    0  22935         iprb_get_dev_type:return 
+    0  22870             iprb_self_test:entry 
+    0  22871            iprb_self_test:return 
+    0  22958            iprb_hard_reset:entry 
+    0  22959           iprb_hard_reset:return 
+    0  22862       iprb_get_eeprom_size:entry 
+    0  22826              iprb_shiftout:entry 
+    0  22828            iprb_raiseclock:entry 
+    0  22829           iprb_raiseclock:return 
+  ...</pre><p>The following example focuses only on those functions called from <tt>iprbattach()</tt>. In an editor, type the following script and save it in a file named <tt>iprb.d</tt>.</p>
+<pre>fbt::iprbattach:entry
+{
+	self->trace = 1;
+}
+
+fbt:::
+/self->trace/
+{}
+
+fbt::iprbattach:return
+{
+	self->trace = 0;
+}</pre><p>Run the following commands to clear the previous settings from the driver configuration file, install the new anonymous tracing request, and reboot:</p>
+<pre><tt><b># dtrace -AFs iprb.d</b></tt>
+dtrace: cleaned up old anonymous enabling in /kernel/drv/dtrace.conf
+dtrace: cleaned up forceload directives in /etc/system
+dtrace: saved anonymous enabling in /kernel/drv/dtrace.conf
+dtrace: added forceload directives to /etc/system
+dtrace: run update_drv(1M) or reboot to enable changes
+<tt><b># reboot</b></tt></pre><p>After rebooting, <tt>dtrace</tt>(7D) prints a different message on the console to indicate the slightly different enabling:</p>
+<pre>  ...
+  Copyright 1983-2003 Sun Microsystems, Inc.  All rights reserved.
+  Use is subject to license terms.
+  NOTICE: enabling probe 0 (fbt::iprbattach:entry)
+  NOTICE: enabling probe 1 (fbt:::)
+  NOTICE: enabling probe 2 (fbt::iprbattach:return)
+  NOTICE: enabling probe 3 (dtrace:::ERROR)
+  configuring IPv4 interfaces: iprb0.
+  ...</pre><p>After the machine has completely booted, run the <tt>dtrace</tt> with the <tt>-a</tt> option and the <tt>-e</tt> option to consume the anonymous data and then exit.</p>
+<pre><tt><b># dtrace -ae</b></tt>
+  CPU FUNCTION                                 
+    0  -> iprbattach                            
+    0    -> gld_mac_alloc                       
+    0      -> kmem_zalloc                       
+    0        -> kmem_cache_alloc                
+    0          -> kmem_cache_alloc_debug        
+    0            -> verify_and_copy_pattern     
+    0            &lt;- verify_and_copy_pattern     
+    0            -> tsc_gethrtime               
+    0            &lt;- tsc_gethrtime               
+    0            -> getpcstack                  
+    0            &lt;- getpcstack                  
+    0            -> kmem_log_enter              
+    0            &lt;- kmem_log_enter              
+    0          &lt;- kmem_cache_alloc_debug        
+    0        &lt;- kmem_cache_alloc                
+    0      &lt;- kmem_zalloc                       
+    0    &lt;- gld_mac_alloc                       
+    0    -> kmem_zalloc                         
+    0      -> kmem_alloc                        
+    0        -> vmem_alloc                      
+    0          -> highbit                       
+    0          &lt;- highbit                       
+    0          -> lowbit                        
+    0          &lt;- lowbit                        
+    0          -> vmem_xalloc                   
+    0            -> highbit                     
+    0            &lt;- highbit                     
+    0            -> lowbit                      
+    0            &lt;- lowbit                      
+    0            -> segkmem_alloc               
+    0              -> segkmem_xalloc            
+    0                -> vmem_alloc              
+    0                  -> highbit               
+    0                  &lt;- highbit               
+    0                  -> lowbit                
+    0                  &lt;- lowbit                
+    0                  -> vmem_seg_alloc        
+    0                    -> highbit             
+    0                    &lt;- highbit             
+    0                    -> highbit             
+    0                    &lt;- highbit             
+    0                    -> vmem_seg_create     
+  ...</pre>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p60.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p62.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

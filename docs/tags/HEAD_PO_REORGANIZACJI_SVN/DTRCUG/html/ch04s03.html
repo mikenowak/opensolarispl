@@ -1,0 +1,209 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Anonymous Tracing</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="DTrace User Guide"><link rel="up" href="ch04.html" title="Chapter 4. Using DTrace"><link rel="prev" href="ch04s02.html" title="Tracing User Processes"><link rel="next" href="ch04s04.html" title="Speculative Tracing"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Anonymous Tracing</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s02.html">Prev</a> </td><th width="60%" align="center">Chapter 4. Using DTrace</th><td width="20%" align="right"> <a accesskey="n" href="ch04s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gcgln"></a>Anonymous Tracing</h2></div></div></div>
+
+<p>This section describes tracing that is not associated with any DTrace
+consumer. Anonymous tracing is used in situations when no DTrace consumer
+processes can run. Only the super user may create an anonymous enabling. Only
+one anonymous enabling can exist at any time.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcglb"></a>Anonymous Enablings</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-37"></a>
+<a class="indexterm" name="indexterm-38"></a>To create an anonymous enabling, use the <code class="option">
+A</code> option
+with a <span><strong class="command">dtrace</strong></span> command invocation that specifies the desired
+probes, predicates, actions and options. The <span><strong class="command">dtrace</strong></span> command
+ adds a series of driver properties that represent your request to the configuration
+file for the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">dtrace</span>
+(
+7D
+)
+</span>
+</span> driver.
+The configuration file is typically <code class="filename">/kernel/drv/dtrace.conf</code>.
+The <code class="filename">dtrace</code> driver reads these properties when the driver
+is loaded. The driver enables the specified probes with the specified actions
+and creates an <em class="firstterm">anonymous state</em> to associate with the
+new enabling. The <code class="filename">dtrace</code> driver is normally loaded on
+demand, along with any drivers that act as <span><strong class="command">dtrace</strong></span> providers.
+To allow tracing during boot, the <code class="filename">dtrace</code> driver must
+be loaded as early as possible.  The <span><strong class="command">dtrace</strong></span> command adds
+the necessary <code class="literal">forceload</code> statements to <code class="filename">/etc/system</code> (see <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">system</span>
+(
+4
+)
+</span>
+</span> for each required <span><strong class="command">dtrace</strong></span> provider and for the <code class="filename">dtrace</code> driver. </p>
+<p>When the system boots, the <code class="filename">dtrace</code> driver sends
+a message indicating that the configuration file has been successfully processed.
+An anonymous enabling can set any of the options that are available during
+normal use of the <span><strong class="command">dtrace</strong></span> command.</p>
+<p>To remove an anonymous enabling, specify the <code class="option">
+A</code> option
+to the <span><strong class="command">dtrace</strong></span> command without any probe descriptions.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcgkj"></a>Claiming Anonymous State</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-39"></a>When the machine has completely booted, you can claim an existing
+anonymous state by specifying the <code class="option">
+a</code> option with the <span><strong class="command">dtrace</strong></span> command. By default, the <code class="option">
+a</code> option claims the anonymous
+state and processes the existing data, then continues to run. To consume the
+anonymous state and exit, add the <code class="option">
+e</code> option.</p>
+<p>When the anonymous state has been consumed from the kernel, the anonymous
+state cannot be replaced. If you attempt to claim an anonymous tracing state
+that does not exist, the <span><strong class="command">dtrace</strong></span> command generates a message
+that is similar to the following example:</p>
+<pre class="screen">dtrace: could not enable tracing: No anonymous tracing state</pre>
+<p>If drops or errors occur, the <span><strong class="command">dtrace</strong></span> command generates
+the appropriate messages when the anonymous state is claimed. The messages
+for drops and errors are the same for both anonymous and non-anonymous state.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcgki"></a>Anonymous Tracing Examples</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-40"></a>
+<a class="indexterm" name="indexterm-41"></a>The following example shows an anonymous DTrace enabling for every
+probe in the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">iprb</span>
+(
+7D
+)
+</span>
+</span> module:</p>
+<pre class="screen"># <strong class="userinput"><code>dtrace -A -m iprb</code></strong>
+dtrace: saved anonymous enabling in /kernel/drv/dtrace.conf
+dtrace: added forceload directives to /etc/system
+dtrace: run update_drv(1M) or reboot to enable changes
+# <strong class="userinput"><code>reboot</code></strong>
+</pre>
+<p>After rebooting, the <code class="filename">dtrace</code> driver prints a message
+on the console to indicate that the driver is enabling the specified probes:</p>
+<pre class="screen">  ...
+  Copyright 1983-2003 Sun Microsystems, Inc.  All rights reserved.
+  Use is subject to license terms.
+  NOTICE: enabling probe 0 (:iprb::)
+  NOTICE: enabling probe 1 (dtrace:::ERROR)
+  configuring IPv4 interfaces: iprb0.
+  ...</pre>
+<p>After rebooting the machine, specifying the <code class="option">
+a</code> option
+with the <span><strong class="command">dtrace</strong></span> command consumes the anonymous state:</p>
+<pre class="screen">
+<strong class="userinput"><code># dtrace -a</code></strong>
+  CPU     ID                    FUNCTION:NAME
+    0  22954                      _init:entry 
+    0  22955                     _init:return 
+    0  22800                  iprbprobe:entry 
+    0  22934          iprb_get_dev_type:entry 
+    0  22935         iprb_get_dev_type:return 
+    0  22801                 iprbprobe:return 
+    0  22802                 iprbattach:entry 
+    0  22874               iprb_getprop:entry 
+    0  22875              iprb_getprop:return 
+    0  22934          iprb_get_dev_type:entry 
+    0  22935         iprb_get_dev_type:return 
+    0  22870             iprb_self_test:entry 
+    0  22871            iprb_self_test:return 
+    0  22958            iprb_hard_reset:entry 
+    0  22959           iprb_hard_reset:return 
+    0  22862       iprb_get_eeprom_size:entry 
+    0  22826              iprb_shiftout:entry 
+    0  22828            iprb_raiseclock:entry 
+    0  22829           iprb_raiseclock:return 
+  ...</pre>
+<p>The following example focuses only on functions that are called from <code class="function">iprbattach
+</code>.</p>
+<pre class="programlisting">fbt::iprbattach:entry
+{
+	self-&gt;trace = 1;
+}
+
+fbt:::
+/self-&gt;trace/
+{}
+
+fbt::iprbattach:return
+{
+	self-&gt;trace = 0;
+}</pre>
+<p>Run the following commands to clear the previous settings from the driver
+configuration file, install the new anonymous tracing request, and reboot:</p>
+<pre class="screen"># <strong class="userinput"><code>dtrace -AFs iprb.d</code></strong>
+dtrace: cleaned up old anonymous enabling in /kernel/drv/dtrace.conf
+dtrace: cleaned up forceload directives in /etc/system
+dtrace: saved anonymous enabling in /kernel/drv/dtrace.conf
+dtrace: added forceload directives to /etc/system
+dtrace: run update_drv(1M) or reboot to enable changes
+# <strong class="userinput"><code>reboot</code></strong>
+</pre>
+<p>After rebooting, the <span><strong class="command">dtrace</strong></span> driver prints a different
+message on the console to indicate the slightly different enabling:</p>
+<pre class="screen">  ...
+  Copyright 1983-2003 Sun Microsystems, Inc.  All rights reserved.
+  Use is subject to license terms.
+  NOTICE: enabling probe 0 (fbt::iprbattach:entry)
+  NOTICE: enabling probe 1 (fbt:::)
+  NOTICE: enabling probe 2 (fbt::iprbattach:return)
+  NOTICE: enabling probe 3 (dtrace:::ERROR)
+  configuring IPv4 interfaces: iprb0.
+  ...</pre>
+<p>After the machine has finished booting, run the <span><strong class="command">dtrace</strong></span> command
+with the <code class="option">
+a</code> and the <code class="option">
+e</code> options to consume
+the anonymous data and then exit.</p>
+<pre class="screen">
+<strong class="userinput"><code># dtrace -ae</code></strong>
+  CPU FUNCTION                                 
+    0  -&gt; iprbattach                            
+    0    -&gt; gld_mac_alloc                       
+    0      -&gt; kmem_zalloc                       
+    0        -&gt; kmem_cache_alloc                
+    0          -&gt; kmem_cache_alloc_debug        
+    0            -&gt; verify_and_copy_pattern     
+    0            &lt;- verify_and_copy_pattern     
+    0            -&gt; tsc_gethrtime               
+    0            &lt;- tsc_gethrtime               
+    0            -&gt; getpcstack                  
+    0            &lt;- getpcstack                  
+    0            -&gt; kmem_log_enter              
+    0            &lt;- kmem_log_enter              
+    0          &lt;- kmem_cache_alloc_debug        
+    0        &lt;- kmem_cache_alloc                
+    0      &lt;- kmem_zalloc                       
+    0    &lt;- gld_mac_alloc                       
+    0    -&gt; kmem_zalloc                         
+    0      -&gt; kmem_alloc                        
+    0        -&gt; vmem_alloc                      
+    0          -&gt; highbit                       
+    0          &lt;- highbit                       
+    0          -&gt; lowbit                        
+    0          &lt;- lowbit                        
+    0          -&gt; vmem_xalloc                   
+    0            -&gt; highbit                     
+    0            &lt;- highbit                     
+    0            -&gt; lowbit                      
+    0            &lt;- lowbit                      
+    0            -&gt; segkmem_alloc               
+    0              -&gt; segkmem_xalloc            
+    0                -&gt; vmem_alloc              
+    0                  -&gt; highbit               
+    0                  &lt;- highbit               
+    0                  -&gt; lowbit                
+    0                  &lt;- lowbit                
+    0                  -&gt; vmem_seg_alloc        
+    0                    -&gt; highbit             
+    0                    &lt;- highbit             
+    0                    -&gt; highbit             
+    0                    &lt;- highbit             
+    0                    -&gt; vmem_seg_create     
+  ...</pre>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Tracing User Processes </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Speculative Tracing</td></tr></table></div></body></html>

@@ -1,0 +1,405 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Speculative Tracing</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="DTrace User Guide"><link rel="up" href="ch04.html" title="Chapter 4. Using DTrace"><link rel="prev" href="ch04s03.html" title="Anonymous Tracing"><link rel="next" href="ix01.html" title="Index"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Speculative Tracing</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s03.html">Prev</a> </td><th width="60%" align="center">Chapter 4. Using DTrace</th><td width="20%" align="right"> <a accesskey="n" href="ix01.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gbxxu"></a>Speculative Tracing</h2></div></div></div>
+
+<p>This section discusses the DTrace facility for <em class="firstterm">speculative
+tracing</em>. Speculative tracing is the ability to tentatively trace
+data and decide whether to <em class="firstterm">commit</em> the data to a tracing
+buffer or <em class="firstterm">discard</em> it. The primary mechanism to filter
+out uninteresting events is the <em class="firstterm">predicate</em> mechanism.
+Predicates are useful when you know at the time that a probe fires whether
+or not the probe event is of interest. Predicates are not well suited to dealing
+with situations where you do not know if a given probe event is of interest
+or not until after the probe fires.</p>
+<p>If a system call is occasionally failing with a common error code, you
+might want to examine the code path that leads to the error condition. You
+can use the speculative tracing facility to tentatively trace data at one
+or more probe locations, then decide to commit the data to the principal buffer
+at another probe location. The resulting trace data contains only the output
+of interest and requires no postprocessing.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcgmb"></a>Speculation Interfaces</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-42"></a>The following table describes the DTrace speculation functions.</p>
+<div class="table"><a name="gcglj"></a><p class="title"><b>Table 4.1. DTrace Speculation Functions</b></p>
+
+
+<table summary="DTrace Speculation Functions" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>Function Name</p>
+</th><th>
+<p>Arguments</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>
+<code class="literal">speculation</code>
+</p>
+</td><td>
+<p>None</p>
+</td><td>
+<p>Returns an identifier for a new speculative buffer</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">speculate</code>
+</p>
+</td><td>
+<p>ID</p>
+</td><td>
+<p>Denotes that the remainder of the clause should be traced to the speculative
+buffer specified by ID</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">commit</code>
+</p>
+</td><td>
+<p>ID</p>
+</td><td>
+<p>Commits the speculative buffer that is associated with ID</p>
+</td></tr><tr><td>
+<p>
+<code class="literal">discard</code>
+</p>
+</td><td>
+<p>ID</p>
+</td><td>
+<p>Discards the speculative buffer associated with ID</p>
+</td></tr></tbody></table>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcgkl"></a>Creating a Speculation</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-43"></a>
+<a class="indexterm" name="indexterm-44"></a>The <code class="function">speculation
+</code> function allocates a speculative
+buffer and returns a speculation identifier. Use the speculation identifier
+in subsequent calls to the <code class="function">speculate
+</code> function. A speculation
+identifier of zero is always invalid, but can be passed to <code class="function">speculate
+</code>, <code class="function">commit
+</code> or <code class="function">discard
+</code>. If a call to <code class="function">speculation
+</code> fails, the <span><strong class="command">dtrace</strong></span> command generates a message
+that is similar to the following example.</p>
+<pre class="screen">dtrace: 2 failed speculations (no speculative buffer space available)</pre>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcgli"></a>Using a Speculation</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-45"></a>To use a speculation, use a clause to pass an identifier that
+has been returned from <code class="function">speculation
+</code> to the <code class="function">speculate
+</code> function before any data-recording actions. All data-recording
+actions in a clause that contains a <code class="function">speculate
+</code> are speculatively
+traced. The D compiler generates a compile-time error if a call to <code class="function">speculate
+</code> follows data recording actions in a D probe clause. Clauses can
+contain either speculative tracing requests or non-speculative tracing requests,
+but not both.</p>
+<p>Aggregating actions, destructive actions, and the <code class="literal">exit</code> action
+may never be speculative. Any attempt to take one of these actions in a clause
+that contains a <code class="function">speculate
+</code> results in a compile-time error.
+A <code class="function">speculate
+</code> function may not follow a previous <code class="function">speculate
+</code> function. Only one speculation is permitted per clause. A clause
+that contains only a <code class="function">speculate
+</code> function will speculatively
+trace the default action, which is defined to trace only the enabled probe
+ID.</p>
+<p>The typical use of the <code class="function">speculation
+</code> function is
+to assign the result of the <code class="function">speculation
+</code> function to a
+thread-local variable. That thread-local variable acts as a subsequent predicate
+to other probes, as well as an argument to <code class="function">speculate
+</code>.</p>
+<div class="example"><a name="gcgmg"></a><p class="title"><b>Example 4.5. Typical Use of The <code class="function">speculation
+</code> Function</b></p>
+
+
+<pre class="programlisting">syscall::open:entry
+{
+	self-&gt;spec = speculation();
+}
+
+syscall:::
+/self-&gt;spec/
+{
+	speculate(self-&gt;spec);
+	printf("this is speculative");
+}</pre>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcglw"></a>Committing a Speculation</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-46"></a>Commit speculations by using the <code class="function">commit
+</code> function.
+When you commit a speculative buffer the buffer's data is copied into the
+principal buffer. If the data in the speculative buffer exceeds the available
+space in the principal buffer, no data is copied and the drop count for the
+buffer increments. If the buffer has been speculatively traced on more than
+one CPU, the speculative data on the committing CPU is copied immediately,
+while speculative data on other CPUs is copied after the <code class="function">commit
+</code>.</p>
+<p>A speculative buffer that is being committed is not available to subsequent <code class="function">speculation
+</code> calls until each per-CPU speculative buffer is completely
+copied into its corresponding per-CPU principal buffer. Subsequent attempts
+to write the results of a <code class="function">speculate
+</code> function call to
+the committing buffer discard the data without generating an error. Subsequent
+calls to <code class="function">commit
+</code> or <code class="function">discard
+</code> also
+fail without generating an error. A clause that contains a <code class="function">commit
+</code> function
+cannot contain a data recording action, but a clause can contain multiple <code class="function">commit
+</code> calls to commit disjoint buffers.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcgkq"></a>Discarding a Speculation</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-47"></a>Discard speculations by using the <code class="function">discard
+</code> function.
+If the speculation has only been active on the CPU that is calling the <code class="function">discard
+</code> function, the buffer is immediately available for subsequent
+calls to the <code class="function">speculation
+</code> function. If the speculation
+has been active on more than one CPU, the discarded buffer will be available
+for subsequent calls to the <code class="function">speculation
+</code> function after
+the call to <code class="function">discard
+</code>. If no speculative buffers are available
+at the time that the <code class="function">speculation
+</code> function is called a<span><strong class="command">dtrace</strong></span> message that is similar to the following example is generated:</p>
+<pre class="screen">dtrace: 905 failed speculations (available buffer(s) still busy)</pre>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcglc"></a>Speculation Example</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-48"></a>
+<a class="indexterm" name="indexterm-49"></a>One potential use for speculations is to highlight a particular
+code path. The following example shows the entire code path under the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">open</span>
+(
+2
+)
+</span>
+</span> system call when the <code class="function">open
+</code> fails.</p>
+<div class="example"><a name="gcgkt"></a><p class="title"><b>Example 4.6. 
+<code class="filename">specopen.d</code>: Code Flow for
+Failed <code class="function">open
+</code>
+</b></p>
+
+
+<pre class="programlisting">#!/usr/sbin/dtrace -Fs
+
+syscall::open:entry,
+syscall::open64:entry
+{
+	/*
+	 * The call to speculation() creates a new speculation.  If this fails,
+	 * dtrace(1M) will generate an error message indicating the reason for
+	 * the failed speculation(), but subsequent speculative tracing will be
+	 * silently discarded.
+	 */
+	self-&gt;spec = speculation();
+	speculate(self-&gt;spec);
+
+	/*
+	 * Because this printf() follows the speculate(), it is being 
+	 * speculatively traced; it will only appear in the data buffer if the
+	 * speculation is subsequently commited.
+	 */
+	printf("%s", stringof(copyinstr(arg0)));
+}
+
+fbt:::
+/self-&gt;spec/
+{
+	/*
+	 * A speculate() with no other actions speculates the default action:
+	 * tracing the EPID.
+	 */
+	speculate(self-&gt;spec);
+}
+
+syscall::open:return,
+syscall::open64:return
+/self-&gt;spec/
+{
+	/*
+	 * To balance the output with the -F option, we want to be sure that
+	 * every entry has a matching return.  Because we speculated the
+	 * open entry above, we want to also speculate the open return.
+	 * This is also a convenient time to trace the errno value.
+	 */
+	speculate(self-&gt;spec);
+	trace(errno);
+}
+
+syscall::open:return,
+syscall::open64:return
+/self-&gt;spec &amp;&amp; errno != 0/
+{
+	/*
+	 * If errno is non-zero, we want to commit the speculation.
+	 */
+	commit(self-&gt;spec);
+	self-&gt;spec = 0;
+}
+
+syscall::open:return,
+syscall::open64:return
+/self-&gt;spec &amp;&amp; errno == 0/
+{
+	/*
+	 * If errno is not set, we discard the speculation.
+	 */
+	discard(self-&gt;spec);
+	self-&gt;spec = 0;
+}</pre>
+</div>
+<p>When you run the previous script, the script generates output that is
+similar to the following example.</p>
+<pre class="screen"># <strong class="userinput"><code>./specopen.d</code></strong>
+dtrace: script './specopen.d' matched 24282 probes
+CPU FUNCTION                                 
+  1  =&gt; open                                  /var/ld/ld.config
+  1    -&gt; open                                
+  1      -&gt; copen                             
+  1        -&gt; falloc                          
+  1          -&gt; ufalloc                       
+  1            -&gt; fd_find                     
+  1              -&gt; mutex_owned               
+  1              &lt;- mutex_owned               
+  1            &lt;- fd_find                     
+  1            -&gt; fd_reserve                  
+  1              -&gt; mutex_owned               
+  1              &lt;- mutex_owned               
+  1              -&gt; mutex_owned               
+  1              &lt;- mutex_owned               
+  1            &lt;- fd_reserve                  
+  1          &lt;- ufalloc                       
+  1          -&gt; kmem_cache_alloc              
+  1            -&gt; kmem_cache_alloc_debug      
+  1              -&gt; verify_and_copy_pattern   
+  1              &lt;- verify_and_copy_pattern   
+  1              -&gt; file_cache_constructor    
+  1                -&gt; mutex_init              
+  1                &lt;- mutex_init              
+  1              &lt;- file_cache_constructor    
+  1              -&gt; tsc_gethrtime             
+  1              &lt;- tsc_gethrtime             
+  1              -&gt; getpcstack                
+  1              &lt;- getpcstack                
+  1              -&gt; kmem_log_enter            
+  1              &lt;- kmem_log_enter            
+  1            &lt;- kmem_cache_alloc_debug      
+  1          &lt;- kmem_cache_alloc              
+  1          -&gt; crhold                        
+  1          &lt;- crhold                        
+  1        &lt;- falloc                          
+  1        -&gt; vn_openat                       
+  1          -&gt; lookupnameat                  
+  1            -&gt; copyinstr                   
+  1            &lt;- copyinstr                   
+  1            -&gt; lookuppnat                  
+  1              -&gt; lookuppnvp                
+  1                -&gt; pn_fixslash             
+  1                &lt;- pn_fixslash             
+  1                -&gt; pn_getcomponent         
+  1                &lt;- pn_getcomponent         
+  1                -&gt; ufs_lookup              
+  1                  -&gt; dnlc_lookup           
+  1                    -&gt; bcmp                
+  1                    &lt;- bcmp                
+  1                  &lt;- dnlc_lookup           
+  1                  -&gt; ufs_iaccess           
+  1                    -&gt; crgetuid            
+  1                    &lt;- crgetuid            
+  1                    -&gt; groupmember         
+  1                      -&gt; supgroupmember    
+  1                      &lt;- supgroupmember
+  1                    &lt;- groupmember         
+  1                  &lt;- ufs_iaccess           
+  1                &lt;- ufs_lookup              
+  1                -&gt; vn_rele                 
+  1                &lt;- vn_rele                 
+  1                -&gt; pn_getcomponent         
+  1                &lt;- pn_getcomponent         
+  1                -&gt; ufs_lookup              
+  1                  -&gt; dnlc_lookup           
+  1                    -&gt; bcmp                
+  1                    &lt;- bcmp                
+  1                  &lt;- dnlc_lookup           
+  1                  -&gt; ufs_iaccess           
+  1                    -&gt; crgetuid            
+  1                    &lt;- crgetuid            
+  1                  &lt;- ufs_iaccess           
+  1                &lt;- ufs_lookup              
+  1                -&gt; vn_rele                 
+  1                &lt;- vn_rele                 
+  1                -&gt; pn_getcomponent         
+  1                &lt;- pn_getcomponent         
+  1                -&gt; ufs_lookup              
+  1                  -&gt; dnlc_lookup           
+  1                    -&gt; bcmp                
+  1                    &lt;- bcmp                
+  1                  &lt;- dnlc_lookup           
+  1                  -&gt; ufs_iaccess           
+  1                    -&gt; crgetuid            
+  1                    &lt;- crgetuid            
+  1                  &lt;- ufs_iaccess           
+  1                  -&gt; vn_rele               
+  1                  &lt;- vn_rele               
+  1                &lt;- ufs_lookup              
+  1                -&gt; vn_rele                 
+  1                &lt;- vn_rele                 
+  1              &lt;- lookuppnvp                
+  1            &lt;- lookuppnat                  
+  1          &lt;- lookupnameat                  
+  1        &lt;- vn_openat                       
+  1        -&gt; setf                            
+  1          -&gt; fd_reserve                    
+  1            -&gt; mutex_owned                 
+  1            &lt;- mutex_owned                 
+  1            -&gt; mutex_owned                 
+  1            &lt;- mutex_owned                 
+  1          &lt;- fd_reserve                    
+  1          -&gt; cv_broadcast                  
+  1          &lt;- cv_broadcast                  
+  1        &lt;- setf                            
+  1        -&gt; unfalloc                        
+  1          -&gt; mutex_owned                   
+  1          &lt;- mutex_owned                   
+  1          -&gt; crfree                        
+  1          &lt;- crfree                        
+  1          -&gt; kmem_cache_free               
+  1            -&gt; kmem_cache_free_debug       
+  1              -&gt; kmem_log_enter            
+  1              &lt;- kmem_log_enter            
+  1              -&gt; tsc_gethrtime             
+  1              &lt;- tsc_gethrtime             
+  1              -&gt; getpcstack                
+  1              &lt;- getpcstack                
+  1              -&gt; kmem_log_enter            
+  1              &lt;- kmem_log_enter
+  1              -&gt; file_cache_destructor     
+  1                -&gt; mutex_destroy           
+  1                &lt;- mutex_destroy           
+  1              &lt;- file_cache_destructor     
+  1              -&gt; copy_pattern              
+  1              &lt;- copy_pattern              
+  1            &lt;- kmem_cache_free_debug       
+  1          &lt;- kmem_cache_free               
+  1        &lt;- unfalloc                        
+  1        -&gt; set_errno                       
+  1        &lt;- set_errno                       
+  1      &lt;- copen                             
+  1    &lt;- open                                
+  1  &lt;= open                                          2</pre>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ix01.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Anonymous Tracing </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Index</td></tr></table></div></body></html>

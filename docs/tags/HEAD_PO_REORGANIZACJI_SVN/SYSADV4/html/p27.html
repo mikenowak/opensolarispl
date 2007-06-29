@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Strategies for NFS Troubleshooting - System Administration Guide: Network Services</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-02-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Network Services<?GenHTML /ReferencePage> > <a href="p15.html">5.&nbsp;&nbsp;Network File System Administration (Tasks)</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p26.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p28.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="rfsadmin-214"></a><h3>Strategies for NFS Troubleshooting</h3>
+<p><a name="indexterm-374"></a><a name="indexterm-375"></a><a name="indexterm-376"></a><a name="indexterm-377"></a><a name="indexterm-378"></a><a name="indexterm-379"></a>When tracking an NFS problem, remember the main points of possible
+failure: the server, the client, and the network. The strategy that is outlined
+in this section tries to isolate each individual component to find the one
+that is not working. In all situations, the <tt>mountd</tt> and <tt>nfsd</tt> daemons must be running on the server for remote mounts to
+succeed.</p>
+<p><a name="indexterm-380"></a><a name="indexterm-381"></a><a name="indexterm-382"></a><a name="indexterm-383"></a><a name="indexterm-384"></a>The <tt>-intr</tt> option is set by default for all mounts.
+If a program hangs with a <tt>server not responding</tt> message,
+you can kill the program with the keyboard interrupt Control-c.</p>
+<p>When the network or server has problems, programs that access hard-mounted
+remote files fail differently than those programs that access soft-mounted
+remote files. Hard-mounted remote file systems cause the client's kernel to
+retry the requests until the server responds again. Soft-mounted remote file
+systems cause the client's system calls to return an error after trying for
+awhile. Because these errors can result in unexpected application errors and
+data corruption, avoid soft mounting.</p>
+<p><a name="indexterm-385"></a>When a file system is hard mounted, a program that tries to access
+the file system hangs if the server fails to respond. In this situation, the
+NFS system displays the following message on the console: </p>
+<pre>NFS server <i>hostname</i> not responding still trying</pre><p>When the server finally responds, the following message appears on the
+console: </p>
+<pre>NFS server <i>hostname</i> ok</pre><p>A program that accesses a soft-mounted file system whose server is not
+responding generates the following message:</p>
+<pre>NFS <i>operation</i> failed for server <i>hostname</i>: error # (<i>error-message</i>)</pre><hr>
+<p><b>Note - </b>Because of possible errors, do not soft-mount file systems with
+read-write data or file systems from which executables are run. Writable data
+could be corrupted if the application ignores the errors. Mounted executables
+might not load properly and can fail. </p>
+<hr>
+<a name="rfsadmin-215"></a><h3>NFS Troubleshooting Procedures</h3>
+<p>To determine where the NFS service has failed, you need to follow several
+procedures to isolate the failure. Check for the following items:</p>
+<ul><li><p>Can the client reach the server?</p>
+</li>
+<li><p>Can the client contact the NFS services on the server?</p>
+</li>
+<li><p>Are the NFS services running on the server?</p>
+</li>
+</ul>
+<p><a name="indexterm-386"></a><a name="indexterm-387"></a><a name="indexterm-388"></a>In the process of checking these items, you might notice that
+other portions of the network are not functioning. For example, the name service
+or the physical network hardware might not be functioning. The <i>System Administration Guide: Naming and Directory Services (DNS, NIS, and LDAP)</i> contains debugging
+procedures for several name services. Also, during the process you might see
+that the problem is not at the client end. An example is if you get at least
+one trouble call from every subnet in your work area. In this situation, you
+should  assume that the problem is the server or the network hardware near
+the server. So, you should  start the debugging process at the server, not
+at the client.   </p>
+<a name="rfsadmin-216"></a><h4><img src="graphics/procedure.gif"> How to Check Connectivity on an NFS Client</h4>
+<a name="indexterm-389"></a><ol><li><a name="rfsadmin-step-785"></a><b><a name="indexterm-390"></a><a name="indexterm-391"></a><a name="indexterm-392"></a><a name="indexterm-393"></a>Check that the NFS server is reachable from the client. On the
+client, type the following command.</b><pre>% <tt><b>/usr/sbin/ping bee</b></tt>
+bee is alive</pre><p>If the command reports that the server is alive, remotely check the
+NFS server. See <a href="p27.html#rfsadmin-224">How to Check the NFS Server Remotely</a>.</p></li><li><a name="rfsadmin-step-786"></a><b>If the server is not reachable from the
+client, ensure that the local name service is running. </b><p>For NIS+
+clients, type the following:</p><pre>% <tt><b>/usr/lib/nis/nisping -u</b></tt>
+Last updates for directory eng.acme.com. :
+Master server is eng-master.acme.com.
+        Last update occurred at Mon Jun  5 11:16:10 1995
+
+Replica server is eng1-replica-58.acme.com.
+        Last Update seen was Mon Jun  5 11:16:10 1995</pre></li><li><a name="rfsadmin-step-787"></a><b>If the name service is running, ensure
+that the client has received the correct host information by typing the following:</b><pre>% <tt><b>/usr/bin/getent hosts bee</b></tt>
+129.144.83.117	bee.eng.acme.com</pre></li><li><a name="rfsadmin-step-221"></a><b>If the host information is correct, but
+the server is not reachable from the client, run the <tt>ping</tt> command
+from another client.</b><p>If the command run from a second client fails,
+see <a href="p28.html">How to Verify the NFS Service on the Server</a>.</p></li><li><a name="rfsadmin-step-788"></a><b>If the server is reachable from the second
+client, use <tt>ping</tt> to check connectivity of the first client
+to other systems on the local net.</b><p>If this command fails, check
+the networking software configuration on the client, for example, <tt>/etc/netmasks</tt> and <tt>/etc/nsswitch.conf</tt>.</p></li><li><a name="rfsadmin-step-231"></a>(Optional) <b>Check the output
+of the <tt>rpcinfo</tt> command.</b><p>If the <tt>rpcinfo</tt> command
+does not display <tt>program 100003 version 4 ready and waiting</tt>,
+then NFS version 4 is not enabled on the server. See <a href="p19.html#rfsadmin-tbl-196">Table 5-3</a> for information about
+enabling NFS version 4.</p></li><li><a name="rfsadmin-step-789"></a><b>If the software is correct, check the networking
+hardware.</b><p>Try to move the client onto a second net drop.</p></li></ol><a name="rfsadmin-224"></a><h4><img src="graphics/procedure.gif"> How to Check the NFS Server Remotely</h4>
+<p>Note that support for both the UDP and the MOUNT protocols is not necessary
+if you are using an NFS version 4 server.</p>
+<ol><li><a name="rfsadmin-step-226"></a><b>Check that the NFS services have started
+on the NFS server by typing the following command:</b><pre>% <tt><b>rpcinfo -s bee|egrep 'nfs|mountd'</b></tt>
+ 100003  3,2    tcp,udp,tcp6,upd6                nfs     superuser
+ 100005  3,2,1  ticots,ticotsord,tcp,tcp6,ticlts,udp,upd6  mountd  superuser</pre><p>If the daemons have not been started, see <a href="p28.html#rfsadmin-240">How to Restart NFS Services</a>.</p></li><li><a name="rfsadmin-step-275"></a><b>Check that the server's <tt>nfsd</tt> processes
+are responding. </b><p><a name="indexterm-394"></a><a name="indexterm-395"></a>On the client, type the following command to test the UDP NFS
+connections from the server.  </p><pre>% <tt><b>/usr/bin/rpcinfo -u bee nfs</b></tt>
+program 100003 version 2 ready and waiting
+program 100003 version 3 ready and waiting</pre><hr>
+<p><b>Note - </b>NFS version 4 does not support UDP.</p>
+<hr>
+<p>If the server is running, it prints a list of program and version numbers.
+Using the <tt>-t</tt> option tests the TCP connection. If this command
+fails, proceed to <a href="p28.html">How to Verify the NFS Service on the Server</a>.</p></li><li><a name="rfsadmin-step-228"></a><b><a name="indexterm-396"></a><a name="indexterm-397"></a>Check that the server's <tt>mountd</tt> is responding,
+by typing the following command.</b><pre>% <tt><b>/usr/bin/rpcinfo -u bee mountd</b></tt>
+program 100005 version 1 ready and waiting
+program 100005 version 2 ready and waiting
+program 100005 version 3 ready and waiting</pre><p>If the server is running, it prints a list of program and version numbers
+that are associated with the UDP protocol. Using the <tt>-t</tt> option
+tests the TCP connection. If either attempt fails, proceed to <a href="p28.html">How to Verify the NFS Service on the Server</a>.</p></li><li><a name="rfsadmin-step-276"></a><b>Check the local autofs service if it is
+being used:</b><pre>% <tt><b>cd /net/wasp</b></tt></pre><p>Choose a <tt>/net</tt> or <tt>/home</tt> mount
+point that you know should work properly. If this command fails, then as <tt>root</tt> on the client, type the following to restart the autofs service:</p><pre># <tt><b>svcadm restart system/filesystem/autofs</b></tt></pre></li><li><a name="rfsadmin-step-277"></a><b>Verify that file system is shared as expected
+on the server.</b><pre>% <tt><b>/usr/sbin/showmount -e bee</b></tt>
+/usr/src										eng
+/export/share/man						(everyone)</pre><p>Check the entry on the server and the local mount entry for errors.
+Also, check the namespace. In this instance, if the first client is not in
+the <tt>eng</tt> netgroup, that client cannot mount the <tt>/usr/src</tt> file system.</p><p>Check all entries that include mounting
+information in all the local files. The list includes <tt>/etc/vfstab</tt> and
+all the <tt>/etc/auto_*</tt> files.</p></li></ol>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p26.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p28.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

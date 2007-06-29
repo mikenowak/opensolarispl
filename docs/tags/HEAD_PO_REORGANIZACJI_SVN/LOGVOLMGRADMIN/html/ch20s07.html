@@ -1,0 +1,185 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Overview of Replacing and Enabling Components
+in RAID-1 and RAID-5 Volumes</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch20.html" title="Chapter 20. Maintaining Solaris Volume Manager (Tasks)"><link rel="prev" href="ch20s06.html" title="Expanding a File System Using the growfs Command"><link rel="next" href="ch21.html" title="Chapter 21. Best Practices for Solaris Volume Manager"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Overview of Replacing and Enabling Components
+in RAID-1 and RAID-5 Volumes</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch20s06.html">Prev</a> </td><th width="60%" align="center">Chapter 20. Maintaining Solaris Volume Manager (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch21.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="replace-enable-1"></a>Overview of Replacing and Enabling Components
+in RAID-1 and RAID-5 Volumes</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-208"></a>
+<a class="indexterm" name="indexterm-209"></a>
+<p>Solaris Volume Manager can <span class="emphasis"><em>replace</em></span> and <span class="emphasis"><em>enable</em></span> components
+within RAID-1 (mirror) and RAID-5 volumes. </p>
+<p>In Solaris Volume Manager terminology, <span class="emphasis"><em>replacing</em></span> a component
+is a way to substitute an available component on the system for a selected
+component in a submirror or RAID-5 volume. You can think of this process as
+logical replacement, as opposed to physically replacing the component. For
+more information see <span class="olink">Replacing a Component With Another Available Component</span>.</p>
+<p>
+<span class="emphasis"><em>Enabling</em></span> a component means to &#8220;activate&#8221;
+or substitute a component with itself (that is, the component name is the
+same). For more information, see <span class="olink">Enabling a Component</span>.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>
+<a class="indexterm" name="indexterm-210"></a>When recovering from disk errors, scan <code class="filename">/var/adm/messages</code> to
+see what kind of errors occurred. If the errors are transitory and the disks
+themselves do not have problems, try enabling the failed components. You can
+also use the <span><strong class="command">format</strong></span> command to test a disk. </p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="replace-enable-2"></a>Enabling a Component</h3></div></div></div>
+
+<p>You can enable a component when any of the following conditions exist:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Solaris Volume Manager cannot access the physical drive. This problem
+might occur, for example, due to a power loss, or a loose drive cable. In
+this case, Solaris Volume Manager puts the components in the &#8220;Maintenance&#8221;
+state. You need to make sure that the drive is accessible (restore power,
+reattach cables, and so on), and then enable the components in the volumes.</p>
+</li><li>
+<p>You suspect that a physical drive is having transitory problems
+that are not disk-related. You might be able to fix a component in the &#8220;Maintenance&#8221;
+state by simply enabling it. If enabling the component does not fix the problem,
+then you need to do one of the following:</p>
+<div class="itemizedlist"><ul type="circle"><li>
+<p>Physically replace the disk drive and enable the component</p>
+</li><li>
+<p>Replace the component with another available component on
+the system</p>
+</li></ul></div>
+<p>When you physically replace a disk, be sure to partition the disk like
+the replaced disk to ensure adequate space on each used component.</p>
+</li></ul></div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Always check for state database replicas and hot spares on the
+disk that is being replaced. Any state database replica in an erred state
+should be deleted before you replace the disk. Then, after you enable the
+component, recreate the state database replicas using the same size. You should
+treat hot spares in the same manner.</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="replace-enable-3"></a>Replacing a Component With Another Available
+Component</h3></div></div></div>
+
+<p>You use the <span><strong class="command">metareplace</strong></span> command when you replace
+or swap an existing component with a different component that is available
+and not in use on the system.</p>
+<p>You can use this command when any of the following conditions exist:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>A disk drive has problems, and you do not have a replacement
+drive. However, you do have available components elsewhere on the system. </p>
+<p>You might want to use this strategy when a replacement is absolutely
+necessary, but you do not want to shut down the system.</p>
+</li><li>
+<p>You see soft errors on the physical disks. </p>
+<p>Physical
+disks might report soft errors even though Solaris Volume Manager shows the mirror/submirror
+or RAID-5 volume in the &#8220;Okay&#8221; state. Replacing the component
+in question with another available component enables you to perform preventative
+maintenance and potentially prevent hard errors from occurring.</p>
+</li><li>
+<p>You want to do performance tuning. </p>
+<p>One way that
+you can evaluate components is by using the performance monitoring feature
+available from the Enhanced Storage tool within the Solaris Management Console. For example, you might see that a particular
+component in a RAID-5 volume is experiencing a high load average, even though
+it is in the &#8220;Okay&#8221; state. To balance the load on the volume,
+you can replace that component with a component from a disk that is less utilized.
+You can perform this type of replacement online without interrupting service
+to the volume.</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="replace-enable-4"></a>Maintenance and Last Erred States</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-211"></a>
+<a class="indexterm" name="indexterm-212"></a>
+<p>When a component in a RAID-1 or RAID-5 volume experiences errors, Solaris Volume Manager puts
+the component in the &#8220;Maintenance&#8221; state. No further reads or
+writes are performed to a component in the &#8220;Maintenance&#8221; state.</p>
+<p>Sometimes a component goes into a &#8220;Last Erred&#8221; state. For
+a RAID-1 volume, this usually occurs with a one-sided mirror. The volume experiences
+errors. However, there are no redundant components to read from. For a RAID-5
+volume this occurs after one component goes into &#8220;Maintenance&#8221;
+state, and another component fails. The second component to fail goes into
+the &#8220;Last Erred&#8221; state.</p>
+<p>When either a RAID-1 volume or a RAID-5 volume has a component in the &#8220;Last
+Erred&#8221; state, I/O is still attempted to the component marked &#8220;Last
+Erred.&#8221; This I/O attempt occurs because a &#8220;Last Erred&#8221; component
+contains the last good copy of data from Solaris Volume Manager's point of view.
+With a component in the &#8220;Last Erred&#8221; state, the volume behaves
+like a normal device (disk) and returns I/O errors to an application. Usually,
+at this point, some data has been lost. </p>
+<p>The subsequent errors on other components in the same volume are handled
+differently, depending on the type of volume. </p>
+<div class="variablelist"><dl><dt><span class="term">RAID-1 Volume</span></dt><dd>
+<p>A RAID-1 volume might be able to tolerate many components
+in the &#8220;Maintenance&#8221; state and still be read from and written
+to. If components are in the &#8220;Maintenance&#8221; state, no data has
+been lost. You can safely replace or enable the components in any order. If
+a component is in the &#8220;Last Erred&#8221; state, you cannot replace it
+until you first replace the components in the &#8220;Maintenance&#8221; state.
+Replacing or enabling a component in the &#8220;Last Erred&#8221; state usually
+means that some data has been lost. Be sure to validate the data on the mirror
+after you repair it.</p>
+</dd><dt><span class="term">RAID-5 Volume</span></dt><dd>
+<p>A RAID-5 volume can tolerate a single component in the &#8220;Maintenance&#8221;
+state. You can safely replace a single component in the &#8220;Maintenance&#8221;
+state without losing data. If an error on another component occurs, it is
+put into the &#8220;Last Erred&#8221; state. At this point, the RAID-5 volume
+is a read-only device. You need to perform some type of error recovery so
+that the state of the RAID-5 volume is stable and the possibility of data
+loss is reduced. If a RAID-5 volume reaches a &#8220;Last Erred&#8221; state,
+there is a good chance it has lost data. Be sure to validate the data on the
+RAID-5 volume after you repair it.</p>
+</dd></dl></div>
+<p>Always replace components in the &#8220;Maintenance&#8221; state first,
+followed by those in the &#8220;Last Erred&#8221; state. After a component
+is replaced and resynchronized, use the <span><strong class="command">metastat</strong></span> command
+to verify its state. Then, validate the data.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="replace-enable-5"></a>Background Information for Replacing and
+Enabling Components in RAID-1 and RAID-5 Volumes</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-213"></a>
+<a class="indexterm" name="indexterm-214"></a>
+<p>
+<a class="indexterm" name="indexterm-215"></a>When you replace components in a RAID-1 volume or a RAID-5 volume,
+follow these guidelines: </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Always replace components in the &#8220;Maintenance&#8221;
+state first, followed by those components in the &#8220;Last Erred&#8221;
+state.</p>
+</li><li>
+<p>After a component is replaced and resynchronized, use the <span><strong class="command">metastat</strong></span> command to verify the state of the volume. Then, validate
+the data. Replacing or enabling a component in the &#8220;Last Erred&#8221;
+state usually means that some data has been lost. Be sure to validate the
+data on the volume after you repair it. For a UFS, run the <span><strong class="command">fsck</strong></span> command
+to validate the &#8220;metadata&#8221; (the structure of the file system).
+Then, check the actual user data. (Practically, users will have to examine
+their files.) A database or other application must have its own way of validating
+its internal data structure.</p>
+</li><li>
+<p>Always check for state database replicas and hot spares when
+you replace components. Any state database replica in an erred state should
+be deleted before you replace the physical disk. The state database replica
+should be added back before you enable the component. The same procedure applies
+to hot spares.</p>
+</li><li>
+<p>During component replacement for a RAID-5 volume, data is
+recovered in one of two ways. The data is recovered either from a hot spare
+currently in use or from using the RAID-5 parity, when no hot spare is in
+use.</p>
+</li><li>
+<p>When you replace a component for a RAID-1 volume, Solaris Volume Manager automatically
+starts resynchronizing the new component with the rest of the volume. When
+the resynchronization completes, the replaced component becomes readable and
+writable. If the failed component has been replaced with data from a hot spare,
+the hot spare is placed in the &#8220;Available&#8221; state and made available
+for other hot spare replacements.</p>
+</li><li>
+<p>The new component must be large enough to replace the old
+component.</p>
+</li><li>
+<p>As a precaution, back up all data before you replace &#8220;Last
+Erred&#8221; devices.</p>
+</li></ul></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch20s06.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch20.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch21.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Expanding a File System Using the <span><strong class="command">growfs</strong></span> Command </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 21. Best Practices for Solaris Volume Manager</td></tr></table></div></body></html>

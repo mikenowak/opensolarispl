@@ -1,0 +1,94 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Architecture overview</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="DTrace User Guide"><link rel="up" href="ch01.html" title="Chapter 1. Introduction"><link rel="prev" href="ch01.html" title="Chapter 1. Introduction"><link rel="next" href="ch02.html" title="Chapter 2. DTrace Basics"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Architecture overview</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01.html">Prev</a> </td><th width="60%" align="center">Chapter 1. Introduction</th><td width="20%" align="right"> <a accesskey="n" href="ch02.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gcfpv"></a>Architecture overview</h2></div></div></div>
+
+<p>The DTrace facility consists of the following components:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>User level consumer programs such as <span><strong class="command">dtrace</strong></span>
+</p>
+</li><li>
+<p>Providers, packaged as kernel modules, that provide probes
+to gather tracing data</p>
+</li><li>
+<p>A library interface that consumer programs use to access the
+DTrace facility through the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">dtrace</span>
+(
+7D
+)
+</span>
+</span> kernel
+driver</p>
+</li></ul></div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcbxv"></a>DTrace Providers</h3></div></div></div>
+
+<p>A provider represents a methodology for instrumenting the system. Providers
+make probes available to the DTrace framework. DTrace sends information to
+a provider regarding when to enable a probe. When an enabled probe fires,
+the provider transfers control to DTrace.</p>
+<p>Providers are packaged as a set of kernel modules. Each module performs
+a particular kind of instrumentation to create probes. When you use DTrace,
+each provider has the ability to publish the probes it can provide to the
+DTrace framework. You can enable and bind tracing actions to any of the published
+probes.</p>
+<p>Some providers have the capability to create new probes based on the
+user's tracing requests.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcbzc"></a>DTrace Probes</h3></div></div></div>
+
+<p>A probe has the following attributes:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>It is made available by a <span class="emphasis"><em>provider</em></span>
+</p>
+</li><li>
+<p>It identifies the <span class="emphasis"><em>module</em></span> and the <span class="emphasis"><em>function</em></span> that it instruments</p>
+</li><li>
+<p>It has a <span class="emphasis"><em>name</em></span>
+</p>
+</li></ul></div>
+<p>These four attributes define a 4&#8211;tuple that serves as a unique
+identifier for each probe, in the format <span class="emphasis"><em>provider:module:function:name</em></span>.
+Each probe also has a unique integer identifier.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcgkn"></a>DTrace Predicates</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-1"></a>Predicates are expressions that are enclosed in slashes <code class="literal">/
+/</code>. Predicates  are evaluated at probe firing time to determine whether
+the associated actions should be executed.  Predicates are the primary conditional
+construct used for building more complex control flow in a D program.  You
+can omit the predicate section of the probe clause entirely for any probe.
+If the predicate section is omitted, the actions are always executed when
+the probe fires.</p>
+<p>Predicate expressions can use any of the previously described D operators.
+Predicate expressions refer to D data objects such as variables and constants.
+The predicate expression must evaluate to a value of integer or pointer type.
+As with all D expressions, a zero value is interpreted as false and any non-zero
+value is interpreted as true.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcdxn"></a>DTrace Actions</h3></div></div></div>
+
+<p>Actions are user-programmable statements that the DTrace virtual machine
+executes within the kernel. Actions have the following properties:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Actions are taken when a probe fires</p>
+</li><li>
+<p>Actions are completely programmable in the D scripting language</p>
+</li><li>
+<p>Most actions record a specified system state</p>
+</li><li>
+<p>An action can change the state of the system in a precisely
+described way. Such actions are called <span class="emphasis"><em>destructive actions</em></span>.
+Destructive actions are not allowed by default.</p>
+</li><li>
+<p>Many actions use expressions in the D scripting language</p>
+</li></ul></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gcbzh"></a>D Scripting Language</h3></div></div></div>
+
+<p>You can invoke the DTrace framework directly from the command line with
+the <span><strong class="command">dtrace</strong></span> command for simple functions. To use DTrace
+to perform more complex functions, write a script in the D scripting language.
+Use the <code class="literal">-s</code> option to load a specified script for DTrace
+to use. See <span class="olink">Chapter 3, Scripting With the D Language</span> for information about using the D scripting language.</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch01.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 1. Introduction </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 2. DTrace Basics</td></tr></table></div></body></html>

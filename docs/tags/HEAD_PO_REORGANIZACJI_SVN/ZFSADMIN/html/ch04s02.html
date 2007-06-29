@@ -1,0 +1,94 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Replication Features of a ZFS Storage Pool</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="up" href="ch04.html" title="Chapter 4. Managing ZFS Storage Pools"><link rel="prev" href="ch04.html" title="Chapter 4. Managing ZFS Storage Pools"><link rel="next" href="ch04s03.html" title="Creating and Destroying ZFS Storage Pools"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Replication Features of a ZFS Storage Pool</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04.html">Prev</a> </td><th width="60%" align="center">Chapter 4. Managing ZFS Storage Pools</th><td width="20%" align="right"> <a accesskey="n" href="ch04s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gcfof"></a>Replication Features of a ZFS Storage Pool</h2></div></div></div>
+
+<p>ZFS provides two levels of data redundancy in a mirrored and a RAID-Z
+configuration.<a class="indexterm" name="indexterm-92"></a>
+</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gamss"></a>Mirrored Storage Pool Configuration</h3></div></div></div>
+
+<p>A mirrored storage pool configuration requires at least two disks, preferrably
+on separate controllers. Many disks can be used in a mirrored configuration.
+In addition, you can create more than one mirror in each pool. Conceptually,
+a simple mirrored configuration would look similar to the following:<a class="indexterm" name="indexterm-93"></a>
+<a class="indexterm" name="indexterm-94"></a>
+<a class="indexterm" name="indexterm-95"></a>
+<a class="indexterm" name="indexterm-96"></a>
+</p>
+<pre class="screen">mirror c1t0d0 c2t0d0</pre>
+<p>Conceptually, a more complex mirrored configuration would look similar
+to the following:</p>
+<pre class="screen">mirror c1t0d0 c2t0d0 c3t0d0 mirror c4t0d0 c5t0d0 c6t0d0</pre>
+<p>For information about creating a mirrored storage pool, see <span class="olink">Creating a Mirrored Storage Pool</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gamtu"></a>RAID-Z Storage Pool Configuration</h3></div></div></div>
+
+<p>In addition to a mirrored storage pool configuration, ZFS provides a
+RAID-Z configuration. RAID-Z is similar to RAID-5.<a class="indexterm" name="indexterm-97"></a>
+<a class="indexterm" name="indexterm-98"></a>
+<a class="indexterm" name="indexterm-99"></a>
+<a class="indexterm" name="indexterm-100"></a>
+</p>
+<p>All traditional RAID-5-like algorithms (RAID-4. RAID-5. RAID-6, RDP,
+and EVEN-ODD, for example) suffer from a problem known as the &#8220;RAID-5
+write hole.&#8221; If only part of a RAID-5 stripe is written, and power is
+lost before all blocks have made it to disk, the parity will remain out of
+sync with the data, and therefore useless, forever (unless a subsequent full-stripe
+write overwrites it). In RAID-Z, ZFS uses variable-width RAID stripes so that
+all writes are full-stripe writes. This design is only possible because ZFS
+integrates file system and device management in such a way that the file system's
+metadata has enough information about the underlying data replication model
+to handle variable-width RAID stripes. RAID-Z is the world's first software-only
+solution to the RAID-5 write hole.</p>
+<p>You need at least two disks for a RAID-Z configuration. Otherwise, no
+special hardware is required to create a RAID-Z configuration. Currently,
+RAID-Z provides single parity. For example, if you have three disks in a RAID-Z
+configuration, parity data occupies space equal to one of the three disks.</p>
+<p>Conceptually, RAID-Z configuration with three disks would look similar
+to the following:</p>
+<pre class="screen">raidz c1t0d0 c2t0d0 c3t0d0</pre>
+<p>A more complex conceptual RAID-Z configuration would look similar to
+the following:</p>
+<pre class="screen">raidz c1t0d0 c2t0d0 c3t0d0 c4t0d0 c5t0d0 c6t0d0 c7t0d0 raidz c8t0d0 c9t0d0 c10t0d0 c11t0d0 c12t0d0 c13t0d0 c14t0d0</pre>
+<p>If you are creating a RAID-Z configuration with many disks, as in this
+example, a RAID-Z configuration with 14 disks is better split into a two 7-disk
+groupings. RAID-Z configurations with single-digit groupings of disks should
+perform better.</p>
+<p>For information about creating a RAID-Z storage pool, see <span class="olink">Creating a RAID-Z Storage Pool</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gazch"></a>Self-Healing Data in a Replicated Configuration</h3></div></div></div>
+
+<p>ZFS provides for self-healing data in a mirrored or RAID-Z configuration.</p>
+<p>When a bad data block is detected, not only does ZFS fetch the correct
+data from another replicated copy, but it also repairs the bad data by replacing
+it with the good copy.<a class="indexterm" name="indexterm-101"></a>
+</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="gazdd"></a>Dynamic Striping in a Storage Pool</h3></div></div></div>
+
+<p>For each virtual device that is added to the pool, ZFS dynamically stripes
+data across all available devices. The decision about where to place data
+is done at write time, so no fixed width stripes are created at allocation
+time.<a class="indexterm" name="indexterm-102"></a>
+<a class="indexterm" name="indexterm-103"></a>
+<a class="indexterm" name="indexterm-104"></a>
+</p>
+<p>When virtual devices are added to a pool, ZFS gradually allocates data
+to the new device in order to maintain performance and space allocation policies.
+Each virtual device can also be a mirror or a RAID-Z device that contains
+other disk devices or files. This configuration allows for flexibility in
+controlling the fault characteristics of your pool. For example, you could
+create the following configurations out of 4 disks:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Four disks using dynamic striping</p>
+</li><li>
+<p>One four-way RAID-Z configuration</p>
+</li><li>
+<p>Two two-way mirrors using dynamic striping</p>
+</li></ul></div>
+<p>While ZFS supports combining different types of virtual devices within
+the same pool, this practice is not recommended. For example, you can create
+a pool with a two-way mirror and a three-way RAID-Z configuration. However,
+your fault tolerance is as good as your worst virtual device, RAID-Z in this
+case. The recommended practice is to use top-level virtual devices of the
+same type with the same replication level in each device.</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 4. Managing ZFS Storage Pools </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Creating and Destroying ZFS Storage Pools</td></tr></table></div></body></html>

@@ -1,0 +1,353 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title><tt>nisplusLDAPentryTtl</tt> Attribute - System Administration Guide: Naming and Directory Services (DNS, NIS, and LDAP)</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2006-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Naming and Directory Services (DNS, NIS, and LDAP)<?GenHTML /ReferencePage> > <a href="p61.html">16.&nbsp;&nbsp;Transitioning From NIS+ to LDAP</a> > <a href="p62.html#nisplus2ldap-5">Getting Started With the NIS+ to LDAP Transition</a> > <a href="p63.html#nisplus2ldap-15"><tt>/var/nis/NIS+LDAPmapping</tt> File</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p63.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p65.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="nisplus2ldap-17"></a><h5><tt>nisplusLDAPentryTtl</tt> Attribute</h5>
+<p>Since the <tt>rpc.nisd</tt> daemon's local database (in
+memory and on disk) functions as a cache for LDAP data, the <tt>nisplusLDAPentryTtl</tt> attribute allows you to set the time-to-live (TTL) values of entries
+in that cache. There are three TTLs for each database ID. The first two control
+the initial TTL when the <tt>rpc.nisd</tt> first loads the corresponding
+NIS+ object data from disk, and the third TTL is assigned to an object when
+it is read or refreshed from LDAP.</p>
+<p>For example the following results in the <tt>rpc.org_dir</tt> table
+object getting an initial TTL randomly selected in the range 21600 to 43200
+seconds.</p>
+<pre>nisplusLDAPentryTtl	rpc_table:21600:43200:43200</pre><p>When that initial TTL expires and the table object is refreshed from
+LDAP, the TTL will be set to 43200 seconds.</p>
+<p>Similarly the following will assign an initial TTL between 1800 and
+3600 seconds to the entries in the <tt>rpc.org_dir</tt> table when
+it is first loaded.</p>
+<pre>nisplusLDAPentryTtl	rpc:1800:3600:3600</pre><p>Each entry gets its own randomly selected TTL in the range specified.
+When a table entry expires and is refreshed, the TTL is set to 3600 seconds.</p>
+<p>When selecting TTL values, consider the trade-off between performance
+and consistency. If the TTLs used for LDAP data cached by the <tt>rpc.nisd</tt> are
+very long, performance is the same as if <tt>rpc.nisd</tt> was not
+mapping data from LDAP at all. However, if the LDAP data is changed (by some
+entity other than <tt>rpc.nisd</tt>), it can also take a very long
+time before that change is visible in NIS+.</p>
+<p>Conversely, selecting a very short (or even zero) TTL means that changes
+to LDAP data are quickly visible in NIS+, but can also impose a significant
+performance penalty. Typically, an NIS+ operation that also reads data from
+or writes data to LDAP will take at least two to three times longer (plus
+the LDAP lookup overhead) than the same operation without LDAP communication.
+Although performance can vary greatly depending on the hardware resources,
+scanning a large (tens of thousands or hundreds of thousands of entries) LDAP
+container to identify NIS+ entries that should be refreshed can take a long
+time. The <tt>rpc.nisd</tt>daemon performs this scan in the background,
+continuing to serve possibly stale data while it is running, but the background
+scan still consumes CPU and memory on the NIS+ server.</p>
+<p>Carefully consider how critical it is to have NIS+ data in close synchronization
+with LDAP, and select the longest TTL that is acceptable for each NIS+ object.
+The default (when no <tt>nisplusLDAPentryTtl</tt> is specified)
+is 1 hour. The template mapping file <tt>/var/nis/NIS+LDAPmapping.template</tt> changes
+this to 12 hours for objects other than table entries. However, there is no
+auto-recognition of non-entry objects, so if you add mapping for a non-entry
+object, the TTL will default to 1 hour.</p>
+<hr>
+<p><b>Note - </b>There are no TTLs for nonexistent objects. Hence, no matter which
+TTLs are in effect for LDAP-mapped entries in an NIS+ table, a request for
+an entry that does not exist in NIS+ will query LDAP for that entry.</p>
+<hr>
+<a name="nisplus2ldap-18"></a><h5><tt>nisplusLDAPobjectDN</tt> Attribute</h5>
+<p>For each mapped NIS+ object, <tt>nisplusLDAPobjectDN</tt> establishes
+the location in the LDAP DIT where the object data resides. It also allows
+specification of the action to take when an LDAP entry is deleted. Each <tt>nisplusLDAPobjectDN</tt> value has three parts. The first specifies where
+LDAP data is read from, the second to where it is written, and the third what
+should happen when LDAP data is deleted. Refer to the following example.</p>
+<pre>nisplusLDAPobjectDN	rpc_table:\
+										cn=rpc,ou=nisPlus,?base?\
+													objectClass=nisplusObjectContainer:\
+										cn=rpc,ou=nisPlus,?base?\
+													objectClass=nisplusObjectContainer,\
+														objectClass=top</pre><p>The above example shows that the <tt>rpc.org_dir</tt> table
+object should be read from the DN <tt>cn=rpc,ou=nisPlus</tt>, (since
+the value ends in a comma, the value of the <tt>defaultSearchBase</tt> attribute
+is appended), with scope <tt>base</tt>, and that entries with a
+value of <tt>nisplusObjectContainer</tt> for the <tt>ObjectClass</tt> attribute
+are selected.</p>
+<p>The table object is written to the same place. The delete specification
+is missing, which implies the default action, which is as follows. If the
+NIS+ table object is deleted, the entire LDAP entry should also be deleted.</p>
+<p>If data should be read from, but not written to LDAP, omit the write
+portion (and the colon separating it from the read part).</p>
+<pre>nisplusLDAPobjectDN	rpc_table:\
+										cn=rpc,ou=nisPlus,?base?\
+										objectClass=nisplusObjectContainer</pre><p>Note that the <tt>nisplusObjectContainer</tt> object class
+is not part of RFC 2307. In order to use it, you must configure your LDAP
+server as detailed in <a href="p67.html">Mapping NIS+ Objects Other Than Table Entries</a>.</p>
+<p>For the <tt>rpc.org_dir</tt> table entries, you could use
+the following example.</p>
+<pre>nisplusLDAPobjectDN rpc:ou=Rpc,?one?objectClass=oncRpc:\
+											ou=Rpc,?one?objectClass=onRpc,objectClass=top</pre><p>The above shows that the table entries are read from and written to
+the base <tt>ou=Rpc</tt>. Again, the trailing comma appends the <tt>defaultSearchBase</tt> value. Select entries that have an <tt>objectClass</tt> attribute value of <tt>oncRpc</tt>. When creating an
+entry in the <tt>ou=Rpc</tt> container in LDAP, you also must specify <tt>top</tt> as an <tt>objectClass</tt> value.</p>
+<p>As an example showing a non-default delete specification, consider the
+following.</p>
+<pre>nisplusLDAPobjectDN	user_attr:\
+										ou=People,?one?objectClass=SolarisUserAttr,\
+											solarisAttrKeyValue=*:\
+										ou=People,?one?objectClass=SolarisUserAttr:\
+											dbid=user_attr_del</pre><p>The <tt>user_attr.org_dir</tt> data resides in the <tt>ou=People</tt> LDAP container, which it shares with account information from other
+sources, such as the <tt>passwd.org_dir</tt> NIS+ table.</p>
+<p>Select entries in that container that have the <tt>solarisAttrKeyValue</tt> attribute, since only those contain <tt>user_attr.org_dir</tt> data.
+The <tt>dbid=user_attr_del</tt> portion of the <tt>nisplusLDAPobjectDN</tt> shows that when an entry in the <tt>user_attr.org_dir</tt> NIS+
+table entry is deleted, deletion of the corresponding LDAP entry (if any)
+should follow the rules in the rule set identified by the <tt>user_attr_del</tt> database
+ID. See <a href="p64.html#nisplus2ldap-20"><tt>nisplusLDAPcolumnFromAttribute</tt> Attribute</a> for more information.</p>
+<a name="nisplus2ldap-19"></a><h5><tt>nisplusLDAPattributeFromColumn</tt> Attribute</h5>
+<p><tt>nisplusLDAPattributeFromColumn</tt> specifies the rules
+used to map NIS+ data to LDAP. Mapping rules for the other direction is controlled
+by <tt>nisplusLDAPcolumnFromAttribute</tt>.</p>
+<a name="nisplus2ldap-20"></a><h5><tt>nisplusLDAPcolumnFromAttribute</tt> Attribute</h5>
+<p><tt>nisplusLDAPcolumnFromAttribute</tt> specifies the rules
+used to map LDAP data to NIS+.</p>
+<p>The full entry mapping syntax can be found on <tt>NIS+LDAPmapping</tt>(4). However,
+a few examples should make things clearer.</p>
+<p>The NIS+ <tt>rpc.org_dir</tt> table contains four columns
+called <tt>cname</tt>, <tt>name</tt>, <tt>numbe</tt>,
+and <tt>comment</tt>. Therefore, the entries for the NIS+ RPC program
+number (100300) with the canonical name <tt>nisd</tt> and the aliases <tt>rpc.nisd</tt> and <tt>nisplusd</tt> could be represented by
+the following NIS+ entries in <tt>rpc.org_dir</tt>.</p>
+<pre>nisd nisd 100300	NIS+ server
+nisd rpc.nisd 100300	NIS+ server
+nisd nisplusd 100300	NIS+ server</pre><p>Assuming the <tt>defaultSearchBase</tt> value is <tt>dc=some,dc=domain</tt>, the corresponding LDAP entry, as listed by <tt>ldapsearch</tt>(1), would be
+the following.</p>
+<pre>dn: cn=nisd,ou=Ppc,dc=some,dc=domain
+cn: nisd
+cn: rpc.nsid
+cn: nisplusd
+oncRpcNumber: 100300
+description: NIS+ server
+objectClass: oncRpc</pre><p>This makes for a simple one-to-one mapping between NIS+ and LDAP data,
+and the corresponding mapping attribute value going from NIS+ to LDAP is the
+following.</p>
+<pre>nisplusLDAPattributeFromColumn \
+rpc:		dn=("cn=%s,", name), \
+				cn=cname, \
+				cn=name, \
+				oncRpcNumber=number, \
+				description=comment</pre><p>This constructs the DN for the entry to be <tt>cn=%s</tt>,
+with the value of the <tt>cname</tt> column substituted for <tt>%s</tt>.</p>
+<pre>cn=nisd,</pre><p>Since the value ends in a comma, the read base value from the <tt>nisplusObjectDN</tt> is appended, and you have the following.</p>
+<pre>cn=nisd,ou=Rpc,dc=some,dc=domain</pre><p>The <tt>oncRpcNumber</tt> and <tt>description</tt> attribute
+values are just simple assignments of the corresponding NIS+ column values.
+The <tt>rpc.nisd</tt> will collect the multiple NIS+ entries into
+one LDAP entry, with multiple <tt>cn</tt> values to represent the
+different <tt>name</tt> column values.</p>
+<p>Similarly, the mapping from LDAP to NIS+ would be as follows.</p>
+<pre>nisplusLDAPcolumnFromAttribute \
+ 					rpc:		cname=cn, \
+			 						(name)=(cn), \
+									number=oncRpcNumber, \
+									comment=description</pre><p>The above assigns the <tt>oncRpcNumber</tt> and <tt>description</tt> values to the corresponding NIS+ columns. The multi-valued <tt>cn</tt> (denoted by <tt>(cn)</tt> is mapped to multiple <tt>name</tt> column values (denoted by <tt>(name)</tt>). Since the <tt>name</tt> column cannot be multi-valued, the <tt>rpc.nisd</tt> creates
+one NIS+ entry for each <tt>cn</tt> value.</p>
+<p>Finally, the <tt>nisplusLDAPattributeFromColumn</tt> value
+is an example of rule sets used for deletion.</p>
+<pre>nisplusLDAPattributeFromColumn \
+user_attr_del:	dn=("uid=%s,", name), \
+						SolarisUserQualifier=, \
+						SolarisAttrReserved1=, \
+ 						SolarisAttrReserved2=, \
+						SolarisAttrKeyValue= </pre><p>Again, the <tt>user_attr.org_dir</tt> data shares the <tt>ou=People</tt> container with other account information (from the <tt>passwd.org_dir</tt> and other tables). If an entry in the <tt>user_attr.org_dir</tt> table
+is deleted, you probably do not want to delete the entire <tt>ou=People</tt> entry.
+Instead, the delete entry above says that when a <tt>user_attr.org_dir</tt> entry
+is deleted, the <tt>SolarisUserQualifier</tt>,  <tt>SolarisAttrReserved1</tt>, <tt>SolarisAttrReserved2</tt>, and <tt>SolarisAttrKeyValue</tt> attributes (if any) are deleted from the <tt>ou=People</tt> entry
+specified by the following rule.</p>
+<pre>dn=("uid=%s,", name)</pre><p>The rest of the LDAP entry is left unchanged.</p>
+<a name="nisplus2ldap-21"></a><h4>NIS+ to LDAP Migration Scenarios</h4>
+<p>Likely scenarios for a migration from NIS+ to LDAP include the following.</p>
+<ul><li><p><b>Convert all NIS+ clients to LDAP in one operation.</b> You
+can use the <tt>rpc.nisd</tt> daemon to upload any NIS+ data that
+ does not yet exist in LDAP. See <a href="p64.html#nisplus2ldap-proc-22">How to Convert All NIS+ Data to LDAP in One Operation</a>.</p>
+</li>
+<li><p><b>Do a gradual migration from NIS+ to LDAP.</b> Start
+by converting NIS+ data to LDAP (see <a href="p64.html#nisplus2ldap-proc-22">How to Convert All NIS+ Data to LDAP in One Operation</a>). 	You could
+have both NIS+ and LDAP clients  sharing the same naming service data, and
+let the <tt>rpc.nisd</tt> automatically keep NIS+ and LDAP data
+synchronized. Initially, perhaps, NIS+ would be authoritative, and the LDAP
+server(s) would maintain a duplicate of the NIS+ data for the benefit of LDAP
+clients. At a convenient time, LDAP can become the authoritative naming service,
+and NIS+ service gradually phased out, until there are no more NIS+ clients.</p>
+</li>
+<li><p>LDAP is already used as a naming service, so you need to merge
+the NIS+ and LDAP data. There are three possible ways to perform this merge.</p>
+<ul><li><p><b>Add the NIS+ data to LDAP.</b> Entries that
+exist in NIS+, but not in LDAP, are added to LDAP. Entries that appear both
+in NIS+ and LDAP, but with different data, end up with the NIS+ data. See <a href="p64.html#nisplus2ldap-proc-22">How to Convert All NIS+ Data to LDAP in One Operation</a>.</p>
+</li>
+<li><p><b>Overwrite the NIS+ data with the LDAP data.</b> If
+there are entries that exist in NIS+ but not in LDAP, they will disappear
+from NIS+. Entries that exist both in NIS+ and LDAP end up with the LDAP data.
+See <a href="p65.html">How to Convert All LDAP Data to NIS+ in One Operation</a>.</p>
+</li>
+<li><p><b>Merge NIS+ and LDAP data, resolving conflicts on
+an individual basis.</b> See <a href="p65.html#nisplus2ldap-28">Merging NIS+ and LDAP Data</a>.</p>
+</li>
+</ul>
+</li>
+</ul>
+<a name="nisplus2ldap-proc-22"></a><h4><img src="graphics/procedure.gif"> How to Convert All NIS+ Data to LDAP
+in One Operation</h4>
+<ol><li><a name="nisplus2ldap-step-23"></a><b>Use the <tt>rpc.nisd</tt> to
+upload any NIS+ data that does not yet exist in LDAP.</b><p>Assuming
+all NIS+/LDAP data mappings have been established in the default location
+(<tt>/var/nis/NIS+LDAPmapping</tt>), use the following command.</p><pre># <tt><b>/usr/sbin/rpc.nisd</b></tt> <tt>-D</tt> <tt><b>\</b></tt>
+<tt><b></b></tt><tt>-x</tt> <tt><b>nisplusLDAPinitialUpdateAction=to_ldap \</b></tt>
+<tt><b></b></tt><tt>-x</tt> <tt><b>nisplusLDAPinitialUpdateOnly=yes</b></tt></pre><p>The above would make the <tt>rpc.nisd</tt> upload data to
+LDAP, and then exit. The NIS+ data would be unaffected by this operation.</p><p>See the <tt>nisplusLDAPinitialUpdateAction</tt> attribute
+on <tt>rpc.nisd</tt>(4).</p></li></ol>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p63.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p65.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2006 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

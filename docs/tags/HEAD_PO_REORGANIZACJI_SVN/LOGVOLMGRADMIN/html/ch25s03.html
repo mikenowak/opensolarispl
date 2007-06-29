@@ -1,0 +1,148 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Replacing Disks</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch25.html" title="Chapter 25. Troubleshooting Solaris Volume Manager (Tasks)"><link rel="prev" href="ch25s02.html" title="Overview of Troubleshooting the System"><link rel="next" href="ch25s04.html" title="Recovering From Disk Movement Problems"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Replacing Disks</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch25s02.html">Prev</a> </td><th width="60%" align="center">Chapter 25. Troubleshooting Solaris Volume Manager (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch25s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="troubleshoottasks-95"></a>Replacing Disks</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="indexterm-233"></a>
+<a class="indexterm" name="indexterm-234"></a>
+<a class="indexterm" name="indexterm-235"></a>
+<a class="indexterm" name="indexterm-236"></a>
+<a class="indexterm" name="indexterm-237"></a>
+<a class="indexterm" name="indexterm-238"></a>
+<a class="indexterm" name="indexterm-239"></a>This section describes how to replace disks in a Solaris Volume Manager environment. </p>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>If you have soft partitions on a failed disk or on volumes
+that are built on a failed disk, you must put the new disk in the same physical
+location Also, use the same <code class="literal">c</code>
+<em class="replaceable"><code>n</code></em>
+<code class="literal">t</code>
+<em class="replaceable"><code>n</code></em>
+<code class="literal">d</code>
+<em class="replaceable"><code>n</code></em>
+<code class="literal">
+</code> number
+as the disk being replaced.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1780865"></a></h3></div></div></div>
+
+<div class="task"><a name="troubleshoottasks-96"></a><p class="title"><b>How to Replace a Failed Disk</b></p><div class="procedure"><ol type="1"><li><a name="troubleshoottasks-step-98"></a>
+<p>
+<a class="indexterm" name="indexterm-240"></a>Identify the failed disk to be replaced by examining the <code class="filename">/var/adm/messages</code> file and the <span><strong class="command">metastat</strong></span> command output. </p>
+</li><li><a name="troubleshoottasks-step-99"></a>
+<p>Locate any state database replicas
+that might have been placed on the failed disk. </p>
+<p>Use the <span><strong class="command">metadb</strong></span> command to find the replicas.</p>
+<p>The <span><strong class="command">metadb</strong></span> command
+might report errors for the state database replicas that are located on the
+failed disk. In this example, <code class="filename">c0t1d0</code> is the problem device.</p>
+<pre class="screen"># <strong class="userinput"><code>metadb</code></strong>
+   flags       first blk        block count
+  a m     u        16               1034            /dev/dsk/c0t0d0s4
+  a       u        1050             1034            /dev/dsk/c0t0d0s4
+  a       u        2084             1034            /dev/dsk/c0t0d0s4
+  W   pc luo       16               1034            /dev/dsk/c0t1d0s4
+  W   pc luo       1050             1034            /dev/dsk/c0t1d0s4
+  W   pc luo       2084             1034            /dev/dsk/c0t1d0s4</pre>
+<p>The output shows three state database replicas on each slice 4 of the
+local disks, <code class="filename">c0t0d0</code> and <code class="filename">c0t1d0</code>.
+The <code class="literal">W</code> in the flags field of the <code class="filename">c0t1d0s4</code> slice
+indicates that the device has write errors. Three replicas on the <code class="filename">c0t0d0s4</code> slice are still good.</p>
+</li><li><a name="troubleshoottasks-step-100"></a>
+<p>Record the slice name where the
+state database replicas reside and the number of state database replicas.
+Then, delete the state database replicas.</p>
+<p>The number of state
+database replicas is obtained by counting the number of appearances of a slice
+in the <span><strong class="command">metadb</strong></span> command output. In this example, the three
+state database replicas that exist on <code class="filename">c0t1d0s4</code> are deleted. </p>
+<pre class="screen"># <strong class="userinput"><code>metadb -d c0t1d0s4</code></strong>
+</pre>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>If, after deleting the bad state database replicas, you are
+left with three or fewer, <span class="olink">add more state database replicas</span> before
+continuing. Doing so helps to ensure that configuration information remains
+intact.</p>
+</div>
+</li><li><a name="troubleshoottasks-step-102"></a>
+<p>Locate and delete any hot spares
+on the failed disk.</p>
+<p>Use the <span><strong class="command">metastat</strong></span> command
+to find hot spares. In this example, hot spare pool <code class="literal">hsp000</code> included <code class="filename">c0t1d0s6</code>, which is then deleted from the pool.</p>
+<pre class="screen"># <strong class="userinput"><code>metahs -d hsp000 c0t1d0s6</code></strong>
+hsp000: Hotspare is deleted</pre>
+</li><li>
+<p>Replace the failed disk.</p>
+<p>This step might entail using
+the <span><strong class="command">cfgadm</strong></span> command, the <span><strong class="command">luxadm</strong></span> command,
+or other commands as appropriate for your hardware and environment. When performing
+this step, make sure to follow your hardware's documented procedures to properly
+manipulate the Solaris state of this disk.</p>
+</li><li><a name="troubleshoottasks-step-105"></a>
+<p>Repartition the new disk.</p>
+<p>Use the <span><strong class="command">format</strong></span> command or the <span><strong class="command">fmthard</strong></span> command
+to partition the disk with the same slice information as the failed disk.
+If you have the <span><strong class="command">prtvtoc</strong></span> output from the failed disk, you
+can format the replacement disk with the <span><strong class="command">fmthard -s <em class="replaceable"><code>/tmp/failed-disk-prtvtoc-output</code></em>
+</strong></span> command.</p>
+</li><li><a name="troubleshoottasks-step-106"></a>
+<p>If you deleted state database
+replicas, add the same number back to the appropriate slice.</p>
+<p>In
+this example, <code class="filename">/dev/dsk/c0t1d0s4</code> is used.</p>
+<pre class="screen"># <strong class="userinput"><code>metadb -a -c 3 c0t1d0s4</code></strong>
+</pre>
+</li><li><a name="troubleshoottasks-step-106a"></a>
+<p>If any slices on the disk are
+components of RAID-5 volumes or are components of RAID-0 volumes that are
+in turn submirrors of RAID-1 volumes, run the <span><strong class="command">metareplace -e</strong></span> command
+for each slice. </p>
+<p>In this example, <code class="filename">/dev/dsk/c0t1d0s4</code> and
+mirror <code class="filename">d10</code> are used.</p>
+<pre class="screen"># <strong class="userinput"><code>metareplace -e d10 c0t1d0s4</code></strong>
+</pre>
+</li><li><a name="troubleshoottasks-step-113"></a>
+<p>If any soft partitions are built
+directly on slices on the replaced disk, run the <span><strong class="command">metarecover -m -p</strong></span> command
+on each slice that contains soft partitions. This command regenerates the
+extent headers on disk.</p>
+<p>In this example, <code class="filename">/dev/dsk/c0t1d0s4</code> needs
+to have the soft partition markings on disk regenerated. The slice is scanned
+and the markings are reapplied, based on the information in the state database
+replicas. </p>
+<pre class="screen"># <strong class="userinput"><code>metarecover c0t1d0s4 -m -p</code></strong>
+</pre>
+</li><li>
+<p>If any soft partitions on the disk are components of RAID-5 volumes
+or are components of RAID-0 volumes that are submirrors of RAID-1 volumes,
+run the <span><strong class="command">metareplace -e</strong></span> command for each slice. </p>
+<p>In
+this example, <code class="filename">/dev/dsk/c0t1d0s4</code> and mirror <code class="filename">d10</code> are
+used.</p>
+<pre class="screen"># <strong class="userinput"><code>metareplace -e d10 c0t1d0s4</code></strong>
+</pre>
+</li><li><a name="troubleshoottasks-step-114b"></a>
+<p>If any RAID-0 volumes have soft
+partitions built on them, run the <span><strong class="command">metarecover</strong></span> command for
+each RAID-0 volume.</p>
+<p>In this example, RAID-0 volume, <code class="filename">d17</code>,
+has soft partitions built on it. </p>
+<pre class="screen"># <strong class="userinput"><code>metarecover d17 -m -p</code></strong>
+</pre>
+</li><li><a name="troubleshoottasks-step-109"></a>
+<p>Replace hot spares that were deleted,
+and add them to the appropriate hot spare pool or pools.</p>
+<p>In this
+example, hot spare pool, <code class="literal">hsp000</code> included <code class="literal">c0t1d0s6</code>.
+This slice is added to the hot spare pool.</p>
+<pre class="screen"># <strong class="userinput"><code>metahs -a hsp000 c0t1d0s6</code></strong>hsp000: Hotspare is added</pre>
+</li><li><a name="troubleshoottasks-step-110"></a>
+<p>If soft partitions or nonredundant
+volumes were affected by the failure, restore data from backups. If only redundant
+volumes were affected, then validate your data.</p>
+<p>
+<a class="indexterm" name="indexterm-241"></a>Check the user and application data on all volumes. You might
+have to run an application-level consistency checker, or use some other method
+to check the data. </p>
+</li></ol></div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch25s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch25.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch25s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Overview of Troubleshooting the System </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Recovering From Disk Movement Problems</td></tr></table></div></body></html>

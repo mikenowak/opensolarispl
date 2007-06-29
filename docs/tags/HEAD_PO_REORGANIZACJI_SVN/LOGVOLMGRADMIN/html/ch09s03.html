@@ -1,0 +1,86 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Creating RAID-0 (Concatenation) Volumes</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch09.html" title="Chapter 9. RAID-0
+(Stripe and Concatenation) Volumes (Tasks)"><link rel="prev" href="ch09s02.html" title="Creating RAID-0 (Stripe) Volumes"><link rel="next" href="ch09s04.html" title="Expanding Storage Capacity"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Creating RAID-0 (Concatenation) Volumes</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch09s02.html">Prev</a> </td><th width="60%" align="center">Chapter 9. RAID-0
+(Stripe and Concatenation) Volumes (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch09s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-metadevices-25"></a>Creating RAID-0 (Concatenation) Volumes</h2></div></div></div>
+
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1734099"></a></h3></div></div></div>
+
+<div class="task"><a name="addtasks-17877"></a><p class="title"><b>How to Create a RAID-0 (Concatenation) Volume</b></p><div class="tasksummary">
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>Do not create volumes larger than 1Tbyte if you expect to run
+the Solaris software with a 32&#8211;bit kernel. Additionally, do not create
+volumes larger than 1 Tbyte if you expect to use a version of the Solaris
+OS prior to the Solaris 9 4/03 release. See <span class="olink">Overview of Multi-Terabyte Support in Solaris Volume Manager</span> for more information about multi-terabyte volumes in Solaris Volume Manager.</p>
+</div>
+</div><div class="taskprerequisites">
+
+<p>Check <span class="olink">Prerequisites for Creating Solaris Volume Manager Components</span> and <span class="olink">Background Information for Creating RAID-0 Volumes</span>.</p>
+</div><div class="procedure"><ul><li><a name="tasks-metadevices-step-58"></a>
+<p>To create a concatenation volume,
+use one of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node. Choose Action&#8658;Create
+Volume, then follow the instructions in the wizard. For more information,
+see the online help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>metainit <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>number-of-stripes</code></em>
+<em class="replaceable"><code>components-per-stripe</code></em>
+<em class="replaceable"><code>component-names</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the volume to create.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>number-of-stripes</code></em>
+</span></dt><dd>
+<p>Specifies the number of stripes to create.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>components-per-concatenation</code></em>
+</span></dt><dd>
+<p>Specifies the number of components each concatenation should
+have.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>component-names</code></em>
+</span></dt><dd>
+<p>Specifies the names of the components that are used. If more
+than one component is used, separate each component with a space.</p>
+</dd></dl></div>
+<p>For more information, see the following examples and the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metainit</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</li></ul></div>
+</li></ul></div><div class="example"><a name="egjxu"></a><p class="title"><b>Example 9.3. Creating a Concatenation of One Slice</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metainit d25 1 1 c0t1d0s2</code></strong>
+d25: Concat/Stripe is setup</pre>
+<p>This example shows the creation of a concatenation, <code class="filename">d25</code>.
+This concatenation consists of one stripe (the first number <code class="option">1</code>) composed of a single slice (the second number <code class="option">1</code> in front of the slice). The system verifies that the volume has
+been set up.</p>
+<p>The example shows a concatenation that can safely encapsulate existing
+data.</p>
+</div><div class="example"><a name="egjyf"></a><p class="title"><b>Example 9.4. Creating a Concatenation of Four Slices</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metainit d40 4 1 c0t1d0s2 1 c0t2d0s2 1 c0t2d0s3 1 c0t2d1s3</code></strong>
+d40: Concat/Stripe is setup</pre>
+<p>
+<a class="indexterm" name="addtasks-ix50"></a>This example shows the creation of a concatenation, <code class="filename">d40</code>.
+The concatenation consists of four stripes (the number 4), each composed of
+a single slice (the number <code class="option">1</code> in front of each
+slice). The system verifies that the volume has been set up. </p>
+</div><div class="taskrelated">
+
+<p>To prepare the newly created concatenation for a file system, see <span class="olink">Chapter 18, <em class="citetitle">Creating UFS, TMPFS, and LOFS File Systems (Tasks),</em> in <em class="citetitle">System Administration Guide: Devices and File Systems</em>
+</span>. </p>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch09s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch09.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch09s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Creating RAID-0 (Stripe) Volumes </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Expanding Storage Capacity</td></tr></table></div></body></html>

@@ -1,0 +1,91 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>RAID-1 Volume (Mirror) Resynchronization</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch10.html" title="Chapter 10. RAID-1 (Mirror) Volumes (Overview)"><link rel="prev" href="ch10.html" title="Chapter 10. RAID-1 (Mirror) Volumes (Overview)"><link rel="next" href="ch10s03.html" title="Creating and Maintaining RAID-1 Volumes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">RAID-1 Volume (Mirror) Resynchronization</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10.html">Prev</a> </td><th width="60%" align="center">Chapter 10. RAID-1 (Mirror) Volumes (Overview)</th><td width="20%" align="right"> <a accesskey="n" href="ch10s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="about-metadevices-25868"></a>RAID-1 Volume (Mirror) Resynchronization</h2></div></div></div>
+
+<p>
+<a class="indexterm" name="about-metadevices-ix122"></a>RAID-1 volume (mirror) resynchronization is the process of copying data
+from one submirror to another submirror when one of the following occurs:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Submirrors fail</p>
+</li><li>
+<p>The system crashes</p>
+</li><li>
+<p>A submirror has been taken offline and brought back online</p>
+</li><li>
+<p>A new submirror has been added</p>
+</li></ul></div>
+<p>While the resynchronization takes place, the mirror remains readable and writable
+by users.</p>
+<p>A mirror resynchronization ensures proper mirror operation by maintaining all
+submirrors with identical data, with the exception of writes in progress.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>A mirror resynchronization should not be bypassed. You do not need to
+manually initiate a mirror resynchronization. This process occurs automatically.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="about-metadevices-14"></a>Full Resynchronization</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="about-metadevices-ix123"></a>When a new submirror is attached (added) to a mirror, all the data from
+another submirror in the mirror is automatically written to the newly attached submirror.
+Once the mirror resynchronization is done, the new submirror is readable. A submirror
+remains attached to a mirror until it is detached.</p>
+<p>If the system crashes while a resynchronization is in progress, the resynchronization
+is restarted when the system finishes rebooting.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="about-metadevices-15"></a>Optimized Resynchronization</h3></div></div></div>
+
+<p>
+<a class="indexterm" name="about-metadevices-ix124"></a>During a reboot following a system failure, or when a submirror that was
+offline is brought back online, Solaris Volume Manager performs an <em class="firstterm">optimized mirror
+resynchronization</em>. The metadisk driver tracks submirror regions. This
+functionality enables the metadisk driver to know which submirror regions might be
+out-of-sync after a failure. An optimized mirror resynchronization is performed only
+on the out-of-sync regions. You can specify the order in which mirrors are resynchronized
+during reboot. You can omit a mirror resynchronization by setting submirror pass numbers
+to zero. For tasks associated with changing a pass number, see <span class="olink">Example 11&#8211;15</span>.</p>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>
+<a class="indexterm" name="about-metadevices-ix125"></a>A pass number of zero should only be used on mirrors that are mounted
+as read-only. </p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="about-metadevices-16"></a>Partial Resynchronization</h3></div></div></div>
+
+<a class="indexterm" name="about-metadevices-ix126"></a>
+<p>
+<a class="indexterm" name="about-metadevices-ix127"></a>Following the replacement of a slice within a submirror, Solaris Volume Manager performs
+a <em class="firstterm">partial mirror resynchronization</em> of data. Solaris Volume Manager copies
+the data from the remaining good slices of another submirror to the replaced slice. </p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fpkkb"></a>Canceling and Resuming
+Resynchronization With the <span><strong class="command">metasync</strong></span> Command</h3></div></div></div>
+
+<p>The resynchronization process affects both the performance of a system, as well
+as the user's ability to perform tasks. For example, resynchronizations impact the
+I/O performance and the response time of a system. Additionally, during a resynchronization
+process, a disk set cannot be released from a host. In another example, if a volume
+is attached by mistake, the volume cannot be released until the resynchronization
+has completed. Because of situations such as these, allowing a resynchronization process
+to complete is not always advantageous.</p>
+<p>The <span><strong class="command">metasync <code class="option">
+c</code> <em class="replaceable"><code>volume</code></em>
+</strong></span> command
+cancels the resynchronization process on a given volume. The following functionality
+is associated with canceling resynchronization processes:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Canceled resynchronization processes are logged by using the syslog
+utility</p>
+</li><li>
+<p>After a reboot, any canceled resynchronization process is resumed
+from the point that it stopped</p>
+</li><li>
+<p>When a disk set is taken, any canceled resynchronization process within
+that disk set resumes automatically from the point of the cancellation</p>
+</li></ul></div>
+<p>A canceled resynchronization process can be resumed manually from the point
+that it stopped by issuing the <span><strong class="command">metasync <em class="replaceable"><code>volume</code></em>
+</strong></span> command.</p>
+<p>For the tasks associated with canceling and resuming resynchroniztion processes
+using the <span><strong class="command">metasync</strong></span> command, see <span class="olink">How to Cancel a Volume Resynchronization Process</span> and <span class="olink">How to Resume a Volume Resynchronization Process</span>.</p>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch10.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch10s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 10. RAID-1 (Mirror) Volumes (Overview) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Creating and Maintaining RAID-1 Volumes</td></tr></table></div></body></html>

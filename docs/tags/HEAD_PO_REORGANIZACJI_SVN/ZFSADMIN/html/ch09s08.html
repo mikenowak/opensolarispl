@@ -1,0 +1,29 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Repairing an Unbootable System</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris ZFS Administration Guide"><link rel="up" href="ch09.html" title="Chapter 9. ZFS Troubleshooting and Data Recovery"><link rel="prev" href="ch09s07.html" title="Repairing Damaged Data"><link rel="next" href="ix01.html" title="Index"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Repairing an Unbootable System</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch09s07.html">Prev</a> </td><th width="60%" align="center">Chapter 9. ZFS Troubleshooting and Data Recovery</th><td width="20%" align="right"> <a accesskey="n" href="ix01.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gbbwc"></a>Repairing an Unbootable System</h2></div></div></div>
+
+<p>ZFS is designed to be robust and stable despite errors. Even so, software
+bugs or certain unexpected pathologies might cause the system to panic when
+a pool is accessed. As part of the boot process, each pool must be opened,
+which means that such failures will cause a system to enter into a panic-reboot
+loop. In order to recover from this situation, ZFS must be informed not to
+look for any pools on startup.<a class="indexterm" name="indexterm-564"></a>
+<a class="indexterm" name="indexterm-565"></a>
+<a class="indexterm" name="indexterm-566"></a>
+</p>
+<p>ZFS maintains an internal cache of available pools and their configurations
+in <code class="filename">/etc/zfs/zpool.cache</code>. The location and contents of
+this file are private and are subject to change. If the system becomes unbootable,
+boot to the <code class="literal">none</code> milestone by using the <code class="option">
+m milestone=none</code> boot option. Once the system is up, remount your root file system
+as writable and then remove <code class="filename">/etc/zfs/zpool.cache</code>. These
+actions cause ZFS to forget that any pools exist on the system, preventing
+it from trying to access the bad pool causing the problem. You can then proceed
+to a normal system state by issuing the <span><strong class="command">svcadm milestone all</strong></span> command.
+You can use a similar process when booting from an alternate root to perform
+repairs.</p>
+<p>Once the system is up, you can attempt to import the pool by using the <span><strong class="command">zpool import</strong></span> command. However, doing so will likely cause the same
+error that occurred during boot, because the command uses the same mechanism
+to access pools. If more than one pool is on the system and you want to import
+a specific pool without accessing any other pools, you must re-initialize
+the devices  in the damaged
+pool, at which point you can safely import the good pool.</p>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch09s07.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch09.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ix01.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Repairing Damaged Data </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Index</td></tr></table></div></body></html>

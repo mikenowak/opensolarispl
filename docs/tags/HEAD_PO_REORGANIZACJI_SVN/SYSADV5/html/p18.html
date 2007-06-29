@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Preparing the <tt>Makefile</tt> - System Administration Guide: Naming and Directory Services (DNS, NIS, and LDAP)</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2006-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Naming and Directory Services (DNS, NIS, and LDAP)<?GenHTML /ReferencePage> > <a href="p16.html">5.&nbsp;&nbsp;Setting Up and Configuring NIS Service</a> > <a href="p17.html#cnis1-21774">Preparing the Master Server</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p17.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p19.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="cnis1-29190"></a><h4>Preparing the <tt>Makefile</tt></h4>
+<a name="indexterm-227"></a><a name="indexterm-228"></a><p><a name="indexterm-229"></a><a name="indexterm-230"></a>After checking the source files and copying them into the source
+file directory, you now need to convert those source files into the <tt>ndbm</tt> format maps that the NIS service uses. This is done automatically
+for you by <tt>ypinit</tt> when called on the master server, as
+explained in <a href="p18.html#cnis1-28187">Setting Up the Master Server With <tt>ypinit</tt></a>.</p>
+<p><a name="indexterm-231"></a><a name="indexterm-232"></a>The <tt>ypinit</tt> script calls the program <tt>make</tt>,
+which uses the <tt>Makefile</tt> located in the <tt>/var/yp</tt> directory.
+A default <tt>Makefile</tt> is provided for you in the <tt>/var/yp</tt> directory and contains the commands needed to transform the source
+files into the desired <tt>ndbm</tt> format maps.</p>
+<p>You can use the default <tt>Makefile</tt> as it is, or modify
+it if you want. (If you do modify the default <tt>Makefile</tt>,
+be sure to first copy and store the original default <tt>Makefile</tt> in
+case you need it for future use.) You might need to make one or more of the
+following modifications to the <tt>Makefile</tt>:</p>
+<ul><li><p><b>Nondefault maps</b></p>
+<p>If you have
+created your own non-default source files and want to convert them to NIS
+maps, you must add those source files to the <tt>Makefile</tt>.</p>
+</li>
+<li><p><tt>DIR</tt> <b>value</b></p>
+<p>If you want the <tt>Makefile</tt> to use source files stored
+in some directory other than <tt>/etc</tt>, as explained in <a href="p17.html#cnis1-39121">Source Files Directory</a>, you must change the
+value of <tt>DIR</tt> in the <tt>Makefile</tt> to
+the directory that you want to use. When changing this value in the <tt>Makefile</tt>, do not indent the line.</p>
+</li>
+<li><p><tt>PWDIR</tt> <b>value</b></p>
+<p><a name="indexterm-233"></a><a name="indexterm-234"></a>If you want the <tt>Makefile</tt> to use <tt>passwd</tt>, <tt>shadow</tt>, and/or <tt>adjunct</tt> source
+files stored in some directory other than <tt>/etc</tt>, you must
+change the value of <tt>PWDIR</tt> in the <tt>Makefile</tt> to the directory that you want to use. When changing this
+value in the <tt>Makefile</tt>, do not indent the line.</p>
+</li>
+<li><p><b>Domain name resolver</b></p>
+<p>If you
+want the NIS server to use the domain name resolver for machines not in the
+current domain, comment out the <tt>Makefile</tt> line <tt>B=</tt>,
+and uncomment (activate) the line <tt>B=</tt><tt>-b</tt><tt></tt>.</p>
+</li>
+</ul>
+<p><a name="indexterm-235"></a><a name="indexterm-236"></a><a name="indexterm-237"></a>The function of the <tt>Makefile</tt> is to create
+the appropriate NIS maps for each of the databases listed under <tt>all</tt>.
+After passing through <tt>makedbm</tt> the data is collected in
+two files, <tt>mapname.dir</tt> and <tt>mapname.pag</tt>.
+Both files are in the <tt>/var/yp/</tt><i>domainname</i> directory
+on the master server.</p>
+<p><a name="indexterm-238"></a><a name="indexterm-239"></a><a name="indexterm-240"></a><a name="indexterm-241"></a><a name="indexterm-242"></a><a name="indexterm-243"></a>The <tt>Makefile</tt> builds <tt>passwd</tt> maps
+from the <tt>/PWDIR/passwd</tt>, <tt>/PWDIR/shadow</tt>,
+and <tt>/PWDIR/security/passwd.adjunct</tt> files, as appropriate.</p>
+<a name="cnis1-28187"></a><h4>Setting Up the Master Server With <tt>ypinit</tt></h4>
+<p><a name="indexterm-244"></a>The <tt>ypinit</tt> script sets up master and slave
+servers and clients to use NIS. It also initially runs <tt>make</tt> to
+create the maps on the master server.</p>
+<p>To use <tt>ypinit</tt> to build a fresh set of NIS maps on
+the master server, do the following.</p>
+<a name="cnis1-proc-13"></a><h4><img src="graphics/procedure.gif"> How to set up the master server using <tt>ypinit</tt></h4>
+<ol><li><a name="cnis1-step-3"></a><b>On the master server, become superuser or assume
+an equivalent role.</b><p>Roles contain authorizations and privileged
+commands. For more information about roles, see Chapter 8, Using Role-Based Access Control (Tasks), in <i>System Administration Guide: Security Services</i>.</p></li><li><a name="cnis1-step-14"></a><b>Copy the contents of the <tt>nsswitch.files</tt> file
+to the <tt>nsswitch.conf</tt> file.</b><pre># <tt><b>cp /etc/nsswitch.files /etc/nsswitch.conf</b></tt></pre></li><li><a name="cnis1-step-15"></a><b>Edit the <tt>/etc/hosts</tt> or <tt>/etc/inet/ipnodes</tt> file to add the name and IP address of each of
+the NIS servers.</b></li><li><a name="cnis1-step-16"></a><b>Build new maps on the master server.</b><pre># <tt><b>/usr/sbin/ypinit</b></tt> <tt>-m</tt><tt><b></b></tt></pre></li><li><a name="cnis1-step-17"></a><b><a name="indexterm-245"></a>When <tt>ypinit</tt> prompts for a list of other machines
+to become NIS slave servers, type the name of the server you are working on,
+along with the names of your NIS slave servers.</b></li><li><a name="cnis1-step-18"></a><b>When <tt>ypinit</tt> asks whether
+you want the procedure to terminate at the first nonfatal error or continue
+despite nonfatal errors, type <tt><b>y</b></tt>.</b><p>When you
+choose <tt>y</tt>, <tt>ypinit</tt> exits upon encountering
+the first problem; you can then fix it and restart <tt>ypinit</tt>.
+This is recommended if you are running <tt>ypinit</tt> for the first
+time. If you prefer to continue, you can try to manually fix all problems
+that occur, and then restart <tt>ypinit</tt>.</p><hr>
+<p><b>Note - </b>A nonfatal error can appear when some of the map files are not
+present. This is not an error that affects the functionality of NIS. You might
+need to add maps manually if they were not created automatically. Refer to <a href="p14.html#anis1-6">Default NIS Maps</a> for a description of all default
+NIS maps.</p>
+<hr>
+</li><li><a name="cnis1-step-19"></a><b><tt>ypinit</tt> asks whether the
+existing files in the <tt>/var/yp/</tt><i>domainname</i> directory
+can be destroyed.</b><p>This message is displayed only if NIS has been
+previously installed.</p></li><li><a name="cnis1-step-20"></a><b>After <tt>ypinit</tt> has constructed
+the list of servers, it invokes <tt>make</tt>.</b><p><a name="indexterm-246"></a><a name="indexterm-247"></a><a name="indexterm-248"></a>This program uses the instructions contained in the <tt>Makefile</tt> (either the default one or the one you modified) located in <tt>/var/yp</tt>. The <tt>make</tt> command cleans any remaining
+comment lines from the files you designated. It also runs <tt>makedbm</tt> on
+the files, creating the appropriate maps and establishing the name of the
+master server for each map.</p><p><a name="indexterm-249"></a><a name="indexterm-250"></a><a name="indexterm-251"></a><a name="indexterm-252"></a>If the map or maps being pushed by the <tt>Makefile</tt> correspond
+to a domain other than the one returned by the command <tt>domainname</tt> on
+the master, you can make sure that they are pushed to the correct domain by
+starting <tt>make</tt> in the <tt>ypinit</tt> shell script
+with a proper identification of the variable <tt>DOM</tt>, as follows:</p><pre># <tt><b>make DOM=</tt><i>domainname</i><tt> </tt><i>password</i><tt></b></tt></pre><p>This pushes the <tt>password</tt> map to the intended domain,
+instead of the domain to which the master belongs.</p></li><li><a name="cnis1-step-21"></a><b>To enable NIS as the naming service, type the
+following.</b><pre># <tt><b>cp /etc/nsswitch.nis /etc/nsswitch.conf</b></tt></pre><p>This replaces the current switch file with the default NIS-oriented
+switch file. You can edit this file as necessary.</p></li></ol><a name="cnis1-22"></a><h4>Master Supporting Multiple NIS Domains</h4>
+<a name="indexterm-253"></a><a name="indexterm-254"></a><a name="indexterm-255"></a><p>Normally, an NIS master server supports only one NIS domain. However,
+if you are using a master server to support multiple domains, you must slightly
+modify the steps, as described in <a href="p18.html#cnis1-28187">Setting Up the Master Server With <tt>ypinit</tt></a>, when setting up the server to serve
+the additional domains.</p>
+<p><a name="indexterm-256"></a>Run the <tt>domainname</tt> command on the server. The
+domain name returned by the command is the server's default domain. The steps
+described in <a href="p18.html#cnis1-28187">Setting Up the Master Server With <tt>ypinit</tt></a> will work properly for setting up service for that domain.
+To configure service for any <b>other</b> domain, you must modify
+the <tt>ypinit</tt> shell script as follows.</p>
+<pre># <tt><b>make DOM=</tt><i>correct-domain</i><tt> passwd</b></tt></pre><p><i>correct-domain</i> is the name of the other domain
+that you are setting up service for, and <tt>passwd</tt> is the <tt>make</tt> target. This command pushes the <tt>passwd</tt> map
+to the intended domain, instead of the domain to which the master belongs.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p17.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p19.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2006 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

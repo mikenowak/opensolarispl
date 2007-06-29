@@ -1,0 +1,302 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Removing RAID-1 Volumes (Unmirroring)</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch11.html" title="Chapter 11. RAID-1
+(Mirror) Volumes (Tasks)"><link rel="prev" href="ch11s05.html" title="Responding to RAID-1 Volume Component
+Failures"><link rel="next" href="ch11s07.html" title="Backing Up Data on a RAID-1 Volume"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Removing RAID-1 Volumes (Unmirroring)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch11s05.html">Prev</a> </td><th width="60%" align="center">Chapter 11. RAID-1
+(Mirror) Volumes (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch11s07.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-mirrors-26"></a>Removing RAID-1 Volumes (Unmirroring)</h2></div></div></div>
+
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1748673"></a></h3></div></div></div>
+
+<div class="task"><a name="tasks-mirrors-3"></a><p class="title"><b>How to Unmirror a File System</b></p><div class="tasksummary">
+<p>Use this procedure to unmirror a file system that can be unmounted while
+the system is running. To unmirror root (<code class="filename">/</code>), <code class="filename">/var</code>, <code class="filename">/usr</code>, or <code class="filename">swap</code>, or any other file system that
+cannot be unmounted while the system is running, see <span class="olink">How to Unmirror a File System That Cannot Be Unmounted</span>.</p>
+</div><div class="taskprerequisites">
+
+<p>Read <span class="olink">Creating and Maintaining RAID-1 Volumes</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-mirrors-step-149"></a>
+<p>Make sure that you have root privilege
+and that you have a current backup of all data.</p>
+</li><li><a name="tasks-mirrors-step-107"></a>
+<p>Verify that at least one submirror
+is in the Okay state.</p>
+<pre class="screen"># <strong class="userinput"><code>metastat <em class="replaceable"><code>mirror</code></em>
+</code></strong>
+</pre>
+</li><li><a name="tasks-mirrors-step-108"></a>
+<p>Unmount the file system.</p>
+<pre class="screen"># <strong class="userinput"><code>umount <em class="replaceable"><code>/file-system</code></em>
+</code></strong>
+</pre>
+</li><li><a name="tasks-mirrors-step-109"></a>
+<p>
+<a class="indexterm" name="indexterm-88"></a>Detach the submirror that will continue to be used for the file
+system.</p>
+<pre class="screen"># <strong class="userinput"><code>metadetach <em class="replaceable"><code>mirror</code></em> <em class="replaceable"><code>submirror</code></em>
+</code></strong>
+</pre>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metadetach</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</li><li><a name="tasks-mirrors-step-110"></a>
+<p>
+<a class="indexterm" name="indexterm-89"></a>Clear the mirror and remaining subcomponents.</p>
+<pre class="screen"># <strong class="userinput"><code>metaclear -r <em class="replaceable"><code>mirror</code></em>
+</code></strong>
+</pre>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metaclear</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</li><li><a name="tasks-mirrors-step-111"></a>
+<p>Edit the <code class="filename">/etc/vfstab</code> file
+to use the component detached in <span class="olink">Step 4</span>, if necessary.</p>
+</li><li><a name="tasks-mirrors-step-112"></a>
+<p>Remount the file system.</p>
+<pre class="screen"># <strong class="userinput"><code>mount <em class="replaceable"><code>/file-system</code></em>
+</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="eypfd"></a><p class="title"><b>Example 11.21. Unmirroring the <code class="filename">/opt</code> File System</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metastat d4</code></strong>
+d4: Mirror
+    Submirror 0: d2
+      State: Okay        
+    Submirror 1: d3
+      State: Okay        
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: parallel (default)
+    Size: 2100735 blocks (1.0 GB)
+
+d2: Submirror of d4
+    State: Okay         
+    Size: 2100735 blocks (1.0 GB)
+    Stripe 0:
+        Device     Start Block  Dbase        State Reloc Hot Spare
+        c0t0d0s0          0     No            Okay   Yes 
+
+
+d3: Submirror of d4
+    State: Okay         
+    Size: 2100735 blocks (1.0 GB)
+    Stripe 0:
+        Device     Start Block  Dbase        State Reloc Hot Spare
+        c1t0d0s0          0     No            Okay   Yes 
+
+...
+# <strong class="userinput"><code>umount /opt</code></strong>
+# <strong class="userinput"><code>metadetach d4 d2</code></strong>
+d4: submirror d2 is detached
+# <strong class="userinput"><code>metaclear -r d4</code></strong>
+d4: Mirror is cleared
+d3: Concat/Stripe is cleared
+<em class="lineannotation"><span class="lineannotation">(Edit the /etc/vfstab file so that the entry for /opt is changed from d4 to the underlying slice or volume)</span></em>
+# <strong class="userinput"><code>mount /opt</code></strong>
+</pre>
+<p>In this example, the <code class="filename">/opt</code> file system is composed
+of a two-way mirror, <code class="filename">d4</code>. The submirrors of the mirror
+are <code class="filename">d2</code> and <code class="filename">d3</code>. The submirrors are
+composed of slices <code class="filename">/dev/dsk/c0t0d0s0</code> and <code class="filename">/dev/dsk/c1t0d0s0</code>. The <span><strong class="command">metastat</strong></span> command verifies that at least
+one submirror is in the &#8220;Okay&#8221; state. (A mirror with no submirrors
+in the &#8220;Okay&#8221; state must be repaired first.) The file system is
+unmounted. Then, submirror <code class="filename">d2</code> is detached. The <span><strong class="command">metaclear <code class="option">
+r</code>
+</strong></span> command deletes the mirror and the other submirror, <code class="filename">d3</code>.</p>
+<p>Next, the entry for <code class="filename">/opt</code> in the <code class="filename">/etc/vfstab</code> file
+is changed to reference the underlying slice.</p>
+<p>In this example the <code class="filename">/etc/vfstab file</code> contains the
+following entry for the <code class="filename">/opt</code> file system:</p>
+<pre class="screen">/dev/md/dsk/d4  /dev/md/rdsk/d4  /opt ufs  2  yes -</pre>
+<p>Change the entry to read as follows:</p>
+<pre class="screen">/dev/md/dsk/d2  /dev/md/rdsk/d2  /opt ufs  2  yes -</pre>
+<p>By using the submirror name, you can continue to have the file system
+mounted on a volume. Finally, the <code class="filename">/opt</code> file system is
+remounted.</p>
+<p>
+<a class="indexterm" name="indexterm-90"></a>By using <code class="filename">d2</code> instead of <code class="filename">d4</code> in
+the <code class="filename">/etc/vfstab</code> file, you have unmirrored the mirror.
+Because <code class="filename">d2</code> consists of a single slice, you can mount
+the file system on the slice name (<code class="filename">/dev/dsk/c0t0d0s0</code>)
+if you do not want the device to support a volume. </p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1749245"></a></h3></div></div></div>
+
+<div class="task"><a name="tasks-mirrors-5"></a><p class="title"><b>How to Unmirror a File System That Cannot
+Be Unmounted</b></p><a class="indexterm" name="indexterm-91"></a><div class="tasksummary">
+<p>Use this task to unmirror file systems, including root (<code class="filename">/</code>), <code class="filename">/usr</code>, <code class="filename">/opt</code>, and <code class="filename">swap</code>,
+that cannot be unmounted during normal system operation.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Make sure that you have root privilege and that you have a current
+backup of all data.</p>
+</li><li><a name="tasks-mirrors-step-114"></a>
+<p>Verify that at least one submirror
+is in the Okay state.</p>
+<pre class="screen"># <strong class="userinput"><code>metastat <em class="replaceable"><code>mirror</code></em>
+</code></strong>
+</pre>
+</li><li><a name="tasks-mirrors-step-115"></a>
+<p>Detach the submirror that will continue
+to be used for the file system.</p>
+<pre class="screen"># <strong class="userinput"><code>metadetach <em class="replaceable"><code>mirror</code></em> <em class="replaceable"><code>submirror</code></em>
+</code></strong>
+</pre>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metadetach</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</li><li>
+<p>Use one of the following commands, depending the file system you
+want to unmirror:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>For the <code class="filename">/usr</code>, <code class="filename">/opt</code>,
+or <code class="filename">swap</code> file systems, change the file system entry in
+the <code class="filename">/etc/vfstab</code> file to use a non-Solaris Volume Manager device
+(slice).</p>
+</li><li>
+<p>For the root (<code class="filename">/</code>) file system <span class="emphasis"><em>only</em></span>:
+run the <span><strong class="command">metaroot</strong></span> command.</p>
+<pre class="screen"># <strong class="userinput"><code>metaroot <em class="replaceable"><code>rootslice</code></em>
+</code></strong>
+</pre>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metaroot</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</li></ul></div>
+</li><li><a name="tasks-mirrors-step-118"></a>
+<p>Reboot the system.</p>
+<pre class="screen"># <strong class="userinput"><code>reboot</code></strong>
+</pre>
+</li><li><a name="tasks-mirrors-step-119"></a>
+<p>Clear the remaining mirror and submirrors.</p>
+<pre class="screen"># <strong class="userinput"><code>metaclear -r <em class="replaceable"><code>mirror</code></em>
+</code></strong>
+</pre>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metaclear</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</li></ol></div><div class="example"><a name="egjyl"></a><p class="title"><b>Example 11.22. Unmirroring the root (<code class="filename">/</code>) File System</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metastat d0</code></strong>
+d0: Mirror
+    Submirror 0: d10
+      State: Okay        
+    Submirror 1: d20
+      State: Okay        
+    Pass: 1
+    Read option: roundrobin (default)
+    Write option: parallel (default)
+    Size: 2100735 blocks (1.0 GB)
+
+d10: Submirror of d0
+    State: Okay         
+    Size: 2100735 blocks (1.0 GB)
+    Stripe 0:
+        Device     Start Block  Dbase        State Reloc Hot Spare
+        c0t3d0s0          0     No            Okay   Yes 
+
+
+d20: Submirror of d0
+    State: Okay         
+    Size: 2100735 blocks (1.0 GB)
+    Stripe 0:
+        Device     Start Block  Dbase        State Reloc Hot Spare
+        c1t3d0s0          0     No            Okay   Yes 
+
+
+# <strong class="userinput"><code>metadetach d0 d20</code></strong>
+d0: submirror d20 is detached
+# <strong class="userinput"><code>metaroot /dev/dsk/c0t3d0s0</code></strong>
+# <strong class="userinput"><code>reboot</code></strong>
+...
+# <strong class="userinput"><code>metaclear -r d0</code></strong>
+d0: Mirror is cleared
+d10: Concat/Stripe is cleared
+# <strong class="userinput"><code>metaclear d20</code></strong>
+d20: Concat/Stripe is cleared</pre>
+<p>In this example, the root (<code class="filename">/</code>) file system is a
+two-way mirror, <code class="filename">d0</code>. The submirrors of the mirror are <code class="filename">d10</code> and <code class="filename">d20</code>. The submirrors are composed of
+slices <code class="filename">/dev/dsk/c0t3d0s0</code> and <code class="filename">/dev/dsk/c1t3d0s0</code>.
+The <span><strong class="command">metastat</strong></span> command verifies that at least one submirror
+is in the &#8220;Okay&#8221; state. (A mirror with no submirrors in the &#8220;Okay&#8221;
+state must be repaired first.) Submirror <code class="filename">d20</code> is detached
+to make <code class="filename">d0</code> a one-way mirror.</p>
+<p>The<em class="firstterm"> rootslice</em> is the slice containing the root
+(<code class="filename">/</code>) file system. The <span><strong class="command">metaroot</strong></span> command
+is run, using the <em class="replaceable"><code>rootslice</code></em> from which the system
+is going to boot. This command edits the <code class="filename">/etc/system</code> and <code class="filename">/etc/vfstab</code> files. The command removes information that specifies
+mirroring of the root (<code class="filename">/</code>) file system.</p>
+<p>After rebooting the system, the <span><strong class="command">metaclear <code class="option">
+r</code>
+</strong></span> command
+deletes the mirror and the other submirror, <code class="filename">d10</code>. The
+last <span><strong class="command">metaclear</strong></span> command clears submirror <code class="filename">d20</code>.</p>
+</div><div class="example"><a name="egjyt"></a><p class="title"><b>Example 11.23. Unmirroring the <code class="filename">swap</code> File System</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metastat d1</code></strong>
+d1: Mirror
+    Submirror 0: d11
+      State: Okay        
+    Submirror 1: d21
+      State: Okay        
+...
+# <strong class="userinput"><code>metadetach d1 d21</code></strong>
+d1: submirror d21 is detached
+<em class="lineannotation"><span class="lineannotation">(Edit the /etc/vfstab file to change the entry for swap from  metadevice to slice name)</span></em>
+# <strong class="userinput"><code>reboot</code></strong>
+...
+# <strong class="userinput"><code>metaclear -r d1</code></strong>
+d1: Mirror is cleared
+d11: Concat/Stripe is cleared
+# <strong class="userinput"><code>metaclear d21</code></strong>
+d21: Concat/stripe is cleared</pre>
+<p>
+<a class="indexterm" name="indexterm-92"></a>In this example, the <code class="filename">swap</code> file system is
+made of a two-way mirror, <code class="filename">d1</code>. The submirrors of the mirror
+are <code class="filename">d11</code> and <code class="filename">d21</code>. The submirrors
+are composed of slices <code class="filename">/dev/dsk/c0t3d0s1</code> and <code class="filename">/dev/dsk/c1t3d0s1</code>. The <span><strong class="command">metastat</strong></span> command verifies that at least
+one submirror is in the &#8220;Okay&#8221; state. (A mirror with no submirrors
+in the &#8220;Okay&#8221; state must be repaired first.) Submirror <code class="filename">d21</code> is
+detached to make <code class="filename">d1</code> a one-way mirror. Next, the <code class="filename">/etc/vfstab</code> file is edited to change the entry for <code class="filename">swap</code> to
+reference the slice that is in submirror <code class="filename">d21</code>.</p>
+<p>In this example, the <code class="filename">/etc/vfstab file</code> contains
+the following entry for the <code class="filename">swap</code> file system:</p>
+<pre class="screen">/dev/md/dsk/d4  /dev/md/rdsk/d4  /opt ufs  2  yes -</pre>
+<pre class="screen">/dev/md/dsk/d1 - - swap - no -</pre>
+<p>Change the entry to read as follows:</p>
+<pre class="screen">/dev/dsk/c0t3d0s1 - - swap - no -</pre>
+<p>
+<a class="indexterm" name="indexterm-93"></a>After rebooting the system, the <span><strong class="command">metaclear <code class="option">
+r</code>
+</strong></span> command
+deletes the mirror and the other submirror, <code class="filename">d11</code>. The
+final <span><strong class="command">metaclear</strong></span> command clears submirror <code class="filename">d21</code>. </p>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch11s05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch11.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch11s07.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Responding to RAID-1 Volume Component
+Failures </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Backing Up Data on a RAID-1 Volume</td></tr></table></div></body></html>

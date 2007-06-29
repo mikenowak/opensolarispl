@@ -1,0 +1,258 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Configuring Your Patch Management
+Environment by Using the Command-Line Interface (Task Map)</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch22.html" title="Chapter 22. Managing Solaris Patches by Using Sun Patch
+Manager (Tasks)"><link rel="prev" href="ch22s05.html" title="Accessing the Sun Patch Manager Command-Line
+Interface"><link rel="next" href="ch22s07.html" title="Managing Patches by Using the Command-Line
+Interface (Task Map)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuring Your Patch Management
+Environment by Using the Command-Line Interface (Task Map)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch22s05.html">Prev</a> </td><th width="60%" align="center">Chapter 22. Managing Solaris Patches by Using Sun Patch
+Manager (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch22s07.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configpatchenvclitaskmap"></a>Configuring Your Patch Management
+Environment by Using the Command-Line Interface (Task Map)</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-486"></a>
+<a class="indexterm" name="indexterm-487"></a>
+<p>Use the <span><strong class="command">smpatch</strong></span> command to perform the configuration
+tasks in this section. For the list of configuration parameters you can set,
+see <span class="olink">Setting Patch Manager Configuration Parameters</span> and the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">smpatch</span>
+(
+1M
+)
+</span>
+</span> man
+page.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>You can use the Sun Update Connection, System Edition software
+to manage patches and updates on your Solaris system. The Sun Update Connection
+software has the same functionality as the Sun Patch Manager 2.0 tools, with
+the addition of some new features and enhancements. For more information,
+see <span class="olink">What's New in Software Management in the Solaris Operating System?</span>.</p>
+</div>
+<p>By default, the patch management environment is configured to obtain
+patches directly from the Sun patch server. Therefore, you must customize
+your environment if your system does one or more of the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Connects to the Internet by means of a web proxy</p>
+</li><li>
+<p>Requires a user name and password to obtain patches</p>
+</li><li>
+<p>Obtains patches from a patch source other than the Sun patch
+server</p>
+</li></ul></div>
+<p>The following table identifies the tasks that you might perform when
+you configure the patch management environment for your system.</p>
+<div class="informaltable">
+<table border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>Task</p>
+</th><th>
+<p>Description</p>
+</th><th>
+<p>For Instructions</p>
+</th></tr></thead><tbody><tr><td>
+<p> Specify the web proxy to use.</p>
+</td><td>
+<p>If your system is connected to the Internet through a web proxy, you
+must specify the web proxy that is used to access the Sun patch server.</p>
+<p>By default, no web proxy is specified.</p>
+</td><td>
+<p>
+<span class="olink">How to Specify Your Web Proxy (Command Line)</span>
+</p>
+</td></tr><tr><td>
+<p>Specify the user and password needed to provide authentication for the
+web proxy.</p>
+</td><td>
+<p>If your web proxy requires authentication, you must specify the web
+proxy user that is needed for authentication.</p>
+<p>By default, no web proxy user is specified.</p>
+</td><td>
+<p>
+<span class="olink">How to Specify Your Web Proxy (Command Line)</span>
+</p>
+</td></tr><tr><td>
+<p>Specify the user and password needed to obtain patches from the Sun
+patch server.</p>
+</td><td>
+<p>If you needed a user and password to obtain patches, you must specify
+the user name and password.</p>
+</td><td>
+<p>
+<span class="olink">How to Specify a User Name and Password With Which to Obtain Patches (Command Line)</span>
+</p>
+</td></tr><tr><td>
+<p> Specify the source of patches for your system.</p>
+</td><td>
+<p>Your system can obtain patches from one of the following sources:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Sun patch server</p>
+</li><li>
+<p>Local collection of patches</p>
+</li></ul></div>
+<p>The default source of patches for your system is the Sun patch server.</p>
+</td><td>
+<p>
+<span class="olink">How to Specify the Source of Patches (Command Line)</span>
+</p>
+</td></tr></tbody></table>
+</div>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The following procedures and examples show how to run the local
+mode <span><strong class="command">smpatch</strong></span> command, which is run by default. To run the
+remote mode version, use any of the authentication options (except for <code class="option">
+L</code>)
+or the remote options. See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">smpatch</span>
+(
+1M
+)
+</span>
+</span> man
+page.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2146261"></a></h3></div></div></div>
+
+<div class="task"><a name="webproxycliproc"></a><p class="title"><b>How to Specify Your Web Proxy (Command Line)</b></p><a class="indexterm" name="indexterm-488"></a><div class="tasksummary">
+<p>If your system connects to the Internet through a web proxy, you must
+provide information about the web proxy to Patch Manager.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Obtain the host name and the port of the web proxy from your network
+administrator.</p>
+</li><li>
+<p>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <code class="literal">solaris.admin.patchmgr.*</code> authorization.</p>
+<p>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <span class="olink">
+<em class="citetitle">Configuring RBAC</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Specify the web proxy.</p>
+<pre class="screen"># <strong class="userinput"><code>smpatch set patchpro.proxy.host=<em class="replaceable"><code>web-proxy-server</code></em> \
+patchpro.proxy.port=<em class="replaceable"><code>port</code></em>
+</code></strong>
+</pre>
+</li><li>
+<p>(Optional) If the web proxy requires authentication, supply the
+user name and password.</p>
+<p>Obtain this information from your network
+administrator.</p>
+<ol type="a">
+<li>
+<p>Specify the user name to be used for authentication.</p>
+<pre class="screen"># <strong class="userinput"><code>smpatch set patchpro.proxy.user=<em class="replaceable"><code>web-proxy-user</code></em>
+</code></strong>
+</pre>
+</li>
+<li>
+<p>Specify the proxy user's password by having <span><strong class="command">smpatch</strong></span> prompt
+you for the password.</p>
+<pre class="screen"># <strong class="userinput"><code>smpatch set patchpro.proxy.passwd</code></strong>
+Web Proxy User Password: <em class="replaceable"><code>web-proxy-password</code></em>
+</pre>
+<p>Setting the password in this way ensures that the password you type
+does not appear as clear text in the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Standard output</p>
+</li><li>
+<p>Output of the <span><strong class="command">ps</strong></span> command</p>
+</li><li>
+<p>Your shell history file</p>
+</li></ul></div>
+</li>
+</ol>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2146506"></a></h3></div></div></div>
+
+<div class="task"><a name="patchaccountcliproc"></a><p class="title"><b>How to Specify a User Name and Password
+With Which to Obtain Patches (Command Line)</b></p><a class="indexterm" name="indexterm-489"></a><div class="tasksummary">
+<p>If you needed a user name and password to obtain patches from the Sun
+patch server, you must specify them for Patch Manager.</p>
+<p>If you do not have an account on SunSolve, register for one at <a href="http://sunsolve.sun.com" target="_top">
+</a>.</p>
+<p>As of this Solaris release, a user name and password are not required
+to obtain patches from the Sun patch server.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <code class="literal">solaris.admin.patchmgr.*</code> authorization.</p>
+<p>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <span class="olink">
+<em class="citetitle">Configuring RBAC</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Specify your user name.</p>
+<pre class="screen"># <strong class="userinput"><code>smpatch set patchpro.sun.user=<em class="replaceable"><code>user-name</code></em>
+</code></strong>
+</pre>
+</li><li>
+<p>Specify the password for your user by having <span><strong class="command">smpatch</strong></span> prompt
+you for the password.</p>
+<pre class="screen"># <strong class="userinput"><code>smpatch set patchpro.sun.passwd</code></strong>
+Sun User Password: <em class="replaceable"><code>password</code></em>
+</pre>
+<p>Setting the password in this way ensures that the password you type
+does not appear as clear text in the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Standard output</p>
+</li><li>
+<p>Output of the <span><strong class="command">ps</strong></span> command</p>
+</li><li>
+<p>Your shell history file</p>
+</li></ul></div>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2146724"></a></h3></div></div></div>
+
+<div class="task"><a name="patchsourcecliproc"></a><p class="title"><b>How to Specify the Source of Patches
+(Command Line)</b></p><a class="indexterm" name="indexterm-490"></a><div class="tasksummary">
+<p>Your system can obtain patches from the following sources:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Sun patch server</p>
+</li><li>
+<p>Local patch collection</p>
+</li></ul></div>
+<p>By default, your system obtains patches from the Sun patch server.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become an appropriately authorized user or assume a role that includes the Software Installation profile or the <code class="literal">solaris.admin.patchmgr.*</code> authorization.</p>
+<p>The System Administrator profile includes the appropriate profiles. To create the role and assign the role to a user, see <span class="olink">
+<em class="citetitle">Configuring RBAC</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>Specify the URL of the patch source.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>For the Sun patch server, type:</p>
+<pre class="screen"># <strong class="userinput"><code>smpatch unset patchpro.patch.source</code></strong>
+</pre>
+</li><li>
+<p>For a collection of patches in a directory, use this URL format:</p>
+<pre class="screen"># <strong class="userinput"><code>smpatch set patchpro.patch.source=file:/<em class="replaceable"><code>directory-name</code></em>
+</code></strong>
+</pre>
+<p>Note that <em class="replaceable"><code>directory-name</code></em> can be a local file
+system or a remotely mounted file system.</p>
+</li></ul></div>
+<p>See <span class="olink">Example 22&#8211;2</span> for
+examples of using the <code class="literal">file:/</code> URL format.</p>
+</li></ol></div><div class="example"><a name="patchsourcecliexample"></a><p class="title"><b>Example 22.2. Specifying the Source of Patches</b></p>
+
+
+<p>The following example shows how to configure a system to obtain patches
+from the <code class="filename">/export/patches</code> directory on the local system.</p>
+<pre class="screen"># <strong class="userinput"><code>smpatch set patchpro.patch.source=file:/export/patches</code></strong>
+</pre>
+<p>The following example shows how to configure a system to obtain patches
+from the <code class="filename">/export/patches</code> directory on the remote system
+called <code class="literal">jupiter</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>smpatch set patchpro.patch.source=file:/net/jupiter/export/patches</code></strong>
+</pre>
+<p>The following example shows how to configure a system to obtain patches
+from a CD mounted from the first CD-ROM drive of the local system.</p>
+<pre class="screen"># <strong class="userinput"><code>smpatch set patchpro.patch.source=file:/cdrom/cdrom0</code></strong>
+</pre>
+</div><div class="taskrelated"><a name="id2147002"></a><p class="title"><b></b></p>
+
+<font color="red">&lt;title&gt;What to Do Next&lt;/title&gt;</font>
+<p>After you specify a patch source, your client system is ready to manage
+patches. See <span class="olink">Managing Patches by Using the Command-Line Interface (Task Map)</span>.</p>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch22s05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch22.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch22s07.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Accessing the Sun Patch Manager Command-Line
+Interface </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Managing Patches by Using the Command-Line
+Interface (Task Map)</td></tr></table></div></body></html>

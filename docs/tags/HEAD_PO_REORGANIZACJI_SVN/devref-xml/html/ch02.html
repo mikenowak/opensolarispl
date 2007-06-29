@@ -1,0 +1,157 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 2. Prerequisites</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="OpenSolaris Developer's Reference"><link rel="up" href="index.html" title="OpenSolaris Developer's Reference"><link rel="prev" href="ch01s05.html" title="1.5 Contributors"><link rel="next" href="ch02s02.html" title="2.2 Operating Environment Packages"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 2. Prerequisites</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01s05.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch02s02.html">Next</a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="_2_Prerequisites"></a>Chapter 2. Prerequisites</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="ch02.html#_2_1_Hardware">2.1 Hardware</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch02.html#_2_1_1_Development_Environment">2.1.1 Development Environment</a></span></dt><dt><span class="sect2"><a href="ch02.html#_2_1_2_Build_Environment">2.1.2 Build Environment</a></span></dt><dt><span class="sect2"><a href="ch02.html#_2_1_3_Test_Environment">2.1.3 Test Environment</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch02s02.html">2.2 Operating Environment Packages</a></span></dt><dt><span class="sect1"><a href="ch02s03.html">2.3 Obtaining and Installing Compilers</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch02s03.html#_Example_1__Installing_Studio_1">Example 1: Installing Studio 10 compilers, installed image</a></span></dt><dt><span class="sect2"><a href="ch02s03.html#_Example_2__Installing_Studio_1">Example 2: Installing Studio 10 compilers, full product</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch02s04.html">2.4 Obtaining and Installing Custom Tools</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch02s04.html#_Example_3__Installing_the_ON_b">Example 3: Installing the ON build tools</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch02s05.html">2.5 Environment Variables</a></span></dt></dl></div><p>
+This chapter describes the hardware and software requirements for
+developing, building, and testing OpenSolaris.  Most of these
+requirements can easily be met on any Solaris Express installation
+(other distributions may work as well).  Depending on your interests,
+you may need to test your work with hardware or software which is not
+readily available to you.  If this is the case, please ask your project
+leader for assistance.  Sun and other companies and organizations
+sponsor various facilities which may be available to OpenSolaris
+community developers.  If you are a project leader, please contact
+<a href="mailto:community_liaison@opensolaris.org" target="_top">mailto:community_liaison@opensolaris.org</a> for information about
+resources your project can use.
+</p><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="_2_1_Hardware"></a>2.1 Hardware</h2></div></div></div><p>
+This section details hardware requirements for developing and building
+OpenSolaris.  Because some projects may have additional requirements
+(for example, driver development obviously requires the device in
+question), this information is intended to be a guide rather than a
+definitive set of rules.  It is possible, for example, to develop on a
+system which cannot run any OpenSolaris-based distribution, transferring
+diffs or other work to a remote environment for building and testing.
+For purposes of this section, however, we will assume that your
+development and build systems will run Solaris or some other fully
+compatible OpenSolaris-based distribution.
+</p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_2_1_1_Development_Environment"></a>2.1.1 Development Environment</h3></div></div></div><p>
+The simplest set of requirements applies to a development environment:
+you need only have sufficient space to store the source tree and enough
+CPU and memory to run text editors and tools such as cscope.  The
+current source tree occupies approximately 300MB without source code
+management metadata, so you should budget at least that amount of space
+for each tree you wish to store (about 1.9GB is required for a tree with
+a full set of SCCS metadata).  Note that if you plan to build the tree
+on the same system, you will need additional space; see section 2.1.2
+below.
+</p><p>
+In general, any computer which will run Solaris 10, Solaris Express, or
+another OpenSolaris-based distribution is adequate for this purpose.  As
+of this writing, all SPARC systems with UltraSPARC-II or newer CPUs
+(that is, all CPUs which have faster clock rates than 200 MHz) are
+supported; the specific list of supported SPARC platforms for Solaris 10
+can be found at
+<a href="http://docs.sun.com/source/817-6337-06/install-solaris.html" target="_top">http://docs.sun.com/source/817-6337-06/install-solaris.html</a>.  For
+i386 and amd64 systems, hardware support is somewhat more complex; you
+can find out more about x86 hardware compatibility at
+<a href="http://www.sun.com/bigadmin/hcl/" target="_top">http://www.sun.com/bigadmin/hcl/</a>.  Be sure to check the latest
+release notes for Solaris for information about current and future
+hardware support; these notes can be found at <a href="http://docs.sun.com/" target="_top">http://docs.sun.com/</a>.
+</p><p>
+Note that other OpenSolaris-based distributions may at times support a somewhat different set of
+hardware from the latest Solaris release or update; the latest
+information about hardware support can always be found in your vendor's
+release notes.
+</p><p>
+Table: Development system requirements
+</p><pre class="programlisting">
+----------------------------------------------------------------
+CPU		Any supported CPU
+----------------------------------------------------------------
+Memory		128MB recommended
+----------------------------------------------------------------
+Swap		No requirement
+----------------------------------------------------------------
+Storage	300MB to 1.9GB per copy of the source tree (*)
+----------------------------------------------------------------
+</pre><p>
+(*) The total size will vary depending on the type of source management
+you use.  With no source management data, a built tree requires
+approximately 3.5GB; CVS and SCCS add 50MB or more, depending on the
+amount of revision history.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_2_1_2_Build_Environment"></a>2.1.2 Build Environment</h3></div></div></div><p>
+Building a large, complex piece of software such as ON or any other
+OpenSolaris consolidation is a memory-, compute-, and space-intensive
+process.  Although it is possible to build OpenSolaris on almost any
+computer, it may take prohibitively long to do so on small
+configurations.  It is especially important to have enough swap space if
+you will be using dmake to perform highly parallel builds.  Inadequate
+swap will cause your build to fail.  Following are the hardware
+requirements for a system on which you intend to build ON:
+</p><p>
+Table: Build system requirements
+</p><pre class="programlisting">
+----------------------------------------------------------------
+CPU		300 MHz UltraSPARC or x86 CPU
+		AMD Opteron or UltraSPARC-III recommended
+----------------------------------------------------------------
+Memory		256MB minimum, 1GB recommended (+)
+----------------------------------------------------------------
+Swap		1GB minimum, 2GB recommended (+)
+----------------------------------------------------------------
+Storage	3.5 to 5GB per copy of the source tree (*) (**)
+----------------------------------------------------------------
+</pre><p>
+On a minimal build system as described above, expect a full build to
+take at least 14 hours.  Incremental builds will take somewhat less
+time; a good rule of thumb is one-third of the full build time.
+</p><p>
+This table shows some approximate full build times for several
+representative systems.  These are current as of 5 April 2006; as
+more code as added and the number of closed components decreases,
+build times will increase.  Of course, the actual time to build will
+vary from system to system as well.
+</p><pre class="programlisting">
+System		CPU			Memory		Time
+----------------------------------------------------------------
+Ultra 2	2x300MHz UltraSPARC-II	512M		5h9m
+----------------------------------------------------------------
+Generic	AMD Athlon64 3200	1GB		1h23m
+----------------------------------------------------------------
+</pre><p>
+The build system can take advantage of multiple CPUs or even distribute
+the work of compiling across multiple machines.  See <a href="ch04.html">Building OpenSolaris</a> for more information about configuring parallel and
+distributed builds.
+</p><p>
+(*) The total size will vary depending on the type of source management
+you use.  With no source management data, a built tree requires
+approximately 3.5GB; CVS and SCCS add 50MB or more, depending on the
+amount of revision history.
+</p><p>
+(+) If you use dmake(1) in parallel mode and run more than 4 jobs on the
+same machine, you may need additional memory and/or swap space.
+</p><p>
+(**) Compilers and tools are installed in /opt and will require an
+additional 300MB on x86 or 800MB on SPARC.
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="_2_1_3_Test_Environment"></a>2.1.3 Test Environment</h3></div></div></div><p>
+The requirements for testing your changes will vary greatly.  Some
+changes do not affect architecture-specific code at all and can simply
+be tested by building and running a test suite on any supported system
+of each architecture.  For example, if you have added a new STREAMS
+module to the network stack, it is probably sufficient to build and test
+on one x86 system (test 32- and 64-bit kernels and user programs), and
+one SPARC system.  In other cases, for example modifications to the x86
+boot code, it will be necessary to test on the widest possible array of
+hardware to ensure you have not broken some obscure piece of
+functionality.
+</p><p>
+Some hardware variables you should consider testing include:
+</p><pre class="programlisting">
+- Architecture: i386, amd64, SPARC
+- Memory size: does your change work with 32MB?  With 32GB?
+- Multiprocessor versus uniprocessor
+- Graphical console versus serial console versus system LOM console
+- Diskless versus "normal" systems
+</pre><p>
+Not all these variables will be applicable to your particular change, so
+you will need to consider, being as conservative as possible, what
+effects your changes could cause.  In general, changes to core kernel
+code such as the VM subsystem or filesystem support require the broadest
+testing.  Changes to add-on drivers or machine-specific code need only
+be tested on the relevant hardware in most cases.  See Chapter 5 for
+more details.
+</p><p>
+Quite often you may want to make a change which you cannot completely
+test on the hardware available to you.  If you find yourself in this
+situation, please contact us via <a href="http://opensolaris.org/" target="_top">http://opensolaris.org/</a>.  The
+OpenSolaris community includes several organizations, including Sun, who
+may be able to provide you with access to additional hardware for the
+purpose of testing your changes.
+</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01s05.html">Prev</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="ch02s02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">1.5 Contributors </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 2.2 Operating Environment Packages</td></tr></table></div></body></html>

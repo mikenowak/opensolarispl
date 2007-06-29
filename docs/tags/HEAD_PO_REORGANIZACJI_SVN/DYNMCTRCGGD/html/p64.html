@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Stability - Solaris Dynamic Tracing Guide</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2005-09-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >Solaris Dynamic Tracing Guide<?GenHTML /ReferencePage>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p63.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p65.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="chp-stab"></a>Chapter&nbsp;39<h3>Stability</h3><p>Sun often provides developers with early access to new technologies as well as observability tools that allow users to peer into the internal implementation details of user and kernel software. Unfortunately, new technologies and internal implementation details are both prone to changes as interfaces and implementations evolve and mature when software is upgraded or patched. Sun documents application and interface stability levels using a set of labels described in the <tt>attributes</tt>(5) man page to help set user expectations for what kinds of changes might occur in different kinds of future releases.</p>
+<p>No one stability attribute appropriately describes the arbitrary set of entities and services that can be accessed from a D program. DTrace and the D compiler therefore include features to dynamically compute and describe the stability levels of D programs you create. This chapter discusses the DTrace features for determining program stability to help you design stable D programs. You can use the DTrace stability features to inform you of the stability attributes of your D programs, or to produce compile-time errors when your program has undesirable interface dependencies.</p>
+<a name="chp-stab-1"></a><h3>Stability Levels</h3>
+<p><a name="indexterm-500"></a><a name="indexterm-501"></a>DTrace provides two types of stability attributes for entities such as built-in variables, functions, and probes: a stability level and an architectural dependency class. The DTrace stability level assists you in making risk assessments when developing scripts and tools based on DTrace by indicating how likely an interface or DTrace entity is to change in a future release or patch. The DTrace dependency class tells you whether an interface is common to all Solaris platforms and processors, or whether the interface is associated with a particular architecture such as SPARC processors only. The two types of attributes used to describe interfaces can vary independently.</p>
+<p><a name="indexterm-502"></a>The stability values used by DTrace appear in the following list in order from lowest to highest stability. The more stable interfaces can be used by all D programs and layered applications because Sun will endeavor to ensure that these continue to work in future minor releases. Applications that depend only on Stable interfaces should reliably continue to function correctly on future minor releases and will not be broken by interim patches. The less stable interfaces allow experimentation, prototyping, tuning, and debugging on your current system, but should be used with the understanding that they might change incompatibly or even be dropped or replaced with alternatives in future minor releases.</p>
+<p>The DTrace stability values also help you understand the stability of the software entities you are observing, in addition to the stability of the DTrace interfaces themselves. Therefore, DTrace stability values also tell you how likely your D programs and layered tools are to require corresponding changes when you upgrade or change the software stack you are observing.</p>
+<dl><dt>Internal</dt>
+<dd><p><a name="indexterm-503"></a><a name="indexterm-504"></a>The interface is private to DTrace and represents an implementation detail of DTrace. Internal interfaces might change in minor or micro releases.</p>
+</dd>
+<dt>Private</dt>
+<dd><p><a name="indexterm-505"></a><a name="indexterm-506"></a>The interface is private to Sun and represents an interface developed for use by other Sun products that is not yet publicly documented for use by customers and ISVs. Private interfaces might change in minor or micro releases.</p>
+</dd>
+<dt>Obsolete</dt>
+<dd><p><a name="indexterm-507"></a><a name="indexterm-508"></a>The interface is supported in the current release but is scheduled to be removed, most likely in a future minor release. When support of an interface is to be discontinued, Sun will attempt to provide notification before discontinuing the interface. The D compiler might produce warning messages if you attempt to use an Obsolete interface.</p>
+</dd>
+<dt>External</dt>
+<dd><p><a name="indexterm-509"></a><a name="indexterm-510"></a>The interface is controlled by an entity other than Sun. At Sun's discretion, Sun can deliver updated and possibly incompatible versions of such interfaces as part of any release, subject to their availability from the controlling entity. Sun makes no claims regarding either source or binary compatibility for External interfaces between any two releases. Applications based on these interfaces might not work in future releases, including patches that contain External interfaces.</p>
+</dd>
+<dt>Unstable</dt>
+<dd><p><a name="indexterm-511"></a><a name="indexterm-512"></a>The interface is provided to give developers early access to new or rapidly changing technology or to an implementation artifact that is essential for observing or debugging system behavior for which a more stable solution is anticipated in the future. Sun makes no claims about either source or binary compatibility for Unstable interfaces from one minor release to another.</p>
+</dd>
+<dt>Evolving</dt>
+<dd><p><a name="indexterm-513"></a><a name="indexterm-514"></a>The interface might eventually become Standard or Stable but is still in transition. Sun will make reasonable efforts to ensure compatibility with previous releases as it evolves. When non-upward compatible changes become necessary, they will occur in minor and major releases. These changes will be avoided in micro releases whenever possible. If such a change is necessary, it will be documented in the release notes for the affected release, and when feasible, Sun will provide migration aids for binary compatibility and continued D program development.</p>
+</dd>
+<dt>Stable</dt>
+<dd><p><a name="indexterm-515"></a><a name="indexterm-516"></a>The interface is a mature interface under Sun's control. Sun will try to avoid non-upward-compatible changes to these interfaces, especially in minor or micro releases. If support of a Stable interface must be discontinued, Sun will attempt to provide notification and the stability level changes to Obsolete.</p>
+</dd>
+<dt>Standard</dt>
+<dd><p><a name="indexterm-517"></a><a name="indexterm-518"></a>The interface complies with an industry standard. The corresponding documentation for the interface will describe the standard to which the interface conforms. Standards are typically controlled by a standards development organization, and changes can be made to the interface in accordance with approved changes to the standard. This stability level can also apply to interfaces that have been adopted(without a formal standard by an industry convention. Support is provided for only the specified versions of a standard; support for later versions is not guaranteed. If the standards development organization approves a non-upward-compatible change to a Standard interface that Sun decides to support, Sun will announce a compatibility and migration strategy.</p>
+</dd>
+</dl>
+<a name="chp-stab-2"></a><h3>Dependency Classes</h3>
+<p><a name="indexterm-519"></a><a name="indexterm-520"></a>Since Solaris and DTrace support a variety of operating platforms and processors, DTrace also labels interfaces with a dependency class that tells you whether an interface is common to all Solaris platforms and processors, or whether the interface is associated with a particular system architecture. The dependency class is orthogonal to the stability levels described earlier. For example, a DTrace interface can be Stable but only supported on SPARC microprocessors, or it can be Unstable but common to all Solaris systems. The DTrace dependency classes are described in the following list in order from least common (that is, most specific to a particular architecture) to most common (that is, common to all architectures).</p>
+<dl><dt>Unknown</dt>
+<dd><p><a name="indexterm-521"></a>The interface has an unknown set of architectural dependencies. DTrace does not necessarily know the architectural dependencies of all entities, such as data types defined in the operating system implementation. The Unknown label is typically applied to interfaces of very low stability for which dependencies cannot be computed. The interface might not be available when using DTrace on <b>any</b> architecture other than the one you are currently using.</p>
+</dd>
+<dt>CPU</dt>
+<dd><p><a name="indexterm-522"></a>The interface is specific to the CPU model of the current system. You can use the <tt>psrinfo</tt>(1M) utility's <tt>-v</tt> option to display the current CPU model and implementation names. Interfaces with CPU model dependencies might not be available on other CPU implementations, even if those CPUs export the same instruction set architecture (ISA). For example, a CPU-dependent interface on an UltraSPARC-III+ microprocessor might not be available on an UltraSPARC-II microprocessor, even though both processors support the SPARC instruction set.</p>
+</dd>
+<dt>Platform</dt>
+<dd><p><a name="indexterm-523"></a>The interface is specific to the hardware platform of the current system. A platform typically associates a set of system components and architectural characteristics such as a set of supported CPU models with a system name such as <tt>SUNW,Ultra-Enterprise-10000</tt>. You can display the current platform name using the <tt>uname</tt>(1) <tt>-i</tt> option. The interface might not be available on other hardware platforms.</p>
+</dd>
+<dt>Group</dt>
+<dd><p><a name="indexterm-524"></a>The interface is specific to the hardware platform group of the current system. A platform group typically associates a set of platforms with related characteristics together under a single name, such as <tt>sun4u</tt>. You can display the current platform group name using the <tt>uname</tt>(1) <tt>-m</tt> option. The interface is available on other platforms in the platform group, but might not be available on hardware platforms that are not members of the group.</p>
+</dd>
+<dt>ISA</dt>
+<dd><p><a name="indexterm-525"></a>The interface is specific to the instruction set architecture (ISA) supported by the microprocessors on this system. The ISA describes a specification for software that can be executed on the microprocessor, including details such as assembly language instructions and registers. You can display the native instruction sets supported by the system using the <tt>isainfo</tt>(1) utility. The interface might not be supported on systems that do not export any of the same instruction sets. For example, an ISA-dependent interface on a Solaris SPARC system might not be supported on a Solaris x86 system.</p>
+</dd>
+<dt>Common</dt>
+<dd><p><a name="indexterm-526"></a>The interface is common to all Solaris systems regardless of the underlying hardware. DTrace programs and layered applications that depend only on Common interfaces can be executed and deployed on other Solaris systems with the same Solaris and DTrace revisions. The majority of DTrace interfaces are Common, so you can use them wherever you use Solaris.</p>
+</dd>
+</dl>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p63.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p65.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

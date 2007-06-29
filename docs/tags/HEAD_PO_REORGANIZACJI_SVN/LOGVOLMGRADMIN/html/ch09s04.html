@@ -1,0 +1,194 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Expanding Storage Capacity</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="Solaris Volume Manager Administration Guide"><link rel="up" href="ch09.html" title="Chapter 9. RAID-0
+(Stripe and Concatenation) Volumes (Tasks)"><link rel="prev" href="ch09s03.html" title="Creating RAID-0 (Concatenation) Volumes"><link rel="next" href="ch09s05.html" title="Removing a RAID-0 Volume"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Expanding Storage Capacity</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch09s03.html">Prev</a> </td><th width="60%" align="center">Chapter 9. RAID-0
+(Stripe and Concatenation) Volumes (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch09s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tasks-metadevices-27"></a>Expanding Storage Capacity</h2></div></div></div>
+
+<p>To add storage capacity to a file system, create a concatenation volume.
+To add storage capacity to an existing stripe, create a concatenated stripe
+volume.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1734566"></a></h3></div></div></div>
+
+<div class="task"><a name="tasks-metadevices-4"></a><p class="title"><b>How to Expand Storage Capacity for Existing
+Data</b></p><div class="tasksummary">
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>Do not create volumes larger than 1Tbyte if you expect to run
+the Solaris software with a 32-bit kernel. Additionally, do not create volumes
+larger than 1 Tbyte if you expect to use a version of the Solaris OS prior
+to the Solaris 9 4/03 release. See <span class="olink">Overview of Multi-Terabyte Support in Solaris Volume Manager</span> for more information
+about multi-terabyte volume support in Solaris Volume Manager.</p>
+</div>
+</div><div class="taskprerequisites">
+
+<p>Check <span class="olink">Prerequisites for Creating Solaris Volume Manager Components</span> and <span class="olink">Background Information for Creating RAID-0 Volumes</span>.</p>
+</div><div class="procedure"><ol type="1"><li><a name="tasks-metadevices-step-29"></a>
+<p>Unmount the file system.</p>
+<pre class="screen"># <strong class="userinput"><code>umount <em class="replaceable"><code>/filesystem</code></em>
+</code></strong>
+</pre>
+</li><li><a name="tasks-metadevices-step-61"></a>
+<p>To create a concatenation, use
+one of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console, open the Volumes node. Choose Action&#8658;Create
+Volume, then follow the instructions in the wizard. For more information,
+see the online help.</p>
+</li><li>
+<p>Use the following form of the <span><strong class="command">metainit</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>metainit <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>number-of-stripes</code></em>
+ <em class="replaceable"><code>components-per-stripe</code></em>
+<em class="replaceable"><code>component-names</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies is the name of the volume to create.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>number-of-stripes</code></em>
+</span></dt><dd>
+<p>Specifies the number of stripes to create.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>components-per-stripe</code></em>
+</span></dt><dd>
+<p>Specifies the number of components each stripe should have.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>component-names</code></em>
+</span></dt><dd>
+<p>Specifies the names of the components that are used. If more
+than one component is used, separate each component with a space.</p>
+</dd></dl></div>
+<p>For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metainit</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</li></ul></div>
+</li><li><a name="tasks-metadevices-step-34"></a>
+<p>Edit the <code class="filename">/etc/vfstab</code> file
+so that the file system references the name of the concatenation.</p>
+</li><li><a name="tasks-metadevices-step-33"></a>
+<p>Remount the file system.</p>
+<pre class="screen"># <strong class="userinput"><code>mount <em class="replaceable"><code>/filesystem</code></em>
+</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="egjyw"></a><p class="title"><b>Example 9.5. Expanding a File System by Creating a Concatenation</b></p>
+
+
+<a class="indexterm" name="indexterm-50"></a>
+<pre class="screen"># <strong class="userinput"><code>umount /docs</code></strong>
+# <strong class="userinput"><code>metainit d25 2 1 c0t1d0s2 1 c0t2d0s2</code></strong>
+d25: Concat/Stripe is setup
+<em class="lineannotation"><span class="lineannotation">(Edit the /etc/vfstab file so that the file system  references the volume d25 instead of slice c0t1d0s2)</span></em>
+# <strong class="userinput"><code>mount /docs</code></strong>
+</pre>
+<p>This example shows the creation of a concatenation, <code class="filename">d25</code>,
+out of two slices, <code class="filename">/dev/dsk/c0t1d0s2</code> (which contains
+a file system mounted on <code class="filename">/docs</code>) and <code class="filename">/dev/dsk/c0t2d0s2</code>. The file system must first be unmounted. Note that the first
+slice in the <span><strong class="command">metainit</strong></span> command must be the slice that contains
+the file system. If not, you will corrupt your data.</p>
+<p>Next, the entry for the file system in the <code class="filename">/etc/vfstab</code> file
+is changed (or entered for the first time) to reference the concatenation.
+For example, initially, the following line appears in the <code class="literal">/etc/vfstab</code> file:</p>
+<pre class="screen">/dev/dsk/c0t1d0s2 /dev/rdsk/c0t1d0s2 /docs ufs 2 yes -</pre>
+<p>This line should be changed to the following: </p>
+<pre class="screen">/dev/md/dsk/d25 /dev/md/rdsk/d25 /docs ufs 2 yes -</pre>
+<p>
+<a class="indexterm" name="indexterm-51"></a>Finally, the file system is remounted. </p>
+</div><div class="taskrelated">
+
+<p>For a UFS file system, run the <span><strong class="command">growfs</strong></span> command on
+the concatenation. See <span class="olink">How to Expand a File System</span>.</p>
+<p>Some applications, such as a database, do not use a file system. An
+application such as a database uses the raw concatenation and must have its
+own way of recognizing the concatenation, or of growing the added space.</p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id1735087"></a></h3></div></div></div>
+
+<div class="task"><a name="maintaintasksnew-36568"></a><p class="title"><b>How to Expand an Existing RAID-0
+Volume</b></p><div class="tasksummary">
+<p>A concatenated stripe enables you to expand an existing stripe. For
+example, if a stripe has run out of storage capacity, you convert it into
+a concatenated stripe. Doing so allows you to expand your storage capacity
+without having to back up and restore data.</p>
+<p>This procedure assumes that you are adding an additional stripe to an
+existing stripe. </p>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>Do not create volumes larger than 1Tbyte if you expect to run
+the Solaris software with a 32-bit kernel. Additionally, do not create volumes
+larger than 1 Tbyte if you expect to use a version of the Solaris OS prior
+to the Solaris 9 4/03 release. See <span class="olink">Overview of Multi-Terabyte Support in Solaris Volume Manager</span> for more information
+about multi-terabyte support in Solaris Volume Manager.</p>
+</div>
+</div><div class="taskprerequisites">
+
+<p>Check <span class="olink">Prerequisites for Creating Solaris Volume Manager Components</span> and <span class="olink">Background Information for Creating RAID-0 Volumes</span>.</p>
+</div><div class="procedure"><ul><li><a name="tasks-metadevices-step-65"></a>
+<p>To create a concatenated stripe,
+use one of the following methods:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>From the Enhanced Storage tool within the Solaris Management Console,  open the Volumes node. Choose Action&#8658;Create
+Volume, then follow the instructions in the wizard. For more information,
+see the online help.</p>
+</li><li>
+<p>To concatenate existing stripes from the command line, use
+the following form of the <span><strong class="command">metattach</strong></span> command:</p>
+<pre class="screen"># <strong class="userinput"><code>metattach <em class="replaceable"><code>volume-name</code></em> <em class="replaceable"><code>component-names</code></em>
+</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>volume-name</code></em>
+</span></dt><dd>
+<p>Specifies the name of the volume to expand.</p>
+</dd><dt><span class="term">
+<em class="replaceable"><code>component-names</code></em>
+</span></dt><dd>
+<p>Specifies the names of the components that are used.  If more
+than one component is used, separate each component with a space.</p>
+</dd></dl></div>
+<p>See the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">metattach</span>
+(
+1M
+)
+</span>
+</span> man
+page for more information.</p>
+</li></ul></div>
+</li></ul></div><div class="example"><a name="maintaintasksnew-134"></a><p class="title"><b>Example 9.6. Creating a Concatenated Stripe by Attaching a Single Slice</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metattach d2 c1t2d0s2</code></strong>
+d2: components are attached</pre>
+<p>
+<a class="indexterm" name="maintaintasksnew-ix279"></a>This example illustrates how to attach a slice to an existing
+stripe, <code class="filename">d2</code>. The system confirms that the slice is attached. </p>
+</div><div class="example"><a name="maintaintasksnew-135"></a><p class="title"><b>Example 9.7. Creating a Concatenated Stripe by Adding Several Slices</b></p>
+
+
+<pre class="screen"># <strong class="userinput"><code>metattach d25 c1t2d0s2 c1t2d1s2 c1t2d3s2</code></strong>
+d25: components are attached</pre>
+<p>
+<a class="indexterm" name="maintaintasksnew-ix280"></a>
+<a class="indexterm" name="maintaintasksnew-ix281"></a>This example takes an existing three-way stripe, <code class="filename">d25</code>,
+and concatenates another three-way stripe to it. Because no interlace value
+is given for the attached slices, the stripes inherit the interlace value
+configured for <code class="filename">d25</code>. The system verifies that the volume
+has been set up.  </p>
+</div><div class="taskrelated">
+
+<p>For a UFS file system, run the <span><strong class="command">growfs</strong></span> command on
+the volume. See <span class="olink">How to Expand a File System</span>.</p>
+<p>Some applications, such as a database, do not use a file system. An
+application such as a database uses the raw volume and must have its own way
+of recognizing the volume, or of growing the added space.</p>
+<p>To prepare a newly created concatenated stripe for a file system, see <span class="olink">Chapter 18, <em class="citetitle">Creating UFS, TMPFS, and LOFS File Systems (Tasks),</em> in <em class="citetitle">System Administration Guide: Devices and File Systems</em>
+</span>.</p>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch09s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch09.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch09s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Creating RAID-0 (Concatenation) Volumes </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Removing a RAID-0 Volume</td></tr></table></div></body></html>

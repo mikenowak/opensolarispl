@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>Cloning a Non-Global Zone on the Same System - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage> > <a href="p70.html">20.&nbsp;&nbsp;Installing, Booting, Halting, Uninstalling,  and Cloning Non-Global Zones (Tasks)</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p72.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p74.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="gbwmc"></a><h3>Cloning a Non-Global Zone on the Same System</h3>
+<p><a name="indexterm-273"></a><a name="indexterm-274"></a><a name="indexterm-275"></a><a name="indexterm-276"></a><a name="indexterm-277"></a><a name="indexterm-278"></a>Cloning is used to provision a new zone
+on a system by copying the data from a source <tt>zonepath</tt> to
+a target <tt>zonepath</tt>. </p>
+<p>When the source <tt>zonepath</tt> and the target <tt>zonepath</tt> both reside on ZFS and are in the same pool, the <tt>zoneadm</tt> <tt>clone</tt> command automatically uses ZFS to clone the zone. However,
+you can specify that the ZFS <tt>zonepath</tt> be copied and not
+ZFS cloned.</p>
+<a name="gbwlp"></a><h4><img src="graphics/procedure.gif"> How to Clone a Zone</h4>
+<p>You must configure the new zone before you can install it. The parameter
+passed to the <tt>zoneadm</tt> <tt>create</tt> subcommand
+is the name of the zone to clone. This source zone must be halted.</p>
+<p>You must be the global administrator in the global zone to perform this
+procedure.</p>
+<ol><li><a name="gbwll"></a><b>Become superuser, or assume the Primary Administrator
+role.</b><p>To create the role and assign the role to a user, see Using
+the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i>.</p></li><li><b>Halt the source zone to be cloned, which is <tt>my-zone</tt> in
+this procedure.</b><pre>global# <tt><b>zoneadm -z my-zone halt</b></tt></pre></li><li><b>Start configuring the new zone by exporting the configuration
+of the source zone <tt>my-zone</tt> to a file, for example, <tt>master</tt>.</b><pre>global# <tt><b>zonecfg -z my-zone export -f /export/zones/master</b></tt></pre><hr>
+<p><b>Note - </b>You can also create the new zone configuration using the procedure <a href="p63.html#z.conf.start-29">How to Configure the Zone</a> instead of modifying
+an existing configuration. If you use this method, skip ahead to Step 6 after
+you create the zone.</p>
+<hr>
+</li><li><b>Edit the file <tt>master</tt>. Set different properties
+and resources for the components that cannot be identical for different zones.
+For example, you must set a new <tt>zonepath</tt>. For a shared-IP
+zone, the IP addresses in any net resources must be changed. For an exclusive-IP
+zone, the physical property of any net resources must be changed.</b></li><li><b>Create the new zone, <tt>zone1</tt>, by using the commands
+in the file <i>master</i>.</b><pre>global# <tt><b>zonecfg -z zone1 -f /export/zones/master</b></tt></pre></li><li><b>Install the new zone, <tt>zone1</tt>, by cloning <tt>my-zone</tt>.</b><pre>global# <tt><b>zoneadm -z zone1 clone my-zone</b></tt></pre><p>The system displays:</p><pre>Cloning zonepath /export/home/my-zone...</pre><p>If the source <tt>zonepath</tt> is on a ZFS pool, for example, <tt>zeepool</tt>, the system displays:</p><pre>Cloning snapshot zeepool/zones/my-zone@SUNWzone1
+Instead of copying, a ZFS clone has been created for this zone.</pre></li><li><b>List the zones on the system.</b><pre>ID  NAME     STATUS       PATH                           BRAND      IP
+ 0  global   running      /                              native     shared
+ -  my-zone  installed    /export/home/my-zone           native     shared
+ -  zone1    installed    /export/home/zone1             native     shared</pre></li></ol><h6><h6>More Information</h6>When a Source <tt>zonepath</tt> on a
+ZFS File System Is Cloned<p>When the <tt>zoneadm</tt> command clones a source <tt>zonepath</tt> that is on its own ZFS file system, the following actions are performed:</p>
+<ul><li><p>The <tt>zoneadm</tt> command takes a software inventory.</p>
+</li>
+<li><p>The <tt>zoneadm</tt> command takes a ZFS snapshot
+and names it <tt>SUNWzone</tt><i>X</i>, for
+example, <tt>SUNWzone</tt><i>1</i>.</p>
+</li>
+<li><p>The <tt>zoneadm</tt> command uses ZFS clone to clone
+the snapshot.</p>
+</li>
+</ul>
+</h6><a name="gcsot"></a><h4><img src="graphics/procedure.gif"> How to Clone a Zone from an Existing Snapshot</h4>
+<p>You can clone a source zone multiple times from an existing snapshot
+that was originally taken when you cloned a zone.</p>
+<p>You must be the global administrator in the global zone to perform this
+procedure.</p>
+<ol><li><b>Become superuser, or assume the Primary Administrator role.</b><p>To create the role and assign the role to a user, see Using
+the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i>.</p></li><li><b>Configure the zone <tt>zone2</tt>.</b></li><li><b>Specify that an existing snapshot be used to create <tt>new-zone2</tt>.</b><pre>global# <tt><b>zoneadm -z zone2 clone -s zeepool/zones/my-zone@SUNWzone1 my-zone</b></tt></pre><p>The system displays:</p><pre>Cloning snapshot zeepool/zones/my-zone@SUNWzone1</pre><p>The <tt>zoneadm</tt> command validates the software from the
+snapshot <tt>SUNWzone</tt><i>1</i>, and clones
+the snapshot.</p></li><li><b>List the zones on the system.</b><pre>ID  NAME     STATUS       PATH                           BRAND      IP
+ 0  global   running      /                              native     shared
+ -  my-zone  installed    /zeepool/zones/my-zone         native     shared
+ -  zone1    installed    /zeepool/zones/zone1           native     shared
+ -  zone2    installed    /zeepool/zones/zone2           native     shared</pre></li></ol><a name="gcspf"></a><h4><img src="graphics/procedure.gif"> How to Use Copy Instead of ZFS Clone</h4>
+<p>Use this procedure to prevent the automatic cloning of a zone on a ZFS
+file system by specifying that the <tt>zonepath</tt> should be copied
+instead.</p>
+<p>You must be the global administrator in the global zone to perform this
+procedure.</p>
+<ol><li><b>Become superuser, or assume the Primary Administrator role.</b><p>To create the role and assign the role to a user, see Using
+the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i>.</p></li><li><b>Specify that the <tt>zonepath</tt> on ZFS be copied
+and not ZFS cloned.</b><pre>global# <tt><b>zoneadm -z zone1 clone -m copy my-zone</b></tt></pre></li></ol>
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p72.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p74.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

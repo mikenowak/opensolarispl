@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- GenHTML@17046-->
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<title>How to Migrate an <tt>lx</tt> Branded Zone - System Administration Guide: Solaris Containers-Resource Management and Solaris Zones</title>
+<meta name="robots" content="index,follow">
+<meta name="robots" content="index,follow">
+<meta name="date" content="2007-05-01">
+<link rel="stylesheet" type="text/css" href="css/default.css">
+<link rel="stylesheet" type="text/css" href="css/ipg.css">
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" bgcolor="#ffffff"  class="a0v0">
+<!--stopindex-->
+
+<a name="top"></a>
+
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1">
+<div class="a1v0">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr valign="bottom">
+<td nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com">sun.com</a>
+<a href="http://docs.sun.com/" class="dividelink">docs.sun.com</a>
+</span>
+</td><td align="right" nowrap="nowrap">
+<span class="toolbarlinks">
+<a href="http://www.sun.com/MySun/">My Sun</a>
+<a href="http://www.sun.com/worldwide/" class="dividelink">Worldwide Sites</a>
+</span>
+</td></tr>
+</table>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+
+<!-- BEGIN A2 COMPONENT V.0 -->
+<div class="a2" id="a2v0">
+<div class="cornerTL">
+<div class="cornerTR">
+<div class="cornerBL">
+<div class="cornerBR">
+<div class="a2topiclinks">
+<table cellpadding="1" cellspacing="0" border="0">
+<tr valign="bottom">
+<td><a href="http://www.sun.com/" title="Home Page"><img src="css/a.gif" alt="Home Page" width="104" height="58" border="0" class="sunlogo"></a></td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip1"></td>
+<td class="navlinks" id="navlink1">
+<div>
+<a id="glink1" href="http://www.sun.com/products/">Products</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip2"></td>
+<td class="navlinks" id="navlink2">
+<div>
+<a id="glink2" href="http://www.sun.com/downloads/">Downloads</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip3"></td><td class="navlinks" id="navlink3">
+<div>
+<a id="glink3" href="http://www.sun.com/service/">Service &amp; Solutions</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip4"></td><td class="navlinks" id="navlink4">
+<div>
+<a id="glink4" href="http://www.sun.com/support/">Support</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip5"></td><td class="navlinks" id="navlink5">
+<div>
+<a id="glink5" href="http://www.sun.com/training/">Training</a>
+</div>
+</td><td><img src="css/a.gif" alt="" width="1" height="1" border="0" id="ip6"></td><td class="navlinks" id="navlink6">
+<div>
+<a id="glink6" href="http://research.sun.com/">Research</a>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+</div></div></div></div>
+</div>
+<!-- END A2 COMPONENT V.0 -->
+
+<!-- BEGIN BREADCRUMB -->
+<div id="breadcrumb">
+<?GenHTML ReferencePage >System Administration Guide: Solaris Containers-Resource Management and Solaris Zones<?GenHTML /ReferencePage> > <a href="p135.html">35.&nbsp;&nbsp;Moving and Migrating <tt>lx</tt> Branded Zones (Tasks)</a> > <a href="p135.html#gdqsr">Migrating an <tt>lx</tt> Branded Zone to a Different Machine</a>
+</div><br />
+<!-- END BREADCRUMB -->
+
+<!-- BEGIN WRAPPER TABLE, 1 COLUMN, MAIN -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr valign="bottom"><td width="100%" valign="top">
+<!-- BEGIN CENTRAL COLUMN COMPONENTS -->
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr><td colspan="5"></td></tr>
+<tr>
+<td></td>
+<td style="width: 60%">&nbsp;</td>
+<td><a href="p135.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p137.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+
+</td></tr>
+<tr><td width="100%" valign="top">
+<a name="skip2content"> </a>
+
+<!--startindex-->
+<div class="maincontent">
+<a name="gdqtd"></a><h4><img src="graphics/procedure.gif"> How to Migrate an <tt>lx</tt> Branded Zone</h4>
+<ol><li><b>Become superuser, or assume the Primary Administrator role.</b><p>To create the role and assign the role to a user, see Using
+the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i>.</p></li><li><b>Halt the zone to be migrated, <tt>lx-zone</tt> in this
+procedure.</b><pre>host1# <tt><b>zoneadm -z lx-zone halt</b></tt></pre></li><li><b>Detach the zone.</b><pre>host1# <tt><b>zoneadm -z lx-zone detach</b></tt></pre><p>The detached zone is now in the configured state.</p></li><li><b>Move the <tt>zonepath</tt> for <tt>lx-zone</tt> to
+the new host.</b><p>See <a href="p136.html#gdqse">How to Move the <tt>zonepath</tt> to a new Host</a> for more information.</p></li><li><b>On the new host, configure the zone.</b><pre>host2# <tt><b>zonecfg -z lx-zone</b></tt></pre><p>You will see the following system message:</p><pre>lx-zone: No such zone configured
+Use 'create' to begin configuring a new zone.</pre></li><li><b>To create the zone <tt>lx-zone</tt> on the new host,
+use the <tt>zonecfg</tt> command with the <tt>-a</tt> option
+and the <tt>zonepath</tt> on the new host.</b><pre>zonecfg:lx-zone> <tt><b>create -a /export/zones/lx-zone</b></tt></pre></li><li><b>View the configuration.</b><pre>zonecfg:lx-zone> <tt><b>info</b></tt>
+zonename: lx-zone
+zonepath: /export/zones/lx-zone
+brand: lx
+autoboot: false
+bootargs:
+pool:
+limitpriv:
+net:
+         address: 192.168.0.90
+         physical: bge0</pre></li><li><b>(Optional) Make any required adjustments to the configuration.</b><p>For example, the network physical device might be different on the new
+host, or devices that are part of the configuration might have different names
+on the new host.</p><pre>zonecfg:lx-zone> <tt><b>select net physical=bge0</b></tt>
+zonecfg:lx-zone:net> <tt><b>set physical=e1000g0</b></tt>
+zonecfg:lx-zone:net> <tt><b>end</b></tt></pre></li><li><b>Commit the configuration and exit.</b><pre>zonecfg:lx-zone> <tt><b>commit</b></tt>
+zonecfg:lx-zone> <tt><b>exit</b></tt></pre></li><li><b>Attach the zone on the new host.</b><ul><li><b>Attach the zone with a validation check. </b><pre>host2# <tt><b>zoneadm -z lx-zone attach</b></tt></pre><p>The system administrator is notified of required actions to be taken
+if either or both of the following conditions are present:</p><ul><li><p>Required packages and patches are not present on the new machine.</p>
+</li>
+<li><p>The software levels are different between machines.</p>
+</li>
+</ul>
+</li><li><b>Force the attach operation without performing the validation.</b><pre>host2# <tt><b>zoneadm -z lx-zone attach -F</b></tt></pre><hr>
+<p><b>Caution - </b>The <tt>-F</tt> option allows you to force the <tt>attach</tt> with no validation performed. This is useful in certain cases,
+such as in a clustered environment or for backup and restore operations, but
+it does require that the system be properly configured to host the zone. An
+incorrect configuration could result in undefined behavior later.</p>
+<hr>
+</li></ul></li></ol><a name="gdqse"></a><h4><img src="graphics/procedure.gif"> How to Move the <tt>zonepath</tt> to a new
+Host</h4>
+<p>There are many ways to create an archive of the <tt>zonepath</tt>.
+For example, you can use the <tt>cpio</tt> or <tt>pax</tt> commands
+described in the <tt>cpio</tt>(1))
+and <tt>pax</tt>(1) man pages.</p>
+<p>There are also several ways to transfer the archive to the new host.
+The mechanism used to transfer the <tt>zonepath</tt> from the source
+host to the destination depends on the local configuration. In some cases,
+such as a SAN, the <tt>zonepath</tt> data might not actually move.
+The SAN might simply be reconfigured so the <tt>zonepath</tt> is
+visible on the new host.  In other cases, the <tt>zonepath</tt> might
+be written to tape, and the tape mailed to a new site.</p>
+<p>For these reasons, this step is not automated. The system administrator
+must choose the most appropriate technique to move the <tt>zonepath</tt> to
+the new host.</p>
+<ol><li><b>Become superuser, or assume the Primary Administrator role.</b><p>To create the role and assign the role to a user, see Using
+the Solaris Management Tools With RBAC (Task Map) in <i>System Administration Guide: Basic Administration</i>.</p></li><li><b>Move the <tt>zonepath</tt> to the new host. You can
+use the method described in this procedure, or use another method of your
+choice.</b></li></ol><a name="gdqsd"></a>Example 35-1 Archiving and Moving the <tt>zonepath</tt> Using the <tt>tar</tt> Command<ol><li><p>Create a <tt>tar</tt> file of the <tt>zonepath</tt> on <tt>host1</tt> and transfer it to <tt>host2</tt> by using the <tt>sftp</tt> command.</p>
+<pre>host1# <tt><b>cd /export/zones</b></tt>
+host1# <tt><b>tar cf lx-zone.tar lx-zone</b></tt>
+host1# <tt><b>sftp host2</b></tt>
+Connecting to host2...
+Password:
+sftp> <tt><b>cd /export/zones</b></tt>
+sftp> <tt><b>put lx-zone.tar</b></tt>
+Uploading lx-zone.tar to /export/zones/lx-zone.tar
+sftp> <tt><b>quit</b></tt></pre></li>
+<li><p>On <tt>host2</tt>, unpack the <tt>tar</tt> file.</p>
+<pre>host2# cd <tt><b>/export/zones</b></tt>
+host2# <tt><b>tar xf lx-zone.tar</b></tt></pre></li>
+</ol>
+<p>For more information, see <tt>sftp</tt>(1) and <tt>tar</tt>(1).</p>
+<h6>Troubleshooting</h6><p>See <a href="p113.html#gchbp">Resolving Problems With a <tt>zoneadm</tt> <tt>attach</tt> Operation</a> for troubleshooting information on the following:</p>
+<ul><li><p>Patches and packages are out of sync.</p>
+</li>
+<li><p>Operating system releases do not match.</p>
+</li>
+</ul>
+<p>The user must verify that the processor type in the new machine is supported.
+See <a href="p135.html#gdqsz">About Migrating an <tt>lx</tt> Branded Zone</a> for
+more information.</p>
+
+</div>
+<!--stopindex-->
+
+<!-- END CENTRAL COLUMN COMPONENTS -->
+</td></tr>
+
+<!-- BEGIN SPACER ROW -->
+<tr><td><img src="css/a.gif" width="780" height="1" border="0" alt="" /></td></tr>
+<!-- END SPACER ROW -->
+
+<tr><td>
+
+<!-- BEGIN PAGE CONTROL ROW -->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tr valign="bottom">
+<td></td>
+<td style="width: 60%"></td>
+<td><a href="p135.html"><img style="padding-right: 3px" src="graphics/prev.gif" border="0">Previous</a></td>
+<td><a href="toc.html">Contents</a></td>
+<td><a href="idx-1.html">Index</a></td>
+<td><a href="p137.html">Next<img style="padding-left: 3px" src="graphics/next.gif" border="0"></a></td>
+</tr>
+</table>
+<!-- END PAGE CONTROL ROW -->
+</td></tr>
+
+</table>
+<!-- END WRAPPER TABLE, 1 COLUMN, MAIN -->
+
+
+<!-- BEGIN A5 COMPONENT V.0 -->
+<div class="a5" id="a5v0">
+<span class="footerlinks">
+<a href="http://www.sun.com/company/">Company Info</a>
+<a href="http://www.sun.com/contact/">Contact</a>
+<a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a>
+<a href="http://www.sun.com/privacy/">Privacy</a>
+
+<span class="footercopy">Copyright 1994-2007 Sun Microsystems, Inc.</span>
+</span>
+</div>
+<!-- END A5 COMPONENT V.0 -->
+
+</body>
+</html>
+

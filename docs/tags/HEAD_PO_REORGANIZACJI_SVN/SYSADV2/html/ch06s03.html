@@ -1,0 +1,585 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Adding a terminfo Entry for
+an Unsupported Printer</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Advanced Administration"><link rel="up" href="ch06.html" title="Chapter 6. Customizing the LP Print Service
+(Tasks)"><link rel="prev" href="ch06s02.html" title="Adjusting Printer Port Characteristics"><link rel="next" href="ch06s04.html" title="Customizing the Printer Interface Program"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Adding a <code class="literal">terminfo</code> Entry for
+an Unsupported Printer</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch06s02.html">Prev</a> </td><th width="60%" align="center">Chapter 6. Customizing the LP Print Service
+(Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch06s04.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="printcust-11157"></a>Adding a <code class="literal">terminfo</code> Entry for
+an Unsupported Printer</h2></div></div></div>
+
+<a class="indexterm" name="printcust-ix714"></a>
+<a class="indexterm" name="printcust-ix715"></a>
+<a class="indexterm" name="printcust-ix716"></a>
+<a class="indexterm" name="printcust-ix717"></a>
+<p>The LP print service uses an interface program and the <code class="filename">terminfo</code> database
+to initialize each printer and establish the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Selected page size</p>
+</li><li>
+<p>Character pitch</p>
+</li><li>
+<p>Line pitch</p>
+</li><li>
+<p>Character set</p>
+</li></ul></div>
+<p>Each printer is identified in the <code class="filename">terminfo</code> database with
+a short name. The short name required by the <code class="filename">terminfo</code> database
+is identical to the name used to set the <span><strong class="command">TERM</strong></span> shell variable. This
+name is also the printer type that you specify when setting up a printer. For example,
+the entries for different types of PostScript printers are in the <code class="filename">/usr/share/lib/terminfo/P</code> directory. The default entries provided with the SunOS software release
+are <code class="literal">PS</code> (for PostScript) and <code class="literal">PSR</code> (for PostScript
+Reverse). </p>
+<p>If you cannot find a <code class="literal">terminfo</code> entry for your printer, you
+still might be able to use the printer with the LP print service without the automatic
+selection of page size, pitch, and character sets. However, you might have trouble
+keeping the printer set in the correct modes for each print request.</p>
+<p>
+<a class="indexterm" name="printcust-ix718"></a>If no <code class="literal">terminfo</code> entry exists for your type of printer
+and you want to keep the printer set in the correct modes, you can do one of the following:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Customize the interface program used with the printer.</p>
+</li><li>
+<p>Add an entry to the <code class="literal">terminfo</code> database.</p>
+</li></ul></div>
+<p>A terminal or printer entry in the <code class="literal">terminfo</code> database contains
+and defines hundreds of items. The LP print service, however, uses fewer than 50 of
+these items. The following table lists the required <code class="filename">terminfo</code> items
+for a printer.</p>
+<div class="table"><a name="printcust-89662"></a><p class="title"><b>Table 6.2. Required <code class="literal">terminfo</code> Items for a Printer (Booleans)</b></p>
+
+
+<table summary="Required terminfo Items for a Printer (Booleans)" width="100%" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>Item</p>
+</th><th>
+<p>
+</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>Booleans:</p>
+</td><td>
+<p>
+</p>
+</td><td>
+<p>
+</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">cpix</code>
+</p>
+</td><td>
+<p>Changing character pitch changes resolution</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">daisy</code>
+</p>
+</td><td>
+<p>Printer requires an operator to change character set</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">lpix</code>
+</p>
+</td><td>
+<p>Changing line pitch changes resolution</p>
+</td></tr></tbody></table>
+</div>
+<div class="table"><a name="frylo"></a><p class="title"><b>Table 6.3. Required <code class="literal">terminfo</code> Items
+for a Printer (Numbers)</b></p>
+
+
+<table summary="Required terminfo Items
+for a Printer (Numbers)" width="100%" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>Item</p>
+</th><th>
+<p>
+</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>Numbers:</p>
+</td><td>
+<p>
+</p>
+</td><td>
+<p>
+</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">bufsx</code>
+</p>
+</td><td>
+<p>Number of bytes buffered before printing</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">cols</code>
+</p>
+</td><td>
+<p>Number of columns in a line</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">cps</code>
+</p>
+</td><td>
+<p>Average print rate in characters per second</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">it</code>
+</p>
+</td><td>
+<p>Tabs initially every <em class="replaceable"><code>n</code></em> spaces</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">lines</code>
+</p>
+</td><td>
+<p>Number of lines on a page</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">orc</code>
+</p>
+</td><td>
+<p>Horizontal resolution, in units per character</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">orhi</code>
+</p>
+</td><td>
+<p>Horizontal resolution, in units per inch</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">orl</code>
+</p>
+</td><td>
+<p>Vertical resolution, in units per line</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">orvi</code>
+</p>
+</td><td>
+<p>Vertical resolution, in units per inch</p>
+</td></tr></tbody></table>
+</div>
+<div class="table"><a name="fryly"></a><p class="title"><b>Table 6.4. Required <code class="literal">terminfo</code> Items
+for a Printer (Strings)</b></p>
+
+
+<table summary="Required terminfo Items
+for a Printer (Strings)" width="100%" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>
+<p>Item</p>
+</th><th>
+<p>
+</p>
+</th><th>
+<p>Description</p>
+</th></tr></thead><tbody><tr><td>
+<p>Strings:</p>
+</td><td>
+<p>
+</p>
+</td><td>
+<p>
+</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">chr</code>
+</p>
+</td><td>
+<p>Changes horizontal resolution</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">cpi</code>
+</p>
+</td><td>
+<p>Changes number of characters per inch</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">cr</code>
+</p>
+</td><td>
+<p>Carriage return</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">csnm</code>
+</p>
+</td><td>
+<p>List of character set names</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">cudl</code>
+</p>
+</td><td>
+<p>Moves carriage down one line</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">cud</code>
+</p>
+</td><td>
+<p>Moves carriage down <em class="replaceable"><code>n</code></em> lines</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">cuf</code>
+</p>
+</td><td>
+<p>Moves carriage to the right <em class="replaceable"><code>n</code></em> columns</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">cvr</code>
+</p>
+</td><td>
+<p>Changes vertical resolution</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">ff</code>
+</p>
+</td><td>
+<p>Ejects page</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">hpa</code>
+</p>
+</td><td>
+<p>Horizontal position absolute</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">ht</code>
+</p>
+</td><td>
+<p>Tabs to next 8-space tab stop</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">if</code>
+</p>
+</td><td>
+<p>Is the name of initialization file</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">iprog</code>
+</p>
+</td><td>
+<p>Is the path name of initialization program</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">is1</code>
+</p>
+</td><td>
+<p>Is a printer initialization string</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">is2</code>
+</p>
+</td><td>
+<p>Is a printer initialization string</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">is3</code>
+</p>
+</td><td>
+<p>Is a printer initialization string</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">lpi</code>
+</p>
+</td><td>
+<p>Changes number of lines per inch</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">mgc</code>
+</p>
+</td><td>
+<p>Clears all margins (top, bottom, and sides)</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">rep</code>
+</p>
+</td><td>
+<p>Repeats a character <em class="replaceable"><code>n</code></em> times</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">rwidm</code>
+</p>
+</td><td>
+<p>Disables double-wide printing</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">scs</code>
+</p>
+</td><td>
+<p>Selects character set</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">scsd</code>
+</p>
+</td><td>
+<p>Starts definition of a character set</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">slines</code>
+</p>
+</td><td>
+<p>Set page length to <em class="replaceable"><code>n</code></em> lines per page</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">smgl</code>
+</p>
+</td><td>
+<p>Sets left margin at current column</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">smglp</code>
+</p>
+</td><td>
+<p>Set left margin</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">smgr</code>
+</p>
+</td><td>
+<p>Sets right margin at current column</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">smgrp</code>
+</p>
+</td><td>
+<p>Sets right margin</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">smglr</code>
+</p>
+</td><td>
+<p>Sets both left and right margins</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">msgt</code>
+</p>
+</td><td>
+<p>Sets top margin at current line</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">smgtp</code>
+</p>
+</td><td>
+<p>Sets top margin</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">smgb</code>
+</p>
+</td><td>
+<p>Sets bottom margin at current line</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">smgbp</code>
+</p>
+</td><td>
+<p>Sets bottom margin</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">smgtb</code>
+</p>
+</td><td>
+<p>Sets both top and bottom margins</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">swidm</code>
+</p>
+</td><td>
+<p>Enables double-wide printing</p>
+</td></tr><tr><td>
+<p>
+</p>
+</td><td>
+<p>
+<code class="literal">vpa</code>
+</p>
+</td><td>
+<p>Sets vertical position to absolute</p>
+</td></tr></tbody></table>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2151773"></a></h3></div></div></div>
+
+<div class="task"><a name="printcust-24894"></a><p class="title"><b>How to Add a <code class="filename">terminfo</code> Entry
+for an Unsupported Printer</b></p><a class="indexterm" name="indexterm-116"></a><div class="tasksummary">
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Before you create a <code class="filename">terminfo</code> entry for a printer,
+make sure that none of the existing <code class="filename">terminfo</code> entries will support
+the printer. To do so, try to set up the printer with an entry for a similar printer,
+if a similar printer exists.</p>
+</div>
+</div><div class="procedure"><ol type="1"><li><a name="printcust-step-7"></a>
+<p>Log in as superuser, <code class="literal">lp</code>,  or
+assume an equivalent role on the print server.</p>
+</li><li><a name="printcust-step-9"></a>
+<p>Determine a <code class="filename">terminfo</code> entry
+name for the printer.</p>
+<p>The directories in the <code class="filename">/usr/share/lib/terminfo</code> directory contain all the valid <code class="filename">terminfo</code> entries.
+Use these entries as a guide for choosing a name for the printer.</p>
+</li><li><a name="printcust-step-10"></a>
+<p>Create a <code class="filename">terminfo</code> entry file
+for the printer.</p>
+<p>
+<span class="olink">Table 6&#8211;2</span> shows
+the items you must define in the <span><strong class="command">terminfo</strong></span> entry to add a new printer
+to the LP print service. For more details about the structure of the <span><strong class="command">terminfo</strong></span> database, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">terminfo</span>
+(
+4
+)
+</span>
+</span> man
+page.</p>
+<p>To help you start writing a new <code class="filename">terminfo</code> entry,
+use the <span><strong class="command">infocmp</strong></span> command to save an existing <code class="filename">terminfo</code> entry to a file. This command is helpful if there is a <code class="filename">terminfo</code> entry that is similar to entry you want to create. For example, the following
+command saves the <code class="literal">ps</code> entry to the <code class="filename">ps_cust</code> file,
+which will become the new <code class="filename">terminfo</code> entry.</p>
+<p>
+<code class="filename">infocmp ps &gt; ps_cust</code>
+</p>
+</li><li><a name="printcust-step-11"></a>
+<p>Compile the <code class="filename">terminfo</code> entry
+file into the <code class="filename">terminfo</code> database.</p>
+<pre class="screen"># <strong class="userinput"><code>tic</code></strong> <em class="replaceable"><code>terminfo_entry</code></em>
+</pre>
+<p>where <em class="replaceable"><code>terminfo-entry</code></em> variable is the <code class="filename">terminfo</code> entry file you created.</p>
+</li><li><a name="printcust-step-48"></a>
+<p>Check for the new <code class="filename">terminfo</code> entry
+file in the <code class="filename">/usr/share/lib/terminfo</code> directory.</p>
+</li></ol></div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch06s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch06.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch06s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Adjusting Printer Port Characteristics </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Customizing the Printer Interface Program</td></tr></table></div></body></html>

@@ -1,0 +1,1369 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>
+Booting a System in the GRUB Based Boot
+Environment</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="System Administration Guide: Basic Administration"><link rel="up" href="ch11.html" title="Chapter 11. 
+GRUB Based Booting (Tasks)"><link rel="prev" href="ch11s03.html" title="
+GRUB Based Booting (Task Map)"><link rel="next" href="ch11s05.html" title="
+The GRUB Based Boot Process (Reference)"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">
+Booting a System in the GRUB Based Boot
+Environment</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch11s03.html">Prev</a> </td><th width="60%" align="center">Chapter 11. 
+GRUB Based Booting (Tasks)</th><td width="20%" align="right"> <a accesskey="n" href="ch11s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="fvzqe"></a>
+Booting a System in the GRUB Based Boot
+Environment</h2></div></div></div>
+
+<a class="indexterm" name="indexterm-153"></a>
+<a class="indexterm" name="indexterm-154"></a>
+<p>This section includes new information for performing a GRUB based disk
+boot and a GRUB based network boot on an x86 based system. Also included are
+instructions for configuring DHCP to perform GRUB based network boots and
+how to modify the Solaris boot behavior.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>GRUB based booting is not available on SPARC based systems in
+this Solaris release.</p>
+</div>
+<p>Some of the procedures in this section indicate to use the Reset button
+to restart the system. If your system does not have a Reset button, use the
+power switch to restart the system. You might be able to press Ctrl-Alt-Del
+to interrupt system operation, depending upon the state of the system.</p>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2078650"></a></h3></div></div></div>
+
+<div class="task"><a name="fvzun"></a><p class="title"><b>
+How to Boot a System to Run Level 3 (Multiuser
+Level)</b></p><div class="tasksummary">
+<p>Use this procedure to boot a system that is currently at run level 0
+to run level 3.</p>
+</div><div class="procedure"><ol type="1"><li><a name="fvzsa"></a>
+<p>If the system displays the <code class="literal">Press any key to
+reboot</code> prompt, press any key to reboot the system.</p>
+<p>You
+can also use the Reset button at this prompt. If the system is shut down,
+turn the system on with the power switch.</p>
+<p>When the boot sequence
+begins, the GRUB menu is displayed.</p>
+</li><li><a name="fvzmf"></a>
+<p>
+<a class="indexterm" name="fvzmv"></a>To boot the system to run level 3, press Enter to boot the default
+OS instance.</p>
+<p>If you do not choose an entry within 10 seconds,
+the system automatically boots to run level 3.</p>
+</li><li><a name="fvzrw"></a>
+<p>Verify that the system has booted to run level 3.</p>
+<pre class="screen"># <strong class="userinput"><code>who -r</code></strong>
+</pre>
+<p>The login prompt is displayed when the boot process has finished successfully.</p>
+<pre class="screen">
+<em class="replaceable"><code>hostname</code></em> console login:</pre>
+</li></ol></div><div class="example"><a name="id2078783"></a><p class="title"><b>Example 11.1. 
+Booting a System to Run Level 3 (Multiuser Level) in the Solaris OS</b></p>
+
+
+<a class="indexterm" name="indexterm-155"></a>
+<a class="indexterm" name="indexterm-156"></a>
+<a class="indexterm" name="indexterm-157"></a>
+<p>For new installations of the Solaris OS, the system automatically boots
+a 64-bit kernel if the system is 64-bit capable. For upgrade installations,
+the system boots a 64-bit kernel, if the system is 64-bit capable. However,
+the system does not boot a 64-bit kernel if the <code class="literal">boot-file</code> parameter
+was previously set to a value other than <code class="filename">kernel/unix</code> with
+the <span><strong class="command">eeprom</strong></span> command.</p>
+<p>This example shows how to boot an x86 based system that has 64-bit computing
+capabilities to run level 3.</p>
+<pre class="screen">Press any key to reboot.
+Resetting...
+
+  GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | Solaris 10.1 ... X86                                                    |
+ | Solaris failsafe                                                        |
+ |                                                                         |
+ |                                                                         |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+      Use the ^ and v keys to select which entry is highlighted.
+      Press enter to boot the selected OS, 'e' to edit the
+      commands before booting, or 'c' for a command-line.
+
+     The highlighted entry will be booted automatically in 10 seconds
+
+Booting 'Solaris 10.1  ... X86'
+
+root (hd0,2,a)
+ Filesystem type is ufs, partition type 0x000000bf
+kernel /platform/i86pc/multiboot
+[Multiboot-elf, &lt;0x1000000:0x13f3b:0x3941d&gt;, shtab=0x104e258, entry=0x1000000]
+module /platform/i86pc/boot_archive
+
+SunOS Release 5.10.1 Version ... 64-bit
+Copyright 1983-2005 Sun Microsystems, Inc.  All rights reserved.
+Use is subject to license terms.
+Hostname: swoozie.Central.Sun.COM
+NIS domain name is boulder.Central.Sun.COM
+checking ufs filesystems
+/dev/rdsk/c1d0s7: is logging.
+
+swoozie.Central.Sun.COM console login:</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2078889"></a></h3></div></div></div>
+
+<div class="task"><a name="fvzqr"></a><p class="title"><b>
+How to Boot a System to Run Level S (Single-User
+Level)</b></p><a class="indexterm" name="indexterm-158"></a><a class="indexterm" name="indexterm-159"></a><a class="indexterm" name="indexterm-160"></a><div class="tasksummary">
+<p>Use this procedure to boot a system that is at run level 0 to run level
+S. Single-user level is used for performing system maintenance.</p>
+</div><div class="procedure"><ol type="1"><li><a name="fvzos"></a>
+<p>If the system displays the <code class="literal">Press any key to
+reboot</code> prompt, press any key to reboot the system.</p>
+<p>You
+can also use the Reset button at this prompt. If the system is shut down,
+turn the system on with the power switch.</p>
+<p>When the boot sequence
+begins, the GRUB menu is displayed.</p>
+</li><li><a name="fvzme"></a>
+<p>
+<a class="indexterm" name="fvzms"></a>To boot the system to run level S, type <span><strong class="command">e</strong></span> when
+the GRUB main menu is displayed.</p>
+</li><li>
+<p>Use the arrow keys to choose the <span><strong class="command">kernel /platform/i86pc/multiboot</strong></span> boot entry.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>If you cannot use the arrow keys, use the <code class="literal">^</code> key
+to scroll up and the <code class="literal">v</code> key to scroll down.</p>
+</div>
+</li><li>
+<p>Type <span><strong class="command">e</strong></span> to edit the <span><strong class="command">kernel /platform/i86pc/multiboot</strong></span> boot entry.</p>
+<p>The GRUB edit menu is displayed, enabling
+you to add options and arguments to the <span><strong class="command">kernel</strong></span> command.</p>
+<pre class="screen">grub edit&gt; kernel /platform/i86pc/multiboot</pre>
+</li><li>
+<p>Type <code class="option">
+s</code> at the end of the <span><strong class="command">kernel /platform/i86pc/multiboot</strong></span> line. Then, press Enter.</p>
+<pre class="screen">grub edit&gt; kernel /platform/i86pc/multiboot <strong class="userinput"><code>-s</code></strong>
+</pre>
+<p>After you press Enter, you are returned to the GRUB main menu.</p>
+</li><li>
+<p>To boot the system to the single-user level, type <span><strong class="command">b</strong></span>.</p>
+<p>The system boots to the single-user level.</p>
+</li><li><a name="fvzta"></a>
+<p>Type the superuser password, if prompted.</p>
+</li><li><a name="fvzoq"></a>
+<p>Verify that the system is at run level S.</p>
+<pre class="screen"># <strong class="userinput"><code>who -r</code></strong>
+ </pre>
+</li><li><a name="fvzuf"></a>
+<p>Perform the system maintenance task that required the
+run level change to S.</p>
+</li><li><a name="fvzqb"></a>
+<p>After you complete the system maintenance task, type
+Control-D to bring the system to the multiuser state.</p>
+</li></ol></div><div class="example"><a name="id2079226"></a><p class="title"><b>Example 11.2. 
+Booting a System to Run Level S (Single-User Level)</b></p>
+
+
+<a class="indexterm" name="indexterm-161"></a>
+<a class="indexterm" name="indexterm-162"></a>
+<pre class="screen">Press any key to reboot.
+Resetting...
+GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | Solaris 10.1 ... X86                                                    |
+ | Solaris failsafe                                                        |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+      Use the ^ and v keys to select which entry is highlighted.
+      Press enter to boot the selected OS, 'e' to edit the
+      commands before booting, or 'c' for a command-line.
+
+&lt;<span class="emphasis"><em>Type e to edit Solaris entry</em></span>&gt;
+
+GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | root (hd0,2,a)                                                          |
+ | kernel /platform/i86pc/multiboot                                        |
+ | module /platform/i86pc/boot_archive                                     |
+ |                                                                         |
+ |                                                                         |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+      Use the ^ and v keys to select which entry is highlighted.
+      Press 'b' to boot, 'e' to edit the selected command in the
+      boot sequence, 'c' for a command-line, 'o' to open a new line
+      after ('O' for before) the selected line, 'd' to remove the
+      selected line, or escape to go back to the main menu.
+
+
+&lt;<span class="emphasis"><em>Type e to edit the line</em></span>&gt;
+
+grub edit&gt; kernel /platform/i86pc/multiboot <strong class="userinput"><code>-s</code></strong>
+<em class="replaceable"><code>Press Enter</code></em>
+ GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | root (hd0,2,a)                                                          |
+ | kernel /platform/i86pc/multiboot -s                                     |
+ | module /platform/i86pc/boot_archive                                     |
+ |                                                                         |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+      Use the ^ and v keys to select which entry is highlighted.
+      Press 'b' to boot, 'e' to edit the selected command in the
+      boot sequence, 'c' for a command-line, 'o' to open a new line
+      after ('O' for before) the selected line, 'd' to remove the
+      selected line, or escape to go back to the main menu.
+
+&lt;<span class="emphasis"><em>Type b to boot system in single-user mode</em></span>&gt;
+
+Booting List command
+root (hd0,2,a)
+Filesystem type is ufs, partition type 0x000000bf
+kernel /platform/i86pc/multiboot -s
+ [Multiboot-elf, &lt;0x1000000:0x13f3b:0x3941d&gt;, shtab=0x104e258, entry=0x100000
+0]...
+
+SunOS Release 5.10.1 Version ... 64-bit
+Copyright 1983-2005 Sun Microsystems, Inc.  All rights reserved.
+Use is subject to license terms.
+Booting to milestone "milestone/single-user:default".
+.
+.
+.
+Root password for system maintenance (control-d to bypass): <strong class="userinput"><code>xxxxxx</code></strong> 
+
+single-user privilege assigned to /dev/console.
+Entering System Maintenance Mode
+
+May 30 12:11:15 su: 'su root' succeeded for root on /dev/console
+Sun Microsystems Inc.   SunOS 5.10.1  ...  October 2007.
+# <strong class="userinput"><code>who -r</code></strong>
+    .       run-level S  Jun 10 11:44     S      0  0
+# <strong class="userinput"><code>svcs | grep milestone</code></strong>
+disabled       11:44:02 svc:/milestone/sysconfig:default
+disabled       11:44:02 svc:/milestone/name-services:default
+disabled       11:44:02 svc:/milestone/multi-user:default
+disabled       11:44:02 svc:/milestone/multi-user-server:default
+online         11:44:05 svc:/milestone/devices:default
+online         11:44:10 svc:/milestone/network:default
+online         11:44:10 svc:/milestone/single-user:default
+#  <em class="lineannotation"><span class="lineannotation">&lt;Perform some maintenance task&gt;
+</span></em>
+# <strong class="userinput"><code>^D</code></strong>
+</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2079392"></a></h3></div></div></div>
+
+<div class="task"><a name="fvzmg"></a><p class="title"><b>
+How to Boot a System Interactively</b></p><a class="indexterm" name="indexterm-163"></a><a class="indexterm" name="indexterm-164"></a><a class="indexterm" name="indexterm-165"></a><div class="tasksummary">
+<p>Use this procedure to boot a system when you need to specify an alternate
+kernel or an alternate <code class="filename">/etc/system</code> file. </p>
+</div><div class="procedure"><ol type="1"><li><a name="fvzpr"></a>
+<p>If the system displays the <code class="literal">Press any key to
+reboot</code> prompt, press any key to reboot the system.</p>
+<p>You
+can also use the Reset button at this prompt. If the system is shut down,
+turn the system on with the power switch.</p>
+<p>When the boot sequence
+begins, the GRUB main menu is displayed.</p>
+</li><li><a name="fvzmu"></a>
+<p>Type <span><strong class="command">e</strong></span> to access the GRUB edit menu.</p>
+</li><li>
+<p>Use the arrow keys to select the <span><strong class="command">kernel /platform/i86pc/multiboot</strong></span> line.</p>
+</li><li>
+<p>Type <span><strong class="command">e</strong></span> to edit the line.</p>
+<p>The GRUB
+edit menu is displayed, enabling you to add options to the <span><strong class="command">kernel</strong></span> command.</p>
+<pre class="screen">grub edit&gt; kernel /platform/i86pc/multiboot</pre>
+</li><li>
+<p>Type <code class="option">
+a</code> at the end of the <span><strong class="command">kernel /platform/i86pc/multiboot</strong></span> line. Then, press Enter.</p>
+<pre class="screen">grub edit&gt; kernel /platform/i86pc/multiboot <strong class="userinput"><code>-a</code></strong>
+</pre>
+<p>The GRUB main menu is displayed.</p>
+</li><li>
+<p>To boot the system interactively, type <span><strong class="command">b</strong></span>.</p>
+<p>A series of system prompts are displayed. If you want to accept the
+default, press Enter.</p>
+</li><li>
+<p>Provide the name of the default directory for modules.</p>
+<p>The
+following prompt is displayed: <code class="literal">Enter default directory for modules</code>
+</p>
+<pre class="screen">[/platform/i86pc/kernel /kernel /usr/kernel]:</pre>
+</li><li>
+<p>Provide the name of the kernel to use for booting.</p>
+<p>The
+following prompt appears: <code class="literal">Name of system file</code>
+</p>
+<pre class="screen">[etc/system]:</pre>
+</li><li>
+<p>When prompted, provide an alternate path for the module directories.</p>
+<p>Press Enter to use the default module directories. Otherwise, provide
+the alternate paths to module directories, press Enter.</p>
+</li><li>
+<p>When prompted, type the physical name of the root device.</p>
+<p>Provide an alternate device name, or press Enter to use the default.</p>
+</li><li>
+<p>If you are not prompted to answer these questions, modify the
+entry by using the <code class="option">
+a</code> option, boot the system interactively
+again.</p>
+</li></ol></div><div class="example"><a name="id2079696"></a><p class="title"><b>Example 11.3. 
+Booting a System Interactively</b></p>
+
+
+<a class="indexterm" name="indexterm-166"></a>
+<a class="indexterm" name="indexterm-167"></a>
+<p>In the following example, the default choices (shown in square brackets <code class="literal">[]</code>) are accepted.</p>
+<pre class="screen">Press any key to reboot.
+Resetting...
+Press any key to reboot.
+
+    GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | Solaris 10.1 ... X86                                                    |
+ | Solaris failsafe                                                        |
+ |                                                                         |
+ |                                                                         |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+      Use the ^ and v keys to select which entry is highlighted.
+      Press enter to boot the selected OS, 'e' to edit the
+      commands before booting, or 'c' for a command-line.
+
+The highlighted entry will be booted in 10 seconds.
+
+    GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | root (hd0,2,a)                                                          |
+ | kernel /platform/i86pc/multiboot                                        |
+ | module /platform/i86pc/boot_archive                                     |
+ |                                                                         |
+ |                                                                         |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+      Use the ^ and v keys to select which entry is highlighted.
+      Press 'b' to boot, 'e' to edit the selected command in the
+      boot sequence, 'c' for a command-line, 'o' to open a new line
+      after ('O' for before) the selected line, 'd' to remove the
+      selected line, or escape to go back to the main menu.
+
+
+grub edit&gt; kernel /platform/i86pc/multiboot  <strong class="userinput"><code>-a</code></strong>
+
+    GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | root (hd0,2,a)                                                          |
+ | kernel /platform/i86pc/multiboot -a                                     |
+ | module /platform/i86pc/boot_archive                                     |
+ |                                                                         |
+ |                                                                         |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+      Use the ^ and v keys to select which entry is highlighted.
+      Press 'b' to boot, 'e' to edit the selected command in the
+      boot sequence, 'c' for a command-line, 'o' to open a new line
+      after ('O' for before) the selected line, 'd' to remove the
+      selected line, or escape to go back to the main menu.
+  Booting command-list
+
+root (hd0,2,a)
+ Filesystem type is ufs, partition type 0x000000bf
+kernel /platform/i86pc/multiboot -a
+   [Multiboot-elf, &lt;0x1000000:0x13f3b:0x3941d&gt;, shtab=0x104e258, entry=0x100000
+0]...
+module /platform/i86pc/boot_archive
+  
+Enter default directory for modules [/platform/i86pc/kernel /kernel /usr/kernel]
+: <em class="lineannotation"><span class="lineannotation">&lt;Press Enter&gt;
+</span></em>
+Name of system file [etc/system]:<em class="lineannotation"><span class="lineannotation">&lt;Press Enter&gt;
+</span></em> 
+SunOS Release 5.10.1 Version ... 64-bit
+Copyright 1983-2005 Sun Microsystems, Inc.  All rights reserved.
+Use is subject to license terms.
+Hostname: swoozie.Central.Sun.COM
+NIS domain name is boulder.Central.Sun.COM
+checking ufs filesystems
+/dev/rdsk/c1d0s7: is logging.
+
+swoozie.Central.Sun.COM console login:</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2079839"></a></h3></div></div></div>
+
+<div class="task"><a name="fwbon"></a><p class="title"><b>
+How to Set Solaris Boot Parameters by Using
+the <span><strong class="command">eeprom</strong></span> Command</b></p><a class="indexterm" name="indexterm-168"></a><a class="indexterm" name="indexterm-169"></a><div class="tasksummary">
+<p>You can display or set Solaris boot parameters by using the <span><strong class="command">eeprom</strong></span> command. The parameters that you can set with the <span><strong class="command">eeprom</strong></span> command
+are found in the <code class="filename">/boot/solaris/bootenv.rc</code> file. Changes
+that you make by using the <span><strong class="command">eeprom</strong></span> command persist over
+a system reboot. However, you can override this <span><strong class="command">eeprom</strong></span> setting
+if you boot the system by using the <span><strong class="command">kernel</strong></span> command in the
+GRUB menu.</p>
+<p>See <span class="olink">
+How to Modify the Solaris Boot Behavior by Editing the GRUB Menu</span>. For more information about changes to the <span><strong class="command">eeprom</strong></span> command in this release, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">eeprom</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Become superuser or assume an equivalent role.</p>
+<p>Roles
+contain authorizations and privileged commands. For more information about
+roles, see <span class="olink">
+<em class="citetitle">Configuring RBAC (Task Map)</em> in <em class="citetitle">System Administration Guide: Security Services</em>
+</span>.</p>
+</li><li>
+<p>To change the specified parameter, type the <span><strong class="command">eeprom</strong></span> command
+with the appropriate arguments .</p>
+<pre class="screen"># <strong class="userinput"><code>eeprom <em class="replaceable"><code>parameter</code></em>=<em class="replaceable"><code>new-value</code></em>
+</code></strong>
+</pre>
+</li><li>
+<p>Verify that the new parameter has been set.</p>
+<pre class="screen"># <strong class="userinput"><code>eeprom <em class="replaceable"><code>parameter</code></em>
+</code></strong>
+</pre>
+<p>The output should display the new <span><strong class="command">eeprom</strong></span> value for
+the specified parameter.</p>
+</li></ol></div><div class="example"><a name="fwbps"></a><p class="title"><b>Example 11.4. 
+Setting <code class="literal">boot-file</code> Parameters by Using the <span>eeprom</span> Command</b></p>
+
+
+<p>This example shows how to manually specify that the system boot a 64-bit
+kernel. Note that the system must support 64-bit computing.</p>
+<pre class="screen"># <strong class="userinput"><code>eeprom boot-file=kernel/amd64/unix</code></strong>
+</pre>
+<p>This example shows how to manually boot a 32-bit kernel on a 64-bit
+capable system.</p>
+<pre class="screen"># <strong class="userinput"><code>eeprom boot-file=kernel/unix</code></strong>
+</pre>
+<p>This example shows how to restore the default autodetected boot behavior
+on a system.</p>
+<pre class="screen"># <strong class="userinput"><code>eeprom boot-file=""</code></strong>
+</pre>
+<p>This example shows how to determine the current <code class="literal">boot-file</code> parameter.</p>
+<pre class="screen">$ <strong class="userinput"><code>eeprom boot-file</code></strong>
+</pre>
+</div><div class="example"><a name="fwboo"></a><p class="title"><b>Example 11.5. Setting the Console Destination, Mode, and Speed by Using the <span>eeprom</span> Command.</b></p>
+
+
+<a class="indexterm" name="indexterm-170"></a>
+<a class="indexterm" name="indexterm-171"></a>
+<a class="indexterm" name="indexterm-172"></a>
+<p>The following examples show how to direct the console to run on <code class="literal">ttyb</code>.</p>
+<pre class="screen"># <strong class="userinput"><code>eeprom console=ttyb</code></strong>
+</pre>
+<pre class="screen"># <strong class="userinput"><code>eeprom input-device=ttyb output-device=ttyb</code></strong>
+</pre>
+<p>The <span><strong class="command">eeprom console=ttyb</strong></span> command only works if you
+are running at least the Solaris Express 6/05 OS. Note that <code class="literal">input-device</code> and <code class="literal">output-device</code> must have the same value. Or, the system might not boot at all.</p>
+<p>This example shows how to set a high serial line speed.</p>
+<pre class="screen"># <strong class="userinput"><code>eeprom ttyb-mode=115200,8,n,1</code></strong>
+</pre>
+<p>To enable the Solaris software to work with a higher serial line speed,
+you must also modify the console line in the <code class="filename">/etc/ttydefs</code> file,
+as shown in the following example.</p>
+<pre class="screen">console:115200 hupcl opost onlcr:115200::console</pre>
+<p>For more information about setting the baud rate on the terminal console,
+see <span class="olink">
+<em class="citetitle">How to Set the Baud Rate Speed on the ttymon Console Terminal</em> in <em class="citetitle">System Administration Guide: Advanced Administration</em>
+</span>.</p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fwbqs"></a>
+Modifying the Solaris Boot Behavior by
+Editing the GRUB Menu</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-173"></a>
+<a class="indexterm" name="indexterm-174"></a>
+<a class="indexterm" name="indexterm-175"></a>
+<a class="indexterm" name="indexterm-176"></a>
+<p>You can modify the Solaris boot behavior by editing the GRUB menu when
+the system is first booted. Typing <span><strong class="command">e</strong></span> when the GRUB main
+menu is displayed interrupts the boot process, enabling you to access the
+GRUB edit menu. Each line in this menu is an individual command for the boot
+entry that you chose in the GRUB main menu. See the section, <span class="olink">GRUB Terminology</span> for more information.</p>
+<p>The following is a sample of the menu that is displayed when you type <span><strong class="command">e</strong></span> in the GRUB main menu to edit a boot entry. The second line, <code class="filename">kernel /platform/i86pc/multiboot</code>, executes the <span><strong class="command">kernel</strong></span> command,
+which determines the boot behavior of the Solaris OS. Use the arrow keys to
+navigate the menu, then highlight the specified line. Type <span><strong class="command">e</strong></span> again
+to edit the line. Note that any modifications you make persist only until
+the next time the system is booted.</p>
+<pre class="screen">GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | root (hd0,2,a)                                                          |
+ | kernel /platform/i86pc/multiboot                                        |
+ | module /platform/i86pc/boot_archive                                     |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+ </pre>
+<div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3>
+
+<p>You can only add additional arguments to the end of boot entry
+that you are editing. You should not modify any portion of the text in the
+menu entry itself. Doing so prevents the Solaris instance from booting.</p>
+</div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fxjha"></a>Using the <span><strong class="command">kernel</strong></span> Command</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-177"></a>
+<a class="indexterm" name="indexterm-178"></a>
+<a class="indexterm" name="indexterm-179"></a>
+<a class="indexterm" name="indexterm-180"></a>
+<p>The following list describes how to use the <span><strong class="command">kernel</strong></span> command
+with the appropriate options and arguments to specify Solaris boot behavior
+in the GRUB menu.</p>
+<pre class="screen">grub edit&gt; kernel /platform/i86pc/multiboot/ <strong class="userinput"><code>[<em class="replaceable"><code>kernel-name</code></em>] [-asrvxk]
+-m [<em class="replaceable"><code>smf-options</code></em>] [-i altinit] [-B prop=value[,prop=value]...]</code></strong>
+</pre>
+<div class="variablelist"><dl><dt><span class="term">
+<em class="replaceable"><code>kernel-name</code></em>
+</span></dt><dd>
+<p>Specifies the kernel to boot.</p>
+</dd><dt><span class="term">
+<code class="option">
+a</code>
+</span></dt><dd>
+<p>Prompts the user for configuration information.</p>
+</dd><dt><span class="term">
+<code class="option">
+s</code>
+</span></dt><dd>
+<p>Boots the system in single-user mode.</p>
+</dd><dt><span class="term">
+<code class="option">
+r</code>
+</span></dt><dd>
+<p>Specifies a reconfiguration boot.  The  system probes all
+attached hardware devices and then assigns nodes in the file system to represent
+only those devices that are actually found.</p>
+</dd><dt><span class="term">
+<code class="option">
+v</code>
+</span></dt><dd>
+<p>Boots the system with verbose messages enabled.</p>
+</dd><dt><span class="term">
+<code class="option">
+x</code>
+</span></dt><dd>
+<p>Does not boot in clustered mode.</p>
+</dd><dt><span class="term">
+<code class="option">
+k</code>
+</span></dt><dd>
+<p>Boots the system with the kernel debugger enabled.</p>
+</dd><dt><span class="term">
+<code class="option">
+m</code> <em class="replaceable"><code>smf-options</code></em>
+</span></dt><dd>
+<p>Controls  the boot behavior of the Service Management Facility
+(SMF). Included are two categories of options, recovery options and messages
+options.</p>
+</dd><dt><span class="term">
+<code class="option">
+i</code> <span><strong class="command">altinit</strong></span>
+</span></dt><dd>
+<p>Specifies an alternative executable as the primordial process.
+ <span><strong class="command">altinit</strong></span> is a valid path to an executable.</p>
+</dd><dt><span class="term">
+<code class="option">
+B</code> <em class="replaceable"><code>prop=value[,prop=value]...</code></em>
+</span></dt><dd>
+<p>Is parsed by the multiboot program. The multiboot program
+then translates the argument into properties.</p>
+</dd></dl></div>
+<p>The following describes various ways that you can used the <span><strong class="command">kernel</strong></span> command
+with the <code class="option">
+B</code> option:</p>
+<div class="variablelist"><dl><dt><span class="term">
+<code class="option">
+B</code> <code class="literal">console=ttya</code>
+</span></dt><dd>
+<p>Redirects the console to <code class="literal">ttya</code>.</p>
+</dd><dt><span class="term">
+<code class="option">
+B</code> <code class="literal">acpi-enum=off</code>
+</span></dt><dd>
+<p>Disables Advanced Configuration and Power Interface (ACPI)
+enumeration of devices.</p>
+</dd><dt><span class="term">
+<code class="option">
+B</code> <code class="literal">console=ttya,apci-enum=off</code>
+</span></dt><dd>
+<p>Redirects the console to <code class="literal">ttya</code> and disables
+the ACPI enumeration of devices.</p>
+</dd><dt><span class="term">
+<code class="option">
+B</code> <code class="literal">acpi-user-options=0x2</code>
+</span></dt><dd>
+<p>Disables ACPI entirely.</p>
+</dd></dl></div>
+<p>Note that when properties are specified by using the <span><strong class="command">eeprom</strong></span> command <span class="emphasis"><em>and</em></span> on the GRUB command line, that the GRUB command takes precedence.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2081104"></a></h3></div></div></div>
+
+<div class="task"><a name="fwbme"></a><p class="title"><b>
+How to Modify the Solaris Boot Behavior
+by Editing the GRUB Menu</b></p><a class="indexterm" name="indexterm-181"></a><a class="indexterm" name="indexterm-182"></a><a class="indexterm" name="indexterm-183"></a><div class="tasksummary">
+<p>This procedure shows how to modify the Solaris boot behavior in the
+GRUB menu. Changes that you make persist until the next time the system is
+booted.</p>
+</div><div class="procedure"><ol type="1"><li><a name="fwbqq"></a>
+<p>If the system displays the <code class="literal">Press any key to
+reboot</code> prompt, press any key to reboot the system.</p>
+<p>You
+can also use the Reset button at this prompt. If the system is shut down,
+turn the system on with the power switch.</p>
+<p>When the boot sequence
+begins, the GRUB main menu is displayed.</p>
+</li><li>
+<p>To access the GRUB edit menu, type <span><strong class="command">e</strong></span>.</p>
+</li><li>
+<p>Ue the arrow keys to select the second line in the menu. </p>
+<pre class="screen">GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | root (hd0,2,a)                                                          |
+ | kernel /platform/i86pc/multiboot                                        |
+ | module /platform/i86pc/boot_archive                                     |
+ |                                                                         |
+ |                                                                         |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+ </pre>
+<p>The second line in the GRUB menu includes the <span><strong class="command">kernel</strong></span> command,
+which is used to specify Solaris boot options.</p>
+</li><li>
+<p>Type <span><strong class="command">e</strong></span> again to edit the <span><strong class="command">kernel /platform/i86pc/multiboot</strong></span> line.</p>
+</li><li>
+<p>Type the appropriate information for the boot parameter that you
+want to specify.</p>
+<pre class="screen">kernel /platform/i86pc/multiboot/ <strong class="userinput"><code>[<em class="replaceable"><code>kernel-name</code></em>] [-afsrvxk]
+-m [<em class="replaceable"><code>smf-options</code></em>] [-i atinit] [-B prop=value[,prop=value]...]</code></strong>
+</pre>
+<p>For example, to boot a 64-bit capable x86 based system in 32-bit mode,
+you would type:</p>
+<pre class="screen">grub edit&gt; kernel /platform/i86pc/multiboot <strong class="userinput"><code>kernel/unix</code></strong>
+</pre>
+<p>See <span class="olink">Using the <span><strong class="command">kernel</strong></span> Command</span> for a
+description of all the <span><strong class="command">kernel</strong></span> command options.</p>
+</li><li>
+<p>Return to the GRUB main menu, by pressing Enter.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Pressing Enter saves your changes and returns you to the GRUB
+main menu. Pressing the Escape key returns you to the GRUB main menu without
+saving your changes.</p>
+</div>
+</li><li>
+<p>To boot the system, type <span><strong class="command">b</strong></span>. </p>
+<p>Changes
+that you made take affect when the system is booted.</p>
+</li></ol></div><div class="example"><a name="fwbtl"></a><p class="title"><b>Example 11.6. Modifying the Solaris Boot Behavior in the GRUB Menu</b></p>
+
+
+<p>This example shows how to modify the <span><strong class="command">kernel /platform/i86pc/multiboot</strong></span> line to boot a 32-bit kernel to single-user mode.</p>
+<pre class="screen">grub edit&gt; kernel /platform/i86pc/multiboot <strong class="userinput"><code>kernel/unix -s</code></strong>
+<strong class="userinput"><code>
+</code></strong>
+</pre>
+<p>This example shows how to manually redirect the console to <code class="literal">ttyb</code>.</p>
+<pre class="screen">grub edit&gt; kernel /platform/i86pc/multiboot <strong class="userinput"><code>-B console=ttyb</code></strong>
+</pre>
+<p>Alternatively, you can use <code class="literal">input-device/output-device</code> property,
+as shown in the following example.</p>
+<pre class="screen">grub edit&gt; kernel /platform/i86pc/multiboot <strong class="userinput"><code>-B input-device=ttyb,output-device=ttyb</code></strong>
+</pre>
+<p>This example shows how to override the serial line speed.</p>
+<pre class="screen">grub edit&gt; kernel /platform/i86pc/multiboot <strong class="userinput"><code>-B ttyb-mode="115200,8,n,1,-"</code></strong>
+</pre>
+<p>In the preceding example, the property value contains commas, which
+is also a property separator. To avoid confusing the property parser, use
+double quotation marks around the entire property value.</p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fvzok"></a>
+Performing a GRUB Based Boot From the
+Network</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-184"></a>
+<a class="indexterm" name="indexterm-185"></a>
+<a class="indexterm" name="indexterm-186"></a>
+<p>Any system can boot from the network, if a boot server is available.
+You might need to boot a stand-alone system from the network for recovery
+purposes if the system cannot boot from the local disk. You can boot a Solaris
+OS x86 based system directly from a network that supports the PXE network
+boot protocol.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The PXE network boot is available only for devices that implement
+the Intel Preboot Execution Environment specification.</p>
+</div>
+<p>The default network boot strategy  that is used for a GRUB based PXE
+network boot is DHCP. For non-PXE devices, you can use either the DHCP or
+the RARP boot strategy. The strategy that you use depends on which type of
+boot server is available on your network. If no PXE or DHCP server is available,
+you can load GRUB from a diskette, a CD-ROM, or a local disk. You can then
+configure the network in GRUB manually and download the multiboot program
+and the boot archive from the file server. For additional information, see <span class="olink">
+GRUB Based Booting From the Network</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fwfdk"></a>About DHCP Macros</h3></div></div></div>
+
+<a class="indexterm" name="indexterm-187"></a>
+<a class="indexterm" name="indexterm-188"></a>
+<a class="indexterm" name="indexterm-189"></a>
+<a class="indexterm" name="indexterm-190"></a>
+<p>When you add clients with the <span><strong class="command">add_install_client</strong></span> <code class="option">
+d</code> script on the install server, the script reports DHCP configuration
+information to standard output. You can use this information when you create
+the options and macros that are needed to pass network installation information
+to clients. </p>
+<p>To install DHCP clients with a DHCP server over the network, you must
+create DHCP options. This information is needed to install the Solaris OS.
+When a client sends a DHCP request, the server must have the following client
+information:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Client's ID, which is typically the Ethernet address</p>
+</li><li>
+<p>Class of the client request</p>
+</li><li>
+<p>Subnet the client resides on</p>
+</li></ul></div>
+<p>The Solaris DHCP server forms a response. This response is based on
+the following <span class="emphasis"><em>macros</em></span>, which matches the client request:</p>
+<div class="variablelist"><dl><dt><span class="term">
+<span class="strong"><strong>class macro</strong></span>
+</span></dt><dd>
+<p>The class macro is based on a <span class="emphasis"><em>class string</em></span> that
+is contained in the DHCP request. On x86 based systems, the BIOS already makes
+a DHCP request with the class <code class="literal">PXEClient:Arch:00000:UNDI:002001</code>.
+If a macro by this name is defined in the DHCP server configuration, then
+the macro content is sent to the x86 based clients.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>network macro</strong></span>
+</span></dt><dd>
+<p>The network macro is named by the IP address of the subnet
+that the client resides on. If the macro <code class="literal">129.146.87.0</code> is
+defined on the DHPC server, the macro content is sent to all clients on that
+subnet. The macro content is sent, regardless of the class of the request.
+If an option is defined in both the class macro and the network macro, the
+network macro takes precedence.</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>IP macro</strong></span>
+</span></dt><dd>
+<p>The IP macro is named by an IP address. This macro is rarely
+used</p>
+</dd><dt><span class="term">
+<span class="strong"><strong>client macro</strong></span>
+</span></dt><dd>
+<p>The client macro is named by the client's type (01 for Ethernet)
+and the mac address of the client, in uppercase letters. For a client with
+the Ethernet address <code class="literal">0:0:39:fc:f2:ef</code>, the corresponding
+macro name is <code class="literal">01000039FCEF</code>. Note the absence of colons
+in the client macro.</p>
+</dd></dl></div>
+<p>For example, for a client on the subnet <code class="literal">192.168.100.0</code>,
+with the Ethernet address <code class="literal">0:0:39:fc:f2:ef</code>, making a DHCP
+request of class <code class="literal">PXEClient</code>, the DHCP server has the following
+matching macro:</p>
+<pre class="screen">PXEClient
+	BootSrvA:  192.168.100.0
+	BootFile:  pxegrub
+  129.146.87.0
+	Router:    129.146.87.1
+	NISdmain:  sunsoft.eng.sun.com
+  01000039FCEF
+	BootFile:  01000039FCEF
+The actual DHCP response will be
+	BootSrvA:  192.168.100.0
+	BootFile:  01000039FCEF
+	Router:    129.146.87.1
+	NISdmain:  sunsoft.eng.sun.com</pre>
+<p>Note that the <code class="filename">BootFile</code> in the client macro overrides
+the <code class="filename">BootFile</code> in the class macro. </p>
+<p>For more detailed information, see <span class="olink">
+<em class="citetitle">Preconfiguring System Configuration Information With the DHCP Service (Tasks)</em> in <em class="citetitle">Solaris Express Installation Guide: Network-Based Installations</em>
+</span>.</p>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2081979"></a></h3></div></div></div>
+
+<div class="task"><a name="fvzpk"></a><p class="title"><b>
+How to Perform a GRUB Based Boot From the
+Network</b></p><div class="tasksummary">
+<p>To perform a GRUB based network boot a DHCP server that is configured
+for PXE clients is required.  A boot server that provides <span><strong class="command">tftp</strong></span> service
+is also required. The DHCP server must be able respond to the DHCP classes, <code class="literal">PXEClient</code> and <code class="literal">GRUBClient</code> to obtain the IP address
+of the file server and the boot file (<span><strong class="command">pxegrub</strong></span>). By default,
+the menu file is <code class="filename">/tftpboot/menu.lst.01<em class="replaceable"><code>ethernet-address</code></em>
+</code>.
+If this file does not exist, then <span><strong class="command">pxegrub</strong></span> reverts to DHCP
+Option 150, if this option is specified, or the <code class="filename">/tftpboot/boot/grub/menu.lst</code> file.</p>
+<p>If you are booting the system from the Solaris Software 1 CD or DVD,
+the system boots automatically.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>In this release, the Device Configuration Assistant has been replaced
+by the GRUB menu.</p>
+</div>
+</div><div class="taskprerequisites">
+
+<p>Before performing a network boot on an x86 based system with GRUB, do
+the following: </p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>Run the appropriate commands on the installation server to
+enable the system to boot from the network.</p>
+</li><li>
+<p>Add the client system as an install client.</p>
+</li></ul></div>
+<p>See <span class="olink">Chapter 8, <em class="citetitle">Preparing to Install From the Network (Overview),</em> in <em class="citetitle">Solaris Express Installation Guide: Network-Based Installations</em>
+</span> for
+more information.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>On the DHCP server, create a client macro for the DHCP service
+with the following two options:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>
+<code class="literal">BootSrvA</code>:  <em class="replaceable"><code>svr-addr</code></em>
+</p>
+</li><li>
+<p>
+<code class="literal">BootFile</code>:  <em class="replaceable"><code>client-macro</code></em>
+</p>
+<p>Note that you must have superuser privileges on the DHCP server to run
+the <span><strong class="command">dhtadm</strong></span> command.</p>
+<p>where <em class="replaceable"><code>svr-addr</code></em> is
+the IP address of the server, and <em class="replaceable"><code>client-macro</code></em> is
+is named by the client's Ethernet type (01) and the mac address, in uppercase
+letters. This number is also the name of the file that is used in the <code class="filename">/tftpboot</code> directory on the installation server.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The notation for the <em class="replaceable"><code>client-macro</code></em> should
+not contain any colons.</p>
+</div>
+<p>You can create the client macro from the DHCP GUI or from command-line
+interface.</p>
+<p>To create the client macro from the command-line, type:</p>
+<pre class="screen"># <strong class="userinput"><code>dhtadm -[MA] -m <em class="replaceable"><code>client macro</code></em> -d
+":BootFile=<em class="replaceable"><code>client-macro</code></em>:BootSrvA=<em class="replaceable"><code>svr-addr:</code></em>"</code></strong>
+</pre>
+</li></ul></div>
+</li><li><a name="fvzqv"></a>
+<p>Reboot the system.</p>
+</li><li>
+<p>Instruct the BIOS to boot from the network.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>If your system uses a specific keystroke sequence to boot
+from the network, type the keystrokes when the BIOS screen is displayed.</p>
+</li><li>
+<p>If you need to manually modify the BIOS settings to boot from
+the network, type the keystroke sequence to access the BIOS setup utility.
+Then, modify the boot priority to boot from the network.</p>
+</li></ul></div>
+</li><li>
+<p>When the GRUB menu is displayed, select the network installation
+image that you want to install.</p>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2082326"></a></h3></div></div></div>
+
+<div class="task"><a name="fvzot"></a><p class="title"><b>
+How to Stop a System for Recovery Purposes</b></p><div class="procedure"><ol type="1"><li>
+<p>
+<a class="indexterm" name="indexterm-191"></a>Stop the system by using one of the following commands, if possible:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>If the keyboard and mouse are functional, become superuser.
+Then, type <span><strong class="command">init 0</strong></span> to stop the system. After the <code class="literal">Press
+any key to reboot</code> prompt appears, press any key to reboot the system.</p>
+</li><li>
+<p>If the keyboard and mouse are functional, become superuser.
+then, type <span><strong class="command">init 6</strong></span> to reboot the system.</p>
+</li></ul></div>
+</li><li><a name="fvzoz"></a>
+<p>If the system does not respond to any input from the
+mouse or the keyboard, press the Reset key, if it exists, to reboot the system. </p>
+<p>Or, you can use the power switch to reboot the system.</p>
+</li></ol></div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2082458"></a></h3></div></div></div>
+
+<div class="task"><a name="fvznb"></a><p class="title"><b>
+How to Boot the Failsafe Archive for Recovery
+Purposes</b></p><a class="indexterm" name="indexterm-192"></a><a class="indexterm" name="indexterm-193"></a><a class="indexterm" name="indexterm-194"></a><a class="indexterm" name="indexterm-195"></a><a class="indexterm" name="indexterm-196"></a><div class="tasksummary">
+<p>Follow this procedure to boot the Solaris failsafe archive, so that
+you can update the boot archives or repair a critical system resource.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>Starting with the Solaris
+Express 3/06 release, the GRUB failsafe interaction has changed. Previously,
+when you booted the failsafe archive, you were prompted to update the boot
+archives, regardless of whether the boot archives were out-of-date. Now, you
+are prompted to update the boot archives only if the system detects any out-of-date
+boot archives. See <span class="olink">Example 11&#8211;8</span> for
+an example.</p>
+<p>For an example of the previous GRUB failsafe interaction,
+see <span class="olink">Booting the Failsafe
+Archive for Recovery Purposes to Repair a Critical System Resource</span>.</p>
+</div>
+</div><div class="procedure"><ol type="1"><li><a name="gcbmu"></a>
+<p>Stop the system by using the system's Stop key sequence.</p>
+<p>Use the Stop key sequence for your system if you do not know the superuser
+password, or if you cannot log in to the system. For more information, see <span class="olink">
+How to Stop a System for Recovery Purposes</span>.</p>
+</li><li><a name="gcbnn"></a>
+<p>If the system displays the <code class="literal">Press any key to
+reboot</code> prompt, press any key to reboot the system.</p>
+<p>You
+can also use the Reset button at this prompt.</p>
+<p>When the boot sequence
+begins, the GRUB menu is displayed.</p>
+<pre class="screen">GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | Solaris 10.1 ... X86                                                    |
+ | Solaris failsafe                                                        |
+ |                                                                         |
+ |                                                                         |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+      Use the ^ and v keys to select which entry is highlighted.
+      Press enter to boot the selected OS, 'e' to edit the
+      commands before booting, or 'c' for a command-line.
+
+The highlighted entry will be booted in 10 seconds.</pre>
+</li><li>
+<p>Use the arrow keys to navigate the GRUB menu, then select the <code class="literal">Solaris failsafe</code> entry. Type <span><strong class="command">b</strong></span> or press Enter
+to boot the failsafe archive.</p>
+<p>The system searches for installed
+OS instances. If the system detects any out-of-date boot archives, a message
+that is similar to the following is displayed:</p>
+<pre class="screen">Searching for installed OS instances...
+	
+	An out of sync boot archive was detected on /dev/dsk/c0t0d0s0.
+	The boot archive is a cache of files used during boot and
+	should be kept in sync to ensure proper system operation.
+	
+	Do you wish to automatically update this boot archive? [y,n,?]</pre>
+</li><li>
+<p>Type <span><strong class="command">y</strong></span> to automatically update the out-of-date
+boot archive. If multiple out-of-date boot archives are found, the system
+prompts you to update each boot archive, one at a time. Type <span><strong class="command">y</strong></span> and
+press Enter to update each boot archive.</p>
+<p>A message that is similar
+to the following is displayed:</p>
+<pre class="screen">Updating boot archive on /dev/dsk/c0t0d0s0.
+	The boot archive on /dev/dsk/c0t0d0s0 was updated successfully.</pre>
+<p>After the boot archive has been updated successfully, the system searches
+again for all installed OS instances and prompts you to select a device to
+mount on <code class="filename">/a</code>. If more than one OS instance is found, a
+message that is similar to the following is displayed:</p>
+<pre class="screen">Multiple OS instances were found. To check and mount one of them
+read-write under /a, select it from the following list. To not mount
+any, select 'q'.
+
+  1  /dev/dsk/c0t0d0s0     Solaris 10 1/06 s10x_u1wos_19a X86
+  2  /dev/dsk/c0t1d0s0     Solaris Nevada snv_25 X86
+
+Please select a device to be mounted (q for none) [?,??,q]: 2
+mounting /dev/dsk/c0t1d0s0 on /a
+
+Starting shell.
+#</pre>
+<ul>
+<li>
+<p>If you do not want to mount a device, type <span><strong class="command">q</strong></span> and
+press Enter. Then, proceed to <span class="olink">Step 7</span>.</p>
+</li>
+<li>
+<p>If any out-of-date archives were updated in the previous step,
+you do not need to mount the device. The device is already mounted. Proceed
+to Step 5.</p>
+</li>
+<li>
+<p>If no out-of-date boot archives were updated in the previous step,
+and you want to mount the device, type the corresponding number of the device,
+and press Enter.</p>
+<p>The system mounts the device on <code class="filename">/a</code>,
+and you are returned to the shell prompt.</p>
+</li>
+</ul>
+</li><li>
+<p>Repair the critical system resource.</p>
+</li><li>
+<p>When you have finished repairing the critical system resource,
+unmount the device.</p>
+<pre class="screen"># <strong class="userinput"><code>umount /a</code></strong>
+</pre>
+</li><li><a name="failsafe-init6"></a>
+<p>Reboot the system.</p>
+<pre class="screen"># <strong class="userinput"><code>init 6</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="failsafe-s10"></a><p class="title"><b>Example 11.7. 
+Booting the Failsafe Archive to Repair a Critical System Resource</b></p>
+
+
+<p>This example shows the previous failsafe interaction. In the preceding
+task, the failsafe interaction that is shown is for the current release. If
+you have installed or have upgraded to at least the Solaris Express 3/06 OS, see <span class="olink">Example 11&#8211;8</span> for the current failsafe interaction.</p>
+<pre class="screen">Press any key to reboot.
+Resetting...
+
+ GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+
+ +-------------------------------------------------------------------------+
+ | Solaris 10.1 ... X86                                                    |
+ | Solaris failsafe                                                        |
+ |                                                                         |
+ |                                                                         |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+ 
+
+ GNU GRUB  version 0.95  (631K lower / 2095488K upper memory)
+Filesystem type is ufs, partition type 0x000000bf
+[Multiboot-elf, &lt;0x1000000:0x13f3b:0x3941d&gt;, shtab=0x104e258, entry=0x100000
+0]...
+module /boot/x86.miniroot-safe
+SunOS Release 5.10.1 Version ... 64-bit
+Copyright 1983-2005 Sun Microsystems, Inc.  All rights reserved.
+Use is subject to license terms.
+Booting to milestone "milestone/single-user:default".
+Configuring devices.
+Searching for installed OS...
+        /dev/dsk/c1t0d0s0 --       Solaris 10.1 ... X86
+
+Do you wish to automatically update boot archives? [y,n,?] <strong class="userinput"><code>y</code></strong>
+# <strong class="userinput"><code>mount /dev/dsk/c0t0d0s0 /a</code></strong>
+      .
+      .
+      .
+# <strong class="userinput"><code>cd /a/etc</code></strong>
+# <strong class="userinput"><code>vi passwd</code></strong>
+<em class="lineannotation"><span class="lineannotation">(Remove invalid entry)</span></em>
+# <strong class="userinput"><code>cd /</code></strong>
+# <strong class="userinput"><code>umount /a</code></strong>
+# <strong class="userinput"><code>init 6</code></strong>
+.
+.
+.
+Booting 'Solaris 10.1 ... X86'
+
+root (hd0,2,a)
+Filesystem type is ufs, partition type 0x000000bf
+kernel /platform/i86pc/multiboot
+[Multiboot-elf, &lt;0x1000000:0x13f3b:0x3941d&gt;, shtab=0x104e258, entry=0x1000000]
+module /platform/i86pc/boot_archive
+
+SunOS Release 5.10.1 Version ... 64-bit
+Copyright 1983-2005 Sun Microsystems, Inc.  All rights reserved.
+Use is subject to license terms.
+Hostname: swoozie.Central.Sun.COM
+NIS domain name is boulder.Central.Sun.COM
+checking ufs filesystems
+/dev/rdsk/c1d0s7: is logging.
+
+<em class="replaceable"><code>hostname.domain</code></em> console login:</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2083076"></a></h3></div></div></div>
+
+<div class="task"><a name="gcbcn"></a><p class="title"><b>
+How to Boot the Failsafe Archive to Forcibly
+Update a Corrupt Boot Archive</b></p><a class="indexterm" name="indexterm-197"></a><a class="indexterm" name="indexterm-198"></a><a class="indexterm" name="indexterm-199"></a><a class="indexterm" name="indexterm-200"></a><a class="indexterm" name="indexterm-201"></a><a class="indexterm" name="indexterm-202"></a><div class="tasksummary">
+<p>This procedure shows you how to replace a corrupt boot archive by using
+the <span><strong class="command">bootadm</strong></span> command. For more information, see the <span class="olink">
+<span class="citerefentry">
+<span class="refentrytitle">bootadm</span>
+(
+1M
+)
+</span>
+</span> man page.</p>
+</div><div class="procedure"><ol type="1"><li><a name="gcbcp"></a>
+<p>Stop the system by using the system's Stop key sequence.</p>
+<p>Use the Stop key sequence for your system if you do not know the superuser
+password, or if you cannot log in to the system. For more information, see <span class="olink">
+How to Stop a System for Recovery Purposes</span>.</p>
+</li><li><a name="gcbfg"></a>
+<p>If the system displays the <code class="literal">Press any key to
+reboot</code> prompt, press any key to reboot the system.</p>
+<p>You
+can also use the Reset button at this prompt.</p>
+<p>When the boot sequence
+begins, the GRUB menu is displayed.</p>
+<pre class="screen">+-------------------------------------------------------------------------+
+ | Solaris 10.1... X86                                                     |
+ | Solaris failsafe                                                        |
+ |                                                                         |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+      Use the  and  keys to select which entry is highlighted.
+      Press enter to boot the selected OS, 'e' to edit the
+      commands before booting, or 'c' for a command-line.</pre>
+</li><li>
+<p>Use the arrow keys to navigate the GRUB menu, then select the <code class="literal">Solaris failsafe</code> entry. Type <span><strong class="command">b</strong></span> or press Enter
+to boot the failsafe archive.</p>
+<p>If any boot archives are out of
+date, a message that is similar to the following is displayed:</p>
+<pre class="screen">Searching for installed OS instances...
+	
+	An out of sync boot archive was detected on /dev/dsk/c0t0d0s0.
+	The boot archive is a cache of files used during boot and
+	should be kept in sync to ensure proper system operation.
+	
+	Do you wish to automatically update this boot archive? [y,n,?]
+		</pre>
+</li><li>
+<p>Type <span><strong class="command">y</strong></span>, then press Enter to update the out-of-date
+boot archive.</p>
+<p>The system displays the following message:</p>
+<pre class="screen">Updating boot archive on /dev/dsk/c0t0d0s0.
+	The boot archive on /dev/dsk/c0t0d0s0 was updated successfully.</pre>
+<p>If no out-of-date boot archives are found, a message that is similar
+to the following is displayed:</p>
+<pre class="screen">Searching for installed OS instances...
+	
+	Solaris 10.1... X86 was found on /dev/dsk/c0t0d0s0.
+	Do you wish to have it mounted read-write on /a? [y,n,?]</pre>
+<p>This message is also displayed after any out-of-date boot archives are
+updated successfully.</p>
+</li><li>
+<p>Mount the device that contains the corrupt boot archive on <code class="filename">/a</code> by typing the corresponding number of the device, then press
+Enter.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>If any out-of-date boot archives were updated in the previous
+step, the device is already mounted on <code class="filename">/a</code>. Proceed to
+Step 6.</p>
+</div>
+</li><li><a name="gcbey"></a>
+<p>To forcibly update the corrupt boot archive, type:</p>
+<pre class="screen"># <strong class="userinput"><code>bootadm update-archive -f -R /a</code></strong>
+</pre>
+</li><li><a name="gcber"></a>
+<p>Unmount the device.</p>
+<pre class="screen"># <strong class="userinput"><code>umount /a</code></strong>
+</pre>
+</li><li>
+<p>Reboot the system.</p>
+<pre class="screen"># <strong class="userinput"><code>init 6</code></strong>
+</pre>
+</li></ol></div><div class="example"><a name="gcbof"></a><p class="title"><b>Example 11.8. 
+Booting the Failsafe Archive to Forcibly Update a Corrupt Boot Archive</b></p>
+
+
+<p>
+<a class="indexterm" name="gcbpm"></a>
+<a class="indexterm" name="gcbnw"></a>
+<a class="indexterm" name="indexterm-203"></a>This example shows how to boot the failsafe archive to forcibly
+update a corrupt boot archive. Note that this example shows the failsafe interaction
+in the current Solaris release. For an example of the previous failsafe interaction,
+see <span class="olink">Example 11&#8211;7</span>.</p>
+<pre class="screen">		 GNU GRUB  version 0.95  (635K lower / 523200K upper memory)                 
+                                                                                
+ +-------------------------------------------------------------------------+    
+ | Solaris 10 1/06 s10x_u1wos_19a X86                                      |    
+ | &gt;Solaris failsafe&lt;                                                      |    
+ |                                                                         |    
+ |                                                                         |    
+  +-------------------------------------------------------------------------+   
+      Use the  and  keys to select which entry is highlighted.                  
+      Press enter to boot the selected OS, 'e' to edit the                      
+      commands before booting, or 'c' for a command-line.                       
+                                                                                
+
+  
+SunOS Release 5.11 Version snv_34 32-bit
+Copyright 1983-2006 Sun Microsystems, Inc.  All rights reserved.
+Use is subject to license terms.
+Booting to milestone "milestone/single-user:default".
+Configuring devices.
+Searching for installed OS instances...
+
+Multiple OS instances were found. To check and mount one of them
+read-write under /a, select it from the following list. To not mount
+any, select 'q'.
+
+  1  /dev/dsk/c0t0d0s0     Solaris 10 1/06 s10x_u1wos_19a X86
+  2  /dev/dsk/c0t1d0s0     Solaris Nevada snv_25 X86
+
+Please select a device to be mounted (q for none) [?,??,q]: 1
+mounting /dev/dsk/c0t0d0s0 on /a
+
+Starting shell.
+# rm /a/platform/i86pc/boot_archive
+# bootadm update-archive -f -R /a
+Creating ram disk on /a
+updating /a/platform/i86pc/boot_archive...this may take a minute
+# umount /a
+# reboot
+syncing file systems... done
+rebooting...
+.
+.
+.</pre>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2083620"></a></h3></div></div></div>
+
+<div class="task"><a name="fvzpl"></a><p class="title"><b>
+How to Boot a System With the Kernel Debugger
+in the GRUB Based Boot Environment (<span><strong class="command">kmdb</strong></span>)</b></p><div class="tasksummary">
+<p>This procedure shows the basics for loading the kernel debugger (<span><strong class="command">kmdb</strong></span>). The <span><strong class="command">savecore</strong></span> feature is enabled by default.
+For more detailed information about using the kernel debugger, see the <span class="olink">
+<em class="citetitle">Solaris Modular Debugger Guide</em>
+</span>.</p>
+</div><div class="procedure"><ol type="1"><li>
+<p>Boot the system.</p>
+<p>The GRUB menu is displayed when the
+system is booted.</p>
+</li><li><a name="fwbug"></a>
+<p>When the GRUB menu is displayed, type <span><strong class="command">e</strong></span> to
+access the GRUB edit menu.</p>
+</li><li>
+<p>Use the arrow keys to choose the <span><strong class="command">kernel /platform/i86pc/multiboot</strong></span> entry.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>If you cannot use the arrow keys, use the <code class="literal">^</code> key
+to scroll up and the <code class="literal">v</code> key to scroll down.</p>
+</div>
+</li><li>
+<p>Type <span><strong class="command">e</strong></span> to edit the boot entry.</p>
+<pre class="screen">grub edit&gt; kernel /platform/i86pc/multiboot</pre>
+<p>The boot entry menu is displayed. In this menu, you can add options
+to the <span><strong class="command">kernel</strong></span> command.</p>
+</li><li>
+<p>Type <code class="option">
+k</code> after the <span><strong class="command">kernel /platform/i86pc/multiboot</strong></span> entry. </p>
+<pre class="screen">grub edit&gt; kernel /platform/i86pc/multiboot <strong class="userinput"><code>-k</code></strong>
+</pre>
+</li><li>
+<p>To save your changes and return to the GRUB main menu, press Enter.</p>
+</li><li>
+<p>Type <span><strong class="command">b</strong></span> to boot the system with the kernel debugger
+enabled.</p>
+<p>The system boots with the kernel debugger enabled.</p>
+</li><li>
+<p>Access the kernel debugger.</p>
+<p>The method used to access
+the debugger is dependent upon the type of console that you are using to access
+the system:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>If you are using a locally attached keyboard, press F1&#8211;A.</p>
+</li><li>
+<p>If you are using a serial console, send a break by using the
+method appropriate to that type of serial console.</p>
+</li></ul></div>
+<p>A welcome message is displayed when you access the kernel debugger for
+the first time.</p>
+</li></ol></div><div class="example"><a name="fwbpo"></a><p class="title"><b>Example 11.9. 
+Booting a System With the Kernel Debugger in the GRUB Based Boot Environment</b></p>
+
+
+<p>This example shows how to manually boot a 64-bit capable x86 based system
+with the kernel debugger enabled.</p>
+<pre class="screen">/kernel/platform/i86pc/multiboot <strong class="userinput"><code>kernel/amd64/unix -k</code></strong>
+</pre>
+<p>This example shows how to boot a 64-bit capable x86 based system 32-bit
+mode with the kernel debugger enabled.</p>
+<pre class="screen">/kernel/platform/i86pc/multiboot <strong class="userinput"><code>kernel/unix -k</code></strong>
+</pre>
+<p>If you type <span><strong class="command">kmdb</strong></span> at the GRUB menu, the system boots
+the autodetected kernel type, with the kernel debugger enabled. The system
+boots in this manner regardless of how the <span><strong class="command">eeprom</strong></span> <code class="literal">boot-file</code> parameter has been set.</p>
+<p>Typing <code class="option">
+k</code> at the GRUB menu, with no additional arguments,
+has the same boot result as typing <span><strong class="command">b</strong></span>, with the kernel debugger
+enabled. The kernel is specified by the <span><strong class="command">eeprom</strong></span> <code class="literal">boot-file</code> parameter or by the autodetected default, if the <code class="literal">boot-file</code> parameter
+is set to a null value (<code class="literal">""</code>).</p>
+</div></div>
+</div>
+<div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="fvzpo"></a>
+Forcing a Crash Dump and Reboot of the
+System</h3></div></div></div>
+
+<p>Forcing a crash dump and reboot of the system are sometimes necessary
+for troubleshooting purposes. The <span><strong class="command">savecore</strong></span> feature is enabled
+by default.</p>
+<p>For more information about system crash dumps, see <span class="olink">Chapter 24, <em class="citetitle">Managing System Crash Information (Tasks),</em> in <em class="citetitle">System Administration Guide: Advanced Administration</em>
+</span>. </p>
+<div class="task"><a name="fvzni"></a><p class="title"><b>
+How to Force a Crash Dump and Reboot of
+the System</b></p><div class="tasksummary">
+<p>If you cannot use the <span><strong class="command">reboot</strong></span> <code class="option">
+d</code> or
+the <span><strong class="command">halt</strong></span> <code class="option">
+d</code> command, you can use the kernel
+debugger, <span><strong class="command">kmdb</strong></span>, to force a crash dump. The kernel debugger
+must have been loaded, either at boot, or with the <span><strong class="command">mdb</strong></span> <code class="option">
+k</code> command, for the following procedure to work.</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>You must be in text mode to access the kernel debugger (<span><strong class="command">kmdb</strong></span>). So, first exit any window system.</p>
+</div>
+</div><div class="procedure"><ol type="1"><li>
+<p>Access the kernel debugger.</p>
+<p>The method used to access
+the debugger is dependent upon the type of console that you are using to access
+the system.</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>If you are using a locally attached keyboard, press F1&#8211;A.</p>
+</li><li>
+<p>If you are using a serial console, send a break by using the
+method appropriate to that type of serial console.</p>
+</li></ul></div>
+<p>The <span><strong class="command">kmdb</strong></span> prompt is displayed.</p>
+</li><li>
+<p>To induce a crash, use the <code class="literal">systemdump</code> macro.</p>
+<pre class="screen">[0]&gt; $&lt;<strong class="userinput"><code>systemdump</code></strong>
+</pre>
+<p>Panic messages are displayed, the crash dump is saved, and the system
+reboots.</p>
+</li><li><a name="fvzoj"></a>
+<p>Verify that the system has rebooted by logging in at
+the console login prompt.</p>
+</li></ol></div><div class="example"><a name="id2084187"></a><p class="title"><b>Example 11.10. 
+Forcing a Crash Dump and Reboot of the System by Using <span>halt</span> <code class="option">
+d</code>
+</b></p>
+
+
+<p>This example shows how to force a crash dump and reboot of the x86 based
+system <code class="literal">neptune</code> by using the <span><strong class="command">halt</strong></span> <code class="option">
+d</code> and <span><strong class="command">boot</strong></span> commands. Use this method to force a crash dump of the system.
+Reboot the system afterwards manually.</p>
+<pre class="screen"># <strong class="userinput"><code>halt -d</code></strong>
+4ay 30 15:35:15 wacked.Central.Sun.COM halt: halted by <em class="replaceable"><code>user</code></em>
+
+panic[cpu0]/thread=ffffffff83246ec0: forced crash dump initiated at user request
+
+fffffe80006bbd60 genunix:kadmin+4c1 ()
+fffffe80006bbec0 genunix:uadmin+93 ()
+fffffe80006bbf10 unix:sys_syscall32+101 ()
+
+syncing file systems... done
+dumping to /dev/dsk/c1t0d0s1, offset 107675648, content: kernel
+NOTICE: adpu320: bus reset
+100% done: 38438 pages dumped, compression ratio 4.29, dump succeeded
+
+Welcome to kmdb
+Loaded modules: [ audiosup crypto ufs unix krtld s1394 sppp nca uhci lofs 
+genunix ip usba specfs nfs md random sctp ]
+[0]&gt; 
+kmdb: Do you really want to reboot? (y/n) <strong class="userinput"><code>y</code></strong>
+</pre>
+</div></div>
+</div>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch11s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch11.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch11s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">
+GRUB Based Booting (Task Map) </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 
+The GRUB Based Boot Process (Reference)</td></tr></table></div></body></html>

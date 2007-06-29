@@ -1,0 +1,133 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 2. DTrace Basics</title><meta name="generator" content="DocBook XSL Stylesheets V1.69.1"><link rel="start" href="index.html" title="DTrace User Guide"><link rel="up" href="index.html" title="DTrace User Guide"><link rel="prev" href="ch01s02.html" title="Architecture overview"><link rel="next" href="ch02s02.html" title="Specifying Probes in DTrace"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 2. DTrace Basics</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01s02.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch02s02.html">Next</a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="gbxwv"></a>Chapter 2. DTrace Basics</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="sect1"><a href="ch02.html#gcfah">Listing Probes</a></span></dt><dt><span class="sect1"><a href="ch02s02.html">Specifying Probes in DTrace</a></span></dt><dt><span class="sect1"><a href="ch02s03.html">Enabling Probes</a></span></dt><dt><span class="sect1"><a href="ch02s04.html">DTrace Action Basics</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch02s04.html#gcggx">Data Recording Actions</a></span></dt><dt><span class="sect2"><a href="ch02s04.html#gcfsm">Destructive Actions</a></span></dt></dl></dd><dt><span class="sect1"><a href="ch02s05.html">DTrace Aggregations</a></span></dt><dd><dl><dt><span class="sect2"><a href="ch02s05.html#gcggc">DTrace Aggregation Syntax</a></span></dt></dl></dd></dl></div>
+
+
+
+
+
+<div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gcfah"></a>Listing Probes</h2></div></div></div>
+
+<p>You can list all DTrace probes by passing the <code class="option">
+l</code> option
+to the <span><strong class="command">dtrace</strong></span> command:</p>
+<pre class="programlisting"># <span class="strong"><strong>dtrace -l</strong></span>
+ID   PROVIDER    MODULE        FUNCTION NAME
+ 1     dtrace                           BEGIN
+ 2     dtrace                           END
+ 3     dtrace                           ERROR
+ 4    syscall                     nosys entry
+ 5    syscall                     nosys return
+ 6    syscall                     rexit entry
+ 7    syscall                     rexit return
+ 8    syscall                   forkall entry
+ 9    syscall                   forkall return
+10    syscall                      read entry
+11    syscall                      read return
+...</pre>
+<p>To count all the probes that are available on your system, you can type
+the following command:</p>
+<pre class="programlisting"># <span class="strong"><strong>dtrace -l | wc -l</strong></span>
+</pre>
+<p>The number of probes reported will vary depending on your operating
+platform and the software you have installed. Some probes do not list an entry
+under the <code class="literal">MODULE</code> or <code class="literal">FUNCTION</code> columns,
+such as the <code class="literal">BEGIN</code> and <code class="literal">END</code> probes in
+the previous example. Probes with blank entries in these fields do not correspond
+to a specifically instrumented program function or location. These probes
+refer to more abstract concepts, such as the end of a tracing request. A probe
+that has a module and function as part of its name is called an <span class="emphasis"><em>anchored
+probe</em></span>. A probe that is not associated with a module and function
+is called an <span class="emphasis"><em>unanchored probe</em></span>.</p>
+<p>You can use additional options to list specific probes, as seen in the
+following examples.</p>
+<div class="example"><a name="gcfac"></a><p class="title"><b>Example 2.1. Listing Probes by Specific Function</b></p>
+
+
+<p>You can list probes that are associated with a specific function by
+passing that function name to DTrace with the <code class="option">
+f</code> option.</p>
+<pre class="programlisting"># <span class="strong"><strong>dtrace -l -f cv_wait</strong></span>
+ID      PROVIDER        MODULE        FUNCTION NAME
+12921        fbt       genunix         cv_wait entry
+12922        fbt       genunix         cv_wait return</pre>
+</div>
+<div class="example"><a name="gcfao"></a><p class="title"><b>Example 2.2. Listing Probes by Specific Module</b></p>
+
+
+<p>You can list probes that are associated with a specific module by passing
+that module name to DTrace with the <code class="option">
+m</code> option.</p>
+<pre class="programlisting"># <span class="strong"><strong>dtrace -l -m sd</strong></span>
+ID      PROVIDER        MODULE        FUNCTION NAME
+17147        fbt            sd          sdopen entry
+17148        fbt            sd          sdopen return
+17149        fbt            sd         sdclose entry
+17150        fbt            sd         sdclose return
+17151        fbt            sd      sdstrategy entry
+17152        fbt            sd      sdstrategy return
+...</pre>
+</div>
+<div class="example"><a name="gcfaf"></a><p class="title"><b>Example 2.3. Listing Probes by Specific Name</b></p>
+
+
+<p>You can list probes that have a specific name by passing that name to
+DTrace with the <code class="option">
+n</code> option.</p>
+<pre class="programlisting"># <span class="strong"><strong>dtrace -l -n BEGIN</strong></span>
+ID      PROVIDER        MODULE        FUNCTION NAME
+1         dtrace                               BEGIN</pre>
+</div>
+<div class="example"><a name="gcfag"></a><p class="title"><b>Example 2.4. Listing Probes by Provider of Origin</b></p>
+
+
+<p>You can list probes that are originate from a specific provider by passing
+the provider name to DTrace with the <code class="option">
+P</code> option.</p>
+<pre class="programlisting"># <span class="strong"><strong>dtrace -l -P lockstat</strong></span>
+ID        PROVIDER        MODULE             FUNCTION NAME
+469       lockstat       genunix          mutex_enter adaptive-acquire
+470       lockstat       genunix          mutex_enter adaptive-block
+471       lockstat       genunix          mutex_enter adaptive-spin
+472       lockstat       genunix           mutex_exit adaptive-release
+473       lockstat       genunix        mutex_destroy adaptive-release
+474       lockstat       genunix       mutex_tryenter adaptive-acquire
+...</pre>
+</div>
+<div class="example"><a name="gcfad"></a><p class="title"><b>Example 2.5. Multiple Providers Supporting a Specific Function
+or Module</b></p>
+
+
+<p>A specific function or specific module can be supported by multiple
+providers, as the following example shows.</p>
+<pre class="programlisting"># <span class="strong"><strong>dtrace -l -f read</strong></span>
+ID        PROVIDER        MODULE             FUNCTION NAME
+  10       syscall                               read entry
+  11       syscall                               read return
+4036       sysinfo       genunix                 read readch
+4040       sysinfo       genunix                 read sysread
+7885           fbt       genunix                 read entry
+7886           fbt       genunix                 read return</pre>
+</div>
+<p>As the previous examples show, the output for a listing of probes displays
+the following information:</p>
+<div class="itemizedlist"><ul type="disc"><li>
+<p>The probe's uniquely assigned integer probe ID</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+
+<p>The probe ID is only unique within a given release or patch level
+of the Solaris operating system.</p>
+</div>
+</li><li>
+<p>The provider name</p>
+</li><li>
+<p>The module name, if applicable</p>
+</li><li>
+<p>The function name, if applicable</p>
+</li><li>
+<p>The probe name</p>
+</li></ul></div>
+</div>
+
+
+
+
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01s02.html">Prev</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="ch02s02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Architecture overview </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Specifying Probes in DTrace</td></tr></table></div></body></html>
