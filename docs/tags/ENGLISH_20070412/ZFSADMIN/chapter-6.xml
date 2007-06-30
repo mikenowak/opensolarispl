@@ -8,73 +8,77 @@
 
 
 
-<title>Praca z migawkami i klonami ZFS-a</title>
+<title>Working With ZFS Snapshots and Clones</title>
 <toc>
-<para>Rozdział ten opisuje jak stworzyć i zarządzać obrazami i klonami ZFS (snapshots and clones).
-Rozdział ten informuje również jak zapisywać stworzone obrazy.</para>
-<para>W rozdziale omówiono poniższe zagadnienia:</para>
+<para>This chapter describes how to create and manage ZFS snapshots and clones.
+Information about saving snapshots is also provided in this chapter.</para>
+<para>The following sections are provided in this chapter:</para>
 <itemizedlist>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbciq">Obrazy ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gbciq">ZFS Snapshots</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbcya">Tworzenie i niszczenie obrazów ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gbcya">Creating and Destroying ZFS Snapshots</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbiqe">Wyświetlanie i uzyskiwanie dostępu do obrazów ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gbiqe">Displaying and Accessing ZFS Snapshots</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbcxk">Uzyskiwanie dostępu i przywracanie obrazów ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gbcxk">Rolling Back to a ZFS Snapshot</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbcxz">Klony ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gbcxz">ZFS Clones</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbcyg">Tworzenie klona ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gbcyg">Creating a ZFS Clone</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbiob">Niszczenie klona ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gbiob">Destroying a ZFS Clone</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbchx">Zapis i odtwarzanie danych ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gbchx">Saving and Restoring ZFS Data</olink>
 </para>
 </listitem>
 </itemizedlist>
 </toc>
 <sect1 xml:id="gbciq">
-<title>Obrazy ZFS</title>
-<para><emphasis>Obraz</emphasis> jest kopią systemu plików (tylko do odczytu) lub woluminu. Obrazy mogą być stworzone niemal natychmiastowo i początkowo nie nie zajmują dodatkowego miejsca na dysku poza pulą. Niemniej jednak, wraz z kolejnymi zmianami danych, obraz pochłania przestrzeń dyskową poprzez czynienie kolejnych odniesień do starych danych.<indexterm xml:id="indexterm-376">
-<primary>System plików ZFS</primary>
-<secondary>obraz</secondary>
-<tertiary>opis</tertiary>
+<title>ZFS Snapshots</title>
+<para>A <emphasis>snapshot</emphasis> is a read-only copy of a file system
+or volume. Snapshots can be created almost instantly, and initially consume
+no additional disk space within the pool. However, as data within the active
+dataset changes, the snapshot consumes disk space by continuing to reference
+the old data and so prevents the space from being freed.<indexterm xml:id="indexterm-376">
+<primary>ZFS file systems</primary>
+<secondary>snapshot</secondary>
+<tertiary>description</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-377">
-<primary>obraz</primary>
-<secondary>funkcje</secondary>
+<primary>snapshot</primary>
+<secondary>features</secondary>
 </indexterm>
 </para>
-<para>Obrazy ZFS zawierają następujące funkcje:</para>
+<para>ZFS snapshots include the following features:</para>
 <itemizedlist>
 <listitem>
-<para>Zapewniają trwałość danych.</para>
+<para>Provides persistence across system reboots.</para>
 </listitem>
 <listitem>
-<para>Teoretyczna liczba możliwych do stworzenia obrazów wynosi 2<superscript>64</superscript>.</para>
+<para>The theoretical maximum number of snapshots is 2<superscript>64</superscript>.</para>
 </listitem>
 <listitem>
 <para>Uses no separate backing store. Snapshots consume disk space

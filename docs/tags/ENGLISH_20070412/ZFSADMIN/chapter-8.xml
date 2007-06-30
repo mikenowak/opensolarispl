@@ -10,93 +10,91 @@
 
 <title>ZFS Advanced Topics</title>
 <toc>
-<para>W tym rozdziale przedstawiono emulowane woluminy, używanie ZFS-a w systemie Solaris
-z zainstalowanymi zonami, ZFS-owe alternatywne pule główne oraz ZFS-owe profile praw.</para>
-<para>Rozdział składa się z następujących podrozdziałów:</para>
+<para>This chapter describes emulated volumes, using ZFS on a Solaris system
+with zones installed, ZFS alternate root pools, and ZFS rights profiles.</para>
+<para>The following sections are provided in this chapter:</para>
 <itemizedlist>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gaypf">Emulowane woluminy</olink>
+<olink targetdoc="" remap="internal" targetptr="gaypf">Emulated Volumes</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gayov">Używanie ZFS-a w systemie Solaris z zainstalowanymi zonami</olink>
+<olink targetdoc="" remap="internal" targetptr="gayov">Using ZFS on a Solaris System With Zones Installed</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbcgl">ZFS-owe alternatywne pule główne</olink>
+<olink targetdoc="" remap="internal" targetptr="gbcgl">ZFS Alternate Root Pools</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbfvq">ZFS-owe profile praw</olink>
+<olink targetdoc="" remap="internal" targetptr="gbfvq">ZFS Rights Profiles</olink>
 </para>
 </listitem>
 </itemizedlist>
 </toc>
 <sect1 xml:id="gaypf">
 <title>Emulated Volumes</title>
-<para><emphasis>Emulowany wolumin</emphasis> to zbiór danych (dataset) reprezentujący
-urządzenie blokowe, którego można używać jak każdego innego urządzenia blokowego.  Woluminom tym odpowiadają
-pliki urządzeń w katalogu <filename>/dev/zvol/{dsk,rdsk}/path</filename>.<indexterm xml:id="indexterm-461">
-<primary>emulowany wolumin</primary>
-<secondary>opis</secondary>
+<para>An <emphasis>emulated volume</emphasis> is a dataset that represents
+a block device and can be used like any block device. ZFS volumes are identified
+as devices in the <filename>/dev/zvol/{dsk,rdsk}/path</filename> directory.<indexterm xml:id="indexterm-461">
+<primary>emulated volume</primary>
+<secondary>description</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-462">
-<primary>tworzenie</primary>
-<secondary>emulowanego woluminu</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>creating</primary>
+<secondary>emulated volume</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-463">
-<primary>systemy plików ZFS</primary>
-<secondary>tworzenie emulowanego woluminu</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS file systems</primary>
+<secondary>creating an emulated volume</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>Poniższy przykład ilustruje tworzenie ZFS-owego woluminu <filename>tank/vol</filename> o pojemności 5 GB:</para>
+<para>In the following example, 5-Gbyte ZFS volume, <filename>tank/vol</filename>,
+is created:</para>
 <screen># <userinput>zfs create -V 5gb tank/vol</userinput>
 </screen>
-<para>Podczas tworzenia woluminu, rezerwacja jest automatycznie ustawiana
-na rozmiar równy początkowej wielkości woluminu.  Wielkość rezerwacji cały
-czas jest równa wielkości woluminu, dzięki czemu nie występują nieprzewidziane
-efekty.  Na przykład, jeśli wielkość woluminu zmniejsza się, może
-nastąpić uszkodzenie danych.  Należy zachować ostrożność podczas zmniejszania
-woluminu.</para>
-<para>Jeśli używasz systemu Solaris z zainstalowanymi zonami, nie możesz tworzyć ani klonować ZFS-owego woluminu
-w zonie innej niz globalna.  Jakakolwiek próba stworzenia lub sklonowania 
-woluminu z zony innej niż globalna nie powiedzie się.  Więcej
-informacji o używaniu ZFS-owych woluminów w globalnej zonie w
-<olink targetdoc="" remap="internal" targetptr="gbebi">Dodawanie ZFS-owych woluminów do zon innych niz globalna</olink>.</para>
+<para>When you create a volume, a reservation is automatically set to the
+initial size of the volume. The reservation size continues to equal the size
+of the volume so that unexpected behavior doesn't occur. For example, if the
+size of the volume shrinks, data corruption might occur. You must be careful
+when changing the size of the volume.</para>
+<para>If you are using a Solaris system with zones installed, you cannot create
+or clone a ZFS volume in a non-global zone.  Any attempt to create or clone
+a volume from within a non-global zone will fail. For information about using
+ZFS volumes in a global zone, see <olink targetdoc="" remap="internal" targetptr="gbebi">Adding ZFS Volumes to a Non-Global Zone</olink>.</para>
 <sect2 xml:id="gbfvg">
-<title>Emulowane woluminy jako urządzenia wymiany i urządzenia zrzutów awaryjnych</title>
-<para>W celu skonfigurowania przestrzeni wymiany należy utworzyć ZFS-owy wolumin o ustalonym rozmiarze
-i włączyć wymianę na to urządzenie.  Nie należy używać jako urządzenia wymiany pliku w ZFS-owym systemie
-plików.  Konfiguracja z ZFS-owym plikiem wymiany nie jest obsługiwana.<indexterm xml:id="indexterm-464">
-<primary>emulowany wolumin</primary>
-<secondary>jako urządzenie wymiany</secondary>
+<title>Emulated Volumes as Swap or Dump Devices</title>
+<para>To set up a swap area, create a ZFS volume of a specific size and then
+enable swap on that device. Do not swap to a file on a ZFS file system. A
+ZFS swap file configuration is not supported.<indexterm xml:id="indexterm-464">
+<primary>emulated volume</primary>
+<secondary>as swap device</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-465">
-<primary>tworzenie</primary>
-<secondary>emulowanego woluminu jako urządzenia wymiany</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>creating</primary>
+<secondary>emulated volume as swap device</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-466">
-<primary>ZFS-owe systemy plików</primary>
-<secondary>tworzenie emulowanego woluminu jako urządzenia wymiany</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS file systems</primary>
+<secondary>creating an emulated volume as swap device</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>Poniższy przykład ilustruje dodanie woluminu <filename>tank/vol</filename> wielkości 5 GB
-jako urządzenia wymiany.</para>
+<para>In the following example, the 5-Gbyte <filename>tank/vol</filename> volume
+is added as a swap device.</para>
 <screen># <userinput>swap -a /dev/zvol/dsk/tank/vol</userinput>
 # <userinput>swap -l</userinput>
 swapfile                 dev  swaplo blocks   free
 /dev/dsk/c0t0d0s1      32,33      16 1048688  1048688
 /dev/zvol/dsk/tank/vol 254,1      16 10485744 10485744</screen>
-<para>Używanie woluminu ZFS-a jako urządzenia zrzutów awaryjnych nie jest obsługiwane.  W celu
-skonfigurowania urządzenia zrzutów awaryjnych należy użyć komendy <command>dumpadm</command>.</para>
+<para>Using a ZFS volume as a dump device is not supported. Use the <command>dumpadm</command> command to set up a dump device.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gayov">

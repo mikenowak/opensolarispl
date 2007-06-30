@@ -8,85 +8,78 @@
 
 
 
-<title>Zarządzanie pulami nośników danych ZFS</title>
+<title>Managing ZFS Storage Pools</title>
 <toc>
-<para>W tym rozdziale opisane jest tworzenie i zarządzanie pulami nośników 
-danych ZFS.</para>
-<para>Podrozdziały:</para>
+<para>This chapter describes how to create and administer ZFS storage pools.</para>
+<para>The following sections are provided in this chapter:</para>
 <itemizedlist>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gcfog">Składniki puli ZFS
-</olink>
+<olink targetdoc="" remap="internal" targetptr="gcfog">Components of a ZFS Storage Pool</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gaypw">Tworzenie i usuwanie puli
- ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gaypw">Creating and Destroying ZFS Storage Pools</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gayrd">Zarządzanie urządzeniami 
-w puli ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gayrd">Managing Devices in ZFS Storage Pools</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gaynp">Sprawdzanie statusu puli 
-ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gaynp">Querying ZFS Storage Pool Status</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbchy">Przenoszenie puli ZFS
-</olink>
+<olink targetdoc="" remap="internal" targetptr="gbchy">Migrating ZFS Storage Pools</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gcikw">Powiększanie puli ZFS
-</olink>
+<olink targetdoc="" remap="internal" targetptr="gcikw">Upgrading ZFS Storage Pools</olink>
 </para>
 </listitem>
 </itemizedlist>
 </toc>
 <sect1 xml:id="gcfog">
-<title>Składniki puli nośników danych ZFS</title>
-<para>Poniższe paragrafy dostarczają dokładnych informacji o następujących 
-komponentach puli nośników danych:</para>
+<title>Components of a ZFS Storage Pool</title>
+<para>This section provides detailed information about the following storage
+pool components:</para>
 <itemizedlist>
 <listitem>
-<para>Dyski</para>
+<para>Disks</para>
 </listitem>
 <listitem>
-<para>Pliki</para>
+<para>Files</para>
 </listitem>
 <listitem>
-<para>Urządzenia wirtualne</para>
+<para>Virtual devices</para>
 </listitem>
 </itemizedlist>
 <sect2 xml:id="gazdp">
-<title>Używanie dysków w puli nośników danych ZFS</title>
-<para>Najbardziej podstawowym elementem puli nośników danych jest fizyczny 
-nośnik danych. Może nim być urządzenie blokowe o pojemności nie mniejszej niż 
-128 MB. Najczęściej urządzeniem tym jest dysk twardy widoczny dla systemu 
-w katalogu <filename>/dev/dsk</filename>.<indexterm xml:id="indexterm-81">
-<primary>Pule nośników danych ZFS</primary>
-<secondary>komponenty</secondary>
+<title>Using Disks in a ZFS Storage Pool</title>
+<para>The most basic element of a storage pool is a piece of physical storage.
+Physical storage can be any block device of at least 128 Mbytes in size. Typically,
+this device is a hard drive that is visible to the system in the <filename>/dev/dsk</filename> directory.<indexterm xml:id="indexterm-81">
+<primary>ZFS storage pools</primary>
+<secondary>components</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-82">
-<primary>komponenty</primary>
-<secondary>pul nośników danych ZFS</secondary>
+<primary>components of</primary>
+<secondary>ZFS storage pool</secondary>
 </indexterm>
 </para>
-<para>Nośnikiem danych może być cały dysk (<filename>c1t0d0</filename>), 
-lub pojedynczy blok (ang. slice), (<filename>c0t0d0s7</filename>). Zaleca się 
-używania całych dysków, w którym to przypadku dysk nie wymaga specjalnego 
-formatowania. ZFS formatuje dysk używają etykiet EFI do przechowywania jednego 
-bloku. W takim przyadku tablica partycji wyświetlana przez komendę <command>
-format</command> wygląda podobnie:</para>
+<para>A storage device can be a whole disk (<filename>c1t0d0</filename>) or
+an individual slice (<filename>c0t0d0s7</filename>). The recommended mode
+of operation is to use an entire disk, in which case the disk does not need
+to be specially formatted. ZFS formats the disk using an EFI label to contain
+a single, large slice. When used in this way, the partition table that is
+displayed by the <command>format</command> command appears similar to the
+following:</para>
 <screen>Current partition table (original):
 Total disk sectors available: 71670953 + 16384 (reserved sectors)
 
@@ -100,51 +93,47 @@ Part      Tag    Flag     First Sector        Size        Last Sector
   6 unassigned    wm                 0          0              0    
   7 unassigned    wm                 0          0              0    
   8   reserved    wm          71670954       8.00MB         71687337</screen>
-<para>Aby użyć całego dysku, musi być nazwany zgodnie z konwencją Solarisa, na 
-przykład <filename>/dev/dsk/cXtXdXsX</filename>. Niektóre sterowniki od 
-niezależnych dostawców używają innych konwencji nazewniczych lub umieszczają 
-dyski w innych katalogach, niż <filename>/dev/dsk</filename>. Aby użyć tych 
-dysków, należy ręcznie je etykietować i udostępnić blok ZFS-owi.
-<indexterm xml:id="indexterm-83">
-<primary>Etykiety EFI</primary>
-<secondary>opis</secondary>
+<para>To use whole disks, the disks must be named using the standard Solaris
+convention, such as <filename>/dev/dsk/cXtXdXsX</filename>. Some third-party
+drivers use a different naming convention or place disks in a location other
+than the <filename>/dev/dsk</filename> directory. To use these disks, you
+must manually label the disk and provide a slice to ZFS. <indexterm xml:id="indexterm-83">
+<primary>EFI label</primary>
+<secondary>description</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-84">
-<primary>Etykiety EFI</primary>
-<secondary>współpraca z ZFS</secondary>
+<primary>EFI label</primary>
+<secondary>interaction with ZFS</secondary>
 </indexterm>
 </para>
-<para>ZFS nadaje etykietę EFI w momencie tworzenia puli przy użyciu całego 
-dysku. Można też etykietować dyski tadycyjnym Solarisowym VTOC przy tworzeniu 
-puli z użyciek bloku.</para>
-<para>Bloki powinny być używane tylko w poniższych wrunkach:</para>
+<para>ZFS applies an EFI label when you create a storage pool with whole disks.
+Disks can be labeled with a traditional Solaris VTOC label when you create
+a storage pool with a disk slice.</para>
+<para>Slices should only be used under the following conditions:</para>
 <itemizedlist>
 <listitem>
-<para>Nazwa urządzenia jest niestandardowa.</para>
+<para>The device name is nonstandard.</para>
 </listitem>
 <listitem>
-<para>Pojedynczy dysk jest wpółdzielony między system plików ZFS oraz inny 
-system plików, na przykład UFS.</para>
+<para>A single disk is shared between ZFS and another file system,
+such as UFS.</para>
 </listitem>
 <listitem>
-<para>Dysk jest używany na potrzeby swap bądź zrzutów (dump).</para>
+<para>A disk is used as a swap or a dump device.</para>
 </listitem>
 </itemizedlist>
-<para>Dyski można wskazać zarówno poprzez użycie pełnej ścieżki, na przykład 
-<filename>/dev/dsk/c1t0d0</filename>, lub przez nazwę urządzenia znajdującego 
-się w katalogu<filename>/dev/dsk</filename>, na przykład <filename>c1t0d0
-</filename>. Poniższe są prawidłowymi nazwami dysków:
-<indexterm xml:id="indexterm-85">
-<primary>pule nośników danych ZFS</primary>
-<secondary>używanie całego dysku</secondary>
+<para>Disks can be specified by using either the full path, such as <filename>/dev/dsk/c1t0d0</filename>, or a shorthand name that consists of the device name within the <filename>/dev/dsk</filename> directory, such as <filename>c1t0d0</filename>. For example,
+the following are valid disk names:<indexterm xml:id="indexterm-85">
+<primary>ZFS storage pools</primary>
+<secondary>using whole disks</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-86">
-<primary>całe dyski</primary>
-<secondary>jako komponenty pul nośników danych ZFS</secondary>
+<primary>whole disks</primary>
+<secondary>as components of ZFS storage pools</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-87">
-<primary>dyski</primary>
-<secondary>jako komponenty pul nośników danych ZFS</secondary>
+<primary>disks</primary>
+<secondary>as components of ZFS storage pools</secondary>
 </indexterm>
 </para>
 <itemizedlist>
@@ -169,372 +158,338 @@ się w katalogu<filename>/dev/dsk</filename>, na przykład <filename>c1t0d0
 </para>
 </listitem>
 </itemizedlist>
-<para>ZFS działa najlepiej przy użyciu całych dysków. Wprawdzie tworzenie dysków
- logicznych przy użyciu zarządców woluminów jest możliwe, na przykład Solaris 
-Volume Manager (SVM), Veritas Volume Manager (VxVM), bądź sprzętowych zarządców 
-woluminów (LUN-y lub sprzętowe RAID-Y), konfiguracje takie nie są zalecane. 
-O ile ZFS działa z takimi urządzeniami prawidłowo, wynikiem może być 
-nieoptymalna wydajność.</para>
-<para>Dyski identyfikuje się za równo za pomocą ścieżki, jak i ich ID, jeśli 
-jest dotępne. Metoda ta pozwala na rekonfigurowanie urządzeń w systemie bez 
-uaktualniania stanu ZFS. Jesli dysk zostanie przeniesiony z kontrolera 1., 
-do kontrolera 2., ZFS użyje ID urządzenia do wykrycia go i ustalenia, że powinno
- być teraz używane za pośrednictwem kontrolera 2. ID urządzenia jest unikalne 
-dla firmware'u. Wprawdzie mało prawdopodobna jest zmiana ID urządzenia, jednak 
-niektóre uaktualnienia firmware'u dokonywały takich zmian. W takiej sytuacji, 
-ZFS może użyć urządzenia za pośrednictwem jego ścieżki systemowej i 
-automatycznie uaktualnić przechowywane ID urządzenia. Jeśli dokonano zarówno 
-zmiany ścieżki jak i ID urządzenia, aby możliwe było użycie puli, należy 
-wyeksportować pulę, a później ją zaimportować.</para>
+<para>ZFS works best when given whole physical disks. Although constructing
+logical devices using a volume manager, such as Solaris Volume Manager (SVM),
+Veritas Volume Manager (VxVM), or a hardware volume manager (LUNs or hardware
+RAID) is possible, these configurations are not recommended. While ZFS functions
+properly on such devices, less-than-optimal performance might be the result.</para>
+<para>Disks are identified both by their path and by their device ID, if available.
+This method allows devices to be reconfigured on a system without having to
+update any ZFS state. If a disk is switched between controller 1 and controller
+2, ZFS uses the device ID to detect that the disk has moved and should now
+be accessed using controller 2. The device ID is unique to the drive's firmware.
+While unlikely, some firmware updates have been known to change device IDs.
+If this situation happens, ZFS can still access the device by path and update
+the stored device ID automatically. If you inadvertently change both the path
+and the ID of the device, then export and re-import the pool in order to use
+it.</para>
 </sect2>
 <sect2 xml:id="gazcr">
-<title>Używanie plików w pulach ZFS</title>
-<para>ZFS umożliwia korzystanie z plików UFS jako urządzeń w puli. Opcja ta jest
- pomyślana głównie w celach testowych i do prostych eksperymentów, nie zaś do 
-użycia w środowisku produkcyjnym. Powodem jest to, że <emphasis role="strong">
-spójność plików zależy od systemu plików, na których pliki są przechowywane.
-</emphasis>. Jeśli zostanie utworzona pula ZFS na bazie plików przechowywanych 
-na systemie plików UFS, wtedy pośrednio żąda się gwarancji semantyki 
-synchornicznej oraz poprawności od systemu plików UFS.
-<indexterm xml:id="indexterm-88">
-<primary>Pule nośników danych ZFS</primary>
-<secondary>używanie plików</secondary>
+<title>Using Files in a ZFS Storage Pool</title>
+<para>ZFS also allows you to use UFS files as virtual devices in your storage
+pool. This feature is aimed primarily at testing and enabling simple experimentation,
+not for production use. The reason is that <emphasis role="strong">any use
+of files relies on the underlying file system for consistency</emphasis>.
+If you create a ZFS pool backed by files on a UFS file system, then you are
+implicitly relying on UFS to guarantee correctness and synchronous semantics.<indexterm xml:id="indexterm-88">
+<primary>ZFS storage pools</primary>
+<secondary>using files</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-89">
-<primary>pliki</primary>
-<secondary>jako komponenty pul nośników danych ZFS</secondary>
+<primary>files</primary>
+<secondary>as components of ZFS storage pools</secondary>
 </indexterm>
 </para>
-<para>Pliki mogą się jednak okazać przydatne przy pierwszych próbach z ZFS-em, 
-bądź przy eksperymentowaniu z bardziej skomplikowanymi układami, kiedy nie ma 
-wystarczającej ilości prawdziwych nośników. Wszystkie pliki należy wskazywać za 
-pomocą pełnej ścieżki dostępu i muszą mieć przynajmniej 128MB. Jeśli plik 
-zostanie przeniesiony bądź zmieniona będzie jego nazwa, pula musi zostać 
-wyeksoprtowana i zaimportowana, ponieważ plikom nie przypisuje się żadnego 
-unikalnego ID, po którym mogłyby być znów odnaleznione.</para>
+<para>However, files can be quite useful when you are first trying out ZFS
+or experimenting with more complicated layouts when not enough physical devices
+are present. All files must be specified as complete paths and must be at
+least 128 Mbytes in size. If a file is moved or renamed, the pool must be
+exported and re-imported in order to use it, as no device ID is associated
+with files by which they can be located.</para>
 </sect2>
 <sect2 xml:id="gazca">
-<title>Urządzenia wirtualne w pulach nośników danych</title>
-<para>Każda pula nośników składa się z jednego lub więcej wirtualnych urządzeń. 
-<emphasis>Urządzenie wirtualne</emphasis> to wewnętrzna reprezentacja puli 
-nośników, opisująca układ fizycznych nośników i ich charakterystyki awaryjności.
- Wirtualne urządzenie jako takie reprezentuje urządzenia dyskowe lub pliki, 
-używane do tworzenia puli. <indexterm xml:id="indexterm-90">
-<primary>Pule nośników danych ZFS</primary>
-<secondary>urządzenia wirtualne</secondary>
+<title>Virtual Devices in a Storage Pool</title>
+<para>Each storage pool is comprised of one or more virtual devices. A <emphasis>virtual device</emphasis> is an internal representation of the storage pool
+that describes the layout of physical storage and its fault characteristics.
+As such, a virtual device represents the disk devices or files that are used
+to create the storage pool. <indexterm xml:id="indexterm-90">
+<primary>ZFS storage pools</primary>
+<secondary>virtual devices</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-91">
-<primary>urządzenia wirtualne</primary>
-<secondary>jako komponenty pul nośników danych ZFS</secondary>
+<primary>virtual devices</primary>
+<secondary>as components of ZFS storage pools</secondary>
 </indexterm>
 </para>
-<para>Dwa urządzenia wirtualne najwyższego poziomu (top level) zapewniają 
-redundancję danych: mirror i RAID-Z. Urządzenia te składają się z dysków, 
-bloków dysków lub plików. </para>
-<para>Dyski, bloki dysków i pliki używane w pulach poza mirrorami i RAID-Z 
-same funkcjonują jako urządzenia wirtualne najwyższego poziomu. </para>
-<para>Pule nośników danych zawierają zazwyczaj wiele urządzeń wirtualnych 
-najwyższego poziomu. ZFS dynamicznie rozdziela dane pomiędzy wszystkie 
-urządzenia najwyższego poziomu w puli.</para>
+<para>Two top-level virtual devices provide data redundancy: mirror and RAID-Z
+virtual devices. These virtual devices consist of disks, disk slices, or files.</para>
+<para>Disks, disk slices, or files that are used in pools outside of mirrors
+and RAID-Z virtual devices, function as top-level virtual devices themselves.</para>
+<para>Storage pools typically contain multiple top-level virtual devices.
+ZFS dynamically stripes data among all of the top-level virtual devices in
+a pool.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gcfof">
-<title>Opcje replikacji danych w pulach ZFS</title>
-<para>ZFS zapewnia dwa poziomy reduncjanji danych w konfiguracji mirror i 
-RAID-Z.<indexterm xml:id="indexterm-92">
-<primary>opcje replikacji danych w ZFS</primary>
-<secondary>mirror lub RAID-Z</secondary>
+<title>Replication Features of a ZFS Storage Pool</title>
+<para>ZFS provides two levels of data redundancy in a mirrored and a RAID-Z
+configuration.<indexterm xml:id="indexterm-92">
+<primary>replication features of ZFS</primary>
+<secondary>mirrored or RAID-Z</secondary>
 </indexterm>
 </para>
 <sect2 xml:id="gamss">
-<title>Konfiguracja puli nośników danych: mirror</title>
-<para>Konfiguracja lustrzana (mirrored) puli nośników danych wymaga użycia 
-przynajmniej dwóch dysków, najlepiej na osobnych kontrolerach. W konfiguracji 
-lustrzanej można używać wielu dysków. Dodatkowo można stworzyć więcej niż jedno 
-lustro w puli. Prosta konfiguracja lustrzana wygląda podobnie do poniższej:
-<indexterm xml:id="indexterm-93">
-<primary>konfiguracja lustrzana</primary>
-<secondary>opis</secondary>
+<title>Mirrored Storage Pool Configuration</title>
+<para>A mirrored storage pool configuration requires at least two disks, preferrably
+on separate controllers. Many disks can be used in a mirrored configuration.
+In addition, you can create more than one mirror in each pool. Conceptually,
+a simple mirrored configuration would look similar to the following:<indexterm xml:id="indexterm-93">
+<primary>mirrored configuration</primary>
+<secondary>description</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-94">
-<primary>konfiguracja lustrzana</primary>
-<secondary>opcja replikacji</secondary>
+<primary>mirrored configuration</primary>
+<secondary>replication feature</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-95">
-<primary>konfiguracja lustrzana</primary>
-<secondary>koncepcja</secondary>
+<primary>mirrored configuration</primary>
+<secondary>conceptual view</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-96">
-<primary>pule nośników danych ZFS</primary>
-<secondary>konfiguracja lustrzana, opis</secondary>
+<primary>ZFS storage pools</primary>
+<secondary>mirrored configuration, description of</secondary>
 </indexterm>
 </para>
 <screen>mirror c1t0d0 c2t0d0</screen>
-<para>Bardziej skomplikowana konfiguracja będzie podobna do poniższej:</para>
+<para>Conceptually, a more complex mirrored configuration would look similar
+to the following:</para>
 <screen>mirror c1t0d0 c2t0d0 c3t0d0 mirror c4t0d0 c5t0d0 c6t0d0</screen>
-<para>Więcej inforomacji o tworzeniu lustrzanej konfiguracji puli nośników 
-danych w <olink targetdoc="" remap="internal" targetptr="gazhv">tworzeniu 
-lustrzanych pul nośników danych</olink>.</para>
+<para>For information about creating a mirrored storage pool, see <olink targetdoc="" remap="internal" targetptr="gazhv">Creating a Mirrored Storage Pool</olink>.</para>
 </sect2>
 <sect2 xml:id="gamtu">
-<title>Konfiguracja puli nośników danych RAID-Z</title>
-<para>Oprócz konfiguracji lustrzanej puli nośników danych, ZFS umożliwia 
-konfigurację RAID-Z. RAID-Z  jest podobne do RAID-5.
-<indexterm xml:id="indexterm-97">
-<primary>konfiguracja RAID-Z</primary>
-<secondary>opis</secondary>
+<title>RAID-Z Storage Pool Configuration</title>
+<para>In addition to a mirrored storage pool configuration, ZFS provides a
+RAID-Z configuration. RAID-Z is similar to RAID-5.<indexterm xml:id="indexterm-97">
+<primary>RAID-Z configuration</primary>
+<secondary>description</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-98">
-<primary>konfiguracja RAID-Z</primary>
-<secondary>opcja replikacji</secondary>
+<primary>RAID-Z configuration</primary>
+<secondary>replication feature</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-99">
-<primary>konfiguracja RAID-Z</primary>
-<secondary>koncepcja</secondary>
+<primary>RAID-Z configuration</primary>
+<secondary>conceptual view</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-100">
-<primary>pule nośników danych ZFS</primary>
-<secondary>konfiguracja RAID-Z, opis</secondary>
+<primary>ZFS storage pools</primary>
+<secondary>RAID-Z configuration, description of</secondary>
 </indexterm>
 </para>
-<para>Wszystkie tradycyjne algorytmy RAID-5 i podobne (RAID-4. RAID-5. RAID-6, 
-RDP i PARZYSTE-NIEPARZYSTE na przykład) obarczone są problemem tak zwanej 
-"luki zapisu RAID-5". Jeśli tylko fragment bloku danych RAID-5 zostanie zapisany
- i nastąpi awaria zasilania zanim wszystkie bloki zostaną zapisane na dysk, 
-przystość i dane będą rozsynchronizowane, a przez to bezużyteczne na zawsze, 
-chyba że następny zapis pełnego bloku nadpisze ten fragment. W RAID-Z ZFS używa 
-bloków o zmiennej długości, zatem każdy zapis zapis jest zapisem pełnego bloku. 
-Jest to możliwe tylko dlatego, że ZFS integruje system plików i zarządzanie 
-urządzeniami w taki sposób, że metadane systemu plików zawierają wystarczająco 
-dużo informacji o modelu replikacji w niższej warstwie, aby poradzić sobie z 
-blokami RAID o zmiennej długości. RAID-Z to pierwszy to pierwsze na świecie 
-czysto programowe rozwiązanie problemu luki zapisu RAID-5.</para>
-<para>Do konfiguracji RAID-Z wymagane są co najmniej dwa dyski. Obecnie RAID-Z 
-zapewnia pojedyczną parzystość. Na przykład, jeśli w puli RAID-Z są trzy dyski, 
-dane parzystości zajmują miejsce równe pojemności jednego z dysków.</para>
-<para>Koncepcyjnie, konfiguracja RAID-Z z trzema dyskami wygląda jak poniżej:
-</para>
+<para>All traditional RAID-5-like algorithms (RAID-4. RAID-5. RAID-6, RDP,
+and EVEN-ODD, for example) suffer from a problem known as the “RAID-5
+write hole.” If only part of a RAID-5 stripe is written, and power is
+lost before all blocks have made it to disk, the parity will remain out of
+sync with the data, and therefore useless, forever (unless a subsequent full-stripe
+write overwrites it). In RAID-Z, ZFS uses variable-width RAID stripes so that
+all writes are full-stripe writes. This design is only possible because ZFS
+integrates file system and device management in such a way that the file system's
+metadata has enough information about the underlying data replication model
+to handle variable-width RAID stripes. RAID-Z is the world's first software-only
+solution to the RAID-5 write hole.</para>
+<para>You need at least two disks for a RAID-Z configuration. Otherwise, no
+special hardware is required to create a RAID-Z configuration. Currently,
+RAID-Z provides single parity. For example, if you have three disks in a RAID-Z
+configuration, parity data occupies space equal to one of the three disks.</para>
+<para>Conceptually, RAID-Z configuration with three disks would look similar
+to the following:</para>
 <screen>raidz c1t0d0 c2t0d0 c3t0d0</screen>
-<para>Bardziej skomplikowana konfiguracja RAID-Z wygląda podobnie do poniższej:
-</para>
+<para>A more complex conceptual RAID-Z configuration would look similar to
+the following:</para>
 <screen>raidz c1t0d0 c2t0d0 c3t0d0 c4t0d0 c5t0d0 c6t0d0 c7t0d0 raidz c8t0d0 c9t0d0 c10t0d0 c11t0d0 c12t0d0 c13t0d0 c14t0d0</screen>
-<para>Jeśli tworzona jest konfiguracja z wieloma dyskami, jak w powyższym 
-przykładzie, konfiguracja RAID-Z z 14 dosyami sprawdza się lepiej jako dwie 
-konfiguracje RAID-Z z 7 dyskami każda. Konfiguracje RAID-Z grupami o 
-jednocyfrowej liczbie dysków powinny mieć lepszą wydajność.</para>
-<para>Więcej informacji o tworzeniu pul RAID-Z w 
-<olink targetdoc="" remap="internal" targetptr="gazhe">Tworzenie pul RAID-Z
-</olink>.</para>
+<para>If you are creating a RAID-Z configuration with many disks, as in this
+example, a RAID-Z configuration with 14 disks is better split into a two 7-disk
+groupings. RAID-Z configurations with single-digit groupings of disks should
+perform better.</para>
+<para>For information about creating a RAID-Z storage pool, see <olink targetdoc="" remap="internal" targetptr="gazhe">Creating a RAID-Z Storage Pool</olink>.</para>
 </sect2>
 <sect2 xml:id="gazch">
-<title>Samonaprawiające się dane w konfiguracjach z replikacją</title>
-<para>W konfiguracji lustrzanej lub RAID-Z ZFS zapewnia samonaprawianie się 
-danych.</para>
-<para>Kiedy wykryty zostanie blok z uszkodzonymi danymi, ZFS nie tylko pobiera 
-poprawne dane z innej kopii, ale również naprawia uszkodzone dane zastępując je 
-poprawną kopią.<indexterm xml:id="indexterm-101">
-<primary>samonaprawiające się dane</primary>
-<secondary>opis</secondary>
+<title>Self-Healing Data in a Replicated Configuration</title>
+<para>ZFS provides for self-healing data in a mirrored or RAID-Z configuration.</para>
+<para>When a bad data block is detected, not only does ZFS fetch the correct
+data from another replicated copy, but it also repairs the bad data by replacing
+it with the good copy.<indexterm xml:id="indexterm-101">
+<primary>self-healing data</primary>
+<secondary>description</secondary>
 </indexterm>
 </para>
 </sect2>
 <sect2 xml:id="gazdd">
-<title>Dynamiczny striping w pulach danych</title>
-<para>Dla każdego urządzenia wirtualnego dodanego do puli, ZFS dynamicznie 
-zapisuje dane równomiernie na wszystkich dostępnych dyskach (stripe). Decyzja 
-o tym, gdzie zapisać dane podejmowana jest w momencie zapisu, nie pojawiają się 
-zatem bloki o stałej wielkości w momencie alokacji.
-<indexterm xml:id="indexterm-102">
-<primary>dynamiczny striping</primary>
-<secondary>opis</secondary>
+<title>Dynamic Striping in a Storage Pool</title>
+<para>For each virtual device that is added to the pool, ZFS dynamically stripes
+data across all available devices. The decision about where to place data
+is done at write time, so no fixed width stripes are created at allocation
+time.<indexterm xml:id="indexterm-102">
+<primary>dynamic striping</primary>
+<secondary>description</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-103">
-<primary>dynamiczny striping</primary>
-<secondary>możliwości puli nośników danych</secondary>
+<primary>dynamic striping</primary>
+<secondary>storage pool feature</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-104">
-<primary>Pule nośników danych ZFS</primary>
-<secondary>dynamiczny striping</secondary>
+<primary>ZFS storage pools</primary>
+<secondary>dynamic striping</secondary>
 </indexterm>
 </para>
-<para>Kiedy urządzenia wirtualne dodawane są do puli. ZFS stopniowo zapisuje 
-dane na dwym urządzeniu w celu zapewnienia wydajności i zgodności z regułami 
-alokacji przestrzeni dyskowej. Każde urządzenie wirtualne może być także lustrem
- lub urządzeniem RAID-Z zawierającym inne urządzenia dyskowe lub pliki. 
-Konfiguracja taka pozwala na elastyczność w kontrolowaniu charakterystyk 
-awaryjności w puli. Na przykład, można utworzyć następującą puę z 4 dysków:
-</para>
+<para>When virtual devices are added to a pool, ZFS gradually allocates data
+to the new device in order to maintain performance and space allocation policies.
+Each virtual device can also be a mirror or a RAID-Z device that contains
+other disk devices or files. This configuration allows for flexibility in
+controlling the fault characteristics of your pool. For example, you could
+create the following configurations out of 4 disks:</para>
 <itemizedlist>
 <listitem>
-<para>Cztery dyski używające dynamicznego stripingu</para>
+<para>Four disks using dynamic striping</para>
 </listitem>
 <listitem>
-<para>Jedna konfiguracja RAID-Z z czterema urządzeniami</para>
+<para>One four-way RAID-Z configuration</para>
 </listitem>
 <listitem>
-<para>Dwuurządzeniowy mirror z użyciem dynamicznego stripingu</para>
+<para>Two two-way mirrors using dynamic striping</para>
 </listitem>
 </itemizedlist>
-<para>Wprawdzie ZFS umożliwia kombinowanie różnych typów urządzeń wirtualnych w 
-jednej puli, jednak praktyka taka jest niezalecana. Można, na przykład, utworzyć
- pulę z dwuurządzeniowym mirrorerm i trzyurządzeniowym RAID-Z. Odporność na 
-awarie jest jednak tak dobra, jak dobre jest najgorsze urządzenie wirtualne, w 
-tym przypadku RAID-Z. Zalecaną praktyką jest stosowanie takich samych urządzeń 
-na tym samym poziomie replikacji w każdym urządzeniu.</para>
+<para>While ZFS supports combining different types of virtual devices within
+the same pool, this practice is not recommended. For example, you can create
+a pool with a two-way mirror and a three-way RAID-Z configuration. However,
+your fault tolerance is as good as your worst virtual device, RAID-Z in this
+case. The recommended practice is to use top-level virtual devices of the
+same type with the same replication level in each device.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gaypw">
-<title>Tworzenie i usuwanie pul nośników danych ZFS</title>
-<para>Zgodnie z założeniami projektowymi, tworzenie i usuwanie pul jest proste i
- szybkie. Należy jednak zachować ostrożność przy wykonywaniu tych operacji. 
-Wprawdzie ZFS stara się uniemożliwić włączenie już używanych urządzeń do nowej 
-puli, nie zawsze jednak może wiedzieć, kiedy urządzenie jest już wykorzystywane 
-w jakiejś puli. Usuwanie puli jest jeszcze prostsze. Komendy <command>zpool 
-destroy</command> należy używać ostrożnie. To prosta komenda o poważnych 
-konsekwencjach. Więcej informacji o usuwaniu pul w 
-<olink targetdoc="" remap="internal" targetptr="gammr">Usuwaniu pul nosników 
-danych ZFS</olink>.<indexterm xml:id="indexterm-105">
-<primary>tworzenie</primary>
-<secondary>pul nośników danych ZFS</secondary>
-<tertiary>opis</tertiary>
+<title>Creating and Destroying ZFS Storage Pools</title>
+<para>By design, creating and destroying pools is fast and easy. However,
+be cautious when doing these operations. Although checks are performed to
+prevent using devices known to be in use in a new pool, ZFS cannot always
+know when a device is already in use. Destroying a pool is even easier. Use <command>zpool destroy</command> with caution. This is a simple command with significant
+consequences. For information about destroy pools, see <olink targetdoc="" remap="internal" targetptr="gammr">Destroying ZFS Storage Pools</olink>.<indexterm xml:id="indexterm-105">
+<primary>creating</primary>
+<secondary>ZFS storage pool</secondary>
+<tertiary>description</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-106">
-<primary>usuwanie</primary>
-<secondary>pul nośników danych ZFS</secondary>
-<tertiary>opis</tertiary>
+<primary>destroying</primary>
+<secondary>ZFS storage pool</secondary>
+<tertiary>description</tertiary>
 </indexterm>
 </para>
 <sect2 xml:id="gaynr">
-<title>Tworzenie puli nośników danych ZFS</title>
-<para>Do tworzenie puli nośników danych służy komenda <command>zpool create
-</command>. Argumentami są: nazwa puli i dowolna liczba urządzeń wirtualnych. 
-Nazwa puli musi spełniać wymogi nazewnicze wyjaśnione w 
-<olink targetdoc="" remap="internal" targetptr="gbcpt">Wymogi nazewnicze 
-komponentów ZFS</olink>.<indexterm xml:id="indexterm-107">
-<primary>tworzenie</primary>
-<secondary>Puli nośników danych ZFS (<command>zpool create</command>)
-</secondary>
-<tertiary>(przykład)</tertiary>
+<title>Creating a ZFS Storage Pool</title>
+<para>To create a storage pool, use the <command>zpool create</command> command.
+This command takes a pool name and any number of virtual devices as arguments.
+The pool name must satisfy the naming conventions outlined in <olink targetdoc="" remap="internal" targetptr="gbcpt">ZFS Component Naming Requirements</olink>.<indexterm xml:id="indexterm-107">
+<primary>creating</primary>
+<secondary>ZFS storage pool (<command>zpool create</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-108">
 <primary>
 <command>zpool create</command>
 </primary>
-<secondary>prosta pula</secondary>
-<tertiary>(przykład)</tertiary>
+<secondary>basic pool</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-109">
-<primary>Pule nośników danych ZFS</primary>
-<secondary>tworzenie (<command>zpool create</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>creating (<command>zpool create</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <sect3 xml:id="gazgt">
-<title>Tworzenie prostej puli nośników danych</title>
-<para>Poniższa komenda tworzy nową pulę o nazwie <filename>tank</filename> 
-składającą się z dysków <filename>c1t0d0</filename> i <filename>c1t1d0
-</filename>:</para>
+<title>Creating a Basic Storage Pool</title>
+<para>The following command creates a new pool named <filename>tank</filename> that
+consists of the disks <filename>c1t0d0</filename> and <filename>c1t1d0</filename>:</para>
 <screen># <userinput>zpool create tank c1t0d0 c1t1d0</userinput>
 </screen>
-<para>Dyski te znajdują się w katalogu <filename>/dev/dsk</filename> i zostaną 
-zaetykietowane przez ZFS tak, aby zawierały jeden duży blok. Dane będą 
-dynamicznie stripowane po wszystkich dyskach.</para>
+<para>These whole disks are found in the <filename>/dev/dsk</filename> directory
+and are labelled appropriately by ZFS to contain a single, large slice. Data
+is dynamically striped across both disks.</para>
 </sect3>
 <sect3 xml:id="gazhv">
-<title>Tworzenie lustrzanej konfiguracji puli nośników danych</title>
-<para>Do stworzenia lustrzanej puli służy słowo kluczowe <literal>mirror
-</literal>, po którym następuje dowolna liczba dysków, z których będzie się 
-składało lustro. Poprzez powtarzanie słowa kluczowego <literal>mirror</literal> 
-można stworzyć wiele luster. Poniższa komenda tworzy pulę z dwoma 
-dwuurządzeniowymi lustrami:</para>
-<screen># <userinput>zpool create tank mirror c1d0 c2d0 mirror c3d0 c4d0
-</userinput>
+<title>Creating a Mirrored Storage Pool</title>
+<para>To create a mirrored pool, use the <literal>mirror</literal> keyword,
+followed by any number of storage devices that will comprise the mirror. Multiple
+mirrors can be specified by repeating the <literal>mirror</literal> keyword
+on the command line. The following command creates a pool with two, two-way
+mirrors:</para>
+<screen># <userinput>zpool create tank mirror c1d0 c2d0 mirror c3d0 c4d0</userinput>
 </screen>
-<para>Drugie słowo kluczowe <literal>mirror</literal> wskazuje, że konfigurowane
- jest nowe urządzenie wirtualne najwyższej warstwy. Dane są dynamicznie 
-stripowane na oba lustra z replikacją pomiędzy odpowiednimi dyskami.
-<indexterm xml:id="indexterm-110">
-<primary>tworzenie</primary>
-<secondary>lustrzanej puli nośników danych ZFS (<command>zpool create</command>)
-</secondary>
-<tertiary>(przykład)</tertiary>
+<para>The second <literal>mirror</literal> keyword indicates that a new top-level
+virtual device is being specified. Data is dynamically striped across both
+mirrors, with data being replicated between each disk appropriately.<indexterm xml:id="indexterm-110">
+<primary>creating</primary>
+<secondary>mirrored ZFS storage pool (<command>zpool create</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-111">
 <primary>
 <command>zpool create</command>
 </primary>
-<secondary>lustrzana konfiguracja puli nośników danych</secondary>
-<tertiary>(przykład)</tertiary>
+<secondary>mirrored storage pool</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-112">
-<primary>lustrzana konfiguracja puli nośników danych (<command>zpool create
-</command>)</primary>
-<secondary>(przykład)</secondary>
+<primary>mirrored storage pool (<command>zpool create</command>)</primary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-113">
-<primary>Pule nośników danych ZFS</primary>
-<secondary>tworzenie konfiguracji lustrzanej (<command>zpool create</command>)
-</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>creating mirrored configuration (<command>zpool create</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 </sect3>
 <sect3 xml:id="gazhe">
-<title>Tworzenie pul nośników danych RAID-Z</title>
-<para>Tworzenie puli RAID-Z jest identyczne jak tworzenie puli lustrzanej, z 
-wyjątkiem słowa kluczowego <literal>raidz</literal> zamiast <literal>mirror
-</literal>. Poniższy przykład pokazuje, jak stworzyć pulę z pojedynczym 
-urządzeniem RAID-Z składającym się z pięciu dysków:
-<indexterm xml:id="indexterm-114">
-<primary>tworzenie</primary>
-<secondary>pule nośników danych RAID-Z (<command>zpool create</command>)
-</secondary>
-<tertiary>(przykład)</tertiary>
+<title>Creating a RAID-Z Storage Pool</title>
+<para>Creating a RAID-Z pool is identical to creating a mirrored pool, except
+that the <literal>raidz</literal> keyword is used instead of <literal>mirror</literal>.
+The following example shows how to create a pool with a single RAID-Z device
+that consists of five disks:<indexterm xml:id="indexterm-114">
+<primary>creating</primary>
+<secondary>RAID-Z storage pool (<command>zpool create</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-115">
-<primary>konfiguracja RAID-Z</primary>
-<secondary>(przykład)</secondary>
+<primary>RAID-Z configuration</primary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-116">
 <primary>
 <command>zpool create</command>
 </primary>
-<secondary>pula nośników danych RAID-Z</secondary>
-<tertiary>(przykład)</tertiary>
+<secondary>RAID-Z storage pool</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-117">
-<primary>Pule nośników danych ZFS</primary>
-<secondary>tworzenie konfiguracji RAID-Z (<command>zpool create</command>)
-</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>creating a RAID-Z configuration (<command>zpool create</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool create tank raidz c1t0d0 c2t0d0 c3t0d0 c4t0d0 /dev/dsk/c5t0d0</userinput>
 </screen>
-<para>Przykłąd ten pokazuje, że dyski można wskazywać ich pełnymi scieżkami. 
-Urządzenie <filename>/dev/dsk/c5t0d0</filename> jest identyczne z urządzeniem 
-<filename>c5t0d0</filename>.</para>
-<para>Podobna konfiguracja może zostać stworzona przy pomocy bloków dysków. Na 
-przykład:</para>
+<para>This example demonstrates that disks can be specified by using their
+full paths. The <filename>/dev/dsk/c5t0d0</filename> device is identical to
+the <filename>c5t0d0</filename> device.</para>
+<para>A similar configuration could be created with disk slices. For example:</para>
 <screen># <userinput>zpool create tank raidz c1t0d0s0 c2t0d0s0 c3t0d0s0 c4t0d0s0 c5t0d0s0</userinput>
 </screen>
-<para>Dyski te muszą jednak być odpowiednio sformatowane, aby mieć właściwą 
-wielkość bloku zero.</para>
-<para>Więcej informacji o konfiguracji RAID-Z w 
-<olink targetdoc="" remap="internal" targetptr="gamtu">Konfiguracji RAID-Z pul 
-nośników danych</olink>.</para>
+<para>However, the disks must be preformatted to have an appropriately sized
+slice zero.</para>
+<para>For more information about a RAID-Z configuration, see <olink targetdoc="" remap="internal" targetptr="gamtu">RAID-Z Storage Pool Configuration</olink>.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gazhs">
-<title>Obsługa błedów przy tworzeniu pul nośników danych ZFS</title>
-<para>Błędy przy tworzeniu puli nośników mogą wystąpić z wielu powodów. Część z 
-nich jest oczywista, na przykład brak urządzenia, jednak inne błędy są bardziej 
-subtelne.</para>
+<title>Handling ZFS Storage Pool Creation Errors</title>
+<para>Pool creation errors can occur for many reasons. Some of these reasons
+are obvious, such as when a specified device doesn't exist, while other reasons
+are more subtle.</para>
 <sect3 xml:id="gazht">
-<title>Wykrywanie używanych urządzeń</title>
-<para>Przed sformatowaniem dysku, ZFS sprawdza, czy dysk jest używany przez ZFS 
-lub inną część systemu operacyjnego. Jeśli dysk jest używany, może wystąpić błąd
- podobny do poniższego:</para>
+<title>Detecting in Use Devices</title>
+<para>Before formatting a device, ZFS first determines if the disk is in use
+by ZFS or some other part of the operating system. If the disk is in use,
+you might see errors such as the following:</para>
 <screen># <userinput>zpool create tank c1t0d0 c1t1d0</userinput>
 invalid vdev specification
 use '-f' to override the following errors:
@@ -542,79 +497,78 @@ use '-f' to override the following errors:
 /dev/dsk/c1t0d0s1 is currently mounted on swap
 /dev/dsk/c1t1d0s0 is part of active ZFS pool 'zeepool'
 Please see zpool(1M)</screen>
-<para>Niektóre z tych błędów można obejść przy użyciu opcji <option>
-f</option>, ale większości się nie da. Poniższych użyć nie uda się obejść za 
-pomocą opcji <option>
-f</option> i należy usunąć je ręcznie:<indexterm xml:id="indexterm-118">
-<primary>wykrywanie</primary>
-<secondary>używanych urządzeń</secondary>
-<tertiary>(przykład)</tertiary>
+<para>Some of these errors can be overridden by using the <option>
+f</option> option,
+but most errors cannot. The following uses cannot be overridden by using the <option>
+f</option> option, and you must manually correct them:<indexterm xml:id="indexterm-118">
+<primary>detecting</primary>
+<secondary>in-use devices</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-119">
-<primary>używane urządzenia</primary>
-<secondary>wykrywanie</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>in-use devices</primary>
+<secondary>detecting</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <variablelist>
 <varlistentry>
 <term>
-<emphasis role="strong">Zamontowane systemy plików</emphasis>
+<emphasis role="strong">Mounted file system</emphasis>
 </term>
 <listitem>
-<para>Dysk lub jeden z bloków zawiera system plików zamontowany w systemie. Błąd
- ten należy poprawić komendą <command>umount</command>.</para>
+<para>The disk or one of its slices contains a file system that
+is currently mounted. To correct this error, use the <command>umount</command> command.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>
-<emphasis role="strong">System plików w /etc/vfstab</emphasis>
+<emphasis role="strong">File system in /etc/vfstab</emphasis>
 </term>
 <listitem>
-<para>Dysk zawiera system plików obecny w pliku <filename>/etc/vfstab</filename>
-, ale nie jest on zamontowany. Błąd ten można poprawić usuwając lub oznaczjąć 
-jako komentarz linię w pliku <filename>/etc/vfstab</filename>.</para>
+<para>The disk contains a file system that is listed in the <filename>/etc/vfstab</filename> file, but the file system is not currently mounted. To correct
+this error, remove or comment out the line in the <filename>/etc/vfstab</filename> file.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>
-<emphasis role="strong">Urządzenie przeznaczone na zrzuty pamięci (dump)
-</emphasis>
+<emphasis role="strong">Dedicated dump device</emphasis>
 </term>
 <listitem>
-<para>Dysk jest używany jako urządzenie przeznaczone na zrzuty pamięci (dump). 
-Błąd ten można poprawić komendą <command>dumpadm</command>.</para>
+<para>The disk is in use as the dedicated dump device for the system.
+To correct this error, use the <command>dumpadm</command> command.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>
-<emphasis role="strong">Część puli ZFS</emphasis>
+<emphasis role="strong">Part of a ZFS pool</emphasis>
 </term>
 <listitem>
-<para>Dysk lub plik jest częścią puli ZFS. Błąd ten można naprawić niszcząc pulę
- przy użyciu komendy <command>zpool</command>.</para>
+<para>The disk or file is part of an active ZFS storage pool. To
+correct this error, use the <command>zpool</command> command to destroy the
+pool.</para>
 </listitem>
 </varlistentry>
 </variablelist>
-<para>Następujące testy na użycie urządzeń służą tylko jako pomocne ostrzeżenia 
-i można je obejść opcją <option>
-f</option> przy tworzeniu puli:</para>
+<para>The following in-use checks serve as helpful warnings and can be overridden
+by using the <option>
+f</option> option to create the pool:</para>
 <variablelist>
 <varlistentry>
 <term>
-<emphasis role="strong">Zawiera system plików</emphasis>
+<emphasis role="strong">Contains a file system</emphasis>
 </term>
 <listitem>
-<para>Dysk zawiera system plików, ale nie jest zamontowany i wydaje się być 
-nieużywany.</para>
+<para>The disk contains a known file system, though it is not mounted
+and doesn't appear to be in use.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>
-<emphasis role="strong">Część woluminu</emphasis>
+<emphasis role="strong">Part of volume</emphasis>
 </term>
 <listitem>
-<para>Dysk jest częścią woluminu SVM.</para>
+<para>The disk is part of an SVM volume.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -622,92 +576,96 @@ nieużywany.</para>
 <emphasis role="strong">Live upgrade</emphasis>
 </term>
 <listitem>
-<para>Dysk jest używany jako alternatywne otoczenie startowe dla Solaris Live 
-Upgrade.</para>
+<para>The disk is in use as an alternate boot environment for Solaris
+Live Upgrade.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>
-<emphasis role="strong">Część wyeksportowanej puli ZFS</emphasis>
+<emphasis role="strong">Part of exported ZFS pool</emphasis>
 </term>
 <listitem>
-<para>Dysk jest częścią puli nośników wyeksportowanej lub ręcznie usuniętej z 
-systemu. W drugim przypadku pulę przedstawia się jako <literal>potencjalnie 
-aktywną</literal>, ponieważ dysk może, ale nie musi być dyskiem podłączonym 
-przez sieć i używanym przez inny system. Obchodzenie potencjalnie aktywnej puli 
-należy wykonywać bardzo ostrożnie.</para>
+<para>The disk is part of a storage pool that has been exported
+or manually removed from a system. In the latter case, the pool is reported
+as <literal>potentially active</literal>, as the disk might or might not be
+a network-attached drive in use by another system. Be cautious when overriding
+a potentially active pool.</para>
 </listitem>
 </varlistentry>
 </variablelist>
-<para>Poniższy przykład demonstruje użycie opcji <option>f</option>:</para>
+<para>The following example demonstrates how the <option>
+f</option> option
+is used:</para>
 <screen># <userinput>zpool create tank c1t0d0</userinput>
 invalid vdev specification
 use '-f' to override the following errors:
 /dev/dsk/c1t0d0s0 contains a ufs filesystem
 # <userinput>zpool create -f tank c1t0d0</userinput>
 </screen>
-<para>Najlepiej jest poprawiać błędy, niż je obchodzić przy pomocy opcji 
-<option>f</option>.</para>
+<para>Ideally, correct the errors rather than use the <option>
+f</option> option.</para>
 </sect3>
 <sect3 xml:id="gazgc">
-<title>Niepasujące poziomy replikacji</title>
-<para>Tworzenie pul z urządzeniami wirtualnymi o różnych poziomach replikacji 
-jest niezalecane. Komenda <command>zpool</command> próbuje zapobiec utworzeniu 
-puli z niepasującymi poziomami replikacji. Przy próbie utworzenia takiej 
-konfiguracji puli, pojawią się błedy podobne do poniższych:
-<indexterm xml:id="indexterm-120">
-<primary>wykrywanie</primary>
-<secondary>niepasujących pozniomów replikacji</secondary>
-<tertiary>(przykład)</tertiary>
+<title>Mismatched Replication Levels</title>
+<para>Creating pools with virtual devices of different replication levels
+is not recommended. The <command>zpool</command> command tries to prevent
+you from accidentally creating a pool with mismatched replication levels.
+If you try to create a pool with such a configuration, you see errors similar
+to the following:<indexterm xml:id="indexterm-120">
+<primary>detecting</primary>
+<secondary>mismatched replication levels</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-121">
-<primary>niepasujące poziomy replikacji</primary>
-<secondary>wykrywanie</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>mismatched replication levels</primary>
+<secondary>detecting</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool create tank c1t0d0 mirror c2t0d0 c3t0d0</userinput>
-invalid vdev specification 
+invalid vdev specification
 use '-f' to override the following errors:
 mismatched replication level: both disk and mirror vdevs are present
 # <userinput>zpool create tank mirror c1t0d0 c2t0d0 mirror c3t0d0 c4t0d0 c5t0d0</userinput>
 invalid vdev specification
 use '-f' to override the following errors:
-mismatched replication level: 2-way mirror and 3-way mirror vdevs are present
-</screen>
-<para>Błędy te można obejść za pomocą opcji <option>f</option>, ale postępowanie
- takie jest niezalecane. Komenda ostrzeże również o tworzeniu puli mirror lub 
-RAID-Z z użyciem urządzeń o różnych rozmiarach. Konfiguracja taka jest wprawdzie
- dozwolona, niepasujące poziomy replikacji powodują marnowanie przestrzeni na 
-większym urządzeniu i wymaga użycia opcji <option>f</option>, aby wyłączyć 
-ostrzeżenie.</para>
+mismatched replication level: 2-way mirror and 3-way mirror vdevs are present</screen>
+<para>You can override these errors with the <option>
+f</option> option, though
+this practice is not recommended. The command also warns you about creating
+a mirrored or RAID-Z pool using devices of different sizes. While this configuration
+is allowed, mismatched replication levels result in unused space on the larger
+device, and requires the <option>
+f</option> option to override the warning.</para>
 </sect3>
 <sect3 xml:id="gazhd">
-<title>Suchy przebieg tworzenia puli nośników danych</title>
-<para>Tworzenie puli może się niespodziewanie nie udać na wiele sposobów, a 
-formatowanie dysków może być szkodliwą czynnością, komenda <command>zfs
-create</command> ma dodatkową opcję <option>
-n</option>, symulującą tworzenie puli bez zapisu danych na dysku. Opcja ta 
-wykonuje testy na użyciu urządzeń i poprawność poziomów replikacji i informuje o
- wszelkich błędach. Jeśli nie ma błędów, pojawi się wynik podobny do poniższego:
-<indexterm xml:id="indexterm-122">
-<primary>suchy przebieg</primary>
-<secondary>tworzenie puli nośników danych ZFS (<command>zpool create</command> 
-<option>n</option>)</secondary>
-<tertiary>(przykład)</tertiary>
+<title>Doing a Dry Run of Storage Pool Creation</title>
+<para>Because creating a pool can fail unexpectedly in different ways, and
+because formatting disks is such a potentially harmful action, the <command>zfs
+create</command> command has an additional option, <option>
+n</option>, which
+simulates creating the pool without actually writing data to disk. This option
+performs the device in-use checking and replication level validation, and
+reports any errors in the process. If no errors are found, you see output
+similar to the following:<indexterm xml:id="indexterm-122">
+<primary>dry run</primary>
+<secondary>ZFS storage pool creation (<command>zpool create</command> <option>
+n</option>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-123">
 <primary>
-<command>zpool create</command> <option>n</option>
+<command>zpool create</command> <option>
+n</option>
 </primary>
-<secondary>suchy przebieg</secondary>
-<tertiary>(przykład)</tertiary>
+<secondary>dry run</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-124">
-<primary>Pue nośników danych ZFS</primary>
-<secondary>wykonywanie suchego przebiegu (<command>zpool create</command> 
-<option>n</option>)</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>doing a dry run (<command>zpool create</command> <option>
+n</option>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool create -n tank mirror c1t0d0 c1t1d0</userinput>
@@ -717,27 +675,27 @@ would create 'tank' with the following layout:
           mirror
             c1t0d0
             c1t1d0</screen>
-<para>Niektórych błędów nie można wykryć bez rzeczywistego tworzenia puli. 
-Najczęstszym przykłądem jest dwukrotne wskazanie tego samego urządzenia 
-dwukrotnie w tej samej konfiguracji. Błędu tego nie można wykryć bez próby 
-zapisu danych, dlatego komenda <command>create -n</command> może poinformowac o 
-sukcesie, ale faktyczne utworznie puli może się nie udać.</para>
+<para>Some errors cannot be detected without actually creating the pool. The
+most common example is specifying the same device twice in the same configuration.
+This error cannot be reliably detected without writing the data itself, so
+the <command>create -n</command> command can report success and yet fail to
+create the pool when run for real.</para>
 </sect3>
 <sect3 xml:id="gbeef">
-<title>Domyślny punkt montowania pul</title>
-<para>Po utworzeniu puli, domyślnym punktem montowania datasetu jest katalog 
-<replaceable>/nazwa-puli</replaceable>. Tego katalogu nie powinno być, a jeśli 
-jest, powinien być pusty. Jeśli nnie istnieje, jest tworzony automatycznie. 
-Jeśli istnieje, dataset jest automatycznie montowany w istniejącym katalogu. 
-Aby utworzyć pulę z innym domyślnym punktem montowania należy użyć opcji 
-<option>m</option> przy wykonywaniu komendy <command>zpool create</command>:
-<indexterm xml:id="indexterm-125">
-<primary>punkt montowania</primary>
-<secondary>domyślny dla puli nośników danych ZFS</secondary>
+<title>Default Mount Point for Storage Pools</title>
+<para>When a pool is created, the default mount point for the root dataset
+is <replaceable>/pool-name</replaceable> by default. This directory must either
+not exist or be empty. If the directory does not exist, it is automatically
+created. If the directory is empty, the root dataset is mounted on top of
+the existing directory. To create a pool with a different default mount point,
+use the <option>
+m</option> option of the <command>zpool create</command> command:<indexterm xml:id="indexterm-125">
+<primary>mountpoint</primary>
+<secondary>default for ZFS storage pools</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-126">
-<primary>pule nośników danych ZFS</primary>
-<secondary>domyślny punkt montowania</secondary>
+<primary>ZFS storage pools</primary>
+<secondary>default mountpoint</secondary>
 </indexterm>
 </para>
 <screen># <userinput>zpool create home c1t0d0</userinput>
@@ -745,112 +703,99 @@ default mountpoint '/home' exists and is not empty
 use '-m' option to specify a different default
 # <userinput>zpool create -m /export/zfs home c1t0d0</userinput>
 </screen>
-<para>Komenda ta tworzy nową pulę <literal>home</literal> i dataset <literal>
-home</literal> z punktem montowania w <filename>/export/zfs</filename>.</para>
-<para>Więcej informacji o punktach montowania w 
-<olink targetdoc="" remap="internal" targetptr="gaztn">Zarządzaniu punktami 
-montowania ZFS</olink>.</para>
+<para>This command creates a new pool <literal>home</literal> and the <literal>home</literal> dataset with a mount point of <filename>/export/zfs</filename>.</para>
+<para>For more information about mount points, see <olink targetdoc="" remap="internal" targetptr="gaztn">Managing ZFS Mount Points</olink>.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gammr">
-<title>Niszczenie puli nośników danych ZFS</title>
-<para>Pule niszczy się przy użyciu komendy <command>zpool destroy</command>. 
-Niszczy ona pulę nawet wtedy, kiedy zawiera ona datasety.
-<indexterm xml:id="indexterm-127">
-<primary>niszczenie</primary>
-<secondary>pul nośników danych ZFS (<command>zpool destroy</command>)
-</secondary>
-<tertiary>(przykład)</tertiary>
+<title>Destroying ZFS Storage Pools</title>
+<para>Pools are destroyed by using the <command>zpool destroy</command> command.
+This command destroys the pool even if it contains mounted datasets.<indexterm xml:id="indexterm-127">
+<primary>destroying</primary>
+<secondary>ZFS storage pool (<command>zpool destroy</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-128">
 <primary>
 <command>zpool destroy</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-129">
-<primary>pule nośników danych ZFS</primary>
-<secondary>niszczenie (<command>zpool destroy</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>destroying (<command>zpool destroy</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool destroy tank</userinput>
 </screen>
 <caution>
 
-<para>Przy niszczeniu pul należy zachować daleko idącą ostrożność. Należy 
-upewnić się, że niszczona jest właściwa pula i że istnieją kopie zapasowe 
-danych. Po przypadkowym zniszczeniu niewłaściwej puli można spróbować ją 
-odzyskać. 
-Więcej informacji w <olink targetdoc="" remap="internal" targetptr="gcfhw">
-Odzyskiwaniu zniszczonych pul nośników danych ZFS</olink>.</para>
+<para>Be very careful when you destroy a pool. Make sure you are
+destroying the right pool and you always have copies of your data. If you
+accidentally destroy the wrong pool, you can attempt to recover the pool.
+For more information, see <olink targetdoc="" remap="internal" targetptr="gcfhw">Recovering Destroyed ZFS Storage Pools</olink>.</para>
 </caution>
 <sect3 xml:id="gazhm">
-<title>Niszczenie puli z uszkodzonym urządzeniem</title>
-<para>Niszczenie puli wymaga zapisu na dysku danych wskazujących, że pula 
-została zniszczona. Dane te zapewniają, że przy imporcie urządzenia nie będą 
-przestawiały się jako potencjalna pula. Jeśli jedno lub więcej urządzeń jest 
-niedostępnych, nadal można zniszczyć pulę. Dane o usunięciu puli nie będą jednak
- zapisane na tych urządzeniach.</para>
-<para>Urządzenia te po naprawieniu będą przedstawiane jako <emphasis>
-potencjalnie aktywne</emphasis> przy tworzeniu nowej puli i przedstawią się jako
- prawidłowe urządzenia przy importowaniu puli. Jeśli w puli jest wystarczająco 
-uszkodzonych urządzeń aby cała pula była uszkodzona (co oznacza, że urządzenie 
-wirtualne najwyższego poziomu jest uszkodzone), wtedy komenda zgłosi błąd i nie
- wykona się bez użycia opcji <option>f</option>. Opcja ta jest konieczna, 
-ponieważ nie mozna otowrzyć puli i nie można ustalić, czy są w niej 
-przechowywane dane. Na przykład:</para>
+<title>Destroying a Pool With Faulted Devices</title>
+<para>The act of destroying a pool requires that data be written to disk to
+indicate that the pool is no longer valid. This state information prevents
+the devices from showing up as a potential pool when you perform an import.
+If one or more devices are unavailable, the pool can still be destroyed. However,
+the necessary state information won't be written to these damaged devices.</para>
+<para>These devices, when suitably repaired, are reported as <emphasis>potentially
+active</emphasis> when you create a new pool, and appear as valid devices
+when you search for pools to import. If a pool has enough faulted devices
+such that the pool itself is faulted (meaning that a top-level virtual device
+is faulted), then the command prints a warning and cannot complete without
+the <option>
+f</option> option. This option is necessary because the pool cannot
+be opened, so whether data is stored there or not is unknown. For example:</para>
 <screen># <userinput>zpool destroy tank</userinput>
 cannot destroy 'tank': pool is faulted
 use '-f' to force destruction anyway
 # <userinput>zpool destroy -f tank</userinput>
 </screen>
-<para>Więcej informacji o zdrowiu pul i urządzeń w 
-<olink targetdoc="" remap="internal" targetptr="gamno">Zdrowie pul nośników 
-danych ZFS</olink>.</para>
-<para>Więcej informacji o importowaniu pul w 
-<olink targetdoc="" remap="internal" targetptr="gazuf">Importowaniu pul nośników
- danych ZFS</olink>.</para>
+<para>For more information about pool and device health, see <olink targetdoc="" remap="internal" targetptr="gamno">Health Status of ZFS Storage Pools</olink>.</para>
+<para>For more information about importing pools, see <olink targetdoc="" remap="internal" targetptr="gazuf">Importing ZFS Storage Pools</olink>.</para>
 </sect3>
 </sect2>
 </sect1>
 <sect1 xml:id="gayrd">
-<title>Zarządzanie urządzeniami w pulach nośników danych ZFS</title>
-<para>Większość podstawowych informacji dotyczących urządzeń znajduje się w
-<olink targetdoc="" remap="internal" targetptr="gcfog">Komponentach 
-puli nośników danych ZFS</olink>. Po utworzeniu puli możliwych jest kilka 
-akcji służących zarządzaniu fizycznym urządzeniami w puli.</para>
+<title>Managing Devices in ZFS Storage Pools</title>
+<para>Most of the basic information regarding devices is covered in <olink targetdoc="" remap="internal" targetptr="gcfog">Components of a ZFS Storage Pool</olink>. Once a pool has
+been created, you can perform several tasks to manage the physical devices
+within the pool.</para>
 <sect2 xml:id="gazgw">
-<title>Dodawanie urządzeń do puli nośników danych</title>
-<para>Poprzez dodanie do puli nowego wirtualnego urządzenia najwyższego poziomu,
- możliwe jest dynamiczne powiększenie przestrzeni dostępnej w puli. Przestrzeń 
-ta jest automatycznie dostępna dla wszystkich datasetów w puli. Nowe urządzenie 
-wirtualne dodaje się do puli za pomocą komendy <command>zpool add</command>.
-Na przykład:<indexterm xml:id="indexterm-130">
-<primary>dodawanie</primary>
-<secondary>orządzeń do puli nośników danych ZFS (<command>zpool add</command>)
-</secondary>
-<tertiary>(przykład)</tertiary>
+<title>Adding Devices to a Storage Pool</title>
+<para>You can dynamically add space to a pool by adding a new top-level virtual
+device. This space is immediately available to all datasets within the pool.
+To add a new virtual device to a pool, use the <command>zpool add</command> command.
+For example:<indexterm xml:id="indexterm-130">
+<primary>adding</primary>
+<secondary>devices to ZFS storage pool (<command>zpool add</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-131">
 <primary>
 <command>zpool add</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-132">
-<primary>pule nośników danych ZFS</primary>
-<secondary>dodawanie urządzeń (<command>zpool add</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>adding devices to (<command>zpool add</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool add zeepool mirror c2t1d0 c2t2d0</userinput>
 </screen>
-<para>Format urządzeń wirtualnych jest taki sam jak w przypadku komendy 
-<command>zpool create</command> i dotyczą go te same zasady. Wykonywane są 
-testy, czy urządzenia są używane i nie można zmienić poziomu replikacji 
-bez użycia opcji <option>f</option>. Komenda umożliwia skorzystanie z opcji 
-<option>n</option> umożliwiającej suchy przebieg. Na przykład:</para>
+<para>The format of the virtual devices is the same as for the <command>zpool
+create</command> command, and the same rules apply. Devices are checked to
+determine if they are in use, and the command cannot change the replication
+level without the <option>
+f</option> option. The command also supports the <option>
+n</option> option so that you can perform a dry run. For example:</para>
 <screen># <userinput>zpool add -n zeepool mirror c3t1d0 c3t2d0</userinput>
 would update 'zeepool' to the following configuration:
       zeepool
@@ -863,167 +808,168 @@ would update 'zeepool' to the following configuration:
         mirror
             c3t1d0
             c3t2d0</screen>
-<para>Komenda ta dodałaby dwa mirrorowane urządzenia <literal>c3t1d0</literal> 
-i <literal>c3t2d0</literal> do istniejącej konfiguracji <filename>zeepool
-</filename>.</para>
-<para>Więcej informacji o [FIXME] walidowaniu [/FIXME] urządzeń wirtualnych 
-w <olink targetdoc="" remap="internal" targetptr="gazht">Wykrywaniu 
-używanych urządzeń</olink>.</para>
+<para>This command syntax would add mirrored devices <literal>c3t1d0</literal> and <literal>c3t2d0</literal> to <filename>zeepool</filename>'s existing configuration.</para>
+<para>For more information about how virtual device validation is done, see <olink targetdoc="" remap="internal" targetptr="gazht">Detecting in Use Devices</olink>.</para>
 </sect2>
 <sect2 xml:id="gcfhe">
-<title>Dołączanie i odłączanie urządzeń z puli nośników danych</title>
-<para>Dodatkowo, oprócz komendy <command>zpool add</command>, istnieje komenda 
-<command>zpool attach</command>, pozwalająca na dołączenie urządzenia do 
-istniejącego mirrorowanego bądź niemirrorwanego urządzenia. Na przykład:
-<indexterm xml:id="indexterm-133">
-<primary>dołączanie</primary>
-<secondary>urządzeń do puli nosników danych ZFS (<command>zpool attach
-</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<title>Attaching and Detaching Devices in a Storage Pool</title>
+<para>In addition to the <command>zpool add</command> command, you can use
+the <command>zpool attach</command> command to add a new device to an existing
+mirrored or non-mirrored device. For example:<indexterm xml:id="indexterm-133">
+<primary>attaching</primary>
+<secondary>devices to ZFS storage pool (<command>zpool attach</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-134">
 <primary>
 <command>zpool attach</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-135">
-<primary>pule nośników danych ZFS</primary>
-<secondary>dołączanie urządzeń (<command>zpool attach</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>attaching devices to (<command>zpool attach</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool attach zeepool c1t1d0 c2t1d0</userinput>
 </screen>
-<para>Jeśli istniejące urządzenie jest podwójnym mirrorem, przyłączenie nowego 
-urządzenia spowoduje przekształcenie w potrójny mirror i tak dalej. W każdym 
-razie nowe urządzenie natychmiast zaczyna resilverować.</para>
-<para>W tym przykładzie <literal>zeepool</literal> to podwójny istniejący mirror
- przekształcony w potrójny mirror przez dołączenie urządzenia <literal>c2t1d0
-</literal> do istniejącego urządzenia <literal>c1t1d0</literal>.</para>
-<para>Do odłączenia urządzenia można użyć komendy <command>zpool detach
-</command>. Na przykład:</para>
+<para>If the existing device is part of a two-way mirror, attaching the new
+device, creates a three-way mirror, and so on. In either case, the new device
+begins to resilver  immediately.</para>
+<para>In is example, <literal>zeepool</literal> is an existing two-way mirror
+that is transformed to a three-way mirror by attaching <literal>c2t1d0</literal>,
+the new device, to the existing device, <literal>c1t1d0</literal>.</para>
+<para>You can use the <command>zpool detach</command> command to detach a
+device from a pool. For example:</para>
 <screen># <userinput>zpool detach zeepool c2t1d0</userinput>
 </screen>
-<para>ZFS nie wykona tej operacji, jeśli nie istnieje żadna prawidłowa kopia 
-danych. Na przykład:<indexterm xml:id="indexterm-136">
-<primary>odłączania</primary>
-<secondary>urządzeń z puli nośników danych ZFS (<command>zpool detach</command>)
-</secondary>
-<tertiary>(przykład)</tertiary>
+<para>However, this operation is refused if  there are no other valid replicas
+of the data. For example:<indexterm xml:id="indexterm-136">
+<primary>detaching</primary>
+<secondary>devices to ZFS storage pool (<command>zpool detach</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-137">
 <primary>
 <command>zpool detach</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-138">
-<primary>pule nośników danych ZFS</primary>
-<secondary>odłączanie urządzeń (<command>zpool detach</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>detaching devices from (<command>zpool detach</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool detach newpool c1t2d0</userinput>
 cannot detach c1t2d0: only applicable to mirror and replacing vdevs</screen>
 </sect2>
 <sect2 xml:id="gazgm">
-<title>Włączanie i wyłączanie urządzeń w puli nośników danych</title>
-<para>ZFS umożliwia włączanie i wyłączanie pojedynczych urządzeń. Jeśli sprzęt 
-zachowuje się niestabilnie lub niewłaściwie, ZFS nadal zapisuje i odczytuje zeń 
-dane, zakładając, że usterka jest chwilowa. Jeśli tak nie jest, można nakazać 
-ZFS ignorować urządzenie przez wyłączenie go. ZFS nie wysyła żadnych zapytań 
-do wyłączonego urządzenia.<indexterm xml:id="indexterm-139">
-<primary>włączanie i wyłączanie urządzeń</primary>
-<secondary>pula nośników danych ZFS</secondary>
-<tertiary>opis</tertiary>
+<title>Onlining and Offlining Devices in a Storage Pool</title>
+<para>ZFS allows individual devices to be taken offline or brought online.
+When hardware is unreliable or not functioning properly, ZFS continues to
+read or write data to the device, assuming the condition is only temporary.
+If the condition is not temporary, it is possible to instruct ZFS to ignore
+the device by bringing it offline. ZFS does not send any requests to an offlined
+device.<indexterm xml:id="indexterm-139">
+<primary>onlining and offlining devices</primary>
+<secondary>ZFS storage pool</secondary>
+<tertiary>description</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-140">
-<primary>pula nośników danych ZFS</primary>
-<secondary>włączanie i wyłączanie urządzeń</secondary>
-<tertiary>opis</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>onlining and offlining devices</secondary>
+<tertiary>description</tertiary>
 </indexterm>
 </para>
 <note>
-<para>Nie trzeba wyłączać urządzeń, aby je wymienić.</para>
+
+<para>Devices do not need to be taken offline in order to replace them.</para>
 </note>
-<para>Jeśli zachodzi konieczność tymczasowego odłączenia nośników, można 
-użyć komendy <command>offline</command>. Na przykład, jeśli zachodzi konieczność
- odłączenia macierzy od układu przełączników Fibre Channel i podłączenia jej 
-do innego układu przełączników, można wyłączyć LUN-y z macierzy używanej 
-w pulach ZFS. Podłączoną i działającą już na nowych przełącznikach macież można 
-aktywować włączając te same LUN-y. Dane, które pojawiły się w puli w czasie, 
-kiedy LUN-y były wyłączone, automatycznie zaczną się resilverować, kiedy tylko 
-LUN-y zostaną włączone.</para>
-<para>Scenariusz taki jest możliwy przy założeniu, że omawiane systemy widzą 
-nośniki danych po podłączeniu ich do nowych przełączników, możliwe że przez 
-inne niż poprzednio kontrolery, oraz że pule są skonfigurowane jako RAID-Z 
-lub mirror.</para>
+<para>You can use the <command>offline</command> command when you need to
+temporarily disconnect storage. For example, if you need to physically disconnect
+an array from one set of Fibre Channel switches and connect the array to a
+different set, you could take the LUNs offline from the array that was used
+in ZFS storage pools. After the array was reconnected and operational on the
+new set of switches, you could then bring the same LUNs online. Data that
+had been added to the storage pools while the LUNs were offline would resilver
+to the LUNs after they were brought back online.</para>
+<para>This scenario is possible assuming that the systems in question see
+the storage once it is attached to the new switches, possibly through different
+controllers than before, and your pools are set up as RAID-Z or mirrored configurations.</para>
 <sect3 xml:id="gazfy">
-<title>Wyłączanie urządzenia</title>
-<para>Urządzenie można wyłączyć używając komendy <command>zpool offline
-</command>.
-Urządzenie można wskazać przez ścieżkę lub skrót, jeśli jest dyskiem. Na 
-przykład:</para>
+<title>Taking a Device Offline</title>
+<para>You can take a device offline by using the <command>zpool offline</command> command.
+The device can be specified by path or by short name, if the device is a disk.
+For example:</para>
 <screen># <userinput>zpool offline tank c1t0d0</userinput>
 bringing device c1t0d0 offline</screen>
-<para>Niemożliwe jest takie wyłączanie urządzeń, aby uszkodzić pulę. Nie można 
-na przykład wyłączyć dwóch urządzeń w RAID-Z ani wyłączyć wirtualnego urządzenia
- najwyższego poziomu. <indexterm xml:id="indexterm-141">
-<primary>wyłączanie urządzenia (<command>zpool offline</command>)</primary>
-<secondary>pula nośników danych ZFS</secondary>
-<tertiary>(przykład)</tertiary>
+<para>You cannot take a pool offline to the point where it becomes faulted.
+For example, you cannot take offline two devices out of a RAID-Z configuration,
+nor can you take offline a top-level virtual device.<indexterm xml:id="indexterm-141">
+<primary>offlining a device (<command>zpool offline</command>)</primary>
+<secondary>ZFS storage pool</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-142">
 <primary>
 <command>zpool offline</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-143">
-<primary>pule nośników danych ZFS</primary>
-<secondary>wyłączanie urządzenia (<command>zpool offline</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>offlining a device (<command>zpool offline</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool offline tank c1t0d0</userinput>
 cannot offline c1t0d0: no valid replicas</screen>
 <note>
 
-<para>Nie można obecnie wymienić wyłączonego urządzenia.</para>
+<para>Currently, you cannot replace a device that has been taken offline.</para>
 </note>
-<para>Wyłączone urządzenia raportowane są w statusie puli jako <literal>OFFLINE</literal>. Więcej informacji o sprawdzaniu statusu puli w <olink targetdoc="" remap="internal" targetptr="gaynp">Sprawdzanie statusu puli nośników danych ZFS</olink>.</para>
-<para>Domyślnie wyłączenie jest trwałe. Urządzenie pozostaje wyłączone po restarcie systemu.</para>
-<para>Tymczasowego wyłączenia można dokonać przy użyciu <command>zpool offline</command> <option>
-t</option>. Na przykład:</para>
+<para>Offlined devices show up in the <literal>OFFLINE</literal> state
+when you query pool status. For information about querying pool status, see <olink targetdoc="" remap="internal" targetptr="gaynp">Querying ZFS Storage Pool Status</olink>.</para>
+<para>By default, the offline state is persistent. The device remains offline
+when the system is rebooted. </para>
+<para>To temporarily take a device offline, use the <command>zpool offline</command> <option>
+t</option> option. For example:</para>
 <screen># <userinput>zpool offline -t tank c1t0d0</userinput>
  bringing device 'c1t0d0' offline</screen>
-<para>Po restarcie systemu urządzenie to zostanie automatycznie przywrócone do stanu online <literal>ONLINE</literal>.</para>
-<para>Więcej informacji o zdrowiu urządzeń w <olink targetdoc="" remap="internal" targetptr="gamno">Zdrowiu pul nośników danych ZFS</olink>.</para>
+<para>When the system is rebooted, this device is automatically returned to
+the <literal>ONLINE</literal> state.</para>
+<para>For more information on device health, see <olink targetdoc="" remap="internal" targetptr="gamno">Health Status of ZFS Storage Pools</olink>.</para>
 </sect3>
 <sect3 xml:id="gazgk">
-<title>Włączanie urządzenia</title>
-<para>Po wyłączeniu urządzenia można je włączyć komendą <command>zpool online</command>:</para>
+<title>Bringing a Device Online</title>
+<para>Once a device is taken offline, it can be restored by using the <command>zpool
+online</command> command:</para>
 <screen># <userinput>zpool online tank c1t0d0</userinput>
 bringing device c1t0d0 online</screen>
-<para>Po włączeniu urządzenia, wszelkie dane, które pojawiły się w puli są synchronizowane z nowym urządzeniem. Nie można używac wyłączania do wymiany dysków. Próba wymiany wyłączonego urządzenia spowoduje oflagowanie go jako uszkodzone przy włączaniu.<indexterm xml:id="indexterm-144">
-<primary>włączanie urządzenia</primary>
-<secondary>pula nośników danych ZFS (<command>zpool online</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<para>When a device is brought online, any data that has been written to the
+pool is resynchronized to the newly available device. Note that you cannot
+use device onlining to replace a disk. If you offline a device, replace the
+drive, and try to bring it online, it remains in the faulted state.<indexterm xml:id="indexterm-144">
+<primary>onlining a device</primary>
+<secondary>ZFS storage pool (<command>zpool online</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-145">
 <primary>
 <command>zpool online</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-146">
-<primary>pule nośników danych ZFS (<command>zpool online</command>)</primary>
-<secondary>włączanie urządzenia</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools (<command>zpool online</command>)</primary>
+<secondary>onlining a device</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>Przy próbie włączenia uszkodzonego urządzenia, rzy użyciu komendy <command>fmd</command> pojawi się komunikat podobny do poniższego:</para>
+<para>If you attempt to online a faulted device, a message similar to the
+following is displayed from <command>fmd</command>:</para>
 <screen># <userinput>zpool online tank c1t0d0</userinput>
 Bringing device c1t0d0 online
 # 
@@ -1036,106 +982,120 @@ DESC: A ZFS device failed.  Refer to http://sun.com/msg/ZFS-8000-D3 for more inf
 AUTO-RESPONSE: No automated response will occur.
 IMPACT: Fault tolerance of the pool may be compromised.
 REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
-<para>Więcej informacji o wymianie uszkodzonych urządzeń w <olink targetdoc="" remap="internal" targetptr="gbbvb">Naprawianiu brakujących urządzeń</olink>.</para>
+<para>For more information on replacing a faulted device, see <olink targetdoc="" remap="internal" targetptr="gbbvb">Repairing a Missing Device</olink>.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gazge">
-<title>Czyszczenie pul nośników danych</title>
-<para>Jeśli urządzenie zostało wyłączone z powodu uszkodzenia, które powodowało wyświetlanie się błędów w wyniku komendy <command>zpool status</command>, można wyczyścić licznik błedów komendą <command>zpool clear</command>.<indexterm xml:id="indexterm-147">
-<primary>czyszczenie</primary>
-<secondary>urządzenie w puli nośników danych ZFS (<command>zpool clear</command>)</secondary>
-<tertiary>opis</tertiary>
+<title>Clearing Storage Pool Devices</title>
+<para>If a device is taken offline due to a failure that causes errors to
+be listed in the <command>zpool status</command> output, you can clear the
+error counts with the <command>zpool clear</command> command.<indexterm xml:id="indexterm-147">
+<primary>clearing</primary>
+<secondary>a device in a ZFS storage pool (<command>zpool clear</command>)</secondary>
+<tertiary>description</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-148">
 <primary>
 <command>zpool clear</command>
 </primary>
-<secondary>opis</secondary>
+<secondary>description</secondary>
 </indexterm>
 </para>
-<para>Komenda ta wydana bez argumentów czyści wszystkie błędy wszystkich urządzeń w puli. Na przykład:</para>
+<para>If specified with no arguments, this command clears all device errors
+within the pool. For example:</para>
 <screen># <userinput>zpool clear tank</userinput>
 </screen>
-<para>Jeśli jako argumenty podano jedno lub więcej urządzeń, komenda wyczyści błędy powiązane tylko z tymi urządzeniami. Na przykład:<indexterm xml:id="indexterm-149">
-<primary>czyszczenie urządzeń</primary>
-<secondary>puna nośników danych ZFS</secondary>
-<tertiary>(przykład)</tertiary>
+<para>If one or more devices are specified, this command only clear errors
+associated with the specified devices. For example:<indexterm xml:id="indexterm-149">
+<primary>clearing a device</primary>
+<secondary>ZFS storage pool</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-150">
 <primary>
 <command>zpool clear</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-151">
-<primary>pule nośników danych ZFS</primary>
-<secondary>czyszczenie urządzenia</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>clearing a device</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool clear tank c1t0d0</userinput>
 </screen>
-<para>Więcej informacji o czyszczeniu błędów <command>zpool</command> w <olink targetdoc="" remap="internal" targetptr="gbbzv">Czyszczeniu tymczasowych błędów</olink>.</para>
+<para>For more information on clearing <command>zpool</command> errors, see <olink targetdoc="" remap="internal" targetptr="gbbzv">Clearing Transient Errors</olink>.</para>
 </sect2>
 <sect2 xml:id="gazgd">
-<title>Wymiana urządzeń w puli nośników danych</title>
-<para>Urządzenie w puli mozna wymienić komendą <command>zpool
-replace</command>.<indexterm xml:id="indexterm-152">
-<primary>wymiana</primary>
-<secondary>urządzenia (<command>zpool replace</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<title>Replacing Devices in a Storage Pool</title>
+<para>You can replace a device in a storage pool by using the <command>zpool
+replace</command> command.<indexterm xml:id="indexterm-152">
+<primary>replacing</primary>
+<secondary>a device (<command>zpool replace</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-153">
 <primary>
 <command>zpool replace</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-154">
-<primary>pule nośników danych ZFS</primary>
-<secondary>wymiana urządzenia (<command>zpool replace</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>replacing a device (<command>zpool replace</command>)</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool replace tank c1t1d0 c1t2d0</userinput>
 </screen>
-<para>W tym przykładzie poprzednie urządzenie, <literal>c1t1d0</literal>, zostało zastąpione urządzeniem <literal>c1t2d0</literal>.</para>
-<para>Pojemność urządzenia dołączanego do puli musi być nie mniejsza niż najmniejsza ze wszystkich pojemności urządzeń w konfiguracji mirror lub RAID-Z. Jeśli dołączone urządzenie jest większe, pojemność puli w konfiguracji innej niż RAID-Z i mirror zostanie powiększona po zakończeniu wymiany urządzenia.</para>
-<para>Więcej informacji o wymianie urządzeń w <olink targetdoc="" remap="internal" targetptr="gbbvb">Naprawianiu brakującego urządzenia</olink> i <olink targetdoc="" remap="internal" targetptr="gbbvf">Naprawianiu uszkodzonego urządzenia</olink>.</para>
+<para>In this example, the previous device, <literal>c1t1d0</literal>, is
+replaced by <literal>c1t2d0</literal>.</para>
+<para>The replacement device must be greater than or equal to the minimum
+size of all the devices in a mirror or RAID-Z        configuration. If the
+replacement device is larger, the pool size in an unmirrored or non RAID-Z
+configuration is increased when the replacement is complete.</para>
+<para>For more information about replacing devices, see <olink targetdoc="" remap="internal" targetptr="gbbvb">Repairing a Missing Device</olink> and <olink targetdoc="" remap="internal" targetptr="gbbvf">Repairing a Damaged Device</olink>.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gaynp">
-<title>Sprawdzanie stanu puli nośników danych ZFS</title>
-<para>Komenda <command>zpool list</command> pozwala na sprawdzanie stanu puli na wiele sposobów. Dostępne w ten sposób informacje należą do trzech kategorii: podstawowe użycie, statystyki we/wy i zdrowie urządzeń. Wszystkie trzy są omawiane w poniższym podrozdziale.<indexterm xml:id="indexterm-155">
-<primary>lista</primary>
-<secondary>pule nośników danych ZFS</secondary>
-<tertiary>opis</tertiary>
+<title>Querying ZFS Storage Pool Status</title>
+<para>The <command>zpool list</command> command provides a number of ways
+to request information regarding pool status. The information available generally
+falls into three categories: basic usage information, I/O statistics, and
+health status. All three types of storage pool information are covered in
+this section.<indexterm xml:id="indexterm-155">
+<primary>listing</primary>
+<secondary>ZFS storage pools</secondary>
+<tertiary>description</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-156">
 <primary>
 <command>zpool list</command>
 </primary>
-<secondary>opis</secondary>
+<secondary>description</secondary>
 </indexterm>
 </para>
 <sect2 xml:id="gamml">
-<title>Podstawowe informacje o pulach nośników danych ZFS</title>
-<para>Podstawowe informacje o pulach mozna wyświetlić za pomocą komendy <command>zpool list</command>.</para>
+<title>Basic ZFS Storage Pool Information</title>
+<para>You can use the <command>zpool list</command> command to display basic
+information about pools.</para>
 <sect3 xml:id="gazij">
-<title>Informacje o wszystkich dostępnych pulach</title>
-<para>Jeśli nie podano argumentów, komenda wyświetli wszystkie pola o wszystkich pulach w systemie. Na przykład:</para>
+<title>Listing Information About All Storage Pools</title>
+<para>With no arguments, the command displays all the fields for all pools
+on the system. For example:</para>
 <screen># <userinput>zpool list</userinput>
 NAME                    SIZE    USED   AVAIL    CAP  HEALTH     ALTROOT
 tank                   80.0G   22.3G   47.7G    28%  ONLINE     -
 dozer                   1.2T    384G    816G    32%  ONLINE     -</screen>
-<para>Powyższy wydruk pokazuje następujące informacje:</para>
+<para>This output displays the following information:</para>
 <variablelist>
 <varlistentry>
 <term>
 <literal>NAME</literal>
 </term>
 <listitem>
-<para>Nazwa puli.</para>
+<para>The name of the pool.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1143,7 +1103,8 @@ dozer                   1.2T    384G    816G    32%  ONLINE     -</screen>
 <literal>SIZE</literal>
 </term>
 <listitem>
-<para>Całkowita pojemność puli, równa sumie pojemności wysztkich urządzeń wirtualnych najwyższego poziomu.</para>
+<para>The total size of the pool, equal to the sum of the size of
+all top-level virtual devices.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1151,8 +1112,11 @@ dozer                   1.2T    384G    816G    32%  ONLINE     -</screen>
 <literal>USED</literal>
 </term>
 <listitem>
-<para>Miejsce alokowane przez wszystkie datasety i wewnętrzne metadane. Należy zauważyć, że wielkości raportowane w tym polu różnią się od wielkości raportowanych na poziomie systemu plików.</para>
-<para>Więcej o ustalaniu dostępnej przestrzeni w systemie plików w <olink targetdoc="" remap="internal" targetptr="gbchp">Obliczaniu miejsca w ZFS</olink>.</para>
+<para>The amount of space allocated by all datasets and internal
+metadata. Note that this amount is different from the amount of space as reported
+at the file system level.</para>
+<para>For more information about determining available file system space,
+see <olink targetdoc="" remap="internal" targetptr="gbchp">ZFS Space Accounting</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1160,14 +1124,15 @@ dozer                   1.2T    384G    816G    32%  ONLINE     -</screen>
 <literal>AVAILABLE</literal>
 </term>
 <listitem>
-<para>Wielkość niealokowanej przestrzeni w puli.</para>
+<para>The amount of unallocated space in the pool.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>
 <literal>CAPACITY</literal> (<literal>CAP</literal>)</term>
 <listitem>
-<para>Wielkość używanej przestrzeni, raportowana jako procent całkowitej pojemności.</para>
+<para>The amount of space used, expressed as a percentage of total
+space.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1175,8 +1140,8 @@ dozer                   1.2T    384G    816G    32%  ONLINE     -</screen>
 <literal>HEALTH</literal>
 </term>
 <listitem>
-<para>Obecny poziom zdrowia puli.</para>
-<para>Więcej o zdrowiu puli w <olink targetdoc="" remap="internal" targetptr="gamno">Zdrowiu pul nośników danych ZFS</olink>.</para>
+<para>The current health status of the pool.</para>
+<para>For more information about pool health, see <olink targetdoc="" remap="internal" targetptr="gamno">Health Status of ZFS Storage Pools</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1184,26 +1149,27 @@ dozer                   1.2T    384G    816G    32%  ONLINE     -</screen>
 <literal>ALTROOT</literal>
 </term>
 <listitem>
-<para>Alternatywny główny katalog puli, jeśli jest.</para>
-<para>Więcej informacji o alternatywnych głównych katalogach pul w <olink targetdoc="" remap="internal" targetptr="gbcgl">Alternatywnych głównych katalogach pul ZFS</olink>.</para>
+<para>The alternate root of the pool, if any.</para>
+<para>For more information about alternate root pools, see <olink targetdoc="" remap="internal" targetptr="gbcgl">ZFS Alternate Root Pools</olink>.</para>
 </listitem>
 </varlistentry>
 </variablelist>
-<para>Można również odczytać statystyki konkretnej puli przez podanie jej w argumencie komendy. Na przykład:<indexterm xml:id="indexterm-157">
-<primary>lista</primary>
-<secondary>pule nośników danych ZFS</secondary>
-<tertiary>(przykład)</tertiary>
+<para>You can also gather statistics for a specific pool by specifying the
+pool name. For example:<indexterm xml:id="indexterm-157">
+<primary>listing</primary>
+<secondary>ZFS storage pools</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-158">
 <primary>
 <command>zpool list</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-159">
-<primary>pule nośników danych ZFS</primary>
-<secondary>lista</secondary>
-<tertiary>(przykład)</tertiary>
+<primary>ZFS storage pools</primary>
+<secondary>listing</secondary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool list tank</userinput>
@@ -1211,9 +1177,9 @@ NAME                    SIZE    USED   AVAIL    CAP  HEALTH     ALTROOT
 tank                   80.0G   22.3G   47.7G    28%  ONLINE     -</screen>
 </sect3>
 <sect3 xml:id="gazil">
-<title>Konrektne statystyki puli nośników danych</title>
-<para>Konkretne statystyki mozna odczytać używając opcji <option>
-o</option>.
+<title>Listing Specific Storage Pool Statistics</title>
+<para>Specific statistics can be requested by using the <option>
+o</option> option.
 This option allows for custom reports or a quick way to list pertinent information.
 For example, to list only the name and size of each pool, you use the following
 syntax:</para>
@@ -1234,18 +1200,18 @@ than by spaces. For example, to request a simple list of all pool names on
 the system:<indexterm xml:id="indexterm-160">
 <primary>scripting</primary>
 <secondary>ZFS storage pool output</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-161">
 <primary>
 <command>zpool list -Ho name</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-162">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>scripting storage pool output</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool list -Ho name</userinput>
@@ -1266,7 +1232,7 @@ well as updated statistics for every specified interval. The following statistic
 are reported:<indexterm xml:id="indexterm-163">
 <primary>displaying</primary>
 <secondary>ZFS storage pool I/O statistics</secondary>
-<tertiary>opis</tertiary>
+<tertiary>description</tertiary>
 </indexterm>
 </para>
 <variablelist>
@@ -1334,18 +1300,18 @@ per second.</para>
 the accumulated statistics since boot for all pools on the system. For example:<indexterm xml:id="indexterm-164">
 <primary>displaying</primary>
 <secondary>ZFS storage pool-wide I/O statistics</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-165">
 <primary>
 <command>zpool iostat</command>
 </primary>
-<secondary>pool-wide (przykład)</secondary>
+<secondary>pool-wide (example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-166">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>pool-wide I/O statistics</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool iostat</userinput>
@@ -1384,18 +1350,18 @@ well as all I/O statistics, use the <command>zpool iostat -v</command> command.
 For example:<indexterm xml:id="indexterm-167">
 <primary>displaying</primary>
 <secondary>ZFS storage pool vdev I/O statistics</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-168">
 <primary>
 <command>zpool iostat -v</command>
 </primary>
-<secondary>vdev (przykład)</secondary>
+<secondary>vdev (example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-169">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>vdev I/O statistics</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool iostat -v</userinput>
@@ -1445,7 +1411,7 @@ information on troubleshooting and data recovery, see <olink targetdoc="" remap=
 <tertiary>description of</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-171">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>displaying health status</secondary>
 </indexterm>
 </para>
@@ -1517,18 +1483,18 @@ level of data replication or data throughput if the pool were online.</para>
 to use the <command>zpool status</command> command:<indexterm xml:id="indexterm-172">
 <primary>displaying</primary>
 <secondary>ZFS storage pool health status</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-173">
 <primary>
 <command>zpool status -x</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-174">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>displaying health status</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool status -x</userinput>
@@ -1566,18 +1532,18 @@ Using the detailed configuration information, you should be able to determine
 which device is damaged and how to repair the pool.<indexterm xml:id="indexterm-175">
 <primary>displaying</primary>
 <secondary>detailed ZFS storage pool health status</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-176">
 <primary>
 <command>zpool status -v</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-177">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>displaying detailed health status</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <para>In the above example, the faulted device should be replaced. After the
@@ -1629,12 +1595,12 @@ and import it on the destination machine, even if the machines are of different
 endianness. For information about replicating or migrating file systems between
 different storage pools, which might reside on different machines, see <olink targetdoc="" remap="internal" targetptr="gbchx">Saving and Restoring ZFS Data</olink>.<indexterm xml:id="indexterm-178">
 <primary>migrating ZFS storage pools</primary>
-<secondary>opis</secondary>
+<secondary>description</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-179">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>migrating</secondary>
-<tertiary>opis</tertiary>
+<tertiary>description</tertiary>
 </indexterm>
 </para>
 <sect2 xml:id="gazre">
@@ -1678,18 +1644,18 @@ an emulated volume, first make sure that all consumers of the volume are no
 longer active.<indexterm xml:id="indexterm-180">
 <primary>exporting</primary>
 <secondary>ZFS storage pool</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-181">
 <primary>
 <command>zpool export</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-182">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>exporting</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <para>For more information about emulated volumes, see <olink targetdoc="" remap="internal" targetptr="gaypf">Emulated Volumes</olink>.</para>
@@ -1721,18 +1687,18 @@ a unique numeric identifier. If multiple pools available to import have the
 same name, you can use the numeric identifier to distinguish between them.<indexterm xml:id="indexterm-183">
 <primary>identifying</primary>
 <secondary>ZFS storage pool for import (<command>zpool import -a</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-184">
 <primary>
 <command>zpool import -a</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-185">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>identifying for import (<command>zpool import -a</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <para>Similar to the <command>zpool status</command> command, the <command>zpool
@@ -1826,18 +1792,18 @@ config:
 d</option> options.<indexterm xml:id="indexterm-186">
 <primary>importing</primary>
 <secondary>ZFS storage pool from alternate directories (<command>zpool import -d</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-187">
 <primary>
 <command>zpool import -d</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-188">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>importing from alternate directories (<command>zpool import -d</command>)</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 </sect2>
@@ -1892,18 +1858,18 @@ R</option> option.
 For more information on alternate root pools, see <olink targetdoc="" remap="internal" targetptr="gbcgl">ZFS Alternate Root Pools</olink>.<indexterm xml:id="indexterm-189">
 <primary>importing</primary>
 <secondary>ZFS storage pool</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-190">
 <primary>
 <command>zpool import</command> <replaceable>name</replaceable>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-191">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>importing</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 </sect2>
@@ -1951,18 +1917,18 @@ you might be able to recover the destroyed pool anyway. In this scenario,
 import the degraded pool and then attempt to fix the device failure. For example:<indexterm xml:id="indexterm-192">
 <primary>recovering</primary>
 <secondary>destroyed ZFS storage pool</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-193">
 <primary>
 <command>zpool import -D</command>
 </primary>
-<secondary>(przykład)</secondary>
+<secondary>(example of)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-194">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>recovering a destroyed pool</secondary>
-<tertiary>(przykład)</tertiary>
+<tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool destroy dozer</userinput>
@@ -2017,7 +1983,7 @@ In addition, the <command>zpool status</command> command has been modified
 to notify you when your pools are running older versions. For example:<indexterm xml:id="indexterm-195">
 <primary>upgrading</primary>
 <secondary>ZFS storage pool</secondary>
-<tertiary>opis</tertiary>
+<tertiary>description</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-196">
 <primary>
@@ -2025,9 +1991,9 @@ to notify you when your pools are running older versions. For example:<indexterm
 </primary>
 </indexterm>
 <indexterm xml:id="indexterm-197">
-<primary>pule nośników danych ZFS</primary>
+<primary>ZFS storage pools</primary>
 <secondary>upgrading</secondary>
-<tertiary>opis</tertiary>
+<tertiary>description</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool status</userinput>
