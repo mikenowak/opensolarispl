@@ -1214,26 +1214,19 @@ tank                   80.0G   22.3G   47.7G    28%  ONLINE     -</screen>
 <title>Konrektne statystyki puli nośników danych</title>
 <para>Konkretne statystyki mozna odczytać używając opcji <option>
 o</option>.
-This option allows for custom reports or a quick way to list pertinent information.
-For example, to list only the name and size of each pool, you use the following
-syntax:</para>
+Opcja ta umożliwia tworzenie własnych raportów lub szybkie dostęp do pożądanych informacji. Aby, na przykład, wydrukować tylko nazwę i pojemność pul, należy użyć następującej składni:</para>
 <screen># <userinput>zpool list -o name,size</userinput>
 NAME                    SIZE
 tank                   80.0G
 dozer                   1.2T</screen>
-<para>The column names correspond to the properties that are listed in <olink targetdoc="" remap="internal" targetptr="gazij">Listing Information About All Storage Pools</olink>.</para>
+<para>Nazwy kolumn odpowiadają własciwościom wydrukowanym w <olink targetdoc="" remap="internal" targetptr="gazij">Drukowaniu informacji o wszystkich pulach nośników danych</olink>.</para>
 </sect3>
 <sect3 xml:id="gazje">
-<title>Scripting ZFS Storage Pool Output</title>
-<para>The default output for the <command>zpool list</command> command is
-designed for readability, and is not easy to use as part of a shell script.
-To aid programmatic uses of the command, the <option>
-H</option> option can
-be used to suppress the column headings and separate fields by tabs, rather
-than by spaces. For example, to request a simple list of all pool names on
-the system:<indexterm xml:id="indexterm-160">
-<primary>scripting</primary>
-<secondary>ZFS storage pool output</secondary>
+<title>Skryptowe przetwarzanie wyjścia pul nośników danych ZFS</title>
+<para>Domyślny format wyjścia komendy <command>zpool list</command> jest przede wszystkim czytelny i niełatwo użyć go w skryptach powłoki. Ułatwieniem w zastosowaniach programowych jest użycie opcji <option>
+H</option>, która wyłącza drukowanie nazw kolumn i oddzielanie pól tabulatorami zamiast spacji. Aby uzyskać, na przykład, prostą listę nazw wszystkich pul w systemie:<indexterm xml:id="indexterm-160">
+<primary>przetwarzanie skryptowe</primary>
+<secondary>wyjście pul nosników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-161">
@@ -1244,28 +1237,24 @@ the system:<indexterm xml:id="indexterm-160">
 </indexterm>
 <indexterm xml:id="indexterm-162">
 <primary>pule nośników danych ZFS</primary>
-<secondary>scripting storage pool output</secondary>
+<secondary>skryptowe przetwarzanie wyjścia pul nośników danych</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zpool list -Ho name</userinput>
 tank
 dozer</screen>
-<para>Here is another example:</para>
+<para>Poniżej jest następny przykład:</para>
 <screen># <userinput>zpool list -H -o name,size</userinput>
 tank   80.0G
 dozer  1.2T</screen>
 </sect3>
 </sect2>
 <sect2 xml:id="gammt">
-<title>ZFS Storage Pool I/O Statistics</title>
-<para>To request I/O statistics for a pool or specific virtual devices, use
-the <command>zpool iostat</command> command. Similar to the <command>iostat</command> command,
-this command can display a static snapshot of all I/O activity so far, as
-well as updated statistics for every specified interval. The following statistics
-are reported:<indexterm xml:id="indexterm-163">
-<primary>displaying</primary>
-<secondary>ZFS storage pool I/O statistics</secondary>
+<title>Statystyki We/Wy pul nośników danych ZFS</title>
+<para>Statystyki We/Wy dla pul lub konkretnych urządzeń wirtualnych można uzyskać za pomocą komendy <command>zpool iostat</command>. Podobnie jak komenda <command>iostat</command>, ta komenda może wydrukować statyczny obraz sumarycznego We/Wy oraz aktuyalne statystyki dla wybranego okresu. Zwracane są następujące statystyki:<indexterm xml:id="indexterm-163">
+<primary>drukowanie</primary>
+<secondary>statystyk We/Wy pul nośników danych ZFS</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
@@ -1275,11 +1264,8 @@ are reported:<indexterm xml:id="indexterm-163">
 <literal>USED CAPACITY</literal>
 </term>
 <listitem>
-<para>The amount of data currently stored in the pool or device.
-This figure differs from the amount of space available to actual file systems
-by a small amount due to internal implementation details.</para>
-<para>For more information about the difference between pool space and dataset
-space, see <olink targetdoc="" remap="internal" targetptr="gbchp">ZFS Space Accounting</olink>.</para>
+<para>Ilość danych aktualnie przechowywanych w puli lub na urządzeniu. Liczba ta różni się nieznacznie od ilości miesjca faktycznie dostępnej systemom plików ze względu na wewnętrzne szczegóły implementacji.</para>
+<para>Więcej informacji o róznicach w pojemności pul i datasetów w <olink targetdoc="" remap="internal" targetptr="gbchp">Obliczaniu pojemności ZFS</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1287,9 +1273,7 @@ space, see <olink targetdoc="" remap="internal" targetptr="gbchp">ZFS Space Acco
 <literal>AVAILABLE CAPACITY</literal>
 </term>
 <listitem>
-<para>The amount of space available in the pool or device. As with
-the <literal>used</literal> statistic, this is differs from the amount of
-space available to datasets by a small margin.</para>
+<para>Ilość miejsca dostępna w puli lub na urządzeniu. Podobnie jak w przypadku pola <literal>used</literal>, różni się nieznacznie od miejsca dostępnego datasetom.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1297,8 +1281,7 @@ space available to datasets by a small margin.</para>
 <literal>READ OPERATIONS</literal>
 </term>
 <listitem>
-<para>The number of read I/O operations sent to the pool or device,
-including metadata requests.</para>
+<para>Liczba operacji odczytania We/Wy wysłanych do puli lub urządzenia, włącznie z żądaniami metadanych.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1306,7 +1289,7 @@ including metadata requests.</para>
 <literal>WRITE OPERATIONS</literal>
 </term>
 <listitem>
-<para>The number of write I/O operations sent to the pool or device.</para>
+<para>Liczba operacji zapisu We/Wy wysłanych do puli lub urządzenia.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1314,8 +1297,7 @@ including metadata requests.</para>
 <literal>READ BANDWIDTH</literal>
 </term>
 <listitem>
-<para>The bandwidth of all read operations (including metadata),
-expressed as units per second.</para>
+<para>Przepustowość wszystkich operacji odczytu (włącznie z metadanymi) wyrażona w jednostkach na sekundę.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1323,17 +1305,15 @@ expressed as units per second.</para>
 <literal>WRITE BANDWIDTH</literal>
 </term>
 <listitem>
-<para>The bandwidth of all write operations, expressed as units
-per second.</para>
+<para>Przepustowość wszystkich operacji zapisu wyrażona w jednostkach na sekundę.</para>
 </listitem>
 </varlistentry>
 </variablelist>
 <sect3 xml:id="gazng">
-<title>Listing Pool-Wide Statistics</title>
-<para>With no options, the <command>zpool iostat</command> command displays
-the accumulated statistics since boot for all pools on the system. For example:<indexterm xml:id="indexterm-164">
-<primary>displaying</primary>
-<secondary>ZFS storage pool-wide I/O statistics</secondary>
+<title>Drukowanie statystyk dla wszystkich pul</title>
+<para>Jeśli nie podano żadnych opcji, komenda <command>zpool iostat</command> drukuje skumulowane statystyki od momentu rozruchu systemu dla wszystkich pul w systemie. Na przykład:<indexterm xml:id="indexterm-164">
+<primary>drukowanie</primary>
+<secondary>statystyki We/Wy dla pul nośników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-165">
@@ -1344,7 +1324,7 @@ the accumulated statistics since boot for all pools on the system. For example:<
 </indexterm>
 <indexterm xml:id="indexterm-166">
 <primary>pule nośników danych ZFS</primary>
-<secondary>pool-wide I/O statistics</secondary>
+<secondary>statystyki We/Wy dla pul nośników danych</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
@@ -1354,9 +1334,7 @@ pool         used  avail   read  write   read  write
 ----------  -----  -----  -----  -----  -----  -----
 tank         100G  20.0G   1.2M   102K   1.2M  3.45K
 dozer       12.3G  67.7G   132K  15.2K  32.1K  1.20K</screen>
-<para>Because these statistics are cumulative since boot, bandwidth might
-appear low if the pool is relatively idle. You can request a more accurate
-view of current bandwidth usage by specifying an interval. For example:</para>
+<para>Ze wzlędu na fakt, że statystyki te są kumulatywne od momentu rozruchu systemu, przepustowość może wydawać się niska, jeśli pula jest względnie nieaktywna. Bliższe rzeczywistości statystyki można uzyskać wskazująć przedział czasu, dla którego mają zostać wydrukowane dane. Na przykład:</para>
 <screen># <userinput>zpool iostat tank 2</userinput>
                capacity     operations    bandwidth
 pool         used  avail   read  write   read  write
@@ -1364,15 +1342,8 @@ pool         used  avail   read  write   read  write
 tank         100G  20.0G   1.2M   102K   1.2M  3.45K
 tank         100G  20.0G    134      0  1.34K      0
 tank         100G  20.0G     94    342  1.06K   4.1M</screen>
-<para>In this example, the command displays usage statistics only for the
-pool <literal>tank</literal> every two seconds until the you type Ctrl-C.
-Alternately, you can specify an additional <literal>count</literal> parameter,
-which causes the command to terminate after the specified number of iterations.
-For example, <command>zpool iostat 2 3</command> would print a summary every
-two seconds for three iterations, for a total of six seconds. If there is
-a single pool, then the statistics is displayed on consecutive lines. If more
-than one pool exists, then an additional dashed line delineates each iteration
-to provide visual separation.</para>
+<para>W tym przykładzie komenda drukuje statystyki użycia puli <literal>tank</literal> co dwie sekundy, aż do zatrzymania procesu klawiszami Ctrl-C.
+Można dodatkowo zdefiniować ilość powtórzeń wykonania komendy za pomocą parametru <literal>count</literal>. Na przykład <command>zpool iostat 2 3</command> wydrukuje podsumowanie trzy razy co dwie sekundy, łącznie sześć sekund. Jeśli w systemie jest tylko jedna pula, statystyki będą drukowane w kolejnych liniach. Jeśli istnieje więcej pul, co każdą iterację dodawane jest linia z myślnikiem, w celu wizualnego oddzielenia każdego wykonania.</para>
 </sect3>
 <sect3 xml:id="gazne">
 <title>Listing Virtual Device Statistics</title>
@@ -1382,7 +1353,7 @@ to identify abnormally slow devices, or simply to observe the distribution
 of I/O generated by ZFS. To request the complete virtual device layout as
 well as all I/O statistics, use the <command>zpool iostat -v</command> command.
 For example:<indexterm xml:id="indexterm-167">
-<primary>displaying</primary>
+<primary>drukowanie</primary>
 <secondary>ZFS storage pool vdev I/O statistics</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
@@ -1440,7 +1411,7 @@ are displayed on the system console and the <command>/var/adm/messages</command>
 This section describes how to determine pool and device health. This chapter
 does not document how to repair or recover from unhealthy pools. For more
 information on troubleshooting and data recovery, see <olink targetdoc="" remap="internal" targetptr="gavwg">Chapter 9, ZFS Troubleshooting and Data Recovery</olink>.<indexterm xml:id="indexterm-170">
-<primary>displaying</primary>
+<primary>drukowanie</primary>
 <secondary>health status of storage pools</secondary>
 <tertiary>description of</tertiary>
 </indexterm>
@@ -1515,7 +1486,7 @@ level of data replication or data throughput if the pool were online.</para>
 <title>Basic Storage Pool Health Status</title>
 <para>The simplest way to request a quick overview of pool health status is
 to use the <command>zpool status</command> command:<indexterm xml:id="indexterm-172">
-<primary>displaying</primary>
+<primary>drukowanie</primary>
 <secondary>ZFS storage pool health status</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
@@ -1564,7 +1535,7 @@ to a knowledge article for more information. Each knowledge article provides
 up-to-date information on the best way to recover from your current problem.
 Using the detailed configuration information, you should be able to determine
 which device is damaged and how to repair the pool.<indexterm xml:id="indexterm-175">
-<primary>displaying</primary>
+<primary>drukowanie</primary>
 <secondary>detailed ZFS storage pool health status</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
