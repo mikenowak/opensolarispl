@@ -85,7 +85,7 @@ w katalogu <filename>/dev/dsk</filename>.<indexterm xml:id="indexterm-81">
 lub pojedynczy blok (ang. slice), (<filename>c0t0d0s7</filename>). Zaleca się 
 używania całych dysków, w którym to przypadku dysk nie wymaga specjalnego 
 formatowania. ZFS formatuje dysk używają etykiet EFI do przechowywania jednego 
-bloku. W takim przyadku tablica partycji wyświetlana przez komendę <command>
+bloku. W takim przypadku tablica partycji wyświetlana przez komendę <command>
 format</command> wygląda podobnie:</para>
 <screen>Current partition table (original):
 Total disk sectors available: 71670953 + 16384 (reserved sectors)
@@ -115,15 +115,15 @@ dysków, należy ręcznie je etykietować i udostępnić blok ZFS-owi.
 </indexterm>
 </para>
 <para>ZFS nadaje etykietę EFI w momencie tworzenia puli przy użyciu całego 
-dysku. Można też etykietować dyski tadycyjnym Solarisowym VTOC przy tworzeniu 
-puli z użyciek bloku.</para>
-<para>Bloki powinny być używane tylko w poniższych wrunkach:</para>
+dysku. Można też etykietować dyski tradycyjnym Solarisowym VTOC przy tworzeniu 
+puli z użyciem bloku.</para>
+<para>Bloki powinny być używane tylko w poniższych warunkach:</para>
 <itemizedlist>
 <listitem>
 <para>Nazwa urządzenia jest niestandardowa.</para>
 </listitem>
 <listitem>
-<para>Pojedynczy dysk jest wpółdzielony między system plików ZFS oraz inny 
+<para>Pojedynczy dysk jest współdzielony między system plików ZFS oraz inny 
 system plików, na przykład UFS.</para>
 </listitem>
 <listitem>
@@ -176,8 +176,8 @@ woluminów (LUN-y lub sprzętowe RAID-Y), konfiguracje takie nie są zalecane.
 O ile ZFS działa z takimi urządzeniami prawidłowo, wynikiem może być 
 nieoptymalna wydajność.</para>
 <para>Dyski identyfikuje się za równo za pomocą ścieżki, jak i ich ID, jeśli 
-jest dotępne. Metoda ta pozwala na rekonfigurowanie urządzeń w systemie bez 
-uaktualniania stanu ZFS. Jesli dysk zostanie przeniesiony z kontrolera 1., 
+jest dostępne. Metoda ta pozwala na rekonfigurowanie urządzeń w systemie bez 
+uaktualniania stanu ZFS. Jeśli dysk zostanie przeniesiony z kontrolera 1., 
 do kontrolera 2., ZFS użyje ID urządzenia do wykrycia go i ustalenia, że powinno
  być teraz używane za pośrednictwem kontrolera 2. ID urządzenia jest unikalne 
 dla firmware'u. Wprawdzie mało prawdopodobna jest zmiana ID urządzenia, jednak 
@@ -195,7 +195,7 @@ użycia w środowisku produkcyjnym. Powodem jest to, że <emphasis role="strong"
 spójność plików zależy od systemu plików, na których pliki są przechowywane.
 </emphasis>. Jeśli zostanie utworzona pula ZFS na bazie plików przechowywanych 
 na systemie plików UFS, wtedy pośrednio żąda się gwarancji semantyki 
-synchornicznej oraz poprawności od systemu plików UFS.
+synchronicznej oraz poprawności od systemu plików UFS.
 <indexterm xml:id="indexterm-88">
 <primary>Pule nośników danych ZFS</primary>
 <secondary>używanie plików</secondary>
@@ -210,8 +210,8 @@ bądź przy eksperymentowaniu z bardziej skomplikowanymi układami, kiedy nie ma
 wystarczającej ilości prawdziwych nośników. Wszystkie pliki należy wskazywać za 
 pomocą pełnej ścieżki dostępu i muszą mieć przynajmniej 128MB. Jeśli plik 
 zostanie przeniesiony bądź zmieniona będzie jego nazwa, pula musi zostać 
-wyeksoprtowana i zaimportowana, ponieważ plikom nie przypisuje się żadnego 
-unikalnego ID, po którym mogłyby być znów odnaleznione.</para>
+wyeksportowana i zaimportowana, ponieważ plikom nie przypisuje się żadnego 
+unikalnego ID, po którym mogłyby być znów odnalezione.</para>
 </sect2>
 <sect2 xml:id="gazca">
 <title>Urządzenia wirtualne w pulach nośników danych</title>
@@ -240,7 +240,7 @@ urządzenia najwyższego poziomu w puli.</para>
 </sect1>
 <sect1 xml:id="gcfof">
 <title>Opcje replikacji danych w pulach ZFS</title>
-<para>ZFS zapewnia dwa poziomy reduncjanji danych w konfiguracji mirror i 
+<para>ZFS zapewnia dwa poziomy renuncjacji danych w konfiguracji mirror i 
 RAID-Z.<indexterm xml:id="indexterm-92">
 <primary>opcje replikacji danych w ZFS</primary>
 <secondary>mirror lub RAID-Z</secondary>
@@ -272,7 +272,7 @@ lustro w puli. Prosta konfiguracja lustrzana wygląda podobnie do poniższej:
 <screen>mirror c1t0d0 c2t0d0</screen>
 <para>Bardziej skomplikowana konfiguracja będzie podobna do poniższej:</para>
 <screen>mirror c1t0d0 c2t0d0 c3t0d0 mirror c4t0d0 c5t0d0 c6t0d0</screen>
-<para>Więcej inforomacji o tworzeniu lustrzanej konfiguracji puli nośników 
+<para>Więcej informacji o tworzeniu lustrzanej konfiguracji puli nośników 
 danych w <olink targetdoc="" remap="internal" targetptr="gazhv">tworzeniu 
 lustrzanych pul nośników danych</olink>.</para>
 </sect2>
@@ -301,7 +301,7 @@ konfigurację RAID-Z. RAID-Z  jest podobne do RAID-5.
 RDP i PARZYSTE-NIEPARZYSTE na przykład) obarczone są problemem tak zwanej 
 "luki zapisu RAID-5". Jeśli tylko fragment bloku danych RAID-5 zostanie zapisany
  i nastąpi awaria zasilania zanim wszystkie bloki zostaną zapisane na dysk, 
-przystość i dane będą rozsynchronizowane, a przez to bezużyteczne na zawsze, 
+parzystość i dane będą rozsynchronizowane, a przez to bezużyteczne na zawsze, 
 chyba że następny zapis pełnego bloku nadpisze ten fragment. W RAID-Z ZFS używa 
 bloków o zmiennej długości, zatem każdy zapis zapis jest zapisem pełnego bloku. 
 Jest to możliwe tylko dlatego, że ZFS integruje system plików i zarządzanie 
@@ -310,7 +310,7 @@ dużo informacji o modelu replikacji w niższej warstwie, aby poradzić sobie z
 blokami RAID o zmiennej długości. RAID-Z to pierwszy to pierwsze na świecie 
 czysto programowe rozwiązanie problemu luki zapisu RAID-5.</para>
 <para>Do konfiguracji RAID-Z wymagane są co najmniej dwa dyski. Obecnie RAID-Z 
-zapewnia pojedyczną parzystość. Na przykład, jeśli w puli RAID-Z są trzy dyski, 
+zapewnia pojedynczą parzystość. Na przykład, jeśli w puli RAID-Z są trzy dyski, 
 dane parzystości zajmują miejsce równe pojemności jednego z dysków.</para>
 <para>Koncepcyjnie, konfiguracja RAID-Z z trzema dyskami wygląda jak poniżej:
 </para>
@@ -319,7 +319,7 @@ dane parzystości zajmują miejsce równe pojemności jednego z dysków.</para>
 </para>
 <screen>raidz c1t0d0 c2t0d0 c3t0d0 c4t0d0 c5t0d0 c6t0d0 c7t0d0 raidz c8t0d0 c9t0d0 c10t0d0 c11t0d0 c12t0d0 c13t0d0 c14t0d0</screen>
 <para>Jeśli tworzona jest konfiguracja z wieloma dyskami, jak w powyższym 
-przykładzie, konfiguracja RAID-Z z 14 dosyami sprawdza się lepiej jako dwie 
+przykładzie, konfiguracja RAID-Z z 14 dyskami sprawdza się lepiej jako dwie 
 konfiguracje RAID-Z z 7 dyskami każda. Konfiguracje RAID-Z grupami o 
 jednocyfrowej liczbie dysków powinny mieć lepszą wydajność.</para>
 <para>Więcej informacji o tworzeniu pul RAID-Z w 
@@ -358,11 +358,11 @@ zatem bloki o stałej wielkości w momencie alokacji.
 </indexterm>
 </para>
 <para>Kiedy urządzenia wirtualne dodawane są do puli. ZFS stopniowo zapisuje 
-dane na dwym urządzeniu w celu zapewnienia wydajności i zgodności z regułami 
+dane na nowym urządzeniu w celu zapewnienia wydajności i zgodności z regułami 
 alokacji przestrzeni dyskowej. Każde urządzenie wirtualne może być także lustrem
  lub urządzeniem RAID-Z zawierającym inne urządzenia dyskowe lub pliki. 
 Konfiguracja taka pozwala na elastyczność w kontrolowaniu charakterystyk 
-awaryjności w puli. Na przykład, można utworzyć następującą puę z 4 dysków:
+awaryjności w puli. Na przykład, można utworzyć następującą pulę z 4 dysków:
 </para>
 <itemizedlist>
 <listitem>
@@ -377,7 +377,7 @@ awaryjności w puli. Na przykład, można utworzyć następującą puę z 4 dysk
 </itemizedlist>
 <para>Wprawdzie ZFS umożliwia kombinowanie różnych typów urządzeń wirtualnych w 
 jednej puli, jednak praktyka taka jest niezalecana. Można, na przykład, utworzyć
- pulę z dwuurządzeniowym mirrorerm i trzyurządzeniowym RAID-Z. Odporność na 
+ pulę z dwuurządzeniowym mirrorem i trzyurządzeniowym RAID-Z. Odporność na 
 awarie jest jednak tak dobra, jak dobre jest najgorsze urządzenie wirtualne, w 
 tym przypadku RAID-Z. Zalecaną praktyką jest stosowanie takich samych urządzeń 
 na tym samym poziomie replikacji w każdym urządzeniu.</para>
@@ -392,7 +392,7 @@ puli, nie zawsze jednak może wiedzieć, kiedy urządzenie jest już wykorzystyw
 w jakiejś puli. Usuwanie puli jest jeszcze prostsze. Komendy <command>zpool 
 destroy</command> należy używać ostrożnie. To prosta komenda o poważnych 
 konsekwencjach. Więcej informacji o usuwaniu pul w 
-<olink targetdoc="" remap="internal" targetptr="gammr">Usuwaniu pul nosników 
+<olink targetdoc="" remap="internal" targetptr="gammr">Usuwaniu pul nośników 
 danych ZFS</olink>.<indexterm xml:id="indexterm-105">
 <primary>tworzenie</primary>
 <secondary>pul nośników danych ZFS</secondary>
@@ -511,7 +511,7 @@ urządzeniem RAID-Z składającym się z pięciu dysków:
 </para>
 <screen># <userinput>zpool create tank raidz c1t0d0 c2t0d0 c3t0d0 c4t0d0 /dev/dsk/c5t0d0</userinput>
 </screen>
-<para>Przykłąd ten pokazuje, że dyski można wskazywać ich pełnymi scieżkami. 
+<para>Przykład ten pokazuje, że dyski można wskazywać ich pełnymi ścieżkami. 
 Urządzenie <filename>/dev/dsk/c5t0d0</filename> jest identyczne z urządzeniem 
 <filename>c5t0d0</filename>.</para>
 <para>Podobna konfiguracja może zostać stworzona przy pomocy bloków dysków. Na 
@@ -526,7 +526,7 @@ nośników danych</olink>.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gazhs">
-<title>Obsługa błedów przy tworzeniu pul nośników danych ZFS</title>
+<title>Obsługa błędów przy tworzeniu pul nośników danych ZFS</title>
 <para>Błędy przy tworzeniu puli nośników mogą wystąpić z wielu powodów. Część z 
 nich jest oczywista, na przykład brak urządzenia, jednak inne błędy są bardziej 
 subtelne.</para>
@@ -572,7 +572,7 @@ f</option> i należy usunąć je ręcznie:<indexterm xml:id="indexterm-118">
 </term>
 <listitem>
 <para>Dysk zawiera system plików obecny w pliku <filename>/etc/vfstab</filename>
-, ale nie jest on zamontowany. Błąd ten można poprawić usuwając lub oznaczjąć 
+, ale nie jest on zamontowany. Błąd ten można poprawić usuwając lub oznaczając 
 jako komentarz linię w pliku <filename>/etc/vfstab</filename>.</para>
 </listitem>
 </varlistentry>
@@ -654,10 +654,10 @@ use '-f' to override the following errors:
 <para>Tworzenie pul z urządzeniami wirtualnymi o różnych poziomach replikacji 
 jest niezalecane. Komenda <command>zpool</command> próbuje zapobiec utworzeniu 
 puli z niepasującymi poziomami replikacji. Przy próbie utworzenia takiej 
-konfiguracji puli, pojawią się błedy podobne do poniższych:
+konfiguracji puli, pojawią się błędy podobne do poniższych:
 <indexterm xml:id="indexterm-120">
 <primary>wykrywanie</primary>
-<secondary>niepasujących pozniomów replikacji</secondary>
+<secondary>niepasujących poziomów replikacji</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-121">
@@ -704,7 +704,7 @@ wykonuje testy na użyciu urządzeń i poprawność poziomów replikacji i infor
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-124">
-<primary>Pue nośników danych ZFS</primary>
+<primary>Pule nośników danych ZFS</primary>
 <secondary>wykonywanie suchego przebiegu (<command>zpool create</command> 
 <option>n</option>)</secondary>
 <tertiary>(przykład)</tertiary>
@@ -718,16 +718,16 @@ would create 'tank' with the following layout:
             c1t0d0
             c1t1d0</screen>
 <para>Niektórych błędów nie można wykryć bez rzeczywistego tworzenia puli. 
-Najczęstszym przykłądem jest dwukrotne wskazanie tego samego urządzenia 
+Najczęstszym przykładem jest dwukrotne wskazanie tego samego urządzenia 
 dwukrotnie w tej samej konfiguracji. Błędu tego nie można wykryć bez próby 
-zapisu danych, dlatego komenda <command>create -n</command> może poinformowac o 
-sukcesie, ale faktyczne utworznie puli może się nie udać.</para>
+zapisu danych, dlatego komenda <command>create -n</command> może poinformować o 
+sukcesie, ale faktyczne utworzenie puli może się nie udać.</para>
 </sect3>
 <sect3 xml:id="gbeef">
 <title>Domyślny punkt montowania pul</title>
 <para>Po utworzeniu puli, domyślnym punktem montowania datasetu jest katalog 
 <replaceable>/nazwa-puli</replaceable>. Tego katalogu nie powinno być, a jeśli 
-jest, powinien być pusty. Jeśli nnie istnieje, jest tworzony automatycznie. 
+jest, powinien być pusty. Jeśli nie istnieje, jest tworzony automatycznie. 
 Jeśli istnieje, dataset jest automatycznie montowany w istniejącym katalogu. 
 Aby utworzyć pulę z innym domyślnym punktem montowania należy użyć opcji 
 <option>m</option> przy wykonywaniu komendy <command>zpool create</command>:
@@ -798,7 +798,7 @@ potencjalnie aktywne</emphasis> przy tworzeniu nowej puli i przedstawią się ja
 uszkodzonych urządzeń aby cała pula była uszkodzona (co oznacza, że urządzenie 
 wirtualne najwyższego poziomu jest uszkodzone), wtedy komenda zgłosi błąd i nie
  wykona się bez użycia opcji <option>f</option>. Opcja ta jest konieczna, 
-ponieważ nie mozna otowrzyć puli i nie można ustalić, czy są w niej 
+ponieważ nie można odtworzyć puli i nie można ustalić, czy są w niej 
 przechowywane dane. Na przykład:</para>
 <screen># <userinput>zpool destroy tank</userinput>
 cannot destroy 'tank': pool is faulted
@@ -828,7 +828,7 @@ ta jest automatycznie dostępna dla wszystkich datasetów w puli. Nowe urządzen
 wirtualne dodaje się do puli za pomocą komendy <command>zpool add</command>.
 Na przykład:<indexterm xml:id="indexterm-130">
 <primary>dodawanie</primary>
-<secondary>orządzeń do puli nośników danych ZFS (<command>zpool add</command>)
+<secondary>urządzeń do puli nośników danych ZFS (<command>zpool add</command>)
 </secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
@@ -866,7 +866,7 @@ would update 'zeepool' to the following configuration:
 <para>Komenda ta dodałaby dwa mirrorowane urządzenia <literal>c3t1d0</literal> 
 i <literal>c3t2d0</literal> do istniejącej konfiguracji <filename>zeepool
 </filename>.</para>
-<para>Więcej informacji o [FIXME] walidowaniu [/FIXME] urządzeń wirtualnych 
+<para>Więcej informacji o sprawdzaniu urządzeń wirtualnych 
 w <olink targetdoc="" remap="internal" targetptr="gazht">Wykrywaniu 
 używanych urządzeń</olink>.</para>
 </sect2>
@@ -877,7 +877,7 @@ używanych urządzeń</olink>.</para>
 istniejącego mirrorowanego bądź niemirrorwanego urządzenia. Na przykład:
 <indexterm xml:id="indexterm-133">
 <primary>dołączanie</primary>
-<secondary>urządzeń do puli nosników danych ZFS (<command>zpool attach
+<secondary>urządzeń do puli nośników danych ZFS (<command>zpool attach
 </command>)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
@@ -951,7 +951,7 @@ do wyłączonego urządzenia.<indexterm xml:id="indexterm-139">
 użyć komendy <command>offline</command>. Na przykład, jeśli zachodzi konieczność
  odłączenia macierzy od układu przełączników Fibre Channel i podłączenia jej 
 do innego układu przełączników, można wyłączyć LUN-y z macierzy używanej 
-w pulach ZFS. Podłączoną i działającą już na nowych przełącznikach macież można 
+w pulach ZFS. Podłączoną i działającą już na nowych przełącznikach macierz można 
 aktywować włączając te same LUN-y. Dane, które pojawiły się w puli w czasie, 
 kiedy LUN-y były wyłączone, automatycznie zaczną się resilverować, kiedy tylko 
 LUN-y zostaną włączone.</para>
@@ -1006,7 +1006,7 @@ t</option>. Na przykład:</para>
 <para>Po wyłączeniu urządzenia można je włączyć komendą <command>zpool online</command>:</para>
 <screen># <userinput>zpool online tank c1t0d0</userinput>
 bringing device c1t0d0 online</screen>
-<para>Po włączeniu urządzenia, wszelkie dane, które pojawiły się w puli są synchronizowane z nowym urządzeniem. Nie można używac wyłączania do wymiany dysków. Próba wymiany wyłączonego urządzenia spowoduje oflagowanie go jako uszkodzone przy włączaniu.<indexterm xml:id="indexterm-144">
+<para>Po włączeniu urządzenia, wszelkie dane, które pojawiły się w puli są synchronizowane z nowym urządzeniem. Nie można używać wyłączania do wymiany dysków. Próba wymiany wyłączonego urządzenia spowoduje oflagowanie go jako uszkodzone przy włączaniu.<indexterm xml:id="indexterm-144">
 <primary>włączanie urządzenia</primary>
 <secondary>pula nośników danych ZFS (<command>zpool online</command>)</secondary>
 <tertiary>(przykład)</tertiary>
@@ -1023,7 +1023,7 @@ bringing device c1t0d0 online</screen>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>Przy próbie włączenia uszkodzonego urządzenia, rzy użyciu komendy <command>fmd</command> pojawi się komunikat podobny do poniższego:</para>
+<para>Przy próbie włączenia uszkodzonego urządzenia, przy użyciu komendy <command>fmd</command> pojawi się komunikat podobny do poniższego:</para>
 <screen># <userinput>zpool online tank c1t0d0</userinput>
 Bringing device c1t0d0 online
 # 
@@ -1041,7 +1041,7 @@ REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
 </sect2>
 <sect2 xml:id="gazge">
 <title>Czyszczenie pul nośników danych</title>
-<para>Jeśli urządzenie zostało wyłączone z powodu uszkodzenia, które powodowało wyświetlanie się błędów w wyniku komendy <command>zpool status</command>, można wyczyścić licznik błedów komendą <command>zpool clear</command>.<indexterm xml:id="indexterm-147">
+<para>Jeśli urządzenie zostało wyłączone z powodu uszkodzenia, które powodowało wyświetlanie się błędów w wyniku komendy <command>zpool status</command>, można wyczyścić licznik błędów komendą <command>zpool clear</command>.<indexterm xml:id="indexterm-147">
 <primary>czyszczenie</primary>
 <secondary>urządzenie w puli nośników danych ZFS (<command>zpool clear</command>)</secondary>
 <tertiary>opis</tertiary>
@@ -1079,7 +1079,7 @@ REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
 </sect2>
 <sect2 xml:id="gazgd">
 <title>Wymiana urządzeń w puli nośników danych</title>
-<para>Urządzenie w puli mozna wymienić komendą <command>zpool
+<para>Urządzenie w puli można wymienić komendą <command>zpool
 replace</command>.<indexterm xml:id="indexterm-152">
 <primary>wymiana</primary>
 <secondary>urządzenia (<command>zpool replace</command>)</secondary>
@@ -1120,7 +1120,7 @@ replace</command>.<indexterm xml:id="indexterm-152">
 </para>
 <sect2 xml:id="gamml">
 <title>Podstawowe informacje o pulach nośników danych ZFS</title>
-<para>Podstawowe informacje o pulach mozna wyświetlić za pomocą komendy <command>zpool list</command>.</para>
+<para>Podstawowe informacje o pulach można wyświetlić za pomocą komendy <command>zpool list</command>.</para>
 <sect3 xml:id="gazij">
 <title>Informacje o wszystkich dostępnych pulach</title>
 <para>Jeśli nie podano argumentów, komenda wyświetli wszystkie pola o wszystkich pulach w systemie. Na przykład:</para>
@@ -1143,7 +1143,7 @@ dozer                   1.2T    384G    816G    32%  ONLINE     -</screen>
 <literal>SIZE</literal>
 </term>
 <listitem>
-<para>Całkowita pojemność puli, równa sumie pojemności wysztkich urządzeń wirtualnych najwyższego poziomu.</para>
+<para>Całkowita pojemność puli, równa sumie pojemności wszystkich urządzeń wirtualnych najwyższego poziomu.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1211,22 +1211,22 @@ NAME                    SIZE    USED   AVAIL    CAP  HEALTH     ALTROOT
 tank                   80.0G   22.3G   47.7G    28%  ONLINE     -</screen>
 </sect3>
 <sect3 xml:id="gazil">
-<title>Konrektne statystyki puli nośników danych</title>
-<para>Konkretne statystyki mozna odczytać używając opcji <option>
+<title>Konkretne statystyki puli nośników danych</title>
+<para>Konkretne statystyki można odczytać używając opcji <option>
 o</option>.
 Opcja ta umożliwia tworzenie własnych raportów lub szybkie dostęp do pożądanych informacji. Aby, na przykład, wydrukować tylko nazwę i pojemność pul, należy użyć następującej składni:</para>
 <screen># <userinput>zpool list -o name,size</userinput>
 NAME                    SIZE
 tank                   80.0G
 dozer                   1.2T</screen>
-<para>Nazwy kolumn odpowiadają własciwościom wydrukowanym w <olink targetdoc="" remap="internal" targetptr="gazij">Drukowaniu informacji o wszystkich pulach nośników danych</olink>.</para>
+<para>Nazwy kolumn odpowiadają właściwościom wydrukowanym w <olink targetdoc="" remap="internal" targetptr="gazij">Drukowaniu informacji o wszystkich pulach nośników danych</olink>.</para>
 </sect3>
 <sect3 xml:id="gazje">
 <title>Skryptowe przetwarzanie wyjścia pul nośników danych ZFS</title>
 <para>Domyślny format wyjścia komendy <command>zpool list</command> jest przede wszystkim czytelny i niełatwo użyć go w skryptach powłoki. Ułatwieniem w zastosowaniach programowych jest użycie opcji <option>
 H</option>, która wyłącza drukowanie nazw kolumn i oddzielanie pól tabulatorami zamiast spacji. Aby uzyskać, na przykład, prostą listę nazw wszystkich pul w systemie:<indexterm xml:id="indexterm-160">
 <primary>przetwarzanie skryptowe</primary>
-<secondary>wyjście pul nosników danych ZFS</secondary>
+<secondary>wyjście pul nośników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-161">
@@ -1252,7 +1252,7 @@ dozer  1.2T</screen>
 </sect2>
 <sect2 xml:id="gammt">
 <title>Statystyki We/Wy pul nośników danych ZFS</title>
-<para>Statystyki We/Wy dla pul lub konkretnych urządzeń wirtualnych można uzyskać za pomocą komendy <command>zpool iostat</command>. Podobnie jak komenda <command>iostat</command>, ta komenda może wydrukować statyczny obraz sumarycznego We/Wy oraz aktuyalne statystyki dla wybranego okresu. Zwracane są następujące statystyki:<indexterm xml:id="indexterm-163">
+<para>Statystyki We/Wy dla pul lub konkretnych urządzeń wirtualnych można uzyskać za pomocą komendy <command>zpool iostat</command>. Podobnie jak komenda <command>iostat</command>, ta komenda może wydrukować statyczny obraz sumarycznego We/Wy oraz aktualne statystyki dla wybranego okresu. Zwracane są następujące statystyki:<indexterm xml:id="indexterm-163">
 <primary>drukowanie</primary>
 <secondary>statystyk We/Wy pul nośników danych ZFS</secondary>
 <tertiary>opis</tertiary>
@@ -1264,8 +1264,8 @@ dozer  1.2T</screen>
 <literal>USED CAPACITY</literal>
 </term>
 <listitem>
-<para>Ilość danych aktualnie przechowywanych w puli lub na urządzeniu. Liczba ta różni się nieznacznie od ilości miesjca faktycznie dostępnej systemom plików ze względu na wewnętrzne szczegóły implementacji.</para>
-<para>Więcej informacji o róznicach w pojemności pul i datasetów w <olink targetdoc="" remap="internal" targetptr="gbchp">Obliczaniu pojemności ZFS</olink>.</para>
+<para>Ilość danych aktualnie przechowywanych w puli lub na urządzeniu. Liczba ta różni się nieznacznie od ilości miejsca faktycznie dostępnej systemom plików ze względu na wewnętrzne szczegóły implementacji.</para>
+<para>Więcej informacji o różnicach w pojemności pul i datasetów w <olink targetdoc="" remap="internal" targetptr="gbchp">Obliczaniu pojemności ZFS</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1334,7 +1334,7 @@ pool         used  avail   read  write   read  write
 ----------  -----  -----  -----  -----  -----  -----
 tank         100G  20.0G   1.2M   102K   1.2M  3.45K
 dozer       12.3G  67.7G   132K  15.2K  32.1K  1.20K</screen>
-<para>Ze wzlędu na fakt, że statystyki te są kumulatywne od momentu rozruchu systemu, przepustowość może wydawać się niska, jeśli pula jest względnie nieaktywna. Bliższe rzeczywistości statystyki można uzyskać wskazująć przedział czasu, dla którego mają zostać wydrukowane dane. Na przykład:</para>
+<para>Ze względu na fakt, że statystyki te są kumulatywne od momentu rozruchu systemu, przepustowość może wydawać się niska, jeśli pula jest względnie nieaktywna. Bliższe rzeczywistości statystyki można uzyskać wskazując przedział czasu, dla którego mają zostać wydrukowane dane. Na przykład:</para>
 <screen># <userinput>zpool iostat tank 2</userinput>
                capacity     operations    bandwidth
 pool         used  avail   read  write   read  write
@@ -1361,7 +1361,7 @@ Na przykład:<indexterm xml:id="indexterm-167">
 </indexterm>
 <indexterm xml:id="indexterm-169">
 <primary>pule nośników danych ZFS</primary>
-<secondary>syatystyki We/Wy urządzeń wirtualnych</secondary>
+<secondary>statystyki We/Wy urządzeń wirtualnych</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
@@ -1374,13 +1374,13 @@ mirror      20.4G  59.6G      0     22      0  6.00K
   c1t1d0        -      -      1    299  11.2K   148K
 ----------  -----  -----  -----  -----  -----  -----
 total       24.5K   149M      0     22      0  6.00K</screen>
-<para>Podczas przeglądania statystyk We/Wy urządzeń wirtualnych nalezy pamiętać o dwóch rzeczach.</para>
+<para>Podczas przeglądania statystyk We/Wy urządzeń wirtualnych należy pamiętać o dwóch rzeczach.</para>
 <itemizedlist>
 <listitem>
 <para>Po pierwsze, zużycie miejsca jest dostępne tylko urządzeniom najwyższego poziomu. Sposób alokacji pomiędzy mirrorami i urządzeniami RAID-Z jest charakterystyczna dla implementacji i trudna do wyrażenia w pojedynczej liczbie.</para>
 </listitem>
 <listitem>
-<para>Po drugie, liczby mogą nie sumować się w sposób, jakiego można się spodziewać. W szczególności operacje na urządzeniach RAID-Z i morrorach nie będą równe. Róznica jest szczególnie zauważalna zaraz po uworzniu puli, ponieważ większość We/Wy wykonywana jest bezpośrednio na dyskach jako część procesu tworzenia puli, nie jest zaś rejestrowana na poziomie mirrora. Z czasem liczby te powinny znacznie się do siebie zbliżyć, aczkolwiek zepsute, milczące lub wyłączeone urządzenia mogą zmienić tę symetrię.</para>
+<para>Po drugie, liczby mogą nie sumować się w sposób, jakiego można się spodziewać. W szczególności operacje na urządzeniach RAID-Z i morrorach nie będą równe. Różnica jest szczególnie zauważalna zaraz po utworzeniu puli, ponieważ większość We/Wy wykonywana jest bezpośrednio na dyskach jako część procesu tworzenia puli, nie jest zaś rejestrowana na poziomie mirrora. Z czasem liczby te powinny znacznie się do siebie zbliżyć, aczkolwiek zepsute, milczące lub wyłączone urządzenia mogą zmienić tę symetrię.</para>
 </listitem>
 </itemizedlist>
 <para>Przy przeglądaniu statystyk urządzeń wirtualnych dostępne są te same opcje (interwał i liczba powtórzeń) co przy przeglądaniu statystyk pul.</para>
@@ -1388,10 +1388,10 @@ total       24.5K   149M      0     22      0  6.00K</screen>
 </sect2>
 <sect2 xml:id="gamno">
 <title>Zdrowie pul nośników danych ZFS</title>
-<para>ZFS zapewnia zintegrowaną metodę sprawdzania zdrowia pul i urządzeń. Zdrowie puli zależy od zdrowia poszczególnych urządzeń, które sie na nią składają. Informacje te mozna wydrukować komendą <command>zpool status</command>. Dodatkowo potencjalne uszkodzenia pul i urządzeń są raportowane przez <command>fmd</command> i wyświetlane na konsoli systemowej i logowane w pliku <command>/var/adm/messages</command>.
+<para>ZFS zapewnia zintegrowaną metodę sprawdzania zdrowia pul i urządzeń. Zdrowie puli zależy od zdrowia poszczególnych urządzeń, które się na nią składają. Informacje te można wydrukować komendą <command>zpool status</command>. Dodatkowo potencjalne uszkodzenia pul i urządzeń są raportowane przez <command>fmd</command> i wyświetlane na konsoli systemowej i logowane w pliku <command>/VAT/ADM/messa ges</command>.
 W tym podrozdziale przedstawione są sposoby ustalania zdrowia pul i urządzeń. Nie przestawiamy sposobów radzenia sobie z  uszkodzeniami pul i urządzeń. Informacje o rozwiązywaniu problemów i odzyskiwaniu danych są w <olink targetdoc="" remap="internal" targetptr="gavwg">Rozdziale 9, Rozwiązywanie problemów i odzyskiwanie danych na ZFS</olink>.<indexterm xml:id="indexterm-170">
 <primary>drukowanie</primary>
-<secondary>zdowie pul nośników danych</secondary>
+<secondary>zdrowie pul nośników danych</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-171">
@@ -1422,7 +1422,7 @@ W tym podrozdziale przedstawione są sposoby ustalania zdrowia pul i urządzeń.
 <literal>FAULTED</literal>
 </term>
 <listitem>
-<para>Urządzenie wirtualne jest niedostępne. Stan ten wskazuje najczęsciej na uszkodzenie urządzenia uniemożliwiające korzystanie z niego, na przykład takie, w którym ZFS nie może ani wysyłać ani odczytywać z niego danych. Jeśli urządzenie wirtualne najwyższego poziomu jest w takim stanie, cała pula jest niedostępna.</para>
+<para>Urządzenie wirtualne jest niedostępne. Stan ten wskazuje najczęściej na uszkodzenie urządzenia uniemożliwiające korzystanie z niego, na przykład takie, w którym ZFS nie może ani wysyłać ani odczytywać z niego danych. Jeśli urządzenie wirtualne najwyższego poziomu jest w takim stanie, cała pula jest niedostępna.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1504,7 +1504,7 @@ errors: No known data errors</screen>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>W pwyższym przykładzie uszkodzone urządzenie powinno zostać wymienione. Po wymianie urządzenia należy użyć komendy <command>zpool online</command>, aby włączyć urządzenie. Na przykład:</para>
+<para>W powyższym przykładzie uszkodzone urządzenie powinno zostać wymienione. Po wymianie urządzenia należy użyć komendy <command>zpool online</command>, aby włączyć urządzenie. Na przykład:</para>
 <screen># <userinput>zpool online tank c1t0d0</userinput>
 Bringing device c1t0d0 online
 # <userinput>zpool status -x</userinput>
@@ -1525,7 +1525,7 @@ config:
           mirror     DEGRADED     0     0     0
             c1t0d0   UNAVAIL      0     0     0  cannot open
             c1t1d0   ONLINE       0     0     0</screen>
-<para>Kolumny <literal>READ</literal> i <literal>WRITE</literal> podają liczbę błędów We/Wy, które pojawiły się na danych urządzeniu, a kolumna <literal>CKSUM</literal> podaje liczbę błędów sum kontrolnych, które pojawiły się na danych urządzeniu. Obydwa liczniki wskazują prawdopodobnie potencjalne uszkodzenie urządzenia i należy podjąć działania naprawcze. Jeśli wartości różne od zera podawane sa dla urządzeń wirtualnych najwyższego poziomu, część danych może być niedostępna. Liczniki błędów rejestrują wszystkie znane błędy danych.</para>
+<para>Kolumny <literal>READ</literal> i <literal>WRITE</literal> podają liczbę błędów We/Wy, które pojawiły się na danych urządzeniu, a kolumna <literal>CKSUM</literal> podaje liczbę błędów sum kontrolnych, które pojawiły się na danych urządzeniu. Obydwa liczniki wskazują prawdopodobnie potencjalne uszkodzenie urządzenia i należy podjąć działania naprawcze. Jeśli wartości różne od zera podawane są dla urządzeń wirtualnych najwyższego poziomu, część danych może być niedostępna. Liczniki błędów rejestrują wszystkie znane błędy danych.</para>
 <para>W powyższym przykładzie wyłączone urządzenie nie powoduje żadnych błędów w danych.</para>
 <para>Więcej informacji o diagnozowaniu i reperowaniu uszkodzonych pul i danych w <olink targetdoc="" remap="internal" targetptr="gavwg">Rozdziale 9, Rozwiązywanie problemów i odzyskiwanie danych na ZFS</olink>.</para>
 </sect3>
@@ -1545,24 +1545,24 @@ config:
 </para>
 <sect2 xml:id="gazre">
 <title>Przygotowanie do migracji puli nośników danych ZFS</title>
-<para>Pule nośników danych muszą być ręcznie eksportowane, aby zaznaczyć, że są gotowe do migracji. Operacja ta zapisuje wszelkie niezapisane wcześniej dane, nanosi dane wskazujące, że wykonano eksport i usuwa wszelką znajomośc puli z systemu.</para>
-<para>Jesli pula nie zostanie wyeksportowana, ale dyski zostaną po prostu usunięte z systemu, wciąż można zaimportować pulę w innym systemie. Należy jednak liczyć się z utratą kilku ostatnich sekund transakcji a pula będzie oznaczona jako uszkodzona na oryginalnym komputerze, ponieważ urządzenia są niedostępne. Domyślnie komputer docelowy odmawia importu puli, która nie była wyeksportowana. Jest to konieczne, aby zapobiec przypadkowemu importowi aktywnej puli składającej się z sieciowych nośników danych, które mogą być używane przez inny system.</para>
+<para>Pule nośników danych muszą być ręcznie eksportowane, aby zaznaczyć, że są gotowe do migracji. Operacja ta zapisuje wszelkie niezapisane wcześniej dane, nanosi dane wskazujące, że wykonano eksport i usuwa wszelką znajomość puli z systemu.</para>
+<para>Jeśli pula nie zostanie wyeksportowana, ale dyski zostaną po prostu usunięte z systemu, wciąż można zaimportować pulę w innym systemie. Należy jednak liczyć się z utratą kilku ostatnich sekund transakcji a pula będzie oznaczona jako uszkodzona na oryginalnym komputerze, ponieważ urządzenia są niedostępne. Domyślnie komputer docelowy odmawia importu puli, która nie była wyeksportowana. Jest to konieczne, aby zapobiec przypadkowemu importowi aktywnej puli składającej się z sieciowych nośników danych, które mogą być używane przez inny system.</para>
 </sect2>
 <sect2 xml:id="gazqr">
-<title>Eksportowanie puli nosników danych ZFS</title>
+<title>Eksportowanie puli nośników danych ZFS</title>
 <para>Eksport puli wykonuje się za pomocą komendy <command>zpool export</command>. Na przykład:</para>
 <screen># <userinput>zpool export tank</userinput>
 </screen>
-<para>Po wykonaniu komendy pula <literal>tank</literal> jest niewidoczna dla systemu. Komenda próbuje odmontować wszelkie systemy plików w puli zamontowane w systemie. Jeśli odmontowanie któregokolwiek sie nie uda, mozna odmontować je siłą przy użyciu opcji <option>f</option>.
+<para>Po wykonaniu komendy pula <literal>tank</literal> jest niewidoczna dla systemu. Komenda próbuje odmontować wszelkie systemy plików w puli zamontowane w systemie. Jeśli odmontowanie któregokolwiek się nie uda, można odmontować je siłą przy użyciu opcji <option>f</option>.
 Na przykład:</para>
 <screen># <userinput>zpool export tank</userinput>
 cannot unmount '/export/home/eschrock': Device busy
 # <userinput>zpool export -f tank</userinput>
 </screen>
-<para>Jeśli w trakcie eksportu urządzenia są niedostępne, nie można oznaczyć dysków jako wyeksportowane. Jeśli jeden z tych dysków zostanie później podłączony do systemu bez żadnych działających urządzeń, będzie oznaczony jako potencjalnie aktywny. Jesli emulowane urządzenia w puli są używane, puli nie można wyeksportować nawet z użyciem opcji <option>
+<para>Jeśli w trakcie eksportu urządzenia są niedostępne, nie można oznaczyć dysków jako wyeksportowane. Jeśli jeden z tych dysków zostanie później podłączony do systemu bez żadnych działających urządzeń, będzie oznaczony jako potencjalnie aktywny. Jeśli emulowane urządzenia w puli są używane, puli nie można wyeksportować nawet z użyciem opcji <option>
 f</option>. Aby wyeksportować pulę z emulowanym urządzeniem, najpierw należy upewnić się, że wszyscy użytkownicy wolumenu już go nie używają.<indexterm xml:id="indexterm-180">
 <primary>eksportowanie</primary>
-<secondary>puli nośników danychZFS storage pool</secondary>
+<secondary>puli nośników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-181">
@@ -1581,7 +1581,7 @@ f</option>. Aby wyeksportować pulę z emulowanym urządzeniem, najpierw należy
 </sect2>
 <sect2 xml:id="gazru">
 <title>Określanie pul nośników danych gotowych do importu</title>
-<para>Po usunięciu puli z systemu (przez wyeksportowanie lub usunięcie dysków), należy podłączyć urządzenia do docelowego systemu. Wprawdzie ZFS potrafi poradzić sobie w niektórych sytuacjach, kiedy tylko część urządzeń jest dostępna, wszyzstkie urządzenia w puli muszą zostać przeniesione między systemami. Urządzenia nie muszą zostac podłączone z tymi samymi nazwami. ZFS wykrywa wszelkie urządzenia o zmienionych nazwach i poprawia odpowiednio swoją konfigurację. Do wykrywania dostępnych pul służy komenda <command>zpool import</command> bez żadnych opcji. Na przykład:</para>
+<para>Po usunięciu puli z systemu (przez wyeksportowanie lub usunięcie dysków), należy podłączyć urządzenia do docelowego systemu. Wprawdzie ZFS potrafi poradzić sobie w niektórych sytuacjach, kiedy tylko część urządzeń jest dostępna, wszystkie urządzenia w puli muszą zostać przeniesione między systemami. Urządzenia nie muszą zostać podłączone z tymi samymi nazwami. ZFS wykrywa wszelkie urządzenia o zmienionych nazwach i poprawia odpowiednio swoją konfigurację. Do wykrywania dostępnych pul służy komenda <command>zpool import</command> bez żadnych opcji. Na przykład:</para>
 <screen># <userinput>zpool import</userinput>
   pool: tank
     id: 3778921145927357706
@@ -1611,7 +1611,7 @@ config:
 </indexterm>
 </para>
 <para>Podobnie jak komenda <command>zpool status</command>, polecenie <command>zpool
-import</command> odsyła do artykułu w bazie wiedzy zawierającego najaktulaniejsze informacje odnośnie procedur naprawiania dla danego problemu. W tym przypadku, użytkownik może zmusić system do zaimportowania puli. Import puli podłączonej przez sieć i wykorzystywanej przez inny system może spowodować uszkodzenia danych i panikę jądra, ponieważ oba systemy będą usiłowały zapisywać na tych samych nośnikach. Jeśli nie wszystkie urządzenia w puli są dostępne, lecz zachowana jest wystarczająca redundancja aby pula była użyteczna, stan jej określany jest jako <literal>DEGRADED</literal>. Na przykład:</para>
+import</command> odsyła do artykułu w bazie wiedzy zawierającego najaktualniejsze informacje odnośnie procedur naprawiania dla danego problemu. W tym przypadku, użytkownik może zmusić system do zaimportowania puli. Import puli podłączonej przez sieć i wykorzystywanej przez inny system może spowodować uszkodzenia danych i panikę jądra, ponieważ oba systemy będą usiłowały zapisywać na tych samych nośnikach. Jeśli nie wszystkie urządzenia w puli są dostępne, lecz zachowana jest wystarczająca redundancja aby pula była użyteczna, stan jej określany jest jako <literal>DEGRADED</literal>. Na przykład:</para>
 <screen># <userinput>zpool import</userinput>
   pool: tank
     id: 3778921145927357706
@@ -1626,7 +1626,7 @@ config:
           mirror     DEGRADED
             c1t0d0   UNAVAIL   cannot open
             c1t1d0   ONLINE</screen>
-<para>W tym przykładzie pierwszy dysk jest uszkodzony lub w ogóle go nie ma, wciąż jednak można zaimportowac pulę, ponieważ mirrorowane dane nadal są dostępne. Jeśli zbyt wiele urządzeń jest niedostępnych lub uszkodzonych, import puli nie powiedzie się. Na przykład:</para>
+<para>W tym przykładzie pierwszy dysk jest uszkodzony lub w ogóle go nie ma, wciąż jednak można zaimportować pulę, ponieważ mirrorowane dane nadal są dostępne. Jeśli zbyt wiele urządzeń jest niedostępnych lub uszkodzonych, import puli nie powiedzie się. Na przykład:</para>
 <screen># <userinput>zpool import</userinput>
   pool: dozer
     id: 12090808386336829175
@@ -1678,9 +1678,9 @@ config:
           /file/b   ONLINE
 # <userinput>zpool import -d /file dozer</userinput>
 </screen>
-<para>Jeśli urządzenia znajdują się w kliku katalogach można podac kilka opcji <option>d</option>.<indexterm xml:id="indexterm-186">
-<primary>iportowanie</primary>
-<secondary>puli nośników danych ZFS z alternatycznych katalogów (<command>zpool import -d</command>)</secondary>
+<para>Jeśli urządzenia znajdują się w kliku katalogach można podać kilka opcji <option>d</option>.<indexterm xml:id="indexterm-186">
+<primary>importowanie</primary>
+<secondary>puli nośników danych ZFS z alternatywnych katalogów (<command>zpool import -d</command>)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-187">
@@ -1691,7 +1691,7 @@ config:
 </indexterm>
 <indexterm xml:id="indexterm-188">
 <primary>pule nośników danych ZFS</primary>
-<secondary>importowanie z alternatycznych katalogów (<command>zpool import -d</command>)</secondary>
+<secondary>importowanie z alternatywnych katalogów (<command>zpool import -d</command>)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
@@ -1728,7 +1728,7 @@ import by numeric ID instead
 <para>Jeśli nazwa puli pokrywa się z nazwą już istniejącej puli, można zaimportować ją pod inną nazwą. Na przykład:</para>
 <screen># <userinput>zpool import dozer zeepool</userinput>
 </screen>
-<para>Powyższa komenda zaimportowała pulę wyeksportowaną jako<literal>dozer</literal> przy użyciu nowej nazwy <literal>zeepool</literal>. Jesli pula nie została czysto wyeksportowana, ZFS będzie wymagał flagi <option>f</option>, aby uniknąć przypadkowego zaimportowania puli, która jest nadal używana przez inny system. Na przykład:</para>
+<para>Powyższa komenda zaimportowała pulę wyeksportowaną jako<literal>dozer</literal> przy użyciu nowej nazwy <literal>zeepool</literal>. Jeśli pula nie została czysto wyeksportowana, ZFS będzie wymagał flagi <option>f</option>, aby uniknąć przypadkowego zaimportowania puli, która jest nadal używana przez inny system. Na przykład:</para>
 <screen># <userinput>zpool import dozer</userinput>
 cannot import 'dozer': pool may be in use on another system
 use '-f' to import anyway
@@ -1770,7 +1770,7 @@ config:
           mirror    ONLINE
             c1t0d0  ONLINE
             c1t1d0  ONLINE</screen>
-<para>W powyższym wyniku komendy <command>zpool import</command> można zidentyfikować pulę jako zniszczoną ze względu na nastepującą informację o stanie:</para>
+<para>W powyższym wyniku komendy <command>zpool import</command> można zidentyfikować pulę jako zniszczoną ze względu na następującą informację o stanie:</para>
 <screen>state: ONLINE (DESTROYED)</screen>
 <para>Aby odzyskać zniszczoną pulę, należy wykonać komendę <command>zpool import</command> <option>D</option> i z flagą <option>f</option>.
 Na przykład:</para>
@@ -1788,7 +1788,7 @@ config:
             c1t1d0  ONLINE       0     0     0
 
 errors: No known data errors</screen>
-<para>Jeśli jedno z urządzeń w zniszczonej puli jest niedostępne lub uszkodzone, odzyskanie zniszczonej puli może być niemożliwe. W takim przypadku należy najpierw zimportować zdegradowana pulę, a następnie spróbować naprawić uszkodzenie. Na przykład:<indexterm xml:id="indexterm-192">
+<para>Jeśli jedno z urządzeń w zniszczonej puli jest niedostępne lub uszkodzone, odzyskanie zniszczonej puli może być niemożliwe. W takim przypadku należy najpierw zaimportować zdegradowana pulę, a następnie spróbować naprawić uszkodzenie. Na przykład:<indexterm xml:id="indexterm-192">
 <primary>odzyskiwanie</primary>
 <secondary>zniszczonej puli nośników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
@@ -1852,7 +1852,7 @@ all pools are healthy</screen>
 <title>Uaktualnianie pul nośników danych ZFS</title>
 <para>W przyszłych wersjach ZFS może okazać się konieczne uaktualnienie pul, aby możliwe było skorzystanie z wszystkich opcji nowej wersji ZFS. 
 Komenda <command>zpool upgrade</command> służy do przeprowadzenia tego procesu. Komenda <command>zpool status</command> dodatkowo informuje, jeśli pule pracują pod kontrolą starszej wersji ZFS. Na przykład:<indexterm xml:id="indexterm-195">
-<primary>aktualnianie</primary>
+<primary>uaktualnianie</primary>
 <secondary>pula nośników danych ZFS</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
@@ -1882,12 +1882,12 @@ config:
           c1t27d0   ONLINE       0     0     0
 
 errors: No known data errors</screen>
-<para>W tym wydaniu ZFS wydanie polecenia <command>zpool upgrade</command> do uaktualnienia puli nie powinno byc konieczne. Obecnie komenda ta drukuje informacje o wersji ZFS.</para>
+<para>W tym wydaniu ZFS wydanie polecenia <command>zpool upgrade</command> do uaktualnienia puli nie powinno być konieczne. Obecnie komenda ta drukuje informacje o wersji ZFS.</para>
 <screen># <userinput>zpool upgrade</userinput>
 This system is currently running ZFS version 1.
 
 All pools are formatted using this version.</screen>
-<para>W przyszłych wydaniach ZFS będzie można użyć poniższej składni do uzyskania dodatkowych infromacji o wersji i obsługiwanych wydaniach.</para>
+<para>W przyszłych wydaniach ZFS będzie można użyć poniższej składni do uzyskania dodatkowych informacji o wersji i obsługiwanych wydaniach.</para>
 <screen># <userinput>zpool upgrade -v</userinput>
 This system is currently running ZFS version 1.
 
