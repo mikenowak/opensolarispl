@@ -1610,15 +1610,8 @@ config:
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>Similar to the <command>zpool status</command> command, the <command>zpool
-import</command> command refers to a knowledge article available on the web
-with the most up-to-date information regarding repair procedures for this
-problem. In this case, the user can force the pool to be imported. However,
-importing a pool that is currently in use by another system over a storage
-network can result in data corruption and panics as both systems attempt to
-write to the same storage. If some devices in the pool are not available but
-enough redundancy is available to have a usable pool, the pool appears in
-the <literal>DEGRADED</literal> state. Na przykład:</para>
+<para>Podobnie jak komenda <command>zpool status</command>, polecenie <command>zpool
+import</command> odsyła do artykułu w bazie wiedzy zawierającego najaktulaniejsze informacje odnośnie procedur naprawiania dla danego problemu. W tym przypadku, użytkownik może zmusić system do zaimportowania puli. Import puli podłączonej przez sieć i wykorzystywanej przez inny system może spowodować uszkodzenia danych i panikę jądra, ponieważ oba systemy będą usiłowały zapisywać na tych samych nośnikach. Jeśli nie wszystkie urządzenia w puli są dostępne, lecz zachowana jest wystarczająca redundancja aby pula była użyteczna, stan jej określany jest jako <literal>DEGRADED</literal>. Na przykład:</para>
 <screen># <userinput>zpool import</userinput>
   pool: tank
     id: 3778921145927357706
@@ -1633,10 +1626,7 @@ config:
           mirror     DEGRADED
             c1t0d0   UNAVAIL   cannot open
             c1t1d0   ONLINE</screen>
-<para>In this example, the first disk is damaged or missing, though you can
-still import the pool because the mirrored data is still accessible. If too
-many faulted or missing devices are present, the pool cannot be imported.
-Na przykład:</para>
+<para>W tym przykładzie pierwszy dysk jest uszkodzony lub w ogóle go nie ma, wciąż jednak można zaimportowac pulę, ponieważ mirrorowane dane nadal są dostępne. Jeśli zbyt wiele urządzeń jest niedostępnych lub uszkodzonych, import puli nie powiedzie się. Na przykład:</para>
 <screen># <userinput>zpool import</userinput>
   pool: dozer
     id: 12090808386336829175
@@ -1650,12 +1640,7 @@ config:
           c1t1d0    FAULTED
           c1t2d0    ONLINE
           c1t3d0    FAULTED</screen>
-<para>In this example, two disks are missing from a RAID-Z virtual device,
-which means that sufficient replicated data is not available to reconstruct
-the pool. In some cases, not enough devices are present to determine the complete
-configuration. In this case, ZFS doesn't know what other devices were part
-of the pool, though ZFS does report as much information as possible about
-the situation. Na przykład:</para>
+<para>W tym przykładzie brakuje dwóch dysków w wirtualnym urządzeniu RAID-Z, co oznacza brak wystarczającej replikacji danych i niemożność odtworzenia puli. W tym przypadku ZFS nie wie, które jeszcze urządzenia są częścią puli, aczkolwiek stara się dostarczyć jak najwięcej informacji. Na przykład:</para>
 <screen># <userinput>zpool import</userinput>
 pool: dozer
     id: 12090808386336829175
@@ -1675,12 +1660,8 @@ config:
         exact configuration cannot be determined.</screen>
 </sect2>
 <sect2 xml:id="gaztk">
-<title>Finding ZFS Storage Pools From Alternate Directories</title>
-<para>By default, the <command>zpool import</command> command only searches
-devices within the <filename>/dev/dsk</filename> directory. If devices exist
-in another directory, or you are using pools backed by files, you must use
-the <option>
-d</option> option to search different directories. Na przykład:</para>
+<title>Szukanie pul nośników danych ZFS w alternatywnych katalogach</title>
+<para>Domyślnie komenda <command>zpool import</command> szuka urządzeń tylko w katalogu <filename>/dev/dsk</filename>. Jeśli urządzenie istnieje w innym katalogu lub używana jest pula zbudowana z plików, należy użyć opcji <option>d</option> w celu przeszukania innych katalogów. Na przykład:</para>
 <screen># <userinput>zpool create dozer /file/a /file/b</userinput>
 # <userinput>zpool export dozer</userinput>
 # <userinput>zpool import</userinput>
@@ -1697,10 +1678,9 @@ config:
           /file/b   ONLINE
 # <userinput>zpool import -d /file dozer</userinput>
 </screen>
-<para>If devices exist in multiple directories, you can specify multiple <option>
-d</option> options.<indexterm xml:id="indexterm-186">
-<primary>importing</primary>
-<secondary>ZFS storage pool from alternate directories (<command>zpool import -d</command>)</secondary>
+<para>Jeśli urządzenia znajdują się w kliku katalogach można podac kilka opcji <option>d</option>.<indexterm xml:id="indexterm-186">
+<primary>iportowanie</primary>
+<secondary>puli nośników danych ZFS z alternatycznych katalogów (<command>zpool import -d</command>)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-187">
@@ -1711,20 +1691,17 @@ d</option> options.<indexterm xml:id="indexterm-186">
 </indexterm>
 <indexterm xml:id="indexterm-188">
 <primary>pule nośników danych ZFS</primary>
-<secondary>importing from alternate directories (<command>zpool import -d</command>)</secondary>
+<secondary>importowanie z alternatycznych katalogów (<command>zpool import -d</command>)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 </sect2>
 <sect2 xml:id="gazuf">
-<title>Importing ZFS Storage Pools</title>
-<para>Once a pool has been identified for import, you can import it by specifying
-the name of the pool or its numeric identifier as an argument to the <command>zpool
-import</command> command. Na przykład:</para>
+<title>Importowanie pul nośników danych ZFS</title>
+<para>Po zidentyfikowaniu puli do importu, można ją zaimportować przez wskazanie nazwy bądź liczbowego identyfikatora komendzie <command>zpool import</command>. Na przykład:</para>
 <screen># <userinput>zpool import tank</userinput>
 </screen>
-<para>If multiple available pools have the same name, you can specify which
-pool to import using the numeric identifier. Na przykład:</para>
+<para>Jeśli kilka pul ma tę samą nazwę, można wskazać konkretną za pomocą liczbowego identyfikatora. Na przykład:</para>
 <screen># <userinput>zpool import</userinput>
   pool: dozer
     id: 2704475622193776801
@@ -1748,25 +1725,19 @@ cannot import 'dozer': more than one matching pool
 import by numeric ID instead
 # <userinput>zpool import 6223921996155991199</userinput>
 </screen>
-<para>If the pool name conflicts with an existing pool name, you can import
-the pool under a different name. Na przykład:</para>
+<para>Jeśli nazwa puli pokrywa się z nazwą już istniejącej puli, można zaimportować ją pod inną nazwą. Na przykład:</para>
 <screen># <userinput>zpool import dozer zeepool</userinput>
 </screen>
-<para>This command imports the exported pool <literal>dozer</literal> using
-the new name <literal>zeepool</literal>. If the pool was not cleanly exported,
-ZFS requires the <option>
-f</option> flag to prevent users from accidentally
-importing a pool that is still in use on another system. Na przykład:</para>
+<para>Powyższa komenda zaimportowała pulę wyeksportowaną jako<literal>dozer</literal> przy użyciu nowej nazwy <literal>zeepool</literal>. Jesli pula nie została czysto wyeksportowana, ZFS będzie wymagał flagi <option>f</option>, aby uniknąć przypadkowego zaimportowania puli, która jest nadal używana przez inny system. Na przykład:</para>
 <screen># <userinput>zpool import dozer</userinput>
 cannot import 'dozer': pool may be in use on another system
 use '-f' to import anyway
 # <userinput>zpool import -f dozer</userinput>
 </screen>
-<para>Pools can also be imported under an alternate root by using the <option>
-R</option> option.
-For more information on alternate root pools, see <olink targetdoc="" remap="internal" targetptr="gbcgl">ZFS Alternate Root Pools</olink>.<indexterm xml:id="indexterm-189">
-<primary>importing</primary>
-<secondary>ZFS storage pool</secondary>
+<para>Pule można też importować z alternatywnym głównym katalogiem przy pomocy opcji <option>R</option> .
+Więcej informacji o alternatywnych katalogach głównych w <olink targetdoc="" remap="internal" targetptr="gbcgl">Alternatywne katalogi główne pul nośników danych ZFS</olink>.<indexterm xml:id="indexterm-189">
+<primary>importowanie</primary>
+<secondary>puli nośników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-190">
@@ -1777,16 +1748,15 @@ For more information on alternate root pools, see <olink targetdoc="" remap="int
 </indexterm>
 <indexterm xml:id="indexterm-191">
 <primary>pule nośników danych ZFS</primary>
-<secondary>importing</secondary>
+<secondary>importowanie</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 </sect2>
 <sect2 xml:id="gcfhw">
-<title>Recovering Destroyed ZFS Storage Pools</title>
-<para>You can use the <command>zpool import</command> <option>
-D</option> command
-to recover a storage pool that has been destroyed. Na przykład:</para>
+<title>Odzyskiwanie zniszczonych pul nośników danych ZFS</title>
+<para>Zniszczoną pulę można odzyskać za pomocą komendy <command>zpool import</command> <option>
+D</option>. Na przykład:</para>
 <screen># <userinput>zpool destroy tank</userinput>
 # <userinput>zpool import -D</userinput>
 pool: tank
@@ -1800,12 +1770,9 @@ config:
           mirror    ONLINE
             c1t0d0  ONLINE
             c1t1d0  ONLINE</screen>
-<para>In the above <command>zpool import</command> output, you can identify
-this pool as the destroyed pool because of the following state information:</para>
+<para>W powyższym wyniku komendy <command>zpool import</command> można zidentyfikować pulę jako zniszczoną ze względu na nastepującą informację o stanie:</para>
 <screen>state: ONLINE (DESTROYED)</screen>
-<para>To recover the destroyed pool, issue the <command>zpool import</command> <option>
-D</option> command again with the pool to be recovered and the <option>
-f</option> option.
+<para>Aby odzyskać zniszczoną pulę, należy wykonać komendę <command>zpool import</command> <option>D</option> i z flagą <option>f</option>.
 Na przykład:</para>
 <screen># <userinput>zpool import -Df tank</userinput>
 # <userinput>zpool status tank</userinput>
@@ -1821,9 +1788,7 @@ config:
             c1t1d0  ONLINE       0     0     0
 
 errors: No known data errors</screen>
-<para>If one of the devices in the destroyed pool is faulted or unavailable,
-you might be able to recover the destroyed pool anyway. In this scenario,
-import the degraded pool and then attempt to fix the device failure. Na przykład:<indexterm xml:id="indexterm-192">
+<para>Jeśli jedno z urządzeń w zniszczonej puli jest niedostępne lub uszkodzone, odzyskanie zniszczonej puli może być niemożliwe. W takim przypadku należy najpierw zimportować zdegradowana pulę, a następnie spróbować naprawić uszkodzenie. Na przykład:<indexterm xml:id="indexterm-192">
 <primary>odzyskiwanie</primary>
 <secondary>zniszczonej puli nośników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
