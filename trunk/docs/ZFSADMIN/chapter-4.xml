@@ -84,8 +84,8 @@ w katalogu <filename>/dev/dsk</filename>.<indexterm xml:id="indexterm-81">
 <para>Nośnikiem danych może być cały dysk (<filename>c1t0d0</filename>), 
 lub pojedynczy blok (ang. slice), (<filename>c0t0d0s7</filename>). Zaleca się 
 używania całych dysków, w którym to przypadku dysk nie wymaga specjalnego 
-formatowania. ZFS formatuje dysk używają etykiet EFI do przechowywania jednego 
-bloku. W takim przyadku tablica partycji wyświetlana przez komendę <command>
+formatowania. ZFS formatuje dysk używając etykiet EFI do przechowywania jednego 
+bloku. W takim przypadku tablica partycji wyświetlana przez komendę <command>
 format</command> wygląda podobnie:</para>
 <screen>Current partition table (original):
 Total disk sectors available: 71670953 + 16384 (reserved sectors)
@@ -100,7 +100,7 @@ Part      Tag    Flag     First Sector        Size        Last Sector
   6 unassigned    wm                 0          0              0    
   7 unassigned    wm                 0          0              0    
   8   reserved    wm          71670954       8.00MB         71687337</screen>
-<para>Aby użyć całego dysku, musi być nazwany zgodnie z konwencją Solarisa, na 
+<para>Aby użyć całego dysku, musi on być nazwany zgodnie z konwencją Solarisa, na 
 przykład <filename>/dev/dsk/cXtXdXsX</filename>. Niektóre sterowniki od 
 niezależnych dostawców używają innych konwencji nazewniczych lub umieszczają 
 dyski w innych katalogach, niż <filename>/dev/dsk</filename>. Aby użyć tych 
@@ -116,8 +116,8 @@ dysków, należy ręcznie je etykietować i udostępnić blok ZFS-owi.
 </para>
 <para>ZFS nadaje etykietę EFI w momencie tworzenia puli przy użyciu całego 
 dysku. Można też etykietować dyski tadycyjnym Solarisowym VTOC przy tworzeniu 
-puli z użyciek bloku.</para>
-<para>Bloki powinny być używane tylko w poniższych wrunkach:</para>
+puli z użyciem bloku.</para>
+<para>Bloki powinny być używane tylko w poniższych warunkach:</para>
 <itemizedlist>
 <listitem>
 <para>Nazwa urządzenia jest niestandardowa.</para>
@@ -175,7 +175,7 @@ Volume Manager (SVM), Veritas Volume Manager (VxVM), bądź sprzętowych zarząd
 woluminów (LUN-y lub sprzętowe RAID-Y), konfiguracje takie nie są zalecane. 
 O ile ZFS działa z takimi urządzeniami prawidłowo, wynikiem może być 
 nieoptymalna wydajność.</para>
-<para>Dyski identyfikuje się za równo za pomocą ścieżki, jak i ich ID, jeśli 
+<para>Dyski identyfikuje się zarówno za pomocą ścieżki, jak i ich ID, jeśli 
 jest dotępne. Metoda ta pozwala na rekonfigurowanie urządzeń w systemie bez 
 uaktualniania stanu ZFS. Jesli dysk zostanie przeniesiony z kontrolera 1., 
 do kontrolera 2., ZFS użyje ID urządzenia do wykrycia go i ustalenia, że powinno
@@ -195,7 +195,7 @@ użycia w środowisku produkcyjnym. Powodem jest to, że <emphasis role="strong"
 spójność plików zależy od systemu plików, na których pliki są przechowywane.
 </emphasis>. Jeśli zostanie utworzona pula ZFS na bazie plików przechowywanych 
 na systemie plików UFS, wtedy pośrednio żąda się gwarancji semantyki 
-synchornicznej oraz poprawności od systemu plików UFS.
+synchronicznej oraz poprawności od systemu plików UFS.
 <indexterm xml:id="indexterm-88">
 <primary>Pule nośników danych ZFS</primary>
 <secondary>używanie plików</secondary>
@@ -210,7 +210,7 @@ bądź przy eksperymentowaniu z bardziej skomplikowanymi układami, kiedy nie ma
 wystarczającej ilości prawdziwych nośników. Wszystkie pliki należy wskazywać za 
 pomocą pełnej ścieżki dostępu i muszą mieć przynajmniej 128MB. Jeśli plik 
 zostanie przeniesiony bądź zmieniona będzie jego nazwa, pula musi zostać 
-wyeksoprtowana i zaimportowana, ponieważ plikom nie przypisuje się żadnego 
+wyeksportowana i zaimportowana, ponieważ plikom nie przypisuje się żadnego 
 unikalnego ID, po którym mogłyby być znów odnaleznione.</para>
 </sect2>
 <sect2 xml:id="gazca">
@@ -301,9 +301,9 @@ konfigurację RAID-Z. RAID-Z  jest podobne do RAID-5.
 RDP i PARZYSTE-NIEPARZYSTE na przykład) obarczone są problemem tak zwanej 
 "luki zapisu RAID-5". Jeśli tylko fragment bloku danych RAID-5 zostanie zapisany
  i nastąpi awaria zasilania zanim wszystkie bloki zostaną zapisane na dysk, 
-przystość i dane będą rozsynchronizowane, a przez to bezużyteczne na zawsze, 
+parzystość i dane będą rozsynchronizowane, a przez to bezużyteczne na zawsze, 
 chyba że następny zapis pełnego bloku nadpisze ten fragment. W RAID-Z ZFS używa 
-bloków o zmiennej długości, zatem każdy zapis zapis jest zapisem pełnego bloku. 
+bloków o zmiennej długości, zatem każdy zapis jest zapisem pełnego bloku. 
 Jest to możliwe tylko dlatego, że ZFS integruje system plików i zarządzanie 
 urządzeniami w taki sposób, że metadane systemu plików zawierają wystarczająco 
 dużo informacji o modelu replikacji w niższej warstwie, aby poradzić sobie z 
@@ -358,11 +358,11 @@ zatem bloki o stałej wielkości w momencie alokacji.
 </indexterm>
 </para>
 <para>Kiedy urządzenia wirtualne dodawane są do puli. ZFS stopniowo zapisuje 
-dane na dwym urządzeniu w celu zapewnienia wydajności i zgodności z regułami 
+dane na nowym urządzeniu w celu zapewnienia wydajności i zgodności z regułami 
 alokacji przestrzeni dyskowej. Każde urządzenie wirtualne może być także lustrem
  lub urządzeniem RAID-Z zawierającym inne urządzenia dyskowe lub pliki. 
 Konfiguracja taka pozwala na elastyczność w kontrolowaniu charakterystyk 
-awaryjności w puli. Na przykład, można utworzyć następującą puę z 4 dysków:
+awaryjności w puli. Na przykład, można utworzyć następującą pulę z 4 dysków:
 </para>
 <itemizedlist>
 <listitem>
@@ -526,7 +526,7 @@ nośników danych</olink>.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gazhs">
-<title>Obsługa błedów przy tworzeniu pul nośników danych ZFS</title>
+<title>Obsługa błędów przy tworzeniu pul nośników danych ZFS</title>
 <para>Błędy przy tworzeniu puli nośników mogą wystąpić z wielu powodów. Część z 
 nich jest oczywista, na przykład brak urządzenia, jednak inne błędy są bardziej 
 subtelne.</para>
@@ -657,7 +657,7 @@ puli z niepasującymi poziomami replikacji. Przy próbie utworzenia takiej
 konfiguracji puli, pojawią się błedy podobne do poniższych:
 <indexterm xml:id="indexterm-120">
 <primary>wykrywanie</primary>
-<secondary>niepasujących pozniomów replikacji</secondary>
+<secondary>niepasujących poziomów replikacji</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-121">
@@ -704,7 +704,7 @@ wykonuje testy na użyciu urządzeń i poprawność poziomów replikacji i infor
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-124">
-<primary>Pue nośników danych ZFS</primary>
+<primary>Pule nośników danych ZFS</primary>
 <secondary>wykonywanie suchego przebiegu (<command>zpool create</command> 
 <option>n</option>)</secondary>
 <tertiary>(przykład)</tertiary>
@@ -718,7 +718,7 @@ would create 'tank' with the following layout:
             c1t0d0
             c1t1d0</screen>
 <para>Niektórych błędów nie można wykryć bez rzeczywistego tworzenia puli. 
-Najczęstszym przykłądem jest dwukrotne wskazanie tego samego urządzenia 
+Najczęstszym przykładem jest dwukrotne wskazanie tego samego urządzenia 
 dwukrotnie w tej samej konfiguracji. Błędu tego nie można wykryć bez próby 
 zapisu danych, dlatego komenda <command>create -n</command> może poinformowac o 
 sukcesie, ale faktyczne utworznie puli może się nie udać.</para>
@@ -727,7 +727,7 @@ sukcesie, ale faktyczne utworznie puli może się nie udać.</para>
 <title>Domyślny punkt montowania pul</title>
 <para>Po utworzeniu puli, domyślnym punktem montowania datasetu jest katalog 
 <replaceable>/nazwa-puli</replaceable>. Tego katalogu nie powinno być, a jeśli 
-jest, powinien być pusty. Jeśli nnie istnieje, jest tworzony automatycznie. 
+jest, powinien być pusty. Jeśli nie istnieje, jest tworzony automatycznie. 
 Jeśli istnieje, dataset jest automatycznie montowany w istniejącym katalogu. 
 Aby utworzyć pulę z innym domyślnym punktem montowania należy użyć opcji 
 <option>m</option> przy wykonywaniu komendy <command>zpool create</command>:
@@ -809,7 +809,7 @@ use '-f' to force destruction anyway
 <olink targetdoc="" remap="internal" targetptr="gamno">Zdrowie pul nośników 
 danych ZFS</olink>.</para>
 <para>Więcej informacji o importowaniu pul w 
-<olink targetdoc="" remap="internal" targetptr="gazuf">Importowaniu pul nośników
+<olink targetdoc="" remap="internal" targetptr="gazuf">Importowanie pul nośników
  danych ZFS</olink>.</para>
 </sect3>
 </sect2>
@@ -817,7 +817,7 @@ danych ZFS</olink>.</para>
 <sect1 xml:id="gayrd">
 <title>Zarządzanie urządzeniami w pulach nośników danych ZFS</title>
 <para>Większość podstawowych informacji dotyczących urządzeń znajduje się w
-<olink targetdoc="" remap="internal" targetptr="gcfog">Komponentach 
+<olink targetdoc="" remap="internal" targetptr="gcfog">Komponenty 
 puli nośników danych ZFS</olink>. Po utworzeniu puli możliwych jest kilka 
 akcji służących zarządzaniu fizycznym urządzeniami w puli.</para>
 <sect2 xml:id="gazgw">
@@ -828,7 +828,7 @@ ta jest automatycznie dostępna dla wszystkich datasetów w puli. Nowe urządzen
 wirtualne dodaje się do puli za pomocą komendy <command>zpool add</command>.
 Na przykład:<indexterm xml:id="indexterm-130">
 <primary>dodawanie</primary>
-<secondary>orządzeń do puli nośników danych ZFS (<command>zpool add</command>)
+<secondary>urządzeń do puli nośników danych ZFS (<command>zpool add</command>)
 </secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
@@ -867,7 +867,7 @@ would update 'zeepool' to the following configuration:
 i <literal>c3t2d0</literal> do istniejącej konfiguracji <filename>zeepool
 </filename>.</para>
 <para>Więcej informacji o [FIXME] walidowaniu [/FIXME] urządzeń wirtualnych 
-w <olink targetdoc="" remap="internal" targetptr="gazht">Wykrywaniu 
+w <olink targetdoc="" remap="internal" targetptr="gazht">Wykrywanie 
 używanych urządzeń</olink>.</para>
 </sect2>
 <sect2 xml:id="gcfhe">
@@ -1036,12 +1036,12 @@ DESC: A ZFS device failed.  Refer to http://sun.com/msg/ZFS-8000-D3 for more inf
 AUTO-RESPONSE: No automated response will occur.
 IMPACT: Fault tolerance of the pool may be compromised.
 REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
-<para>Więcej informacji o wymianie uszkodzonych urządzeń w <olink targetdoc="" remap="internal" targetptr="gbbvb">Naprawianiu brakujących urządzeń</olink>.</para>
+<para>Więcej informacji o wymianie uszkodzonych urządzeń w <olink targetdoc="" remap="internal" targetptr="gbbvb">Naprawianie brakujących urządzeń</olink>.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gazge">
 <title>Czyszczenie pul nośników danych</title>
-<para>Jeśli urządzenie zostało wyłączone z powodu uszkodzenia, które powodowało wyświetlanie się błędów w wyniku komendy <command>zpool status</command>, można wyczyścić licznik błedów komendą <command>zpool clear</command>.<indexterm xml:id="indexterm-147">
+<para>Jeśli urządzenie zostało wyłączone z powodu uszkodzenia, które powodowało wyświetlanie się błędów w wyniku komendy <command>zpool status</command>, można wyczyścić licznik błędów komendą <command>zpool clear</command>.<indexterm xml:id="indexterm-147">
 <primary>czyszczenie</primary>
 <secondary>urządzenie w puli nośników danych ZFS (<command>zpool clear</command>)</secondary>
 <tertiary>opis</tertiary>
@@ -1058,7 +1058,7 @@ REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
 </screen>
 <para>Jeśli jako argumenty podano jedno lub więcej urządzeń, komenda wyczyści błędy powiązane tylko z tymi urządzeniami. Na przykład:<indexterm xml:id="indexterm-149">
 <primary>czyszczenie urządzeń</primary>
-<secondary>puna nośników danych ZFS</secondary>
+<secondary>pula nośników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-150">
@@ -1075,7 +1075,7 @@ REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
 </para>
 <screen># <userinput>zpool clear tank c1t0d0</userinput>
 </screen>
-<para>Więcej informacji o czyszczeniu błędów <command>zpool</command> w <olink targetdoc="" remap="internal" targetptr="gbbzv">Czyszczeniu tymczasowych błędów</olink>.</para>
+<para>Więcej informacji o czyszczeniu błędów <command>zpool</command> w <olink targetdoc="" remap="internal" targetptr="gbbzv">Czyszczenie tymczasowych błędów</olink>.</para>
 </sect2>
 <sect2 xml:id="gazgd">
 <title>Wymiana urządzeń w puli nośników danych</title>
@@ -1101,7 +1101,7 @@ replace</command>.<indexterm xml:id="indexterm-152">
 </screen>
 <para>W tym przykładzie poprzednie urządzenie, <literal>c1t1d0</literal>, zostało zastąpione urządzeniem <literal>c1t2d0</literal>.</para>
 <para>Pojemność urządzenia dołączanego do puli musi być nie mniejsza niż najmniejsza ze wszystkich pojemności urządzeń w konfiguracji mirror lub RAID-Z. Jeśli dołączone urządzenie jest większe, pojemność puli w konfiguracji innej niż RAID-Z i mirror zostanie powiększona po zakończeniu wymiany urządzenia.</para>
-<para>Więcej informacji o wymianie urządzeń w <olink targetdoc="" remap="internal" targetptr="gbbvb">Naprawianiu brakującego urządzenia</olink> i <olink targetdoc="" remap="internal" targetptr="gbbvf">Naprawianiu uszkodzonego urządzenia</olink>.</para>
+<para>Więcej informacji o wymianie urządzeń w <olink targetdoc="" remap="internal" targetptr="gbbvb">Naprawianie brakującego urządzenia</olink> i <olink targetdoc="" remap="internal" targetptr="gbbvf">Naprawianie uszkodzonego urządzenia</olink>.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gaynp">
@@ -1152,7 +1152,7 @@ dozer                   1.2T    384G    816G    32%  ONLINE     -</screen>
 </term>
 <listitem>
 <para>Miejsce alokowane przez wszystkie datasety i wewnętrzne metadane. Należy zauważyć, że wielkości raportowane w tym polu różnią się od wielkości raportowanych na poziomie systemu plików.</para>
-<para>Więcej o ustalaniu dostępnej przestrzeni w systemie plików w <olink targetdoc="" remap="internal" targetptr="gbchp">Obliczaniu miejsca w ZFS</olink>.</para>
+<para>Więcej o ustalaniu dostępnej przestrzeni w systemie plików w <olink targetdoc="" remap="internal" targetptr="gbchp">Obliczanie miejsca w ZFS</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1176,7 +1176,7 @@ dozer                   1.2T    384G    816G    32%  ONLINE     -</screen>
 </term>
 <listitem>
 <para>Obecny poziom zdrowia puli.</para>
-<para>Więcej o zdrowiu puli w <olink targetdoc="" remap="internal" targetptr="gamno">Zdrowiu pul nośników danych ZFS</olink>.</para>
+<para>Więcej o zdrowiu puli w <olink targetdoc="" remap="internal" targetptr="gamno">Zdrowie pul nośników danych ZFS</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1185,7 +1185,7 @@ dozer                   1.2T    384G    816G    32%  ONLINE     -</screen>
 </term>
 <listitem>
 <para>Alternatywny główny katalog puli, jeśli jest.</para>
-<para>Więcej informacji o alternatywnych głównych katalogach pul w <olink targetdoc="" remap="internal" targetptr="gbcgl">Alternatywnych głównych katalogach pul ZFS</olink>.</para>
+<para>Więcej informacji o alternatywnych głównych katalogach pul w <olink targetdoc="" remap="internal" targetptr="gbcgl">Alternatywne główne katalogi pul ZFS</olink>.</para>
 </listitem>
 </varlistentry>
 </variablelist>
