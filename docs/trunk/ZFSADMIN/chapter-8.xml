@@ -8,7 +8,7 @@
 
 
 
-<title>ZFS Advanced Topics</title>
+<title>ZFS - zagadnienia zaawansowane</title>
 <toc>
 <para>W tym rozdziale przedstawiono emulowane woluminy, używanie ZFS-a w systemie Solaris
 z zainstalowanymi zonami, ZFS-owe alternatywne pule główne oraz ZFS-owe profile praw.</para>
@@ -37,7 +37,7 @@ z zainstalowanymi zonami, ZFS-owe alternatywne pule główne oraz ZFS-owe profil
 </itemizedlist>
 </toc>
 <sect1 xml:id="gaypf">
-<title>Emulated Volumes</title>
+<title>Emulowane woluminy</title>
 <para><emphasis>Emulowany wolumin</emphasis> to zbiór danych (dataset) reprezentujący
 urządzenie blokowe, którego można używać jak każdego innego urządzenia blokowego.  Woluminom tym odpowiadają
 pliki urządzeń w katalogu <filename>/dev/zvol/{dsk,rdsk}/path</filename>.<indexterm xml:id="indexterm-461">
@@ -70,10 +70,10 @@ woluminu z zony innej niż globalna nie powiedzie się.  Więcej
 informacji o używaniu ZFS-owych woluminów w globalnej zonie w
 <olink targetdoc="" remap="internal" targetptr="gbebi">Dodawanie ZFS-owych woluminów do zon innych niz globalna</olink>.</para>
 <sect2 xml:id="gbfvg">
-<title>Emulowane woluminy jako urządzenia wymiany i urządzenia zrzutów awaryjnych</title>
+<title>Emulowane woluminy jako urządzenia wymiany (swap) i urządzenia zrzutów awaryjnych</title>
 <para>W celu skonfigurowania przestrzeni wymiany należy utworzyć ZFS-owy wolumin o ustalonym rozmiarze
-i włączyć wymianę na to urządzenie.  Nie należy używać jako urządzenia wymiany pliku w ZFS-owym systemie
-plików.  Konfiguracja z ZFS-owym plikiem wymiany nie jest obsługiwana.<indexterm xml:id="indexterm-464">
+i włączyć wymianę na to urządzenie. Nie należy używać jako urządzenia wymiany pliku w ZFS-owym systemie
+plików. Konfiguracja z ZFS-owym plikiem wymiany nie jest obsługiwana.<indexterm xml:id="indexterm-464">
 <primary>emulowany wolumin</primary>
 <secondary>jako urządzenie wymiany</secondary>
 </indexterm>
@@ -95,19 +95,14 @@ jako urządzenia wymiany.</para>
 swapfile                 dev  swaplo blocks   free
 /dev/dsk/c0t0d0s1      32,33      16 1048688  1048688
 /dev/zvol/dsk/tank/vol 254,1      16 10485744 10485744</screen>
-<para>Używanie woluminu ZFS-a jako urządzenia zrzutów awaryjnych nie jest obsługiwane.  W celu
+<para>Używanie woluminu ZFS-a jako urządzenia zrzutów awaryjnych nie jest obsługiwane. W celu
 skonfigurowania urządzenia zrzutów awaryjnych należy użyć komendy <command>dumpadm</command>.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gayov">
-<title>Using ZFS on a Solaris System With Zones Installed</title>
-<para>ZFS datasets can be added to a zone either as a generic file system
-or as a delegated dataset.</para>
-<para>Adding a file system allows the non-global zone to share space with
-the global zone, though the zone administrator cannot control properties or
-create new file systems in the underlying file system hierarchy. This is identical
-to adding any other type of file system to a zone, and should be used when
-the primary purpose is solely to share common space.</para>
+<title>Używanie ZFS-a w systemie Solaris z zainstalowanymi zonami</title>
+<para>Datasety ZFS-a można dodać do zony jako ogólny system plików lub jako wydelegowany dataset.</para>
+<para>Dodanie systemu plików umożliwia nieglobalnej zonie współdzielenie przestrzeni z zoną globalną, aczkolwiek administrator zony nie może kontrolować właściwości lub tworzyć nowych systemów plików w hierarchii. Mechanizm ten działa identycznie jak podłączenie do zony dowolnego innego systemu pliów i powinien być wykorzystywany głównie do współdzielenia miejsca.</para>
 <para>ZFS also allows datasets to be delegated to a non-global zone, giving
 complete control over the dataset and all its children to the zone administrator.
 The zone administrator can create and destroy file systems within that dataset,
@@ -116,12 +111,12 @@ datasets that have not been added to the zone, and cannot exceed any top-level
 quotas set on the exported dataset.<indexterm xml:id="indexterm-467">
 <primary>zones</primary>
 <secondary>using with ZFS file systems</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-468">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS</primary>
 <secondary>using on a Solaris system with zones installed</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 </para>
 <para>Consider
@@ -153,17 +148,17 @@ set to legacy.</para>
 <para>You can add a ZFS file system to a non-global zone by using the <command>zonecfg</command> command's <literal>add fs</literal> subcommand. For example:<indexterm xml:id="indexterm-469">
 <primary>zones</primary>
 <secondary>adding ZFS file system to a non-global zone</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-470">
 <primary>adding</primary>
 <secondary>ZFS file system to a non-global zone</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-471">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS</primary>
 <secondary>adding ZFS file system to a non-global zone</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <para>In the following example, a ZFS file system is added to a non-global
@@ -200,17 +195,17 @@ a zone, then ZFS supports adding datasets to a non-global zone through use
 of the <command>zonecfg</command> command's <literal>add dataset</literal> subcommand.<indexterm xml:id="indexterm-472">
 <primary>zones</primary>
 <secondary>delegating dataset to a non-global zone</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-473">
 <primary>delegating</primary>
 <secondary>dataset to a non-global zone</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-474">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS</primary>
 <secondary>delegating dataset to a non-global zone</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <para>In the following example, a ZFS file system is delegated to a non-global
@@ -236,17 +231,17 @@ an attempt to add an emulated volume is detected, the zone cannot boot. However,
 volumes can be added to a zone by using the <command>zonecfg</command> command's <literal>add device</literal> subcommand.<indexterm xml:id="indexterm-475">
 <primary>zones</primary>
 <secondary>adding ZFS volume to a non-global zone</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-476">
 <primary>adding</primary>
 <secondary>ZFS volume to a non-global zone</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-477">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS</primary>
 <secondary>adding ZFS volume to a non-global zone</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <para>In the following example, a ZFS emulated volume is added to a non-global
@@ -289,17 +284,17 @@ are visible as read-only datasets, while the dataset itself is writable as
 are all its children. For example, consider the following configuration:<indexterm xml:id="indexterm-478">
 <primary>zones</primary>
 <secondary>ZFS property management within a zone</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-479">
 <primary>ZFS properties</primary>
 <secondary>management within a zone</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-480">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS</primary>
 <secondary>property management within a zone</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 </para>
 <screen>global# <userinput>zfs list -Ho name</userinput>
@@ -531,7 +526,7 @@ root</emphasis> pool feature. An alternate root pool does not persist across
 system reboots, and all mount points are modified to be relative to the root
 of the pool.<indexterm xml:id="indexterm-484">
 <primary>alternate root pools</primary>
-<secondary>description</secondary>
+<secondary>opis</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-485">
 <primary>ZFS storage pools</primary>
@@ -549,12 +544,12 @@ the mount point of the root file system is automatically set to <filename>/</fil
 which is the equivalent of the alternate root itself.<indexterm xml:id="indexterm-486">
 <primary>alternate root pools</primary>
 <secondary>creating</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-487">
 <primary>creating</primary>
 <secondary>alternate root pools</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <para>In the following example, a pool called <literal>morpheus</literal> is
@@ -578,12 +573,12 @@ can be performed. This feature also can be used when mounting removable media
 as described above.<indexterm xml:id="indexterm-488">
 <primary>alternate root pools</primary>
 <secondary>importing</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-489">
 <primary>importing</primary>
 <secondary>alternate root pools</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <para>In the following example, a pool called <literal>morpheus</literal> is
@@ -603,7 +598,7 @@ morpheus              32.5K  33.5G     8K  /mnt/morpheus</screen>
 <para>If you want to perform ZFS management tasks without using the superuser
 (root) account, you can assume a role with either of the following profiles
 to perform ZFS administration tasks:<indexterm xml:id="indexterm-490">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS</primary>
 <secondary>rights profiles</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-491">
@@ -613,7 +608,7 @@ to perform ZFS administration tasks:<indexterm xml:id="indexterm-490">
 <indexterm xml:id="indexterm-492">
 <primary>rights profiles</primary>
 <secondary>for management of ZFS file systems and storage pools</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 </para>
 <itemizedlist>
