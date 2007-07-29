@@ -103,66 +103,47 @@ skonfigurowania urządzenia zrzutów awaryjnych należy użyć komendy <command>
 <title>Używanie ZFS-a w systemie Solaris z zainstalowanymi zonami</title>
 <para>Datasety ZFS-a można dodać do zony jako ogólny system plików lub jako wydelegowany dataset.</para>
 <para>Dodanie systemu plików umożliwia nieglobalnej zonie współdzielenie przestrzeni z zoną globalną, aczkolwiek administrator zony nie może kontrolować właściwości lub tworzyć nowych systemów plików w hierarchii. Mechanizm ten działa identycznie jak podłączenie do zony dowolnego innego systemu pliów i powinien być wykorzystywany głównie do współdzielenia miejsca.</para>
-<para>ZFS also allows datasets to be delegated to a non-global zone, giving
-complete control over the dataset and all its children to the zone administrator.
-The zone administrator can create and destroy file systems within that dataset,
-and modify properties of the datasets. The zone administrator cannot affect
-datasets that have not been added to the zone, and cannot exceed any top-level
-quotas set on the exported dataset.<indexterm xml:id="indexterm-467">
-<primary>zones</primary>
-<secondary>using with ZFS file systems</secondary>
+<para>ZFS pozwala także na delegację datasetu do nieglobalnej zony, przekazując administratorowi zony całkowitą kontrolę nad datasetem i jego potomkami. Administrator zony może tworzyć i niszczyć systemy plików w tym datasecie i modyfikować właściwości datasetów. Nie może natomiast zmieniać właściwości datasetów, które nie zostały dodane do zony i nie może przekroczyć limitów najwyższego poziomu ustalonych na wyeksportowanym datasecie.<indexterm xml:id="indexterm-467">
+<primary>zony</primary>
+<secondary>używanie z systemami plików ZFS-a</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-468">
 <primary>systemy plików ZFS</primary>
-<secondary>using on a Solaris system with zones installed</secondary>
+<secondary>używanie w systemie Solaris z zainstalowanymi zonami</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
-<para>Consider
-the following interactions when working with ZFS on a system with Solaris
-zones installed:</para>
+<para>Poniższy przypadek opisuje pracę z ZFS-em w systemie Solaris z zainstalowanymi zonami:</para>
 <itemizedlist>
 <listitem>
-<para>A ZFS file system that is added to a non-global zone must
-have its <command>mountpoint</command> property set to legacy.</para>
+<para>Właściwość <command>mountpoint</command> systemu plików ZFS-a dodawanego do nieglobalnej zony musi mieć wartość legacy.</para>
 </listitem>
 <listitem>
-<para>When a source <literal>zonepath</literal> and the
-target <literal>zonepath</literal> both reside on ZFS and are in the same
-pool, <command>zoneadm clone</command> will now automatically use ZFS clone
-to clone a zone. The <command>zoneadm clone</command> command will take a
-ZFS snapshot of the source <literal>zonepath</literal> and set
-up the target <literal>zonepath</literal>. Do not use the ZFS snapshot features
-to clone a zone. For more information, see <olink targetdoc="819-2450" remap="external" targetptr="zone">Part II, <citetitle remap="chapter">Zones,</citetitle> in <citetitle remap="book">System Administration Guide: Solaris Containers-Resource Management
-and Solaris Zones</citetitle>
+<para>Kiedy źródłowa <literal>zonepath</literal> i docelowa <literal>zonepath</literal> znajdują się na ZFS-ie i są w tej samej puli, <command>zoneadm clone</command> automatycznie użyje ZFS clone do sklonowana zony. Komenda <command>zoneadm clone</command> zrzuci obraz ZFS źródłowej <literal>zonepath</literal> i ustawi docelową <literal>zonepath</literal>. Nie należy używać opcji zrzutu obrazu ZFS-a do klonowania zony. Więcej informacji w <olink targetdoc="819-2450" remap="external" targetptr="zone">Części II, <citetitle remap="chapter">Zony,</citetitle> w <citetitle remap="book">Przewodnik administracji systemu: kontenery Solarisa - zarządzanie zasobami i zonami Solarisa</citetitle>
 </olink>.</para>
 </listitem>
 </itemizedlist>
 <sect2 xml:id="gbbrq">
-<title>Adding ZFS File Systems to a Non-Global Zone</title>
-<para>You can add a ZFS file system as a generic file system when the goal
-is solely to share space with the global zone. A ZFS file system that is added
-to a non-global zone must have its <literal>mountpoint</literal> property
-set to legacy.</para>
-<para>You can add a ZFS file system to a non-global zone by using the <command>zonecfg</command> command's <literal>add fs</literal> subcommand. For example:<indexterm xml:id="indexterm-469">
-<primary>zones</primary>
-<secondary>adding ZFS file system to a non-global zone</secondary>
+<title>Dodawanie systemu plików ZFS-a do nieglobalnej zony</title>
+<para>Kiedy zakłada się głównie współdzielenie przestrzeni, można dodać system plików ZFS-a jako ogólny system plików. Właściwość <literal>mountpoint</literal> systemu plików ZFS-a dodawanego do nieglobalnej zony musi być ustawiona na legacy.</para>
+<para>Dodawnie systemu plików ZFS-a do nieglobalnej zony wykonuje się subkomendą <literal>add fs</literal> komendy <command>zonecfg</command>. Na przykład:<indexterm xml:id="indexterm-469">
+<primary>zony</primary>
+<secondary>dodawanie systemu plików ZFS-a do nieglobalnej zony</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-470">
-<primary>adding</primary>
-<secondary>ZFS file system to a non-global zone</secondary>
+<primary>dodawanie</primary>
+<secondary>systemu plików ZFS-a do nieglobalnej zony</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-471">
 <primary>systemy plików ZFS</primary>
-<secondary>adding ZFS file system to a non-global zone</secondary>
+<secondary>dodawanie systemu plików ZFS-a do nieglobalnej zony</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>In the following example, a ZFS file system is added to a non-global
-zone by a global administrator in the global zone.</para>
+<para>W poniższym przykładzie globalny administrator dodaje w zonie globalnej system plików ZFS-a do nieglobalnej zony.</para>
 <screen># <userinput>zonecfg -z zion</userinput>
 zion: No such zone configured
 Use 'create' to begin configuring a new zone.
@@ -173,19 +154,9 @@ zonecfg:zion:fs&gt; <userinput>set special=tank/zone/zion</userinput>
 zonecfg:zion:fs&gt; <userinput>set dir=/export/shared</userinput>
 zonecfg:zion:fs&gt; <userinput>end</userinput>
 </screen>
-<para>This syntax adds the ZFS file system, <filename>tank/zone/zion</filename>,
-to the zone <literal>zion</literal>, mounted at <filename>/export/shared</filename>.
-The <property>mountpoint</property> property of the file system must be set
-to <property>legacy</property>, and the file system cannot already be mounted
-in another location. The zone administrator can create and destroy files within
-the file system. The file system cannot be remounted in a different location,
-nor can the zone administrator change properties on the file system such as
-atime, readonly, compression, and so on.  The
-global zone administrator is responsible for setting and controlling properties
-of the file system.</para>
-<para>For more information about the <command>zonecfg</command> command and
-about configuring resource types with <command>zonecfg</command>, see <olink targetdoc="819-2450" remap="external" targetptr="zone">Part II, <citetitle remap="chapter">Zones,</citetitle> in <citetitle remap="book">System Administration Guide: Solaris
-Containers-Resource Management and Solaris Zones</citetitle>
+<para>Polecenie to dodaje system plików ZFS-a <filename>tank/zone/zion</filename> do zony <literal>zion</literal> i montuje go w <filename>/export/shared</filename>.
+Właściwość <property>mountpoint</property> systemu plików musi być ustawiona na <property>legacy</property>, a sam system plików nie może być wcześniej zamontowany w innej lokalizacji. Administrator zony może tworzyć i niszczyć pliki w systemie plików. System plików nie może zostać przemontowany w inna lokalizację, a administrator zony nie może zmienić właściwości systemu plików: atime, readonly, compression itd. Odpowiedzialnym za ustalenie i kontrolę właściwości systemu plióków jest administrator globalnej zony.</para>
+<para>Więcej informacji i komendzie <command>zonecfg</command> i konfiguracji typów zasobów za pomocą <command>zonecfg</command> w <olink targetdoc="819-2450" remap="external" targetptr="zone">Części II, <citetitle remap="chapter">Zony,</citetitle> in <citetitle remap="book">Przewodnik administracji systemu: kontenery Solarisa - zarządzanie zasobami i zonami Solarisa</citetitle>
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gbbst">
@@ -193,7 +164,7 @@ Containers-Resource Management and Solaris Zones</citetitle>
 <para>If the primary goal is to delegate the administration of storage to
 a zone, then ZFS supports adding datasets to a non-global zone through use
 of the <command>zonecfg</command> command's <literal>add dataset</literal> subcommand.<indexterm xml:id="indexterm-472">
-<primary>zones</primary>
+<primary>zony</primary>
 <secondary>delegating dataset to a non-global zone</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
@@ -229,7 +200,7 @@ otherwise control the entire file system hierarchy.</para>
 <para>Emulated volumes cannot be added to a non-global zone by using the <command>zonecfg</command> command's <literal>add dataset</literal> subcommand. If
 an attempt to add an emulated volume is detected, the zone cannot boot. However,
 volumes can be added to a zone by using the <command>zonecfg</command> command's <literal>add device</literal> subcommand.<indexterm xml:id="indexterm-475">
-<primary>zones</primary>
+<primary>zony</primary>
 <secondary>adding ZFS volume to a non-global zone</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
@@ -282,7 +253,7 @@ the creation of any new pools within the zone.</para>
 specific dataset properties. When a dataset is added to a zone, all its ancestors
 are visible as read-only datasets, while the dataset itself is writable as
 are all its children. For example, consider the following configuration:<indexterm xml:id="indexterm-478">
-<primary>zones</primary>
+<primary>zony</primary>
 <secondary>ZFS property management within a zone</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
@@ -459,7 +430,7 @@ cannot be interpreted in the context of the global zone. Otherwise, the zone
 administrator could affect the global zone's namespace. To address the latter,
 ZFS uses the <property>zoned</property> property to indicate that a dataset
 has been delegated to a non-global zone at one point in time.<indexterm xml:id="indexterm-481">
-<primary>zones</primary>
+<primary>zony</primary>
 <secondary>
 <property>zoned</property> property</secondary>
 <tertiary>detailed description</tertiary>
