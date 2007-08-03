@@ -160,27 +160,24 @@ Właściwość <property>mountpoint</property> systemu plików musi być ustawio
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gbbst">
-<title>Delegating Datasets to a Non-Global Zone</title>
-<para>If the primary goal is to delegate the administration of storage to
-a zone, then ZFS supports adding datasets to a non-global zone through use
-of the <command>zonecfg</command> command's <literal>add dataset</literal> subcommand.<indexterm xml:id="indexterm-472">
+<title>Delegowanie datasetów do nieglobalnej zony</title>
+<para>Jeśli głównym celem jest oddelegowanie administrowania nośnikami danych do zony, wtedy należy skorzystać z możliwości ZFS-a dodania dataestu do zony za pomocą komendy <command>zonecfg</command> i jej podkomenty <literal>add dataset</literal>.<indexterm xml:id="indexterm-472">
 <primary>zony</primary>
-<secondary>delegating dataset to a non-global zone</secondary>
+<secondary>delegowanie datasetu do nieglobalnej zony</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-473">
-<primary>delegating</primary>
-<secondary>dataset to a non-global zone</secondary>
+<primary>delegowanie</primary>
+<secondary>datasetu do nieglobalnej zony</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-474">
 <primary>systemy plików ZFS</primary>
-<secondary>delegating dataset to a non-global zone</secondary>
+<secondary>delegowanie datasetu do nieglobalnej zony</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>In the following example, a ZFS file system is delegated to a non-global
-zone by a global administrator in the global zone.</para>
+<para>W poniższym przykładzie system plików ZFS-a oddelegowany został do nieglobalnej zony przez globalnego administratora w globalnej zonie.</para>
 <screen># <userinput>zonecfg -z zion</userinput>
 zion: No such zone configured
 Use 'create' to begin configuring a new zone.
@@ -189,34 +186,28 @@ zonecfg:zion&gt; <userinput>add dataset</userinput>
 zonecfg:zion:dataset&gt; <userinput>set name=tank/zone/zion</userinput>
 zonecfg:zion:dataset&gt; <userinput>end</userinput>
 </screen>
-<para>Unlike adding a file system, this syntax causes the ZFS file system <filename>tank/zone/zion</filename> to be visible within the zone <literal>zion</literal>.
-The zone administrator can set file system properties, as well as create children.
-In addition, the zone administrator can take snapshots, create clones, and
-otherwise control the entire file system hierarchy.</para>
-<para>For more information about what actions are allowed within zones, see <olink targetdoc="" remap="internal" targetptr="gbbsn">Property Management Within a Zone</olink>.</para>
+<para>Inaczej niż w przypadku dodania systemu plików, polecenie spowoduje widoczność systemu plików ZFS-a <filename>tank/zone/zion</filename> w zonie <literal>zion</literal>. Administrator zony może modyfikować właściwości systemu plików i tworzyć potomków. Dodatkowo może wykonywać obrazy systemu plików, klonować i w inny sposób kontrolować całą hierarchię systemu plików.</para>
+<para>Więcej informacji o działaniach dozwolonych w zonie w <olink targetdoc="" remap="internal" targetptr="gbbsn">Zarządzenie właściwościami w zonie</olink>.</para>
 </sect2>
 <sect2 xml:id="gbebi">
-<title>Adding ZFS Volumes to a Non-Global Zone</title>
-<para>Emulated volumes cannot be added to a non-global zone by using the <command>zonecfg</command> command's <literal>add dataset</literal> subcommand. If
-an attempt to add an emulated volume is detected, the zone cannot boot. However,
-volumes can be added to a zone by using the <command>zonecfg</command> command's <literal>add device</literal> subcommand.<indexterm xml:id="indexterm-475">
+<title>Dodawanie woluminu ZFS-a do nieglobalnej zony</title>
+<para>Emoluwane woluminy nie mogą być dodawane do nieglobalnej zony poleceniem <command>zonecfg</command> <literal>add dataset</literal>. Przy wykryciu próby dodania takiego datasetu zona nie wybootuje. Można jednak dodać woluminy do zony za pomocą komendy <command>zonecfg</command> i komendy <literal>add device</literal>.<indexterm xml:id="indexterm-475">
 <primary>zony</primary>
-<secondary>adding ZFS volume to a non-global zone</secondary>
+<secondary>dodawanie woluminu ZFS-a do nieglobalnej zony</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-476">
-<primary>adding</primary>
-<secondary>ZFS volume to a non-global zone</secondary>
+<primary>dodawanie</primary>
+<secondary>woluminu ZFS-a do nieglobalnej zony</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-477">
 <primary>systemy plików ZFS</primary>
-<secondary>adding ZFS volume to a non-global zone</secondary>
+<secondary>dodawanie</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>In the following example, a ZFS emulated volume is added to a non-global
-zone by a global administrator in the global zone:</para>
+<para>W poniższym przykładzie globalny administrator dodaje do nieglobalnej zony emulowany wolumin ZFS-a:</para>
 <screen># <userinput>zonecfg -z zion</userinput>
 zion: No such zone configured
 Use 'create' to begin configuring a new zone.
@@ -225,18 +216,12 @@ zonecfg:zion&gt; <userinput>add device</userinput>
 zonecfg:zion:device&gt; <userinput>set match=/dev/zvol/dsk/tank/vol</userinput>
 zonecfg:zion:device&gt; <userinput>end</userinput>
 </screen>
-<para>This syntax exports the <literal>tank/vol</literal> emulated volume
-to the zone. Note that adding a raw volume to a zone has implicit security
-risks, even if the volume doesn't correspond to a physical device. In particular,
-the zone administrator could create malformed file systems that would panic
-the system when a mount is attempted. For more information about adding devices
-to zones and the related security risks, see <olink targetdoc="" remap="internal" targetptr="gbbre">Understanding the <property>zoned</property> Property</olink>.</para>
-<para>For more information about adding devices to zones, see <olink targetdoc="819-2450" remap="external" targetptr="zone">Part II, <citetitle remap="chapter">Zones,</citetitle> in <citetitle remap="book">System Administration Guide: Solaris
-Containers-Resource Management and Solaris Zones</citetitle>
+<para>Powyższe polecenie eksportuje emulowany wolumin <literal>tank/vol</literal> do zony. Należy pamiętać, że dodawanie surowego (ang. raw) woluminu do zony niesie ze sobą zagrożenia bezpieczeństwa, nawet jeśli wolumin nie odpowiada fizycznemu urządzeniu. W szczególności administrator zony mógłby stworzyć uszkodzone systemy plików, które spowodowałyby panikę systemu przy próbie zamontowania. Więcej informacji o dodawaniu urządzeń do zon i związanych z tym zagrożeniach w <olink targetdoc="" remap="internal" targetptr="gbbre">Znaczenie właściwości <property>zoned</property></olink>.</para>
+<para>Więcej informacji o dodawaniu urządzeń do zon w <olink targetdoc="819-2450" remap="external" targetptr="zone">Części II, <citetitle remap="chapter">Zonach,</citetitle> w <citetitle remap="book">Przewodnik administratora systemu: zarządzanie kontenerami i zasobami Solarisa oraz zony Solarisa</citetitle>
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gbbso">
-<title>Using ZFS Storage Pools Within a Zone</title>
+<title>Używanie puli nośników danych w zonie</title>
 <para>ZFS storage pools cannot be created or modified within a zone. The delegated
 administration model centralizes control of physical storage devices within
 the global zone and control of virtual storage to non-global zones. While

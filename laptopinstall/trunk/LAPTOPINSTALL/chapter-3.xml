@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="gbdgq">
+
+
+
+<title>Configuring the OpenSolaris Software</title>
+<toc>
+<para>This document provides the procedures for configuring Xorg, graphics and wifi on a laptop installed with the OpenSolaris software.
+</para>
+
+</toc>
+
+
+<sect1 xml:id="gciaz">
+<title>Configuring Graphics on OpenSolaris</title>
+
+<para>This document describes the procedure for configuring graphics on a laptop running the OpenSolaris software.</para>
+<sect2>
+<title>Configuring Xorg for NVIDIA on OpenSolaris</title>
+<para>The following procedure describes configuring Xorg for your NVIDIA graphics card.</para>
+
+
+
+<task id="gbdga">
+
+<title>To Configure Xorg for NVIDIA on OpenSolaris</title>
+<taskprerequisites>
+
+<para>Refer to the following forum for help and guidance: http://www.nvnews.net/vbulletin/showthread.php?t=52257</para>
+
+</taskprerequisites>
+<procedure>
+<step>
+<para>Open a terminal window and log in as root:</para>
+<screen>mymachine% <command>su</command>
+password:
+mymachine#
+</screen>
+</step>
+<step>
+<para>Run the following command:</para>
+<screen>mymachine# <command>/usr/X11/bin/xorgconfig</command>
+</screen>
+<para>The program prompts you for responses.</para>
+</step>
+<step>
+<para>Answer the questions as appropriate.</para>
+<para>The <filename>xorg.conf</filename> file is created in <literal>/etc/X11</literal>. 
+</para>
+</step>
+<step>
+<para>Download the NVIDIA driver for Solaris at the following web site: http://nvidia.com/content/drivers/drivers.asp</para>
+</step>
+<step>
+<para>Run the driver according to the README instructions.</para>
+</step>
+<step>
+<para>Check the PCI ID of your NVIDIA card by running the following command:</para>
+<screen>mymachine# <command>/usr/X11/bin/scanpci</command>
+</screen>
+</step>
+<step>
+<para>Update the driver by running the following command:</para>
+<screen>mymachine# <command>update_drv -a -i '"pcixxxx,xxx"' nvidia</command>
+</screen>
+<para>Where xxxx,xxx is the value output from the <command>scanpci</command> command in the previous step.</para>
+<note>
+<para>Do not forget the quotes ' and ". In some cases <command>scanpci</command> will output a PCI ID as 0x10de 0x0322 and entering this value as '"pci10de,0322"' will fail due to the the 0 in 0322. Editing <filename>/etc/driver_aliases</filename> might correct this type of error.</para>
+</note>
+</step>
+<step>
+<para>Open the <filename>/etc/X11/xorg.conf</filename> file.</para>
+</step>
+<step>
+<para>Change the <literal>nv</literal> entry to <literal>nvidia</literal>.</para>
+</step>
+<step>
+<para>Save and close the <filename>/etc/X11/xorg.conf</filename> file.</para>
+</step>
+<step>
+<para>Reboot your laptop by running the following command:</para>
+<screen>mymachine# <command>reboot -- -r</command>
+</screen>
+<para>NVIDIA acceleration is enabled on Solaris.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+
+<sect1 xml:id="gbiaz">
+<title>Configuring Screen Resolution</title>
+
+<para>This document describes the procedure for configuring screen resolution of your OpenSolaris laptop.</para>
+<sect2>
+<title>Configuring Screen Resolution</title>
+<para>This section provides different procedures for screen resolution settings depending on the type of video driver in your laptop.</para>
+
+<task id="gbdga">
+
+<title>To Configure Screen Resolution With the NVIDIA Driver Included With the Solaris Operating System</title>
+
+<procedure>
+<step>
+<para>Right-click on the desktop.</para>
+<para>A drop-down menu appears.</para>
+</step>
+<step>
+<para>Select Screen Resolution</para>
+<para>The Screen Resolution dialog box appears.</para>
+</step>
+<step>
+<para>Specify the desired settings and click OK.</para>
+<para>The new resolution settings are applied. 
+</para>
+</step>
+</procedure>
+</task>
+<task id="gbdgb">
+
+<title>To Configure Screen Resolution With the ATI Driver</title>
+
+<procedure>
+<step>
+<para>Right-click on the desktop.</para>
+<para>A drop-down menu appears.</para>
+</step>
+<step>
+<para>Select Screen Resolution</para>
+<para>The Screen Resolution dialog box appears.</para>
+</step>
+<step>
+<para>Specify the desired settings and click OK.</para>
+<para>The new resolution settings are applied. 
+</para>
+</step>
+</procedure>
+</task>
+<task id="gbdgc">
+<title>To Configure Screen Resolution With the Intel Driver and Regular Screen Size</title>
+
+<procedure>
+<step>
+<para>Restart the machine and, from the black screen, enter the BIOS or Setup menu by pressing the key indicated by the onscreen text.</para>
+<para>A menu appears.</para>
+</step>
+<step>
+<para>Increase the RAM allocation for the video card.</para>
+</step>
+<step>
+<para>Boot the OpenSolaris operating system and log in.</para>
+</step>
+<step>
+<para>Right-click on the desktop.</para>
+<para>A drop-down menu appears.</para>
+</step>
+<step>
+<para>Select Screen Resolution</para>
+<para>The Screen Resolution dialog box appears.</para>
+</step>
+<step>
+<para>Specify the desired settings and click OK.</para>
+<para>The new resolution settings are applied. 
+</para>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1>
+<title>Configuring Networking</title>
+<para>This section describes the procedures for basic configuration of wireless networking. Refer to the http://www.opensolaris.org/os/community/laptop/inetmenu/ Inetmenu page of the Laptop Community for information about the tool currently in use. Refer to the Resources tab for more links to commonly used documentation and information about advanced configuration topics.</para>
+<sect2>
+<title>Configuring Wireless Networking</title>
+<para>This procedure describes secure wireless network configuration of a laptop running the OpenSolaris software. OpenSolaris is compatible with a wide variety of wireless cards using drivers provided in the <filename>laptop_downloads</filename> directory on the <command>i learn</command> DVD. Currently only WEP or unencrypted connections are supported with most devices. Experimental WPA 
+support for the Atheros driver is available from the Laptop Community.</para>
+
+
+
+<task id="gbdge">
+
+<title>To Configure Wireless Networking</title>
+<taskprerequisites>
+
+<para>If you do not have a built-in wireless card, access the <filename>laptop_downloads</filename> directory on the <command>i learn</command> DVD. Then unpack and install the nexus cardbus driver using the following instructions:</para>
+<note>
+<para>If you install the v0.3 cardbus drivers you may need to 
+repeat the installation procedure or 
+networking may no longer work correctly.</para>
+</note>
+<para>
+<screen>
+# <command>gzip -dc cardbus-0.3-bin.tar.gz | tar xvf -</command>
+# <command>cd cardbus</command>
+# <command>./Install</command>
+</screen>
+</para>
+<para>Reboot your laptop, insert your PC card, and the new device should appear in the device tree.</para>
+<para>Refer to http://www.opensolaris.org/os/community/laptop/wireless for the interface support and notation associated with your machine chipset.The examples below assume the Atheros driver which is used in many inexpensive cardbus wireless cards.</para>
+</taskprerequisites>
+<procedure>
+<step>
+<para>Open a terminal window and login as root:</para>
+<screen>mymachine% <command>su</command>
+password:
+mymachine#
+</screen>
+</step>
+<step>
+<para>Scan available WLANs using the following command:</para>
+<screen>mymachine# <command>wificonfig -i ath0 scan</command>
+</screen>
+<para>Where <literal>ath0</literal> is the interface for your machine chip set.</para>
+<para>Available WLANs appear in the output.</para>
+</step>
+<step>
+<para>Connect to an available WLAN using the following command:</para>
+<screen>mymachine# <command>wificonfig -i ath0 autoconf</command>
+</screen>
+<para>Where <literal>ath0</literal> is the interface for your machine chip set.</para>
+</step>
+<step>
+<para>Create a WEP-protected configuration profile using the following command:</para>
+<screen>mymachine# <command>wificonfig -i ath0 createprofile myprofile essid=mywifi encryption=WEP wepkey1=12345 wepkeyindex=1</command>
+</screen>
+<para>Where <literal>ath0</literal> is the interface for your machine chip set.</para>
+</step>
+<step>
+<para>Connect using the new configuration profile:</para>
+<screen>mymachine# <command>wificonfig -i ath0 connect myprofile</command>
+</screen>
+<para>The profile is recorded in the preference list.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+<sect2>
+<title>Additional Action</title>
+<para>If you need to re-configure your system or change the IP address or host name, refer to the <command>sys-unconfig</command> documentation at the following location: http://docs.sun.com/app/docs/doc/816-5166 Solaris 10 man pages section1M: System Administration Commands.</para>
+</sect2>
+</sect1>
+</chapter>

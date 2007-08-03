@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
+	<!ENTITY % xinclude SYSTEM "xinclude.mod">
+	%xinclude;
+]>
+
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="faazb">
+
+
+
+<title>Preparing to Install and Configure
+the OpenSolaris Software for Dualboot on an x86/x64 Laptop</title>
+<para>This document describes procedures for installing and configuring an x86/x64 laptop installed with Windows (2000/NT/XP) to boot OpenSolaris from the same physical hard drive. This
+capability is referred to throughout this document as "dualboot" or "multiboot". Many users prefer to maintain multiple operating systems on thier laptops, 
+especially if they use their laptop for operating system development work. Specifically, the <trademark>Solaris</trademark> Operating System, Linux, and Windows operating systems, can
+be deployed on a single system disk, and configured to allow you to choose between the different
+operating systems at boot time.</para> 
+<para>The focus of this document is to enable you to dualboot the existing Windows operating system on your laptop and OpenSolaris (Solaris Express: Community Release build 43). The OpenSolaris software is included on the <command>i install</command> DVD.</para> 
+<para>This document also provides the procedures to back up and re-partition your disk before installing and configuring the OpenSolaris software. Re-partitioning is a necessary step because the installer for the Solaris Express: Community Release only allows one primary partition to be devoted to OpenSolaris on a disk.
+In order to install and configure the OpenSolaris software, your x86/x64 laptop must meet the following system requirements:</para>
+<itemizedlist>
+<listitem><para>120 MHz x86/x64 processor with hardware floating-point support</para></listitem>
+<listitem><para>Memory: 256 Mbytes</para></listitem>
+<listitem><para>A minimum of 4Gbytes of available space on your hard drive is recommended.</para></listitem>
+<listitem><para>CD-Rom burner; if you do not have the full starter kit, or if you do not have a partitioning utility.</para></listitem>
+<listitem><para>DVD drive</para><para>If your laptop does not
+have a DVD drive installed, you can download, unpack, and burn the Solaris Express: Community Release pre-built archives using the instructions at http://www.opensolaris.org/os/downloads/on/.</para></listitem>
+</itemizedlist>
+
+<note>
+
+<para>Multiboot capability should not be confused with available virtualization
+technology that allows simultaneous operation of multiple operating systems such as VMware or Xen technologies. VMware may be used as a low-cost alternative to partitioning your hard drive for multiboot. See http://opensolaris.org/os/project/content/articles/vmware-opensolaris/ for more information. As another alternative to partitioning, you may consider adding a new disk drive to your machine for the installation of the OpenSolaris software.</para>
+</note>
+<sect1 xml:id="fcpby">
+<title>OpenSolaris Installation Prerequisites</title>
+<indexterm xml:id="indexterm-1">
+<primary>installation</primary>
+<secondary>prerequisites</secondary>
+</indexterm>
+<para>The following prerequisites must be met before you can install a laptop with the OpenSolaris software using the instructions in this document.</para>
+<note>
+<para>The following section describes prerequisites for novice users in order to complete the tasks with the highest level of safety. If you are a more experienced user, you already backup your data regularly, and you have a partition resizing program like Partition Magic or gPartEd, feel free to repartition with those tools and to use the following prerequisites as a reminder.</para>
+</note>
+<itemizedlist>
+<listitem>
+<para>If you are able to successfully boot one of the LiveCDs included with this kit, your hardware should be compatible with the OpenSolaris software. You may also access to the online Hardware Compatibility List at http://www.sun.com/bigadmin/hcl/ to check that your laptop is compatible with the OpenSolaris software. Optionally use the Installation Check Tool at http://www.sun.com/bigadmin/hcl/hcts/install_check.html to create a report of the drivers available for the devices it detects on your laptop.</para>
+</listitem>
+<listitem>
+<para>The disk should be scanned and defragmented using the Windows system tools.</para></listitem>
+<listitem>
+<para>The disk should be re-partitioned because the OpenSolaris software requires a primary partition to install successfully.</para></listitem>
+<listitem>
+<para>If you use the backup instructions in this document, you will need to have available the following:</para>
+<para>Three empty 1.44MB floppy disks, or an empty CD-R/RW.</para>
+<para>An FTP server with enough free space to store all of the data you need to back up.</para>
+<para>A DHCP server.</para>
+<para>Several hours to complete the disk backup.</para>
+</listitem>
+<listitem>
+<para>You will also need to download and burn the g4u files and create an image using the instructions at <olink url="http://feyrer.de/g4u">http://feyrer.de/g4u</olink>.</para>
+</listitem>
+<listitem>
+<para>If you use the partitioning instructions in this document, you will need to download and burn the System Rescue-CD ISO that includes the QT_Parted files at http://prdownloads.sourceforge.net/systemrescuecd/systemrescuecd-x86-0.2.19.iso?download by using the instructions at http://www.sysresccd.org/Sysresccd-manual-en_Downloading_and_burning.</para>
+</listitem>
+</itemizedlist>
+<para>Two methods of installing the OpenSolaris software are available:<indexterm xml:id="indexterm-4">
+<primary>installation</primary>
+<secondary>methods</secondary>
+</indexterm>
+</para>
+<itemizedlist>
+<listitem>
+<para>Install the OpenSolaris software from the <command>i install</command>
+DVD-ROM as described in To Install the Solaris Express: Community Release Software.</para>
+</listitem>
+<listitem>
+<para>Install the OpenSolaris software by following the installation prompts included with the http://Nexenta, http://Belenix, or http://Schillix LiveCDs on the <command>i learn</command> DVD-ROM. See the Installation tab for links to associated installation documents.</para>
+</listitem>
+</itemizedlist>
+
+</sect1>
+<sect1 xml:id="frjzc">
+<title>Backing up the Disk Drive</title>
+<para>This section provides the procedure for backing up your disk drive in case you need to recover from an unforeseen failure. Be sure to read and complete the preparations as outlined in this kit before proceeding.</para> 
+<figure xml:id="fxrtf">
+
+<title>Backup Process Overview</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="figures/backup_process_overview.gif"/>
+</imageobject>
+<textobject>
+<simpara>Diagram provides an example of the process for backing up a disk drive.</simpara>
+</textobject>
+</mediaobject>
+</figure>
+<sect2>
+<task id="frjzc">
+<title>To Back Up the Disk Drive</title>
+<procedure>
+<step>
+<para>Scan and defragment your disk.</para>
+<para>To locate ScanDisk and Defragmentation utilities on Windows XP, select My Computer from the Start menu and click the right mouse button on the C-drive icon to choose a utility. On Windows 2000, choose Programs | Accessories | System Tools from the Start menu and select a utility.</para>
+</step>
+<step><para>Create a password-protected user account called <literal>install</literal> on your FTP server.</para>
+</step>
+<step>
+<para>To begin the disk backup, boot the g4u CD that you created as a prerequisite to this task.</para>
+<para>The Welcome To g4u Harddisk Image Cloning screen appears.</para>
+<note>Completion of the following steps could take several hours depending on your network, CPU, hardware and disk contents.
+</note>
+</step>
+<step>
+<para>To list the disks that are recognized by g4u, type the following command:</para>
+<screen>g4u > <command>disks</command></screen>
+</step>
+<step>
+<para>To back up the disk, type the following command:</para>
+<screen>g4u > <command>uploaddisk 172.XX.XX.XXX <filename>imagename.gz</filename> <literal>wd0</literal></command></screen>
+<para>Where <replaceable>172.XX.XX.XXX</replaceable> is the IP address of the FTP server where you are saving the image, <replaceable>imagename.gz</replaceable> is the name of the backup file, and <replaceable>wd0</replaceable> is the disk you want to backup.</para>
+<para>The Welcome to g4u, starting to upload now screen appears.</para>
+</step>
+<step>
+<para>When you are returned to the shell prompt, check that the <filename>imagename.gz</filename> is in your FTP server <literal>install</literal> account.
+</para>
+<para>If the <filename>imagename.gz</filename> is in your FTP server <literal>install</literal> account, the backup is complete.</para>
+</step>
+<step><para>Power off the laptop.</para>
+</step>
+</procedure>
+</task>
+</sect2>
+</sect1>
+<sect1 xml:id="fapmb">
+<title>Re-partitioning the Disk Drive</title>
+<para>This section provides the procedure for re-partitioning your disk drive to make room for the OpenSolaris software. The goal of this task is to create a free primary partition which is required for the OpenSolaris software to install successfully. Partitioning the hard drive into smaller <literal>fdisk</literal> partitions is a necessary step to set up a multiboot environment. Each operating system is installed on its own <literal>fdisk</literal> partition.</para>
+<figure xml:id="fxxtf">
+
+<title>Re-Partitioning Process Overview</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="figures/partition_process_overview.gif"/>
+</imageobject>
+<textobject>
+<simpara>Diagram provides an example of the process for re-partitioning a disk drive.</simpara>
+</textobject>
+</mediaobject>
+</figure>
+
+<sect2>
+
+
+<title>To Re-partition Your Disk</title>
+<procedure>
+<step><para>Power on the laptop.</para>
+</step>
+<step><para>Determine the current partition size by completing the following steps:</para>
+<substeps>
+<step><para>Choose Control Panel from the Start menu.</para>
+<para>The Control Panel appears.</para>
+</step>
+<step>
+<para>Double-click the Administrative Tools icon.</para>
+<para>The Administrative Tools window appears.</para>
+</step>
+<step>
+<para>Double-click the Computer Management icon.</para>
+<para>The Computer Management window appears.</para>
+</step>
+<step>
+<para>Expand the Storage list and select the Disk Management node.</para>
+<para>The current disk partition size appears in the right pane of the Computer Management window. Note down this information and use it to confirm the data reported by QTParted in a later step of this procedure.</para>
+</step>
+</substeps>
+</step>
+<step>
+<para>If you have not already done so, burn the System Rescue CD.</para>
+<para>See http://prdownloads.sourceforge.net/systemrescuecd/systemrescuecd-x86-0.2.19.iso?download and use the instructions at http://www.sysresccd.org/Sysresccd-manual-en_Downloading_and_burning.</para>
+</step>
+<step>
+<para>Set the CD/DVD-Rom drive to be the first boot device, and reboot the system.</para>
+<para>The Welcome to SystemRescueCd screen appears.</para>
+</step>
+<step>
+<para>Press the Enter key to boot the CD.</para>
+<para>After the boot is complete, a list of commands for the different utilities, modes, and documentation appears.</para> 
+</step>
+<step>
+<para>To start the QTParted graphical user interface, type the following command:</para>
+<screen>root@sysresccd /root % <command>run_qtparted</command></screen>
+<para>The qtparted window appears.</para>
+</step>
+<step>
+<para>To view the current partition size, click the disk icon in the left pane.</para>
+<para>The partition size and details appear in the right pane. This data should match the information that appeared on the Disk Management node of the Computer Management administrative tool.</para>
+</step>
+<step>
+<para>Click the double-headed arrow in the tools bar.</para>
+<para>The Resize Partition dialog box appears.</para>
+</step>
+<step>
+<para>To set the desired partition size, position the mouse at the edge of the green box, hold down the left mouse button and drag the box to the desired size.</para>
+<para>The fields below the box indicate the exact size of the desired partition.</para>
+<para>The recommended partition size for Solaris Express: Community Release build 41 or higher is 4Gb. If you plan to install additional software, such as developer tools, 10Gb is recommended. Refer to the Managing Disks chapter of http://docs.sun.com/app/docs/doc/817-5093/ the Solaris 10 System Administration Guide: Devices and File Systems for additional information.</para>
+</step>
+<step>
+<para>To save this setting, click OK.</para>
+<para>The Resize Partition dialog box is closed.</para>
+</step>
+<step>
+<para>To begin creating the new partition, select Create from the Operations menu.</para>
+<para>The Create Partition dialog box appears.</para>
+</step>
+<step>
+<para>Choose Linux swap from the Partition Type drop-down menu and click OK to create the partition.</para>
+<note>
+<para>Linux swap is the same partition ID that Solaris uses.</para>
+</note>
+<para>The Create Partition dialog box is closed.</para>
+</step>
+<step>
+<para>Click the button to the left of the double-headed arrow button.</para>
+<para>A confirmation dialog box appears.</para>
+</step>
+<step>
+<para>To commit to the partition changes, click Yes.</para>
+<para>A Progress dialog box appears.</para>
+</step>
+<step>
+<para>After the Progress bar reaches 100% and the Operations Completed Successfully message appears, click OK.</para>
+<para>The Progress dialog box is closed.</para>
+</step>
+<step>
+<para>To exit QTParted, choose Exit from the File menu.</para>
+<para>The QTParted window is closed.</para>
+</step>
+<step>
+<para>To reboot Windows, type the following command:</para>
+<screen>root@sysresccd /root % <userinput>reboot</userinput></screen>
+<para>The system reboots and the Windows login screen appears.</para>
+</step>
+</procedure>
+
+</sect2>
+<sect2>
+<title>Troubleshooting</title>
+<para>If Windows does not boot, restore the operating system by loading the g4u CD and typing the following command:</para>
+<screen>g4u > <command>slurpdisk <replaceable>IP address</replaceable> <filename>imagename.gz</filename> <literal>wd0</literal></command></screen>
+<para>Where <replaceable>IP address</replaceable> is the IP address of the FTP server where you saved the image, <replaceable>imagename.gz</replaceable> is the name of the backup file, and <replaceable>wd0</replaceable> is the disk you want to restore.</para>
+<para>At the prompt, type the password for the <literal>install</literal> user account.</para>
+<para>Windows is restored to the whole disk and the partition you created with QTParted is overwritten.</para>
+</sect2>
+<sect2>
+<title>Next Steps</title>
+<para>If Windows booted successfully, click the Installation tab for further instructions about how to install the OpenSolaris software on the new partition.</para>
+</sect2>
+</sect1>
+
+</chapter>
