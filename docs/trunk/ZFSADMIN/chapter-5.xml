@@ -1926,13 +1926,15 @@ pool/home/tabriz_clone</screen>
 </sect2>
 </sect1>
 <sect1 xml:id="gayns">
-<title>Managing ZFS Properties</title>
-<para>Dataset properties are managed through the <command>zfs</command> command's <command>set</command>, <command>inherit</command>, and <command>get</command> subcommands.</para>
+<title>Zarządzanie parametrami ZFS</title>
+<para>Parametry datasetów są zarządzalne poleceniem <command>zfs</command> z komendami <command>set</command>, <command>inherit</command>oraz <command>get</command>.</para>
 <sect2 xml:id="gazsp">
-<title>Setting ZFS Properties</title>
-<para>You can use the <command>zfs set</command> command to modify any settable
-dataset property.  For a list of settable dataset properties, see <olink targetdoc="" remap="internal" targetptr="gazsd">Settable ZFS Properties</olink>. The <command>zfs set</command> command
-takes a property/value sequence in the format of <replaceable>property</replaceable>=<replaceable>value</replaceable> and a dataset name.<indexterm xml:id="indexterm-325">
+<title>Ustawianie parametrów ZFS</title>
+<para>Polecenie <command>zfs set</command> służy do modyfikacji jakiegokolwiek
+ustwialnego parametru datasetu. Lista ustawialnych parametrów datasetu znajduje
+się pod <olink targetdoc="" remap="internal" targetptr="gazsd">Settable ZFS Properties</olink>.
+Polecenie <command>zfs set</command> przyjmuje sekwencję parametr/wartość w formacie
+<replaceable>parametr</replaceable>=<replaceable>wartość</replaceable> oraz nazwę datasetu.<indexterm xml:id="indexterm-325">
 <primary>setting</primary>
 <secondary>ZFS <property>atime</property> property</secondary>
 <tertiary>(example of)</tertiary>
@@ -1949,26 +1951,26 @@ takes a property/value sequence in the format of <replaceable>property</replacea
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>The following example sets the <property>atime</property> property to <literal>off</literal> for <filename>tank/home</filename>. Only one property can be
-set or modified during each <command>zfs set</command> invocation.</para>
+<para>Następujący przykład ustawia parametr <property>atime</property> na <literal>off</literal> dla <filename>tank/home</filename>.
+Tylko jeden parametr może być ustawiany lub modyfikowany podczas każdego
+wykonania polecenia <command>zfs set</command>.</para>
 <screen># <userinput>zfs set atime=off tank/home</userinput>
 </screen>
-<para>You can specify numeric properties by using the following easy to understand
-suffixes (in order of magnitude): <literal>BKMGTPEZ</literal>.  Any of these
-suffixes can be followed by an optional <literal>b</literal>, indicating bytes,
-with the exception of the <literal>B</literal> suffix, which already indicates
-bytes. The following four invocations of <command>zfs set</command> are equivalent
-numeric expressions indicating that the <property>quota</property> property
-be set to the value of 50 Gbytes on the <filename>tank/home/marks</filename> file
-system:</para>
+<para>Duże wartości numeryczne mogą być określane z użyciem łatwych do zrozumienia
+przyrostków (w kolejności rosnącej): <literal>BKMGTPEZ</literal>.  Każdy z tych
+przyrostków może mieć po sobie opcjonalnie dodane <literal>b</literal>, oznaczające bajty,
+z wyjątkiem przyrostka <literal>B</literal>, który sam z siebie już określa bajty.
+bytes. Podane cztery wyołania polecenia <command>zfs set</command> są równoważnymi
+wyrażeniami numerycznymi określającymi, że parametr <property>quota</property> zostanie
+ustawiony na wartość 50 gigabajtów dla systemu plików <filename>tank/home/marks</filename>:</para>
 <screen># <userinput>zfs set quota=50G tank/home/marks</userinput>
 # <userinput>zfs set quota=50g tank/home/marks</userinput>
 # <userinput>zfs set quota=50GB tank/home/marks</userinput>
 # <userinput>zfs set quota=50gb tank/home/marks</userinput>
 </screen>
-<para>Non-numeric properties are case-sensitive and must be lowercase, with
-the exception of <property>mountpoint</property> and  <property>sharenfs</property>.
-These properties may have mixed upper and lower case letters.<indexterm xml:id="indexterm-328">
+<para>Wartości nienumeryczne są wrażliwe na wielkość liter i muszą być podawane małymi literami,
+z wykluczeniem parametrów <property>mountpoint</property> oraz <property>sharenfs</property>.
+Te dwa parametry mogą mieć wartości podawane zarówno wielkimi, jak i małymi literami.<indexterm xml:id="indexterm-328">
 <primary>setting</primary>
 <secondary>ZFS quota</secondary>
 <tertiary>(example of)</tertiary>
@@ -1985,7 +1987,7 @@ These properties may have mixed upper and lower case letters.<indexterm xml:id="
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>For more information about the <command>zfs set</command> command, see <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<para>Więcej informacji o poleceniu <command>zfs set</command> znajduje się pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
@@ -1995,13 +1997,13 @@ These properties may have mixed upper and lower case letters.<indexterm xml:id="
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gazup">
-<title>Inheriting ZFS Properties</title>
-<para>All settable properties, with the exception of quotas and reservations,
-inherit their value from their parent, unless a quota or reservation is explicitly
-set on the child. If no ancestor has an explicit value set for an inherited
-property, the default value for the property is used. You can use the <command>zfs
-inherit</command> command is to clear a property setting, thus causing the
-setting to be inherited from the parent.<indexterm xml:id="indexterm-331">
+<title>Dziedziczenie parametrów ZFS</title>
+<para>Wszystkie ustawialne parametry z wyłączeniem quoty i rezerwacji dziedziczą
+swoje wartości od "rodziców". Jeśli żaden z nadrzędnych datasetów nie ma ustawionej
+dokłądnej wartości dla dziedziczonego parametru, przyjmowana jest wartość domyślna.
+Polecenie <command>zfs inherit</command> służy do usunięcia ustawionej wartości
+parametru, poprzez co przyjmuje wartość odziedziczoną od nadrzędnego datasetu.
+<indexterm xml:id="indexterm-331">
 <primary>inheriting</primary>
 <secondary>ZFS properties (<command>zfs inherit</command>)</secondary>
 <tertiary>description</tertiary>
@@ -2018,14 +2020,14 @@ setting to be inherited from the parent.<indexterm xml:id="indexterm-331">
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>The following example uses the <command>zfs set</command> command to
-turn on compression for the <filename>tank/home/bonwick</filename> file system.
-Then, <command>zfs inherit</command> is used to unset the <property>compression</property> property,
-thus causing the property to inherit the default setting of <literal>off</literal>.
-Because neither <filename>home</filename> nor <filename>tank</filename> have
-the <property>compression</property> property set locally, the default value
-is used. If both had compression on, the value set in the most immediate ancestor
-would be used (<filename>home</filename> in this example).</para>
+<para>Następujący przykład używa polecenia <command>zfs set</command> w celu
+włączenia kompresji dla systemu plików <filename>tank/home/bonwick</filename>.
+Następnie polecenie <command>zfs inherit</command> usuwa wartość parametru <property>compression</property>,
+przez co parametr ten dziedziczy domyślne ustawienie <literal>off</literal>.
+Ponieważ zarówno <filename>home</filename> jak i <filename>tank</filename> nie
+mają ustawionego parametru <property>compression</property> lokalnie, jest używana
+wartość domyślna. Jeśli obydwa miałyby włączoną kompresję, zostałaby użyta wartość
+najbardziej bezpośredniego rodzica (<filename>home</filename> w tym przykładzie).</para>
 <screen># <userinput>zfs set compression=on tank/home/bonwick</userinput>
 # <userinput>zfs get -r compression tank</userinput>
 NAME             PROPERTY      VALUE                    SOURCE
@@ -2038,21 +2040,20 @@ NAME             PROPERTY      VALUE                    SOURCE
 tank             compression   off                      default
 tank/home        compression   off                      default
 tank/home/bonwick compression  off                      inherited from tank/home</screen>
-<para>The <command>inherit</command> subcommand is applied recursively when
-the <option>
-r</option> option is specified. In the following example, the
-command causes the value for the <property>compression</property> property
-to be inherited by <filename>tank/home</filename> and any descendants it might
-have.</para>
+<para>Komenda <command>inherit</command> jest wykonywana rekursywnie, jeśli zostanie
+wykonana z opcją <option>r</option>. W następującym przykładzie polecenie to powoduje,
+że parametr <property>compression</property> będzie dziedziczony przez 
+<filename>tank/home</filename> i jakiekolwiek potomne systemy plików, jakie mógłby
+posiadać.</para>
 <screen># <userinput>zfs inherit -r compression tank/home</userinput>
 </screen>
 <note>
 
-<para>Be aware that the use of the <option>
-r</option> option clears
-the current property setting for all descendant datasets.</para>
+<para>Należy mieć świadomość, że użycie opcji <option>
+r</option> czyści aktualne ustawienie parametru dla wszystkich potomnych
+datasetów.</para>
 </note>
-<para>For more information about the <command>zfs</command> command, see <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<para>Więcej informacji o poleceniu <command>zfs</command> znajduje się pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
