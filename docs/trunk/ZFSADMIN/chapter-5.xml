@@ -2063,11 +2063,12 @@ datasetów.</para>
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gazuk">
-<title>Querying ZFS Properties</title>
-<para>The simplest way to query property values is by using the <command>zfs
-list</command> command. For more information, see <olink targetdoc="" remap="internal" targetptr="gaztd">Listing Basic ZFS Information</olink>. However, for complicated queries and for scripting,
-use the <command>zfs get</command> command to provide more detailed information
-in a customized format.<indexterm xml:id="indexterm-334">
+<title>Odpytywanie o wartości parametrów ZFS</title>
+<para>Najprostszą metodą odpytania o wartości parametru jest użycie polecenia <command>zfs
+list</command>. Więcej informacji znajduje się pod <olink targetdoc="" remap="internal" targetptr="gaztd">Listing Basic ZFS Information</olink>.
+W przypadku bardziej skomplikowanych zapytań i do pisania skryptów można
+użyć polecenia <command>zfs get</command> w celu dostarczenia bardziej dokładnych
+informacji w ściśle określonym formacie.<indexterm xml:id="indexterm-334">
 <primary>listing</primary>
 <secondary>ZFS properties (<command>zfs list</command>)</secondary>
 <tertiary>(example of)</tertiary>
@@ -2084,18 +2085,17 @@ in a customized format.<indexterm xml:id="indexterm-334">
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>You can use the <command>zfs get</command> command to retrieve any dataset
-property. The following example shows how to retrieve a single property on
-a dataset:</para>
+<para>Polecenia <command>zfs get</command> można użyć w celu pobrania wartości
+jakiegokolwiek parametru datasetu. Następujący przykład pokazuje, jak pobrać
+wartość jednego parametru datasetu:</para>
 <screen># <userinput>zfs get checksum tank/ws</userinput>
 NAME    	         PROPERTY      VALUE                      SOURCE
 tank/ws             checksum      on                         default</screen>
-<para>The fourth column, <literal>SOURCE</literal>, indicates where this property
-value has been set from. The following table defines the meaning of the possible
-source values. </para>
+<para>Czwarta kolumna, <literal>SOURCE</literal>, określa, gdzie ten parametr
+został ustawiony. Poniższa tabela definiuje znaczenie możliwych wartości. </para>
 <table frame="topbot" xml:id="gbavh">
 
-<title>Possible <literal>SOURCE</literal> Values
+<title>Możliwe wartości <literal>SOURCE</literal>
 (<command>zfs get</command>)</title>
 <tgroup cols="2" colsep="0" rowsep="0">
 <colspec colwidth="35.30*"/>
@@ -2103,10 +2103,10 @@ source values. </para>
 <thead>
 <row rowsep="1">
 <entry>
-<para>Source Value</para>
+<para>Wartość SOURCE</para>
 </entry>
 <entry>
-<para>Description</para>
+<para>Opis</para>
 </entry>
 </row>
 </thead>
@@ -2118,19 +2118,19 @@ source values. </para>
 </para>
 </entry>
 <entry>
-<para>This property was never explicitly set for this dataset or any of its
-ancestors. The default value for this property is being used.</para>
+<para>Wartość tego parametru nigdzie nie została w jawny sposób określona w tym oraz jakimkolwiek
+nadrzędnym datasecie. Dla tego parametru jest używana wartość domyślna.</para>
 </entry>
 </row>
 <row>
 <entry>
 <para>
-<literal>inherited from</literal> <replaceable>dataset-name</replaceable>
+<literal>inherited from</literal> <replaceable>nazwa-datasetu</replaceable>
 </para>
 </entry>
 <entry>
-<para>This property value is being inherited from the parent as specified
-by <replaceable>dataset-name</replaceable>.</para>
+<para>Wartość tego parametru jest dziedziczona z datasetu nadrzędnego o podanej
+nazwie <replaceable>nazwa-datasetu</replaceable>.</para>
 </entry>
 </row>
 <row>
@@ -2140,8 +2140,8 @@ by <replaceable>dataset-name</replaceable>.</para>
 </para>
 </entry>
 <entry>
-<para>This property value was explicitly set for this dataset by using <command>zfs
-set</command>.</para>
+<para>Wartość tego parametru została dokładnie określona dla tego datasetu poprzez
+użycie polecenia <command>zfs set</command>.</para>
 </entry>
 </row>
 <row>
@@ -2151,9 +2151,11 @@ set</command>.</para>
 </para>
 </entry>
 <entry>
-<para>This property value was set by using the <command>zfs mount</command> <option>
-o</option> option and is only valid for the lifetime of the mount. For more
-information about temporary mount point properties, see <olink targetdoc="" remap="internal" targetptr="gamnt">Temporary Mount Properties</olink>.</para>
+<para>Wartość tego parametru została określona poprzez użycie opcji <option>
+o</option> polecenia <command>zfs mount</command> <option>
+o</option> i obowiązuje na czas zamontowania tego systemu plików. Więcej informacji
+na temat tymczasowych parametrów punktu montowania znajduje się pod
+<olink targetdoc="" remap="internal" targetptr="gamnt">Temporary Mount Properties</olink>.</para>
 </entry>
 </row>
 <row>
@@ -2161,15 +2163,15 @@ information about temporary mount point properties, see <olink targetdoc="" rema
 <para>- (none)</para>
 </entry>
 <entry>
-<para>This property is a read-only property. Its value is generated by ZFS.</para>
+<para>Ten parametr jest tylko do odczytu. Jego wartość jest generowana przez ZFS.</para>
 </entry>
 </row>
 </tbody>
 </tgroup>
 </table>
-<para>You can use the special keyword <literal>all</literal> to retrieve all
-dataset properties. The following example uses the <literal>all</literal> keyword
-to retrieve all existing dataset properties:</para>
+<para>Użycie specjalnego słowa kluczowego <literal>all</literal> pozwala pobrać
+wszystkie parametry datasetu. Poniższy przykład używa słowa kluczowego <literal>all</literal>
+w celu pobrania wszystkich istniejących parametrów datasetu:</para>
 <screen># <userinput>zfs get all pool</userinput>
 NAME             PROPERTY       VALUE                      SOURCE
 pool             type           filesystem                 -
@@ -2195,12 +2197,14 @@ pool             zoned          off                        default
 pool             snapdir        hidden                     default
 pool             aclmode        groupmask                  default
 pool             aclinherit     secure                     default</screen>
-<para>The <option>
-s</option> option to <command>zfs get</command> enables
-you to specify, by source value, the type of properties to display. This option
-takes a comma-separated list indicating the desired source types. Only properties
-with the specified source type are displayed. The valid source types are <literal>local</literal>, <literal>default</literal>, <literal>inherited</literal>, <literal>temporary</literal>, and <literal>none</literal>. The following example shows
-all properties that have been locally set on <literal>pool</literal>.<indexterm xml:id="indexterm-337">
+<para>Opcja <option>
+s</option> polecenia <command>zfs get</command> pozwala określić, poprzez
+wartość SOURCE, rodzaj parametrów do wyświetlenia. Opcja ta przyjmuje listę wartości
+oddzielonych przecinkiem określającą żądany typ wartości. Tylko parametry
+o określonym typie "SOURCE" zostaną wyświetlone. Dopuszczalne wartości to
+<literal>local</literal>, <literal>default</literal>, <literal>inherited</literal>, <literal>temporary</literal> oraz <literal>none</literal>.
+Poniższy przykład pokazuje wszystkie parametry, które zostały ustawione lokalnie
+dla datasetu <literal>pool</literal>.<indexterm xml:id="indexterm-337">
 <primary>listing</primary>
 <secondary>ZFS properties by source value</secondary>
 <tertiary>(example of)</tertiary>
@@ -2220,17 +2224,17 @@ all properties that have been locally set on <literal>pool</literal>.<indexterm 
 <screen># <userinput>zfs get -s local all pool</userinput>
 NAME             PROPERTY      VALUE                      SOURCE
 pool             compression   on                         local</screen>
-<para>Any of the above options can be combined with the <option>
-r</option> option
-to recursively display the specified properties on all children of the specified
-dataset. In the following example, all temporary properties on all datasets
-within <literal>tank</literal> are recursively displayed:</para>
+<para>Wszystkie powyższe opcje mogą być łączone z użyciem opcji <option>
+r</option> w celu rekursywnego wyświetlenia określonych parametrów
+dla wszystkich "dzieci" określonego datasetu. W poniższym przykładzie wszystkie
+tymczasowe wartości parametru dla wszystkich datasetów od <literal>tank</literal>
+włącznie zostaną rekursywnie wyświetlone:</para>
 <screen># <userinput>zfs get -r -s temporary all tank</userinput>
 NAME             PROPERTY       VALUE                      SOURCE
 tank/home          atime          off                      temporary
 tank/home/bonwick  atime          off                      temporary
 tank/home/marks    atime          off                      temporary</screen>
-<para>For more information about the <command>zfs get</command> command, see <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<para>Więcej informacji o poleceniu <command>zfs get</command> znajduje się pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
@@ -2240,19 +2244,18 @@ tank/home/marks    atime          off                      temporary</screen>
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gazum">
-<title>Querying ZFS Properties for Scripting</title>
-<para>The <command>zfs get</command> command supports the <option>
-H</option> and <option>
-o</option> options, which are designed for scripting. The <option>
-H</option> option
-indicates that any header information should be omitted and that all white
-space should come in the form of tab. Uniform white space allows for easily
-parseable data. You can use the <option>
-o</option> option to customize the
-output. This option takes a comma-separated list of values to be output. All
-properties defined in <olink targetdoc="" remap="internal" targetptr="gazss">ZFS Properties</olink>, along
-with the literals <literal>name</literal>, <literal>value</literal>, <literal>property</literal> and <literal>source</literal> can be supplied in the <option>
-o</option> list.<indexterm xml:id="indexterm-340">
+<title>Odpytywanie o parametry ZFS dla skryptów</title>
+<para>Polecenie <command>zfs get</command> wspiera opcje <option>
+H</option> oraz <option>
+o</option>, które zostały stworzone z myślą o pisaniu skryptów. Opcja <option>
+H</option> określa, że jakiekolwiek informacje nagłówków powinny być pominięte
+oraz wszystki białe spacje powinny być zamienione na tabulatory. Ujednolicony
+format białych znaków pozwala łatwo przetwarzać dane. Użycie opcji <option>
+o</option> pozwala dostosować format wyjścia. Przyjmuje ona parametry w postaci
+listy parametrów do wyświetlenia oddzielonej przecinkami. Wszystkie parametry
+zdefiniowane w <olink targetdoc="" remap="internal" targetptr="gazss">parametrach ZFS</olink>, włącznie
+z <literal>name</literal>, <literal>value</literal>, <literal>property</literal> oraz <literal>source</literal> mogą być użyte w liście opcji <option>
+o</option>.<indexterm xml:id="indexterm-340">
 <primary>listing</primary>
 <secondary>ZFS properties for scripting</secondary>
 <tertiary>(example of)</tertiary>
@@ -2269,26 +2272,25 @@ o</option> list.<indexterm xml:id="indexterm-340">
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>The following example shows how to retrieve a single value by using
-the <option>
-H</option> and <option>
-o</option> options of <command>zfs get</command>.</para>
+<para>Poniższy przykład pokazuje jak otrzymać pojedynczą wartość poprzez użycie
+opcji <option>H</option> oraz <option>o</option> z poleceniem <command>zfs get</command>.</para>
 <screen># <userinput>zfs get -H -o value compression tank/home</userinput>
 on</screen>
-<para>The <option>
-p</option> option reports numeric values as their exact
-values. For example, 1 Mbyte would be reported as 1000000. This option can
-be used as follows:</para>
+<para>Opcja <option>
+p</option> włącza dokładne zwracanie wartości liczbowych. Na przykład
+1 Mbajt będzie wyświetlony jako 1000000. Opcja ta może być użyta, jak
+demonstruje poniższy przykład:</para>
 <screen># <userinput>zfs get -H -o value -p used tank/home</userinput>
 182983742</screen>
-<para>You can use the <option>
-r</option> option along with any of the above
-options to recursively retrieve the requested values for all descendants.
-The following example uses the <option>
+<para>Użycie opcji <option>
+r</option> w połączeniu z jakimikolwiek powyższymi opcjami pozwala pobrać
+rekursywnie wartości dla wszystkich potomnych datasetów. Poniższy przykład
+używa opcji <option>
 r</option>, <option>
-o</option>, and <option>
-H</option> options to retrieve the dataset name and the value of the <property>used</property> property for <filename>export/home</filename> and its descendants,
-while omitting any header output:</para>
+o</option> oraz <option>
+H</option> w celu ppbrania nazwy datasetu oraz wartości parametru <property>used</property> dla
+<filename>export/home</filename> i wszystkich potomków, z pominięciem jakichkolwiek informacji
+nagłówka:</para>
 <screen># <userinput>zfs get -H -o name,value -r used export/home</userinput>
 export/home     5.57G
 export/home/marks       1.43G
