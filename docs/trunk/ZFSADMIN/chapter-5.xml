@@ -817,7 +817,7 @@ do wollimunów. Parametr może przyjmować wartości yes lub no.<indexterm xml:i
 </entry>
 <entry colsep="0" rowsep="1">
 <para>Określa punkt montowania dla systemu plików. Kiedy wartość parametru <property>mountpoint</property>
-zostaje zmieniona, system plików i wszystkie jego potomne, które dzieciczą punkt montowania zostają odmontowane.
+zostaje zmieniona, system plików i wszystkie jego potomne, które dziedziczą punkt montowania zostają odmontowane.
 Jeśli nową wartością jest  <literal>legacy</literal>, wtedy pozostają odmontowane. W przeciwnym przypadku
 zostaną automatycznie zamontowane w nowej lokalizacji, jeśli parametr ten miał poprzednio wartość
 <literal>legacy</literal> or <literal>none</literal> lub był zamontowany, zanim parametr został
@@ -2298,15 +2298,15 @@ export/home/maybee      2.15G</screen>
 </sect2>
 </sect1>
 <sect1 xml:id="gaynd">
-<title>Mounting and Sharing ZFS File Systems</title>
-<para>This section describes how mount points and shared file systems are
-managed in ZFS.</para>
+<title>Montowanie i udostępnianie systemów plików ZFS</title>
+<para>Ta sekcja opisuje jak punkty montowanie i udostępniane systemy plików są zarządzane
+w ZFS.</para>
 <sect2 xml:id="gaztn">
-<title>Managing ZFS Mount Points</title>
-<para>By default, all ZFS file systems are mounted by ZFS at boot by using
-SMF's <filename>svc://system/filesystem/local</filename> service. File systems
-are mounted under <replaceable>/path</replaceable>, where <replaceable>path</replaceable> is
-the name of the file system.<indexterm xml:id="indexterm-343">
+<title>Zarządzanie punktami montowania ZFS</title>
+<para>Domyślnie wszystkie systemy plików ZFS są montowane przez ZFS w trakcie startu systemu
+poprzez użycie serwisu SMF <filename>svc://system/filesystem/local</filename>. Systemy plików
+są montowane w lokalizacji <replaceable>/ścieżka</replaceable>, gdzie <replaceable>ścieżka</replaceable> jest
+nazwą systemu plików.<indexterm xml:id="indexterm-343">
 <primary>mount points</primary>
 <secondary>managing ZFS</secondary>
 <tertiary>description</tertiary>
@@ -2317,15 +2317,16 @@ the name of the file system.<indexterm xml:id="indexterm-343">
 <tertiary>description</tertiary>
 </indexterm>
 </para>
-<para>You can override the default mount point by setting the <property>mountpoint</property> property to a specific path by using the <command>zfs set</command> command.
-ZFS automatically creates this mount point, if needed, and automatically mounts
-this file system when the <command>zfs mount -a</command> command is invoked,
-without requiring you to edit the <filename>/etc/vfstab</filename> file.</para>
-<para>The  <literal>mountpoint</literal> property is inherited. For example,
-if <filename>pool/home</filename> has <property>mountpoint</property> set
-to <filename>/export/stuff</filename>, then <filename>pool/home/user</filename> inherits <filename>/export/stuff/user</filename> for its <property>mountpoint</property> property.</para>
-<para>The <property>mountpoint</property> property can be set to <literal>none</literal> to
-prevent the file system from being mounted.<indexterm xml:id="indexterm-345">
+<para>Domyślny punkt montowania można zmienić poprzez ustawienie parametru <property>mountpoint</property> na określoną ścieżkę poprzez użycie polecenia <command>zfs set</command>.
+ZFS automatycznie tworzy punkt montowania, jeśli jest taka potrzeba oraz
+automatycznie montuje ten system plików, jeśli zostanie wywołane polecenie
+<command>zfs mount -a</command> bez potrzeby poprawianie pliku <filename>/etc/vfstab</filename>.</para>
+<para>Parametr <literal>mountpoint</literal> jest dziedziczony. Jeśli przykładowo
+<filename>pool/home</filename> ma <property>mountpoint</property> ustawiony jako
+<filename>/export/stuff</filename>, wtedy <filename>pool/home/user</filename> dziedziczy <filename>/export/stuff/user</filename> dla
+swojego parametru <property>mountpoint</property>.</para>
+<para>Parametr <property>mountpoint</property> może być ustawiony jako <literal>none</literal> 
+w celu zapobiegnięcia montowania systemu plików.<indexterm xml:id="indexterm-345">
 <primary>mount points</primary>
 <secondary>legacy</secondary>
 </indexterm>
@@ -2335,38 +2336,41 @@ prevent the file system from being mounted.<indexterm xml:id="indexterm-345">
 <tertiary>description</tertiary>
 </indexterm>
 </para>
-<para>If desired, file systems can also be explicitly managed through legacy
-mount interfaces by setting the <property>mountpoint</property> property to <property>legacy</property> by using <command>zfs set</command>. Doing so prevents ZFS
-from automatically mounting and managing this file system. Legacy tools including
-the <command>mount</command> and <command>umount</command> commands, and the <filename>/etc/vfstab</filename> file must be used instead. For more information about
-legacy mounts, see <olink targetdoc="" remap="internal" targetptr="gbaln">Legacy Mount Points</olink>.</para>
-<para>When changing mount point management strategies, the following behaviors
+<para>W razie potrzeby systemy plików mogą być bezpośrednio zarządzane przez standardowy
+mechanizm montowania poprzez ustawienie parametru <property>mountpoint</property> na
+wartość <property>legacy</property> poleceniem <command>zfs set</command>. Zapobiega to również
+automatycznemu montowaniu i zarządzaniu tym systemem plików przez ZFS. W zamian muszą zostać
+użyte standardowe narzędzia, włączając w to polecenia <command>mount</command> i <command>umount</command>
+oraz plik <filename>/etc/vfstab</filename>. Więcej informacji o tradycjnym montowaniu systemu
+plików znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbaln">Legacy Mount Points</olink>.</para>
+<para>W przypadku zmiany strategii zarządzania punktem montowania, mogą mieć miejsce następujące zachowania:</para>
+When changing mount point management strategies, the following behaviors
 apply:</para>
 <itemizedlist>
 <listitem>
-<para>Automatic mount point behavior</para>
+<para>Automatyczne zarządzanie punktem montowania</para>
 </listitem>
 <listitem>
-<para>Legacy mount point behavior</para>
+<para>Tradycyjne zarządzanie punktem montowania</para>
 </listitem>
 </itemizedlist>
 <sect3 xml:id="gbala">
-<title>Automatic Mount Points</title>
+<title>Automatyczne zarządzanie punktami montowania</title>
 <itemizedlist>
 <listitem>
-<para>When changing from <literal>legacy</literal> or <literal>none</literal>,
-ZFS automatically mounts the file system.</para>
+<para>W przypadku zmiany wartości parametru z <literal>legacy</literal> lub <literal>none</literal>,
+ZFS automatycznie montuje system plików.</para>
 </listitem>
 <listitem>
-<para>If ZFS is currently managing the file system but it is currently
-unmounted, and the <property>mountpoint</property> property is changed, the
-file system remains unmounted.</para>
+<para>Jeśli ZFS aktualnie zarządza systemem plików, ale ten jest aktualnie odmontowany,
+a wartość parametru <property>mountpoint</property> zostanie zmieniona, system plików
+pozostaje odmontowany.</para>
 </listitem>
 </itemizedlist>
-<para>You can also set the default mount point for the root dataset at creation
-time by using <command>zpool create</command>'s <option>
-m</option> option.
-For more information about creating pools, see <olink targetdoc="" remap="internal" targetptr="gaynr">Creating a ZFS Storage Pool</olink>.<indexterm xml:id="indexterm-347">
+<para>Można także określić domyślny punkt montowania dla głównego datasetu w czasie tworzenia
+poleceniem <command>zpool create</command> poprzez użycie opcji <option>
+m</option>.
+Więcej informacji o tworzeniu puli znajduje się pod <olink targetdoc="" remap="internal" targetptr="gaynr">Creating a ZFS Storage Pool</olink>.<indexterm xml:id="indexterm-347">
 <primary>mount points</primary>
 <secondary>automatic</secondary>
 </indexterm>
@@ -2375,8 +2379,8 @@ For more information about creating pools, see <olink targetdoc="" remap="intern
 <secondary>managing automatic mount points</secondary>
 </indexterm>
 </para>
-<para>Any dataset whose <property>mountpoint</property> property is not <literal>legacy</literal> is managed by ZFS. In the following example, a dataset is
-created whose mount point is automatically managed by ZFS.</para>
+<para>Wszystkie datasety, których parametr <property>mountpoint</property> nie ma wartości <literal>legacy</literal> są zarządzane przez ZFS.
+W poniższym przykładzie punkt montowania tworzonego datasetu jest automatycznie zarządzany przez ZFS.</para>
 <screen># <userinput>zfs create pool/filesystem</userinput>
 # zfs get mountpoint pool/filesystem
 NAME             PROPERTY      VALUE                      SOURCE
@@ -2384,8 +2388,8 @@ pool/filesystem  mountpoint    /pool/filesystem           default
 # zfs get mounted pool/filesystem
 NAME             PROPERTY      VALUE                      SOURCE
 pool/filesystem  mounted       yes                        -</screen>
-<para>You can also explicitly set the <property>mountpoint</property> property
-as shown in the following example:</para>
+<para>Można także ustawić parametr <property>mountpoint</property>, jak
+pokazano w poniższym przykładzie:</para>
 <screen># <userinput>zfs set mountpoint=/mnt pool/filesystem</userinput>
 # <userinput>zfs get mountpoint pool/filesystem</userinput>
 NAME             PROPERTY      VALUE                      SOURCE
@@ -2393,11 +2397,11 @@ pool/filesystem  mountpoint    /mnt                       local
 # <userinput>zfs get mounted pool/filesystem</userinput>
 NAME             PROPERTY      VALUE                      SOURCE
 pool/filesystem  mounted       yes                        -</screen>
-<para>When the <property>mountpoint</property> property is changed, the file
-system is automatically unmounted from the old mount point and remounted to
-the new mount point. Mount point directories are created as needed. If ZFS
-is unable to unmount a file system due to it being active, an error is reported
-and a forced manual unmount is necessary.<indexterm xml:id="indexterm-349">
+<para>Kiedy parametr <property>mountpoint</property> jest zmieniany, system plików
+zostaje automatycznie odmontowany ze starego punktu montowani i zamontowany w nowym
+miejscu. W razie potrzeby katalogi punktu montowania są tworzone. Jeśli ZFS nie jest
+w stanie odmontować systemu plików z powodu jego aktywności, zostanie zgłoszony błąd i 
+jest konieczne ręczne odmontowanie systemu plików.<indexterm xml:id="indexterm-349">
 <primary>setting</primary>
 <secondary>ZFS mount points (<command>zfs set mountpoint</command>)</secondary>
 <tertiary>(example of)</tertiary>
@@ -2416,7 +2420,7 @@ and a forced manual unmount is necessary.<indexterm xml:id="indexterm-349">
 </para>
 </sect3>
 <sect3 xml:id="gbaln">
-<title>Legacy Mount Points</title>
+<title>Tradycyjne zarządzanie punktami montowania</title>
 <para>You can manage ZFS file systems with legacy tools by setting the <property>mountpoint</property> property to <property>legacy</property>. Legacy file
 systems must be managed through the <command>mount</command> and <command>umount</command> commands
 and the <filename>/etc/vfstab</filename> file. ZFS does not automatically
