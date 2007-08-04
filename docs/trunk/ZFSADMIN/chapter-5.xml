@@ -2659,16 +2659,19 @@ pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gamnd">
-<title>Sharing ZFS File Systems</title>
-<para>Similar to mount points, ZFS can automatically share file systems by
-using the <property>sharenfs</property> property. Using this method, you do
-not have to modify the <filename>/etc/dfs/dfstab</filename> file when a new
-file system is added. The <property>sharenfs</property> property is a comma-separated
-list of options to pass to the <command>share</command> command. The special
-value <literal>on</literal> is an alias for the default share options, which
-are <literal>read/write</literal> permissions for anyone. The special value <literal>off</literal> indicates that the file system is not managed by ZFS and can
-be shared through traditional means, such as the <filename>/etc/dfs/dfstab</filename> file.
-All file systems whose <property>sharenfs</property> property is not <literal>off</literal> are shared during boot.<indexterm xml:id="indexterm-361">
+<title>Udostępnianie (sharing) systemów plików ZFS</title>
+<para>Analogicznie do punktów montowania ZFS może automatycznie udostępniać
+systemy plików poprzez użycie parametru <property>sharenfs</property>. Używając
+tej metody nie ma potrzeby modyfikować pliku <filename>/etc/dfs/dfstab</filename>,
+kiedy zostaje dodany nowy system plików. Parametr <property>sharenfs</property>
+jest listą opcji oddzielonych przecinkami przekazywanych do polecenia <command>share</command>.
+Specjalna wartość <literal>on</literal> jest aliasem na domyślne opcje udostępniania,
+które pozwalają na pełny dostęp (<literal>read/write</literal>) dla każdego.
+Specjalna wartość <literal>off</literal> określa, że ten system plików
+nie jest zarządzany przez ZFS i może być udostępniony tradycyjnymi metodami,
+jak plik <filename>/etc/dfs/dfstab</filename>.
+Wszystkie systemy plików, których parametr <property>sharenfs</property> nie jest ustawiony
+na <literal>off</literal> są udostępniane na etapie startu systemu.<indexterm xml:id="indexterm-361">
 <primary>sharing</primary>
 <secondary>ZFS file systems</secondary>
 <tertiary>description</tertiary>
@@ -2685,14 +2688,15 @@ All file systems whose <property>sharenfs</property> property is not <literal>of
 </indexterm>
 </para>
 <sect3 xml:id="gbdxz">
-<title>Controlling Share Semantics</title>
-<para>By default, all file systems are unshared. To share a new file system,
-use <command>zfs set</command> syntax similar to the following:</para>
+<title>Kontrolowanie sposobu udostępniania</title>
+<para>Domyślnie wszystkie systemy plików nie są udostępniane. W celu
+udostępnienia nowego systemu plików należy użyć polecenia <command>zfs set</command>
+ze składnią podobną do poniższej:</para>
 <screen># <userinput>zfs set sharenfs=on tank/home/eschrock</userinput>
 </screen>
-<para>The property is inherited, and file systems are automatically shared
-on creation if their inherited property is not <literal>off</literal>. For
-example:<indexterm xml:id="indexterm-364">
+<para>Parametr jest dziedziczony i wszystkie systemy plików są automatycznie udostępanie
+jeśli ich dziedziczony parametr nie przyjmuje wartości <literal>off</literal>. Na
+przykład:<indexterm xml:id="indexterm-364">
 <primary>sharing</primary>
 <secondary>ZFS file systems</secondary>
 <tertiary>example of</tertiary>
@@ -2714,20 +2718,24 @@ example:<indexterm xml:id="indexterm-364">
 # <userinput>zfs create tank/home/tabriz</userinput>
 # <userinput>zfs set sharenfs=ro tank/home/tabriz</userinput>
 </screen>
-<para>Both <filename>tank/home/bricker</filename> and <filename>tank/home/tabriz</filename> are
-initially shared writable because they inherit the <property>sharenfs</property> property
-from <filename>tank/home</filename>. Once the property is set to <literal>ro</literal> (readonly), <filename>tank/home/tabriz</filename> is shared read-only regardless of the <property>sharenfs</property> property that is set for <filename>tank/home</filename>.</para>
+<para>Zarówno <filename>tank/home/bricker</filename>, jak i <filename>tank/home/tabriz</filename> 
+na początku są udostępnione w trybie do zapisu, ponieważ dziedziczą wartość parametru
+<property>sharenfs</property> z <filename>tank/home</filename>. Natomiast <filename>tank/home/tabriz</filename>
+staje się tylko do odczytu w momencie, kiedy parametr zostaje ustawiony na <literal>ro</literal>
+(readonly) niezlaeżnie od ustawienia parametru <property>sharenfs</property> dla
+<filename>tank/home</filename>.</para>
 </sect3>
 <sect3 xml:id="gbdze">
-<title>Unsharing ZFS File Systems</title>
-<para>While most file systems are automatically shared and unshared during
-boot, creation, and destruction, file systems sometimes need to be explicitly
-unshared. To do so, use the <command>zfs unshare</command> command. For example:</para>
+<title>Wyłączenie udostępniania (unsharing) systemów plików ZFS</title>
+<para>Kiedy większość systemów plików jest automatycznie udostępniana lub też nie
+podczas startu systemu, tworzenia lub kasoawania, czasami istnieje potrzeba jawnego
+wyłączenia udostępniania. Służy do tego polecenia <command>zfs unshare</command>.
+Na przykład:</para>
 <screen># <userinput>zfs unshare tank/home/tabriz</userinput>
 </screen>
-<para>This command unshares the <filename>tank/home/tabriz</filename> file
-system. To unshare all ZFS file systems on the system, you need to use the <option>
-a</option> option.<indexterm xml:id="indexterm-367">
+<para>To polecenie wyłączy udostępnianie systemu plików <filename>tank/home/tabriz</filename>.
+W celu wyłączenia udostępniania wszystkich systemów plików ZFS należy użyć opcji <option>
+a</option>.<indexterm xml:id="indexterm-367">
 <primary>unsharing</primary>
 <secondary>ZFS file systems</secondary>
 <tertiary>example of</tertiary>
@@ -2742,11 +2750,11 @@ a</option> option.<indexterm xml:id="indexterm-367">
 </screen>
 </sect3>
 <sect3 xml:id="gbdxw">
-<title>Sharing ZFS File Systems</title>
-<para>Most of the time the automatic behavior of ZFS, sharing on boot and
-creation, is sufficient for normal operation. If, for some reason, you unshare
-a file system, you can share it again by using the <command>zfs share</command> command.
-For example:</para>
+<title>Udostępnianie (sharing) systemów plików ZFS</title>
+<para>W większości przypadków automatyczne zachowanie ZFS, udostępnianie w czasie
+startu systemu i tworzenia jest wystarczające. Jeśli z jakichś przyczyn udostępnianie
+systemu plików zostało wyłączone, można udostępnić go ponownie poprzez użycie polecenia
+<command>zfs share</command>. Na przykład:</para>
 <screen># <userinput>zfs share tank/home/tabriz</userinput>
 </screen>
 <para>You can also share all ZFS file systems on the system by using the <option>
@@ -2755,41 +2763,47 @@ a</option> option.</para>
 </screen>
 </sect3>
 <sect3 xml:id="gbdxq">
-<title>Legacy Share Behavior</title>
-<para>If the <property>sharenfs</property> property is <literal>off</literal>,
-then ZFS does not attempt to share or unshare the file system at any time.
-This setting enables you to administer through traditional means such as the <filename>/etc/dfs/dfstab</filename> file.</para>
-<para>Unlike the traditional <command>mount</command> command, the traditional <command>share</command> and <command>unshare</command> commands can still function
-on ZFS file systems. As a result, you can manually share a file system with
-options that are different from the settings of the <literal>sharenfs</literal> property.
-This administrative model is discouraged. Choose to either manage NFS shares
-completely through ZFS or completely through the <filename>/etc/dfs/dfstab</filename> file.
-The ZFS administrative model is designed to be simpler and less work than
-the traditional model. However, in some cases, you might still want to control
-file system sharing behavior through the familiar model.</para>
+<title>Tradycyjne udostępnianie</title>
+<para>Jeśli parametr <property>sharenfs</property> jest ustawiony na <literal>off</literal>,
+wtedy ZFS nie podejmuje prób udostępniania lub wyłączenia udostępniania systemu plików.
+To ustawienie pozwala zarządzać udostępnianie tradycyjnymi metodami takimi jak
+plik <filename>/etc/dfs/dfstab</filename>.</para>
+<para>W przeciwieństwie do tradycyjnego polecenia <command>mount</command>, standardowe
+polecenia <command>share</command> oraz <command>unshare</command> mogą być ciągle używane
+dla systemów plików ZFS. Wskutek tego istnieje możliwość udostępnienia systemu plików z innymi
+ustawienia, niż wartość zmiennej <literal>sharenfs</literal>. Ten model administrowania
+jest odradzany. Zaleca się zarządzanie udostępnianiem NFS całkowicie poprzez mechanizm ZFS lub
+całkowicie poprzez plik <filename>/etc/dfs/dfstab</filename>. Model zarządzania ZFS
+został zaprojektowany tak, żeby był prostszy i wymagający mniejszego nakładu pracy niż
+tradycyjny. Jednakże w niektórych przypadkach może ciągle zachodzić potrzeba kontrolowania
+udostępniania systemu plików poprzez tradycyjny, znajomy sposób.</para>
 </sect3>
 </sect2>
 </sect1>
 <sect1 xml:id="gazvb">
-<title>ZFS Quotas and Reservations</title>
-<para>ZFS supports quotas and reservations at the file system level. You can
-use the <property>quota</property> property to set a limit on the amount of
-space a file system can use. In addition, you can use the <property>reservation</property> property
-to guarantee that some amount of space is available to a file system. Both
-properties apply to the dataset they are set on and all descendants of that
-dataset.<indexterm xml:id="indexterm-369">
+<title>Quoty i rezerwacje ZFS</title>
+<para>ZFS wspiera quoty i rezeracje na poziomie systemu plików. Ustawienie
+parametru <property>quota</property> narzuca limit wielkości miejsca, jaki
+system plików może użyć. Dodatkowo można ustawić parametr <property>reservation</property>
+w celu zagwarantowania, że podana ilość miejsca będzie dostępna dla systemu
+plików. Obydwa parametry dotyczą datasetu, dla którego są ustawiane oraz
+dla wszystkich potomnych dla niego datasetów.<indexterm xml:id="indexterm-369">
 <primary>quotas and reservations</primary>
 <secondary>description</secondary>
 </indexterm>
 </para>
-<para>That is, if a quota is set on the <filename>tank/home</filename> dataset,
-the total amount of space used by <filename>tank/home</filename> <emphasis>and
-all of its descendants</emphasis> cannot exceed the quota. Similarly, if <filename>tank/home</filename> is given a reservation, <filename>tank/home</filename> <emphasis>and all of its descendants</emphasis> draw from that reservation. The amount
-of space used by a dataset and all of its descendents is reported by the <property>used</property> property.</para>
+<para>Oznacza to, że jeśli quota zostanie ustawiona dla datasetu <filename>tank/home</filename>,
+Całkowita ilość miejsca użyta przez <filename>tank/home</filename> <emphasis>i
+wszystkie dla niego potomne datasety</emphasis> nie może przekroczyć wartości quoty.
+Analogicznie jeśli <filename>tank/home</filename> ma określoną rezerwację,
+<filename>tank/home</filename> <emphasis>i wszystkie dla niego potomne datasety</emphasis>
+dostają tą rezerwację. Ilość miejsca użyta przez dataset i jego "potomki" jest raportowana
+poprzez parametr <property>used</property>.</para>
 <sect2 xml:id="gazud">
-<title>Setting Quotas on ZFS File Systems</title>
-<para>ZFS quotas can be set and displayed by using the <command>zfs set</command> and <command>zfs get</command> commands. In the following example, a quota of 10 Gbytes
-is set on <filename>tank/home/bonwick</filename>.<indexterm xml:id="indexterm-370">
+<title>Ustawianie quoty dla systemów plików ZFS</title>
+<para>Quoty ZFS mogą być ustawiane i wyświetlane poprzez użycie poleceń
+<command>zfs set</command> oraz <command>zfs get</command>. W poniższym przykładzie
+dla systamu plików <filename>tank/home/bonwick</filename> zostaje ustawiona quota 10GB.<indexterm xml:id="indexterm-370">
 <primary>setting</primary>
 <secondary>ZFS file system quota (<command>zfs set quota</command>)</secondary>
 <tertiary>example of</tertiary>
@@ -2810,7 +2824,7 @@ is set on <filename>tank/home/bonwick</filename>.<indexterm xml:id="indexterm-37
 # <userinput>zfs get quota tank/home/bonwick</userinput>
 NAME              PROPERTY      VALUE                      SOURCE
 tank/home/bonwick quota         10.0G                      local</screen>
-<para>ZFS quotas also impact the output of the <command>zfs list</command> and <command>df</command> commands. For example:</para>
+<para>Quoty ZFS wpływają także na wartości w wyjściu poleceń <command>zfs list</command> oraz <command>df</command>. Na przykład:</para>
 <screen># <userinput>zfs list</userinput>
 NAME                   USED  AVAIL  REFER  MOUNTPOINT
 tank/home             16.5K  33.5G  8.50K  /export/home
@@ -2819,23 +2833,24 @@ tank/home/bonwick/ws  6.50K  10.0G  8.50K  /export/home/bonwick/ws
 # <userinput>df -h /export/home/bonwick</userinput>
 Filesystem             size   used  avail capacity  Mounted on
 tank/home/bonwick       10G     8K    10G     1%    /export/home/bonwick</screen>
-<para>Note that although <filename>tank/home</filename> has 33.5 Gbytes of
-space available, <filename>tank/home/bonwick</filename> and <filename>tank/home/bonwick/ws</filename> only have 10 Gbytes of space available, due to the quota on <filename>tank/home/bonwick</filename>.</para>
-<para>You cannot set a quota to an amount less than is currently being used
-by a dataset. For example:</para>
+<para>Proszę zauważyć, że pomimo tego, iż <filename>tank/home</filename> ma 33.5 GB dostępnego
+miejsca, <filename>tank/home/bonwick</filename> oraz <filename>tank/home/bonwick/ws</filename>
+mają tylko 10GB dostępnego miejsca z powodu ustawienia quoty dla <filename>tank/home/bonwick</filename>.</para>
+<para>Nie można ustawić quoty na wielkość mniejszą, niż aktualnie używana
+przez dataset. Na przykład:</para>
 <screen># <userinput>zfs set quota=10K tank/home/bonwick</userinput>
 cannot set quota for 'tank/home/bonwick': size is less than current used or 
 reserved space</screen>
 </sect2>
 <sect2 xml:id="gbdbb">
-<title>Setting Reservations on ZFS File Systems</title>
-<para>A ZFS <emphasis>reservation</emphasis> is an allocation of space from
-the pool that is guaranteed to be available to a dataset. As such, you cannot
-reserve space for a dataset if that space is not currently available in the
-pool. The total amount of all outstanding unconsumed reservations cannot exceed
-the amount of unused space in the pool. ZFS reservations can be set and displayed
-by using the <command>zfs set</command> and <command>zfs get</command> commands.
-For example:<indexterm xml:id="indexterm-373">
+<title>Ustawianie rezerwacji dla systemów plików ZFS</title>
+<para><emphasis>Rezerwacje</emphasis> ZFS to inaczej przydzielenie miejsca z puli
+w celu zagwarantowania jego dostępności dla datasetu. Skutkiem tego nie można
+zarezerwować miejsca dla datasetu, jeśli to miejsce nie jest w danym momencie
+dostępne w puli. Sumaryczna wielkość dla wszystkich rezerwacji nie może
+przekroczyć wielkości niewykorzystanego miejsca w puli. Rezerwacje ZFS
+mogą być ustawiane i wyświetlane poprzez użycie poleceń <command>zfs set</command>
+oraz <command>zfs get</command>. Na przykład:<indexterm xml:id="indexterm-373">
 <primary>setting</primary>
 <secondary>ZFS file system reservation</secondary>
 <tertiary>(example of)</tertiary>
@@ -2856,15 +2871,15 @@ For example:<indexterm xml:id="indexterm-373">
 # <userinput>zfs get reservation tank/home/moore</userinput>
 NAME             PROPERTY      VALUE                      SOURCE
 tank/home/moore  reservation   5.00G                      local</screen>
-<para>ZFS reservations can affect the output of the <command>zfs list</command> command.
-For example:</para>
+<para>Rezerwacje ZFS mogą wpływać na wyjście polecenia <command>zfs list</command>. Na przykład:</para>
 <screen># <userinput>zfs list</userinput>
 NAME                   USED  AVAIL  REFER  MOUNTPOINT
 tank/home             5.00G  33.5G  8.50K  /export/home
 tank/home/moore       15.0K  10.0G  8.50K  /export/home/moore</screen>
-<para>Note that <filename>tank/home</filename> is using 5 Gbytes of space,
-although the total amount of space referred to by <filename>tank/home</filename> and
-its descendants is much less than 5 Gbytes. The used space reflects the space
+<para>Proszę zauważyć, że <filename>tank/home</filename> używa 5GB przestrzeni,
+pomimo tego, że sumaryczna wielkość zajętego miejsca odnosząca się do <filename>tank/home</filename>
+oraz jego potomnych datasetów jest dużo mniejsza niż 5GB.
+The used space reflects the space
 reserved for <filename>tank/home/moore</filename>. Reservations are considered
 in the used space of the parent dataset and do count against its quota, reservation,
 or both.</para>
