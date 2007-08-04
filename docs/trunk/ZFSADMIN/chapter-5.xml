@@ -2419,17 +2419,22 @@ jest konieczne ręczne odmontowanie systemu plików.<indexterm xml:id="indexterm
 </sect3>
 <sect3 xml:id="gbaln">
 <title>Tradycyjne zarządzanie punktami montowania</title>
-<para>You can manage ZFS file systems with legacy tools by setting the <property>mountpoint</property> property to <property>legacy</property>. Legacy file
-systems must be managed through the <command>mount</command> and <command>umount</command> commands
-and the <filename>/etc/vfstab</filename> file. ZFS does not automatically
-mount legacy file systems on boot, and the ZFS <command>mount</command> and <command>umount</command> command do not operate on datasets of this type. The following
-examples show how to set up and manage a ZFS dataset in legacy mode:</para>
+<para>Istnieje możliwość zarządzania systemami plików ZFS z użyciem tradycyjnych narzędzi
+poprzez ustawienie parametru <property>mountpoint</property> na wartość <property>legacy</property>.
+Tradycyjne systemy plików muszą być zarządzane poprzez polecenia <command>mount</command>
+i <command>umount</command> oraz plik <filename>/etc/vfstab</filename>. ZFS nie montuje
+automatycznie tradycyjnych systemów plików podczas startu systemu, a także polecenia ZFS-a
+<command>mount</command> oraz <command>umount</command> nie działają z takim rodzajem
+datasetu. Poniższy przykład pokazuje jak ustawić i zarządzać datasetem ZFS w tradycyjny sposób:</para>
 <screen># <userinput>zfs set mountpoint=legacy tank/home/eschrock</userinput>
 # <userinput>mount -F zfs tank/home/eschrock /mnt</userinput>
 </screen>
-<para>In particular, if you have set up separate ZFS <filename>/usr</filename> or <filename>/var</filename> file systems, you must indicate that they are legacy file
-systems. In addition, you must mount them by creating entries in the <filename>/etc/vfstab</filename> file. Otherwise, the <filename>system/filesystem/local</filename> service
-enters maintenance mode when the system boots.<indexterm xml:id="indexterm-352">
+<para>W szczególnym przypadku, jeśli są tworzone oddzielne systemy plików ZFS
+<filename>/usr</filename> lub <filename>/var</filename>, muszą być one określone
+jako tradycyjne systemy plików. Dodatkowo muszą być one montowane poprzez stworzenie
+odpowiednich wpisów w pliku <filename>/etc/vfstab</filename>. W przeciwnym przypadku
+serwis <filename>system/filesystem/local</filename> wejdzie w tryb "maintenance"
+w trakcie startu systemu.<indexterm xml:id="indexterm-352">
 <primary>setting</primary>
 <secondary>legacy mount points</secondary>
 <tertiary>(example of)</tertiary>
@@ -2446,44 +2451,45 @@ enters maintenance mode when the system boots.<indexterm xml:id="indexterm-352">
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>To automatically mount a legacy file system on boot, you must add an
-entry to the <filename>/etc/vfstab</filename> file. The following example
-shows what the entry in the <filename>/etc/vfstab</filename> file might look
-like:</para>
+<para>W celu automatycznego montowania tradycyjnego systemu plików w czasie startu
+systemu należy dodać odpowiedni wpis do pliku <filename>/etc/vfstab</filename>.
+Poniższy przykład pokazuje, jak taki wpis w pliku <filename>/etc/vfstab</filename>
+może wyglądać:</para>
 <screen>#device         device        mount           FS      fsck    mount   mount
 #to mount       to fsck       point           type    pass    at boot options
 #
 
 tank/home/eschrock -		/mnt		   zfs		-		yes		-	</screen>
-<para>Note that the <literal>device to fsck</literal> and <literal>fsck pass</literal> entries
-are set to <literal>-</literal>. This syntax is because the <command>fsck</command> command
-is not applicable to ZFS file systems. For more information regarding data
-integrity and the lack of need for <command>fsck</command> in ZFS, see <olink targetdoc="" remap="internal" targetptr="gaypi">Transactional Semantics</olink>.</para>
+<para>Należy zwrócić uwagę na to, że pozycje <literal>device to fsck</literal> oraz <literal>fsck pass</literal>
+są ustawione jako <literal>-</literal>. Składnia ta wynika z faktu, że polecenie
+<command>fsck</command> nie ma zastosowaniu w przypadku systemów plików ZFS.
+Więcej informacji na temat integralności danych i braku potrzeby istnienia
+polecenia <command>fsck</command> w ZFS znajduje się pod
+<olink targetdoc="" remap="internal" targetptr="gaypi">Transactional Semantics</olink>.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gamns">
-<title>Mounting ZFS File Systems</title>
-<para>ZFS automatically mounts file systems when file systems are created
-or when the system boots. Use of the <command>zfs mount</command> command
-is necessary only when changing mount options or explicitly mounting or unmounting
-file systems.</para>
-<para>The <command>zfs mount</command> command with no arguments shows all
-currently mounted file systems that are managed by ZFS. Legacy managed mount
-points are not displayed. For example:</para>
+<title>Montowanie systemów plików ZFS</title>
+<para>ZFS automatycznie montuje systemy plików podczas ich tworzenia lub
+startu systemu. Użycie polecenia <command>zfs mount</command> jest
+potrzebne tylko wtedy, gdy są zmieniane opcje montowania lub do 
+montowania i odmontowania ściśle określonych systemów plików.</para>
+<para>Polecenie <command>zfs mount</command> bez argumentów pokazuje wszystkie
+aktualnie zamontowane systemy plików, które są zarządzane przez ZFS. Tradycyjnie
+zarządzane punkty montowania nie są wyświetlane. Na przykład:</para>
 <screen># <userinput>zfs mount</userinput>
 tank                            /tank
 tank/home                       /tank/home
 tank/home/bonwick               /tank/home/bonwick
 tank/ws                         /tank/ws</screen>
-<para>You can use the <option>
-a</option> option to mount all ZFS managed file
-systems. Legacy managed file systems are not mounted. For example:</para>
+<para>Użycie opcji <option>
+a</option> spowoduje zamontowanie wszystkich systemów plików zarządzanych
+przez ZFS. Tradycyjnie zarządzane systemy plików są nie montowane. Na przykład:</para>
 <screen># <userinput>zfs mount -a</userinput>
 </screen>
-<para>By default, ZFS does not allow mounting on top of a nonempty directory.
-To force a mount on top of a nonempty directory, you must use the <option>
-O</option> option.
-For example:<indexterm xml:id="indexterm-355">
+<para>Domyślnie ZFS nie pozwoli zamontować systemu plików w katalogu, który nie jest pusty.
+W celu wymuszenia zamontowania systemu plików w takim katalogu, należy użyć opcji <option>O</option>.
+Na przykład:<indexterm xml:id="indexterm-355">
 <primary>mounting</primary>
 <secondary>ZFS file systems</secondary>
 <tertiary>(example of)</tertiary>
@@ -2505,21 +2511,21 @@ cannot mount '/export/home/lalt': directory is not empty
 use legacy mountpoint to allow this behavior, or use the -O flag
 # <userinput>zfs mount -O tank/home/lalt</userinput>
 </screen>
-<para>Legacy mount points must be managed through legacy tools. An attempt
-to use ZFS tools results in an error. For example:</para>
+<para>Tradycyjne punkty montowania muszą być zarządzane przez tradycyjne narzędzia.
+Próba użycia narzędzi ZFS będzie skutkowało błędem. Na przykład:</para>
 <screen># <userinput>zfs mount pool/home/billm</userinput>
 cannot mount 'pool/home/billm': legacy mountpoint
 use mount(1M) to mount this filesystem
 # <userinput>mount -F zfs tank/home/billm</userinput>
 </screen>
-<para>When a file system is mounted, it uses a set of mount options based
-on the property values associated with the dataset.  The correlation between
-properties and mount options is as follows:</para>
+<para>Kiedy system plików jest zamontowany, używa opcji montowania opartych
+na parametrach skojarzonych z datasetem. Korelacja między parametrami i opcjami
+montowania wygląda następująco:</para>
 <variablelist>
 <varlistentry>
-<term>Property</term>
+<term>Parametr</term>
 <listitem>
-<para>Mount Options</para>
+<para>Opcje montowania</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -2563,31 +2569,33 @@ properties and mount options is as follows:</para>
 </listitem>
 </varlistentry>
 </variablelist>
-<para>The mount option <literal>nosuid</literal> is an alias for  <literal>nodevices,nosetuid</literal>.</para>
+<para>Opcja montowania <literal>nosuid</literal> jest aliasem na <literal>nodevices,nosetuid</literal>.</para>
 </sect2>
 <sect2 xml:id="gamnt">
-<title>Temporary Mount Properties</title>
-<para>If any of the above options are set explicitly by using the<option>
-o</option> option
-with the <command>zfs mount</command> command, the associated property value
-is temporarily overridden. These property values are reported as <literal>temporary</literal> by the <command>zfs get</command> command and revert back to their
-original settings when the file system is unmounted. If a property value is
-changed while the dataset is mounted, the change takes effect immediately,
-overriding any temporary setting.</para>
-<para>In the following example, the read-only mount option is temporarily
-set on the <filename>tank/home/perrin</filename> file system:</para>
+<title>Tymczasowe parametry montowania</title>
+<para>Jeśli jakakolwiek z powyższych opcji jest dokładnie określona poprzez
+użycie opcji <option>o</option> z poleceniem <command>zfs mount</command>,
+odpowiednio skojarzona wartość parametru zostaje tymczasowo nadpisana. Te
+wartości parametrów są zgłaszane jako <literal>temporary</literal> przez
+polecenie <command>zfs get</command> i wracają do oryginalnych ustawień, kiedy
+system plików zostanie odmontowany. Jeżeli wartość parametru zostanie zmieniona,
+kiedy dataset jest zamontowany, zmiana odnosi skutek natychmiastowy nadpisując
+jakiekolwiek tymczasowe ustawienie.</para>
+<para>W poniższym przykładzie zostaje ustawiona tymczasowo opcja
+montowania systemu plików w trybie tylko do odczytu dla <filename>tank/home/perrin</filename>:</para>
 <screen># <userinput>zfs mount -o ro tank/home/perrin</userinput>
 </screen>
-<para>In this example, the file system is assumed to be unmounted. To temporarily
-change a property on a file system that is currently mounted, you must use
-the special <literal>remount</literal> option. In the following example, the <property>atime</property> property is temporarily changed to <literal>off</literal> for
-a file system that is currently mounted:</para>
+<para>W tym przykładzie przyjęto założenie, że system plików był odmontowane.
+Żeby tymczasowo zmienić parametr dla systemu plików aktualnie zamontowanego,
+należy użyć specjalnej opcji <literal>remount</literal>. W poniższym przykładzie
+parametr <property>atime</property> zostaje tymczasowo zmieniony na <literal>off</literal>
+dla systemu plików, który jest zamontowany:</para>
 <screen># <userinput>zfs mount -o remount,noatime tank/home/perrin</userinput>
 # <userinput>zfs get atime tank/home/perrin</userinput>
 NAME             PROPERTY      VALUE                      SOURCE
 tank/home/perrin atime         off                        temporary</screen>
-<para>For more information about the <command>zfs mount</command> command,
-see <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<para>Więcej informacji na temat polecenia <command>zfs mount</command>
+znajduje się pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
@@ -2597,10 +2605,10 @@ see <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gamnr">
-<title>Unmounting ZFS File Systems</title>
-<para>You can unmount file systems by using the <command>zfs unmount</command> subcommand.
-The <command>unmount</command> command can take either the mount point or
-the file system name as arguments.<indexterm xml:id="indexterm-358">
+<title>Odmontowywanie systemów plików ZFS</title>
+<para>Systemy plików można odmontować poprzez użycie polecenia <command>zfs unmount</command>.
+Polecenie <command>unmount</command> przyjmuje jako argumenty punkt montowania
+lub nazwę systemu plików.<indexterm xml:id="indexterm-358">
 <primary>unmounting</primary>
 <secondary>ZFS file systems</secondary>
 <tertiary>(example of)</tertiary>
@@ -2617,28 +2625,31 @@ the file system name as arguments.<indexterm xml:id="indexterm-358">
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>In the following example, a file system is unmounted by file system
-name:</para>
+<para>W poniższym przykładzie system plików jest odmontowany poprzez wskazanie
+jego nazwy:</para>
 <screen># <userinput>zfs unmount tank/home/tabriz</userinput>
 </screen>
-<para>In the following example, the file system is unmounted by mount point:</para>
+<para>W poniższym przykładzie systemu plików jest odmontowany poprzez wskazanie
+punktu montowania:</para>
 <screen># <userinput>zfs unmount /export/home/tabriz</userinput>
 </screen>
-<para>The <command>unmount</command> command fails if the file system is active
-or busy. To forceably unmount a file system, you can use the <option>
-f</option> option.
-Be cautious when forceably unmounting a file system, if its contents are actively
-being used. Unpredictable application behavior can result.</para>
+<para>Wykonanie polecenia <command>unmount</command> zawiedzie, jeśli system plików
+jest aktywny lub zajęty. W celu wymuszenia odmontowania systemu plików można użyć opcji
+<option>f</option>.
+Należy zachować ostrożność przy wymuszonym odmontowaniu systemu plików, jeśli jego
+zawartość jest aktywnie wykorzystywana. Może to skutkować nieprzewidywalnym
+zachowaniem aplikacji.</para>
 <screen># <userinput>zfs unmount tank/home/eschrock</userinput>
 cannot unmount '/export/home/eschrock': Device busy
 # <userinput>zfs unmount -f tank/home/eschrock</userinput>
 </screen>
-<para>To provide for backwards compatibility, the legacy <command>umount</command> command
-can be used to unmount ZFS file systems. For example:</para>
+<para>W celu zachowania wstecznej kompatybilności, można użyć także tradycyjnego
+polecenia <command>umount</command> do odmontowania systemów plików ZFS.
+Na przykład:</para>
 <screen># <userinput>umount /export/home/bob</userinput>
 </screen>
-<para>For more information about the <command>zfs umount</command> command,
-see <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<para>Więcej informacji o poleceniu <command>zfs umount</command> znajduje się
+pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
