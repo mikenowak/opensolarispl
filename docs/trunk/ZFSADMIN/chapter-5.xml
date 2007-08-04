@@ -1052,7 +1052,8 @@ ponieważ ich zawartość jest identyczna.</para>
 <para>Minimalna wielkość dostępnego miejsca gwarantowana dla datasetu i
 jego potomków. Jeżeli ilość użytego miejsca jest poniżej tej wartości,
 dataset jest traktowany, jakby zużywał miejsce określone przez rezerwację.
-[FIXIT] Reservations are accounted for in the parent datasets' space used, and count against the parent datasets' quotas and reservations.<indexterm xml:id="indexterm-271">
+Rezerwacje są tak wyliczone, aby zmieściły się w przestrzeni nadrzędnego datasetu
+i działają na niekorzyść limitom i rezerwacjom tego datasetu.<indexterm xml:id="indexterm-271">
 <primary>ZFS properties</primary>
 <secondary>
 <property>reservation</property>
@@ -2876,10 +2877,9 @@ tank/home/moore       15.0K  10.0G  8.50K  /export/home/moore</screen>
 <para>Proszę zauważyć, że <filename>tank/home</filename> używa 5 gigabajtów przestrzeni,
 pomimo tego, że sumaryczna wielkość zajętego miejsca odnosząca się do <filename>tank/home</filename>
 oraz jego potomnych datasetów jest dużo mniejsza niż 5 gigabajtów.
-[FIXIT] The used space reflects the space
-reserved for <filename>tank/home/moore</filename>. Reservations are considered
-in the used space of the parent dataset and do count against its quota, reservation,
-or both.</para>
+Użyte miejsce odpowiada przestrzeni zarezerwoawanej dla <filename>tank/home/moore</filename>.
+Rezerwacje są uwzględnianie w używanym miejscu nadrzędnego datasetu i działają na niekorzyść
+dla jego limitu, rezerwacji lub obydwu.</para>
 <screen># <userinput>zfs set quota=5G pool/filesystem</userinput>
 # <userinput>zfs set reservation=10G pool/filesystem/user1</userinput>
 cannot set reservation for 'pool/filesystem/user1': size is greater than 
