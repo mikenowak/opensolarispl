@@ -11,28 +11,27 @@
 <title>Zarządzanie systemami plików ZFS</title>
 <toc>
 <para>Ten rozdział dostarcza szczegółowe informacje o zarządzaniu systemami plików ZFS. Omawia także takie koncepcje,
-jak hierarchiczny układ systemów plików, dziedziczenie właściwości, automatyczne zarządzanie punktem montowania oraz
-(FIXIT!) share interactions.</para>
-
-<para>ZFS jest lekkim systemem plików zgodnym z POSIX, który jest umieszczony na
+jak hierarchiczny układ systemów plików, dziedziczenie właściwości, automatyczne zarządzanie punktami montowania oraz
+udostępnianie systemów plików.</para>
+<para>ZFS jest lekkim systemem plików zgodnym z POSIX, który jest budowany na
 samym szczycie puli nośników danych. Systemy plików mogą być dynamicznie tworzone
 i usuwane bez potrzeby uprzedniego przydzielania lub formatowania jakiejkolwiek
-przestrzeni. Ponieważ te systemy plików są tak lekkie i zarządzalne z jednego
-centralnego miejsca w systemie plików ZFS, można bardzo łatwo tworzyć ich wiele. (FIXIT)
+przestrzeni. Ponieważ są one tak lekkie i zarządzalne z jednego
+centralnego miejsca, można w bardzo łatwy sposób tworzyć ich wiele.
 <indexterm xml:id="indexterm-198">
-<primary>System plików ZFS</primary>
-<secondary>opis</secondary>
+<primary>ZFS file system</primary>
+<secondary>description</secondary>
 </indexterm>
 </para>
 <para>Systemy plików ZFS są administrowane przy użyciu polecenia <command>zfs</command>.
-The <command>zfs</command> command provides a set of subcommands that perform
-specific operations on file systems. This chapter describes these subcommands
-in detail. Snapshots, volumes, and clones are also managed by using this command,
-but these features are only covered briefly in this chapter. For detailed
-information about snapshots and clones, see <olink targetdoc="" remap="internal" targetptr="gavvx">Chapter 6, Working With ZFS Snapshots and Clones</olink>. For detailed information about
-emulated volumes, see <olink targetdoc="" remap="internal" targetptr="gaypf">Emulated Volumes</olink>.</para>
+Polecenie <command>zfs</command> dostarcza zestaw komend, które służą do wykonywania
+określonych operacji na systemach plików. Rozdział ten opisuje te komendy szczegółowo.
+Obrazy, woluminy i klony są także zarządzane przy użyciu tego polecenia, ale te cechy
+są opisane pobieżnie w tym rozdziale. Więcej informacji na temat obrazów i klonów
+znajduje się w <olink targetdoc="" remap="internal" targetptr="gavvx">rozdziale 6, praca z migawkami i klonami ZFS</olink>.
+Więcej informacji na temat emulowanych woluminów znajduje się pod
+<olink targetdoc="" remap="internal" targetptr="gaypf">Emulated Volumes</olink>.</para>
 <note>
-
 <para>Pojęcie <emphasis>dataset</emphasis> używane w tym rozdziale
 jest ogólnym pojęciem odnoszącym się do jakiegokolwiek systemu plików,
 obrazu (snapshotu), klonu lub woluminu.<indexterm xml:id="indexterm-199">
@@ -65,7 +64,7 @@ obrazu (snapshotu), klonu lub woluminu.<indexterm xml:id="indexterm-199">
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gaynd">Montowanie i współdzielenie systemów plików ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gaynd">Montowanie i udostępnianie systemów plików ZFS</olink>
 </para>
 </listitem>
 <listitem>
@@ -110,7 +109,7 @@ nazwy systemów plików muszą już istnieć w puli. Ostatnia nazwa w ścieżce 
 nazwę systemu plików, który zostanie utworzony. Nazwa systemu plików musi
 odpowiadać zasadom tworzenia nazw zdefiniowanych w
 <olink targetdoc="" remap="internal" targetptr="gbcpt">ZFS Component Naming Requirements</olink>.</para>
-<para>W tym przykładzie system plików o nazwie <filename>bonwick</filename>
+<para>W poniższym przykładzie system plików o nazwie <filename>bonwick</filename>
 zostanie stworzony w systemie plików <filename>tank/home</filename>.<indexterm xml:id="indexterm-202">
 <primary>creating</primary>
 <secondary>ZFS file system</secondary>
@@ -134,8 +133,8 @@ zostanie stworzony w systemie plików <filename>tank/home</filename>.<indexterm 
 powiodła się. Domyślnie systemy plików są montowane jako <replaceable>/dataset</replaceable>,
 używając ścieżki dostarczanej jako nazwa systemu plików dla polecenia <command>create</command>.
 W tym przykładzie nowo utworzony system plików <filename>bonwick</filename> jest dostępny
-jako <filename>/tank/home/bonwick</filename>. W celu uzyskania większej ilości informacji
-na temat automatycznego zarządzania punktami montowania, proszę zobaczyć
+jako <filename>/tank/home/bonwick</filename>. Więcej informacji na temat automatycznego
+zarządzania punktami montowania znajduje się pod
 <olink targetdoc="" remap="internal" targetptr="gaztn">Managing ZFS Mount Points</olink>.<indexterm xml:id="indexterm-205">
 <primary>mountpoint</primary>
 <secondary>default for ZFS file system</secondary>
@@ -146,8 +145,8 @@ na temat automatycznego zarządzania punktami montowania, proszę zobaczyć
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>W celu uzyskania większej ilości informacji na temat polecenia <command>zfs create</command>, proszę
-zobaczyć <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<para>Więcej informacji na temat polecenia <command>zfs create</command> znajduje się pod
+<olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
@@ -159,9 +158,9 @@ zobaczyć <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
 <sect2 xml:id="gammq">
 <title>Niszczenie systemu plików ZFS</title>
 <para>W celu zniszczenia systemu plików ZFS należy użyć polecenia <command>zfs destroy</command>.
-Zniszczony system plików jest automatycznie odmontowany i wyłączony ze współdzielenia.
-W celu uzyskania większej ilości informacji na temat automatyczne zarządzania montowaniem
-lub współdzieleniem systemów plików, proszę zobaczyć
+Zniszczony system plików zostaje automatycznie odmontowany i wyłączony z udostępniania.
+Więcej informacji na temat automatycznego zarządzania montowaniem lub udostępniania systemów
+plików znajduje się pod
 <olink targetdoc="" remap="internal" targetptr="gbala">Automatic Mount Points</olink>.<indexterm xml:id="indexterm-207">
 <primary>destroying</primary>
 <secondary>ZFS file system</secondary>
@@ -184,8 +183,7 @@ zostanie zniszczony.</para>
 <screen># <userinput>zfs destroy tank/home/tabriz</userinput>
 </screen>
 <caution>
-
-<para>Po użyciu polecenia <command>destroy</command> nie ma żadnej prośby o potwierdzenie operacji.
+<para>Przy użyciu komendy <command>destroy</command> nie ma żadnej prośby o potwierdzenie operacji.
 Proszę używać ze wzmożoną ostrożnością.</para>
 </caution>
 <para>Jeśli system plików przeznaczony do zniszczenia jest zajęty i w związku z tym
@@ -200,8 +198,8 @@ cannot unmount 'tank/home/ahrens': Device busy
 # <userinput>zfs destroy -f tank/home/ahrens</userinput>
 </screen>
 <para>Wykonanie polecenia <command>zfs destroy</command> również nie powiedzie się,
-jeśli system plików ma dzieci. W celu rekursywnego zniszczenia systemu plików i wszystkich
-potomnych dla niego, proszę użyć opcji <option>r</option>. Proszę zauważyć,
+jeśli system plików ma potomne datasety. W celu rekursywnego zniszczenia systemu plików
+i wszystkich potomnych dla niego, proszę użyć opcji <option>r</option>. Proszę zauważyć,
 że rekursywne niszczenie systemów plików zniszczy również obrazy (snapshoty), więc
 należy używać tej opcji ostrożnie.</para>
 <screen># <userinput>zfs destroy tank/ws</userinput>
@@ -243,11 +241,11 @@ tank/clones/schrock-clone
 </screen>
 <caution>
 
-<para>Po użyciu opcji <option>f</option>, <option>r</option>, lub <option>
+<para>Po użyciu opcji <option>f</option>, <option>r</option> lub <option>
 R</option> nie ma żadnej prośby o potwierdzenie operacji, więc proszę używać tych
 opcji ostrożnie.</para>
 </caution>
-<para>W celu uzyskania większej ilości informacji o obrazach i klonach, proszę zajrzeć do <olink targetdoc="" remap="internal" targetptr="gavvx">Chapter 6, Working With ZFS Snapshots and Clones</olink>.</para>
+<para>Więcej informacji o obrazach i klonach znajduje się w <olink targetdoc="" remap="internal" targetptr="gavvx">rozdziale 6, praca z migawkami i klonami ZFS-a</olink>.</para>
 </sect2>
 <sect2 xml:id="gamnn">
 <title>Zmiana nazwy systemu plików ZFS</title>
@@ -282,12 +280,12 @@ plików ZFS</para>
 plików ZFS</para>
 </listitem>
 </itemizedlist>
-<para>Następujący przykład używa komendy <command>rename</command> w celu
+<para>Poniższy przykład używa komendy <command>rename</command> w celu
 prostej zmiany nazwy systemu plików:</para>
 <screen># <userinput>zfs rename tank/home/kustarz tank/home/kustarz_old</userinput>
 </screen>
 <para>Ten przykład zmienia nazwę systemu plików z <filename>kustarz</filename> na <filename>kustarz_old</filename>. </para>
-<para>Następujący przykład pokazuje, jak używać polecenia <command>zfs rename</command> do
+<para>Kolejny przykład pokazuje, jak używać polecenia <command>zfs rename</command> do
 zmiany lokalizacji systemu plików.</para>
 <screen># <userinput>zfs rename tank/home/maybee tank/ws/maybee</userinput>
 </screen>
@@ -295,22 +293,23 @@ zmiany lokalizacji systemu plików.</para>
 z <filename>tank/home</filename> do <filename>tank/ws</filename>. Jeśli
 następuje próba zmiany lokalizacji systemu plików przy użyciu polecenia
 <command>rename</command>, nowa lokalizacja musi zawierać się w obrębie
-tej samej puli i musi mieć wystarczającą ilość wolnego miejsca, żeby
+tej samej puli i mieć wystarczającą ilość wolnego miejsca, żeby
 trzymać nowy system plików. Jeśli nowa lokalizacja nie zapewnia wystarczającej
 ilości miejsca, przypuszczalnie z powodu osiągnięcia limitu (quoty), przeniesienie
 systemu plików nie powiedzie się.</para>
-<para>W celu uzyskania większej ilości informacji o limitach, proszę zobaczyć <olink targetdoc="" remap="internal" targetptr="gazvb">ZFS Quotas and Reservations</olink>.</para>
+<para>Więcej informacji na temat limitów znajduje się pod <olink targetdoc="" remap="internal" targetptr="gazvb">ZFS Quotas and Reservations</olink>.</para>
 <para>Operacja zmiany nazwy próbuje wykonać sekwencję odmontowania i przemontowania wskazanego oraz
-potomnego systemu plików. Operacja zmiany nazwy nie powiedzie się, jeśli nie będzie
+potomnych systemów plików. Operacja zmiany nazwy nie powiedzie się, jeśli nie będzie
 w stanie odmontować aktywnego systemu plików. Jeśli wystąpi taki problem,
 potrzebne będzie wymuszenie odmontowania systemu plików.</para>
-<para>W celu uzyskania większej ilości informacji o zmianie nazwy obrazów (snapshotów), proszę zobaczyć <olink targetdoc="" remap="internal" targetptr="gbion">Renaming ZFS Snapshots</olink>.</para>
+<para>Więcej informacji o zmianie nazwy obrazów (snapshotów) znajduje się pod
+<olink targetdoc="" remap="internal" targetptr="gbion">Renaming ZFS Snapshots</olink>.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gazss">
 <title>Parametry dla systemu plików ZFS</title>
-<para>Parametry są podstawowym mechanizmem, którego używa się w celu kontroli zachowania
-się systemów plików, woluminów, obrazów i klonów. O ile nie określono ineaczej, parametry
+<para>Parametry są podstawowym mechanizmem, który jest używany w celu kontroli zachowania
+się systemów plików, woluminów, obrazów i klonów. O ile nie określono inaczej, parametry
 opisane w tej sekcji odnoszą się do wszystkich typów datasetu.<indexterm xml:id="indexterm-216">
 <primary>ZFS properties</primary>
 <secondary>description</secondary>
@@ -320,11 +319,11 @@ opisane w tej sekcji odnoszą się do wszystkich typów datasetu.<indexterm xml:
 <secondary>description</secondary>
 </indexterm>
 </para>
-<para>Parametry dzielą się na tylko do odczytu (statystyki) lub ustawiane. Większość
+<para>Parametry dzielą się na tylko do odczytu (statystyki) lub ustawialne. Większość
 parametrów przeznaczonych do ustawiania jest także dziedziczona. Dziedziczony parametr jest takim,
 którego ustawiona wartość na "rodzicu" jest dziedziczona na wszystkie potomne datasety.</para>
-<para>Wszystkie dziedziczone parametry mają przypisane źródło. Źródło określa, w jaki sposób
-parametr została przypisana. Źródło parametru może przyjmować następujące parametry:<indexterm xml:id="indexterm-218">
+<para>Wszystkie dziedziczone parametry mają przypisane źródło (source). Źródło określa, w jaki sposób
+parametr został przypisany. Źródło parametru może przyjmować następujące parametry:<indexterm xml:id="indexterm-218">
 <primary>ZFS properties</primary>
 <secondary>inheritable, description of</secondary>
 </indexterm>
@@ -349,7 +348,7 @@ dokładnie określony na tym datasecie przy użyciu polecenia
 <literal>inherited from</literal> <replaceable>dataset-name</replaceable>
 </term>
 <listitem>
-<para>Wartość <literal>inherited from</literal> <replaceable>dataset-name</replaceable> oznacza, że parametr został odziedziczony
+<para>Wartość <literal>inherited from</literal> <replaceable>nazwa-datasetu</replaceable> oznacza, że parametr został odziedziczony
 z podanego poprzednika.</para>
 </listitem>
 </varlistentry>
@@ -367,10 +366,10 @@ jakiegokolwiek przodka mającego ustawionego parametr ze źródłem zdefiniowany
 </variablelist>
 <para>Poniższa tabela zestawia wszystkie parametry (tylko do odczytu i ustawialne)
 systemu plików ZFS. Parametry tylko do odczytu są oznaczone. Wszystkie pozostałe
-są ustawiane.</para>
+są ustawialne.</para>
 <table frame="topbot" xml:id="gcfgr">
 
-<title>Opisy parametrów dla ZFS</title>
+<title>Opisy parametrów ZFS</title>
 <tgroup cols="4" colsep="0" rowsep="0">
 <colspec colwidth="16.17*"/>
 <colspec colwidth="11.73*"/>
@@ -408,7 +407,7 @@ są ustawiane.</para>
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Kontroluje w jaki sposób wpisy ACL są dziedziczone, kiedy są tworzone pliki i katalogi.
+<para>Określa w jaki sposób wpisy ACL są dziedziczone, kiedy są tworzone pliki i katalogi.
 Dopuszczalne wartości to <literal>discard</literal>, <literal>noallow</literal>, <literal>secure</literal> oraz <literal>passthrough</literal>.
 Opis tych wartości znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbaaz">ACL Property Modes</olink>.<indexterm xml:id="indexterm-220">
 <primary>ZFS properties</primary>
@@ -446,7 +445,7 @@ Opis tych wartości znajduje się pod <olink targetdoc="" remap="internal" targe
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Kontroluje w jaki sposób wpis ACL jest zmieniany podczas operacji <literal>chmod</literal>.
+<para>Określa w jaki sposób wpis ACL jest zmieniany podczas operacji <literal>chmod</literal>.
 Dopuszczalne wartości to <literal>discard</literal>, <literal>groupmask</literal> oraz <literal>passthrough</literal>.
 Opis tych wartości znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbaaz">ACL Property Modes</olink>.<indexterm xml:id="indexterm-223">
 <primary>ZFS properties</primary>
@@ -484,7 +483,7 @@ Opis tych wartości znajduje się pod <olink targetdoc="" remap="internal" targe
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Kontroluje, czy czas dostępu do pliku jest aktualizowany za każdym razem,
+<para>Określa czy czas dostępu do pliku jest aktualizowany za każdym razem,
 gdy ten jest czytany. Ustawienie tego parametru na "off" zapobiega generowaniu
 zapisów w czasie odczytu do pliku i może znacząco wpłynąć na podniesienie
 wydajności, ale jednocześnie spowodować problemy z programami do poczty
@@ -518,7 +517,7 @@ elektronicznej i podobnymi narzędziami użytkowymi.<indexterm xml:id="indexterm
 <para>Liczba</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>N/A</para>
+<para>BRAK</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>Parametr tylko do odczytu, który określa dostępne miejsce dla datasetu
@@ -562,12 +561,12 @@ rezerwacje lub inne datasety w puli.<indexterm xml:id="indexterm-229">
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Kontroluje sposób użycia sum kontrolnych do weryfikowania integralności danych.
+<para>Określa sposób użycia sum kontrolnych do weryfikowania integralności danych.
 Domyślna wartość jest ustawiona na <literal>on</literal>, która automatycznie wybiera
 odpowiedni algorytm, aktualnie <literal>fletcher2</literal>.
 Dopuszczalne wartości to <literal>on, off, fletcher2</literal>, <literal>fletcher4</literal> oraz <literal>sha256</literal>.
 Wartość <literal>off</literal> wyłącza sprawdzanie integralności danych użytkownika.
-Wartość <literal>off</literal> nie jest polecane.<indexterm xml:id="indexterm-232">
+Wartość <literal>off</literal> nie jest zalecana.<indexterm xml:id="indexterm-232">
 <primary>ZFS properties</primary>
 <secondary>
 <property>checksum</property>
@@ -602,7 +601,7 @@ Wartość <literal>off</literal> nie jest polecane.<indexterm xml:id="indexterm-
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Kontroluje rodzaj użytego algorytmu kompresji dla tego datasetu. Aktualnie
+<para>Określa rodzaj użytego algorytmu kompresji dla tego datasetu. Aktualnie
 istnieje tylko jeden algorytm, <literal>lzjb</literal>.<indexterm xml:id="indexterm-235">
 <primary>ZFS properties</primary>
 <secondary>
@@ -634,7 +633,7 @@ istnieje tylko jeden algorytm, <literal>lzjb</literal>.<indexterm xml:id="indext
 <para>Liczba</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>N/A</para>
+<para>BRAK</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>Parametr tylko do odczytu, który określa współczynnik kompresji
@@ -658,9 +657,9 @@ Kompresja może być włączona przez wykonanie
 <secondary>description</secondary>
 </indexterm>
 </para>
-<para>Wartość jest wyliczana z logicznego rozmiaru wszystkich plików i wielkości danych
-fizycznych. Includes explicit savings through the use of the <property>compression</property> property.</para>
-</entry>
+<para>Wartość jest wyliczana z logicznego rozmiaru wszystkich plików i faktycznej wielkości danych
+fizycznych. Obejmuje również wymierne oszczędności wywołane poprzez użycie parametru <property>compression</property>.</para>
+</entry> 
 </row>
 <row>
 <entry colsep="0" rowsep="1">
@@ -672,10 +671,10 @@ fizycznych. Includes explicit savings through the use of the <property>compressi
 <para>Liczba</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>N/A</para>
+<para>BRAK</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Parametr tylko do odczytu, który określa datę i czas, kiedy ten dataset
+<para>Parametr tylko do odczytu, który określa datę i czas, kiedy dataset
 został stworzony.<indexterm xml:id="indexterm-241">
 <primary>ZFS properties</primary>
 <secondary>
@@ -711,7 +710,7 @@ został stworzony.<indexterm xml:id="indexterm-241">
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Controls whether device nodes found within this file system can be opened.<indexterm xml:id="indexterm-244">
+<para>Określa czy pliki urządzeń (device nodes) znajdujące się na tym systemie plików mogą być otwierane.<indexterm xml:id="indexterm-244">
 <primary>ZFS properties</primary>
 <secondary>
 <property>devices</property>
@@ -778,12 +777,12 @@ z <literal>PROT_EXEC</literal> są zabronione.<indexterm xml:id="indexterm-247">
 <para>Logiczny</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>N/A</para>
+<para>BRAK</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>Parametr tylko do odczytu określający, czy system plików, klon lub
 obraz jest aktualnie zamontowany. Ten parametr nie ma zastosowania w odniesieniu
-do wollimunów. Parametr może przyjmować wartości yes lub no.<indexterm xml:id="indexterm-250">
+do woluminów. Parametr może przyjmować wartości <literal>yes</literal> lub <literal>no</literal>.<indexterm xml:id="indexterm-250">
 <primary>ZFS properties</primary>
 <secondary>
 <property>mounted</property>
@@ -813,16 +812,16 @@ do wollimunów. Parametr może przyjmować wartości yes lub no.<indexterm xml:i
 <para>Łańcuch znaków</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>N/A</para>
+<para>BRAK</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>Określa punkt montowania dla systemu plików. Kiedy wartość parametru <property>mountpoint</property>
-zostaje zmieniona, system plików i wszystkie jego potomne, które dziedziczą punkt montowania zostają odmontowane.
-Jeśli nową wartością jest  <literal>legacy</literal>, wtedy pozostają odmontowane. W przeciwnym przypadku
-zostaną automatycznie zamontowane w nowej lokalizacji, jeśli parametr ten miał poprzednio wartość
-<literal>legacy</literal> or <literal>none</literal> lub był zamontowany, zanim parametr został
-zmieniony. Dodatkowo wszystkie udostępniane systemy plików zostaną wyłączone ze współdzielenia i udostępnione
-z nowej lokalizacji.<indexterm xml:id="indexterm-253">
+zostaje zmieniona, system plików i wszystkie dla niego potomne, które dziedziczą punkt montowania zostają odmontowane.
+Jeśli nową wartością jest <literal>legacy</literal>, wtedy pozostaną odmontowane. W przeciwnym przypadku,
+jeśli parametr ten miał poprzednio wartość <literal>legacy</literal> lub <literal>none</literal>,
+lub był zamontowany zanim parametr został zmieniony, zostaną automatycznie zamontowane w nowej lokalizacji.
+Dodatkowo wszystkie udostępniane systemy plików zostaną wyłączone z udostępniania w starej lokalizacji i udostępnione
+z nowej.<indexterm xml:id="indexterm-253">
 <primary>ZFS properties</primary>
 <secondary>
 <property>mountpoint</property>
@@ -853,7 +852,7 @@ z nowej lokalizacji.<indexterm xml:id="indexterm-253">
 <para>Łańcuch znaków</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>N/A</para>
+<para>BRAK</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>Parametr tylko do odczytu dla klonów lub woluminów, który określa obraz
@@ -861,7 +860,7 @@ systemu plików, z którego klon został stworzony. Oryginalny obraz nie może
 zostać zniszczony (nawet przy użyciu opcji <option>
 r</option> lub <option>
 f</option>) tak długo, jak klon istnieje.</para>
-<para>Nie sklonowane systemu plików mają ten parametr ustawiony jako none.<indexterm xml:id="indexterm-256">
+<para>Niesklonowane systemy plików mają ten parametr ustawiony jako <literal>none</literal>.<indexterm xml:id="indexterm-256">
 <primary>ZFS properties</primary>
 <secondary>
 <property>origin</property>
@@ -898,7 +897,7 @@ f</option>) tak długo, jak klon istnieje.</para>
 <entry colsep="0" rowsep="1">
 <para>Ogranicza wielkość dostępnego miejsca dla datasetu i jego potomków.
 Ten parametr wymusza twarde ograniczenie miejsca do wykorzystania, włączając w to
-miejsce zajęte przez potomków, włącznie z innymi systemami plików i obrazami.
+miejsce zajęte przez potomne datasety, włącznie z innymi systemami plików i obrazami.
 Ustawienie limitu na potomnym datasecie, gdy już rodzic ma takowy zdefiniowany nie
 nadpisuje limitu rodzica, tylko raczej narzuca dodatkowy limit. Parametr ten
 nie może być ustawiony dla woluminów, w tym przypadku parametr 
@@ -1006,11 +1005,11 @@ nie są dopuszczalne jakiekolwiek modyfikacje w datasecie.<indexterm xml:id="ind
 <para>Liczba</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>N/A</para>
+<para>BRAK</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Parametr tylko do odczytu, który określa liczbę danych dostępnych w tym datasecie,
-które mogą lub mogą nie być współdzielone z innymi datasetami w puli.<indexterm xml:id="indexterm-268">
+<para>Parametr tylko do odczytu, który określa wielkość danych dostępnych w datasecie,
+które mogą być lub nie współdzielone z innymi datasetami w puli.<indexterm xml:id="indexterm-268">
 <primary>ZFS properties</primary>
 <secondary>
 <property>referenced</property>
@@ -1041,7 +1040,7 @@ ponieważ ich zawartość jest identyczna.</para>
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Liczba (lub <literal>none)</literal>
+<para>Liczba (lub <literal>none</literal>)
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
@@ -1050,10 +1049,10 @@ ponieważ ich zawartość jest identyczna.</para>
 </para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Minimalna wilekość dostępnego miejsca gwarantowana dla datasetu i
-jego potomków. Jeżeli ilość zużytego miejsca jest poniżej tej wartości,
+<para>Minimalna wielkość dostępnego miejsca gwarantowana dla datasetu i
+jego potomków. Jeżeli ilość użytego miejsca jest poniżej tej wartości,
 dataset jest traktowany, jakby zużywał miejsce określone przez rezerwację.
-Reservations are accounted for in the parent datasets' space used, and count against the parent datasets' quotas and reservations.<indexterm xml:id="indexterm-271">
+[FIXIT] Reservations are accounted for in the parent datasets' space used, and count against the parent datasets' quotas and reservations.<indexterm xml:id="indexterm-271">
 <primary>ZFS properties</primary>
 <secondary>
 <property>reservation</property>
@@ -1092,10 +1091,10 @@ Reservations are accounted for in the parent datasets' space used, and count aga
 <entry colsep="0" rowsep="1">
 <para>Określa, czy system plików jest dostępny po protokole NFS i z jakimi opcjami.
 Jeśli parametr jest ustawiony na <literal>on</literal>, polecenie <command>zfs share</command>
-jest wykonywane bez żadnych opcji.  przeciwnym wypadku polecenie <command>zfs share</command>
+jest wykonywane bez żadnych opcji. W przeciwnym wypadku polecenie <command>zfs share</command>
 jest wykonywane z opcjami odpowiadającymi zawartości tego parametru. W przypadku ustawienia
 tego parametru na <literal>off</literal> do zarządzania systemem plików należy używać
-podstawowych komend <command>share</command> oraz <command>unshare</command>, a także
+tradycyjnych poleceń <command>share</command> oraz <command>unshare</command>, a także
 pliku <filename>dfstab</filename>.<indexterm xml:id="indexterm-274">
 <primary>ZFS properties</primary>
 <secondary>
@@ -1200,10 +1199,10 @@ znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbciq">ZFS Sna
 <para>Łańcuch znaków</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>N/A</para>
+<para>BRAK</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Parametr tylko do odczytu, który określa typ datasetu. Możliwe wartości to <literal>filesystem</literal> (system
+<para>Parametr tylko do odczytu, który określa rodzaj datasetu. Możliwe wartości to <literal>filesystem</literal> (system
 plików lub klon), <literal>volume</literal> (wolumin) lub <literal>snapshot</literal> (obraz).<indexterm xml:id="indexterm-283">
 <primary>ZFS properties</primary>
 <secondary>
@@ -1234,11 +1233,11 @@ plików lub klon), <literal>volume</literal> (wolumin) lub <literal>snapshot</li
 <para>Liczba</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>N/A</para>
+<para>BRAK</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Parametr tylko do odczytu określający wielkość zajętego miejsca przez dataset
-i wszystkie jego potomki.<indexterm xml:id="indexterm-286">
+<para>Parametr tylko do odczytu określający wielkość zajętego miejsca przez dany dataset
+i wszystkie dla niego potomnei.<indexterm xml:id="indexterm-286">
 <primary>ZFS properties</primary>
 <secondary>
 <property>used</property>
@@ -1256,7 +1255,7 @@ i wszystkie jego potomki.<indexterm xml:id="indexterm-286">
 <secondary>description</secondary>
 </indexterm>
 </para>
-<para>Dokładniejszy opis znajduje się pod w sekcji opisującej <olink targetdoc="" remap="internal" targetptr="gcfgz">parametr <property>used</property></olink>.</para>
+<para>Dokładniejszy opis znajduje się w sekcji opisującej <olink targetdoc="" remap="internal" targetptr="gcfgz">parametr <property>used</property></olink>.</para>
 </entry>
 </row>
 <row>
@@ -1269,7 +1268,7 @@ i wszystkie jego potomki.<indexterm xml:id="indexterm-286">
 <para>Liczba</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>N/A</para>
+<para>BRAK</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>Określa logiczny rozmiar woluminu.<indexterm xml:id="indexterm-289">
@@ -1306,9 +1305,9 @@ i wszystkie jego potomki.<indexterm xml:id="indexterm-286">
 <para>8 Kbytes</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>Określa wielkość bloku dla woluminu. Rozmiar bloku nie może zostać zmieniona,
-jeśli wystąpiły już jakieś operacje zapisu na woluminie, więc należy ustawiać
-wielkość bloku w czasie tworzenia datasetu. Domyślną wielkością bloku dla
+<para>Określa wielkość bloku dla woluminu. Rozmiar bloku nie może zostać zmieniony,
+jeśli wystąpiły już jakieś operacje zapisu na woluminie, więc należy go ustawiać
+w czasie tworzenia datasetu. Domyślną wielkością bloku dla
 woluminów jest 8 kilobajtów. Dopuszczalne wartości to jakakolwiek potęga
 liczby 2 w zakresie od 512 bajtów do 128 kilobajtów.<indexterm xml:id="indexterm-292">
 <primary>ZFS properties</primary>
@@ -1341,13 +1340,13 @@ liczby 2 w zakresie od 512 bajtów do 128 kilobajtów.<indexterm xml:id="indexte
 <para>Logiczny</para>
 </entry>
 <entry colsep="0" rowsep="1">
-<para>N/A</para>
+<para>BRAK</para>
 </entry>
 <entry colsep="0" rowsep="1">
 <para>Określa, czy dataset został dodany do nieglobalnej zony. Jeśli ten
 parametr jest ustawiony, wówczas punkt montowania nie jest uwzględniany
 w zonie globalnej, w związku z tym ZFS nie może zamontować tego systemu
-plików w zonie globalnej. Jeśli najpierw została zainstalowana zona,
+plików w zonie globalnej. Kiedy zostanie zainstalowana zona,
 parametr ten jest ustawiany dla każdego dodanego systemu pliku do niej.<indexterm xml:id="indexterm-295">
 <primary>ZFS properties</primary>
 <secondary>
@@ -1375,9 +1374,9 @@ parametr ten jest ustawiany dla każdego dodanego systemu pliku do niej.<indexte
 <sect2 xml:id="gazsy">
 <title>Parametry ZFS tylko do odczytu</title>
 <para>Parametry do odczytu mogą być tylko odczytywane, nie można
-ich natomiast ustawić. Nie są również dziedziczone. Niektórre z tych
-parametrów są specyficzne dla pewnych typów datasetu. W takim przypadku
-typ ten jest wspomniany w opisie parametru.<indexterm xml:id="indexterm-298">
+ich natomiast ustawić. Nie są również dziedziczone. Niektóre z tych
+parametrów są specyficzne dla pewnych rodzajów datasetu. W takim przypadku
+rodzaj ten jest wspomniany w opisie parametru.<indexterm xml:id="indexterm-298">
 <primary>ZFS properties</primary>
 <secondary>read-only</secondary>
 </indexterm>
@@ -1432,19 +1431,14 @@ typ ten jest wspomniany w opisie parametru.<indexterm xml:id="indexterm-298">
 <para>Więcej informacji na temat zliczania miejsca włącznie z opisem parametrów <property>used</property>, <property>referenced</property> oraz <property>available</property> znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbchp">ZFS Space Accounting</olink>.</para>
 <sect3 xml:id="gcfgz">
 <title>Parametr <property>used</property></title>
-<para>Ilość miejsca zajęta przez aktualny i jemu potomne datasety.
+<para>Ilość miejsca zajęta przez aktualny dataset i potomne dla niego.
 Wartość ta jest sprawdzana z uwzględnieniem parametrów limitu i rezerwacji.
-Wartość ta nie uwzględnia rezerwacji bieżącego datasetu, ale uwzględnia
-rezerwacje wszystkich potomnych. Wielkość miejsca, jaką zużywa dataset
-od rodzica, jak również ilość miejsca, która jest zwalnia podczas
+Nie uwzględnia rezerwacji bieżącego datasetu, ale bierze pod uwagę
+rezerwacje wszystkich potomnych. Ilość miejsca, jaką zużywa dataset
+od nadrzędnego dla niego, jak również ilość miejsca, która jest zwalniana podczas
 rekursywnego niszczenia datasetu jest większa od aktualnie zużytego
-miejsca i jego rezerwacji (?!?! FIXIT, bo bełkot wyszedł).
-The amount of space consumed by this dataset and all its descendants.
-This value is checked against the dataset's quota and reservation. The space
-used does not include the dataset's reservation, but does consider the reservation
-of any descendant datasets. The amount of space that a dataset consumes from
-its parent, as well as the amount of space that is freed if the dataset is
-recursively destroyed, is the greater of its space used and its reservation.<indexterm xml:id="indexterm-300">
+miejsca i jego rezerwacji.
+<indexterm xml:id="indexterm-300">
 <primary>ZFS properties</primary>
 <secondary>
 <property>used</property>
@@ -1466,15 +1460,16 @@ recursively destroyed, is the greater of its space used and its reservation.<ind
 </para>
 <para>W momencie tworzenia obrazów (snapshotów) ich przestrzeń jest pierwotnie
 współdzielona między nimi a systemem plików, a także prawdopodobnie poprzednimi
-obrazami. W momencie zmiany danych w systemie plików, przestrzeń, która pierwotnie
+obrazami. W momencie zmiany danych w systemie plików przestrzeń, która pierwotnie
 była współdzielona staje się unikalna dla obrazu i jest wliczana jako przestrzeń
-zużywana przez obraz. Dodatkowo usunięcie snapshotów może zwiększyć wielkośc przestrzeni
+zużywana przez obraz. Dodatkowo usunięcie snapshotów może zwiększyć wielkość przestrzeni
 unikalnej (i używanej przez) inne obrazy.
 Więcej informacji o obrazach i niuansach związanych z miejscem znajduje się pod <olink targetdoc="" remap="internal" targetptr="gayra">Out of Space Behavior</olink>.</para>
-<para>The amount of space used, available, or referenced does not take into
-account pending changes. Pending changes are generally accounted for within
-a few seconds. Committing a change to a disk using <literal>fsync(3c)</literal> or <literal>O_SYNC</literal> does not necessarily guarantee that the space usage information
-will be updated immediately.</para>
+<para>Ilość miejsca używanego, dostępnego lub referencyjnego nie jest zliczana
+w trakcie trwających zmian w systemie plików. Generalnie takie zmiany są zliczane
+po upływie kilku sekund. Zatwierdzenie zmian poprzez użycie <literal>fsync(3c)</literal>
+lub <literal>O_SYNC</literal> nie daje żadnej gwarancji, że informacje o użyciu
+przestrzeni zostaną zaktualizowane natychmiast.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gazsd">
@@ -1497,7 +1492,7 @@ Więcej informacji o limitach i rezerwacjach znajduje się pod
 <para>Niektóre ustawialne parametry są specyficzne dla określonego
 rodzaju datasetu. W takich przypadkach określony typ datasetu jest
 wspomniany w opisie. Jeśli nie jest specjalnie określony, właściwość ta
-tyczy wszystkich typów datasetu: systemu plików, woluminów, klonów i obrazów.
+tyczy wszystkich rodzajów: systemu plików, woluminów, klonów i obrazów.
 </para>
 <para>Ustawialne parametry są wymienione tutaj i opisane w <olink targetdoc="" remap="internal" targetptr="gcfgr">tabeli 5–1</olink>.</para>
 <itemizedlist>
@@ -1624,13 +1619,13 @@ pod <olink targetdoc="" remap="internal" targetptr="gcfhk">The <property>volsize
 <para>Ten parametr jest przeznaczony wyłącznie do użytku w środowisku baz danych,
 które wymaga dostępu do pliku w sztywno określonych rozmiarach rekordów. ZFS automatycznie
 dopasowuje wielkość bloków zgodnie z wewnętrznym algorytmem zoptymalizowanym do użytku
-w typowach wzorcach dostępu do pliku. Dla baz danych, które tworzą bardzo duże pliki,
+w typowych szablonach dostępu do plików. Dla baz danych, które tworzą bardzo duże pliki,
 ale uzyskują dostęp do plików w małych losowych kawałkach, te algorytmy niekoniecznie
 są optymalne. Poprzez określenie parametru <property>recordsize</property> na wartość
 większą lub równą wielkości rekordu bazy danych można uzyskać znaczący zysk wydajności.
 Używanie tego parametru dla systemów pliku ogólnego przeznaczenia jest mocno niezalecane
 i może negatywnie wpłynąć na wydajność systemu plików. Wartość parametru musi być
-potęgą dwójki większa lub równa 512 bajtów i mniejsza lub równa 128 kilobajtów. Zmiana
+potęgą dwójki większą lub równą 512 bajtów i mniejszą lub równą 128 kilobajtów. Zmiana
 parametru <literal>recordsize</literal> dotyczy tylko plików utworzonych po tej zmianie.
 Istniejące pliki zostają nienaruszone.</para>
 <para>Do tego parametru można także odwołać się po skróconej nazwie, <property>recsize</property>.</para>
@@ -1639,9 +1634,9 @@ Istniejące pliki zostają nienaruszone.</para>
 <title>Parametr <property>volsize</property></title>
 <para>Logiczny rozmiar woluminu. Domyślnie tworzenie woluminu tworzy rezerwację
 tej samej wielkości. Jakiekolwiek zmiany parametru <property>volsize</property>
-są odbijane na odpowiednią zmianę rezerwacji. Zachowanie to jest w celu
-zapobiegnięcia nieprzewidywalnego zachowania woluminu dla użytkowników.
-Wolumin, który ma mniej miejsca, niż twierdzi, że jest dostępne może powodować
+są przenoszone na odpowiednią zmianę rezerwacji. Zachowanie to jest w celu
+zapobiegnięcia nieprzewidywalnego zachowania się woluminu dla użytkowników.
+Wolumin, który ma mniej miejsca niż twierdzi, że jest dostępne, może powodować
 nieprzewidywalne działanie lub uszkodzenie danych, w zależności od tego, jak
 wolumin jest używany. Efekty te mogą mieć także miejsce, kiedy wielkość
 woluminu jest zmieniana w trakcie używania, szczególnie podczas zmniejszania
@@ -1666,8 +1661,8 @@ ostrożność.<indexterm xml:id="indexterm-308">
 <secondary>detailed description</secondary>
 </indexterm>
 </para>
-<para>Chociaż jest to niezalecane, można utworzyć tzw. "rozrzedzony wolumin" (ang.
-sparse volume) poprzez określenie flagi <option>s</option> przy poleceniu
+<para>Chociaż jest to niezalecane, można utworzyć tzw. "rozrzedzony wolumin" 
+(sparse volume) poprzez określenie opcji <option>s</option> przy poleceniu
 <command>zfs create -V</command> lub poprzez zmianę rezerwacji po utworzeniu
 już woluminu. <emphasis>Rozrzedzony wolumin</emphasis> jest definiowany jako wolumin,
 gdzie rezerwacja nie jest równa wielkości woluminu. Dla takiego woluminu zmiany
@@ -1681,7 +1676,7 @@ parametru <property>volsize</property> nie są przenoszone na zmianę rezerwacji
 <title>Uzyskiwanie informacji o systemie plików ZFS</title>
 <para>Polecenie <command>zfs list</command> dostarcza rozszerzalny mechanizm do
 oglądania i odpytywania o informacje dotyczące datasetów. Zarówno forma podstawowa,
-jak i złożona tych zapytań została omówiona w tej części.</para>
+jak i złożona tych zapytań została omówiona w tej części rozdziału.</para>
 <sect2 xml:id="gaztd">
 <title>Wyświetlanie podstawowych informacji o datasecie ZFS</title>
 <para>Podstawowe informacje o datasecie można wyświetlić używając polecenia
@@ -1716,10 +1711,10 @@ pool/home             17.5K  33.5G  9.00K  /pool/home
 pool/home/marks       8.50K  33.5G  8.50K  /pool/home/marks
 pool/home/marks@snap      0      -  8.50K  /pool/home/marks@snap</screen>
 <para>Można także użyć tego polecenia do wyświetlenia informacji określonych
-datasetów poprzez podanie ich w wierszu poleceń. Dodatkowo użycie opcji
+datasetów poprzez podanie ich nazw w wierszu poleceń. Dodatkowo użycie opcji
 <option>r</option> wyświetli rekursywnie wszystkich potomków podanego datasetu.</para>
 <para>Kolejny przykład pokazuje, jak wyświetlić informacje o <filename>tank/home/chua</filename>
-i jego potomnych datasetach.<indexterm xml:id="indexterm-314">
+i potomnych dla niego datasetach.<indexterm xml:id="indexterm-314">
 <primary>listing</primary>
 <secondary>descendants of ZFS file systems</secondary>
 <tertiary>(example of)</tertiary>
@@ -1761,13 +1756,13 @@ o</option>, <option>
 f</option> oraz <option>
 H</option>.</para>
 <para>Format wyjścia można dostosować poprzez użycie opcji <option>
-o</option> oraz listy pożądanych parametrów oddzielonych przecinkami. Jakikolwiek
+o</option> oraz listy żądanych parametrów oddzielonych przecinkami. Jakikolwiek
 parametr datasetu jest poprawną wartością. Lista wszystkich wspieranych parametrów
 datasetu znajduje się pod <olink targetdoc="" remap="internal" targetptr="gazss">ZFS Properties</olink>.
-Dodatkowo do podanych parametrów opcja <option>
+Dodatkowo wśród podanych parametrów opcja <option>
 o</option> może zawierać także parametr <literal>name</literal>, który określa, że wyjście
 powinno zawierać nazwę datasetu.</para>
-<para>Następujący przykład używa polecenia <command>zfs list</command>, żeby wyświetlić
+<para>Poniższy przykład używa polecenia <command>zfs list</command>, żeby wyświetlić
 nazwę datasetu włącznie z parametrami <property>sharenfs</property> oraz <property>mountpoint</property>.</para>
 <screen># <userinput>zfs list -o name,sharenfs,mountpoint</userinput> 
 NAME                  SHARENFS         MOUNTPOINT
@@ -1863,7 +1858,7 @@ Właściwe rodzaje są wymienione w tabeli poniżej.<indexterm xml:id="indexterm
 </table>
 <para>Opcja <option>
 t</option> przyjmuje jako parametr listę rodzajów datasetów do wyświetlenia oddzielaną
-przecinkami. Następujący przykład używa opcji <option>
+przecinkami. Poniższy przykład używa opcji <option>
 t</option> oraz <option>
 o</option> jednocześnie, żeby wyświetlić nazwę oraz parametr <property>used</property>
 dla wszystkich systemów plików:<indexterm xml:id="indexterm-319">
@@ -1894,7 +1889,7 @@ pool/home/tabriz_clone  0</screen>
 H</option> pozwala pominąć nagłówek w wyjściu polecenia <command>zfs list</command>
 Przy użyciu tej opcji wszystkie białe spacje są zamieniane na tabulatory.
 Ta opcja może być użyteczna, jeśli jest potrzebne parsowalne wyjścia, na przykład
-dla potrzeb skryptów. Następujący przykład pokazuje wyjście po użyciu polecenia
+dla potrzeb skryptów. Kolejny przykład pokazuje wyjście po użyciu polecenia
 <command>zfs list</command> z opcją <option>
 H</option>:<indexterm xml:id="indexterm-322">
 <primary>listing</primary>
@@ -1927,11 +1922,11 @@ pool/home/tabriz_clone</screen>
 </sect1>
 <sect1 xml:id="gayns">
 <title>Zarządzanie parametrami ZFS</title>
-<para>Parametry datasetów są zarządzalne poleceniem <command>zfs</command> z komendami <command>set</command>, <command>inherit</command>oraz <command>get</command>.</para>
+<para>Parametry datasetów są zarządzane poleceniem <command>zfs</command> z komendami <command>set</command>, <command>inherit</command>oraz <command>get</command>.</para>
 <sect2 xml:id="gazsp">
 <title>Ustawianie parametrów ZFS</title>
 <para>Polecenie <command>zfs set</command> służy do modyfikacji jakiegokolwiek
-ustwialnego parametru datasetu. Lista ustawialnych parametrów datasetu znajduje
+ustawialnego parametru datasetu. Lista ustawialnych parametrów datasetu znajduje
 się pod <olink targetdoc="" remap="internal" targetptr="gazsd">Settable ZFS Properties</olink>.
 Polecenie <command>zfs set</command> przyjmuje sekwencję parametr/wartość w formacie
 <replaceable>parametr</replaceable>=<replaceable>wartość</replaceable> oraz nazwę datasetu.<indexterm xml:id="indexterm-325">
@@ -1951,16 +1946,16 @@ Polecenie <command>zfs set</command> przyjmuje sekwencję parametr/wartość w f
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>Następujący przykład ustawia parametr <property>atime</property> na <literal>off</literal> dla <filename>tank/home</filename>.
+<para>Poniższy przykład ustawia parametr <property>atime</property> na <literal>off</literal> dla <filename>tank/home</filename>.
 Tylko jeden parametr może być ustawiany lub modyfikowany podczas każdego
 wykonania polecenia <command>zfs set</command>.</para>
 <screen># <userinput>zfs set atime=off tank/home</userinput>
 </screen>
 <para>Duże wartości numeryczne mogą być określane z użyciem łatwych do zrozumienia
 przyrostków (w kolejności rosnącej): <literal>BKMGTPEZ</literal>.  Każdy z tych
-przyrostków może mieć po sobie opcjonalnie dodane <literal>b</literal>, oznaczające bajty,
-z wyjątkiem przyrostka <literal>B</literal>, który sam z siebie już określa bajty.
-bytes. Podane cztery wyołania polecenia <command>zfs set</command> są równoważnymi
+przyrostków, z wyjątkiem przyrostka <literal>B</literal>, który sam z siebie już określa
+bajty, może mieć po sobie opcjonalnie dodane <literal>b</literal>.
+Podane cztery wywołania polecenia <command>zfs set</command> są równoważnymi
 wyrażeniami numerycznymi określającymi, że parametr <property>quota</property> zostanie
 ustawiony na wartość 50 gigabajtów dla systemu plików <filename>tank/home/marks</filename>:</para>
 <screen># <userinput>zfs set quota=50G tank/home/marks</userinput>
@@ -1998,9 +1993,9 @@ Te dwa parametry mogą mieć wartości podawane zarówno wielkimi, jak i małymi
 </sect2>
 <sect2 xml:id="gazup">
 <title>Dziedziczenie parametrów ZFS</title>
-<para>Wszystkie ustawialne parametry z wyłączeniem quoty i rezerwacji dziedziczą
+<para>Wszystkie ustawialne parametry z wyłączeniem limitu i rezerwacji dziedziczą
 swoje wartości od "rodziców". Jeśli żaden z nadrzędnych datasetów nie ma ustawionej
-dokłądnej wartości dla dziedziczonego parametru, przyjmowana jest wartość domyślna.
+dokładnej wartości dla dziedziczonego parametru, przyjmowana jest wartość domyślna.
 Polecenie <command>zfs inherit</command> służy do usunięcia ustawionej wartości
 parametru, poprzez co przyjmuje wartość odziedziczoną od nadrzędnego datasetu.
 <indexterm xml:id="indexterm-331">
@@ -2020,7 +2015,7 @@ parametru, poprzez co przyjmuje wartość odziedziczoną od nadrzędnego dataset
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>Następujący przykład używa polecenia <command>zfs set</command> w celu
+<para>Poniższy przykład używa polecenia <command>zfs set</command> w celu
 włączenia kompresji dla systemu plików <filename>tank/home/bonwick</filename>.
 Następnie polecenie <command>zfs inherit</command> usuwa wartość parametru <property>compression</property>,
 przez co parametr ten dziedziczy domyślne ustawienie <literal>off</literal>.
@@ -2041,7 +2036,7 @@ tank             compression   off                      default
 tank/home        compression   off                      default
 tank/home/bonwick compression  off                      inherited from tank/home</screen>
 <para>Komenda <command>inherit</command> jest wykonywana rekursywnie, jeśli zostanie
-wykonana z opcją <option>r</option>. W następującym przykładzie polecenie to powoduje,
+wykonana z opcją <option>r</option>. W kolejnym przykładzie polecenie to powoduje,
 że parametr <property>compression</property> będzie dziedziczony przez 
 <filename>tank/home</filename> i jakiekolwiek potomne systemy plików, jakie mógłby
 posiadać.</para>
@@ -2068,7 +2063,7 @@ datasetów.</para>
 list</command>. Więcej informacji znajduje się pod <olink targetdoc="" remap="internal" targetptr="gaztd">Listing Basic ZFS Information</olink>.
 W przypadku bardziej skomplikowanych zapytań i do pisania skryptów można
 użyć polecenia <command>zfs get</command> w celu dostarczenia bardziej dokładnych
-informacji w ściśle określonym formacie.<indexterm xml:id="indexterm-334">
+informacji w dokładnie określonym formacie.<indexterm xml:id="indexterm-334">
 <primary>listing</primary>
 <secondary>ZFS properties (<command>zfs list</command>)</secondary>
 <tertiary>(example of)</tertiary>
@@ -2086,7 +2081,7 @@ informacji w ściśle określonym formacie.<indexterm xml:id="indexterm-334">
 </indexterm>
 </para>
 <para>Polecenia <command>zfs get</command> można użyć w celu pobrania wartości
-jakiegokolwiek parametru datasetu. Następujący przykład pokazuje, jak pobrać
+jakiegokolwiek parametru datasetu. Poniższy przykład pokazuje, jak pobrać
 wartość jednego parametru datasetu:</para>
 <screen># <userinput>zfs get checksum tank/ws</userinput>
 NAME    	         PROPERTY      VALUE                      SOURCE
@@ -2152,8 +2147,8 @@ użycie polecenia <command>zfs set</command>.</para>
 </entry>
 <entry>
 <para>Wartość tego parametru została określona poprzez użycie opcji <option>
-o</option> polecenia <command>zfs mount</command> <option>
-o</option> i obowiązuje na czas zamontowania tego systemu plików. Więcej informacji
+o</option> polecenia <command>zfs mount</command>
+i obowiązuje przez czas zamontowania tego systemu plików. Więcej informacji
 na temat tymczasowych parametrów punktu montowania znajduje się pod
 <olink targetdoc="" remap="internal" targetptr="gamnt">Temporary Mount Properties</olink>.</para>
 </entry>
@@ -2245,16 +2240,17 @@ tank/home/marks    atime          off                      temporary</screen>
 </sect2>
 <sect2 xml:id="gazum">
 <title>Odpytywanie o wartości parametrów ZFS dla skryptów</title>
-<para>Polecenie <command>zfs get</command> wspiera opcje <option>
+<para>Polecenie <command>zfs get</command> wspiera także opcje <option>
 H</option> oraz <option>
 o</option>, które zostały stworzone z myślą o pisaniu skryptów. Opcja <option>
-H</option> określa, że jakiekolwiek informacje nagłówków powinny być pominięte
-oraz wszystki białe spacje powinny być zamienione na tabulatory. Ujednolicony
+H</option> określa, że jakiekolwiek nagłówki powinny być pominięte
+oraz wszystkie białe spacje powinny być zamienione na tabulatory. Ujednolicony
 format białych znaków pozwala łatwo przetwarzać dane. Użycie opcji <option>
 o</option> pozwala dostosować format wyjścia. Przyjmuje ona parametry w postaci
 listy parametrów do wyświetlenia oddzielonej przecinkami. Wszystkie parametry
 zdefiniowane w <olink targetdoc="" remap="internal" targetptr="gazss">parametrach ZFS</olink>, włącznie
-z <literal>name</literal>, <literal>value</literal>, <literal>property</literal> oraz <literal>source</literal> mogą być użyte w liście opcji <option>
+z <literal>name</literal>, <literal>value</literal>, <literal>property</literal> oraz <literal>source</literal>
+mogą być użyte w liście argumentów opcji <option>
 o</option>.<indexterm xml:id="indexterm-340">
 <primary>listing</primary>
 <secondary>ZFS properties for scripting</secondary>
@@ -2278,7 +2274,7 @@ opcji <option>H</option> oraz <option>o</option> z poleceniem <command>zfs get</
 on</screen>
 <para>Opcja <option>
 p</option> włącza dokładne zwracanie wartości liczbowych. Na przykład
-1 Mbajt będzie wyświetlony jako 1000000. Opcja ta może być użyta, jak
+1 megabajt będzie wyświetlony jako 1000000. Opcja ta może być użyta, jak
 demonstruje poniższy przykład:</para>
 <screen># <userinput>zfs get -H -o value -p used tank/home</userinput>
 182983742</screen>
@@ -2299,7 +2295,7 @@ export/home/maybee      2.15G</screen>
 </sect1>
 <sect1 xml:id="gaynd">
 <title>Montowanie i udostępnianie systemów plików ZFS</title>
-<para>Ta sekcja opisuje jak punkty montowanie i udostępniane systemy plików są zarządzane
+<para>Ta sekcja opisuje jak punkty montowania i udostępniane systemy plików są zarządzane
 w ZFS.</para>
 <sect2 xml:id="gaztn">
 <title>Zarządzanie punktami montowania ZFS</title>
@@ -2317,10 +2313,11 @@ nazwą systemu plików.<indexterm xml:id="indexterm-343">
 <tertiary>description</tertiary>
 </indexterm>
 </para>
-<para>Domyślny punkt montowania można zmienić poprzez ustawienie parametru <property>mountpoint</property> na określoną ścieżkę poprzez użycie polecenia <command>zfs set</command>.
+<para>Domyślny punkt montowania można zmienić poprzez ustawienie parametru
+<property>mountpoint</property> na określoną ścieżkę poprzez użycie polecenia <command>zfs set</command>.
 ZFS automatycznie tworzy punkt montowania, jeśli jest taka potrzeba oraz
 automatycznie montuje ten system plików, jeśli zostanie wywołane polecenie
-<command>zfs mount -a</command> bez potrzeby poprawianie pliku <filename>/etc/vfstab</filename>.</para>
+<command>zfs mount -a</command> bez potrzeby poprawiania pliku <filename>/etc/vfstab</filename>.</para>
 <para>Parametr <literal>mountpoint</literal> jest dziedziczony. Jeśli przykładowo
 <filename>pool/home</filename> ma <property>mountpoint</property> ustawiony jako
 <filename>/export/stuff</filename>, wtedy <filename>pool/home/user</filename> dziedziczy <filename>/export/stuff/user</filename> dla
@@ -2396,7 +2393,7 @@ pool/filesystem  mountpoint    /mnt                       local
 NAME             PROPERTY      VALUE                      SOURCE
 pool/filesystem  mounted       yes                        -</screen>
 <para>Kiedy parametr <property>mountpoint</property> jest zmieniany, system plików
-zostaje automatycznie odmontowany ze starego punktu montowani i zamontowany w nowym
+zostaje automatycznie odmontowany ze starego punktu montowania i zamontowany w nowym
 miejscu. W razie potrzeby katalogi punktu montowania są tworzone. Jeśli ZFS nie jest
 w stanie odmontować systemu plików z powodu jego aktywności, zostanie zgłoszony błąd i 
 jest konieczne ręczne odmontowanie systemu plików.<indexterm xml:id="indexterm-349">
@@ -2423,7 +2420,7 @@ jest konieczne ręczne odmontowanie systemu plików.<indexterm xml:id="indexterm
 poprzez ustawienie parametru <property>mountpoint</property> na wartość <property>legacy</property>.
 Tradycyjne systemy plików muszą być zarządzane poprzez polecenia <command>mount</command>
 i <command>umount</command> oraz plik <filename>/etc/vfstab</filename>. ZFS nie montuje
-automatycznie tradycyjnych systemów plików podczas startu systemu, a także polecenia ZFS-a
+automatycznie tradycyjnych systemów plików podczas startu systemu, także polecenia ZFS
 <command>mount</command> oraz <command>umount</command> nie działają z takim rodzajem
 datasetu. Poniższy przykład pokazuje jak ustawić i zarządzać datasetem ZFS w tradycyjny sposób:</para>
 <screen># <userinput>zfs set mountpoint=legacy tank/home/eschrock</userinput>
@@ -2462,7 +2459,7 @@ może wyglądać:</para>
 tank/home/eschrock -		/mnt		   zfs		-		yes		-	</screen>
 <para>Należy zwrócić uwagę na to, że pozycje <literal>device to fsck</literal> oraz <literal>fsck pass</literal>
 są ustawione jako <literal>-</literal>. Składnia ta wynika z faktu, że polecenie
-<command>fsck</command> nie ma zastosowaniu w przypadku systemów plików ZFS.
+<command>fsck</command> nie ma zastosowania w przypadku systemów plików ZFS.
 Więcej informacji na temat integralności danych i braku potrzeby istnienia
 polecenia <command>fsck</command> w ZFS znajduje się pod
 <olink targetdoc="" remap="internal" targetptr="gaypi">Transactional Semantics</olink>.</para>
@@ -2574,7 +2571,7 @@ montowania wygląda następująco:</para>
 <sect2 xml:id="gamnt">
 <title>Tymczasowe parametry montowania</title>
 <para>Jeśli jakakolwiek z powyższych opcji jest dokładnie określona poprzez
-użycie opcji <option>o</option> z poleceniem <command>zfs mount</command>,
+użycie opcji <option>o</option> polecenia <command>zfs mount</command>,
 odpowiednio skojarzona wartość parametru zostaje tymczasowo nadpisana. Te
 wartości parametrów są zgłaszane jako <literal>temporary</literal> przez
 polecenie <command>zfs get</command> i wracają do oryginalnych ustawień, kiedy
@@ -2585,7 +2582,7 @@ jakiekolwiek tymczasowe ustawienie.</para>
 montowania systemu plików w trybie tylko do odczytu dla <filename>tank/home/perrin</filename>:</para>
 <screen># <userinput>zfs mount -o ro tank/home/perrin</userinput>
 </screen>
-<para>W tym przykładzie przyjęto założenie, że system plików był odmontowane.
+<para>W tym przykładzie przyjęto założenie, że system plików był odmontowany.
 Żeby tymczasowo zmienić parametr dla systemu plików aktualnie zamontowanego,
 należy użyć specjalnej opcji <literal>remount</literal>. W poniższym przykładzie
 parametr <property>atime</property> zostaje tymczasowo zmieniony na <literal>off</literal>
@@ -2629,7 +2626,7 @@ lub nazwę systemu plików.<indexterm xml:id="indexterm-358">
 jego nazwy:</para>
 <screen># <userinput>zfs unmount tank/home/tabriz</userinput>
 </screen>
-<para>W poniższym przykładzie systemu plików jest odmontowany poprzez wskazanie
+<para>W kolejnym przykładzie systemu plików jest odmontowany poprzez wskazanie
 punktu montowania:</para>
 <screen># <userinput>zfs unmount /export/home/tabriz</userinput>
 </screen>
@@ -2662,7 +2659,7 @@ pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
 <title>Udostępnianie (sharing) systemów plików ZFS</title>
 <para>Analogicznie do punktów montowania ZFS może automatycznie udostępniać
 systemy plików poprzez użycie parametru <property>sharenfs</property>. Używając
-tej metody nie ma potrzeby modyfikować pliku <filename>/etc/dfs/dfstab</filename>,
+tej metody nie ma potrzeby modyfikacji pliku <filename>/etc/dfs/dfstab</filename>,
 kiedy zostaje dodany nowy system plików. Parametr <property>sharenfs</property>
 jest listą opcji oddzielonych przecinkami przekazywanych do polecenia <command>share</command>.
 Specjalna wartość <literal>on</literal> jest aliasem na domyślne opcje udostępniania,
@@ -2694,7 +2691,7 @@ udostępnienia nowego systemu plików należy użyć polecenia <command>zfs set<
 ze składnią podobną do poniższej:</para>
 <screen># <userinput>zfs set sharenfs=on tank/home/eschrock</userinput>
 </screen>
-<para>Parametr jest dziedziczony i wszystkie systemy plików są automatycznie udostępanie
+<para>Parametr jest dziedziczony i wszystkie systemy plików są automatycznie udostępniane,
 jeśli ich dziedziczony parametr nie przyjmuje wartości <literal>off</literal>. Na
 przykład:<indexterm xml:id="indexterm-364">
 <primary>sharing</primary>
@@ -2722,7 +2719,7 @@ przykład:<indexterm xml:id="indexterm-364">
 na początku są udostępnione w trybie do zapisu, ponieważ dziedziczą wartość parametru
 <property>sharenfs</property> z <filename>tank/home</filename>. Natomiast <filename>tank/home/tabriz</filename>
 staje się tylko do odczytu w momencie, kiedy parametr zostaje ustawiony na <literal>ro</literal>
-(readonly) niezlaeżnie od ustawienia parametru <property>sharenfs</property> dla
+(readonly) niezależnie od ustawienia parametru <property>sharenfs</property> dla
 <filename>tank/home</filename>.</para>
 </sect3>
 <sect3 xml:id="gbdze">
@@ -2766,12 +2763,12 @@ a</option> option.</para>
 <title>Tradycyjne udostępnianie</title>
 <para>Jeśli parametr <property>sharenfs</property> jest ustawiony na <literal>off</literal>,
 wtedy ZFS nie podejmuje prób udostępniania lub wyłączenia udostępniania systemu plików.
-To ustawienie pozwala zarządzać udostępnianie tradycyjnymi metodami takimi jak
+To ustawienie pozwala zarządzać udostępnianiem tradycyjnymi metodami takimi jak
 plik <filename>/etc/dfs/dfstab</filename>.</para>
 <para>W przeciwieństwie do tradycyjnego polecenia <command>mount</command>, standardowe
-polecenia <command>share</command> oraz <command>unshare</command> mogą być ciągle używane
+polecenia <command>share</command> oraz <command>unshare</command> mogą być zawsze używane
 dla systemów plików ZFS. Wskutek tego istnieje możliwość udostępnienia systemu plików z innymi
-ustawienia, niż wartość zmiennej <literal>sharenfs</literal>. Ten model administrowania
+ustawieniami, niż wartość zmiennej <literal>sharenfs</literal>. Ten model administrowania
 jest odradzany. Zaleca się zarządzanie udostępnianiem NFS całkowicie poprzez mechanizm ZFS lub
 całkowicie poprzez plik <filename>/etc/dfs/dfstab</filename>. Model zarządzania ZFS
 został zaprojektowany tak, żeby był prostszy i wymagający mniejszego nakładu pracy niż
@@ -2781,8 +2778,8 @@ udostępniania systemu plików poprzez tradycyjny, znajomy sposób.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gazvb">
-<title>Quoty i rezerwacje ZFS</title>
-<para>ZFS wspiera quoty i rezeracje na poziomie systemu plików. Ustawienie
+<title>Limity (quoty) i rezerwacje ZFS</title>
+<para>ZFS wspiera limity i rezeracje na poziomie systemu plików. Ustawienie
 parametru <property>quota</property> narzuca limit wielkości miejsca, jaki
 system plików może użyć. Dodatkowo można ustawić parametr <property>reservation</property>
 w celu zagwarantowania, że podana ilość miejsca będzie dostępna dla systemu
@@ -2792,18 +2789,18 @@ dla wszystkich potomnych dla niego datasetów.<indexterm xml:id="indexterm-369">
 <secondary>description</secondary>
 </indexterm>
 </para>
-<para>Oznacza to, że jeśli quota zostanie ustawiona dla datasetu <filename>tank/home</filename>,
-Całkowita ilość miejsca użyta przez <filename>tank/home</filename> <emphasis>i
-wszystkie dla niego potomne datasety</emphasis> nie może przekroczyć wartości quoty.
+<para>Oznacza to, że jeśli limit zostanie ustawiony dla datasetu <filename>tank/home</filename>,
+całkowita ilość miejsca użyta przez <filename>tank/home</filename> <emphasis>i
+wszystkie dla niego potomne datasety</emphasis> nie może przekroczyć wartości limitu.
 Analogicznie jeśli <filename>tank/home</filename> ma określoną rezerwację,
 <filename>tank/home</filename> <emphasis>i wszystkie dla niego potomne datasety</emphasis>
-dostają tą rezerwację. Ilość miejsca użyta przez dataset i jego "potomki" jest raportowana
+dostają tą rezerwację. Ilość miejsca użyta przez dataset i potomne dla niego jest podawana
 poprzez parametr <property>used</property>.</para>
 <sect2 xml:id="gazud">
-<title>Ustawianie quoty dla systemów plików ZFS</title>
-<para>Quoty ZFS mogą być ustawiane i wyświetlane poprzez użycie poleceń
+<title>Ustawianie limitu dla systemów plików ZFS</title>
+<para>Limity ZFS mogą być ustawiane i wyświetlane poprzez użycie poleceń
 <command>zfs set</command> oraz <command>zfs get</command>. W poniższym przykładzie
-dla systamu plików <filename>tank/home/bonwick</filename> zostaje ustawiona quota 10GB.<indexterm xml:id="indexterm-370">
+dla systemu plików <filename>tank/home/bonwick</filename> zostaje ustawiony limit 10 gigabajtów.<indexterm xml:id="indexterm-370">
 <primary>setting</primary>
 <secondary>ZFS file system quota (<command>zfs set quota</command>)</secondary>
 <tertiary>example of</tertiary>
@@ -2824,7 +2821,7 @@ dla systamu plików <filename>tank/home/bonwick</filename> zostaje ustawiona quo
 # <userinput>zfs get quota tank/home/bonwick</userinput>
 NAME              PROPERTY      VALUE                      SOURCE
 tank/home/bonwick quota         10.0G                      local</screen>
-<para>Quoty ZFS wpływają także na wartości w wyjściu poleceń <command>zfs list</command> oraz <command>df</command>. Na przykład:</para>
+<para>Limity ZFS mają także wpływ na wartości w wyjściu poleceń <command>zfs list</command> oraz <command>df</command>. Na przykład:</para>
 <screen># <userinput>zfs list</userinput>
 NAME                   USED  AVAIL  REFER  MOUNTPOINT
 tank/home             16.5K  33.5G  8.50K  /export/home
@@ -2833,10 +2830,10 @@ tank/home/bonwick/ws  6.50K  10.0G  8.50K  /export/home/bonwick/ws
 # <userinput>df -h /export/home/bonwick</userinput>
 Filesystem             size   used  avail capacity  Mounted on
 tank/home/bonwick       10G     8K    10G     1%    /export/home/bonwick</screen>
-<para>Proszę zauważyć, że pomimo tego, iż <filename>tank/home</filename> ma 33.5 GB dostępnego
+<para>Proszę zauważyć, że pomimo tego, iż <filename>tank/home</filename> ma 33.5 gigabajtów dostępnego
 miejsca, <filename>tank/home/bonwick</filename> oraz <filename>tank/home/bonwick/ws</filename>
-mają tylko 10GB dostępnego miejsca z powodu ustawienia quoty dla <filename>tank/home/bonwick</filename>.</para>
-<para>Nie można ustawić quoty na wielkość mniejszą, niż aktualnie używana
+mają tylko 10 gigabajtów dostępnego miejsca z powodu ustawienia limitu dla <filename>tank/home/bonwick</filename>.</para>
+<para>Nie można ustawić limitu na wielkość mniejszą, niż aktualnie używana
 przez dataset. Na przykład:</para>
 <screen># <userinput>zfs set quota=10K tank/home/bonwick</userinput>
 cannot set quota for 'tank/home/bonwick': size is less than current used or 
@@ -2876,10 +2873,10 @@ tank/home/moore  reservation   5.00G                      local</screen>
 NAME                   USED  AVAIL  REFER  MOUNTPOINT
 tank/home             5.00G  33.5G  8.50K  /export/home
 tank/home/moore       15.0K  10.0G  8.50K  /export/home/moore</screen>
-<para>Proszę zauważyć, że <filename>tank/home</filename> używa 5GB przestrzeni,
+<para>Proszę zauważyć, że <filename>tank/home</filename> używa 5 gigabajtów przestrzeni,
 pomimo tego, że sumaryczna wielkość zajętego miejsca odnosząca się do <filename>tank/home</filename>
-oraz jego potomnych datasetów jest dużo mniejsza niż 5GB.
-The used space reflects the space
+oraz jego potomnych datasetów jest dużo mniejsza niż 5 gigabajtów.
+[FIXIT] The used space reflects the space
 reserved for <filename>tank/home/moore</filename>. Reservations are considered
 in the used space of the parent dataset and do count against its quota, reservation,
 or both.</para>
@@ -2887,13 +2884,13 @@ or both.</para>
 # <userinput>zfs set reservation=10G pool/filesystem/user1</userinput>
 cannot set reservation for 'pool/filesystem/user1': size is greater than 
 available space</screen>
-<para>A dataset can use more space than its reservation, as long as space
-is available in the pool that is unreserved and the dataset's current usage
-is below its quota. A dataset cannot consume space that has been reserved
-for another dataset.</para>
-<para>Reservations are not cumulative. That is, a second invocation of <command>zfs
-set</command> to set a reservation does not add its reservation to the existing
-reservation. Rather, the second reservation replaces the first reservation.</para>
+<para>Dataset może używać więcej przestrzeni niż ustawiona rezerwacja tak długo, jak
+jest dostępne niezarezerwowane miejsce w puli i aktualne użycie miejsca przez dataset
+jest poniżej jego limitu. Dataset nie może użyć miejsca, które jest zarezerwowane dla
+innego datasetu.</para>
+<para>Rezerwacje nie kumulują się. Drugie wykonanie polecenia <command>zfs set</command>
+w celu ustawienie rezerwacji nie dodaje podanej wartości do poprzedniej. Drugie wykonanie
+polecenia nadpisze poprzednią wartość.</para>
 <screen># <userinput>zfs set reservation=10G tank/home/moore</userinput>
 # <userinput>zfs set reservation=5G tank/home/moore</userinput>
 # <userinput>zfs get reservation tank/home/moore</userinput>
