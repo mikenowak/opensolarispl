@@ -1,23 +1,22 @@
 
 3/29/2006
 
-The docbook.dtd file located in this directory is the latest version of 
-the DocBook 5.0 DTD obtained from here:
-http://docbook.org/xml/5.0b3/dtd/docbook.dtd
+Plik docbook.dtd w tym katalogu to najnowsza wersja DocBook 5.0 DTD 
+pobrana ze strony: http://docbook.org/xml/5.0b3/dtd/docbook.dtd
 
-A few things have been changed on this DTD which may be in error. They are:
+W tej wersji DTD zmieniono kilka rzeczy i mogą one powodować błedy. Są to:
 
-- All places where the keyword EMPTY was used have had the surrounding 
-parenthesis removed (i.e. <!ELEMENT colspec (EMPTY)> is now 
+- Wszystkie wystąpienia słowa EMPTY zamknięte były w nawiasy okrągłe, które teraz 
+zostały usunięte (na przykład <!ELEMENT colspec (EMPTY)> to teraz  
 <!ELEMENT colspec EMPTY> )
 
-- The table element has had its info sub-element made optional (info?), its
-title|titleabbrev sub-elements made into OR instead of each required, its 
-textobject sub-element made into * instead of required, and its indexterm 
-sub-element made into * instead of required
+- Podelement info elemtu tabela jest teraz opcjonalny (info?), jego podelementy 
+title|titleabbrev są teraz OR zamiast oba wymagane, podelement textobject 
+przekształcono w * zmiast wymagane, a także podelement indexterm przekształcono 
+w * zamiast wymagane
 
-If these changes are not correct than a subsequent version of this tool shall 
-correct them. Also note that as the DocBook 5 specification changes updates will
-occur accordingly.
+Jeśli zmiany nie są poprawne, następna wersja narzędzia powinna je poprawic. 
+Proszę też zauważyć, że od wersji DocBook 5 zmiany specyfikacji będą uaktualnianie 
+w zależności od potrzeb.
 
 

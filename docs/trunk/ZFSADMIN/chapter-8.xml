@@ -66,7 +66,7 @@ nastąpić uszkodzenie danych.  Należy zachować ostrożność podczas zmniejsz
 woluminu.</para>
 <para>Jeśli używasz systemu Solaris z zainstalowanymi zonami, nie możesz tworzyć ani klonować ZFS-owego woluminu
 w zonie innej niz globalna.  Jakakolwiek próba stworzenia lub sklonowania 
-woluminu z zony innej niż globalna nie powiedzie się.  Więcej
+woluminu z strefy innej niż globalna nie powiedzie się.  Więcej
 informacji o używaniu ZFS-owych woluminów w globalnej zonie w
 <olink targetdoc="" remap="internal" targetptr="gbebi">Dodawanie ZFS-owych woluminów do zon innych niz globalna</olink>.</para>
 <sect2 xml:id="gbfvg">
@@ -101,10 +101,10 @@ skonfigurowania urządzenia zrzutów awaryjnych należy użyć komendy <command>
 </sect1>
 <sect1 xml:id="gayov">
 <title>Używanie ZFS-a w systemie Solaris z zainstalowanymi zonami</title>
-<para>Datasety ZFS-a można dodać do zony jako ogólny system plików lub jako wydelegowany dataset.</para>
-<para>Dodanie systemu plików umożliwia nieglobalnej zonie współdzielenie przestrzeni z zoną globalną, aczkolwiek administrator zony nie może kontrolować właściwości lub tworzyć nowych systemów plików w hierarchii. Mechanizm ten działa identycznie jak podłączenie do zony dowolnego innego systemu pliów i powinien być wykorzystywany głównie do współdzielenia miejsca.</para>
-<para>ZFS pozwala także na delegację datasetu do nieglobalnej zony, przekazując administratorowi zony całkowitą kontrolę nad datasetem i jego potomkami. Administrator zony może tworzyć i niszczyć systemy plików w tym datasecie i modyfikować właściwości datasetów. Nie może natomiast zmieniać właściwości datasetów, które nie zostały dodane do zony i nie może przekroczyć limitów najwyższego poziomu ustalonych na wyeksportowanym datasecie.<indexterm xml:id="indexterm-467">
-<primary>zony</primary>
+<para>Datasety ZFS-a można dodać do strefy jako ogólny system plików lub jako wydelegowany dataset.</para>
+<para>Dodanie systemu plików umożliwia nieglobalnej zonie współdzielenie przestrzeni z zoną globalną, aczkolwiek administrator strefy nie może kontrolować właściwości lub tworzyć nowych systemów plików w hierarchii. Mechanizm ten działa identycznie jak podłączenie do strefy dowolnego innego systemu pliów i powinien być wykorzystywany głównie do współdzielenia miejsca.</para>
+<para>ZFS pozwala także na delegację datasetu do nieglobalnej strefy, przekazując administratorowi strefy całkowitą kontrolę nad datasetem i jego potomkami. Administrator strefy może tworzyć i niszczyć systemy plików w tym datasecie i modyfikować właściwości datasetów. Nie może natomiast zmieniać właściwości datasetów, które nie zostały dodane do strefy i nie może przekroczyć limitów najwyższego poziomu ustalonych na wyeksportowanym datasecie.<indexterm xml:id="indexterm-467">
+<primary>strefy</primary>
 <secondary>używanie z systemami plików ZFS-a</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
@@ -117,33 +117,33 @@ skonfigurowania urządzenia zrzutów awaryjnych należy użyć komendy <command>
 <para>Poniższy przypadek opisuje pracę z ZFS-em w systemie Solaris z zainstalowanymi zonami:</para>
 <itemizedlist>
 <listitem>
-<para>Właściwość <command>mountpoint</command> systemu plików ZFS-a dodawanego do nieglobalnej zony musi mieć wartość legacy.</para>
+<para>Właściwość <command>mountpoint</command> systemu plików ZFS-a dodawanego do nieglobalnej strefy musi mieć wartość legacy.</para>
 </listitem>
 <listitem>
-<para>Kiedy źródłowa <literal>zonepath</literal> i docelowa <literal>zonepath</literal> znajdują się na ZFS-ie i są w tej samej puli, <command>zoneadm clone</command> automatycznie użyje ZFS clone do sklonowana zony. Komenda <command>zoneadm clone</command> zrzuci obraz ZFS źródłowej <literal>zonepath</literal> i ustawi docelową <literal>zonepath</literal>. Nie należy używać opcji zrzutu obrazu ZFS-a do klonowania zony. Więcej informacji w <olink targetdoc="819-2450" remap="external" targetptr="zone">Części II, <citetitle remap="chapter">Zony,</citetitle> w <citetitle remap="book">Przewodnik administracji systemu: kontenery Solarisa - zarządzanie zasobami i zonami Solarisa</citetitle>
+<para>Kiedy źródłowa <literal>zonepath</literal> i docelowa <literal>zonepath</literal> znajdują się na ZFS-ie i są w tej samej puli, <command>zoneadm clone</command> automatycznie użyje ZFS clone do sklonowana strefy. Komenda <command>zoneadm clone</command> zrzuci obraz ZFS źródłowej <literal>zonepath</literal> i ustawi docelową <literal>zonepath</literal>. Nie należy używać opcji zrzutu obrazu ZFS-a do klonowania strefy. Więcej informacji w <olink targetdoc="819-2450" remap="external" targetptr="zone">Części II, <citetitle remap="chapter">strefy,</citetitle> w <citetitle remap="book">Przewodnik administracji systemu: kontenery Solarisa - zarządzanie zasobami i zonami Solarisa</citetitle>
 </olink>.</para>
 </listitem>
 </itemizedlist>
 <sect2 xml:id="gbbrq">
-<title>Dodawanie systemu plików ZFS-a do nieglobalnej zony</title>
-<para>Kiedy zakłada się głównie współdzielenie przestrzeni, można dodać system plików ZFS-a jako ogólny system plików. Właściwość <literal>mountpoint</literal> systemu plików ZFS-a dodawanego do nieglobalnej zony musi być ustawiona na legacy.</para>
-<para>Dodawnie systemu plików ZFS-a do nieglobalnej zony wykonuje się subkomendą <literal>add fs</literal> komendy <command>zonecfg</command>. Na przykład:<indexterm xml:id="indexterm-469">
-<primary>zony</primary>
-<secondary>dodawanie systemu plików ZFS-a do nieglobalnej zony</secondary>
+<title>Dodawanie systemu plików ZFS-a do nieglobalnej strefy</title>
+<para>Kiedy zakłada się głównie współdzielenie przestrzeni, można dodać system plików ZFS-a jako ogólny system plików. Właściwość <literal>mountpoint</literal> systemu plików ZFS-a dodawanego do nieglobalnej strefy musi być ustawiona na legacy.</para>
+<para>Dodawnie systemu plików ZFS-a do nieglobalnej strefy wykonuje się subkomendą <literal>add fs</literal> komendy <command>zonecfg</command>. Na przykład:<indexterm xml:id="indexterm-469">
+<primary>strefy</primary>
+<secondary>dodawanie systemu plików ZFS-a do nieglobalnej strefy</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-470">
 <primary>dodawanie</primary>
-<secondary>systemu plików ZFS-a do nieglobalnej zony</secondary>
+<secondary>systemu plików ZFS-a do nieglobalnej strefy</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-471">
 <primary>systemy plików ZFS</primary>
-<secondary>dodawanie systemu plików ZFS-a do nieglobalnej zony</secondary>
+<secondary>dodawanie systemu plików ZFS-a do nieglobalnej strefy</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>W poniższym przykładzie globalny administrator dodaje w zonie globalnej system plików ZFS-a do nieglobalnej zony.</para>
+<para>W poniższym przykładzie globalny administrator dodaje w zonie globalnej system plików ZFS-a do nieglobalnej strefy.</para>
 <screen># <userinput>zonecfg -z zion</userinput>
 zion: No such zone configured
 Use 'create' to begin configuring a new zone.
@@ -154,30 +154,30 @@ zonecfg:zion:fs&gt; <userinput>set special=tank/zone/zion</userinput>
 zonecfg:zion:fs&gt; <userinput>set dir=/export/shared</userinput>
 zonecfg:zion:fs&gt; <userinput>end</userinput>
 </screen>
-<para>Polecenie to dodaje system plików ZFS-a <filename>tank/zone/zion</filename> do zony <literal>zion</literal> i montuje go w <filename>/export/shared</filename>.
-Właściwość <property>mountpoint</property> systemu plików musi być ustawiona na <property>legacy</property>, a sam system plików nie może być wcześniej zamontowany w innej lokalizacji. Administrator zony może tworzyć i niszczyć pliki w systemie plików. System plików nie może zostać przemontowany w inna lokalizację, a administrator zony nie może zmienić właściwości systemu plików: atime, readonly, compression itd. Odpowiedzialnym za ustalenie i kontrolę właściwości systemu plióków jest administrator globalnej zony.</para>
-<para>Więcej informacji i komendzie <command>zonecfg</command> i konfiguracji typów zasobów za pomocą <command>zonecfg</command> w <olink targetdoc="819-2450" remap="external" targetptr="zone">Części II, <citetitle remap="chapter">Zony,</citetitle> in <citetitle remap="book">Przewodnik administracji systemu: kontenery Solarisa - zarządzanie zasobami i zonami Solarisa</citetitle>
+<para>Polecenie to dodaje system plików ZFS-a <filename>tank/zone/zion</filename> do strefy <literal>zion</literal> i montuje go w <filename>/export/shared</filename>.
+Właściwość <property>mountpoint</property> systemu plików musi być ustawiona na <property>legacy</property>, a sam system plików nie może być wcześniej zamontowany w innej lokalizacji. Administrator strefy może tworzyć i niszczyć pliki w systemie plików. System plików nie może zostać przemontowany w inna lokalizację, a administrator strefy nie może zmienić właściwości systemu plików: atime, readonly, compression itd. Odpowiedzialnym za ustalenie i kontrolę właściwości systemu plióków jest administrator globalnej strefy.</para>
+<para>Więcej informacji i komendzie <command>zonecfg</command> i konfiguracji typów zasobów za pomocą <command>zonecfg</command> w <olink targetdoc="819-2450" remap="external" targetptr="zone">Części II, <citetitle remap="chapter">strefy,</citetitle> in <citetitle remap="book">Przewodnik administracji systemu: kontenery Solarisa - zarządzanie zasobami i zonami Solarisa</citetitle>
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gbbst">
-<title>Delegowanie datasetów do nieglobalnej zony</title>
-<para>Jeśli głównym celem jest oddelegowanie administrowania nośnikami danych do zony, wtedy należy skorzystać z możliwości ZFS-a dodania dataestu do zony za pomocą komendy <command>zonecfg</command> i jej podkomenty <literal>add dataset</literal>.<indexterm xml:id="indexterm-472">
-<primary>zony</primary>
-<secondary>delegowanie datasetu do nieglobalnej zony</secondary>
+<title>Delegowanie datasetów do nieglobalnej strefy</title>
+<para>Jeśli głównym celem jest oddelegowanie administrowania nośnikami danych do strefy, wtedy należy skorzystać z możliwości ZFS-a dodania dataestu do strefy za pomocą komendy <command>zonecfg</command> i jej podkomenty <literal>add dataset</literal>.<indexterm xml:id="indexterm-472">
+<primary>strefy</primary>
+<secondary>delegowanie datasetu do nieglobalnej strefy</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-473">
 <primary>delegowanie</primary>
-<secondary>datasetu do nieglobalnej zony</secondary>
+<secondary>datasetu do nieglobalnej strefy</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-474">
 <primary>systemy plików ZFS</primary>
-<secondary>delegowanie datasetu do nieglobalnej zony</secondary>
+<secondary>delegowanie datasetu do nieglobalnej strefy</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>W poniższym przykładzie system plików ZFS-a oddelegowany został do nieglobalnej zony przez globalnego administratora w globalnej zonie.</para>
+<para>W poniższym przykładzie system plików ZFS-a oddelegowany został do nieglobalnej strefy przez globalnego administratora w globalnej zonie.</para>
 <screen># <userinput>zonecfg -z zion</userinput>
 zion: No such zone configured
 Use 'create' to begin configuring a new zone.
@@ -186,19 +186,19 @@ zonecfg:zion&gt; <userinput>add dataset</userinput>
 zonecfg:zion:dataset&gt; <userinput>set name=tank/zone/zion</userinput>
 zonecfg:zion:dataset&gt; <userinput>end</userinput>
 </screen>
-<para>Inaczej niż w przypadku dodania systemu plików, polecenie spowoduje widoczność systemu plików ZFS-a <filename>tank/zone/zion</filename> w zonie <literal>zion</literal>. Administrator zony może modyfikować właściwości systemu plików i tworzyć potomków. Dodatkowo może wykonywać obrazy systemu plików, klonować i w inny sposób kontrolować całą hierarchię systemu plików.</para>
+<para>Inaczej niż w przypadku dodania systemu plików, polecenie spowoduje widoczność systemu plików ZFS-a <filename>tank/zone/zion</filename> w zonie <literal>zion</literal>. Administrator strefy może modyfikować właściwości systemu plików i tworzyć potomków. Dodatkowo może wykonywać obrazy systemu plików, klonować i w inny sposób kontrolować całą hierarchię systemu plików.</para>
 <para>Więcej informacji o działaniach dozwolonych w zonie w <olink targetdoc="" remap="internal" targetptr="gbbsn">Zarządzenie właściwościami w zonie</olink>.</para>
 </sect2>
 <sect2 xml:id="gbebi">
-<title>Dodawanie woluminu ZFS-a do nieglobalnej zony</title>
-<para>Emoluwane woluminy nie mogą być dodawane do nieglobalnej zony poleceniem <command>zonecfg</command> <literal>add dataset</literal>. Przy wykryciu próby dodania takiego datasetu zona nie wybootuje. Można jednak dodać woluminy do zony za pomocą komendy <command>zonecfg</command> i komendy <literal>add device</literal>.<indexterm xml:id="indexterm-475">
-<primary>zony</primary>
-<secondary>dodawanie woluminu ZFS-a do nieglobalnej zony</secondary>
+<title>Dodawanie woluminu ZFS-a do nieglobalnej strefy</title>
+<para>Emoluwane woluminy nie mogą być dodawane do nieglobalnej strefy poleceniem <command>zonecfg</command> <literal>add dataset</literal>. Przy wykryciu próby dodania takiego datasetu zona nie wybootuje. Można jednak dodać woluminy do strefy za pomocą komendy <command>zonecfg</command> i komendy <literal>add device</literal>.<indexterm xml:id="indexterm-475">
+<primary>strefy</primary>
+<secondary>dodawanie woluminu ZFS-a do nieglobalnej strefy</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-476">
 <primary>dodawanie</primary>
-<secondary>woluminu ZFS-a do nieglobalnej zony</secondary>
+<secondary>woluminu ZFS-a do nieglobalnej strefy</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-477">
@@ -207,7 +207,7 @@ zonecfg:zion:dataset&gt; <userinput>end</userinput>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>W poniższym przykładzie globalny administrator dodaje do nieglobalnej zony emulowany wolumin ZFS-a:</para>
+<para>W poniższym przykładzie globalny administrator dodaje do nieglobalnej strefy emulowany wolumin ZFS-a:</para>
 <screen># <userinput>zonecfg -z zion</userinput>
 zion: No such zone configured
 Use 'create' to begin configuring a new zone.
@@ -216,40 +216,29 @@ zonecfg:zion&gt; <userinput>add device</userinput>
 zonecfg:zion:device&gt; <userinput>set match=/dev/zvol/dsk/tank/vol</userinput>
 zonecfg:zion:device&gt; <userinput>end</userinput>
 </screen>
-<para>Powyższe polecenie eksportuje emulowany wolumin <literal>tank/vol</literal> do zony. Należy pamiętać, że dodawanie surowego (ang. raw) woluminu do zony niesie ze sobą zagrożenia bezpieczeństwa, nawet jeśli wolumin nie odpowiada fizycznemu urządzeniu. W szczególności administrator zony mógłby stworzyć uszkodzone systemy plików, które spowodowałyby panikę systemu przy próbie zamontowania. Więcej informacji o dodawaniu urządzeń do zon i związanych z tym zagrożeniach w <olink targetdoc="" remap="internal" targetptr="gbbre">Znaczenie właściwości <property>zoned</property></olink>.</para>
-<para>Więcej informacji o dodawaniu urządzeń do zon w <olink targetdoc="819-2450" remap="external" targetptr="zone">Części II, <citetitle remap="chapter">Zonach,</citetitle> w <citetitle remap="book">Przewodnik administratora systemu: zarządzanie kontenerami i zasobami Solarisa oraz zony Solarisa</citetitle>
+<para>Powyższe polecenie eksportuje emulowany wolumin <literal>tank/vol</literal> do strefy. Należy pamiętać, że dodawanie surowego (ang. raw) woluminu do strefy niesie ze sobą zagrożenia bezpieczeństwa, nawet jeśli wolumin nie odpowiada fizycznemu urządzeniu. W szczególności administrator strefy mógłby stworzyć uszkodzone systemy plików, które spowodowałyby panikę systemu przy próbie zamontowania. Więcej informacji o dodawaniu urządzeń do zon i związanych z tym zagrożeniach w <olink targetdoc="" remap="internal" targetptr="gbbre">Znaczenie właściwości <property>zoned</property></olink>.</para>
+<para>Więcej informacji o dodawaniu urządzeń do zon w <olink targetdoc="819-2450" remap="external" targetptr="zone">Części II, <citetitle remap="chapter">Zonach,</citetitle> w <citetitle remap="book">Przewodnik administratora systemu: zarządzanie kontenerami i zasobami Solarisa oraz strefy Solarisa</citetitle>
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gbbso">
 <title>Używanie puli nośników danych w zonie</title>
-<para>ZFS storage pools cannot be created or modified within a zone. The delegated
-administration model centralizes control of physical storage devices within
-the global zone and control of virtual storage to non-global zones. While
-a pool-level dataset can be added to a zone, any command that modifies the
-physical characteristics of the pool, such as creating, adding, or removing
-devices, is not allowed from within a zone. Even if physical devices are added
-to a zone by using the <command>zonecfg</command> command's <literal>add device</literal> subcommand,
-or if files are used, the <command>zpool</command> command does not allow
-the creation of any new pools within the zone.</para>
+<para>Pule nośników danych ZFS-a nie mogą być modyfikowane wewnątrz strefy. Model delegowanej administracji centralizuje kontrolę nad fizycznymi urządzeniami w globalnej strefie, a kontrolę nad nad wirtualnymi nośnikami danych przekazuje do stref nieglobalnych. Wprawdzie można dodać do strefy dataset na poziomie puli, to jednak komendy modyfikujące fizyczne właściwości puli, takie jak tworzenie, dodawanie lub usuwanie są zabronione w strefie. Nawet jeśli do strefy dodano fizyczne nośniki za pomocą komendy <command>zonecfg</command> i <literal>add device</literal> lub jeśli używanie są pliki, komenda <command>zpool</command> odmówi utworzenia nowych pul w strefie.</para>
 </sect2>
 <sect2 xml:id="gbbsn">
-<title>Property Management Within a Zone</title>
-<para>Once a dataset is added to a zone, the zone administrator can control
-specific dataset properties. When a dataset is added to a zone, all its ancestors
-are visible as read-only datasets, while the dataset itself is writable as
-are all its children. For example, consider the following configuration:<indexterm xml:id="indexterm-478">
-<primary>zony</primary>
-<secondary>ZFS property management within a zone</secondary>
+<title>Zarządzanie właściwościami w strefie</title>
+<para>Po dodaniu datasetu do strefy administrator strefy ma kontrolę nad poszczególnymi właściwościami datasetu. Wszyscy rodzice datasetu dostępni są tylko w trybie do odczytu, natomiast sam dataset i jego potomkowie są dostępni w trybie do zapisu. Na przykład:<indexterm xml:id="indexterm-478">
+<primary>strefy</primary>
+<secondary>zarządzanie własciwościami ZFS-a w strefie</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-479">
-<primary>ZFS properties</primary>
-<secondary>management within a zone</secondary>
+<primary>właściwości ZFS-a</primary>
+<secondary>zarządzanie w strefie</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-480">
 <primary>systemy plików ZFS</primary>
-<secondary>property management within a zone</secondary>
+<secondary>zarządzanie właściwościami w strefie</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
@@ -260,8 +249,7 @@ tank/data
 tank/data/matrix
 tank/data/zion
 tank/data/zion/home</screen>
-<para>If <filename>tank/data/zion</filename> is added to a zone, each dataset
-would have the following properties.</para>
+<para>Jeśli dodano <filename>tank/data/zion</filename> do strefy, każdy z datasetów miałby właściwości.</para>
 <informaltable frame="topbot">
 <tgroup cols="4" colsep="0" rowsep="0">
 <colspec colwidth="25*"/>
@@ -274,13 +262,13 @@ would have the following properties.</para>
 <para>Dataset</para>
 </entry>
 <entry>
-<para>Visible</para>
+<para>Widoczny</para>
 </entry>
 <entry>
-<para>Writable</para>
+<para>Do zapisu</para>
 </entry>
 <entry>
-<para>Immutable Properties</para>
+<para>Niezmienialne właściwości</para>
 </entry>
 </row>
 </thead>
@@ -292,10 +280,10 @@ would have the following properties.</para>
 </para>
 </entry>
 <entry>
-<para>Yes</para>
+<para>Tak</para>
 </entry>
 <entry>
-<para>No</para>
+<para>Nie</para>
 </entry>
 <entry>
 <para>-</para>
@@ -308,7 +296,7 @@ would have the following properties.</para>
 </para>
 </entry>
 <entry>
-<para>No</para>
+<para>Nie</para>
 </entry>
 <entry>
 <para>-</para>
@@ -324,10 +312,10 @@ would have the following properties.</para>
 </para>
 </entry>
 <entry>
-<para>Yes</para>
+<para>Tak</para>
 </entry>
 <entry>
-<para>No</para>
+<para>Nie</para>
 </entry>
 <entry>
 <para>-</para>
@@ -340,7 +328,7 @@ would have the following properties.</para>
 </para>
 </entry>
 <entry>
-<para>No</para>
+<para>Nie</para>
 </entry>
 <entry>
 <para>-</para>
@@ -356,10 +344,10 @@ would have the following properties.</para>
 </para>
 </entry>
 <entry>
-<para>Yes</para>
+<para>Tak</para>
 </entry>
 <entry>
-<para>Yes</para>
+<para>Tak</para>
 </entry>
 <entry>
 <para>
@@ -374,10 +362,10 @@ would have the following properties.</para>
 </para>
 </entry>
 <entry>
-<para>Yes</para>
+<para>Tak</para>
 </entry>
 <entry>
-<para>Yes</para>
+<para>Tak</para>
 </entry>
 <entry>
 <para>
@@ -388,19 +376,9 @@ would have the following properties.</para>
 </tbody>
 </tgroup>
 </informaltable>
-<para>Note that every parent of <filename>tank/zone/zion</filename> is visible
-read-only, all children are writable, and datasets that are not part of the
-parent hierarchy are not visible at all. The zone administrator cannot change
-the <property>sharenfs</property> property, because non-global zones cannot
-act as NFS servers. Neither can the zone administrator change the <literal>zoned</literal> property,
-because doing so would expose a security risk as described in the next section. </para>
-<para>Any other property can be changed, except for the added dataset itself,
-where the <property>quota</property> and <property>reservation</property> properties
-cannot be changed. This behavior allows the global zone administrator to control
-the space consumption of all datasets used by the non-global zone.</para>
-<para>In addition, the <property>sharenfs</property> and <property>mountpoint</property> properties
-cannot be changed by the global zone administrator once a dataset has been
-added to a non-global zone.</para>
+<para>Wszyscy rodzice <filename>tank/zone/zion</filename> widoczni są w trybie tylko do odczytu, wszyscy potomkowie w trybie do zapisu a datasety, które nie są cześcią hierarchii rodzic-potomek są zupełnie niewidoczne. Administrator strefy nie może zmienić właściwości <property>sharenfs</property>, ponieważ strefy nieglobalne nie mogą być serwerami NFS. Administrator strefy nie może też zmienić właściwości <literal>zoned</literal>, ponieważ utworzyłoby to lukę w zabezpieczeniach, co wyjaśnimy później.</para>
+<para>Zmianom poddają się wszystkie pozostałe właściwości, poza samym datasetem, dla którego właściwości <property>quota</property> i <property>reservation</property> są niezmienialne. Pozwala to administratorowi globalnemu kontrolować zużycie miejsca wszystkich datasetów w nieglobalnych strefach. </para>
+<para>Dodatkowo po dodaniu datasetu do nieglobalnej zony właściwości <property>sharenfs</property> i <property>mountpoint</property> nie można zmienić także w strefie globalnej.</para>
 </sect2>
 <sect2 xml:id="gbbre">
 <title>Understanding the <property>zoned</property> Property</title>
@@ -415,7 +393,7 @@ cannot be interpreted in the context of the global zone. Otherwise, the zone
 administrator could affect the global zone's namespace. To address the latter,
 ZFS uses the <property>zoned</property> property to indicate that a dataset
 has been delegated to a non-global zone at one point in time.<indexterm xml:id="indexterm-481">
-<primary>zony</primary>
+<primary>strefy</primary>
 <secondary>
 <property>zoned</property> property</secondary>
 <tertiary>detailed description</tertiary>
