@@ -8,88 +8,86 @@
 
 
 
-<title>Uzywanie ACLi do zabezpieczania systemu plikow ZFS</title>
+<title>Używanie ACL do ochrony plików w ZFS-ie</title>
 <toc>
-<para>Ten rozdział dostarcza informację o używaniu kontrolnych list dostępu (ACLs)
-aby chronić twój system plików ZFS przez dostarczenie więcej szczegółów dostępu
-niż standard UNIX zezwala.</para>
-<para>Rozdział składa się z nastepujących podrozdziałów:</para>
+<para>Ten rozdział dostarcza informacji na temat używania list kontroli dostępu (ACL)
+do ochrony plików w ZFS-ie poprzez dostarczenie bardziej dokładnych uprawnień niż
+standardowe UNIX.</para>
+<para>Rozdział składa się z następujących podrozdziałów:</para>
 <itemizedlist>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbacb">Nowy model ACL w Solarisie</olink>
+<olink targetdoc="" remap="internal" targetptr="gbacb">Nowy model ACL-i w Solarisie</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbace">Umieszczanie ACLs w systemie plikow ZFS</olink>
+<olink targetdoc="" remap="internal" targetptr="gbace">Ustawianie ACL-i dla plików w ZFS-ie</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbabw">Umieszczanie i wyswietlanie ACLs na systemie plikow ZFS w Verbose Format</olink>
+<olink targetdoc="" remap="internal" targetptr="gbabw">Ustawianie i wyświetlanie ACL-i dla plików w ZFS-ie w formacie rozszerzonym</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbchf">Umieszczanie i wyswietlanie ACLs na systemie plikow ZFS w Compact Format</olink>
+<olink targetdoc="" remap="internal" targetptr="gbchf">Ustawianie i wyświetlanie ACL-i dla plików w ZFS-ie w formacie skróconym</olink>
 </para>
 </listitem>
 </itemizedlist>
 </toc>
 <sect1 xml:id="gbacb">
-<title>Nowy model ACL w Solarisie</title>
-<para>Do niedawna poprzednie wersje Solarisa wspierały ACL głównie zaimplementowany 
-w oparciu o specyfikację POSIX-draft ACL. POSIX-draft 
-na bazie ACLs są używane aby chronić system plików UFS oraz tłumaczyć wcześniejszą wersje 
-NFS na NFSv4.<indexterm xml:id="indexterm-411">
+<title>Nowy model ACL-i w Solarisie</title>
+<para>Niedawne poprzednie wersje Solarisa wspierały implementację ACL, która
+była przede wszystkim oparta na specyfikacji POSIX-draft. ACL oparte na tej
+specyfikacji są używane do ochrony plików dla UFS-a i tłumaczone dla NFS-a
+w wersji poprzedniej niż NFSv4.<indexterm xml:id="indexterm-411">
 <primary>ACLs</primary>
-<secondary>składnia</secondary>
+<secondary>description</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-412">
 <primary>NFSv4 ACLs</primary>
 <secondary>model</secondary>
-<tertiary>składni</tertiary>
+<tertiary>description</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-413">
 <primary>Solaris ACLs</primary>
-<secondary>nowy model</secondary>
-<tertiary>składni</tertiary>
+<secondary>new model</secondary>
+<tertiary>description</tertiary>
 </indexterm>
 </para>
-<para>Wraz z wprowadzeniem NFSv4, nowy model ACL całkowicie wspiera NFSv4 
-interpratujac obsługę klientów UNIXowych jak i nie-UNIXowych. Nowe interpratacje ACL, 
-są zdefiniowane w specyfikacji NFSv4, dostarcza znacznie bogatszą 
-semantykę w oparciu o NT-style ACLs.</para>
-<para>Główne różnice w nowym modelu ACL sa następuja:</para>
+<para>Wraz z wprowadzeniem NFSv4 został określony nowy model ACL, który w pełni wspiera
+współpracę, jaką NFSv4 zapewnia pomiędzy klientami UNIX-owymi jak i nie-UNIX-owymi.
+Nowa implementacja ACL-i zdefiniowana w specyfikacji NFSv4 dostarcza znacznie bogatszą
+semantykę opartą o ACL-e w stylu NT.</para>
+<para>Główne różnice w nowym modelu ACL są następujące:</para>
 <itemizedlist>
 <listitem>
-<para>Specyfikacja oparta na NFSv4 i podobna do NT-stylu ACLs.</para>
+<para>Oparte o specyfikację NFSv4 i podobne do ACL-i w stylu NT.</para>
 </listitem>
 <listitem>
-<para>dostarcza wiele wieksze zagęszczenie umieszczjąc przywileje dostępu. 
-Więcej informacji, patrz<olink targetdoc="" remap="internal" targetptr="gbbht">Tabela 7-2</olink>.</para>
+<para>Dostarczają bardziej dokładny zestaw uprawnień dostępu. Więcej informacji znajduje się
+w <olink targetdoc="" remap="internal" targetptr="gbbht">tabeli 7–2</olink>.</para>
 </listitem>
 <listitem>
-<para>konfiguracja i wyświetlanie za pomocą komend<command>chmod</command> i <command>ls</command> 
-niż za pomocą komend  <command>setfacl</command> i <command>getfacl</command></para>
+<para>Ustawiane i wyświetlane raczej za pomocą poleceń <command>chmod</command> oraz <command>ls</command> niż <command>setfacl</command> i <command>getfacl</command>.</para>
 </listitem>
 <listitem>
-<para>dostarcza bogatszą semantykę dziedzictwa dla oznaczenia jak przywileje 
-dostępu otrzymują od przewodnika wykaz do podwykazu, i tak dalej. 
-Więcej informacji, zobacz
-<olink targetdoc="" remap="internal" targetptr="gbaax">Dziedziczenie ACL</olink>.</para>
+<para>Dostarczają bogatszą semantykę dziedziczenia do określania jak prawa dostępu
+są przenoszone z katalogu na podkatalogi i głębiej. Więcej informacji znajduje się pod
+<olink targetdoc="" remap="internal" targetptr="gbaax">ACL Inheritance</olink>.</para>
 </listitem>
 </itemizedlist>
-<para>Obydwa modele ACL dostarczają bardziej szczegułową kontrole dostępu niż dostępny 
-standardowy system plików zezwala. Dużo upodobniono do POSIX-draft ACLs, nowy ACLs jest 
-złożony z wielodostępnych/dostpności kontrolowanego wejścia Access Control Entries (ACEs)</para>
-<para>POSIX-draft na styl ACLs używają pojedyczego wejścia do określenia jakie zezwolenia 
-są dopuszczalne a jakie drzucić. Nowy model ACLs posiada dwa typy ACEs który 
-wpływa na dostęp kontrolowany: <literal>ZEZWALA</literal> lub <literal>ODMAWIA</literal>.
-Ponieważ nie możesz wywnioskować z pojedyńczego ACE który określa komplet zezwala czy 
-nie zezwala które nie były zdefinowane do którego ACE zazwala lub odmawia. 
-<indexterm xml:id="indexterm-414">
+<para>Obydwa modele ACL dostarczają bardziej szczegółową kontrolę dostępu niż
+standardowe uprawnienia plików. Podobnie jak ACL-e oparte o POSIX-draft, nowe ACL-e
+są słożone z wielu wpisów kontroli dostępu (ACE).</para>
+<para>ACL oparty o POSIX-draft używa pojedynczego wpisu w celu zdefiniowania jakie prawa
+są zdefiniowane, a jakie zabronione. Nowy model ACL ma dwa rodzaje wpisów ACE, które
+wpływają na sprawdzanie dostępu: <literal>ALLOW</literal> oraz <literal>DENY</literal>.
+W związku z tym nie można wywnioskować z jakiegokolwiek pojedynczego wpisu ACE, czy
+definiuje prawa dostępu bądź nie, jeśli nie zostanie zdefiniowany, czy ten
+ACE jest dozwolony, czy zabroniony.<indexterm xml:id="indexterm-414">
 <primary>ACLs</primary>
 <secondary>differences from POSIX-draft ACLs</secondary>
 </indexterm>
@@ -106,47 +104,50 @@ nie zezwala które nie były zdefinowane do którego ACE zazwala lub odmawia.
 <secondary>description</secondary>
 </indexterm>
 </para>
-<para>Tłumaczenie między NFSv4-style ACLs i POSIX-draft ACLs jest następujące:</para>
+<para>Konwersja ACL-i pomiędzy tymi w stylu NFSv4 a POSIX-draft przebiega następująco:</para>
 <itemizedlist>
 <listitem>
-<para>Jesli używasz jakiś pożytacznych ACL-aware, takich komend jak <command>cp</command>, <command>mv</command>, 
-<command>tar</command>, <command>cpio</command>, albo <command>rcp</command> 
-do transferowania systemu plikow UFS wraz z ACLs do systemu plików ZFS, POSIX-draft 
-ACLs są przetłumaczone na odpowiedniki NFSv4-style ACLs.</para>
+<para>W przypadku używania narzędzi świadomych ACL-i, takich jak polecenia <command>cp</command>, <command>mv</command>, <command>tar</command>, <command>cpio</command> lub <command>rcp</command> do przeniesienia plików z UFS-a z ACL-ami na ZFS, ACL-e POSIX-draft są tłumaczone na odpowiednie ACL-e w stylu NFSv4.</para>
 </listitem>
 <listitem>
-<para>Niektóre NFSv4-style ACLs są przetłumaczone do POSIX-draft ACLs. 
-Zobaczysz wiadomość podobna do poniższej jeżeli NFSv4style ACL nie jest 
-przetłumaczony na POSIX-draft ACL:</para>
+<para>Niektóre ACL-e w stylu NFSv4 są tłumaczone na ACL-e POSIX-draft.
+W przypadku, gdy wpis ACL w stylu NFSv4 nie jest tłumaczony na odpowiedni ACL POSIX-draft,
+pokaże się komunikat podobny do poniższego:</para>
 <screen># cp -p filea /var/tmp
 cp: failed to set acl entries on /var/tmp/filea</screen>
 </listitem>
 <listitem>
-<para>Jeżeli tworzysz archiwum UFS za pomocą<command>tar</command> lub <command>cpio</command> 
-z zachowaniem ACL wybierz (<command>tar</command> <option>p</option> lub <command>cpio</command> <option>P</option>) 
-na systemie który działa aktualne wydanie Solaris, będziesz gubić ACLs gdy archiwum jest wyciągane na systemie który 
-działa na poprzednim wydaniu Solaris.</para>
-<para>Wszystkie pliki wyciągnięte do naprawy różnymi sposobami, ACL na wyjściu zignoroje je.</para>
+<para>W przypadku utworzenia archiwum UFS <command>tar</command> or <command>cpio</command>
+z opcją zachowywania ACL (<command>tar</command> <option>
+p</option> lib <command>cpio</command> <option>
+P</option>) na systemie, który działa pod kontrolą aktualnego wydania Solarisa,
+ACL-e zostaną stracone w przypadku odtworzenia tego archiwum na systemie,
+który działa pod kontrolą poprzedniego wydania Solarisa.</para>
+<para>Wszystkie pliki zostaną odtworzone z prawidłowymi standardowymi uprawnieniami,
+ale wpisy ACL zostaną zignorowane.</para>
 </listitem>
 <listitem>
-<para>Możesz użyć komendy <command>ufsrestore</command> do odzyskania danych w systemi eplików ZFS, ale ACLs będzie zagubiony.</para>
+<para>Można użyć polecenia <command>ufsrestore</command> do odtworzenia danych
+na system plików ZFS, ale wpisy ACL zostaną utracone.</para>
 </listitem>
 <listitem>
-<para>Jeśli masz zamiar używać NFSv4-style ACL na systemie plików UFS, zobaczysz podobna wiadomość:</para>
+<para>Przy próbie ustawienia ACL-a w stylu NFSv4 dla pliku na UFS-ie, pokaże
+się komunikat podobny do poniższego:</para>
 <screen>chmod: ERROR: ACL type's are different</screen>
 </listitem>
 <listitem>
-<para>Jeśli masz zamiar używać NFSv4-style ACL na systemie plików ZFS, zobaczysz podobna wiadomość:</para>
+<para>Przy próbie ustawienia ACL-a w stylu POSIX dla pliku na ZFS-ie, pokaże
+się komunikat podobny do poniższego:</para>
 <screen># getfacl filea
 File system doesn't support aclent_t style ACL's.
 See acl(5) for more information on Solaris ACL support.</screen>
 </listitem>
 </itemizedlist>
-<para>Inne informacje związane z ograniczeniami ACLs i kopiami bezpieczeństwa, 
-zobacz <olink targetdoc="" remap="internal" targetptr="gbscu">Bezpieczeństwo ZFS Dane z Kopiami Bezpieczeństwa</olink>.</para>
+<para>Więcej informacji na temat ograniczeń związanych z ACL-ami i produktami do backupu znajduje się
+pod <olink targetdoc="" remap="internal" targetptr="gbscu">Saving ZFS Data With Other Backup Products</olink>.</para>
 <sect2 xml:id="gbaay">
-<title>Opisy Składni do umieszczania ACLs</title>
-<para>Dwa podstawowe formaty ACL  założeń poniżej:<indexterm xml:id="indexterm-418">
+<title>Opis składni dla ustawiania ACL-i</title>
+<para>Dostarczane są dwa podstawowe formaty ACL-i:<indexterm xml:id="indexterm-418">
 <primary>ACLs</primary>
 <secondary>format description</secondary>
 </indexterm>
@@ -160,29 +161,29 @@ zobacz <olink targetdoc="" remap="internal" targetptr="gbscu">Bezpieczeństwo ZF
 </indexterm>
 </para>
 <para>
-<emphasis role="strong">Opisy do tymczasowego umieszczenia ACLs</emphasis>
+<emphasis role="strong">Składnia dla ustawiania podstawowych ACL-i</emphasis>
 </para>
 <para>
 <literal>chmod [options] A[index]{+|=}owner@, group@, everyone@:</literal>
-<emphasis>access-permissions</emphasis>/...[:<emphasis>inheritance-flags</emphasis>]:<literal>deny | allow</literal> <replaceable>file</replaceable>
+<emphasis>access-permissions</emphasis>/...[:<emphasis>inheritance-flags</emphasis>]:<literal>deny | allow</literal> <replaceable>plik</replaceable>
 </para>
 <para>
 <literal>chmod [options] A-owner@, group@, everyone@:</literal>
-<emphasis>access-permissions</emphasis>/...[:<emphasis>inheritance-flags</emphasis>]:<literal>deny | allow</literal> <replaceable>file ...</replaceable>
+<emphasis>access-permissions</emphasis>/...[:<emphasis>inheritance-flags</emphasis>]:<literal>deny | allow</literal> <replaceable>plik ...</replaceable>
 </para>
 <para>
 <literal>chmod [options] A[index]-</literal> <replaceable>file</replaceable>
 </para>
 <para>
-<emphasis role="strong">Opisy do stałego umieszczenia ACLs</emphasis>
+<emphasis role="strong">Składnia dla ustawiania dokładnych ACL-i</emphasis>
 </para>
 <para>
 <literal>chmod [options] A[index]{+|=}user|group:</literal>
-<emphasis>access-permissions</emphasis>/...[:<emphasis>inheritance-flags</emphasis>]<literal>:deny | allow</literal> <replaceable>file</replaceable>
+<emphasis>access-permissions</emphasis>/...[:<emphasis>inheritance-flags</emphasis>]<literal>:deny | allow</literal> <replaceable>plik</replaceable>
 </para>
 <para>
 <literal>chmod [options] A-user|group:</literal>
-<emphasis>access-permissions</emphasis>/...[:<emphasis>inheritance-flags</emphasis>]<literal>:deny | allow</literal> <replaceable>file ...</replaceable>
+<emphasis>access-permissions</emphasis>/...[:<emphasis>inheritance-flags</emphasis>]<literal>:deny | allow</literal> <replaceable>plik ...</replaceable>
 </para>
 <para>
 <literal>chmod [options] A[index]-</literal> <replaceable>file</replaceable>
@@ -191,26 +192,26 @@ zobacz <olink targetdoc="" remap="internal" targetptr="gbscu">Bezpieczeństwo ZF
 <varlistentry>
 <term>owner@, group@, everyone@</term>
 <listitem>
-<para>Identyfikacja  <emphasis>ACL-entry-type</emphasis> dla tymczasowej 
-składni ACL. Opis dla <emphasis>ACL-entry-types</emphasis>, zobacz <olink targetdoc="" remap="internal" targetptr="gbbhr">Tabela 7â1</olink>.</para>
+<para>Identifies the <emphasis>ACL-entry-type</emphasis> for trivial
+ACL syntax . For a description of <emphasis>ACL-entry-types</emphasis>, see <olink targetdoc="" remap="internal" targetptr="gbbhr">Table 7–1</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>user or group:<emphasis>ACL-entry-ID=username or groupname</emphasis>
 </term>
 <listitem>
-<para>Identyfikacja <emphasis>ACL-entry-type</emphasis> stałej 
-składni ACL. Użytkownik i grupa <emphasis>ACL-entry-type</emphasis> musza także posiadać <emphasis>ACL-entry-ID</emphasis>, 
-<emphasis>username</emphasis> oraz <emphasis>groupname</emphasis>. Opis dla <emphasis>ACL-entry-types</emphasis>, zobacz 
-<olink targetdoc="" remap="internal" targetptr="gbbhr">Tabela 7â1</olink>.</para>
+<para>Identifies the <emphasis>ACL-entry-type</emphasis> for explicit
+ACL syntax. The user and group <emphasis>ACL-entry-type</emphasis> must also
+contain the <emphasis>ACL-entry-ID</emphasis>, <emphasis>username</emphasis> or <emphasis>groupname</emphasis>. For a description of <emphasis>ACL-entry-types</emphasis>,
+see <olink targetdoc="" remap="internal" targetptr="gbbhr">Table 7–1</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
 <term>
 <emphasis>access-permissions</emphasis>/.../</term>
 <listitem>
-<para>Identyfikacja praw dostepu które są dozwolone oraz zastrzeżone. 
-Opis praw dostępu ACL, zobacz <olink targetdoc="" remap="internal" targetptr="gbbht">Tabela 7â2</olink>.</para>
+<para>Identifies the access permissions that are granted or denied.
+For a description of ACL access privileges, see <olink targetdoc="" remap="internal" targetptr="gbbht">Table 7–2</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -218,8 +219,8 @@ Opis praw dostępu ACL, zobacz <olink targetdoc="" remap="internal" targetptr="g
 <emphasis>inheritance-flags</emphasis>
 </term>
 <listitem>
-<para>Identyfikacja listy opcji ACL dziedziczenia flag. Opis 
-dziedziczenia flag ACL, zobacz <olink targetdoc="" remap="internal" targetptr="gbbhx">Tabela 7â3</olink>.</para>
+<para>Identifies an optional list of ACL inheritance flags. For
+a description of the ACL inheritance flags, see <olink targetdoc="" remap="internal" targetptr="gbbhx">Table 7–3</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -227,48 +228,47 @@ dziedziczenia flag ACL, zobacz <olink targetdoc="" remap="internal" targetptr="g
 <literal>deny</literal> | <literal>allow</literal>
 </term>
 <listitem>
-<para>Identyfikacja czy prawa dostępu są dozwolone czy zastrzeżone.</para>
+<para>Identifies whether the access permissions are granted or denied.</para>
 </listitem>
 </varlistentry>
 </variablelist>
-<para>W następnym przykładzie, <emphasis>ACL-entry-ID</emphasis> wartość 
-nie jest stosowana. </para>
-
+<para>In the following example, the <emphasis>ACL-entry-ID</emphasis> value
+is not relevant. </para>
 <screen>group@:write_data/append_data/execute:deny</screen>
-<para>Następujący przykład włącza <emphasis>ACL-entry-ID</emphasis> w specyfikacji 
-urzytkownika (<emphasis>ACL-entry-type</emphasis>) jest włączony do ACL.</para>
+<para>The following example includes an <emphasis>ACL-entry-ID</emphasis> because
+a specific user (<emphasis>ACL-entry-type</emphasis>) is included in the ACL.</para>
 <screen>0:user:gozer:list_directory/read_data/execute:allow</screen>
-<para>Podczas ACL wstęp jest wyświetlony, wygląda podobnie do nastepującego:</para>
+<para>When an ACL entry is displayed, it looks similar to the following:</para>
 <screen>
 <userinput>2</userinput>:group@:write_data/append_data/execute:deny</screen>
-<para>Ten <emphasis role="strong">2</emphasis> lub <emphasis>index-ID</emphasis> oznaczony
-w przykładzie identyfikuje ACL dostępne w większy ACL, który może mieć różny 
-dostęp dla właścicieli, specyfikacja dla UIDa, grupy, i dla każdego. Możesz 
-wyszczegulnić <emphasis>index-ID</emphasis> poprzez komende <command>chmod</command> 
-identyfikując który rozdział ACL potrzebujesz zmodyfikować. Na przykład, możesz 
-zidentyfikować index ID 3 jako <literal>A3</literal> poprzez komende <command>chmod</command>,
-podobnie do kolejnego:</para>
+<para>The <emphasis role="strong">2</emphasis> or the <emphasis>index-ID</emphasis> designation
+in this example identifies the ACL entry in the larger ACL, which might have
+multiple entries for owner, specific UIDs, group, and everyone. You can specify
+the <emphasis>index-ID</emphasis> with the <command>chmod</command> command
+to identify which part of the ACL you want to modify. For example, you can
+identify index ID 3 as <literal>A3</literal> to the <command>chmod</command> command,
+similar to the following:</para>
 <screen>chmod A3=user:venkman:read_acl:allow <emphasis>filename</emphasis>
 </screen>
-<para>ACL wyświetla rodzaj, w którym ACL przedstawia właściciela, grupe, 
-i inne, pochodzące z nastepującej tablicy.<indexterm xml:id="indexterm-421">
+<para>ACL entry types, which are the ACL representations of owner, group,
+and other, are described in the following table.<indexterm xml:id="indexterm-421">
 <primary>ACLs</primary>
-<secondary>Typy Wejścia</secondary>
+<secondary>entry types</secondary>
 </indexterm>
 </para>
 <table frame="topbot" xml:id="gbbhr">
 
-<title>ACL Typy Wejścia</title>
+<title>ACL Entry Types</title>
 <tgroup cols="2" colsep="0" rowsep="0">
 <colspec colwidth="23.49*"/>
 <colspec colwidth="76.51*"/>
 <thead>
 <row rowsep="1">
 <entry>
-<para>ACL Typy Wejścia</para>
+<para>ACL Entry Type</para>
 </entry>
 <entry>
-<para>Opis</para>
+<para>Description</para>
 </entry>
 </row>
 </thead>
@@ -694,7 +694,7 @@ system property. For more information, see the next section.</para>
 <itemizedlist>
 <listitem>
 <para>
-<literal>aclinherit</literal> â This property determines
+<literal>aclinherit</literal> – This property determines
 the behavior of ACL inheritance. Values include the following:<indexterm xml:id="indexterm-432">
 <primary>ACLs</primary>
 <secondary>
@@ -708,23 +708,23 @@ the behavior of ACL inheritance. Values include the following:<indexterm xml:id=
 <itemizedlist>
 <listitem>
 <para>
-<literal>discard</literal> â For new objects, no ACL
+<literal>discard</literal> – For new objects, no ACL
 entries are inherited when a file or directory is created. The ACL on the
 file or directory is equal to the permission mode of the file or directory.</para>
 </listitem>
 <listitem>
 <para>
-<literal>noallow</literal> â For new objects, only inheritable
+<literal>noallow</literal> – For new objects, only inheritable
 ACL entries that have an access type of <literal>deny</literal> are inherited.</para>
 </listitem>
 <listitem>
 <para>
-<literal>secure</literal> â For new objects, the <literal>write_owner</literal> and <literal>write_acl</literal> permissions are removed when an
+<literal>secure</literal> – For new objects, the <literal>write_owner</literal> and <literal>write_acl</literal> permissions are removed when an
 ACL entry is inherited.</para>
 </listitem>
 <listitem>
 <para>
-<literal>passthrough</literal> â For new objects, the
+<literal>passthrough</literal> – For new objects, the
 inheritable ACL entries are inherited with no changes made to the them. This
 mode, in effect, disables <literal>secure</literal> mode.</para>
 </listitem>
@@ -733,7 +733,7 @@ mode, in effect, disables <literal>secure</literal> mode.</para>
 </listitem>
 <listitem>
 <para>
-<literal>aclmode</literal> â This property modifies
+<literal>aclmode</literal> – This property modifies
 ACL behavior whenever a file or directory's mode is modified by the <command>chmod</command> command or when a file is initially created. Values include the
 following:<indexterm xml:id="indexterm-434">
 <primary>ACLs</primary>
@@ -748,12 +748,12 @@ following:<indexterm xml:id="indexterm-434">
 <itemizedlist>
 <listitem>
 <para>
-<literal>discard</literal> â All ACL entries are removed
+<literal>discard</literal> – All ACL entries are removed
 except for the entries needed to define the mode of the file or directory.</para>
 </listitem>
 <listitem>
 <para>
-<literal>groupmask</literal> â User or group ACL permissions
+<literal>groupmask</literal> – User or group ACL permissions
 are reduced so that they are no greater than the group permission bits, unless
 it is a user entry that has the same UID as the owner of the file or directory.
 Then, the ACL permissions are reduced so that they are no greater than owner
@@ -761,7 +761,7 @@ permission bits.</para>
 </listitem>
 <listitem>
 <para>
-<literal>passthrough</literal> â For new objects, the
+<literal>passthrough</literal> – For new objects, the
 inheritable ACL entries are inherited with no changes made to the them. </para>
 </listitem>
 </itemizedlist>
@@ -806,7 +806,7 @@ ACL.</para>
 the ACL, from the top down.</para>
 </listitem>
 <listitem>
-<para>Only ACL entries that have a âwhoâ that matches
+<para>Only ACL entries that have a “who” that matches
 the requester of the access are processed.</para>
 </listitem>
 <listitem>
@@ -827,7 +827,7 @@ and enables superuser to modify files for recovery purposes.</para>
 <para>If you set an explicit ACL on a directory, the ACL is not automatically
 inherited by the directory's children. If you set an explicit ACL and you
 want it inherited to the directory's children, you have to use the ACL inheritance
-flags. For more information, see <olink targetdoc="" remap="internal" targetptr="gbbhx">Table 7â3</olink> and <olink targetdoc="" remap="internal" targetptr="gbabx">Setting ACL Inheritance on ZFS Files in Verbose Format</olink>.</para>
+flags. For more information, see <olink targetdoc="" remap="internal" targetptr="gbbhx">Table 7–3</olink> and <olink targetdoc="" remap="internal" targetptr="gbabx">Setting ACL Inheritance on ZFS Files in Verbose Format</olink>.</para>
 <para>When you create a new file and depending on the <command>umask</command> value,
 a default trivial ACL, similar to the following, is applied:</para>
 <screen>$ <userinput>ls -v file.1</userinput>
@@ -1628,7 +1628,7 @@ that allows <literal>read_data</literal> permission is discarded.</para>
 Format</title>
 <para>You can set and display permissions on ZFS files in a compact format
  that uses 14 unique letters to represent the permissions. The letters that
-represent the compact permissions are listed in <olink targetdoc="" remap="internal" targetptr="gbbht">Table 7â2</olink> and <olink targetdoc="" remap="internal" targetptr="gbbhx">Table 7â3</olink>.<indexterm xml:id="indexterm-455">
+represent the compact permissions are listed in <olink targetdoc="" remap="internal" targetptr="gbbht">Table 7–2</olink> and <olink targetdoc="" remap="internal" targetptr="gbbhx">Table 7–3</olink>.<indexterm xml:id="indexterm-455">
 <primary>ACLs</primary>
 <secondary>setting ACLs on ZFS file (compact mode)</secondary>
 <tertiary>description</tertiary>
@@ -1769,7 +1769,7 @@ fashion.</para>
          everyone@:r-x---a-R-c--s:------:allow</screen>
 <para>Another way to add the same permissions for user <literal>gozer</literal> is
 to insert a new ACL at a specific position, 4, for example. As such, the existing
-ACLs at positions 4â6 are pushed down. For example:</para>
+ACLs at positions 4–6 are pushed down. For example:</para>
 <screen># <userinput>chmod A4+user:gozer:rx:allow file.1</userinput>
 # <userinput>ls -V file.1</userinput>
 -rw-r-xr-x+  1 root     root      206663 Feb 16 11:00 file.1
