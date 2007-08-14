@@ -77,125 +77,113 @@ Rozdział ten informuje również jak zapisywać stworzone obrazy.</para>
 <para>Teoretyczna liczba możliwych do stworzenia obrazów wynosi 2<superscript>64</superscript>.</para>
 </listitem>
 <listitem>
-<para>Uses no separate backing store. Obrazy pochłaniają zajmują przestrzeń dyskową bezpośrednio z puli nośników danych tak samo jak system plików, pod którym zostały stworzone.</para>
+<para>Nie używa osobnego nośnika danych na potrzeby kopii. Obrazy pochłaniają zajmują przestrzeń dyskową bezpośrednio z puli nośników danych tak samo jak system plików, pod którym zostały stworzone.</para>
 </listitem>
 </itemizedlist>
-<para>Obrazy woluminów nie są dostępne bezpośrednio, mogą być jednakże klonowane, zapisywane, przywracane i tak dalej. Aby dowiedzieć zapoznać się z informacjami na temat zapisywania obrazu ZFS, sprawdź <olink targetdoc="" remap="internal" targetptr="gbchx">Zapis i odtwarzanie danych ZFS</olink>.</para>
+<para>Obrazy woluminów nie są dostępne bezpośrednio, mogą być jednakże klonowane, zapisywane, przywracane i tak dalej. Więcej informacji o  zapisywaniu obrazu ZFS-a w <olink targetdoc="" remap="internal" targetptr="gbchx">Zapis i odtwarzanie danych ZFS</olink>.</para>
 <sect2 xml:id="gbcya">
-<title>Creating and Destroying ZFS Snapshots</title>
-<para>Snapshots are created by using the <command>zfs snapshot</command> command,
-which takes as its only argument the name of the snapshot to create. The snapshot
-name is specified as follows:</para>
+<title>Tworzenie i niszczenie obrazów ZFS-a</title>
+<para>Obrazy tworzone są za pomocą komendy <command>zfs snapshot</command>, której jedynym argumentem jest nazwa obrazu do utworzenia. Nazwę tworzy się w sposób nastepujący:</para>
 <screen>
-<replaceable>filesystem@snapname</replaceable>
-<replaceable>volume@snapname</replaceable>
+<replaceable>systemplików@nazwaobrazu</replaceable>
+<replaceable>wolumin@nazwaobrazu</replaceable>
 </screen>
-<para>The snapshot name must satisfy the naming conventions defined in  <olink targetdoc="" remap="internal" targetptr="gbcpt">ZFS Component Naming Requirements</olink>.</para>
-<para>In the following example, a snapshot of <filename>tank/home/ahrens</filename> that
-is named <filename>friday</filename> is created.<indexterm xml:id="indexterm-378">
-<primary>ZFS file systems</primary>
-<secondary>snapshot</secondary>
-<tertiary>creating</tertiary>
+<para>Nazwa obrazu musi spełniać wymogi konwencji zdefiniowane w <olink targetdoc="" remap="internal" targetptr="gbcpt">Wymogi nazewnicze komponentów ZFS-a</olink>.</para>
+<para>W poniższym przykładzie utworzony zostanie obraz systemu plików <filename>tank/home/ahrens</filename> o nazwie <filename>friday</filename>.<indexterm xml:id="indexterm-378">
+<primary>systemy plików ZFS-a</primary>
+<secondary>obraz</secondary>
+<tertiary>tworzenie</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-379">
-<primary>creating</primary>
-<secondary>ZFS snapshot</secondary>
-<tertiary>(example of)</tertiary>
+<primary>tworzenie</primary>
+<secondary>obrazu ZFS-a</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-380">
-<primary>snapshot</primary>
-<secondary>creating</secondary>
-<tertiary>(example of)</tertiary>
+<primary>obraz</primary>
+<secondary>tworzenie</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zfs snapshot tank/home/ahrens@friday</userinput>
 </screen>
-<para>Snapshots have no modifiable properties. Nor can dataset properties
-be applied to a snapshot.</para>
+<para>Obrazy nie mają żadnych modyfikowalnych właściwości, nie można też do obrazu przypisać właściwości datasetu.</para>
 <screen># zfs set compression=on tank/home/ahrens@tuesday
 cannot set compression property for 'tank/home/ahrens@tuesday': snapshot
 properties cannot be modified</screen>
-<para>Snapshots are destroyed by using the <command>zfs destroy</command> command.
-For example:</para>
+<para>Obrazy niszczy się za pomocą komendy <command>zfs destroy</command>. Na przykład:</para>
 <screen># <userinput>zfs destroy tank/home/ahrens@friday</userinput>
 </screen>
-<para>A dataset cannot be destroyed if snapshots of the dataset exist. For
-example:</para>
+<para>Nie można zniszczyć datasetu, jeśli wciąż istnieją obrazy tego datasetu. Na przykład:</para>
 <screen># <userinput>zfs destroy tank/home/ahrens</userinput>
 cannot destroy 'tank/home/ahrens': filesystem has children
 use '-r' to destroy the following datasets:
 tank/home/ahrens@tuesday
 tank/home/ahrens@wednesday
 tank/home/ahrens@thursday</screen>
-<para>In addition, if clones have been created from a snapshot, then they
-must be destroyed before the snapshot can be destroyed.<indexterm xml:id="indexterm-381">
-<primary>ZFS file systems</primary>
-<secondary>snapshot</secondary>
-<tertiary>destroying</tertiary>
+<para>Jeśli dodatkowo istnieją klony obrazu, muszą zostać zniszczone zanim zniszczony będzie obraz.<indexterm xml:id="indexterm-381">
+<primary>systemy plików ZFS-a</primary>
+<secondary>obraz</secondary>
+<tertiary>niszczenie</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-382">
-<primary>destroying</primary>
-<secondary>ZFS snapshot</secondary>
-<tertiary>(example of)</tertiary>
+<primary>niszczenie</primary>
+<secondary>obrazy ZFS-a</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-383">
-<primary>snapshot</primary>
-<secondary>destroying</secondary>
-<tertiary>(example of)</tertiary>
+<primary>obraz</primary>
+<secondary>niszczenie</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>For more information about the <command>destroy</command> subcommand,
-see <olink targetdoc="" remap="internal" targetptr="gammq">Destroying a ZFS File System</olink>.</para>
+<para>Więcej informacji o podkomendzie <command>destroy</command> w <olink targetdoc="" remap="internal" targetptr="gammq">Niszczenie systemów plików ZFS-a</olink>.</para>
 <sect3 xml:id="gbion">
-<title>Renaming ZFS Snapshots</title>
-<para>You can rename snapshots but they must be renamed within the pool and
-dataset from which they were created. For example:<indexterm xml:id="indexterm-384">
-<primary>ZFS file systems</primary>
-<secondary>snapshot</secondary>
-<tertiary>renaming</tertiary>
+<title>Zmiana nazwy obrazu ZFS-a</title>
+<para>Zmiana nazwy obrazu jest możliwa, musi się jednak odbyć w ramach puli i datasetu, z których został utworzony. Na przykład:<indexterm xml:id="indexterm-384">
+<primary>systemy plików ZFS-a</primary>
+<secondary>obraz</secondary>
+<tertiary>zmiana nazwy</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-385">
-<primary>renaming</primary>
-<secondary>ZFS snapshot</secondary>
-<tertiary>(example of)</tertiary>
+<primary>zmiana nazwy</primary>
+<secondary>obraz ZFS-a</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-386">
-<primary>snapshot</primary>
-<secondary>renaming</secondary>
-<tertiary>(example of)</tertiary>
+<primary>obraz</primary>
+<secondary>zmiana nazwy</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># zfs rename tank/home/cindys@031306 tank/home/cindys@today</screen>
-<para>The following snapshot rename operation is not supported because the
-target pool and file system name are different from the pool and file system
-where the snapshot was created.</para>
+<para>Poniższej operacji zmiany nazwy nie da się wykonać, ponieważ docelowa pula i system plików są inne, niż pula i system plików, dla których utworzono obraz.</para>
 <screen># zfs rename tank/home/cindys@today pool/home/cindys@saturday
 cannot rename to 'pool/home/cindys@today': snapshots must be part of same 
 dataset</screen>
 </sect3>
 </sect2>
 <sect2 xml:id="gbiqe">
-<title>Displaying and Accessing ZFS Snapshots</title>
-<para>Snapshots of file systems are accessible in the <filename>.zfs/snapshot</filename> directory
-within the root of the containing file system. For example, if <filename>tank/home/ahrens</filename> is mounted on <filename>/home/ahrens</filename>, then the <filename>tank/home/ahrens@thursday</filename> snapshot data is accessible in the <filename>/home/ahrens/.zfs/snapshot/thursday</filename> directory.<indexterm xml:id="indexterm-387">
-<primary>ZFS file systems</primary>
-<secondary>snapshot</secondary>
-<tertiary>accessing</tertiary>
+<title>Przeglądanie i dostęp do obrazów ZFS-a</title>
+<para>Obrazy systemu plików dostępne są w katalogu <filename>.zfs/snapshot</filename> w szczycie hierarchii zawierającego obraz systemu plików. Na przykład, jeśli system plików <filename>tank/home/ahrens</filename> zamontowano w katalogu  <filename>/home/ahrens</filename>, to obraz <filename>tank/home/ahrens@thursday</filename> będzie dostępny w katalogu <filename>/home/ahrens/.zfs/snapshot/thursday</filename>.<indexterm xml:id="indexterm-387">
+<primary>systemy plików ZFS-a</primary>
+<secondary>obraz</secondary>
+<tertiary>dostęp</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-388">
-<primary>accessing</primary>
+<primary>dostęp</primary>
 <secondary>ZFS snapshot</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-389">
-<primary>snapshot</primary>
-<secondary>accessing</secondary>
-<tertiary>(example of)</tertiary>
+<primary>obraz</primary>
+<secondary>dostęp</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>ls /home/ahrens/.zfs/snapshot</userinput>
 tuesday wednesday thursday</screen>
-<para>You can list snapshots as follows:</para>
+<para>Listę obrazów można wydrukować nastepująco:</para>
 <screen># <userinput>zfs list -t snapshot</userinput>
 NAME                        USED  AVAIL  REFER  MOUNTPOINT
 pool/home/anne@monday          0      -   780K  -
@@ -204,14 +192,13 @@ tank/home/ahrens@tuesday   8.50K      -   780K  -
 tank/home/ahrens@wednesday 8.50K      -  1.01M  -
 tank/home/ahrens@thursday      0      -  1.77M  -
 tank/home/cindys@today     8.50K      -   524K  -</screen>
-<para>You can list snapshots that were created for a particular file system
-as follows:</para>
+<para>Listę obrazów dla konkretnego systemu plików można wydrukować następująco:</para>
 <screen># <userinput>zfs list -r -t snapshot -o name,creation pool/home</userinput>
 NAME                   CREATION
 pool/home/anne@monday  Mon Mar 13 11:46 2006
 pool/home/bob@monday   Mon Mar 13 11:46 2006</screen>
 <sect3 xml:id="gbcxc">
-<title>Snapshot Space Accounting</title>
+<title>Zużycie miejsca przez obraz</title>
 <para>When a snapshot is created, its space is initially shared between the
 snapshot and the file system, and possibly with previous snapshots. As the
 file system changes, space that was previously shared becomes unique to the
@@ -220,11 +207,11 @@ Additionally, deleting snapshots can increase the amount of space unique to
 (and thus <emphasis>used</emphasis> by) other snapshots.</para>
 <para>A snapshot's space <property>referenced</property> property is the same
 as the file system's was when the snapshot was created.<indexterm xml:id="indexterm-390">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS-a</primary>
 <secondary>snapshot space accounting</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-391">
-<primary>snapshot</primary>
+<primary>obraz</primary>
 <secondary>space accounting</secondary>
 </indexterm>
 </para>
@@ -252,19 +239,19 @@ be unmounted, if necessary.</para>
 </note>
 <para>In the following example, the <filename>tank/home/ahrens</filename> file
 system is rolled back to the <filename>tuesday</filename> snapshot:<indexterm xml:id="indexterm-392">
-<primary>ZFS file systems</primary>
-<secondary>snapshot</secondary>
+<primary>systemy plików ZFS-a</primary>
+<secondary>obraz</secondary>
 <tertiary>rolling back</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-393">
 <primary>rolling back</primary>
 <secondary>ZFS snapshot</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-394">
-<primary>snapshot</primary>
+<primary>obraz</primary>
 <secondary>rolling back</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zfs rollback tank/home/ahrens@tuesday</userinput>
@@ -287,9 +274,9 @@ tank/home/ahrens@tuesday  Mon Mar 13 11:05 2006</screen>
 initial contents are the same as the dataset from which it was created.  As
 with snapshots, creating a clone is nearly instantaneous, and initially consumes
 no additional disk space.<indexterm xml:id="indexterm-395">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS-a</primary>
 <secondary>clones</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-396">
 <primary>clones</primary>
@@ -320,19 +307,19 @@ the ZFS hierarchy. The type of the new dataset (for example, file system or
 volume) is the same type as the snapshot from which the clone was created.
 You cannot create clone of a file system in a pool that this different from
 where the original file system snapshot resides. <indexterm xml:id="indexterm-397">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS-a</primary>
 <secondary>clone</secondary>
-<tertiary>creating</tertiary>
+<tertiary>tworzenie</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-398">
-<primary>creating</primary>
+<primary>tworzenie</primary>
 <secondary>ZFS clone</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-399">
 <primary>clones</primary>
-<secondary>creating</secondary>
-<tertiary>(example of)</tertiary>
+<secondary>tworzenie</secondary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <para>In the following example, a new clone named <literal>tank/home/ahrens/bug123</literal> with the same initial contents as the snapshot <literal>tank/ws/gate@yesterday</literal> is created.</para>
@@ -350,19 +337,19 @@ where the original file system snapshot resides. <indexterm xml:id="indexterm-39
 <title>Destroying a ZFS Clone</title>
 <para>ZFS clones are destroyed by using the <command>zfs destroy</command> command.
 For example:<indexterm xml:id="indexterm-400">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS-a</primary>
 <secondary>clone</secondary>
 <tertiary>destroying</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-401">
 <primary>destroying</primary>
 <secondary>ZFS clone</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-402">
 <primary>clones</primary>
 <secondary>destroying</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zfs destroy tank/home/ahrens/bug123</userinput>
@@ -382,12 +369,12 @@ snapshot data and restore ZFS snapshot data and file systems with these commands
 See the examples in the next section.<indexterm xml:id="indexterm-403">
 <primary>saving and restoring</primary>
 <secondary>ZFS file system data</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-404">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS-a</primary>
 <secondary>saving and restoring</secondary>
-<tertiary>description</tertiary>
+<tertiary>opis</tertiary>
 </indexterm>
 </para>
 <para>The following solutions for saving ZFS data are provided:</para>
@@ -449,18 +436,18 @@ backup products, please see the Solaris Express release notes.</para>
 a copy of a snapshot. For example:<indexterm xml:id="indexterm-405">
 <primary>saving</primary>
 <secondary>ZFS file system data (<command>zfs send</command>)</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-406">
 <primary>
 <command>zfs send</command>
 </primary>
-<secondary>(example of)</secondary>
+<secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-407">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS-a</primary>
 <secondary>saving data streams (<command>zfs send</command>)</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zfs send tank/dana@040706 &gt; /dev/rmt/0</userinput>
@@ -486,18 +473,18 @@ while it is being restored. If a conflicting file system name exists, <command>z
 rename</command> can be used to rename the file system. For example:<indexterm xml:id="indexterm-408">
 <primary>restoring</primary>
 <secondary>ZFS file system data (<command>zfs receive</command>)</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-409">
 <primary>
 <command>zfs receive</command>
 </primary>
-<secondary>(example of)</secondary>
+<secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-410">
-<primary>ZFS file systems</primary>
+<primary>systemy plików ZFS-a</primary>
 <secondary>restoring data streams (<command>zfs receive</command>)</secondary>
-<tertiary>(example of)</tertiary>
+<tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zfs send tank/gozer@040706 &gt; /dev/rmt/0</userinput>
