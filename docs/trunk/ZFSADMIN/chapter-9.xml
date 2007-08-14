@@ -281,8 +281,7 @@ scrub</command> command. For example:<indexterm xml:id="indexterm-513">
 </para>
 <screen># <userinput>zpool scrub tank</userinput>
 </screen>
-<para>The status of the current scrub can be displayed in the <command>zpool
-status</command> output. For example:</para>
+<para>The status of the current scrub can be displayed in the <command>zpool status</command> output. Na przykład:</para>
 <screen># <userinput>zpool status -v tank</userinput>
   pool: tank
  state: ONLINE
@@ -518,7 +517,7 @@ in progress, or if no scrubbing was requested.</para>
 </varlistentry>
 <varlistentry>
 <term>
-<literal>errors</literal>
+<literal>błędy</literal>
 </term>
 <listitem>
 <para>Identifies known data errors or the absence of known data
@@ -535,8 +534,7 @@ well as their state and any errors generated from the devices. The state can
 be one of the following: <literal>ONLINE</literal>, <literal>FAULTED</literal>, <literal>DEGRADED</literal>, <literal>UNAVAILABLE</literal>, or <literal>OFFLINE</literal>.
 If the state is anything but <literal>ONLINE</literal>, the fault tolerance
 of the pool has been compromised.</para>
-<para>The second section of the configuration output displays error statistics.
-These errors are divided into three categories:</para>
+<para>The second section of the configuration output displays error statistics. Te błędy są podzielone na trzy kategorie:</para>
 <itemizedlist>
 <listitem>
 <para>
@@ -751,10 +749,7 @@ DESC: A ZFS device failed.  Refer to http://sun.com/msg/ZFS-8000-D3 for more inf
 AUTO-RESPONSE: No automated response will occur.
 IMPACT: Fault tolerance of the pool may be compromised.
 REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
-<para>The next step is to use the <command>zpool status</command> <option>
-x</option> command
-to view more detailed information about the device problem and the resolution.
-For example:</para>
+<para>The next step is to use the <command>zpool status</command> <option> x</option> command to view more detailed information about the device problem and the resolution. Na przykład:</para>
 <screen># <userinput>zpool status -x</userinput>
   pool: tank
  state: DEGRADED
@@ -772,8 +767,7 @@ config:
             c1t1d0   ONLINE       0     0     0</screen>
 <para>You can see from this output that the missing device <literal>c0t1d0</literal> is
 not functioning. If you determine that the drive is faulty, replace the device.</para>
-<para>Then, use the <command>zpool online</command> command to online the
-replaced device. For example:</para>
+<para>Then, use the <command>zpool online</command> command to online the replaced device. Na przykład:</para>
 <screen># <userinput>zpool online tank c0t1d0</userinput>
 </screen>
 <para>Confirm that the pool with the replaced device is healthy.</para>
@@ -1042,12 +1036,7 @@ damaged device with another different device, use the following command:<indexte
 </para>
 <screen># <userinput>zpool replace tank c1t0d0 c2t0d0</userinput>
 </screen>
-<para>This command begins migrating data to the new device from the damaged
-device, or other devices in the pool if it is in a replicated configuration.
-When the command is finished, it detaches the damaged device from the configuration,
-at which point the device can be removed from the system. If you have already
-removed the device and replaced it with a new device in the same location,
-use the single device form of the command. For example:</para>
+<para>This command begins migrating data to the new device from the damaged device, or other devices in the pool if it is in a replicated configuration. When the command is finished, it detaches the damaged device from the configuration, at which point the device can be removed from the system. If you have already removed the device and replaced it with a new device in the same location, use the single device form of the command. Na przykład:</para>
 <screen># <userinput>zpool replace tank c1t0d0</userinput>
 </screen>
 <para>This command takes an unformatted disk, formats it appropriately, and
@@ -1096,8 +1085,7 @@ power or is rebooted, the resilvering process resumes exactly where it left
 off, without any need for manual intervention.</para>
 </listitem>
 </itemizedlist>
-<para>To view the resilvering process, use the <command>zpool status</command> command.
-For example:</para>
+<para>To view the resilvering process, use the <command>zpool status</command> command. Na przykład:</para>
 <screen># <userinput>zpool status tank</userinput>
   pool: tank
  state: DEGRADED
@@ -1119,12 +1107,7 @@ by presence of the <emphasis>replacing</emphasis> virtual device in the configur
 This device is not real, nor is it possible for you to create a pool by using
 this virtual device type. The purpose of this device is solely to display
 the resilvering process, and to identify exactly which device is being replaced. </para>
-<para>Note that any pool currently undergoing resilvering is placed in the <literal>DEGRADED</literal> state, because the pool cannot provide the desired replication
-level until the resilvering process is complete. Resilvering proceeds as fast
-as possible, though the I/O is always scheduled with a lower priority than
-user-requested I/O, to minimize impact on the system. Once the resilvering
-is complete, the configuration reverts to the new, complete, configuration.
-For example:</para>
+<para>Note that any pool currently undergoing resilvering is placed in the <literal>DEGRADED</literal> state, because the pool cannot provide the desired replication level until the resilvering process is complete. Resilvering proceeds as fast as possible, though the I/O is always scheduled with a lower priority than user-requested I/O, to minimize impact on the system. Once the resilvering is complete, the configuration reverts to the new, complete, configuration. Na przykład:</para>
 <screen># <userinput>zpool status tank</userinput>
   pool: tank
  state: ONLINE
@@ -1217,8 +1200,7 @@ A complete scrub of the pool is guaranteed to examine every active block in
 the pool, so the error log is reset whenever a scrub finishes. If you determine
 that the errors are no longer present, and you don't want to wait for a scrub
 to complete, reset all errors in the pool by using the <command>zpool online</command> command.</para>
-<para>If the data corruption is in pool-wide metadata, the output is slightly
-different. For example:</para>
+<para>If the data corruption is in pool-wide metadata, the output is slightly different. Na przykład:</para>
 <screen># <userinput>zpool status -v morpheus</userinput>
   pool: morpheus
     id: 1422736890544688191
