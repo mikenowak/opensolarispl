@@ -504,8 +504,8 @@ in the file's extended attributes directory.</para>
 <entry>
 <para>Permission to create extended attributes or write to the extended attributes
 directory.</para>
-<para>Granting this permission to a user means that the user can create an
-extended attribute directory for a file. The attribute file's permissions
+<para>Przyznanie tego prawa użytkownika oznacza, że może on tworzyć katalog
+rozszerzonych atrybutów dla pliku. The attribute file's permissions
 control the user's access to the attribute.</para>
 </entry>
 </row>
@@ -565,7 +565,7 @@ the <literal>PRIV_FILE_CHOWN</literal> privilege is required.</para>
 </table>
 </sect2>
 <sect2 xml:id="gbaax" remap="">
-<title>ACL Inheritance</title>
+<title>Dziedziczenie ACL</title>
 <para>The purpose of using ACL inheritance is so that a newly created file
 or directory can inherit the ACLs they are intended to inherit, but without
 disregarding the existing permission bits on the parent directory.<indexterm xml:id="indexterm-423">
@@ -1730,8 +1730,8 @@ fashion.</para>
 <para>For information about using the verbose ACL format, see <olink targetdoc="" remap="internal" targetptr="gbabw">Setting and Displaying ACLs on ZFS Files in Verbose Format</olink>.</para>
 <example xml:id="gcfhr">
 
-<title>Setting and Displaying ACLs in Compact Format</title>
-<para>In the following example, a trivial ACL exists on <filename>file.1</filename>:<indexterm xml:id="indexterm-458">
+<title>Ustawianie i wyświetlanie list ACL w formacie skróconym</title>
+<para>W poniższym przykładzie istnieje prosty wpis ACL dla pliku <filename>file.1</filename>:<indexterm xml:id="indexterm-458">
 <primary>ACLs</primary>
 <secondary>setting ACLs on ZFS file (compact mode)</secondary>
 <tertiary>(example of)</tertiary>
@@ -1755,7 +1755,7 @@ fashion.</para>
             group@:r-x-----------:------:allow
          everyone@:-w-p---A-W-Co-:------:deny
          everyone@:r-x---a-R-c--s:------:allow</screen>
-<para>In this example, read_data/execute permissions are added for the user <literal>gozer</literal> on <filename>file.1</filename>. </para>
+<para>W kolejnym przykładzie zostaną dodane prawa read_data/execute dla użytkownika <literal>gozer</literal> do pliku <filename>file.1</filename>. </para>
 <screen># <userinput>chmod A+user:gozer:rx:allow file.1</userinput>
 # <userinput>ls -V file.1</userinput>
 -rw-r-xr-x+  1 root     root      206663 Feb 16 11:00 file.1
@@ -1766,9 +1766,9 @@ fashion.</para>
             group@:r-x-----------:------:allow
          everyone@:-w-p---A-W-Co-:------:deny
          everyone@:r-x---a-R-c--s:------:allow</screen>
-<para>Another way to add the same permissions for user <literal>gozer</literal> is
-to insert a new ACL at a specific position, 4, for example. As such, the existing
-ACLs at positions 4–6 are pushed down. For example:</para>
+<para>Inną metodą dodania tych samych uprawnień dla użytkownika <literal>gozer</literal>
+jest wstawienie nowych wpisów ACL w określonej pozycji, na przykład 4. W tym przypadku
+istniejące wpisy ACL na pozycjach 4-6 zostaną przesunięte w dół. Na przykład:</para>
 <screen># <userinput>chmod A4+user:gozer:rx:allow file.1</userinput>
 # <userinput>ls -V file.1</userinput>
 -rw-r-xr-x+  1 root     root      206663 Feb 16 11:00 file.1
@@ -1779,9 +1779,9 @@ ACLs at positions 4–6 are pushed down. For example:</para>
         user:gozer:r-x-----------:------:allow
          everyone@:-w-p---A-W-Co-:------:deny
          everyone@:r-x---a-R-c--s:------:allow</screen>
-<para>In the following example, user <literal>gozer</literal> is granted read,
-write, and execute permissions that are inherited for newly created files
-and directories by using the compact ACL format.</para>
+<para>W kolejnym przykładzie użytkownik <literal>gozer</literal> ma przyznane
+uprawnienia do odczytu, zapisu i wykonywania, które są dziedziczone dla nowo
+tworzonych plików i katalogów. Uzyskano je przy użyciu skróconego formatu ACL.</para>
 <screen># <userinput>chmod A+user:gozer:rwx:f:allow dir.1</userinput>
 # <userinput>ls -dV dir.1</userinput>
 drwxr-xr-x+  2 root     root           2 Feb 23 10:37 dir.1
@@ -1792,10 +1792,11 @@ drwxr-xr-x+  2 root     root           2 Feb 23 10:37 dir.1
             group@:r-x-----------:------:allow
          everyone@:-w-p---A-W-Co-:------:deny
          everyone@:r-x---a-R-c--s:------:allow</screen>
-<para>You can also cut and paste permissions and inheritance flags from the <command>ls</command> <option>
-V</option> output into the compact <command>chmod</command> format.
-For example, to duplicate the permissions and inheritance flags on <filename>dir.1</filename> for user <literal>gozer</literal> to user <literal>cindys</literal>,
-copy and paste the permission and inheritance flags (<literal>rwx-----------:f-----:allow</literal>) into your <command>chmod</command> command. For example:</para>
+<para>Można także kopiować i wklejać uprawnienia i flagi dziedziczenia z wyjścia polecenia
+<command>ls</command> <option>V</option> do skróconego formatu polecenia <command>chmod</command>.
+Na przykład w celu powielenia uprawnień i flag dziedziczenia do <filename>dir.1</filename> od użytkownika
+<literal>gozer</literal> dla użytkownika <literal>cindys</literal>, można skopiować uprawnienia i flagi
+dziedziczenia (<literal>rwx-----------:f-----:allow</literal>) do polecenia <command>chmod</command>. Jak poniżej:</para>
 <screen># <userinput>chmod A+user:cindys:rwx-----------:f-----:allow dir.1</userinput>
 # <userinput>ls -dV dir.1</userinput>
 drwxr-xr-x+  2 root     root           2 Feb 23 10:37 dir.1
