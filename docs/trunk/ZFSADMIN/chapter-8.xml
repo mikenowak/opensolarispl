@@ -381,45 +381,26 @@ tank/data/zion/home</screen>
 <para>Dodatkowo po dodaniu datasetu do nieglobalnej zony właściwości <property>sharenfs</property> i <property>mountpoint</property> nie można zmienić także w strefie globalnej.</para>
 </sect2>
 <sect2 xml:id="gbbre">
-<title>Understanding the <property>zoned</property> Property</title>
-<para>When a dataset is added to a non-global zone, the dataset must be specially
-marked so that certain properties are not interpreted within the context of
-the global zone. Once a dataset has been added to a non-global zone under
-the control of a zone administrator, its contents can no longer be trusted.
-As with any file system, there might be setuid binaries, symbolic links, or
-otherwise questionable contents that might adversely affect the security of
-the global zone. In addition, the <property>mountpoint</property> property
-cannot be interpreted in the context of the global zone. Otherwise, the zone
-administrator could affect the global zone's namespace. To address the latter,
-ZFS uses the <property>zoned</property> property to indicate that a dataset
-has been delegated to a non-global zone at one point in time.<indexterm xml:id="indexterm-481">
+<title>Znaczenie właściwości <property>zoned</property></title>
+<para>Przy dodawaniu datasetu do nieglobalnej strefy, musi być on szczególnie oznaczony, aby uniknąć interpretowania niektórych właściwości w kontekście strefy globalnej. Od chwili kiedy dataset został dodany do nieglobalnej strefy i oddany pod kontrolę administratora tej strefy, nie można dłużej zaufać zasobom, które się w nim znajdują. Jak każdy system plików  może zawierać pliki wykonywalne z ustawionym bitem setuid, dowiązania symboliczne lub inne wtpliwe dane, które mogłyby zagrozić bezpieczeństwu globalnej strefy. Dodatkowo nie należy interpretować właściwości <property>mountpoint</property> w kontekście strefy globalnej. Gdyby tak zrobić, administrator strefy mógłby wpływać na przestrzeń nazw globalnej strefy. W związku z tym wprowadzono w ZFS-ie właściwość <property>zoned</property>, która wskazuje, że w pewnym momencie dataset był podłączony do nieglobalnej strefy.<indexterm xml:id="indexterm-481">
 <primary>strefy</primary>
-<secondary>
-<property>zoned</property> property</secondary>
-<tertiary>detailed description</tertiary>
+<secondary>właściwość 
+<property>zoned</property></secondary>
+<tertiary>dokładny opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-482">
-<primary>
-<property>zoned</property> property</primary>
-<secondary>detailed description</secondary>
+<primary>właściwość 
+<property>zoned</property></primary>
+<secondary>dokładny opis</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-483">
-<primary>ZFS properties</primary>
-<secondary>
-<property>zoned</property> property</secondary>
-<tertiary>detailed description</tertiary>
+<primary>właściwości ZFS-a</primary>
+<secondary>właściwość 
+<property>zoned</property></secondary>
+<tertiary>dokładny opis</tertiary>
 </indexterm>
 </para>
-<para>The <property>zoned</property> property is a boolean value that is automatically
-turned on when a zone containing a ZFS dataset is first booted. A zone administrator
-will not need to manually turn on this property. If the <property>zoned</property> property
-is set, the dataset cannot be mounted or shared in the global zone, and is
-ignored when the <command>zfs share</command> <option>
-a</option> command or
-the <command>zfs mount</command> <option>
-a</option> command is executed. In
-the following example, <filename>tank/zone/zion</filename> has been added
-to a zone, while <filename>tank/zone/global</filename> has not:</para>
+<para>Właściwość <property>zoned</property> to wartość typu boolean automatycznie oznaczana przy pierwszym uruchamianiu strefy zawierającej dataset ZFS-a. Administrator strefy nie musi samodzielnie jest ustawiać. Jeśli właściwość <property>zoned</property> jest ustawiona, dataset nie daje się zamontować lub współdzielić w strefie globalnej i jest ignorowany przy wydawaniu polecenia <command>zfs share</command> <option>a</option> lub <command>zfs mount</command> <option>a</option>. W poniższym przykładzie do strefy dodano <filename>tank/zone/zion</filename>, natomiast <filename>tank/zone/global</filename> nie:</para>
 <screen># <userinput>zfs list -o name,zoned,mountpoint -r tank/zone</userinput>
 NAME                  ZONED  MOUNTPOINT
 tank/zone/global        off  /tank/zone/global
@@ -427,26 +408,10 @@ tank/zone/zion           on  /tank/zone/zion
 # <userinput>zfs mount</userinput>
 tank/zone/global           /tank/zone/global
 tank/zone/zion             /export/zone/zion/root/tank/zone/zion</screen>
-<para>Note the difference between the <property>mountpoint</property> property
-and the directory where the <filename>tank/zone/zion</filename> dataset is
-currently mounted. The <property>mountpoint</property> property reflects the
-property as stored on disk, not where the dataset is currently mounted on
-the system.</para>
-<para>When a dataset is removed from a zone or a zone is destroyed, the <property>zoned</property> property is <emphasis role="strong">not</emphasis> automatically
-cleared. This behavior is due to the inherent security risks associated with
-these tasks. Because an untrusted user has had complete access to the dataset
-and its children, the <property>mountpoint</property> property might be set
-to bad values, or setuid binaries might exist on the file systems.</para>
-<para>To prevent accidental security risks, the <property>zoned</property> property
-must be manually cleared by the global administrator if you want to reuse
-the dataset in any way. Before setting the <property>zoned</property> property
-to <literal>off</literal>, make sure that the <property>mountpoint</property> property
-for the dataset and all its children are set to reasonable values and that
-no setuid binaries exist, or turn off the <property>setuid</property> property.</para>
-<para>Once you have verified that no security vulnerabilities are left, the <property>zoned</property> property can be turned off by using the <command>zfs set</command> or <command>zfs inherit</command> commands. If the <property>zoned</property> property
-is turned off while a dataset is in use within a zone, the system might behave
-in unpredictable ways. Only change the property if you are sure the dataset
-is no longer in use by a non-global zone.</para>
+<para>Należy zwrócić uwagę na właściwość <property>mountpoint</property> i katalog, w którym dataset <filename>tank/zone/zion</filename> jest zamontowany. Właściwość <property>mountpoint</property> odpowiada właściwości na dysku, nie zaś aktualnemu punktowi montowania.</para>
+<para>Po wycofaniu datasetu ze strefy lub usunięciu strefy, właściwość <property>zoned</property> <emphasis role="strong">nie jest</emphasis> czyszczona automatycznie. Wynika to z zagrożeń bezpieczeństwa. Niezaufany użytkownik ma całkowity dostęp do datasetu i jego potomków, stąd też właściwość <property>mountpoint</property> może mieć złe ustawienia, bądź w systemie plików mogą istnieć pliki wykonywalne z ustawionym bitem setuid.</para>
+<para>W gestii administratora globalnej strefy pozostaje wyłączenie właściwości <property>zoned</property>, w celu uniknięcia przypadkowego zagrożenia bezpieczeństwa, przed ponownym wykorzystaniem datasetu. Przed ustawieniem właściwości <property>zoned</property> na wartość <literal>off</literal>, należy upewnić się, że właściwość <property>mountpoint</property> datasetu i wszystkich jego potomków jest sensownie skonfigurowana i że nie istnieją pliki wykonywalne z ustawionym bitem setuid, bądź należy wyłączyć właściwość <property>setuid</property>.</para>
+<para>Po wykluczeniu wszystkich zagrożeń bezpieczeństwa właściwość <property>zoned</property> można wyłączyć komendami <command>zfs set</command> lub <command>zfs inherit</command>. Jeśli wyłączy się właściwość <property>zoned</property> kiedy dataset jest nadal w użyciu w nieglobalnej strefie, system może zachowywać się w nieprzewidywalny sposób. Należy wyłączać ją tylko mając pewność, że dataset nie jest już używany przez żadną nieglobalną strefę.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gbcgl">
