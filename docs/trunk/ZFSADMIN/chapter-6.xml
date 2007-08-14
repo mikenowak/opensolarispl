@@ -199,58 +199,40 @@ pool/home/anne@monday  Mon Mar 13 11:46 2006
 pool/home/bob@monday   Mon Mar 13 11:46 2006</screen>
 <sect3 xml:id="gbcxc">
 <title>Zużycie miejsca przez obraz</title>
-<para>When a snapshot is created, its space is initially shared between the
-snapshot and the file system, and possibly with previous snapshots. As the
-file system changes, space that was previously shared becomes unique to the
-snapshot, and thus is counted in the snapshot's <property>used</property> property.
-Additionally, deleting snapshots can increase the amount of space unique to
-(and thus <emphasis>used</emphasis> by) other snapshots.</para>
-<para>A snapshot's space <property>referenced</property> property is the same
-as the file system's was when the snapshot was created.<indexterm xml:id="indexterm-390">
+<para>Po utworzeniu obrazu współdzieli on początkowo miejsce z systemem plików oraz, być może, z poprzednimi obrazami. Wraz z postępowaniem zmian w systemie plików, współdzielone uprzednio miejsce staje się unikalne dla obrazu i zostaje wliczone do właściwości obrazu <property>used</property>. Dodatkowo, usunięcie obrazu może spowodować wzrost unikalnej przestrzeni 
+(a tym samym również <emphasis>used</emphasis>) innych obrazów.</para>
+<para>Właściwość <property>referenced</property> przestrzeni obrazu jest taka sama jak systemu plików, kiedy obraz został utworzony.<indexterm xml:id="indexterm-390">
 <primary>systemy plików ZFS-a</primary>
-<secondary>snapshot space accounting</secondary>
+<secondary>zużycie miejsca przez obraz</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-391">
 <primary>obraz</primary>
-<secondary>space accounting</secondary>
+<secondary>zużycie miejsca</secondary>
 </indexterm>
 </para>
 </sect3>
 </sect2>
 <sect2 xml:id="gbcxk">
-<title>Rolling Back to a ZFS Snapshot</title>
-<para>The <command>zfs rollback</command> command can be used to discard all
-changes made since a specific snapshot. The file system reverts to its state
-at the time the snapshot was taken. By default, the command cannot roll back
-to a snapshot other than the most recent snapshot.</para>
-<para>To roll back to an earlier snapshot, all intermediate snapshots must
-be destroyed. You can destroy earlier snapshots by specifying the <option>
-r</option> option.</para>
-<para>If clones of any intermediate snapshots exist, the <option>
-R</option> option
-must be specified to destroy the clones as well. </para>
+<title>Powrót do obrazu ZFS-a</title>
+<para>Przy pomocy komendy <command>zfs rollback</command> mozna cofnąć wszystkie zmiany aż do momentu utworzenia dowolnego obrazu. System plików powraca do stanu z momentu utworzenia obrazu. Domyślnie nie można cofnąć się dalej, niż do ostatniego obrazu.</para>
+<para>Zanim będzie można cofnąć się do wcześniejszego obrazu, wszystkie obrazy utworzone później należy zniszczyć. Można to zrobić za pomocą opcji <option> r</option>.</para>
+<para>Jeśli istnieją klony pośrednich obrazów, należy zniszczyć je za pomocą opcji <option>R</option>. </para>
 <note>
-
-<para>The file system that you want to roll back must be unmounted and
-remounted, if it is currently mounted. If the file system cannot be unmounted,
-the rollback fails. The <option>
-f</option> option forces the file system to
-be unmounted, if necessary.</para>
+<para>Należy odmontować i ponownie zamontować system plików, aby cofnięcie do obrazu powiodło się. Jeśli nie można odmontować systemu plików, nie uda się wycofanie zmian. W celu wymuszenia odmontowania systemu plików można użyć opcji <option>f</option>.</para>
 </note>
-<para>In the following example, the <filename>tank/home/ahrens</filename> file
-system is rolled back to the <filename>tuesday</filename> snapshot:<indexterm xml:id="indexterm-392">
+<para>W poniższym przykładzie system plików <filename>tank/home/ahrens</filename> cofany jest do obrazu o nazwie <filename>tuesday</filename>:<indexterm xml:id="indexterm-392">
 <primary>systemy plików ZFS-a</primary>
 <secondary>obraz</secondary>
-<tertiary>rolling back</tertiary>
+<tertiary>wycofywanie zmian</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-393">
-<primary>rolling back</primary>
-<secondary>ZFS snapshot</secondary>
+<primary>wycofywanie zmian</primary>
+<secondary>obraz ZFS-a</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-394">
 <primary>obraz</primary>
-<secondary>rolling back</secondary>
+<secondary>wycofywanie zmian</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
@@ -261,43 +243,28 @@ tank/home/ahrens@wednesday
 tank/home/ahrens@thursday
 # <userinput>zfs rollback -r tank/home/ahrens@tuesday</userinput>
 </screen>
-<para>In the above example, the <literal>wednesday</literal> and <literal>thursday</literal> snapshots are removed because you rolled back to the previous tuesday
-snapshot.</para>
+<para>W powyższym przykładzie obrazy o nazwach <literal>wednesday</literal> i <literal>thursday</literal> zostały zniszczone, ponieważ wycofywano system do poprzedzającego je obrazu o nazwie <literal>tuesday</literal>.</para>
 <screen># <userinput>zfs list -r -t snapshot -o name,creation tank/home/ahrens</userinput>
 NAME                  CREATION
 tank/home/ahrens@tuesday  Mon Mar 13 11:05 2006</screen>
 </sect2>
 </sect1>
 <sect1 xml:id="gbcxz">
-<title>ZFS Clones</title>
-<para>A <emphasis>clone</emphasis> is a writable volume or file system whose
-initial contents are the same as the dataset from which it was created.  As
-with snapshots, creating a clone is nearly instantaneous, and initially consumes
-no additional disk space.<indexterm xml:id="indexterm-395">
+<title>Klony ZFS-a</title>
+<para><emphasis>Klon</emphasis> jest zapisywalnym woluminem lub systemem plików, którego początkowa zawartość jest taka sama, jak zawartość datasetu, z którego został utworzony. Podobnie jak w przypadku obrazów, tworzenie klonów jest natychmiastowe i początkowo nie zajmuje miejsca na dysku.<indexterm xml:id="indexterm-395">
 <primary>systemy plików ZFS-a</primary>
-<secondary>clones</secondary>
+<secondary>klony</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-396">
-<primary>clones</primary>
-<secondary>features</secondary>
+<primary>klony</primary>
+<secondary>możliwości</secondary>
 </indexterm>
 </para>
-<para>Clones can only be created from a snapshot. When a snapshot is cloned,
-an implicit dependency is created between the clone and snapshot. Even though
-the clone is created somewhere else in the dataset hierarchy, the original
-snapshot cannot be destroyed as long as the clone exists. The <property>origin</property> property
-exposes this dependency, and the <command>zfs destroy</command> command lists
-any such dependencies, if they exist.</para>
-<para>Clones do not inherit the properties of the dataset from which it was
-created. Rather, clones inherit their properties based on where the clones
-are created in the pool hierarchy. Use the <command>zfs get</command> and <command>zfs set</command> commands to view and change the properties of a cloned dataset.
-For more information about setting ZFS dataset properties, see <olink targetdoc="" remap="internal" targetptr="gazsp">Setting ZFS Properties</olink>.</para>
-<para>Because a clone initially shares all its disk space with the original
-snapshot, its <property>used</property> property is initially zero. As changes
-are made to the clone, it uses more space. The <property>used</property> property
-of the original snapshot does not consider the disk space consumed by the
-clone.</para>
+<para>Klony można utworzyć wyłącznie z obrazu. Po sklonowaniu obrazu powstaje implikowana zależność między klonem a obrazem. Pomimo tego, że klon jest tworzony w innym miejscu hierarchii datasetu, nie można zniszczyć oryginalnego obrazu tak długo, jak długo istnieje jego klon. Właściwość <property>origin</property> eksponuje tę zależność, a komenda <command>zfs destroy</command> podaje listę takich zależności, jeśli istnieją.</para>
+<para>Klony nie dziedziczą właściwości dataestu, z którego są tworzone, ale raczej dziedziczą właściwości wynikłe z miejsca utworzenia ich w hierarchii puli. Do drukowania i modyfikowania właściwości sklonowanego datasetu służą odpowiednio komendy <command>zfs get</command> i <command>zfs set</command>.
+Więcej informacji o ustawianiu właściwości datasetu ZFS-a w <olink targetdoc="" remap="internal" targetptr="gazsp">Ustawianie własciwości ZFS-a</olink>.</para>
+<para>Klon zaraz po utworzeniu współdzieli przestrzeń dyskową z oryginalnym obrazem, dlatego jego właściwość <property>used</property> jest początkowo równa zeru. W miarę postępowania zmian w klonie, zaczyna on zużywac więcej przestrzeni. Właściwość <property>used</property> oryginalnego obrazu nie obejmuje przestrzeni zużytej przez jego klony.</para>
 <sect2 xml:id="gbcyg">
 <title>Creating a ZFS Clone</title>
 <para>To create a clone, use the <command>zfs clone</command> command, specifying
