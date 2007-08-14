@@ -266,34 +266,28 @@ tank/home/ahrens@tuesday  Mon Mar 13 11:05 2006</screen>
 Więcej informacji o ustawianiu właściwości datasetu ZFS-a w <olink targetdoc="" remap="internal" targetptr="gazsp">Ustawianie własciwości ZFS-a</olink>.</para>
 <para>Klon zaraz po utworzeniu współdzieli przestrzeń dyskową z oryginalnym obrazem, dlatego jego właściwość <property>used</property> jest początkowo równa zeru. W miarę postępowania zmian w klonie, zaczyna on zużywac więcej przestrzeni. Właściwość <property>used</property> oryginalnego obrazu nie obejmuje przestrzeni zużytej przez jego klony.</para>
 <sect2 xml:id="gbcyg">
-<title>Creating a ZFS Clone</title>
-<para>To create a clone, use the <command>zfs clone</command> command, specifying
-the snapshot from which to create the clone, and the name of the new file
-system or volume. The new file system or volume can be located anywhere in
-the ZFS hierarchy. The type of the new dataset (for example, file system or
-volume) is the same type as the snapshot from which the clone was created.
-You cannot create clone of a file system in a pool that this different from
-where the original file system snapshot resides. <indexterm xml:id="indexterm-397">
+<title>Tworzenie klonu ZFS-a</title>
+<para>Klon tworzy się przy pomocy komendy <command>klon ZFS-a</command>, podając nazwę klonowanego obrazu i nazwę nowego systemu plików lub woluminu. Nowy system plików lub wolumin może znajdować się w dowolnym miejscu hierachii ZFS-a. Typ nowego datasetu (system plików lub wolumin) jest taki sam, jak typ klonowanego obrazu. Nie można utworzyć klonu systemu plików w puli innej, niż pula, w której znajduje się klonowany obraz.<indexterm xml:id="indexterm-397">
 <primary>systemy plików ZFS-a</primary>
-<secondary>clone</secondary>
+<secondary>klon</secondary>
 <tertiary>tworzenie</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-398">
 <primary>tworzenie</primary>
-<secondary>ZFS clone</secondary>
+<secondary>klon ZFS-a</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-399">
-<primary>clones</primary>
+<primary>klony</primary>
 <secondary>tworzenie</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>In the following example, a new clone named <literal>tank/home/ahrens/bug123</literal> with the same initial contents as the snapshot <literal>tank/ws/gate@yesterday</literal> is created.</para>
+<para>W poniższym przykładzie utworzony zostanie nowy klon <literal>tank/home/ahrens/bug123</literal> z identycznym zestawem początkowych danych, jak obraz <literal>tank/ws/gate@yesterday</literal>.</para>
 <screen># <userinput>zfs snapshot tank/ws/gate@yesterday</userinput>
 # <userinput>zfs clone tank/ws/gate@yesterday tank/home/ahrens/bug123</userinput>
 </screen>
-<para>In the following example, a cloned workspace is created from the <filename>projects/newproject@today</filename> snapshot for a temporary user as <filename>projects/teamA/tempuser</filename>. Then, properties are set on the cloned workspace.</para>
+<para>W poniższym przykładzie sklonowano obszar roboczy z obrazu <filename>projects/newproject@today</filename> dla tymczasowego użytkownika <filename>projects/teamA/tempuser</filename>. Następnie ustalane są właściwości sklonowanego obszaru.</para>
 <screen># <userinput>zfs snapshot projects/newproject@today</userinput>
 # <userinput>zfs clone projects/newproject@today projects/teamA/tempuser</userinput>
 # <userinput>zfs set sharenfs=on projects/teamA/tempuser</userinput>
@@ -301,31 +295,30 @@ where the original file system snapshot resides. <indexterm xml:id="indexterm-39
 </screen>
 </sect2>
 <sect2 xml:id="gbiob">
-<title>Destroying a ZFS Clone</title>
-<para>ZFS clones are destroyed by using the <command>zfs destroy</command> command.
-For example:<indexterm xml:id="indexterm-400">
+<title>Niszczenie klonu ZFS-a</title>
+<para>Klony ZFS-a niszczone są komendą <command>zfs destroy</command>. Na przykład:<indexterm xml:id="indexterm-400">
 <primary>systemy plików ZFS-a</primary>
-<secondary>clone</secondary>
-<tertiary>destroying</tertiary>
+<secondary>klon</secondary>
+<tertiary>niszczenie</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-401">
-<primary>destroying</primary>
-<secondary>ZFS clone</secondary>
+<primary>niszczenie</primary>
+<secondary>klon ZFS-a</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-402">
-<primary>clones</primary>
-<secondary>destroying</secondary>
+<primary>klony</primary>
+<secondary>niszczenie</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zfs destroy tank/home/ahrens/bug123</userinput>
 </screen>
-<para>Clones must be destroyed before the parent snapshot can be destroyed.</para>
+<para>Przed zniszczeniem obrazu trzeba zniszczyć wszystkie jego klony.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gbchx">
-<title>Saving and Restoring ZFS Data</title>
+<title>Zapisywanie i odzyskiwanie danych ZFS-a</title>
 <para>The <command>zfs send</command> command creates a stream representation
 of a snapshot that is written to standard output. By default, a full stream
 is generated. You can redirect the output to a file or to a different system.
