@@ -842,7 +842,7 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 <literal>5:everyone@</literal>
 </term>
 <listitem>
-<para>Każdey, kto nie jest właściciel lub nie należy do grupy, ma prawa do odczytu pliku i atrybutów (<literal>read_data/read_xattr/read_attributes/read_acl/synchronize:allow</literal>). Uprawnienie <literal>synchronize</literal> nie zostało jeszcze zaimplementowane.</para>
+<para>Każdy, kto nie jest właściciel lub nie należy do grupy, ma prawa do odczytu pliku i atrybutów (<literal>read_data/read_xattr/read_attributes/read_acl/synchronize:allow</literal>). Uprawnienie <literal>synchronize</literal> nie zostało jeszcze zaimplementowane.</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -1399,10 +1399,8 @@ drwxr-xr-x   2 root     root           2 Feb 17 14:57 test4.dir/sub4.dir
 </example>
 <example xml:id="gbcid">
 
-<title>ACL Inheritance With ACL Mode Set to Passthrough</title>
-<para>If the <literal>aclmode</literal> property on the <filename>tank/cindy</filename> file
-system is set to <literal>passthrough</literal>, then user <literal>gozer</literal> would
-inherit the ACL applied on <filename>test4.dir</filename> for the newly created <filename>file.4</filename> as follows:</para>
+<title>Dziedziczenie ACL-i z ustawionym tryblem ACL Passthrough</title>
+<para>Jeśli właściwość <literal>aclmode</literal> dla systemu plików <filename>tank/cindy</filename> ustawiona jest na<literal>passthrough</literal>, wtedy użytkownik <literal>gozer</literal> odziedziczyłby ACL-e nałozone na <filename>test4.dir</filename> dla nowego pliku<filename>file.4</filename>, jak poniżej:</para>
 <screen># <userinput>zfs set aclmode=passthrough tank/cindy</userinput>
 # <userinput>touch test4.dir/file.4</userinput>
 # <userinput>ls -v test4.dir/file.4</userinput>
@@ -1417,15 +1415,12 @@ inherit the ACL applied on <filename>test4.dir</filename> for the newly created 
          /write_acl/write_owner:deny
      6:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
          :allow</screen>
-<para>This output illustrates that the <literal>read_data/write_data/execute:allow:file_inherit/dir_inherit</literal> ACL that was set on the parent directory, <filename>test4.dir</filename>,
-is passed through to user <literal>gozer</literal>.</para>
+<para>ACL <literal>read_data/write_data/execute:allow:file_inherit/dir_inherit</literal> ustawiony dla wyższego katalogu <filename>test4.dir</filename> dziedziczony jest przez użytkownika <literal>gozer</literal>.</para>
 </example>
 <example xml:id="gbchq">
 
-<title>ACL Inheritance With ACL Mode Set to Discard</title>
-<para>If the <property>aclmode</property> property on a file system is set
-to <literal>discard</literal>, then ACLs can potentially be discarded when
-the permission bits on a directory change. For example:</para>
+<title>Dziedziczenie ACL-i z trybem ACL Discard</title>
+<para>Jesli właściwość <property>aclmode</property> dla systemu plików ustawiona jest na<literal>discard</literal>, wtedy ACL-e mogą być odrzucone, kiedy zmienią suę bity praw dla katalogu. Na przykład:</para>
 <screen># <userinput>zfs set aclmode=discard tank/cindy</userinput>
 # <userinput>chmod A+user:gozer:read_data/write_data/execute:dir_inherit:allow test5.dir</userinput>
 # <userinput>ls -dv test5.dir</userinput>
@@ -1442,8 +1437,7 @@ drwxr-xr-x+  2 root     root           2 Feb 16 11:23 test5.dir
          /write_attributes/write_acl/write_owner:deny
      6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
-<para>If, at a later time, you decide to tighten the permission bits on a
-directory, the explicit ACL is discarded. For example:</para>
+<para>Jeśli później bity praw zostaną zaostrzone, szczegółowe ACL-e będą odrzucane. Na przykład:</para>
 <screen># <userinput>chmod 744 test5.dir</userinput>
 # <userinput>ls -dv test5.dir</userinput>
 drwxr--r--   2 root     root           2 Feb 16 11:23 test5.dir
@@ -1460,7 +1454,7 @@ drwxr--r--   2 root     root           2 Feb 16 11:23 test5.dir
 </example>
 <example xml:id="gbche">
 
-<title>ACL Inheritance With ACL Inherit Mode Set to Noallow</title>
+<title>Dziedziczenie ACL-i z trybem dziedziczenia ustalonym na Noallow</title>
 <para>In the following example, two explicit ACLs with file inheritance are
 set. One ACL allows <literal>read_data</literal> permission, and one ACL denies <literal>read_data</literal> permission. This example also illustrates how you can
 specify two ACEs in the same <command>chmod</command> command.</para>
