@@ -637,10 +637,7 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 <para>i</para>
 </entry>
 <entry>
-<para>Inherit the ACL from the parent directory but applies only to newly
-created files or subdirectories and not the directory itself. This flag requires
-the <literal>file_inherit</literal> flag, the <literal>dir_inherit</literal> flag,
-or both, to indicate what to inherit.</para>
+<para>ACL-e dziedziczone są z wyższego katalogu, ale dotyczą tylko plików lub podkatalogów, nie samego katalogu, na który nałozona została flaga. Flaga ta wymaga jednej z flag: <literal>file_inherit</literal> i <literal>dir_inherit</literal>, lub obu, aby wskazać, co ma być dziedziczone.</para>
 </entry>
 </row>
 <row>
@@ -651,142 +648,112 @@ or both, to indicate what to inherit.</para>
 <para>n</para>
 </entry>
 <entry>
-<para>Only inherit the ACL from the parent directory to the first-level contents
-of the directory, not the second-level or subsequent contents. This flag requires
-the <literal>file_inherit</literal> flag, the <literal>dir_inherit</literal> flag,
-or both, to indicate what to inherit.</para>
+<para>Dziedziczenie ACL-i z wyższego katalogu tylko do zawartości pierwszego podkatalogu, z pominięciem nastepnych poziomów. Flaga wymaga jednej z flag: <literal>file_inherit</literal> i <literal>dir_inherit</literal>, lub obu w celu zdefiniowania, co ma być dziedziczone.</para>
 </entry>
 </row>
 </tbody>
 </tgroup>
 </table>
-<para>In addition, you can set a default ACL inheritance policy on the file
-system that is more strict or less strict by using the <literal>aclinherit</literal> file
-system property. For more information, see the next section.</para>
+<para>Istnieje dodatkowa możliwość zdefiniowania głownej reguły dziedziczenia na poziomie systemu plików. Może być bardziej lu mniej restrykcyjna i używa się w tym celu właściwości systemu plików <literal>aclinherit</literal>. Więcej informacji w następnym podrozdziale.</para>
 </sect2>
 <sect2 xml:id="gbaaz">
-<title>ACL Property Modes</title>
-<para>The ZFS file system includes two property modes related to ACLs:<indexterm xml:id="indexterm-429">
+<title>Tryby właściwości ACL-i</title>
+<para>System plików ZFS ma dwa możliwe tryby właściwości odnośnie ACL-i::<indexterm xml:id="indexterm-429">
 <primary>ACL-e</primary>
-<secondary>ACL property modes</secondary>
+<secondary>tryby właściwości ACL-i</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-430">
-<primary>NFSv4 ACLs</primary>
-<secondary>ACL property modes</secondary>
+<primary>ACL-e NFSv4</primary>
+<secondary>tryby właściwości ACL-i</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-431">
 <primary>ACL-e Solarisa</primary>
-<secondary>ACL property modes</secondary>
+<secondary>tryby właściwości ACL-i</secondary>
 </indexterm>
 </para>
 <itemizedlist>
 <listitem>
 <para>
-<literal>aclinherit</literal> – This property determines
-the behavior of ACL inheritance. Values include the following:<indexterm xml:id="indexterm-432">
+<literal>aclinherit</literal> – Określa podejście do dziecziczenia ACL-i. Wartości zawierają:<indexterm xml:id="indexterm-432">
 <primary>ACL-e</primary>
 <secondary>
-<literal>aclinherit</literal> property mode</secondary>
+<literal>aclinherit</literal> tryb właściwości</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-433">
 <primary>
-<literal>aclinherit</literal> property mode</primary>
+<literal>aclinherit</literal> tryb właściwości</primary>
 </indexterm>
 </para>
 <itemizedlist>
 <listitem>
 <para>
-<literal>discard</literal> – For new objects, no ACL
-entries are inherited when a file or directory is created. The ACL on the
-file or directory is equal to the permission mode of the file or directory.</para>
+<literal>discard</literal> – Przy tworzeniu katalogu lub pliku nie dziedziczy się żadnych ACL-i. ACL-e są ustawiane równoważnie do uprawnień systemu plików bądź katalogu.</para>
 </listitem>
 <listitem>
 <para>
-<literal>noallow</literal> – For new objects, only inheritable
-ACL entries that have an access type of <literal>deny</literal> are inherited.</para>
+<literal>noallow</literal> – Przy nowych obiektach dziedziczone są tylko dziedziczne wartości ACL-i, mające typ dostępu<literal>deny</literal>.</para>
 </listitem>
 <listitem>
 <para>
-<literal>secure</literal> – For new objects, the <literal>write_owner</literal> and <literal>write_acl</literal> permissions are removed when an
-ACL entry is inherited.</para>
+<literal>secure</literal> – Przy nowych obiektach podczas dziedziczenia ACL-i usuwane są uprawnienia: <literal>write_owner</literal> i <literal>write_acl</literal>.</para>
 </listitem>
 <listitem>
 <para>
-<literal>passthrough</literal> – For new objects, the
-inheritable ACL entries are inherited with no changes made to the them. This
-mode, in effect, disables <literal>secure</literal> mode.</para>
+<literal>passthrough</literal> – Przy nowych obiektach dziedziczne ACL-e są dziedziczone bez zmian. Ten tryb efektywnie wyłącza tryb <literal>secure</literal>.</para>
 </listitem>
 </itemizedlist>
-<para>The default mode for the <literal>aclinherit</literal> is <literal>secure</literal>.</para>
+<para>Domyślnym trybem dla <literal>aclinherit</literal> jest <literal>secure</literal>.</para>
 </listitem>
 <listitem>
 <para>
-<literal>aclmode</literal> – This property modifies
-ACL behavior whenever a file or directory's mode is modified by the <command>chmod</command> command or when a file is initially created. Values include the
-following:<indexterm xml:id="indexterm-434">
+<literal>aclmode</literal> – Właściwość ta zmienai zachowania ACL-i podczas zmiany trybu pliku bądź katalogu narzędziem  <command>chmod</command> oraz podczas tworzenia pliku. Wartości zawierają:<indexterm xml:id="indexterm-434">
 <primary>ACL-e</primary>
 <secondary>
-<literal>aclmode</literal> property mode</secondary>
+<literal>aclmode</literal> tryb właściwości</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-435">
 <primary>
-<literal>aclmode</literal> property mode</primary>
+<literal>aclmode</literal> tryb właściwości</primary>
 </indexterm>
 </para>
 <itemizedlist>
 <listitem>
 <para>
-<literal>discard</literal> – All ACL entries are removed
-except for the entries needed to define the mode of the file or directory.</para>
+<literal>discard</literal> – Usuwane są wszelkie ACL-e za wyjątkiem tych, które sa konieczne do ustalenia trybu pliku lub katalogu.</para>
 </listitem>
 <listitem>
 <para>
-<literal>groupmask</literal> – User or group ACL permissions
-are reduced so that they are no greater than the group permission bits, unless
-it is a user entry that has the same UID as the owner of the file or directory.
-Then, the ACL permissions are reduced so that they are no greater than owner
-permission bits.</para>
+<literal>groupmask</literal> – Uprawnienia ALC użytkownika bądź grupy są zmniejszane tak, aby były co najwyżej równe uprawnieniom grupy wynikłym z bitów uprawnień, chyba że użytkownik ma taki sam UID jak właściel pliku bądź katalogu. Wtedy ACL-e są zmniejszane tak, aby były nie większe niż bity uprawnień właściciela.</para>
 </listitem>
 <listitem>
 <para>
-<literal>passthrough</literal> – For new objects, the
-inheritable ACL entries are inherited with no changes made to the them. </para>
+<literal>passthrough</literal> – Przy nowych obiektach dziedziczne ACL-e są dziedziczone bez zmian.</para>
 </listitem>
 </itemizedlist>
-<para>The default mode for the <literal>aclmode</literal> property is <literal>groupmask</literal>.</para>
+<para>Domyślnym trybem dla <literal>aclmode</literal> jest <literal>groupmask</literal>.</para>
 </listitem>
 </itemizedlist>
 </sect2>
 </sect1>
 <sect1 xml:id="gbace">
-<title>Setting ACLs on ZFS Files</title>
-<para>As implemented with ZFS, ACLs are composed of an array of ACL entries.
- ZFS provides a <emphasis>pure</emphasis> ACL model, where all files have
-an ACL. Typically, the ACL is <emphasis>trivial</emphasis> in that it only
-represents the traditional UNIX <literal>owner/group/other</literal> entries.<indexterm xml:id="indexterm-436">
+<title>Ustawianie ACL-i dla plików ZFS-a</title>
+<para>W implementacji ZFs-a ACL-e składają się z tablicy definicji ACL-i. ZFS implementuje <emphasis>czysty</emphasis> model ACL-i, co oznacza, że każdy plik ma ACL-a. Najczęściej ACL-e są <emphasis>proste</emphasis> w tym znaczeniu, że reprezentują tradycyjny model UNIX-a <literal>właściel/grupa/inni(ang. owner/group/other)</literal>.<indexterm xml:id="indexterm-436">
 <primary>ACL-e</primary>
-<secondary>setting on ZFS files</secondary>
+<secondary>ustawianie dla plików ZFS-a</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-437">
 <primary>setting</primary>
-<secondary>ACLs on ZFS files</secondary>
+<secondary>ACL-e dla plików ZFS-a</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-438">
-<primary>ZFS file systems</primary>
-<secondary>setting ACLs on ZFS files</secondary>
+<primary>systemy plików ZFS-a</primary>
+<secondary>ustawianie ACL-i dla plików ZFS-a</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
-<para>ZFS files still have permission bits and a mode, but these values are
-more of a cache of what the ACL represents. As such, if you change the permissions
-of the file, the file's ACL is updated accordingly. In addition, if you remove
-an explicit ACL that granted a user access to a file or directory, that user
-could still have access to the file or directory because of the file or directory's
-permission bits that grant access to group or everyone. All access control
-decisions are governed by the permissions represented in a file or directory's
-ACL.</para>
+<para>Pliki ZFS-a wciąż mają bity uprawnień i tryb, ale wartości te są raczej cachem reprezentacji ACl-i. W związku z tym równocześnie do zmiany uprawnień pliku, zmieniają się jego ACL-e. Dodatkowo po usunięciu konkretnego ACL-a zezwalającego użytkownikowi dostęp do pliku lub katalogu, użytkownik nadal może mieć dostęp do pliku lub katalogu ze względu na bity uprawnień pliku lub katalogu, zezwalające na dostęp grupie lub wszystkim użytkownikom. Wszystkie decyzje o dostępie podejmowane są na podstawie uprawnień reprezentowanych w ACL-ach pliku lub katalogu.</para>
 <para>The primary rules of ACL access on a ZFS file are as follows:</para>
 <itemizedlist>
 <listitem>
@@ -799,7 +766,7 @@ the requester of the access are processed.</para>
 </listitem>
 <listitem>
 <para>Once an allow permission has been granted, it cannot be denied
-by a subsequent ACL deny entry in the same ACL permission set.</para>
+by a subsequent ACL deny entry in the same ACL permission set.</para> 
 </listitem>
 <listitem>
 <para>The owner of the file is granted the <literal>write_acl</literal> permission
