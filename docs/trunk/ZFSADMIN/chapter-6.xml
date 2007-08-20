@@ -58,7 +58,7 @@ Rozdział ten informuje również jak zapisywać stworzone obrazy.</para>
 </toc>
 <sect1 xml:id="gbciq">
 <title>Obrazy ZFS</title>
-<para><emphasis>Obraz</emphasis> jest kopią systemu plików (tylko do odczytu) lub woluminu. Obrazy mogą być stworzone niemal natychmiastowo i początkowo nie nie zajmują dodatkowego miejsca na dysku poza pulą. Niemniej jednak, wraz z kolejnymi zmianami danych, obraz pochłania przestrzeń dyskową poprzez czynienie kolejnych odniesień do starych danych.<indexterm xml:id="indexterm-376">
+<para><emphasis>Obraz</emphasis> jest kopią systemu plików (tylko do odczytu) lub woluminu. Obrazy mogą być stworzone niemal natychmiastowo i początkowo nie zajmują dodatkowego miejsca na dysku poza pulą. Niemniej jednak, wraz z kolejnymi zmianami danych, obraz pochłania przestrzeń dyskową poprzez czynienie kolejnych odniesień do starych danych.<indexterm xml:id="indexterm-376">
 <primary>System plików ZFS</primary>
 <secondary>obraz</secondary>
 <tertiary>opis</tertiary>
@@ -77,20 +77,20 @@ Rozdział ten informuje również jak zapisywać stworzone obrazy.</para>
 <para>Teoretyczna liczba możliwych do stworzenia obrazów wynosi 2<superscript>64</superscript>.</para>
 </listitem>
 <listitem>
-<para>Nie używa osobnego nośnika danych na potrzeby kopii. Obrazy pochłaniają zajmują przestrzeń dyskową bezpośrednio z puli nośników danych tak samo jak system plików, pod którym zostały stworzone.</para>
+<para>Nie używa osobnego nośnika danych na potrzeby kopii. Obrazy zajmują przestrzeń dyskową bezpośrednio z puli nośników danych tak samo jak system plików, pod którym zostały stworzone.</para>
 </listitem>
 </itemizedlist>
-<para>Obrazy woluminów nie są dostępne bezpośrednio, mogą być jednakże klonowane, zapisywane, przywracane i tak dalej. Więcej informacji o  zapisywaniu obrazu ZFS-a w <olink targetdoc="" remap="internal" targetptr="gbchx">Zapis i odtwarzanie danych ZFS</olink>.</para>
+<para>Obrazy woluminów nie są dostępne bezpośrednio, mogą być jednakże klonowane, zapisywane, przywracane i tak dalej. Więcej informacji o zapisywaniu obrazu ZFS w <olink targetdoc="" remap="internal" targetptr="gbchx">Zapis i odtwarzanie danych ZFS</olink>.</para>
 <sect2 xml:id="gbcya">
-<title>Tworzenie i niszczenie obrazów ZFS-a</title>
+<title>Tworzenie i niszczenie obrazów ZFS</title>
 <para>Obrazy tworzone są za pomocą komendy <command>zfs snapshot</command>, której jedynym argumentem jest nazwa obrazu do utworzenia. Nazwę tworzy się w sposób następujący:</para>
 <screen>
 <replaceable>systemplików@nazwaobrazu</replaceable>
 <replaceable>wolumin@nazwaobrazu</replaceable>
 </screen>
-<para>Nazwa obrazu musi spełniać wymogi konwencji zdefiniowane w <olink targetdoc="" remap="internal" targetptr="gbcpt">Wymogi nazewnicze komponentów ZFS-a</olink>.</para>
+<para>Nazwa obrazu musi spełniać wymogi konwencji zdefiniowane w <olink targetdoc="" remap="internal" targetptr="gbcpt">Wymogi nazewnicze komponentów ZFS</olink>.</para>
 <para>W poniższym przykładzie utworzony zostanie obraz systemu plików <filename>tank/home/ahrens</filename> o nazwie <filename>friday</filename>.<indexterm xml:id="indexterm-378">
-<primary>systemy plików ZFS-a</primary>
+<primary>systemy plików ZFS</primary>
 <secondary>obraz</secondary>
 <tertiary>tworzenie</tertiary>
 </indexterm>
@@ -122,7 +122,7 @@ tank/home/ahrens@tuesday
 tank/home/ahrens@wednesday
 tank/home/ahrens@thursday</screen>
 <para>Jeśli dodatkowo istnieją klony obrazu, muszą zostać zniszczone zanim zniszczony będzie obraz.<indexterm xml:id="indexterm-381">
-<primary>systemy plików ZFS-a</primary>
+<primary>systemy plików ZFS</primary>
 <secondary>obraz</secondary>
 <tertiary>niszczenie</tertiary>
 </indexterm>
@@ -139,7 +139,7 @@ tank/home/ahrens@thursday</screen>
 </para>
 <para>Więcej informacji o podkomendzie <command>destroy</command> w <olink targetdoc="" remap="internal" targetptr="gammq">Niszczenie systemów plików ZFS-a</olink>.</para>
 <sect3 xml:id="gbion">
-<title>Zmiana nazwy obrazu ZFS-a</title>
+<title>Zmiana nazwy obrazu ZFS</title>
 <para>Zmiana nazwy obrazu jest możliwa, musi się jednak odbyć w ramach puli i datasetu, z których został utworzony. Na przykład:<indexterm xml:id="indexterm-384">
 <primary>systemy plików ZFS-a</primary>
 <secondary>obraz</secondary>
@@ -164,7 +164,7 @@ dataset</screen>
 </sect3>
 </sect2>
 <sect2 xml:id="gbiqe">
-<title>Przeglądanie i dostęp do obrazów ZFS-a</title>
+<title>Przeglądanie i dostęp do obrazów ZFS</title>
 <para>Obrazy systemu plików dostępne są w katalogu <filename>.zfs/snapshot</filename> w szczycie hierarchii zawierającego obraz systemu plików. Na przykład, jeśli system plików <filename>tank/home/ahrens</filename> zamontowano w katalogu  <filename>/home/ahrens</filename>, to obraz <filename>tank/home/ahrens@thursday</filename> będzie dostępny w katalogu <filename>/home/ahrens/.zfs/snapshot/thursday</filename>.<indexterm xml:id="indexterm-387">
 <primary>systemy plików ZFS-a</primary>
 <secondary>obraz</secondary>
@@ -215,7 +215,7 @@ pool/home/bob@monday   Mon Mar 13 11:46 2006</screen>
 <sect2 xml:id="gbcxk">
 <title>Powrót do obrazu ZFS-a</title>
 <para>Przy pomocy komendy <command>zfs rollback</command> można cofnąć wszystkie zmiany aż do momentu utworzenia dowolnego obrazu. System plików powraca do stanu z momentu utworzenia obrazu. Domyślnie nie można cofnąć się dalej, niż do ostatniego obrazu.</para>
-<para>Zanim będzie można cofnąć się do wcześniejszego obrazu, wszystkie obrazy utworzone później należy zniszczyć. Można to zrobić za pomocą opcji <option> r</option>.</para>
+<para>Zanim będzie można cofnąć się do wcześniejszego obrazu, wszystkie obrazy utworzone później należy zniszczyć. Można to zrobić za pomocą opcji <option>r</option>.</para>
 <para>Jeśli istnieją klony pośrednich obrazów, należy zniszczyć je za pomocą opcji <option>R</option>. </para>
 <note>
 <para>Należy odmontować i ponownie zamontować system plików, aby cofnięcie do obrazu powiodło się. Jeśli nie można odmontować systemu plików, nie uda się wycofanie zmian. W celu wymuszenia odmontowania systemu plików można użyć opcji <option>f</option>.</para>
