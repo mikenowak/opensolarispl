@@ -754,37 +754,24 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 </indexterm>
 </para>
 <para>Pliki ZFS-a wciąż mają bity uprawnień i tryb, ale wartości te są raczej cachem reprezentacji ACl-i. W związku z tym równocześnie do zmiany uprawnień pliku, zmieniają się jego ACL-e. Dodatkowo po usunięciu konkretnego ACL-a zezwalającego użytkownikowi dostęp do pliku lub katalogu, użytkownik nadal może mieć dostęp do pliku lub katalogu ze względu na bity uprawnień pliku lub katalogu, zezwalające na dostęp grupie lub wszystkim użytkownikom. Wszystkie decyzje o dostępie podejmowane są na podstawie uprawnień reprezentowanych w ACL-ach pliku lub katalogu.</para>
-<para>The primary rules of ACL access on a ZFS file are as follows:</para>
+<para>Podstawowe reguły dostępu ACL-i do w ZFS-ie są następujące:</para>
 <itemizedlist>
 <listitem>
-<para>ZFS processes ACL entries in the order they are listed in
-the ACL, from the top down.</para>
+<para>ZFS przetwarza wpisy ACL-i w kolejności w jakiej pojawiają się w ACL-ach, od góry do dołu.</para>
 </listitem>
 <listitem>
-<para>Only ACL entries that have a “who” that matches
-the requester of the access are processed.</para>
+<para>Przetwarzane są tylko te ACL-e, których “kto” jest identyczny z autorem żądania.</para>
 </listitem>
 <listitem>
-<para>Once an allow permission has been granted, it cannot be denied
-by a subsequent ACL deny entry in the same ACL permission set.</para> 
+<para>Po przydzieleniu uprawnienia, nie można go odebrać nastepującym później wpisem ACL w tym samym zestawie uprawnień ACL-i.</para> 
 </listitem>
 <listitem>
-<para>The owner of the file is granted the <literal>write_acl</literal> permission
-unconditionally, even if the permission is explicitly denied. Otherwise, any
-permission left unspecified is denied.</para>
-<para>In the cases of deny permissions
-or when an access permission is missing, the privilege subsystem determines
-what access request is granted for the owner of the file or for superuser.
-This mechanism prevents owners of files from getting locked out of their files
-and enables superuser to modify files for recovery purposes.</para>
+<para>Właścicielowi pliku przydziela się bezwarunkowo uprawnienie <literal>write_acl</literal>, nawet jeśli jest zabronione explicite. Pozostałych uprawnień odmawia się, jeśli nie zostały sprecyzowane.</para>
+<para>W przypadku zabronionego dostepu lub gdy brak sprecyzowanego uprawnienia, podsystem przywilejów ustala, jakiego dostepu udziela się właścicielowi pliku lub superużytkownikowi. Unika się dzięki temu wykluczenia właścicieli plików z dostępu do ich własnych plików oraz pozwala superużytkownikowi na modyfikacje plików w celu dzyskania danych.</para>
 </listitem>
 </itemizedlist>
-<para>If you set an explicit ACL on a directory, the ACL is not automatically
-inherited by the directory's children. If you set an explicit ACL and you
-want it inherited to the directory's children, you have to use the ACL inheritance
-flags. For more information, see <olink targetdoc="" remap="internal" targetptr="gbbhx">Table 7–3</olink> and <olink targetdoc="" remap="internal" targetptr="gbabx">Setting ACL Inheritance on ZFS Files in Verbose Format</olink>.</para>
-<para>When you create a new file and depending on the <command>umask</command> value,
-a default trivial ACL, similar to the following, is applied:</para>
+<para>ACL ustalony dla katalogu nie jest automatycznie dziedziczony przez jego podkatalogi i pliki. Jeśli ustalony ACL ma być dziedziczony, należy użyć flag dziedziczenia ACL-i. Więcej informacji w<olink targetdoc="" remap="internal" targetptr="gbbhx">Table 7–3</olink> and <olink targetdoc="" remap="internal" targetptr="gbabx">Ustalanie dziedziczenia ACl-i dla plików ZFS-a w formacie verbose</olink>.</para>
+<para>Po utworzeniu pliku, w oparciu o wartość parametru <command>umask</command>, tworzony jest domyślny prosty ACL, podobny do poniższego:</para>
 <screen>$ <userinput>ls -v file.1</userinput>
 -r--r--r--   1 root     root      206663 May  4 11:52 file.1
      0:owner@:write_data/append_data/execute:deny
@@ -796,25 +783,25 @@ a default trivial ACL, similar to the following, is applied:</para>
          /write_acl/write_owner:deny
      5:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
          :allow</screen>
-<para>Note that each user category (<literal>owner@</literal>, <literal>group@</literal>, <literal>everyone@</literal>) in this example has two ACL entries. One entry for <literal>deny</literal> permissions, and one entry is for <literal>allow</literal> permissions.<indexterm xml:id="indexterm-439">
+<para>Należy zwrócić uwagę, że każda kategoria użytkownika (<literal>owner@</literal>, <literal>group@</literal>, <literal>everyone@</literal>) ma w tym przykładzie dwa spisy ACL. Jeden wpis dla prawa <literal>deny</literal> i jeden dla <literal>allow</literal>.<indexterm xml:id="indexterm-439">
 <primary>ACL-e</primary>
-<secondary>ACL on ZFS file</secondary>
-<tertiary>detailed description</tertiary>
+<secondary>ACL-e na plikach ZFS-a</secondary>
+<tertiary>szczegółowy opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-440">
-<primary>ZFS file systems</primary>
-<secondary>ACL on ZFS file</secondary>
-<tertiary>detailed description</tertiary>
+<primary>systemy plików ZFS-a</primary>
+<secondary>ACL-e na plikach ZFS-a</secondary>
+<tertiary>szczegółowy opis</tertiary>
 </indexterm>
 </para>
-<para>A description of this file ACL is as follows:</para>
+<para>Opis ACL-i dla tego pliku:</para>
 <variablelist>
 <varlistentry>
 <term>
 <literal>0:owner@</literal>
 </term>
 <listitem>
-<para>The owner is denied execute permissions to the file (<literal>execute:deny</literal>).</para>
+<para>Właściciel pliku nie ma uprawnień do wykonywania (<literal>execute:deny</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -822,10 +809,8 @@ a default trivial ACL, similar to the following, is applied:</para>
 <literal>1:owner@</literal>
 </term>
 <listitem>
-<para>The owner can read and modify the contents of the file (<literal>read_data/write_data/append_data</literal>). The owner can also modify the
-file's attributes such as timestamps, extended attributes, and ACLs (<literal>write_xattr/write_attributes
-/write_acl</literal>). In addition, the owner can modify the ownership of
-the file (<literal>write_owner:allow</literal>)</para>
+<para>Właściciel może czytać i zmieniać zawartość pliku (<literal>read_data/write_data/append_data</literal>). Właściciel może też modyfikować atrybuty, takie jak timestamps, rozszerzone atrybuty i ACL-e (<literal>write_xattr/write_attributes
+/write_acl</literal>). Właściciel może dodatkowo zmieniać właściciela pliku (<literal>write_owner:allow</literal>)</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -833,8 +818,7 @@ the file (<literal>write_owner:allow</literal>)</para>
 <literal>2:group@</literal>
 </term>
 <listitem>
-<para>The group is denied modify and execute permissions to the
-file (<literal>write_data/append_data/execute:deny</literal>).</para>
+<para>Grupa nie ma praw do zmiany i uruchamiania pliku (<literal>write_data/append_data/execute:deny</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -842,7 +826,7 @@ file (<literal>write_data/append_data/execute:deny</literal>).</para>
 <literal>3:group@</literal>
 </term>
 <listitem>
-<para>The group is granted read permissions to the file (<literal>read_data:allow</literal>).</para>
+<para>Grupa ma prawa do odczytu pliku (<literal>read_data:allow</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -850,9 +834,7 @@ file (<literal>write_data/append_data/execute:deny</literal>).</para>
 <literal>4:everyone@</literal>
 </term>
 <listitem>
-<para>Everyone who is not user or group is denied permission to
-execute or modify the contents of the file and to modify any attributes of
-the file (<literal>write_data/append_data/write_xattr/execute/write_attributes/write_acl/write_owner:deny</literal>).</para>
+<para>Każdemu, kto nie jest właścicielem lub członkiem grupy, odmawia się praw do wykonywania pliku, zmiany jego zawartosci, lub zmiany atrybutów (<literal>write_data/append_data/write_xattr/execute/write_attributes/write_acl/write_owner:deny</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -860,14 +842,11 @@ the file (<literal>write_data/append_data/write_xattr/execute/write_attributes/w
 <literal>5:everyone@</literal>
 </term>
 <listitem>
-<para>Everyone who is not user or group is granted read permissions
-to the file, and the file's attributes (<literal>read_data/read_xattr/read_attributes/read_acl/synchronize:allow</literal>). The <literal>synchronize</literal> access permission is not currently
-implemented.</para>
+<para>Każdey, kto nie jest właściciel lub nie należy do grupy, ma prawa do odczytu pliku i atrybutów (<literal>read_data/read_xattr/read_attributes/read_acl/synchronize:allow</literal>). Uprawnienie <literal>synchronize</literal> nie zostało jeszcze zaimplementowane.</para>
 </listitem>
 </varlistentry>
 </variablelist>
-<para>When a new directory is created and depending on the <command>umask</command> value,
-a default directory ACL is similar to the following:</para>
+<para>Przy tworzeniu nowego katalogu, biorąc pod uwagę wartośc parametru <command>umask</command>, tworzony jet domyslny ACL, podobny do poniższego:</para>
 <screen>$ <userinput>ls -dv dir.1</userinput>
 drwxr-xr-x   2 root     root           2 Feb 23 10:37 dir.1
      0:owner@::deny
@@ -880,15 +859,15 @@ drwxr-xr-x   2 root     root           2 Feb 23 10:37 dir.1
          /write_attributes/write_acl/write_owner:deny
      5:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
-<para>A description of this directory ACL is as follows:<indexterm xml:id="indexterm-441">
+<para>Szczegółowy opis ACL-i dla tego katalogu:<indexterm xml:id="indexterm-441">
 <primary>ACL-e</primary>
-<secondary>ACL on ZFS directory</secondary>
-<tertiary>detailed description</tertiary>
+<secondary>ACL-e dla katalogów ZFS-a</secondary>
+<tertiary>szczegółowy opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-442">
-<primary>ZFS file systems</primary>
-<secondary>ACL on ZFS directory</secondary>
-<tertiary>detailed description</tertiary>
+<primary>systemy plików ZFS-a</primary>
+<secondary>ACL-e dla katalogów ZFS-a</secondary>
+<tertiary>szczegółowy opis</tertiary>
 </indexterm>
 </para>
 <variablelist>
@@ -897,7 +876,7 @@ drwxr-xr-x   2 root     root           2 Feb 23 10:37 dir.1
 <literal>0:owner@</literal>
 </term>
 <listitem>
-<para>The owner deny list is empty for the directory (<literal>::deny</literal>).</para>
+<para>Lista odmownych uprawnień dla właściciela jest pusta (<literal>::deny</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -905,9 +884,7 @@ drwxr-xr-x   2 root     root           2 Feb 23 10:37 dir.1
 <literal>1:owner@</literal>
 </term>
 <listitem>
-<para>The owner can read and modify the directory contents (<literal>list_directory/read_data/add_file/write_data/add_subdirectory/append_data</literal>), search the contents (<literal>execute</literal>), and modify
-the file's attributes such as timestamps, extended attributes, and ACLs (<literal>write_xattr/write_attributes/write_acl</literal>). In addition, the owner
-can modify the ownership of the directory (<literal>write_owner:allow</literal>).</para>
+<para>Właściciel może odczytywać i zmieniać zawartość katalogu  (<literal>list_directory/read_data/add_file/write_data/add_subdirectory/append_data</literal>), przeszukiwać zawartość (<literal>execute</literal>) i zmieniać atrybuty pliku, takie jak timestamps, rozszerzone atrybuty i ACL-e (<literal>write_xattr/write_attributes/write_acl</literal>). Może dodatkowo zmienić właściciela katalogu (<literal>write_owner:allow</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -915,7 +892,7 @@ can modify the ownership of the directory (<literal>write_owner:allow</literal>)
 <literal>2:group@</literal>
 </term>
 <listitem>
-<para>The group cannot add to or modify the directory contents (<literal>add_file/write_data/add_subdirectory/append_data:deny</literal>).</para>
+<para>Grupa nie może zmieniać ani dodawać nowej zawartości do katalogu (<literal>add_file/write_data/add_subdirectory/append_data:deny</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -923,8 +900,7 @@ can modify the ownership of the directory (<literal>write_owner:allow</literal>)
 <literal>3:group@</literal>
 </term>
 <listitem>
-<para>The group can list and read the directory contents. In addition,
-the group has execute permission to search the directory contents (<literal>list_directory/read_data/execute:allow</literal>).</para>
+<para>Grupa może drukować listę i czytać zawartość katalogu. Grupa może dodatkowo przeszukiwać zawartość katalogu  (<literal>list_directory/read_data/execute:allow</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -932,9 +908,7 @@ the group has execute permission to search the directory contents (<literal>list
 <literal>4:everyone@</literal>
 </term>
 <listitem>
-<para>Everyone who is not user or group is denied permission to
-add to or modify the contents of the directory (<literal>add_file/write_data/add_subdirectory/append_data</literal>). In addition, the permission to modify any attributes of the directory
-is denied. (<literal>write_xattr          /write_attributes/write_acl/write_owner:deny</literal>).</para>
+<para>Każdemu kto nie jest właścicielem i nie należy do grupy odmawia się praw  dodawania i zmiany zawartości katalogu(<literal>add_file/write_data/add_subdirectory/append_data</literal>). Zabronione są dodatkowo zmiany atrybutów katalogu (<literal>write_xattr          /write_attributes/write_acl/write_owner:deny</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -942,83 +916,78 @@ is denied. (<literal>write_xattr          /write_attributes/write_acl/write_owne
 <literal>5:everyone@</literal>
 </term>
 <listitem>
-<para>Everyone who is not user or group is granted read and execute
-permissions to the directory contents and the directory's attributes (<literal>list_directory/read_data/read_xattr/execute/read_attributes/read_acl/synchronize:allow</literal>). The <literal>synchronize</literal> access permission is not currently
-implemented.</para>
+<para>Każdy, kto nie jest właścicielem i nie kależy do grupy, ma prawo do czytania i wykonywania zawartości katalogu oraz atrybutów katalogu (<literal>list_directory/read_data/read_xattr/execute/read_attributes/read_acl/synchronize:allow</literal>). Uprawnienie <literal>synchronize</literal> nie zostało jeszcze zaimplementowane.</para>
 </listitem>
 </varlistentry>
 </variablelist>
 </sect1>
 <sect1 xml:id="gbabw">
-<title>Setting and Displaying ACLs on ZFS Files in Verbose
-Format</title>
-<para>You can use the <command>chmod</command> command to modify ACLs on ZFS
-files. The following <command>chmod</command> syntax for modifying ACLs uses <emphasis>acl-specification</emphasis> to identify the format of the ACL. For a description
-of <emphasis>acl-specification</emphasis>, see <olink targetdoc="" remap="internal" targetptr="gbaay">Syntax Descriptions for Setting ACLs</olink>.<indexterm xml:id="indexterm-443">
+<title>Ustalanie i drukowanie ACL-i dla plików ZFS-a w formacie verbose</title>
+<para>Do zmiany ACL-i plików ZFS-a służy komenda <command>chmod</command>. Poniższa składnia <command>chmod</command> do zmiany ACL-i używa <emphasis>acl-specification</emphasis> do identyfikacji formatu ACL-i. Opis <emphasis>acl-specification</emphasis> znajduje się w<olink targetdoc="" remap="internal" targetptr="gbaay">Opis składni ustalania ACL-i</olink>.<indexterm xml:id="indexterm-443">
 <primary>ACL-e</primary>
-<secondary>setting ACLs on ZFS file (verbose mode)</secondary>
+<secondary>ustalanie ACL-i dla plików ZFS-a (tryb verbose)</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-444">
-<primary>setting</primary>
-<secondary>ACLs on ZFS file (verbose mode)</secondary>
-<tertiary>(description</tertiary>
+<primary>ustalanie</primary>
+<secondary>ustalanie ACL-i dla plików ZFS-a (tryb verbose)</secondary>
+<tertiary>(opis)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-445">
-<primary>ZFS file systems</primary>
-<secondary>setting ACLs on ZFS file (verbose mode)</secondary>
+<primary>systemy plików ZFS-a</primary>
+<secondary>ustalanie ACL-i dla plików ZFS-a (tryb verbose)</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
 <itemizedlist>
 <listitem>
-<para>Adding ACL entries</para>
+<para>Dodawanie wpisów ACL-i</para>
 <itemizedlist>
 <listitem>
-<para>Adding an ACL entry for a user</para>
-<screen>% chmod A+<emphasis>acl-specification</emphasis> <emphasis>filename</emphasis>
+<para>Dodawnia wpisu ACL dla użytkownika</para>
+<screen>% chmod A+<emphasis>acl-specification</emphasis> <emphasis>nazwapliku</emphasis>
 </screen>
 </listitem>
 <listitem>
-<para>Adding an ACL entry by <replaceable>index-ID</replaceable>
+<para>Dodawanie wpisu ACL po <replaceable>index-ID</replaceable>
 </para>
-<screen>% chmod A<emphasis>index-ID</emphasis>+<emphasis>acl-specification</emphasis> <emphasis>filename</emphasis>
+<screen>% chmod A<emphasis>index-ID</emphasis>+<emphasis>acl-specification</emphasis> <emphasis>nazwapliku</emphasis>
 </screen>
-<para>This syntax inserts the new ACL entry at the specified <replaceable>index-ID</replaceable> location.</para>
+<para>Komenda ta umieszcza wpis ACL w miejscu wskazywanym przez <replaceable>index-ID</replaceable>.</para>
 </listitem>
 </itemizedlist>
 </listitem>
 <listitem>
-<para>Replacing an ACL entry</para>
-<screen>% chmod A<emphasis>index-ID</emphasis>=<emphasis>acl-specification</emphasis> <emphasis>filename</emphasis>
+<para>Zamiana wpisów ACL</para>
+<screen>% chmod A<emphasis>index-ID</emphasis>=<emphasis>acl-specification</emphasis> <emphasis>nazwapliku</emphasis>
 </screen>
-<screen>% chmod A=<emphasis>acl-specification</emphasis> <emphasis>filename</emphasis>
+<screen>% chmod A=<emphasis>acl-specification</emphasis> <emphasis>nazwapliku</emphasis>
 </screen>
 </listitem>
 <listitem>
-<para>Removing ACL entries</para>
+<para>Usuwanie wpisu ACL</para>
 <itemizedlist>
 <listitem>
-<para>Removing an ACL entry by <replaceable>index-ID</replaceable>
+<para>Usuwanie wpisu ACL po <replaceable>index-ID</replaceable>
 </para>
-<screen>% chmod A<emphasis>index-ID</emphasis>- <emphasis>filename</emphasis>
+<screen>% chmod A<emphasis>index-ID</emphasis>- <emphasis>nazwapliku</emphasis>
 </screen>
 </listitem>
 <listitem>
-<para>Removing an ACL entry by user</para>
-<screen>% chmod A-<emphasis>acl-specification</emphasis> <emphasis>filename</emphasis>
+<para>Usuwanie wpisu ACL po użytkowniku</para>
+<screen>% chmod A-<emphasis>acl-specification</emphasis> <emphasis>nazwapliku</emphasis>
 </screen>
 </listitem>
 <listitem>
-<para>Removing all explicit ACEs from a file</para>
-<screen>% chmod A- <emphasis>filename</emphasis>
+<para>Usuwanie konkretnych ACL-i z pliku</para>
+<screen>% chmod A- <emphasis>nazwapliku</emphasis>
 </screen>
 </listitem>
 </itemizedlist>
 </listitem>
 </itemizedlist>
-<para>Verbose ACL information is displayed by using the <command>ls</command> <option>
-v</option> command. For example:</para>
+<para>Dokładniejsze informacje o ACL-ach drukowane są za pomocą komendy <command>ls</command> <option>
+v</option>. Na przykład:</para>
 <screen># <userinput>ls -v file.1</userinput>
 -rw-r--r--   1 root     root      206663 Feb 16 11:00 file.1
      0:owner@:execute:deny
