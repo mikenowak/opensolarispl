@@ -1198,35 +1198,30 @@ drwxr-xr-x   2 root     root           2 Feb 16 11:23 test5.dir
          /read_acl/synchronize:allow</screen>
 </example>
 <sect2 xml:id="gbabx">
-<title>Setting ACL Inheritance on ZFS Files in Verbose Format</title>
-<para>You can determine how ACLs are inherited or not inherited on files and
-directories. By default, ACLs are not propagated. If you set an explicit ACL
-on a directory, the ACL is not inherited by any subsequent directory. You
-must specify the inheritance of an ACL on a file or directory.<indexterm xml:id="indexterm-452">
+<title>Ustalanie dziedziczenia ACL-i dla plików ZFS-a w trybie szczegółowym</title>
+<para>Możliwe jest ustalenie, jak wygląda dziedziczenie ACL-i dla plików i katalogów. Domyślnie ACL-e nie są propagowane. Szczegółowy ACL ustalony dla katalogu nie jest dziedziczone przez zawarte w nim pliki i podkatalogi. Dla kazdego pliku i katalogu dziedziczenie ACL-i musi został ustalone ręcznie.<indexterm xml:id="indexterm-452">
 <primary>ACL-e</primary>
-<secondary>setting ACL inheritance on ZFS file (tryb szczegółowy)</secondary>
+<secondary>ustalanie dziedziczenia ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-453">
-<primary>setting</primary>
-<secondary>ACL inheritance on ZFS file (tryb szczegółowy)</secondary>
+<primary>ustalanie</primary>
+<secondary>dziedziczenie ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-454">
 <primary>systemy plików ZFS-a</primary>
-<secondary>setting ACL inheritance on ZFS file (tryb szczegółowy)</secondary>
+<secondary>ustalanie dziedziczenia ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>In addition, two ACL properties are provided that can be set globally
-on file systems: <literal>aclinherit</literal> and <literal>aclmode</literal>.
-By default, <property>aclinherit</property> is set to <literal>secure</literal> and <property>aclmode</property> is set to <literal>groupmask</literal>.</para>
-<para>For more information, see <olink targetdoc="" remap="internal" targetptr="gbaax">ACL Inheritance</olink>.</para>
+<para>Istnieją dodatkowo dwie właściwości ACL-i, które można ustalić globalnie dla systemu plików: <literal>aclinherit</literal> i <literal>aclmode</literal>. Domyślnie <property>aclinherit</property> ustalony jest na <literal>secure</literal>, a <property>aclmode</property> ustalony jest na <literal>groupmask</literal>.</para>
+<para>Więcej informacji w <olink targetdoc="" remap="internal" targetptr="gbaax">Dziedziczenie ACL-i</olink>.</para>
 <example xml:id="gcakr">
 
-<title>Default ACL Inheritance</title>
-<para>By default, ACLs are not propagated through a directory structure.</para>
-<para>In the following example, an explicit ACE of <literal>read_data/write_data/execute</literal> is applied for user <literal>gozer</literal> on <literal>test.dir</literal>.</para>
+<title>Domyślne dziedziczenie ACL-i</title>
+<para>Domyślnie ACL-e nie są propagowane po strukturze katalogów.</para>
+<para>W poniższym przykładzie szczegółowy ACE <literal>read_data/write_data/execute</literal> dla użytkownika <literal>gozer</literal> ustalany jest dla katalogu <literal>test.dir</literal>.</para>
 <screen># <userinput>chmod A+user:gozer:read_data/write_data/execute:allow test.dir</userinput>
 # <userinput>ls -dv test.dir</userinput>
 drwxr-xr-x+  2 root     root           2 Feb 17 14:45 test.dir
@@ -1241,9 +1236,7 @@ drwxr-xr-x+  2 root     root           2 Feb 17 14:45 test.dir
          /write_attributes/write_acl/write_owner:deny
      6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
-<para>If a <filename>test.dir</filename> subdirectory is created, the ACE
-for user <literal>gozer</literal> is not propagated. User <literal>gozer</literal> would
-only have access to <filename>sub.dir</filename> if the permissions on <filename>sub.dir</filename> granted him access as the file owner, group member, or <literal>everyone@</literal>.</para>
+<para>Jeśli tworzony jest podkatalog <filename>test.dir</filename>, ACE dla użytkownika <literal>gozer</literal> nie będzie dziedziczony. Użytkownik <literal>gozer</literal> będzie miał dostęp do <filename>sub.dir</filename> tylko wtedy, gdy prawa dla <filename>sub.dir</filename> zezwalają mu na dostęp jako właścicielowi, członkowi grupy lub zezwalają na dostęp dla <literal>everyone@</literal>.</para>
 <screen># <userinput>mkdir test.dir/sub.dir</userinput>
 # <userinput>ls -dv test.dir/sub.dir</userinput>
 drwxr-xr-x   2 root     root           2 Feb 17 14:46 test.dir/sub.dir
@@ -1260,11 +1253,9 @@ drwxr-xr-x   2 root     root           2 Feb 17 14:46 test.dir/sub.dir
 </example>
 <example xml:id="gcale">
 
-<title>Granting ACL Inheritance on Files and Directories</title>
-<para>This series of examples identify the file and directory ACEs that are
-applied when the <literal>file_inherit</literal> flag is set.</para>
-<para>In the following example, <literal>read_data/write_data</literal> permissions
-are added for files in the <filename>test.dir</filename> directory for user <literal>gozer</literal> so that he has read access on any newly created files.</para>
+<title>Ustalanie dziedziczenia ACL-i dla plików i katalogów</title>
+<para>Poniższe przykłady identyfikują ACE dla plików i katalogów, ustanawiane po ustawieniu flagi <literal>file_inherit</literal>.</para>
+<para>W poniższym przykładzie użytkownikowi <literal>gozer</literal> dodaje się prawa <literal>read_data/write_data</literal> dotyczące plików w katalogu <filename>test.dir</filename>, tak aby miał dostęp do każdego nowego pliku w tym katalogu.</para>
 <screen># <userinput>chmod A+user:gozer:read_data/write_data:file_inherit:allow test2.dir</userinput>
 # <userinput>ls -dv test2.dir</userinput>
 drwxr-xr-x+  2 root     root           2 Feb 17 14:47 test2.dir
@@ -1279,9 +1270,7 @@ drwxr-xr-x+  2 root     root           2 Feb 17 14:47 test2.dir
          /write_attributes/write_acl/write_owner:deny
      6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
-<para>In the following example, user gozer's permissions are applied on the
-newly created <filename>test2.dir/file.2</filename> file. The ACL inheritance
-granted, <filename>read_data:file_inherit:allow</filename>, means user <literal>gozer</literal> can read the contents of any newly created file.</para>
+<para>W poniższym przykładzie prawa użytkownika gozer nakładane są na nowoutworzony plik <filename>test2.dir/file.2</filename>. Dziedziecznie ACL-i <filename>read_data:file_inherit:allow</filename> oznacza, że użytkownik <literal>gozer</literal> może czytać zawartość nowych plików.</para>
 <screen># <userinput>touch test2.dir/file.2</userinput>
 # <userinput>ls -v test2.dir/file.2</userinput>
 -rw-r--r--+  1 root     root           0 Feb 17 14:49 test2.dir/file.2
@@ -1296,15 +1285,8 @@ granted, <filename>read_data:file_inherit:allow</filename>, means user <literal>
          /write_acl/write_owner:deny
      7:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
          :allow</screen>
-<para>Because the <property>aclmode</property> for this file is set to the
-default mode, <literal>groupmask</literal>, user <literal>gozer</literal> does
-not have <literal>write_data</literal> permission on <filename>file.2</filename> because
-the group permission of the file does not allow it.</para>
-<para>Note the <literal>inherit_only</literal> permission, which is applied
-when the <literal>file_inherit</literal> or <literal>dir_inherit</literal> flags
-are set, is used to propagate the ACL through the directory structure. As
-such, user <literal>gozer</literal> is only granted or denied permission from <literal>everyone@</literal> permissions unless he is the owner of the file or a member
-of the owning group of the file. For example:</para>
+<para>Dla tego pliku <property>aclmode</property> ustalone jest na domyślną wartość <literal>groupmask</literal>, dlatego użytkownik <literal>gozer</literal> nie ma prawa <literal>write_data</literal>, ponieważ prawa grupy dla pliku <filename>file.2</filename> nie zezwalają na to.</para>
+<para>Należy zwrócić uwagę na prawo <literal>inherit_only</literal> (ustawiane jeśli ustalona jest jedna z flag <literal>file_inherit</literal> i <literal>dir_inherit</literal>), które używane jest do propagowania ACL-i po strukturze katalogów. Z tego powodu użytkownikowi <literal>gozer</literal> przyznawane (bądź odmawiane) jest prawo tylko dla <literal>everyone@</literal>, o ile nie jest właścicielem pliku lub członkiem grupy pliku. Na przykład:</para>
 <screen># <userinput>mkdir test2.dir/subdir.2</userinput>
 # <userinput>ls -dv test2.dir/subdir.2</userinput>
 drwxr-xr-x+  2 root     root           2 Feb 17 14:50 test2.dir/subdir.2
@@ -1320,11 +1302,8 @@ drwxr-xr-x+  2 root     root           2 Feb 17 14:50 test2.dir/subdir.2
          /write_attributes/write_acl/write_owner:deny
      6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
-<para>The following series of examples identify the file and directory ACLs
-that are applied when both the <literal>file_inherit</literal> and <literal>dir_inherit</literal> flags are set.</para>
-<para>In the following example, user <literal>gozer</literal> is granted read,
-write, and execute permissions that are inherited for newly created files
-and directories.</para>
+<para>Poniższe przykłady identyfikują ACL-e dla plików i katalogów ustalane, gdy ustalone są flagi <literal>file_inherit</literal> i <literal>dir_inherit</literal>.</para>
+<para>W poniższym przykładzie użytkownikowi <literal>gozer</literal> przydziela się prawa do odczytu, zapisu i wykonania plików, dziedziczone dla nowotworzonych plików i katalogów.</para>
 <screen># <userinput>chmod A+user:gozer:read_data/write_data/execute:file_inherit/dir_inherit:allow test3.dir</userinput>
 # <userinput>ls -dv test3.dir</userinput>
 drwxr-xr-x+  2 root     root           2 Feb 17 14:51 test3.dir
@@ -1371,13 +1350,8 @@ drwxr-xr-x+  2 root     root           2 May  4 15:00 test3.dir/subdir.1
          /write_attributes/write_acl/write_owner:deny
      8:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
-<para>In these examples, because the permission bits of the parent directory
-for <literal>group@</literal> and <literal>everyone@</literal> deny write
-and execute permissions, user <literal>gozer</literal> is denied write and
-execute permissions. The default <property>aclmode</property> property is <literal>secure</literal>, which means that <literal>write_data</literal> and <literal>execute</literal> permissions are not inherited.</para>
-<para>In the following example, user <literal>gozer</literal> is granted 
-read, write, and execute permissions that are inherited for newly created
-files, but are not propagated to subsequent contents of the directory.</para>
+<para>W poniższych przykładach użytkownikowi <literal>gozer</literal> odmawia się prawa do zapisu i wykonania, ponieważ bity praw dla wyższego katalogu dla <literal>group@</literal> i <literal>everyone@</literal> odmawiają praw do zapisu i wykonania. Domyślna wartość właściwości <property>aclmode</property> ustawiona jest na <literal>secure</literal>, co oznacza, że prawa <literal>write_data</literal> i <literal>execute</literal> nie są dziedziczone.</para>
+<para>W poniższym przykładzie użytkownikowi <literal>gozer</literal> przydziela się prawa do zapisu, odzczytu i wykonania, dziedziczone dla nowych plików, ale niepropagowane do podkatalogów.</para>
 <screen># <userinput>chmod A+user:gozer:read_data/write_data/execute:file_inherit/no_propagate:allow test4.dir</userinput>
 # <userinput>ls -dv test4.dir</userinput>
 drwxr-xr-x+  2 root     root           2 Feb 17 14:54 test4.dir
@@ -1393,9 +1367,7 @@ drwxr-xr-x+  2 root     root           2 Feb 17 14:54 test4.dir
          /write_attributes/write_acl/write_owner:deny
      6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
-<para>As the following example illustrates, when a new subdirectory is created,
-user <literal>gozer</literal>'s <literal>read_data/write_data/execute</literal> permission
-for files are not propagated to the new <literal>sub4.dir</literal> directory.</para>
+<para>Jak pokazuje to poniższy przykład, kiedy tworzony jest nowy podkatalog, prawo <literal>read_data/write_data/execute</literal> użytkownika <literal>gozer</literal> nie jest prowagowane do nowego katalogu<literal>sub4.dir</literal>.</para>
 <screen># <userinput>mkdir test4.dir/sub4.dir</userinput>
 # <userinput>ls -dv test4.dir/sub4.dir</userinput>
 drwxr-xr-x   2 root     root           2 Feb 17 14:57 test4.dir/sub4.dir
@@ -1409,7 +1381,7 @@ drwxr-xr-x   2 root     root           2 Feb 17 14:57 test4.dir/sub4.dir
          /write_attributes/write_acl/write_owner:deny
      5:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
-<para>As the following example illustrates, <literal>gozer</literal>'s <literal>read_data/write_data/execute</literal> permission for files is propagated to the newly created file.</para>
+<para>Jak ilustruje poniższy przykład prawo <literal>read_data/write_data/execute</literal> użytkownika <literal>gozer</literal> dziedziczone jest na nowy plik.</para>
 <screen># <userinput>touch test4.dir/file.4</userinput>
 # <userinput>ls -v test4.dir/file.4</userinput>
 -rw-r--r--+  1 root     root           0 May  4 15:02 test4.dir/file.4
