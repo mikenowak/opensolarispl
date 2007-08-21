@@ -47,7 +47,7 @@ w wersji poprzedniej niż NFSv4.<indexterm xml:id="indexterm-411">
 <secondary>opis</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-412">
-<primary>NFSv4 ACLs</primary>
+<primary>ACL-e NFSv4</primary>
 <secondary>model</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
@@ -81,7 +81,7 @@ są przenoszone z katalogu na podkatalogi i głębiej. Więcej informacji znajdu
 </itemizedlist>
 <para>Obydwa modele ACL dostarczają bardziej szczegółową kontrolę dostępu niż
 standardowe uprawnienia plików. Podobnie jak ACL-e oparte o POSIX-draft (nieostateczną wersję dokumentu, szkic), nowe ACL-e
-są słożone z wielu wpisów kontroli dostępu (ACE).</para>
+są złożone z wielu wpisów kontroli dostępu (ACE).</para>
 <para>ACL oparty o POSIX-draft używa pojedynczego wpisu w celu zdefiniowania jakie prawa
 są zdefiniowane, a jakie zabronione. Nowy model ACL ma dwa rodzaje wpisów ACE, które
 wpływają na sprawdzanie dostępu: <literal>ALLOW</literal> oraz <literal>DENY</literal>.
@@ -197,11 +197,11 @@ Opis <emphasis>typów-wpisu-ACL</emphasis> znajduje się w <olink targetdoc="" r
 </listitem>
 </varlistentry>
 <varlistentry>
-<term>user lub group:<emphasis>ID-wpisu-ACL=nazwausera lub nazwagrupy</emphasis>
+<term>user lub group:<emphasis>ID-wpisu-ACL=nazwaużytkownika lub nazwagrupy</emphasis>
 </term>
 <listitem>
 <para>Określa <emphasis>typ-wpisu-ACL</emphasis> dla dokładnej składni ACL.
-Wpis tego typu musi także zawierać <emphasis>ID-wpisu-ACL</emphasis>, <emphasis>nazwausera</emphasis> lub <emphasis>nazwagrupy</emphasis>. Opis <emphasis>typów-wpisu-ACL</emphasis> znajduje się w <olink targetdoc="" remap="internal" targetptr="gbbhr">tabeli 7–1</olink>.</para>
+Wpis tego typu musi także zawierać <emphasis>ID-wpisu-ACL</emphasis>, <emphasis>nazwaużytkownika</emphasis> lub <emphasis>nazwagrupy</emphasis>. Opis <emphasis>typów-wpisu-ACL</emphasis> znajduje się w <olink targetdoc="" remap="internal" targetptr="gbbhr">tabeli 7–1</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -432,7 +432,7 @@ ten typ wpisu ACL jest nieprawidłowy.</para>
 <para>r</para>
 </entry>
 <entry>
-<para>Pozwala na wylistowanie zawartości katalogu.</para>
+<para>Pozwala na wydrukowanie zawartości katalogu.</para>
 </entry>
 </row>
 <row>
@@ -637,7 +637,7 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 <para>i</para>
 </entry>
 <entry>
-<para>ACL-e dziedziczone są z wyższego katalogu, ale dotyczą tylko plików lub podkatalogów, nie samego katalogu, na który nałozona została flaga. Flaga ta wymaga jednej z flag: <literal>file_inherit</literal> i <literal>dir_inherit</literal>, lub obu, aby wskazać, co ma być dziedziczone.</para>
+<para>ACL-e dziedziczone są z wyższego katalogu, ale dotyczą tylko plików lub podkatalogów, nie samego katalogu, na który nałożona została flaga. Flaga ta wymaga jednej z flag: <literal>file_inherit</literal> i <literal>dir_inherit</literal>, lub obu, aby wskazać, co ma być dziedziczone.</para>
 </entry>
 </row>
 <row>
@@ -648,13 +648,13 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 <para>n</para>
 </entry>
 <entry>
-<para>Dziedziczenie ACL-i z wyższego katalogu tylko do zawartości pierwszego podkatalogu, z pominięciem nastepnych poziomów. Flaga wymaga jednej z flag: <literal>file_inherit</literal> i <literal>dir_inherit</literal>, lub obu w celu zdefiniowania, co ma być dziedziczone.</para>
+<para>Dziedziczenie ACL-i z wyższego katalogu tylko do zawartości pierwszego podkatalogu, z pominięciem następnych poziomów. Flaga wymaga jednej z flag: <literal>file_inherit</literal> i <literal>dir_inherit</literal>, lub obu w celu zdefiniowania, co ma być dziedziczone.</para>
 </entry>
 </row>
 </tbody>
 </tgroup>
 </table>
-<para>Istnieje dodatkowa możliwość zdefiniowania głownej reguły dziedziczenia na poziomie systemu plików. Może być bardziej lu mniej restrykcyjna i używa się w tym celu właściwości systemu plików <literal>aclinherit</literal>. Więcej informacji w następnym podrozdziale.</para>
+<para>Istnieje dodatkowa możliwość zdefiniowania głównej reguły dziedziczenia na poziomie systemu plików. Może być bardziej lu mniej restrykcyjna i używa się w tym celu właściwości systemu plików <literal>aclinherit</literal>. Więcej informacji w następnym podrozdziale.</para>
 </sect2>
 <sect2 xml:id="gbaaz">
 <title>Tryby właściwości ACL-i</title>
@@ -674,7 +674,7 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 <itemizedlist>
 <listitem>
 <para>
-<literal>aclinherit</literal> – Określa podejście do dziecziczenia ACL-i. Wartości zawierają:<indexterm xml:id="indexterm-432">
+<literal>aclinherit</literal> – Określa podejście do dziedziczenia ACL-i. Wartości zawierają:<indexterm xml:id="indexterm-432">
 <primary>ACL-e</primary>
 <secondary>
 <literal>aclinherit</literal> tryb właściwości</secondary>
@@ -706,7 +706,7 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 </listitem>
 <listitem>
 <para>
-<literal>aclmode</literal> – Właściwość ta zmienai zachowania ACL-i podczas zmiany trybu pliku bądź katalogu narzędziem  <command>chmod</command> oraz podczas tworzenia pliku. Wartości zawierają:<indexterm xml:id="indexterm-434">
+<literal>aclmode</literal> – Właściwość ta zmienia zachowania ACL-i podczas zmiany trybu pliku bądź katalogu narzędziem  <command>chmod</command> oraz podczas tworzenia pliku. Wartości zawierają:<indexterm xml:id="indexterm-434">
 <primary>ACL-e</primary>
 <secondary>
 <literal>aclmode</literal> tryb właściwości</secondary>
@@ -719,11 +719,11 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 <itemizedlist>
 <listitem>
 <para>
-<literal>discard</literal> – Usuwane są wszelkie ACL-e za wyjątkiem tych, które sa konieczne do ustalenia trybu pliku lub katalogu.</para>
+<literal>discard</literal> – Usuwane są wszelkie ACL-e za wyjątkiem tych, które są konieczne do ustalenia trybu pliku lub katalogu.</para>
 </listitem>
 <listitem>
 <para>
-<literal>groupmask</literal> – Uprawnienia ALC użytkownika bądź grupy są zmniejszane tak, aby były co najwyżej równe uprawnieniom grupy wynikłym z bitów uprawnień, chyba że użytkownik ma taki sam UID jak właściel pliku bądź katalogu. Wtedy ACL-e są zmniejszane tak, aby były nie większe niż bity uprawnień właściciela.</para>
+<literal>groupmask</literal> – Uprawnienia ALC użytkownika bądź grupy są zmniejszane tak, aby były co najwyżej równe uprawnieniom grupy wynikłym z bitów uprawnień, chyba że użytkownik ma taki sam UID jak właściciel pliku bądź katalogu. Wtedy ACL-e są zmniejszane tak, aby były nie większe niż bity uprawnień właściciela.</para>
 </listitem>
 <listitem>
 <para>
@@ -737,7 +737,7 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 </sect1>
 <sect1 xml:id="gbace">
 <title>Ustawianie ACL-i dla plików ZFS-a</title>
-<para>W implementacji ZFs-a ACL-e składają się z tablicy definicji ACL-i. ZFS implementuje <emphasis>czysty</emphasis> model ACL-i, co oznacza, że każdy plik ma ACL-a. Najczęściej ACL-e są <emphasis>proste</emphasis> w tym znaczeniu, że reprezentują tradycyjny model UNIX-a <literal>właściel/grupa/inni(ang. owner/group/other)</literal>.<indexterm xml:id="indexterm-436">
+<para>W implementacji ZFs-a ACL-e składają się z tablicy definicji ACL-i. ZFS implementuje <emphasis>czysty</emphasis> model ACL-i, co oznacza, że każdy plik ma ACL-a. Najczęściej ACL-e są <emphasis>proste</emphasis> w tym znaczeniu, że reprezentują tradycyjny model UNIX-a <literal>właściciel/grupa/inni(ang. owner/group/other)</literal>.<indexterm xml:id="indexterm-436">
 <primary>ACL-e</primary>
 <secondary>ustawianie dla plików ZFS-a</secondary>
 <tertiary>opis</tertiary>
@@ -763,11 +763,11 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 <para>Przetwarzane są tylko te ACL-e, których “kto” jest identyczny z autorem żądania.</para>
 </listitem>
 <listitem>
-<para>Po przydzieleniu uprawnienia, nie można go odebrać nastepującym później wpisem ACL w tym samym zestawie uprawnień ACL-i.</para> 
+<para>Po przydzieleniu uprawnienia, nie można go odebrać następującym później wpisem ACL w tym samym zestawie uprawnień ACL-i.</para> 
 </listitem>
 <listitem>
 <para>Właścicielowi pliku przydziela się bezwarunkowo uprawnienie <literal>write_acl</literal>, nawet jeśli jest zabronione explicite. Pozostałych uprawnień odmawia się, jeśli nie zostały sprecyzowane.</para>
-<para>W przypadku zabronionego dostepu lub gdy brak sprecyzowanego uprawnienia, podsystem przywilejów ustala, jakiego dostepu udziela się właścicielowi pliku lub superużytkownikowi. Unika się dzięki temu wykluczenia właścicieli plików z dostępu do ich własnych plików oraz pozwala superużytkownikowi na modyfikacje plików w celu dzyskania danych.</para>
+<para>W przypadku zabronionego dostępu lub gdy brak sprecyzowanego uprawnienia, podsystem przywilejów ustala, jakiego dostępu udziela się właścicielowi pliku lub superużytkownikowi. Unika się dzięki temu wykluczenia właścicieli plików z dostępu do ich własnych plików oraz pozwala superużytkownikowi na modyfikacje plików w celu odzyskania danych.</para>
 </listitem>
 </itemizedlist>
 <para>ACL ustalony dla katalogu nie jest automatycznie dziedziczony przez jego podkatalogi i pliki. Jeśli ustalony ACL ma być dziedziczony, należy użyć flag dziedziczenia ACL-i. Więcej informacji w<olink targetdoc="" remap="internal" targetptr="gbbhx">Table 7–3</olink> and <olink targetdoc="" remap="internal" targetptr="gbabx">Ustalanie dziedziczenia ACl-i dla plików ZFS-a w formacie verbose</olink>.</para>
@@ -834,7 +834,7 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 <literal>4:everyone@</literal>
 </term>
 <listitem>
-<para>Każdemu, kto nie jest właścicielem lub członkiem grupy, odmawia się praw do wykonywania pliku, zmiany jego zawartosci, lub zmiany atrybutów (<literal>write_data/append_data/write_xattr/execute/write_attributes/write_acl/write_owner:deny</literal>).</para>
+<para>Każdemu, kto nie jest właścicielem lub członkiem grupy, odmawia się praw do wykonywania pliku, zmiany jego zawartości, lub zmiany atrybutów (<literal>write_data/append_data/write_xattr/execute/write_attributes/write_acl/write_owner:deny</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -846,7 +846,7 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 </listitem>
 </varlistentry>
 </variablelist>
-<para>Przy tworzeniu nowego katalogu, biorąc pod uwagę wartośc parametru <command>umask</command>, tworzony jet domyslny ACL, podobny do poniższego:</para>
+<para>Przy tworzeniu nowego katalogu, biorąc pod uwagę wartość parametru <command>umask</command>, tworzony jet domyślny ACL, podobny do poniższego:</para>
 <screen>$ <userinput>ls -dv dir.1</userinput>
 drwxr-xr-x   2 root     root           2 Feb 23 10:37 dir.1
      0:owner@::deny
@@ -916,7 +916,7 @@ drwxr-xr-x   2 root     root           2 Feb 23 10:37 dir.1
 <literal>5:everyone@</literal>
 </term>
 <listitem>
-<para>Każdy, kto nie jest właścicielem i nie kależy do grupy, ma prawo do czytania i wykonywania zawartości katalogu oraz atrybutów katalogu (<literal>list_directory/read_data/read_xattr/execute/read_attributes/read_acl/synchronize:allow</literal>). Uprawnienie <literal>synchronize</literal> nie zostało jeszcze zaimplementowane.</para>
+<para>Każdy, kto nie jest właścicielem i nie należy do grupy, ma prawo do czytania i wykonywania zawartości katalogu oraz atrybutów katalogu (<literal>list_directory/read_data/read_xattr/execute/read_attributes/read_acl/synchronize:allow</literal>). Uprawnienie <literal>synchronize</literal> nie zostało jeszcze zaimplementowane.</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -944,7 +944,7 @@ drwxr-xr-x   2 root     root           2 Feb 23 10:37 dir.1
 <para>Dodawanie wpisów ACL-i</para>
 <itemizedlist>
 <listitem>
-<para>Dodawnia wpisu ACL dla użytkownika</para>
+<para>Dodawanie wpisu ACL dla użytkownika</para>
 <screen>% chmod A+<emphasis>acl-specification</emphasis> <emphasis>nazwapliku</emphasis>
 </screen>
 </listitem>
@@ -1062,7 +1062,7 @@ v</option>. Na przykład:</para>
 <example xml:id="gcpsk">
 
 <title>Ustalanie konkretnych ACL-i dla plików ZFS-a</title>
-<para>W tym podrozdziale przedstawione są przykłady ustalania i drukowania protych ACL-i.</para>
+<para>W tym podrozdziale przedstawione są przykłady ustalania i drukowania prostych ACL-i.</para>
 <para>W poniższym przykładzie przydziela się użytkownikowi <literal>gozer</literal> prawo <literal>read_data/execute</literal> do katalogu <filename>test.dir</filename>.</para>
 <screen># <userinput>chmod A+user:gozer:read_data/execute:allow test.dir</userinput>
 # <userinput>ls -dv test.dir</userinput>
@@ -1120,13 +1120,13 @@ drwxr-xr-x   2 root     root           2 Feb 16 11:12 test.dir
      3:group@:read_data:allow
      4:everyone@:write_data/append_data/write_xattr/execute/write_attributes
          /write_acl/write_owner:deny</screen>
-<para>Bity uprawnień dla pliku zostały zmienione z 655 na 650. Prawa odczytu dla <literal>everyone@</literal> zostały efektywnie usunięte z ustawien bitów praw w momencie, gdy usunięte zostały zezwolenia ACL dla <literal>everyone@</literal>.</para>
+<para>Bity uprawnień dla pliku zostały zmienione z 655 na 650. Prawa odczytu dla <literal>everyone@</literal> zostały efektywnie usunięte z ustawień bitów praw w momencie, gdy usunięte zostały zezwolenia ACL dla <literal>everyone@</literal>.</para>
 <para>W poniższym przykładzie zamieniono istniejące ACL-e na <literal>read_data/write_data</literal> dla <literal>everyone@</literal>.</para>
 <screen># <userinput>chmod A=everyone@:read_data/write_data:allow file.3</userinput>
 # <userinput>ls -v file.3</userinput>
 -rw-rw-rw-+  1 root     root        1532 Feb 16 11:18 file.3
      0:everyone@:read_data/write_data:allow</screen>
-<para>Komenda <command>chmod</command> efektywnie zamieniła istniejące ACL-e na uprawnienia <literal>read_data/write_data:allow</literal>, zezwalające właścicielowi, grupie oraz <literal>everyone@</literal> na zapis i odczyt. W tym modelu <literal>everyone@</literal> oznacza dostęp dla każdego użytkownika lub grupy. Nie istnieje żaden wpis ACL <literal>owner@</literal> ani <literal>group@</literal>, który zmieniałby uprawnienia dla właściciela i grupy, dlatego też bity praw ujstawione zostają na 666.</para>
+<para>Komenda <command>chmod</command> efektywnie zamieniła istniejące ACL-e na uprawnienia <literal>read_data/write_data:allow</literal>, zezwalające właścicielowi, grupie oraz <literal>everyone@</literal> na zapis i odczyt. W tym modelu <literal>everyone@</literal> oznacza dostęp dla każdego użytkownika lub grupy. Nie istnieje żaden wpis ACL <literal>owner@</literal> ani <literal>group@</literal>, który zmieniałby uprawnienia dla właściciela i grupy, dlatego też bity praw ustawione zostają na 666.</para>
 <para>W poniższym przykładzie istniejący ACL zostaje zamieniony dla użytkownika <literal>gozer</literal> na prawa do odczytu.</para>
 <screen># <userinput>chmod A=user:gozer:read_data:allow file.3</userinput>
 # <userinput>ls -v file.3</userinput>
@@ -1199,7 +1199,7 @@ drwxr-xr-x   2 root     root           2 Feb 16 11:23 test5.dir
 </example>
 <sect2 xml:id="gbabx">
 <title>Ustalanie dziedziczenia ACL-i dla plików ZFS-a w trybie szczegółowym</title>
-<para>Możliwe jest ustalenie, jak wygląda dziedziczenie ACL-i dla plików i katalogów. Domyślnie ACL-e nie są propagowane. Szczegółowy ACL ustalony dla katalogu nie jest dziedziczone przez zawarte w nim pliki i podkatalogi. Dla kazdego pliku i katalogu dziedziczenie ACL-i musi został ustalone ręcznie.<indexterm xml:id="indexterm-452">
+<para>Możliwe jest ustalenie, jak wygląda dziedziczenie ACL-i dla plików i katalogów. Domyślnie ACL-e nie są propagowane. Szczegółowy ACL ustalony dla katalogu nie jest dziedziczone przez zawarte w nim pliki i podkatalogi. Dla każdego pliku i katalogu dziedziczenie ACL-i musi został ustalone ręcznie.<indexterm xml:id="indexterm-452">
 <primary>ACL-e</primary>
 <secondary>ustalanie dziedziczenia ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
@@ -1270,7 +1270,7 @@ drwxr-xr-x+  2 root     root           2 Feb 17 14:47 test2.dir
          /write_attributes/write_acl/write_owner:deny
      6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
-<para>W poniższym przykładzie prawa użytkownika gozer nakładane są na nowoutworzony plik <filename>test2.dir/file.2</filename>. Dziedziecznie ACL-i <filename>read_data:file_inherit:allow</filename> oznacza, że użytkownik <literal>gozer</literal> może czytać zawartość nowych plików.</para>
+<para>W poniższym przykładzie prawa użytkownika gozer nakładane są na nowoutworzony plik <filename>test2.dir/file.2</filename>. Dziedziczenie ACL-i <filename>read_data:file_inherit:allow</filename> oznacza, że użytkownik <literal>gozer</literal> może czytać zawartość nowych plików.</para>
 <screen># <userinput>touch test2.dir/file.2</userinput>
 # <userinput>ls -v test2.dir/file.2</userinput>
 -rw-r--r--+  1 root     root           0 Feb 17 14:49 test2.dir/file.2
@@ -1351,7 +1351,7 @@ drwxr-xr-x+  2 root     root           2 May  4 15:00 test3.dir/subdir.1
      8:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
 <para>W poniższych przykładach użytkownikowi <literal>gozer</literal> odmawia się prawa do zapisu i wykonania, ponieważ bity praw dla wyższego katalogu dla <literal>group@</literal> i <literal>everyone@</literal> odmawiają praw do zapisu i wykonania. Domyślna wartość właściwości <property>aclmode</property> ustawiona jest na <literal>secure</literal>, co oznacza, że prawa <literal>write_data</literal> i <literal>execute</literal> nie są dziedziczone.</para>
-<para>W poniższym przykładzie użytkownikowi <literal>gozer</literal> przydziela się prawa do zapisu, odzczytu i wykonania, dziedziczone dla nowych plików, ale niepropagowane do podkatalogów.</para>
+<para>W poniższym przykładzie użytkownikowi <literal>gozer</literal> przydziela się prawa do zapisu, odczytu i wykonania, dziedziczone dla nowych plików, ale niepropagowane do podkatalogów.</para>
 <screen># <userinput>chmod A+user:gozer:read_data/write_data/execute:file_inherit/no_propagate:allow test4.dir</userinput>
 # <userinput>ls -dv test4.dir</userinput>
 drwxr-xr-x+  2 root     root           2 Feb 17 14:54 test4.dir
@@ -1367,7 +1367,7 @@ drwxr-xr-x+  2 root     root           2 Feb 17 14:54 test4.dir
          /write_attributes/write_acl/write_owner:deny
      6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
-<para>Jak pokazuje to poniższy przykład, kiedy tworzony jest nowy podkatalog, prawo <literal>read_data/write_data/execute</literal> użytkownika <literal>gozer</literal> nie jest prowagowane do nowego katalogu<literal>sub4.dir</literal>.</para>
+<para>Jak pokazuje to poniższy przykład, kiedy tworzony jest nowy podkatalog, prawo <literal>read_data/write_data/execute</literal> użytkownika <literal>gozer</literal> nie jest propagowane do nowego katalogu<literal>sub4.dir</literal>.</para>
 <screen># <userinput>mkdir test4.dir/sub4.dir</userinput>
 # <userinput>ls -dv test4.dir/sub4.dir</userinput>
 drwxr-xr-x   2 root     root           2 Feb 17 14:57 test4.dir/sub4.dir
@@ -1399,8 +1399,8 @@ drwxr-xr-x   2 root     root           2 Feb 17 14:57 test4.dir/sub4.dir
 </example>
 <example xml:id="gbcid">
 
-<title>Dziedziczenie ACL-i z ustawionym tryblem ACL Passthrough</title>
-<para>Jeśli właściwość <literal>aclmode</literal> dla systemu plików <filename>tank/cindy</filename> ustawiona jest na<literal>passthrough</literal>, wtedy użytkownik <literal>gozer</literal> odziedziczyłby ACL-e nałozone na <filename>test4.dir</filename> dla nowego pliku<filename>file.4</filename>, jak poniżej:</para>
+<title>Dziedziczenie ACL-i z ustawionym trybem ACL Passthrough</title>
+<para>Jeśli właściwość <literal>aclmode</literal> dla systemu plików <filename>tank/cindy</filename> ustawiona jest na<literal>passthrough</literal>, wtedy użytkownik <literal>gozer</literal> odziedziczyłby ACL-e nałożone na <filename>test4.dir</filename> dla nowego pliku<filename>file.4</filename>, jak poniżej:</para>
 <screen># <userinput>zfs set aclmode=passthrough tank/cindy</userinput>
 # <userinput>touch test4.dir/file.4</userinput>
 # <userinput>ls -v test4.dir/file.4</userinput>
@@ -1420,7 +1420,7 @@ drwxr-xr-x   2 root     root           2 Feb 17 14:57 test4.dir/sub4.dir
 <example xml:id="gbchq">
 
 <title>Dziedziczenie ACL-i z trybem ACL Discard</title>
-<para>Jesli właściwość <property>aclmode</property> dla systemu plików ustawiona jest na<literal>discard</literal>, wtedy ACL-e mogą być odrzucone, kiedy zmienią suę bity praw dla katalogu. Na przykład:</para>
+<para>Jeśli właściwość <property>aclmode</property> dla systemu plików ustawiona jest na<literal>discard</literal>, wtedy ACL-e mogą być odrzucone, kiedy zmienią się bity praw dla katalogu. Na przykład:</para>
 <screen># <userinput>zfs set aclmode=discard tank/cindy</userinput>
 # <userinput>chmod A+user:gozer:read_data/write_data/execute:dir_inherit:allow test5.dir</userinput>
 # <userinput>ls -dv test5.dir</userinput>
@@ -1507,7 +1507,7 @@ drwxr-xr-x+  2 root     root           2 May  4 14:23 test6.dir
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
-<para>Skróconą listę ACL-i dla plików i katalogów można wudrukować komendą <command>ls</command> <option>
+<para>Skróconą listę ACL-i dla plików i katalogów można wydrukować komendą <command>ls</command> <option>
 V</option>. Na przykład:</para>
 <screen># <userinput>ls -V file.1</userinput>
 -rw-r--r--   1 root     root      206663 Feb 16 11:00 file.1
@@ -1574,7 +1574,7 @@ V</option>. Na przykład:</para>
 <para>Uprawnienia można wskazywać jako argumenty pozycyjne komendzie <command>chmod</command>.</para>
 </listitem>
 <listitem>
-<para>Myślniki (-), które nie identyfikują uprawnien można pominąć i podawac tylko wymagane litery.</para>
+<para>Myślniki (-), które nie identyfikują uprawnień można pominąć i podawać tylko wymagane litery.</para>
 </listitem>
 <listitem>
 <para>W ten sam sposób podaje się uprawnienia i flagi dziedziczenia.</para>
