@@ -1455,9 +1455,7 @@ drwxr--r--   2 root     root           2 Feb 16 11:23 test5.dir
 <example xml:id="gbche">
 
 <title>Dziedziczenie ACL-i z trybem dziedziczenia ustalonym na Noallow</title>
-<para>In the following example, two explicit ACLs with file inheritance are
-set. One ACL allows <literal>read_data</literal> permission, and one ACL denies <literal>read_data</literal> permission. This example also illustrates how you can
-specify two ACEs in the same <command>chmod</command> command.</para>
+<para>W poniższym przykładzie ustanowiono dwa szczegółowe ACL-e z włączonym dziedziczeniem dla plików. Jeden ACL daje prawo <literal>read_data</literal>, drugi odmawia prawa <literal>read_data</literal>. Przykład ten ilustruje jak można ustalić dwa ACE w jednym wywołaniu komendy <command>chmod</command>.</para>
 <screen># <userinput>zfs set aclinherit=nonallow tank/cindy</userinput>
 # <userinput>chmod A+user:gozer:read_data:file_inherit:deny,user:lp:read_data:file_inherit:allow test6.dir</userinput>
 # <userinput>ls -dv test6.dir</userinput>
@@ -1474,8 +1472,7 @@ drwxr-xr-x+  2 root     root           2 May  4 14:23 test6.dir
          /write_attributes/write_acl/write_owner:deny
      7:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
-<para>As the following example shows, when a new file is created, the ACL
-that allows <literal>read_data</literal> permission is discarded.</para>
+<para>Poniżej widać, że przy tworzeniu nowego pliku ACL przydzielający prawo <literal>read_data</literal> jest odrzucany.</para>
 <screen># <userinput>touch test6.dir/file.6</userinput>
 # <userinput>ls -v test6.dir/file.6</userinput>
 -rw-r--r--+  1 root     root           0 May  4 13:44 test6.dir/file.6
@@ -1493,29 +1490,25 @@ that allows <literal>read_data</literal> permission is discarded.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gbchf">
-<title>Setting and Displaying ACLs on ZFS Files in Compact
-Format</title>
-<para>You can set and display permissions on ZFS files in a compact format
- that uses 14 unique letters to represent the permissions. The letters that
-represent the compact permissions are listed in <olink targetdoc="" remap="internal" targetptr="gbbht">Table 7–2</olink> and <olink targetdoc="" remap="internal" targetptr="gbbhx">Table 7–3</olink>.<indexterm xml:id="indexterm-455">
+<title>Ustalanie i drukowanie ACL-i na plikach ZFS-a w skróconym formacie</title>
+<para>Prawa dla plików ZFS-a można ustalać i drukować w formie skróconej, w której 14 liter reprezentuje prawa. Jednoliterowe reprezentacje praw przedstawione są w <olink targetdoc="" remap="internal" targetptr="gbbht">tabeli 7–2</olink> i w <olink targetdoc="" remap="internal" targetptr="gbbhx">tabeli 7–3</olink>.<indexterm xml:id="indexterm-455">
 <primary>ACL-e</primary>
-<secondary>setting ACLs on ZFS file (compact mode)</secondary>
+<secondary>ustalanie ACL-i dla plików ZFS-a (tryb skrócony)</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-456">
 <primary>setting</primary>
-<secondary>ACLs on ZFS file (compact mode)</secondary>
+<secondary>ACL-e dla plików ZFS-a (tryb skrócony)</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-457">
 <primary>systemy plików ZFS-a</primary>
-<secondary>setting ACLs on ZFS file (compact mode)</secondary>
+<secondary>ustalanie ACL-i dla plików ZFS-a (tryb skrócony)</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
-<para>You can display compact ACL listings for files and directories by using
-the <command>ls</command> <option>
-V</option> command. For example:</para>
+<para>Skróconą listę ACL-i dla plików i katalogów można wudrukować komendą <command>ls</command> <option>
+V</option>. Na przykład:</para>
 <screen># <userinput>ls -V file.1</userinput>
 -rw-r--r--   1 root     root      206663 Feb 16 11:00 file.1
             owner@:--x-----------:------:deny
@@ -1524,14 +1517,14 @@ V</option> command. For example:</para>
             group@:r-------------:------:allow
          everyone@:-wxp---A-W-Co-:------:deny
          everyone@:r-----a-R-c--s:------:allow</screen>
-<para>The compact ACL output is described as follows:</para>
+<para>Opis skróconego formatu ACL-i:</para>
 <variablelist>
 <varlistentry>
 <term>
 <literal>owner@</literal>
 </term>
 <listitem>
-<para>The owner is denied execute permissions to the file (<literal>x</literal>=<literal>execute</literal>).</para>
+<para>Właścicielowi odmawia się praw do wykonania pliku (<literal>x</literal>=<literal>execute</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1539,9 +1532,7 @@ V</option> command. For example:</para>
 <literal>owner@</literal>
 </term>
 <listitem>
-<para>The owner can read and modify the contents of the file (<literal>rw</literal>=<literal>read_data/write_data</literal>), (<literal>p</literal>=<literal>append_data</literal>). The owner can also modify the file's attributes such
-as timestamps, extended attributes, and ACLs (<literal>A</literal>=<literal>write_xattr</literal>, <literal>W</literal>=<literal>write_attributes</literal>, <literal>C</literal>=<literal>write_acl</literal>). In addition, the owner can modify the ownership of the
-file (<literal>O</literal>=<literal>write_owner</literal>).</para>
+<para>Właściciel może czytać i modyfikować zawartość pliku (<literal>rw</literal>=<literal>read_data/write_data</literal>), (<literal>p</literal>=<literal>append_data</literal>). Właściciel może także zmieniać atrybuty pliku, takie jak timestamps, rozszerzone atrybuty i ACL-e (<literal>A</literal>=<literal>write_xattr</literal>, <literal>W</literal>=<literal>write_attributes</literal>, <literal>C</literal>=<literal>write_acl</literal>). Dodatkowo może zmienić właściciela pliku (<literal>O</literal>=<literal>write_owner</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1549,8 +1540,7 @@ file (<literal>O</literal>=<literal>write_owner</literal>).</para>
 <literal>group@</literal>
 </term>
 <listitem>
-<para>The group is denied modify and execute permissions to the
-file (<literal>rw</literal>=<literal>read_data/write_data</literal>, <literal>p</literal>=<literal>append_data</literal>, and <literal>x</literal>=<literal>execute</literal>).</para>
+<para>Grupie odmawia się praw do zmiany i wykonania pliku (<literal>rw</literal>=<literal>read_data/write_data</literal>, <literal>p</literal>=<literal>append_data</literal> i <literal>x</literal>=<literal>execute</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1558,7 +1548,7 @@ file (<literal>rw</literal>=<literal>read_data/write_data</literal>, <literal>p<
 <literal>group@</literal>
 </term>
 <listitem>
-<para>The group is granted read permissions to the file (<literal>r</literal>=<literal>read_data</literal>).</para>
+<para>Grupa ma prawo do czytania pliku (<literal>r</literal>=<literal>read_data</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1566,9 +1556,7 @@ file (<literal>rw</literal>=<literal>read_data/write_data</literal>, <literal>p<
 <literal>everyone@</literal>
 </term>
 <listitem>
-<para>Everyone who is not user or group is denied permission to
-execute or modify the contents of the file, and to modify any attributes of
-the file (<literal>w</literal>=<literal>write_data</literal>, <literal>x</literal>=<literal>execute</literal>, <literal>p</literal>=<literal>append_data</literal>, <literal>A</literal>=<literal>write_xattr</literal>, <literal>W</literal>=<literal>write_attributes</literal>, <literal>C</literal>=<literal>write_acl</literal>, and <literal>o</literal>=<literal>write_owner</literal>).</para>
+<para>Każdemu, kto nie jest właścicielem i nie należy do grupy odmawia się praw do wykonania lub modyfikacji pliku, także do zmiany atrybutów pliku  (<literal>w</literal>=<literal>write_data</literal>, <literal>x</literal>=<literal>execute</literal>, <literal>p</literal>=<literal>append_data</literal>, <literal>A</literal>=<literal>write_xattr</literal>, <literal>W</literal>=<literal>write_attributes</literal>, <literal>C</literal>=<literal>write_acl</literal> i <literal>o</literal>=<literal>write_owner</literal>).</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -1576,44 +1564,39 @@ the file (<literal>w</literal>=<literal>write_data</literal>, <literal>x</litera
 <literal>everyone@</literal>
 </term>
 <listitem>
-<para>Everyone who is not user or group is granted read permissions
-to the file and the file's attributes (<literal>r</literal>=<literal>read_data</literal>, <literal>a</literal>=<literal>append_data</literal>, <literal>R</literal>=<literal>read_xattr</literal>, <literal>c</literal>=<literal>read_acl</literal>, and <literal>s</literal>=<literal>synchronize</literal>). The <literal>synchronize</literal> access permission
-is not currently implemented.</para>
+<para>Każdemu, kto nie jest właścicielem lub nie należy do grupy daje się prawo do odczytania pliku i jego atrybutów (<literal>r</literal>=<literal>read_data</literal>, <literal>a</literal>=<literal>append_data</literal>, <literal>R</literal>=<literal>read_xattr</literal>, <literal>c</literal>=<literal>read_acl</literal> i <literal>s</literal>=<literal>synchronize</literal>). Prawo dostępu <literal>synchronize</literal> nie zostało jeszcze zaimplementowane.</para>
 </listitem>
 </varlistentry>
 </variablelist>
-<para>Compact ACL format provides the following advantages over verbose ACL
-format:</para>
+<para>Skrócony format ACL-i ma pewna przewagę nad formatem szczegółowym:</para>
 <itemizedlist>
 <listitem>
-<para>Permissions can be specified as positional arguments to the <command>chmod</command> command.</para>
+<para>Uprawnienia można wskazywać jako argumenty pozycyjne komendzie <command>chmod</command>.</para>
 </listitem>
 <listitem>
-<para>The hyphen (-) characters, which identify no permissions,
-can be removed and only the required letters need to be specified.</para>
+<para>Myślniki (-), które nie identyfikują uprawnien można pominąć i podawac tylko wymagane litery.</para>
 </listitem>
 <listitem>
-<para>Both permissions and inheritance flags are set in the same
-fashion.</para>
+<para>W ten sam sposób podaje się uprawnienia i flagi dziedziczenia.</para>
 </listitem>
 </itemizedlist>
-<para>For information about using the verbose ACL format, see <olink targetdoc="" remap="internal" targetptr="gbabw">Setting and Displaying ACLs on ZFS Files in Verbose Format</olink>.</para>
+<para>Więcej informacji o szczegółowym formacie w <olink targetdoc="" remap="internal" targetptr="gbabw">Ustalanie i drukowanie ACL-i dla plików ZFS-a w formacie szczegółowym</olink>.</para>
 <example xml:id="gcfhr">
 
 <title>Ustawianie i wyświetlanie list ACL w formacie skróconym</title>
 <para>W poniższym przykładzie istnieje prosty wpis ACL dla pliku <filename>file.1</filename>:<indexterm xml:id="indexterm-458">
 <primary>ACL-e</primary>
-<secondary>setting ACLs on ZFS file (compact mode)</secondary>
+<secondary>ustalanie ACL-i dla plików ZFS-a (tryb skrócony)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-459">
-<primary>setting</primary>
-<secondary>ACLs on ZFS file (compact mode)</secondary>
+<primary>ustalanie</primary>
+<secondary>ACL-e dla plików ZFS-a (tryb skrócony)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-460">
 <primary>systemy plików ZFS-a</primary>
-<secondary>setting ACLs on ZFS file (compact mode)</secondary>
+<secondary>ustalanie ACL-i dla plików ZFS-a (tryb skrócony)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
