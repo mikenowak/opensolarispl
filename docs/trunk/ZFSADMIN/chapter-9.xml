@@ -9,8 +9,7 @@
 
 <title>Usuwanie problemów i odzyskiwanie danych w ZFS-ie</title>
 <toc>
-<para>Ten rozdział opisuje w jaki sposób identyfikowac i naprawiać błędy w ZFS-ie.
-Zawarto równierz informacje dotyczącą zapobieganiu powstawania błędow.</para>
+<para>Ten rozdział opisuje w jaki sposłób identyfikować i naprawiać błędy w ZFS-ie. Zawarto równierz informacje dotyczącą zapobieganiu powstawania błędow.</para>
 <para>W tym rozdziale znajduja sa nastepujace sekcje:</para>
 <itemizedlist>
 <listitem>
@@ -40,7 +39,7 @@ Zawarto równierz informacje dotyczącą zapobieganiu powstawania błędow.</par
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbbvf">Naprawa uszkodzonego urządzenia</olink>
+<olink targetdoc="" remap="internal" targetptr="gbbvf">Naprawa brakującego urządzenia</olink>
 </para>
 </listitem>
 <listitem>
@@ -138,18 +137,16 @@ przestawiono w poniższych przykładach:<indexterm xml:id="indexterm-499">
 <para>On-disk data corruption due to cosmic rays</para>
 </listitem>
 <listitem>
-<para>Driver bugs resulting in data being transferred to or from
-the wrong location</para>
+<para>Błędy w sterownikach, powodujące nieprawidłowy transfer danych w lub ze złych miejsc</para>
 </listitem>
 <listitem>
-<para>Simply another user overwriting portions of the physical device
-by accident</para>
+<para>Inny użytkownik, przypadkowo nadpisujący porcje danych na fizycznym urządzeniu</para>
 </listitem>
 </itemizedlist>
-<para>In some cases, these errors are transient, such as a random I/O error while the controller is having problems. In other cases, the damage is permanent, such as on-disk corruption. Even still, whether the damage is permanent does not necessarily indicate that the error is likely to occur again. Na przykład, jeżeli administrator przez przypadek nadpisze część dysku, nie wystąpił błąd sprzętowy i urządzenie nie musi zostać wymienione. Identifying exactly what went wrong with a device is not an easy task and is covered in more detail in a later section.</para>
+<para>In some cases, these errors are transient, such as a random I/O error while the controller is having problems. W reszcie przypadków uszkodzenia są trwałe, jak na przykład fizyczne uszkodzenie dysku Nawet wtedy, kiedy uszkodzenia są trwałe, błędy niekoniecznie się powtórzą Na przykład, jeżeli administrator przez przypadek nadpisze część dysku, nie wystąpił błąd sprzętowy i urządzenie nie musi zostać wymienione. Identifying exactly what went wrong with a device is not an easy task and is covered in more detail in a later section.</para>
 </sect2>
 <sect2 xml:id="gbbwx">
-<title>Corrupted ZFS Data</title>
+<title>Zepsute dane ZFS</title>
 <para>Data corruption occurs when one or more device errors (indicating missing
 or damaged devices/uszkodzone urządzenia) affects a top-level virtual device. For example, one half
 of a mirror can experience thousands of device errors without ever causing
@@ -168,43 +165,15 @@ in the exact same location, corrupted data will be the result.<indexterm xml:id=
 <secondary>corrupted</secondary>
 </indexterm>
 </para>
-<para>Data corruption is always permanent and requires special consideration
-during repair. Even if the underlying devices are repaired or replaced, the
-original data is lost forever. Most often this scenario requires restoring
-data from backups. Data errors are recorded as they are encountered, and can
-be controlled through regular disk scrubbing as explained in the following
-section. When a corrupted block is removed, the next scrubbing pass recognizes
-that the corruption is no longer present and removes any trace of the error
-from the system.</para>
+<para>Zepsucie danych jest zawsze trwałe i wymaga specjalnej uwagi podczas naprawy. Even if the underlying devices are repaired or replaced, the original data is lost forever. W większości przypadków, ten scenariusz wymaga odtworzenia danych z kopi zapasowych. Data errors are recorded as they are encountered, and can be controlled through regular disk scrubbing as explained in the following section. When a corrupted block is removed, the next scrubbing pass recognizes that the corruption is no longer present and removes any trace of the error from the system.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gbbwa">
 <title>Sprawdzanie integralności danych w ZFS-ie</title>
-<para>No <command>fsck</command> utility equivalent exists for ZFS. This utility
-has traditionally served two purposes, data repair and data validation.</para>
+<para>Dla ZFS nie istnieje równoważne narzędzie jak <command>fsck</command>. This utility has traditionally served two purposes, data repair and data validation.</para>
 <sect2 xml:id="gbbyc">
-<title>Data Repair</title>
-<para>With traditional file systems, the way in which data is written is inherently
-vulnerable to unexpected failure causing data inconsistencies. Because a traditional
-file system is not transactional, unreferenced blocks, bad link counts, or
-other inconsistent data structures are possible. The addition of journaling
-does solve some of these problems, but can introduce additional problems when
-the log cannot be rolled back. With ZFS, none of these problems exist. The
-only way for inconsistent data to exist on disk is through hardware failure
-(in which case the pool should have been replicated) or a bug in the ZFS software
-exists.<indexterm xml:id="indexterm-505">
-<primary>Pule pamięci ZFS</primary>
-<secondary>data repair</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-506">
-<primary>checking</primary>
-<secondary>ZFS data integrity</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-507">
-<primary>data</primary>
-<secondary>repair</secondary>
-</indexterm>
+<title>Naprawa danych</title>
+<para>With traditional file systems, the way in which data is written is inherently vulnerable to unexpected failure causing data inconsistencies. Because a traditional file system is not transactional, unreferenced blocks, bad link counts, or other inconsistent data structures are possible. The addition of journaling does solve some of these problems, but can introduce additional problems when the log cannot be rolled back. Żaden z powyższych problemów nie istnieje dla ZFS. The only way for inconsistent data to exist on disk is through hardware failure (in which case the pool should have been replicated) or a bug in the ZFS software exists.<indexterm xml:id="indexterm-505"> <primary>Pule pamięci ZFS</primary> <secondary>data repair</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-506"> <primary>checking</primary> <secondary>ZFS data integrity</secondary> </indexterm> <indexterm xml:id="indexterm-507"> <primary>data</primary> <secondary>repair</secondary> </indexterm>
 </para>
 <para>Given that the <command>fsck</command> utility is designed to repair
 known pathologies specific to individual file systems, writing such a utility
@@ -216,7 +185,7 @@ always be avoided by using replicated pools.</para>
 render some or all of your data inaccessible is always represent.</para>
 </sect2>
 <sect2 xml:id="gbbyd">
-<title>Data Validation</title>
+<title>Sprawdzanie poprawności danych</title>
 <para>In addition to data repair, the <command>fsck</command> utility validates
 that the data on disk has no problems. Traditionally, this task is done by
 unmounting the file system and running the <command>fsck</command> utility,
@@ -242,7 +211,7 @@ before they result in hardware or software failure.<indexterm xml:id="indexterm-
 </para>
 </sect2>
 <sect2 xml:id="gbbxi">
-<title>Controlling ZFS Data Scrubbing</title>
+<title>Kontrola weryfikacji danych ZFS</title>
 <para>Whenever ZFS encounters an error, either through scrubbing or when accessing
 a file on demand, the error is logged internally so that you can get a quick
 overview of all known errors within the pool. <indexterm xml:id="indexterm-511">
@@ -256,28 +225,8 @@ overview of all known errors within the pool. <indexterm xml:id="indexterm-511">
 </indexterm>
 </para>
 <sect3 xml:id="gbbws">
-<title>Explicit ZFS Data Scrubbing</title>
-<para>The simplest way to check your data integrity is to initiate an explicit
-scrubbing of all data within the pool. This operation traverses all the data
-in the pool once and verifies that all blocks can be read. Scrubbing proceeds
-as fast as the devices allow, though the priority of any I/O remains below
-that of normal operations. This operation might negatively impact performance,
-though the file system should remain usable and nearly as responsive while
-the scrubbing occurs. To initiate an explicit scrub, use the <command>zpool
-scrub</command> command. For example:<indexterm xml:id="indexterm-513">
-<primary>Pule pamięci ZFS</primary>
-<secondary>data scrubbing</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-514">
-<primary>scrubbing</primary>
-<secondary>(example of)</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-515">
-<primary>data</primary>
-<secondary>scrubbing</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
+<title>Jawna kontrola danych ZFS</title>
+<para>Najprostrzą metodą na sprawdzenie integralności danych jest zainicjowanie jawnej kontroli wszystkich danych dla puli. This operation traverses all the data in the pool once and verifies that all blocks can be read. Scrubbing proceeds as fast as the devices allow, though the priority of any I/O remains below that of normal operations. This operation might negatively impact performance, though the file system should remain usable and nearly as responsive while the scrubbing occurs. Aby zainicjować jawną kontrolę danych, użyj komendy <command>zpool scrub&lt;/0&gt; For example:<indexterm xml:id="indexterm-513"> <primary>Pule pamięci ZFS</primary> <secondary>data scrubbing</secondary> <tertiary>(example of)</tertiary> </indexterm> <indexterm xml:id="indexterm-514"> <primary>scrubbing</primary> <secondary>(example of)</secondary> </indexterm> <indexterm xml:id="indexterm-515"> <primary>data</primary> <secondary>scrubbing</secondary> <tertiary>(example of)</tertiary> </indexterm>
 </para>
 <screen># <userinput>zpool scrub tank</userinput>
 </screen>
@@ -285,47 +234,23 @@ scrub</command> command. For example:<indexterm xml:id="indexterm-513">
 <screen># <userinput>zpool status -v tank</userinput>
   pool: tank
  state: ONLINE
- scrub: scrub completed with 0 errors on Tue Mar  7 15:27:36 2006
-config:
+ scrub: scrub completed with 0 errors on Tue Mar 7 15:27:36 2006 config:
 
-        NAME         STATE     READ WRITE CKSUM
-        tank         ONLINE       0     0     0
-          mirror     ONLINE       0     0     0
-            c1t0d0   ONLINE       0     0     0
-            c1t1d0   ONLINE       0     0     0
+        NAME        STATE    READ  WRITE  CKSUM
+        tank           ONLINE        0        0        0
+          mirror        ONLINE        0        0        0
+            c1t0d0      ONLINE        0        0        0
+            c1t1d0       ONLINE        0        0        0
 
 errors: No known data errors</screen>
-<para>Note that only one active scrubbing operation per pool can occur at
-one time.</para>
-<para>Performing regular scrubbing also guarantees continuous I/O to all disks
-on the system. Regular scrubbing has the side effect of preventing power management
-from placing idle disks in low-power mode. If the system is generally performing
-I/O all the time, or if power consumption is not a concern, then this issue
-can safely be ignored.</para>
+<para>Należy zwrócić uwagę, że jednocześnie możliwa jest tylko jedna operacja weryfikacji danych dla każdej z puli.</para>
+<para>Wykonywanie regularnej weryfikacji gwarantuje ciągłość we/wy dla wszystkich dysków w systemie. Regular scrubbing has the side effect of preventing power management from placing idle disks in low-power mode. If the system is generally performing I/O all the time, or if power consumption is not a concern, then this issue can safely be ignored.</para>
 <para>For more information about interpreting <command>zpool status</command> output,
 see <olink targetdoc="" remap="internal" targetptr="gaynp">Querying ZFS Storage Pool Status</olink>.</para>
 </sect3>
 <sect3 xml:id="gbbya">
 <title>ZFS Data Scrubbing and Resilvering</title>
-<para>When a device is replaced, a resilvering operation is initiated to move
-data from the good copies to the new device. This action is a form of disk
-scrubbing. Therefore, only one such action can happen at a given time in the
-pool. If a scrubbing operation  is
-in progress, a resilvering operation suspends the current scrubbing, and restarts
-after the resilvering is complete.<indexterm xml:id="indexterm-516">
-<primary>Pule pamięci ZFS</primary>
-<secondary>data scrubbing and resilvering</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-517">
-<primary>resilvering and data scrubbing</primary>
-<secondary>opis</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-518">
-<primary>data</primary>
-<secondary>resilvering</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
+<para>When a device is replaced, a resilvering operation is initiated to move data from the good copies to the new device. Ta akcja jest formą weryfikacji danych dysku. Therefore, only one such action can happen at a given time in the pool. If a scrubbing operation is in progress, a resilvering operation suspends the current scrubbing, and restarts after the resilvering is complete.<indexterm xml:id="indexterm-516"> <primary>Pule pamięci ZFS</primary> <secondary>data scrubbing and resilvering</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-517"> <primary>resilvering and data scrubbing</primary> <secondary>opis</secondary> </indexterm> <indexterm xml:id="indexterm-518"> <primary>data</primary> <secondary>resilvering</secondary> <tertiary>opis</tertiary> </indexterm>
 </para>
 <para>For more information about resilvering, see <olink targetdoc="" remap="internal" targetptr="gbcus">Viewing Resilvering Status</olink>.</para>
 </sect3>
@@ -356,7 +281,7 @@ instructions.<indexterm xml:id="indexterm-519">
 <secondary>identifying problems</secondary>
 </indexterm>
 </para>
-<para>The basic recovery process is as follows:</para>
+<para>Podstawowy proces odtworzenia wygląda następująco:</para>
 <itemizedlist>
 <listitem>
 <para>Identify the errors through the <command>fmd</command> messages
@@ -432,11 +357,11 @@ action: Online the device using 'zpool online' or replace the device with
  scrub: none requested
  config:
 
-        NAME         STATE     READ WRITE CKSUM
-        tank         DEGRADED     0     0     0
-          mirror     DEGRADED     0     0     0
-            c1t0d0   ONLINE       0     0     0
-            c1t1d0   OFFLINE      0     0     0
+        NAME        STATE    READ  WRITE  CKSUM
+        tank         DEGRADED        0        0        0
+          mirror      DEGRADED        0        0        0
+            c1t0d0      ONLINE        0        0        0
+            [fuzzy] c1t1d0       ONLINE        0        0        0
 
 errors: No known data errors</screen>
 <para>This output is divided into several sections:</para>
@@ -527,7 +452,7 @@ errors.</para>
 </variablelist>
 </sect3>
 <sect3 xml:id="gbcvv">
-<title>Configuration Information</title>
+<title>Informacja o konfiguracji</title>
 <para>The <literal>config</literal> field in the <command>zpool status</command> output
 describes the configuration layout of the devices comprising the pool, as
 well as their state and any errors generated from the devices. The state can
@@ -548,8 +473,7 @@ issuing a write request.</para>
 </listitem>
 <listitem>
 <para>
-<literal>CKSUM</literal> – Checksum error. The device
-returned corrupted data as the result of a read request.</para>
+&lt;I0&gt;CKSUM&lt;/I0&gt; - błędy sumy kontrolnej. The device returned corrupted data as the result of a read request.</para>
 </listitem>
 </itemizedlist>
 <para>These errors can be used to determine if the damage is permanent. A
@@ -582,53 +506,29 @@ any known data corruption has been discovered.</para>
 information, see <olink targetdoc="" remap="internal" targetptr="gbbwa">Checking ZFS Data Integrity</olink>.</para>
 </sect3>
 <sect3 xml:id="gbcwe">
-<title>Data Corruption Errors</title>
+<title>Błędy uszkodzenia danych</title>
 <para>The <command>zpool status</command> command also shows whether any known
 errors are associated with the pool. These errors might have been found during
 disk scrubbing or during normal operation. ZFS maintains a persistent log
 of all data errors associated with the pool. This log is rotated whenever
 a complete scrub of the system finishes.</para>
-<para>Data corruption errors are always fatal. Their presence indicates that
-at least one application experienced an I/O error due to corrupt data within
-the pool. Device errors within a replicated pool do not result in data corruption
-and are not recorded as part of this log. By default, only the number of errors
-found is displayed. A complete list of errors and their specifics can be found
-by using the <command>zpool status</command> <option>
-v</option> option. For
-example:<indexterm xml:id="indexterm-525">
-<primary>Pule pamięci ZFS</primary>
-<secondary>data corruption identified (<command>zpool status</command> <option>
-v</option>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-526">
-<primary>data</primary>
-<secondary>corruption identified (<command>zpool status</command> <option>
-v</option>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-527">
-<primary>usuwanie problemów</primary>
-<secondary>data corruption identified (<command>zpool status</command> <option>
-v</option>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
+<para>Błędy uszkodzenia danych są zawsze krytyczne. Their presence indicates that at least one application experienced an I/O error due to corrupt data within the pool. Device errors within a replicated pool do not result in data corruption and are not recorded as part of this log. By default, only the number of errors found is displayed. A complete list of errors and their specifics can be found by using the <command>zpool status</command> <option> v</option> option. For example:<indexterm xml:id="indexterm-525"> <primary>Pule pamięci ZFS</primary> <secondary>data corruption identified (<command>zpool status</command> <option> v</option>)</secondary> <tertiary>(example of)</tertiary> </indexterm> <indexterm xml:id="indexterm-526"> <primary>data</primary> <secondary>corruption identified (<command>zpool status</command> <option> v</option>)</secondary> <tertiary>(example of)</tertiary> </indexterm> <indexterm xml:id="indexterm-527"> <primary>usuwanie problemów</primary> <secondary>data corruption identified (<command>zpool status</command> <option> v</option>)</secondary> <tertiary>(example of)</tertiary> </indexterm>
 </para>
 <screen># <userinput>zpool status -v</userinput>
   pool: tank
  state: DEGRADED
 status: One or more devices has experienced an error resulting in data
-        corruption.  Applications may be affected.
+        corruption.   Applications may be affected.
 action: Restore the file in question if possible.  Otherwise restore the
         entire pool from backup.
    see: http://www.sun.com/msg/ZFS-8000-8A
- scrub: resilver completed with 1 errors on Fri Mar 17 15:42:18 2006
+ scrub: resilver completed with 1 errors on Fri Mar 17 15:42:18 2006 
 config:
 
-        NAME         STATE     READ WRITE CKSUM
+        NAME        STATE    READ  WRITE  CKSUM
         tank         DEGRADED     0     0     1
           mirror     DEGRADED     0     0     1
-            c1t0d0   ONLINE       0     0     2
+            [fuzzy] c1t0d0      ONLINE        0        0        0
             c1t1d0   UNAVAIL      0     0     0  corrupted data
 
 errors: The following persistent errors have been detected:
@@ -663,10 +563,7 @@ scenarios generate events to notify the administrator:<indexterm xml:id="indexte
 <itemizedlist>
 <listitem>
 <para>
-<emphasis role="strong">Device state transition</emphasis> –
-If a device becomes <literal>FAULTED</literal>, ZFS logs a message indicating
-that the fault tolerance of the pool might be compromised. A similar message
-is sent if the device is later brought online, restoring the pool to health.</para>
+<emphasis role="strong">Device state transition</emphasis> – If a device becomes <literal>FAULTED</literal>, ZFS logs a message indicating that the fault tolerance of the pool might be compromised. Podobna wiadomość zostaje wysłana, jeżeli urządzenie </para>
 </listitem>
 <listitem>
 <para>
@@ -690,28 +587,7 @@ problem accompanied by its own set of error messages.</para>
 </sect1>
 <sect1 xml:id="gbbve">
 <title>Naprawa uszkodzonej konfiguracji ZFS</title>
-<para>ZFS maintains a cache of active pools and their configuration on the
-root file system. If this file is corrupted or somehow becomes out of sync
-with what is stored on disk, the pool can no longer be opened. ZFS tries to
-avoid this situation, though arbitrary corruption is always possible given
-the qualities of the underlying file system and storage. This situation typically
-results in a pool disappearing from the system when it should otherwise be
-available. This situation can also manifest itself as a partial configuration
-that is missing an unknown number of top-level virtual devices. In either
-case, the configuration can be recovered by exporting the pool (if it is visible
-at all), and re-importing it.<indexterm xml:id="indexterm-531">
-<primary>Pule pamięci ZFS</primary>
-<secondary>repairing a damaged ZFS configuration</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-532">
-<primary>repairing</primary>
-<secondary>a damaged ZFS configuration</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-533">
-<primary>usuwanie problemów</primary>
-<secondary>repairing a damaged ZFS configuration</secondary>
-</indexterm>
+<para>ZFS maintains a cache of active pools and their configuration on the root file system. If this file is corrupted or somehow becomes out of sync with what is stored on disk, the pool can no longer be opened. ZFS tries to avoid this situation, though arbitrary corruption is always possible given the qualities of the underlying file system and storage. Ta sytuacja zwykle powoduje zniknięcie puli z systemu, kiedy w przeciwnym przypadku powinna być dostępna. This situation can also manifest itself as a partial configuration that is missing an unknown number of top-level virtual devices. In either case, the configuration can be recovered by exporting the pool (if it is visible at all), and re-importing it.<indexterm xml:id="indexterm-531"> <primary>Pule pamięci ZFS</primary> <secondary>repairing a damaged ZFS configuration</secondary> </indexterm> <indexterm xml:id="indexterm-532"> <primary>repairing</primary> <secondary>a damaged ZFS configuration</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-533"> <primary>usuwanie problemów</primary> <secondary>repairing a damaged ZFS configuration</secondary> </indexterm>
 </para>
 <para>For more information about importing and exporting pools, see <olink targetdoc="" remap="internal" targetptr="gbchy">Migrating ZFS Storage Pools/Pule pamięci ZFS</olink>.</para>
 </sect1>
@@ -748,25 +624,24 @@ EVENT-ID: 043bb0dd-f0a5-4b8f-a52d-8809e2ce2e0a
 DESC: A ZFS device failed.  Refer to http://sun.com/msg/ZFS-8000-D3 for more information.
 AUTO-RESPONSE: No automated response will occur.
 IMPACT: Fault tolerance of the pool may be compromised.
-REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
-<para>The next step is to use the <command>zpool status</command> <option> x</option> command to view more detailed information about the device problem and the resolution. Na przykład:</para>
+RE-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
+<para>Następnym krokiem jest uzycie komendy <command>zpool status</command> <option>x</option> w celu zobaczenia dokładniejszej informacji na temat problemu urządzenia i podjęcia decyzji. Na przykład:</para>
 <screen># <userinput>zpool status -x</userinput>
   pool: tank
  state: DEGRADED
 status: One or more devices could not be opened.  Sufficient replicas exist for
-        the pool to continue functioning in a degraded state.
+        the pool continue functioning in a degraded state.
 action: Attach the missing device and online it using 'zpool online'.
    see: http://www.sun.com/msg/ZFS-8000-D3
- scrub: resilver completed with 0 errors on Fri Mar 10 11:08:29 2006
+ scrub: resilver completed with 0 errors on Fri Mar 10 11:08:29 2006 
 config:
 
-        NAME         STATE     READ WRITE CKSUM
-        tank         DEGRADED     0     0     0
-          mirror     DEGRADED     0     0     0
+        NAME        STATE    READ  WRITE  CKSUM
+        tank         DEGRADED        0        0        0
+          mirror      DEGRADED        0        0        0
             c0t1d0   UNAVAIL      0     0     0  cannot open
-            c1t1d0   ONLINE       0     0     0</screen>
-<para>You can see from this output that the missing device <literal>c0t1d0</literal> is
-not functioning. If you determine that the drive is faulty, replace the device.</para>
+            c1t1d0      ONLINE        0        0        0</screen>
+<para>You can see from this output that the missing device <literal>c0t1d0</literal> is not functioning. Jesli zostanie stwierdzone, ze urządzenie jest wadliwe, należy je wymienić.</para>
 <para>Then, use the <command>zpool online</command> command to online the replaced device. Na przykład:</para>
 <screen># <userinput>zpool online tank c0t1d0</userinput>
 </screen>
@@ -816,7 +691,7 @@ online</command> command. For example:<indexterm xml:id="indexterm-537">
 </sect2>
 </sect1>
 <sect1 xml:id="gbbvf">
-<title>Repairing a Damaged Device</title>
+<title>Naprawa Uszodzonego Urządzenia</title>
 <para>This section describes how to determine device failure types, clear
 transient errors, and replace a device.</para>
 <sect2 xml:id="gbbzs">
@@ -841,11 +716,7 @@ describe a number of possible situations:<indexterm xml:id="indexterm-540">
 <itemizedlist>
 <listitem>
 <para>
-<emphasis role="strong">Bit rot</emphasis> – Over time,
-random events, such as magnetic influences and cosmic rays, can cause bits
-stored on disk to flip in unpredictable events. These events are relatively
-rare but common enough to cause potential data corruption in large or long-running
-systems. These errors are typically transient.</para>
+<emphasis role="strong">Bit rot</emphasis> – Over time, random events, such as magnetic influences and cosmic rays, can cause bits stored on disk to flip in unpredictable events. These events are relatively rare but common enough to cause potential data corruption in large or long-running systems. [fuzzy] Te błędy są podzielone na trzy kategorie:</para>
 </listitem>
 <listitem>
 <para>
@@ -856,11 +727,7 @@ though a large number might indicate a faulty drive.</para>
 </listitem>
 <listitem>
 <para>
-<emphasis role="strong">Administrator error</emphasis> –
-Administrators can unknowingly overwrite portions of the disk with bad data
-(such as copying <filename>/dev/zero</filename> over portions
-of the disk) that cause permanent corruption on disk. These errors are always
-transient.</para>
+<emphasis role="strong">Administrator error</emphasis> – Administrators can unknowingly overwrite portions of the disk with bad data (such as copying <filename>/dev/zero</filename> over portions of the disk) that cause permanent corruption on disk. [fuzzy] [fuzzy] Te błędy są podzielone na trzy kategorie:</para>
 </listitem>
 <listitem>
 <para>
@@ -872,10 +739,7 @@ not be transient.</para>
 </listitem>
 <listitem>
 <para>
-<emphasis role="strong">Bad or flaky hardware</emphasis> –
-This situation is a catch-all for the various problems that bad hardware exhibits.
-This could be consistent I/O errors, faulty transports causing random corruption,
-or any number of failures. These errors are typically permanent.</para>
+<emphasis role="strong">Bad or flaky hardware</emphasis> – This situation is a catch-all for the various problems that bad hardware exhibits. This could be consistent I/O errors, faulty transports causing random corruption, or any number of failures. [fuzzy] [fuzzy] Te błędy są podzielone na trzy kategorie:</para>
 </listitem>
 <listitem>
 <para>
@@ -890,15 +754,7 @@ step is to examine the error counts in the <command>zpool status</command> outpu
 as follows:</para>
 <screen># <userinput>zpool status -v</userinput> <replaceable>pool</replaceable>
 </screen>
-<para>The errors are divided into I/O errors and checksum errors, both of
-which might indicate the possible failure type. Typical operation predicts
-a very small number of errors (just a few over long periods of time). If you
-are seeing large numbers of errors, then this situation probably indicates
-impending or complete device failure. However, the pathology for administrator
-error can result in large error counts. The other source of information is
-the system log. If the log shows a large number of SCSI or fibre channel driver
-messages, then this situation probably indicates serious hardware problems.
-If no syslog messages are generated, then the damage is likely transient.</para>
+<para>The errors are divided into I/O errors and checksum errors, both of which might indicate the possible failure type. Typical operation predicts a very small number of errors (just a few over long periods of time). If you are seeing large numbers of errors, then this situation probably indicates impending or complete device failure. However, the pathology for administrator error can result in large error counts. Innym źródłem informacji jest log systemowy. If the log shows a large number of SCSI or fibre channel driver messages, then this situation probably indicates serious hardware problems. If no syslog messages are generated, then the damage is likely transient.</para>
 <para>The goal is to answer the following question:</para>
 <para>
 <emphasis>Is another error likely to occur on this device?</emphasis>
@@ -984,23 +840,22 @@ are sufficient replicas with good data.<indexterm xml:id="indexterm-546">
 </para>
 <para>In the following configuration, the disk <literal>c1t1d0</literal> can
 be replaced, and any data in the pool is copied from the good replica, <literal>c1t0d0</literal>.</para>
-<screen>mirror            DEGRADED
-    c1t0d0             ONLINE
-    c1t1d0             FAULTED</screen>
+<screen>[fuzzy] mirror      DEGRADED        0        0        0
+    [fuzzy] c1t0d0      ONLINE        0        0        0
+    [fuzzy] c1t1d0      ONLINE        0        0        0</screen>
 <para>The disk <literal>c1t0d0</literal> can also be replaced, though no self-healing
 of data can take place because no good replica is available.</para>
 <para>In the following configuration, neither of the faulted disks can be
 replaced. The <literal>ONLINE</literal> disks cannot be replaced either, because
 the pool itself is faulted.</para>
-<screen>raidz             FAULTED
-    c1t0d0             ONLINE
-    c2t0d0             FAULTED
-    c3t0d0             FAULTED
-    c3t0d0             ONLINE</screen>
+<screen>[fuzzy] [fuzzy] c1t1d0      ONLINE        0        0        0
+    [fuzzy] c1t0d0      ONLINE        0        0        0
+    [fuzzy] [fuzzy] c1t1d0      ONLINE        0        0        0
+    [fuzzy] [fuzzy] c1t1d0      ONLINE        0        0        0
+    [fuzzy] [fuzzy] c1t0d0      ONLINE        0        0        0</screen>
 <para>In the following configuration, either top-level disk can be replaced,
 though any bad data present on the disk is copied to the new disk.</para>
-<screen>c1t0d0         ONLINE
-c1t1d0         ONLINE</screen>
+<screen>[fuzzy] [fuzzy] c1t0d0      ONLINE        0        0        0</screen>
 <para>If either disk were faulted, then no replacement could be performed
 because the pool itself would be faulted.</para>
 </sect3>
@@ -1015,7 +870,7 @@ the process.</para>
 <para>For more information about restoring an entire pool, see <olink targetdoc="" remap="internal" targetptr="gbctt">Repairing ZFS Storage Pool-Wide Damage</olink>.</para>
 </sect3>
 <sect3 xml:id="gbcet">
-<title>Replacing a Device</title>
+<title>[fuzzy] Naprawa Uszodzonego Urządzenia</title>
 <para>Once you have determined that a device can be replaced, use the <command>zpool
 replace</command> command to replace the device. If you are replacing the
 damaged device with another different device, use the following command:<indexterm xml:id="indexterm-549">
@@ -1085,22 +940,22 @@ power or is rebooted, the resilvering process resumes exactly where it left
 off, without any need for manual intervention.</para>
 </listitem>
 </itemizedlist>
-<para>To view the resilvering process, use the <command>zpool status</command> command. Na przykład:</para>
+<para>Aby zobaczyć status jawnej kontroli danych, użyj komendy <command>zpool status&lt;/0&gt; Na przykład:</para>
 <screen># <userinput>zpool status tank</userinput>
   pool: tank
  state: DEGRADED
-reason: One or more devices is being resilvered.
+status: One or more devices is being resilvered.
 action: Wait for the resilvering process to complete.
    see: http://www.sun.com/msg/ZFS-XXXX-08
- scrub: none requested
+ scrub: none requestes
 config:
-        NAME                  STATE     READ WRITE CKSUM 
-        tank                  DEGRADED     0     0     0
-          mirror              DEGRADED     0     0     0
+        NAME        STATE    READ  WRITE  CKSUM 
+        tank         DEGRADED        0        0        0
+          mirror      DEGRADED        0        0        0
             replacing         DEGRADED     0     0     0  52% resilvered
-              c1t0d0          ONLINE       0     0     0
-              c2t0d0          ONLINE       0     0     0  
-            c1t1d0            ONLINE       0     0     0</screen>
+              c1t0d0      ONLINE        0        0        0
+              c2t0d0      ONLINE        0        0        0  
+            c1t1d0      ONLINE        0        0        0</screen>
 <para>In this example, the disk <literal>c1t0d0</literal> is being replaced
 by <literal>c2t0d0</literal>. This event is observed in the status output
 by presence of the <emphasis>replacing</emphasis> virtual device in the configuration.
@@ -1111,14 +966,13 @@ the resilvering process, and to identify exactly which device is being replaced.
 <screen># <userinput>zpool status tank</userinput>
   pool: tank
  state: ONLINE
- scrub: scrub completed with 0 errors on Tue Mar  7 15:27:36 2006
-config:
+ scrub: scrub completed with 0 errors on Tue Mar 7 15:27:36 2006 config:
 
-        NAME         STATE     READ WRITE CKSUM
-        tank         ONLINE       0     0     0
-          mirror     ONLINE       0     0     0
-            c2t0d0   ONLINE       0     0     0
-            c1t1d0   ONLINE       0     0     0
+        NAME        STATE    READ  WRITE  CKSUM
+        tank           ONLINE        0        0        0
+          mirror        ONLINE        0        0        0
+            [fuzzy] c2t0d0      ONLINE        0        0        0
+            c1t1d0       ONLINE        0        0        0
 
 errors: No known data errors</screen>
 <para>The pool is once again <literal>ONLINE</literal>, and the original bad
@@ -1128,14 +982,7 @@ disk (<literal>c1t0d0</literal>) has been removed from the configuration.</para>
 </sect1>
 <sect1 xml:id="gbbwl">
 <title>Naprawa uszkodzonych danych</title>
-<para>ZFS uses checksumming, replication, and self-healing data to minimize
-the chances of data corruption. Nonetheless, data corruption can occur if
-the pool isn't replicated, if corruption occurred while the pool was degraded,
-or an unlikely series of events conspired to corrupt multiple copies of a
-piece of data. Regardless of the source, the result is the same: The data
-is corrupted and therefore no longer accessible. The action taken depends
-on the type of data being corrupted, and its relative value. Two basic types
-of data can be corrupted:</para>
+<para>ZFS uses checksumming, replication, and self-healing data to minimize the chances of data corruption. Nonetheless, data corruption can occur if the pool isn't replicated, if corruption occurred while the pool was degraded, or an unlikely series of events conspired to corrupt multiple copies of a piece of data. Regardless of the source, the result is the same: The data is corrupted and therefore no longer accessible. The action taken depends on the type of data being corrupted, and its relative value. Dwa podstawowe typy danych mogą zostać uszkodzone:</para>
 <itemizedlist>
 <listitem>
 <para>Pool metadata – ZFS requires a certain amount of data
@@ -1153,7 +1000,7 @@ to be broken altogether.</para>
 <para>Data is verified during normal operation as well as through scrubbing.
 For more information about how to verify the integrity of pool data, see <olink targetdoc="" remap="internal" targetptr="gbbwa">Checking ZFS Data Integrity</olink>.</para>
 <sect2 xml:id="gbcuz">
-<title>Identifying the Type of Data Corruption</title>
+<title>Identyfikowanie rodzaju uszkodzenia danych</title>
 <para>By default, the <command>zpool status</command> command shows only that
 corruption has occurred, but not where this corruption occurred. For example:<indexterm xml:id="indexterm-555">
 <primary>Pule pamięci ZFS</primary>
@@ -1172,12 +1019,11 @@ corruption has occurred, but not where this corruption occurred. For example:<in
 </indexterm>
 </para>
 <screen># <userinput>zpool status tank -v</userinput>
-   pool: tank
-	 state: ONLINE
-	status: One or more devices has experienced an error resulting in data
-		     corruption.  Applications may be affected.
+   state: ONLINE
+status: One or more devices has experienced an error resulting in data
+                            corruption.   Applications may be affected.
 	action: Restore the file in question if possible.  Otherwise restore the
-		     entire pool from backup.
+                                                                                 entire pool from backup.
 	   see: http://www.sun.com/msg/ZFS-8000-8A
 	 scrub: none requested
 	config:
@@ -1208,7 +1054,6 @@ to complete, reset all errors in the pool by using the <command>zpool online</co
 status: The pool metadata is corrupted.
 action: The pool cannot be imported due to damaged devices/uszkodzone urządzenia or data.
    see: http://www.sun.com/msg/ZFS-8000-72
-config:
 
         morpheus    FAULTED   corrupted data
           c1t10d0   ONLINE</screen>
@@ -1216,33 +1061,10 @@ config:
 level.</para>
 </sect2>
 <sect2 xml:id="gbctx">
-<title>Repairing a Corrupted File or Directory</title>
-<para>If a file or directory is corrupted, the system might still be able
-to function depending on the type of corruption. Any damage is effectively
-unrecoverable. No good copies of the data exist anywhere on the system. If
-the data is valuable, you have no choice but to restore the affected data
-from backup. Even so, you might be able to recover from this corruption without
-restoring the entire pool.<indexterm xml:id="indexterm-558">
-<primary>Pule pamięci ZFS</primary>
-<secondary>repairing a corrupted file or directory</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-559">
-<primary>repairing</primary>
-<secondary>repairing a corrupted file or directory</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-560">
-<primary>usuwanie problemów</primary>
-<secondary>repairing a corrupted file or directory</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
+<title>Naprawa uszkodzonego pliku lub katalogu</title>
+<para>If a file or directory is corrupted, the system might still be able to function depending on the type of corruption. Uszkodzenie jest nie do naprawienia. Żadne zdrowe kopie danych nie istnieją w innych miejscach systemu. If the data is valuable, you have no choice but to restore the affected data from backup. Even so, you might be able to recover from this corruption without restoring the entire pool.<indexterm xml:id="indexterm-558"> <primary>Pule pamięci ZFS</primary> <secondary>repairing a corrupted file or directory</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-559"> <primary>repairing</primary> <secondary>repairing a corrupted file or directory</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-560"> <primary>usuwanie problemów</primary> <secondary>repairing a corrupted file or directory</secondary> <tertiary>opis</tertiary> </indexterm>
 </para>
-<para>If the damage is within a file data block, then the file can safely
-be removed, thereby clearing the error from the system. The first step is
-to try removing the file with the <command>rm</command> command. If this command
-doesn't work, the corruption is within the file's metadata, and ZFS cannot
-determine which blocks belong to the file in order to remove the corruption.</para>
+<para>If the damage is within a file data block, then the file can safely be removed, thereby clearing the error from the system. Pierwszym krokiem jest próba usunięcia pliku, używając komendy <command>rm</command>. If this command doesn't work, the corruption is within the file's metadata, and ZFS cannot determine which blocks belong to the file in order to remove the corruption.</para>
 <para>If the corruption is within a directory or a file's metadata, the only
 choice is to move the file elsewhere. You can safely move any file or directory
 to a less convenient location, allowing the original object to be restored
