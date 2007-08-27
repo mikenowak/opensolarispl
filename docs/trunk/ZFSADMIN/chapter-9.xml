@@ -147,9 +147,9 @@ przestawiono w poniższych przykładach:<indexterm xml:id="indexterm-499">
 </sect2>
 <sect2 xml:id="gbbwx">
 <title>Zepsute dane ZFS</title>
-<para>Data corruption occurs when one or more device errors (indicating missing or damaged devices/uszkodzone urządzenia) affects a top-level virtual device. Na przykład połowa mirroru może doświadczyć tysięcy błędów dyskowych, bez utraty danych. If an error is encountered on the other side of the mirror in the exact same location, corrupted data will be the result.<indexterm xml:id="indexterm-502"> <primary>Pule pamięci ZFS</primary> <secondary>corrupted data</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-503"> <primary>rodzaje błędów</primary> <secondary>corrupted data</secondary> </indexterm> <indexterm xml:id="indexterm-504"> <primary>data</primary> <secondary>corrupted</secondary> </indexterm>
+<para>Uszkodzenie danych występuje, kiedy jedno lub więcej urządzeń (wliczając brakujące lub zniszczone urządzenia) dotyczy wirtualnego urządzenia najwyższego poziomu. Na przykład połowa mirroru może doświadczyć tysięcy błędów dyskowych, bez utraty danych. Kiedy błąd zostanie napotkany w tej samej lokacji po drugiej strony mirroru, rezultatem będzie uszkodzenie danych. <indexterm xml:id="indexterm-502"><primary>Pule pamięci</primary><secondary>uszkodzone dane</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-503"><primary>rodzaje błędów</primary><secondary>uszkodzone dane</secondary></indexterm><indexterm xml:id="indexterm-504"><primary>dane</primary><secondary>uszkodzone</secondary></indexterm>
 </para>
-<para>Zepsucie danych jest zawsze trwałe i wymaga specjalnej uwagi podczas naprawy. Nawet kiedy odpowiednie urządzenia zostaną naprawione lub wymienione, oryginalne dane są utracone na zawsze. W większości przypadków, ten scenariusz wymaga odtworzenia danych z kopi zapasowych. Data errors are recorded as they are encountered, and can be controlled through regular disk scrubbing as explained in the following section. When a corrupted block is removed, the next scrubbing pass recognizes that the corruption is no longer present and removes any trace of the error from the system.</para>
+<para>Zepsucie danych jest zawsze trwałe i wymaga specjalnej uwagi podczas naprawy. Nawet kiedy odpowiednie urządzenia zostaną naprawione lub wymienione, oryginalne dane są utracone na zawsze. W większości przypadków, ten scenariusz wymaga odtworzenia danych z kopi zapasowych. Podczas napotkania, błędy danych są rejestrowane i mogą zostać skontrolowane poprzez regularną weryfikację danych dysku, co zostało wyjaśnione w kolejnej sekcji. Kiedy popsuty blok zostanie usunięty, kolejna weryfikacja danych rozpoznaje, że uszkodzenie zostało naprawione i usuwa wszelkie ślady błędu z systemu.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gbbwa">
@@ -157,7 +157,7 @@ przestawiono w poniższych przykładach:<indexterm xml:id="indexterm-499">
 <para>Dla ZFS nie istnieje równoważne narzędzie jak <command>fsck</command>. To narzędzie było stosowane w celu naprawiania danych oraz sprawdzania ich poprawności.</para>
 <sect2 xml:id="gbbyc">
 <title>Naprawa danych</title>
-<para>With traditional file systems, the way in which data is written is inherently vulnerable to unexpected failure causing data inconsistencies. Ponieważ tradycyjne systemy plików nie są transakcyjne, niepowiązane bloki, uszkodzone linki lub inne niespójne struktury dane są dozwolone.  The addition of journaling does solve some of these problems, but can introduce additional problems when the log cannot be rolled back. Żaden z powyższych problemów nie istnieje dla ZFS. The only way for inconsistent data to exist on disk is through hardware failure (in which case the pool should have been replicated) or a bug in the ZFS software exists.<indexterm xml:id="indexterm-505"> <primary>Pule pamięci ZFS</primary> <secondary>data repair</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-506"> <primary>checking</primary> <secondary>ZFS data integrity</secondary> </indexterm> <indexterm xml:id="indexterm-507"> <primary>data</primary> <secondary>repair</secondary> </indexterm>
+<para>W tradycyjnych systemach plików, sposób w jaki dane są zapisywane jest podatny na uszkodzenia co powoduje błędy w regularności danych. Ponieważ tradycyjne systemy plików nie są transakcyjne, niepowiązane bloki, uszkodzone linki lub inne niespójne struktury dane są dozwolone.  The addition of journaling does solve some of these problems, but can introduce additional problems when the log cannot be rolled back. Żaden z powyższych problemów nie istnieje dla ZFS. The only way for inconsistent data to exist on disk is through hardware failure (in which case the pool should have been replicated) or a bug in the ZFS software exists.<indexterm xml:id="indexterm-505"> <primary>Pule pamięci ZFS</primary> <secondary>data repair</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-506"> <primary>checking</primary> <secondary>ZFS data integrity</secondary> </indexterm> <indexterm xml:id="indexterm-507"> <primary>data</primary> <secondary>repair</secondary> </indexterm>
 </para>
 <para>Biorąc pod uwagę, że narzędzie <command>fsck</command> zostało stworzone do naprawy znanych problemów specyficznych dla danych systemów plików, napisanie takiego narzędzia dla systemu plików, w którym problemy są nieznane nie jest możliwe. W przyszłości, problemy mogą okazać się na tyle wspólne, że stworzenie takiego narzędzia stanie się możliwe. Jednak problemy te mogą zostać zawsze ominięte przy użyciu replikowanych pul.</para>
 <para>Jeśli pule nie są replikowane, szansa niedostępności danych jest zawsze możliwa.</para>
@@ -191,7 +191,7 @@ przestawiono w poniższych przykładach:<indexterm xml:id="indexterm-499">
 
 errors: No known data errors</screen>
 <para>Należy zwrócić uwagę, że jednocześnie możliwa jest tylko jedna operacja weryfikacji danych dla każdej z puli.</para>
-<para>Wykonywanie regularnej weryfikacji gwarantuje ciągłość we/wy dla wszystkich dysków w systemie. Regular scrubbing has the side effect of preventing power management from placing idle disks in low-power mode. If the system is generally performing I/O all the time, or if power consumption is not a concern, then this issue can safely be ignored.</para>
+<para>Wykonywanie regularnej weryfikacji gwarantuje ciągłość we/wy dla wszystkich dysków w systemie. Regularna weryfikacja danych posiada uboczny efekt, powodujący uniemożliwienie menadżerowi zasilania postawienia niepracujących dysków w stanie niskiego poboru energii. Jeśli system w większości przypadków korzysta ciągle z operacji we/wy lub zużycie energii nie jest brane pod uwagę, wtedy ten problem może zostać bezpiecznie zignorowany.</para>
 <para>Więcej informacji na temat interpretowania wyniku komendy <command>zpool status</command> można znaleźć w <olink targetdoc="" remap="internal" targetptr="gaynp">Status puli ZFS</olink></para>
 </sect3>
 <sect3 xml:id="gbbya">
@@ -241,7 +241,7 @@ automatically by the command, it is important to understand exactly what problem
 are being identified in order to diagnose the type of failure.</para>
 <sect2 xml:id="gbcwb">
 <title>Sprawdzanie, czy problem istnieje w puli ZFS.</title>
-<para>Najprostrzym sposobem na sprawdzenie, czy istnieje jakikolwiek znany błąd w systemie, jest użycie komendy <command>zpool status</command> <option>x</option>. This command describes only pools exhibiting problems. Jeśli w systemie nie istnieją uszkodzone pule, komenda wyświetla prosą wiadomość:</para>
+<para>Najprostrzym sposobem na sprawdzenie, czy istnieje jakikolwiek znany błąd w systemie, jest użycie komendy <command>zpool status</command> <option>x</option>. Ta komenda opisuje wyłącznie problemy związane z pulami. Jeśli w systemie nie istnieją uszkodzone pule, komenda wyświetla prosą wiadomość:</para>
 <screen># <userinput>zpool status -x</userinput>
 all pools are healthy</screen>
 <para>Without the <option>
@@ -283,7 +283,7 @@ action: Online the device using 'zpool online' or replace the device with
             [fuzzy] c1t1d0       ONLINE        0        0        0
 
 errors: No known data errors</screen>
-<para>This output is divided into several sections:</para>
+<para>Wynik jest podzielony na kilka sekcji:</para>
 <sect3 xml:id="gbcvl">
 <title>Overall Pool Status Information</title>
 <para>This header section in the <command>zpool status</command> output contains
