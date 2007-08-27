@@ -157,53 +157,23 @@ przestawiono w poniższych przykładach:<indexterm xml:id="indexterm-499">
 <para>Dla ZFS nie istnieje równoważne narzędzie jak <command>fsck</command>. To narzędzie było stosowane w celu naprawiania danych oraz sprawdzania ich poprawności.</para>
 <sect2 xml:id="gbbyc">
 <title>Naprawa danych</title>
-<para>With traditional file systems, the way in which data is written is inherently vulnerable to unexpected failure causing data inconsistencies. Because a traditional file system is not transactional, unreferenced blocks, bad link counts, or other inconsistent data structures are possible. The addition of journaling does solve some of these problems, but can introduce additional problems when the log cannot be rolled back. Żaden z powyższych problemów nie istnieje dla ZFS. The only way for inconsistent data to exist on disk is through hardware failure (in which case the pool should have been replicated) or a bug in the ZFS software exists.<indexterm xml:id="indexterm-505"> <primary>Pule pamięci ZFS</primary> <secondary>data repair</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-506"> <primary>checking</primary> <secondary>ZFS data integrity</secondary> </indexterm> <indexterm xml:id="indexterm-507"> <primary>data</primary> <secondary>repair</secondary> </indexterm>
+<para>With traditional file systems, the way in which data is written is inherently vulnerable to unexpected failure causing data inconsistencies. Ponieważ tradycyjne systemy plików nie są transakcyjne, niepowiązane bloki, uszkodzone linki lub inne niespójne struktury dane są dozwolone.  The addition of journaling does solve some of these problems, but can introduce additional problems when the log cannot be rolled back. Żaden z powyższych problemów nie istnieje dla ZFS. The only way for inconsistent data to exist on disk is through hardware failure (in which case the pool should have been replicated) or a bug in the ZFS software exists.<indexterm xml:id="indexterm-505"> <primary>Pule pamięci ZFS</primary> <secondary>data repair</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-506"> <primary>checking</primary> <secondary>ZFS data integrity</secondary> </indexterm> <indexterm xml:id="indexterm-507"> <primary>data</primary> <secondary>repair</secondary> </indexterm>
 </para>
-<para>Given that the <command>fsck</command> utility is designed to repair
-known pathologies specific to individual file systems, writing such a utility
-for a file system with no known pathologies is impossible. Future experience
-might prove that certain data corruption problems are common enough and simple
-enough such that a repair utility can be developed, but these problems can
-always be avoided by using replicated pools.</para>
-<para>If your pool is not replicated, the chance that data corruption can
-render some or all of your data inaccessible is always represent.</para>
+<para>Biorąc pod uwagę, że narzędzie <command>fsck</command> zostało stworzone do naprawy znanych problemów specyficznych dla danych systemów plików, napisanie takiego narzędzia dla systemu plików, w którym problemy są nieznane nie jest możliwe. W przyszłości, problemy mogą okazać się na tyle wspólne, że stworzenie takiego narzędzia stanie się możliwe. Jednak problemy te mogą zostać zawsze ominięte przy użyciu replikowanych pul.</para>
+<para>Jeśli pule nie są replikowane, szansa niedostępności danych jest zawsze możliwa.</para>
 </sect2>
 <sect2 xml:id="gbbyd">
 <title>Sprawdzanie poprawności danych</title>
-<para>Dodatkowo, oprócz naprawy danych, narzędzie <command>fsck</command> sprawdza dane na dysku pod względem ich poprawności. Traditionally, this task is done by unmounting the file system and running the <command>fsck</command> utility, possibly taking the system to single-user mode in the process. Ten scenariusz powoduje przestój działania proporcjonalny do rozmiaru sprawdzanego systemu plików. Instead of requiring an explicit utility to perform the necessary checking, ZFS provides a mechanism to perform regular checking of all data. This functionality, known as <emphasis>scrubbing</emphasis>, is commonly used in memory and other systems as a method of detecting and preventing errors before they result in hardware or software failure.<indexterm xml:id="indexterm-508"> <primary>Pule pamięci ZFS</primary> <secondary>data validation</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-509"> <primary>data</primary> <secondary>validation (scrubbing)</secondary> </indexterm> <indexterm xml:id="indexterm-510"> <primary>scrubbing</primary> <secondary>data validation</secondary> </indexterm>
+<para>Dodatkowo, oprócz naprawy danych, narzędzie <command>fsck</command> sprawdza dane na dysku pod względem ich poprawności. Tradycyjnie to zadanie odbywa się poprzez odmontowanie systemu plików oraz uruchomnienie narzędzia <command>fsck</command>. W tym przypadku może zaistnieć potrzeba uruchomienia systemu w trybie pojedyńczego użytkownika. Ten scenariusz powoduje przestój działania proporcjonalny do rozmiaru sprawdzanego systemu plików. Instead of requiring an explicit utility to perform the necessary checking, ZFS provides a mechanism to perform regular checking of all data. This functionality, known as <emphasis>scrubbing</emphasis>, is commonly used in memory and other systems as a method of detecting and preventing errors before they result in hardware or software failure.<indexterm xml:id="indexterm-508"> <primary>Pule pamięci ZFS</primary> <secondary>data validation</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-509"> <primary>data</primary> <secondary>validation (scrubbing)</secondary> </indexterm> <indexterm xml:id="indexterm-510"> <primary>scrubbing</primary> <secondary>data validation</secondary> </indexterm>
 </para>
 </sect2>
 <sect2 xml:id="gbbxi">
 <title>Kontrola weryfikacji danych ZFS</title>
-<para>Whenever ZFS encounters an error, either through scrubbing or when accessing
-a file on demand, the error is logged internally so that you can get a quick
-overview of all known errors within the pool. <indexterm xml:id="indexterm-511">
-<primary>Pule pamięci ZFS</primary>
-<secondary>data scrubbing</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-512">
-<primary>controlling</primary>
-<secondary>data validation (scrubbing)</secondary>
-</indexterm>
+<para>Ilekroć ZFS napotka błąd poprzez operację weryfikacji lub zwykłego żądania dostępu do pliku, błąd ten jest logowany wewnętrznie. Daje to możliwość szybkiego przeglądu wszystkich znanych błędów w puli. <indexterm xml:id="indexterm-511"><primary>Pule pamięci ZFS</primary><secondary>weryfikacja danych</secondary><tertiary>opis&gt;</tertiary></indexterm><indexterm xml:id="indexterm-512"><primary>kontrola</primary><secondary> sprawdzanie poprawności danych (weryfikacja danych)</secondary></indexterm>
 </para>
 <sect3 xml:id="gbbws">
 <title>Jawna kontrola danych ZFS</title>
-<para>Najprostrzą metodą na sprawdzenie integralności danych jest zainicjowanie jawnej kontroli wszystkich danych dla puli. Ta operacja sprawdza jednokrotnie wszystkie dane w puli i weryfikuje, czy wszystkie bloki mogą być odczytane. Scrubbing proceeds as fast as the devices allow, though the priority of any I/O remains below that of normal operations. This operation might negatively impact performance, though the file system should remain usable and nearly as responsive while the scrubbing occurs. Aby zainicjować jawną kontrolę danych, użyj komendy <command>zpool scrub</command> For example:
-<indexterm xml:id="indexterm-513"> 
-<primary>Pule pamięci ZFS</primary> 
-<secondary>data scrubbing</secondary> 
-<tertiary>(example of)</tertiary> 
-</indexterm> 
-<indexterm xml:id="indexterm-514"> 
-<primary>scrubbing</primary> 
-<secondary>(example of)</secondary> 
-</indexterm> 
-<indexterm xml:id="indexterm-515"> 
-<primary>data</primary> 
-<secondary>scrubbing</secondary> 
-<tertiary>(example of)</tertiary> 
-</indexterm>
+<para>Najprostrzą metodą na sprawdzenie integralności danych jest zainicjowanie jawnej kontroli wszystkich danych dla puli. Ta operacja sprawdza jednokrotnie wszystkie dane w puli i weryfikuje, czy wszystkie bloki mogą być odczytane. Weryfikacja danych przebiega z maksymalną dostępną dla urządzenia prędkością, aczkolwiek priorytet każdej szczątkowej operacji we/wy pozostaje poniżej normalnych operacji. Weryfikacja danych może mieć negatywny wpływ na wydajność, jednak system powinien pozostawać czuły podczas weryfikacji. Aby zainicjować jawną kontrolę danych, użyj komendy <command>zpool scrub</command> Na przykład:<indexterm xml:id="indexterm-513"><primary>Pule pamięci ZFS</primary><secondary>weryfikacja danych</secondary><tertiary>(przykład)</tertiary></indexterm><indexterm xml:id="indexterm-514"><primary>weryfikacja</primary><secondary>(przykład)</secondary></indexterm><indexterm xml:id="indexterm-515"><primary>dane</primary><secondary>weryfikacja</secondary><tertiary>(przykład)</tertiary></indexterm>
 </para>
 <screen># <userinput>zpool scrub tank</userinput>
 </screen>
@@ -222,20 +192,19 @@ overview of all known errors within the pool. <indexterm xml:id="indexterm-511">
 errors: No known data errors</screen>
 <para>Należy zwrócić uwagę, że jednocześnie możliwa jest tylko jedna operacja weryfikacji danych dla każdej z puli.</para>
 <para>Wykonywanie regularnej weryfikacji gwarantuje ciągłość we/wy dla wszystkich dysków w systemie. Regular scrubbing has the side effect of preventing power management from placing idle disks in low-power mode. If the system is generally performing I/O all the time, or if power consumption is not a concern, then this issue can safely be ignored.</para>
-<para>For more information about interpreting <command>zpool status</command> output,
-see <olink targetdoc="" remap="internal" targetptr="gaynp">Querying ZFS Storage Pool Status</olink>.</para>
+<para>Więcej informacji na temat interpretowania wyniku komendy <command>zpool status</command> można znaleźć w <olink targetdoc="" remap="internal" targetptr="gaynp">Status puli ZFS</olink></para>
 </sect3>
 <sect3 xml:id="gbbya">
 <title>Jawna kontrola danych ZFS i Resilvering</title>
 <para>Kiedy urządzenie zostaje wymienione, operacja resilveringu jest inicjowana. Zdrowe dane są kopiowane na nowe urządzenie. Ta akcja jest formą weryfikacji danych dysku. Dlatego jednocześnie tylko jedna taka akcja może się odbywać w obrębie jednej puli. If a scrubbing operation is in progress, a resilvering operation suspends the current scrubbing, and restarts after the resilvering is complete.<indexterm xml:id="indexterm-516"> <primary>Pule pamięci ZFS</primary> <secondary>data scrubbing and resilvering</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-517"> <primary>resilvering and data scrubbing</primary> <secondary>opis</secondary> </indexterm> <indexterm xml:id="indexterm-518"> <primary>data</primary> <secondary>resilvering</secondary> <tertiary>opis</tertiary> </indexterm>
 </para>
-<para>For more information about resilvering, see <olink targetdoc="" remap="internal" targetptr="gbcus">Viewing Resilvering Status</olink>.</para>
+<para>Więcej informacji na temat resilweringu można znaleźć w <olink targetdoc="" remap="internal" targetptr="gbcus">Podgląd statusu resilweringu</olink></para>
 </sect3>
 </sect2>
 </sect1>
 <sect1 xml:id="gbbuw">
 <title>Identyfikowanie problemów w ZFS-ie</title>
-<para>All ZFS troubleshooting is centered around the <command>zpool status</command> command. This command analyzes the various failures in the system and identifies the most severe problem, presenting you with a suggested action and a link to a knowledge article for more information. Proszę zwrócić uwagę, że komenda ta identyfikuje pojedyńczy problem w puli, podczas gdy wiele problemów może istnieć. Na przykład, błędy uszkodzenia danych zawsze pociągają za sobą uszkodzenie jednego z urządzeń. Wymiana uszkodzonego urządzenia nie naprawia problemu uszkodzenia danych.</para>
+<para>Wykrywanie wszystkich usterek jest skupione wokół komendy <command>zpool status</command> This command analyzes the various failures in the system and identifies the most severe problem, presenting you with a suggested action and a link to a knowledge article for more information. Proszę zwrócić uwagę, że komenda ta identyfikuje pojedyńczy problem w puli, podczas gdy wiele problemów może istnieć. Na przykład, błędy uszkodzenia danych zawsze pociągają za sobą uszkodzenie jednego z urządzeń. Wymiana uszkodzonego urządzenia nie naprawia problemu uszkodzenia danych.</para>
 <para>Dodatkowo, silnik diagnostyki ZFS zgłasza błędy puli oraz dysku. Błędy suma kontrolnej, we/wy, oraz puli związane z błędami urządzenia lub puli też są zgłaszane. Błędy ZFS zgłaszane przez <command>fmd</command> są wyświetlane zarówno na konsoli jak i w pliku wiadomości systemowych. In most cases, the <command>fmd</command> message directs you to the <command>zpool status</command> command for further recovery instructions.<indexterm xml:id="indexterm-519"> <primary>Pule pamięci ZFS</primary> <secondary>identifying problems</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-520"> <primary>usuwanie problemów</primary> <secondary>identifying problems</secondary> </indexterm>
 </para>
 <para>Podstawowy proces odtworzenia wygląda następująco:</para>
@@ -257,7 +226,7 @@ that are displayed on the system console or in the <filename>/var/adm/messages</
 <para>Odzyskaj brakujące dane lub błędną konfiguracje z kopi zapasowej.</para>
 </listitem>
 <listitem>
-<para>Verify the recovery by using the <command>zpool status</command> <command>x</command> command.</para>
+<para>Potwierdź odzyskanie danych używając komendy <command>zpool status</command> <command>x</command>.</para>
 </listitem>
 <listitem>
 <para>Stwórz kopie zapasową odzyskanej konfiguracji.</para>
@@ -271,8 +240,8 @@ sections on how to repair the problem. While most of the work is performed
 automatically by the command, it is important to understand exactly what problems
 are being identified in order to diagnose the type of failure.</para>
 <sect2 xml:id="gbcwb">
-<title>Determining if Problems Exist in a ZFS Storage Pool</title>
-<para>The easiest way to determine if any known problems exist on the system is to use the <command>zpool status</command> <option> x</option> command. This command describes only pools exhibiting problems. Jeśli w systemie nie istnieją uszkodzone pule, komenda wyświetla prosą wiadomość:</para>
+<title>Sprawdzanie, czy problem istnieje w puli ZFS.</title>
+<para>Najprostrzym sposobem na sprawdzenie, czy istnieje jakikolwiek znany błąd w systemie, jest użycie komendy <command>zpool status</command> <option>x</option>. This command describes only pools exhibiting problems. Jeśli w systemie nie istnieją uszkodzone pule, komenda wyświetla prosą wiadomość:</para>
 <screen># <userinput>zpool status -x</userinput>
 all pools are healthy</screen>
 <para>Without the <option>
@@ -294,9 +263,8 @@ x</option>)</secondary>
 status</command> command, see <olink targetdoc="" remap="internal" targetptr="gaynp">Querying ZFS Storage Pool Status</olink>.</para>
 </sect2>
 <sect2 xml:id="gbcve">
-<title>Understanding <command>zpool status</command> Output</title>
-<para>The complete <command>zpool status</command> output looks similar to
-the following:</para>
+<title>Zrozumienie wyniku działania komendy <command>zpool status</command></title>
+<para>Kompletny wynik komendy <command>zpool status</command> jest podobny do następującego:</para>
 <screen># <userinput>zpool status tank</userinput>
   pool: tank
  state: DEGRADED
@@ -337,7 +305,7 @@ problems:<indexterm xml:id="indexterm-523">
 <literal>pool</literal>
 </term>
 <listitem>
-<para>Nazwa puli.</para>
+<para>The name of the pool.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -345,7 +313,10 @@ problems:<indexterm xml:id="indexterm-523">
 <literal>state</literal>
 </term>
 <listitem>
-<para>Aktualny stan zdrowia puli. This information refers only to the ability of the pool to provide the necessary replication level. Pools that are <literal>ONLINE</literal> might still have failing devices or data corruption.</para>
+<para>The current health of the pool. This information refers only
+to the ability of the pool to provide the necessary replication level. Pools
+that are <literal>ONLINE</literal> might still have failing devices or data
+corruption.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -353,7 +324,7 @@ problems:<indexterm xml:id="indexterm-523">
 <literal>status</literal>
 </term>
 <listitem>
-<para>Opis, co jest złego z pulą. To pole jest pominięte, jeśli nie zostały znalezione żadne problemy.</para>
+<para>A description of what is wrong with the pool. To pole jest pominięte, jeśli nie zostały znalezione żadne problemy.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -415,7 +386,8 @@ issuing a write request.</para>
 </listitem>
 <listitem>
 <para>
-<literal>CKSUM</literal> - błędy sumy kontrolnej. The device returned corrupted data as the result of a read request.</para>
+<literal>CKSUM</literal> – Checksum error. The device
+returned corrupted data as the result of a read request.</para>
 </listitem>
 </itemizedlist>
 <para>These errors can be used to determine if the damage is permanent. A
@@ -679,7 +651,7 @@ not be transient.</para>
 </listitem>
 <listitem>
 <para>
-<emphasis role="strong">Bad or flaky hardware</emphasis> – This situation is a catch-all for the various problems that bad hardware exhibits. This could be consistent I/O errors, faulty transports causing random corruption, or any number of failures. [fuzzy] [fuzzy] Te błędy są podzielone na trzy kategorie:</para>
+<emphasis role="strong">Bad or flaky hardware</emphasis> – This situation is a catch-all for the various problems that bad hardware exhibits. This could be consistent I/O errors, faulty transports causing random corruption, or any number of failures. Te błędy są zwykle trwałe.</para>
 </listitem>
 <listitem>
 <para>
@@ -937,8 +909,7 @@ file or directory being inaccessible, or this problem might cause the object
 to be broken altogether.</para>
 </listitem>
 </itemizedlist>
-<para>Data is verified during normal operation as well as through scrubbing.
-For more information about how to verify the integrity of pool data, see <olink targetdoc="" remap="internal" targetptr="gbbwa">Checking ZFS Data Integrity</olink>.</para>
+<para>Dane są sprawdzane podczas normalnych operacji, ale również podczas sprawdzania weryfikacji danych. For more information about how to verify the integrity of pool data, see <olink targetdoc="" remap="internal" targetptr="gbbwa">Checking ZFS Data Integrity</olink>.</para>
 <sect2 xml:id="gbcuz">
 <title>Identyfikowanie rodzaju uszkodzenia danych</title>
 <para>By default, the <command>zpool status</command> command shows only that
@@ -978,14 +949,7 @@ status: One or more devices has experienced an error resulting in data
 
 		  DATASET  OBJECT  RANGE
 		  tank     6       0-512</screen>
-<para>Each error indicates only that an error occurred at the given point
-in time. Each error is not necessarily still present on the system. Under
-normal circumstances, this situation is true. Certain temporary outages might
-result in data corruption that is automatically repaired once the outage ends.
-A complete scrub of the pool is guaranteed to examine every active block in
-the pool, so the error log is reset whenever a scrub finishes. If you determine
-that the errors are no longer present, and you don't want to wait for a scrub
-to complete, reset all errors in the pool by using the <command>zpool online</command> command.</para>
+<para>Each error indicates only that an error occurred at the given point in time. Each error is not necessarily still present on the system. W zwykłych przypadkach ta sytuacja jest prawdziwa. Certain temporary outages might result in data corruption that is automatically repaired once the outage ends. A complete scrub of the pool is guaranteed to examine every active block in the pool, so the error log is reset whenever a scrub finishes. If you determine that the errors are no longer present, and you don't want to wait for a scrub to complete, reset all errors in the pool by using the <command>zpool online</command> command.</para>
 <para>If the data corruption is in pool-wide metadata, the output is slightly different. Na przykład:</para>
 <screen># <userinput>zpool status -v morpheus</userinput>
   pool: morpheus
@@ -1012,33 +976,7 @@ in place.</para>
 </sect2>
 <sect2 xml:id="gbctt">
 <title>Repairing ZFS Storage Pool-Wide Damage</title>
-<para>If the damage is in pool metadata that damage prevents the pool from
-being opened, then you must restore the pool and all its data from backup.
-The mechanism you use varies widely by the pool configuration and backup strategy.
-First, save the configuration as displayed by <command>zpool status</command> so
-that you can recreate it once the pool is destroyed. Then, use <command>zpool
-destroy</command> <option>
-f</option> to destroy the pool. Also, keep a file
-describing the layout of the datasets and the various locally set properties
-somewhere safe, as this information will become inaccessible if the pool is
-ever rendered inaccessible. With the pool configuration and dataset layout,
-you can reconstruct your complete configuration after destroying the pool.
-The data can then be populated by using whatever backup or restoration strategy
-you use.<indexterm xml:id="indexterm-561">
-<primary>Pule pamięci ZFS</primary>
-<secondary>repairing pool-wide damage</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-562">
-<primary>repairing</primary>
-<secondary>pool-wide damage</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-563">
-<primary>usuwanie problemów</primary>
-<secondary>repairing pool-wide damage</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
+<para>If the damage is in pool metadata that damage prevents the pool from being opened, then you must restore the pool and all its data from backup. The mechanism you use varies widely by the pool configuration and backup strategy. Najpierw, zachowaj konfiguracje puli uzyskaną przy użyciu komendy <command>zpool status</command>, umożliwi to jej odtworzenie, kiedy zostanie zniszczona. Później użyj komendy <command>zpool destroy</command> <option>f</option> w celu zniszenia puli. Also, keep a file describing the layout of the datasets and the various locally set properties somewhere safe, as this information will become inaccessible if the pool is ever rendered inaccessible. With the pool configuration and dataset layout, you can reconstruct your complete configuration after destroying the pool. The data can then be populated by using whatever backup or restoration strategy you use.<indexterm xml:id="indexterm-561"> <primary>Pule pamięci ZFS</primary> <secondary>repairing pool-wide damage</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-562"> <primary>repairing</primary> <secondary>pool-wide damage</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-563"> <primary>usuwanie problemów</primary> <secondary>repairing pool-wide damage</secondary> <tertiary>opis</tertiary> </indexterm>
 </para>
 </sect2>
 </sect1>
