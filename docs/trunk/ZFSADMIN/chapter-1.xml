@@ -10,8 +10,8 @@
 
 <title>System plików ZFS (Wprowadzenie)</title>
 <toc>
-<para>Ten rozdział zawiera przegląd możliwości oraz korzyści związanych z systemem plików ZFS. Wyjaśnia także podstawową terminologię używaną przez resztę tej książki.</para>
-<para>W tym rozdziale znajdują się następujące sekcje:</para>
+<para>Ten rozdział zawiera przegląd możliwości oraz korzyści związanych z systemem plików ZFS. Wyjaśnia także podstawową terminologię pojawiającą się w następnych rozdziałach.</para>
+<para>W tym rozdziale znajdują się następujące podrozdziały:</para>
 <itemizedlist>
 <listitem>
 <para>
@@ -37,22 +37,21 @@
 </toc>
 <sect1 xml:id="gbscy">
 <title>Co nowego w ZFS-ie?</title>
-<para>Sekcja ta zestawia nowe cechy, które zostały dodane do systemu plików ZFS już po początkowym
-wypuszczeniu go w dystrybucji Solaris Express w grudniu 2005 r.</para>
+<para>Nowe cechy dodane do systemu plików ZFS już po pierwszym wydaniu go w dystrybucji Solaris Express w grudniu 2005 r.</para>
 <itemizedlist>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gcsxk">Używanie ZFS-a do powielania zon innych niż globalna i inne ulepszenia</olink>
+<olink targetdoc="" remap="internal" targetptr="gcsxk">Używanie ZFS-a do powielania stref innych niż globalna i inne ulepszenia</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gciui">Komendy ZFS-a do backupu i odtwarzania systemu plików mają zmienioną nazwę</olink>
+<olink targetdoc="" remap="internal" targetptr="gciui">Komendy ZFS-a do tworzenia kopii zapasowych i odtwarzania systemu plików mają zmienioną nazwę</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gcitn">Odzyskiwanie zniszczonych puli</olink>
+<olink targetdoc="" remap="internal" targetptr="gcitn">Odzyskiwanie zniszczonych pul</olink>
 </para>
 </listitem>
 <listitem>
@@ -67,7 +66,7 @@ wypuszczeniu go w dystrybucji Solaris Express w grudniu 2005 r.</para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gcajn">Compact NFSv4 ACL Format</olink>
+<olink targetdoc="" remap="internal" targetptr="gcajn">Skrócony format ACL-i NFSv4</olink>
 </para>
 </listitem>
 <listitem>
@@ -82,35 +81,35 @@ wypuszczeniu go w dystrybucji Solaris Express w grudniu 2005 r.</para>
 </listitem>
 </itemizedlist>
 <sect2 xml:id="gcsxk">
-<title>Używanie ZFS-a do powielania zon innych niż globalna i inne ulepszenia</title>
+<title>Używanie ZFS-a do powielania stref (ang. zone) innych niż globalna i inne ulepszenia</title>
 <para>
-<emphasis role="strong">OpenSolaris, build 39:</emphasis> Jeżeli wzorcowy parametr <literal>zonepath</literal> i docelowy <literal>zonepath</literal> znajdują się na ZFS-ie i dodatkowo w tej samej puli ZFS-owej, polecenie <command>zoneadm clone</command> automatycznie użyje funkcjonalności klonowania systemu plików ZFS w celu utworzenia sklonowanej zony. Oznacza to, że polecenie <command>zoneadm clone</command> robi obraz (snapshot) systemu plików wskazywanego przez źródłowy parametr <literal>zonepath</literal> i ustawia go jako docelowy.
-Obraz ten jest nazywany w notacji <literal>SUNWzoneX</literal>, gdzie <literal>X</literal> jest unikatowym identyfikatorem używanym do rozróżnienia poszczególnych obrazów. Parametr <literal>zonepath</literal> docelowej zony jest używany jako nazwa sklonowanego systemu plików ZFS. Tworzona jest programowa inspekcja poprawności obrazu, aby mógł on zostać później użyty przez system. Zauważ, że nadal posiadasz możliwość skopiowania parametru źródłowego ZFS <literal>zonepath</literal> zamiast klonu ZFS, jeśli zajdzie taka potrzeba.</para>
-<para>Aby umożliwić kilkukrotnie klonowanie zon, dodano nowy parametr polecenia <command>zoneadm</command> pozwalający na określenie, iż powinien zostać użyty istniejący obraz. System dokonuje inspekcji poprawności obrazu, aby mógł on zostać później użyty przez system. Dodatkowo, proces instalacyjny zony, ma teraz zdolność detekcji kiedy system plików ZFS może być stworzony dla zony, a proces deinstalacyjny potrafi sprawdzić czy system plików ZFS w zonie może zostać usunięty. Kroki te są wykonywane automatycznie przez polecenie <command>zoneadm</command> .</para> 
-<para>Nie należy wykorzystywać opcji tworzenie obrazów ZFS w celu klonowania zony.</para>
-<para>W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="819-2450" remap="external">
+<emphasis role="strong">OpenSolaris, build 39:</emphasis> Jeżeli wzorcowy parametr <literal>zonepath</literal> i docelowy <literal>zonepath</literal> znajdują się na ZFS-ie i dodatkowo w tej samej puli ZFS-owej, polecenie <command>zoneadm clone</command> automatycznie użyje funkcjonalności klonowania systemu plików ZFS w celu utworzenia sklonowanej strefy. Oznacza to, że polecenie <command>zoneadm clone</command> robi obraz (snapshot) systemu plików wskazywanego przez źródłowy parametr <literal>zonepath</literal> i ustawia go jako docelowy.
+Obraz ten jest nazywany w notacji <literal>SUNWzoneX</literal>, gdzie <literal>X</literal> jest unikatowym identyfikatorem używanym do rozróżnienia poszczególnych obrazów. Parametr <literal>zonepath</literal> docelowej strefy jest używany jako nazwa sklonowanego systemu plików ZFS. Tworzona jest programowa inspekcja poprawności obrazu, aby mógł on zostać później użyty przez system. Nadal istnieje możliwość skopiowania parametru źródłowego ZFS <literal>zonepath</literal> zamiast klonu ZFS, jeśli zajdzie taka potrzeba.</para>
+<para>Aby umożliwić kilkukrotnie klonowanie stref dodano nowy parametr polecenia <command>zoneadm</command>, pozwalający na określenie, iż powinien zostać użyty istniejący obraz. Wykonywana jest inspekcja poprawności obrazu, aby mógł on zostać później użyty przez system. Dodatkowo proces instalacyjny strefy umie teraz wykrywać kiedy system plików ZFS może być stworstrefy dla strefy, a proces deinstalacyjny potrafi sprawdzić, czy system plików ZFS w strefie może zostać usunięty. Kroki te są wykonywane automatycznie przez polecenie <command>zoneadm</command>.</para> 
+<para>Nie należy wykorzystywać opcji tworzenie obrazów ZFS w celu klonowania strefy.</para>
+<para>Więcej informacji w <olink targetdoc="819-2450" remap="external">
 <citetitle remap="book">System Administration Guide: Solaris Containers-Resource Management
 and Solaris Zones</citetitle>
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gciui">
-<title>Komendy ZFS-a do backupu i odtwarzania systemu plików mają zmienioną nazwę</title>
+<title>Komendy ZFS-a do tworzenia kopii zapasowych i odtwarzania systemu plików mają zmienioną nazwę</title>
 <para>
-<emphasis role="strong">OpenSolaris, build 38:</emphasis> W tym wydaniu Solarisa polecenia <command>zfs backup</command> oraz <command>zfs restore</command>, zostały przemianowane na <command>zfs send</command> i <command>zfs receive</command>, żeby bardziej precyzyjnie opisywały swoją funkcję. Rolą tych poleceń jest zapis i odtworzenie strumienia danych ZFS-a.</para>
-<para>W celu uzyskania dodatkowych informacji o tych poleceniach, zobacz <olink targetdoc="" remap="internal" targetptr="gbchx">Zapisywanie i odzyskiwanie danych ZFS</olink>.</para>
+<emphasis role="strong">OpenSolaris, build 38:</emphasis> W tym wydaniu Solarisa polecenia <command>zfs backup</command> oraz <command>zfs restore</command> zostały przemianowane na <command>zfs send</command> i <command>zfs receive</command>, żeby bardziej precyzyjnie opisywały swoją funkcję. Rolą tych poleceń jest zapis i odtworzenie strumienia danych ZFS-a.</para>
+<para>Więcej informacji o tych poleceniach w <olink targetdoc="" remap="internal" targetptr="gbchx">Zapisywanie i odzyskiwanie danych ZFS</olink>.</para>
 </sect2>
 <sect2 xml:id="gcitn">
-<title>Odzyskiwanie zniszczonych puli</title>
+<title>Odzyskiwanie zniszczonych pul</title>
 <para>
-<emphasis role="strong">OpenSolaris, build 37:</emphasis> To wydanie wprowadziło polecenie <command>zpool import</command> <option>D</option>, które umożliwia odtworzenie puli, które zostały wcześniej zniszczone przez <command>zpool destroy</command>.</para>
-<para>W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="" remap="internal" targetptr="gcfhw">Odzyskiwanie zniszczonych danych ZFS</olink>.</para>
+<emphasis role="strong">OpenSolaris, build 37:</emphasis> To wydanie wprowadziło polecenie <command>zpool import</command> <option>D</option>, które umożliwia odtworzenie pul zniszczonych wcześniej poleceniem <command>zpool destroy</command>.</para>
+<para>Więcej informacji w <olink targetdoc="" remap="internal" targetptr="gcfhw">Odzyskiwanie zniszczonych danych ZFS</olink>.</para>
 </sect2>
 <sect2 xml:id="gcfhy">
 <title>ZFS został zintegrowany z "Fault Manager"</title>
 <para>
-<emphasis role="strong">OpenSolaris, build 36:</emphasis> Wydanie to zawiera zintegrowany silnik diagnostyczny ZFS, który jest zdolny do diagnozowania oraz raportowania awarii puli i urządzeń. Sumy kontrolne, I/O, błędy puli i urządzeń związane z awariami urządzeń i puli są również raportowane.</para>
-<para>Silnik diagnostyczny nie prognozuje na podstawie analizy sum kontrolnych oraz błędów I/O, jednakże posiada zdolność prognozowania na podstawie analizy błędu.</para>
-<para>W przypadku awarii ZFS, być może zobaczysz komunikat podobny do następującego <command>fmd</command>:</para>
+<emphasis role="strong">OpenSolaris, build 36:</emphasis> Wydanie to zawiera zintegrowany silnik diagnostyczny ZFS, który jest zdolny do diagnozowania oraz raportowania awarii pul i urządzeń. Sumy kontrolne, I/O, błędy puli i urządzeń związane z awariami urządzeń i pul są również raportowane.</para>
+<para>Silnik diagnostyczny nie prognozuje na podstawie analizy sum kontrolnych oraz błędów I/O, umie jednak prognozować na podstawie analizy błędu.</para>
+<para>W przypadku awarii ZFS może pojawić się błąd podobny do poniższego <command>fmd</command>:</para>
 <screen>SUNW-MSG-ID: ZFS-8000-D3, TYPE: Fault, VER: 1, SEVERITY: Major
 EVENT-TIME: Fri Mar 10 11:09:06 MST 2006
 PLATFORM: SUNW,Ultra-60, CSN: -, HOSTNAME: neo
@@ -120,14 +119,14 @@ DESC: A ZFS device failed.  Refer to http://sun.com/msg/ZFS-8000-D3 for more inf
 AUTO-RESPONSE: No automated response will occur.
 IMPACT: Fault tolerance of the pool may be compromised.
 REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
-<para>Poprzez zapoznanie się z rekomendowanymi krokami, które będą przedstawione przez polecenie <command>zpool status</command>, będziesz mógł szybko zidentyfikować i naprawić awarię.</para>
-<para>W celu zapoznania się z przykładami rozwiązywania problemów raportowanych przez ZFS, zobacz <olink targetdoc="" remap="internal" targetptr="gbbvb">Naprawa brakującego urządzenia</olink>.</para>
+<para>Poprzez zapoznanie się z rekomendowanymi krokami, które będą przedstawione przez polecenie <command>zpool status</command>, szybko będzie można zidentyfikować i naprawić awarię.</para>
+<para>Przykłady rozwiązywania problemów raportowanych przez ZFS w <olink targetdoc="" remap="internal" targetptr="gbbvb">Naprawa brakującego urządzenia</olink>.</para>
 </sect2>
 <sect2 xml:id="gcfiw">
 <title>Nowe polecenie <command>zpool clear</command></title>
 <para>
-<emphasis role="strong">OpenSolaris, build 36:</emphasis> Wydanie to zawiera komendę <command>zpool clear</command>, służącą do zerownia licznika błędów związanych z urządzeniem lub pulą. Poprzednio, licznik błędów był zerowany, kiedy urządzenie w puli było włączane ponownie za pomocą polecenia <command>zpool online</command>.
-W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="819-2240" remap="external" targetptr="zpool-1m">
+<emphasis role="strong">OpenSolaris, build 36:</emphasis> Wydanie to zawiera komendę <command>zpool clear</command>, służącą do zerownia licznika błędów związanych z urządzeniem lub pulą. Poprzednio licznik błędów był zerowany, kiedy urządzenie w puli było włączane ponownie za pomocą polecenia <command>zpool online</command>.
+Więcej informacji w <olink targetdoc="819-2240" remap="external" targetptr="zpool-1m">
 <citerefentry>
 <refentrytitle>zpool</refentrytitle>
 <manvolnum>
@@ -137,10 +136,10 @@ W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="819-2240" rema
 </olink> oraz <olink targetdoc="" remap="internal" targetptr="gazge">Czyszczenie urządzeń puli nośników danych</olink>.</para>
 </sect2>
 <sect2 xml:id="gcajn">
-<title>Compact NFSv4 ACL Format</title>
+<title>Skrócony formac ACL-i NFSv4</title>
 <para>
-<emphasis role="strong">OpenSolaris, build 34:</emphasis> W wydaniu tym, są dostępne trzy formaty NFSv4 ACL: informacyjny (verbose), pozycyjny i upakowany. Nowe formaty ACL: upakowany i pozycyjny, są dostępne, aby ustawiać i wyświetlać ACL. Możesz używać polecenia <command>chmod</command>, aby ustawić wszystkie 3 formaty ACL. Możesz używać polecenia <command>ls</command> <option>V</option>, aby wyświetlić upakowany i pozycyjny format ACL oraz polecenia <command>ls</command> <option> v</option>, aby wyświetlić format informacyjny (verbose) ACL.</para>
-<para>W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="" remap="internal" targetptr="gbchf">Setting and Displaying ACLs on ZFS Files in Compact Format</olink>, <olink targetdoc="819-2239" remap="external" targetptr="chmod-1">
+<emphasis role="strong">OpenSolaris, build 34:</emphasis> W wydaniu tym są dostępne trzy formaty ACLI- NFSv4: informacyjny (verbose), pozycyjny i skrócony. Nowe formaty ACL: skrócony i pozycyjny są dostępne, aby ustawiać i wyświetlać ACL-e. Możesz używać polecenia <command>chmod</command>, aby ustawić wszystkie 3 formaty ACL-i. Możesz używać polecenia <command>ls</command> <option>V</option>, aby wyświetlić skrócony i pozycyjny format ACL-i oraz polecenia <command>ls</command> <option> v</option>, aby wyświetlić format informacyjny (verbose) ACL-i.</para>
+<para>Więcej informacji w <olink targetdoc="" remap="internal" targetptr="gbchf">Ustawianie i drukowanie ACL-i dla plików ZFs-a w formacie skróconym</olink>, <olink targetdoc="819-2239" remap="external" targetptr="chmod-1">
 <citerefentry>
 <refentrytitle>chmod</refentrytitle>
 <manvolnum>
@@ -159,12 +158,12 @@ W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="819-2240" rema
 <sect2 xml:id="gcakl">
 <title>Narzędzie Monitorowania Systemu Plików (File System Monitoring Tool) (<command>fsstat</command>)</title>
 <para>
-<emphasis role="strong">OpenSolaris, build 34:</emphasis> Nowe narzędzie do monitorowania systemu plików, <command>fsstat</command>, jest dostępne do raportowania operacji na systemie plików. Aktywność może być raportowana według punktu montowania systemu plików, bądź według jego typu. Poniższy przykład przedstawia ogólne statystyki aktywności systemu plików ZFS.</para>
+<emphasis role="strong">OpenSolaris, build 34:</emphasis> Nowe narzędzie do monitorowania systemu plików, <command>fsstat</command>, jest dostępne do raportowania operacji na systemie plików. Aktywność może być raportowana według punktu montowania systemu plików bądź według jego typu. Poniższy przykład przedstawia ogólne statystyki aktywności systemu plików ZFS.</para>
 <screen>% <userinput>fsstat zfs</userinput>
  new  name   name  attr  attr lookup rddir  read read  write write
  file remov  chng   get   set    ops   ops   ops bytes   ops bytes
  729K  488K  282K 79.8M  266K   333M 5.33M 24.8M  115G 2.36M 27.8G zfs</screen>
-<para>W celu uzyskania dodatkowych informacji, zobacz <citerefentry>
+<para>Więcej informacji w <citerefentry>
 <refentrytitle>fsstat</refentrytitle>
 <manvolnum>
 1M
@@ -172,7 +171,7 @@ W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="819-2240" rema
 </citerefentry>.</para>
 </sect2>
 <sect2 xml:id="gbsbp">
-<title>Zarządzanie ZFS-em poprzez interfejs WWW</title>
+<title>Zarządzanie ZFS-em przez interfejs WWW</title>
 <para>
 <emphasis role="strong">OpenSolaris, build 28:</emphasis> Zostało udostępnione narzędzie administracyjne ZFS zbudowane w oparciu o interfejs web. Za pomocą tego narzędzia można wykonywać następujące czynności:</para>
 <itemizedlist>
@@ -186,7 +185,7 @@ W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="819-2240" rema
 <para>Przenoszenie (eksport) puli nośników danych do innego systemu.</para>
 </listitem>
 <listitem>
-<para>Import uprzednio eksportowanych puli nośników danych, celem udostępnienia ich w innym systemie.</para>
+<para>Import uprzednio eksportowanych pul nośników danych celem udostępnienia ich w innym systemie.</para>
 </listitem>
 <listitem>
 <para>Podgląd informacji o puli nośników danych.</para>
@@ -204,11 +203,11 @@ W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="819-2240" rema
 <para>Przywracanie systemu plików do poprzedniego obrazu.</para>
 </listitem>
 </itemizedlist>
-<para>Możesz uzyskać dostęp do konsoli Administracji ZFS, poprzez bezpieczne połączenie, przy pomocy przeglądarki web pod następującym adresem URL:</para>
+<para>Dostęp do konsoli Administracji ZFS możliwe jest przez bezpieczne połączenie przy pomocy przeglądarki web pod następującym adresem URL:</para>
 <screen>https://<replaceable>system-name</replaceable>:6789/zfs</screen>
-<para>Jeśli wpisałeś poprawny adres URL i nie jesteś w stanie połączyć sie z konsolą Administracji ZFS, znaczy to iż serwer prawdopodobnie nie jest uruchomiony. Aby go uruchomić, uruchom następujące polecenie:</para>
+<para>Jeśli po wpisaniu poprawengo adresu URL nie pojawia się konsola administracyjna, oznacza to najprawdopodobniej, że serwer jest nieuruchomiony. Włącza się go następującym poleceniem:</para>
 <screen># /usr/sbin/smcwebserver start</screen>
-<para>Jeśli chcesz, aby serwer uruchamiał się automatycznie podczas startu systemu, wykonaj następujące polecenie:</para>
+<para>Automatyczne uruchamianie serwera podczas startu systemu włączane jest następującą komendą:</para>
 <screen># /usr/sbin/smcwebserver enable</screen>
 </sect2>
 </sect1>
@@ -220,7 +219,7 @@ W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="819-2240" rema
 </para>
 <sect2 xml:id="gaypk">
 <title>Pula danych ZFS</title>
-<para>ZFS używa koncepcji <emphasis>puli nośników danych</emphasis>, aby zarządzać urządzeniami fizycznymi. Uprzednio systemy plików były konstruowane na pojedynczych, fizycznych urządzeniach. Aby zaadresować wiele urządzeń oraz zapewnić redundancję, została przedstawiona koncepcja <emphasis>managera woluminów</emphasis>,prezentującego obraz pojedynczego urządzenia, który nie musiał być modyfikowany aby korzystać z zalet wykorzystania kilku urządzeń. Taki schemat stworzył dodatkowy poziom i ostatecznie uniemożliwił wykorzystanie pewnych zalet systemu plików, ponieważ system plików nie miał kontroli nad fizyczną lokalizacją danych w wirtualnych woluminach.<indexterm xml:id="indexterm-2">
+<para>ZFS używa koncepcji <emphasis>pul nośników danych</emphasis>, aby zarządzać urządzeniami fizycznymi. Uprzednio systemy plików były konstruowane na pojedynczych, fizycznych urządzeniach. Aby zaadresować wiele urządzeń oraz zapewnić redundancję została przedstawiona koncepcja <emphasis>managera woluminów</emphasis>, prezentującego obraz pojedynczego urządzenia, który nie musiał być modyfikowany, aby korzystać z zalet wykorzystania kilku urządzeń. Taki schemat stworzył dodatkowy poziom i ostatecznie uniemożliwił wykorzystanie pewnych zalet systemu plików, ponieważ system plików nie miał kontroli nad fizyczną lokalizacją danych w wirtualnych woluminach.<indexterm xml:id="indexterm-2">
 <primary>System plików ZFS</primary>
 <secondary>pula nośników danych</secondary>
 <tertiary>opis</tertiary>
@@ -230,11 +229,11 @@ W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="819-2240" rema
 <secondary>opis</secondary>
 </indexterm>
 </para>
-<para>ZFS eliminuje całkowicie managera woluminów. Zamiast zmuszać do tworzenia wirtualnych woluminów, ZFS grupuje urządzenia w pule nośników danych. Pula nośników danych opisuje fizyczną charakterystykę zbioru danych (podział logiczny urządzenia, sposób redundancji danych, itd.) i działa jako magazyn danych, z którego systemy plików mogą zostać stworzone. System plików nie zawiera już indywidualnych urządzeń, co pozwala im na dzielenie się przestrzenią dyskową ze wszystkimi systemami plików w puli. Nie trzeba już dłużej z góry definiować wielkości systemu plików, rośnie on automatycznie w przestrzeni dyskowej, jaką zadedykowano na potrzeby puli. W momencie gdy zostają dodane nowe urządzenia, wszystkie systemy plików potrafią używać dodatkowej przestrzeni, bez potrzeby ingerencji. W pewien sposób, pule nośników danych zachowują się podobnie do systemu pamięć wirtualnej. Kiedy dodawane są pamięci DIMM do systemu, system operacyjny nie wymusza wykonania jakichkolwiek poleceń, aby skonfigurować pamięć, by przypisać ją do indywidualnego procesu. Wszystkie procesy w systemie automatycznie wykorzystują dodatkową pamięć.</para>
+<para>ZFS eliminuje całkowicie managera woluminów. Zamiast zmuszać do tworzenia wirtualnych woluminów, ZFS grupuje urządzenia w pule nośników danych. Pula nośników danych opisuje fizyczną charakterystykę zbioru danych (podział logiczny urządzenia, sposób redundancji danych, itd.) i działa jako magazyn danych, z którego systemy plików mogą być tworzone. System plików nie zawiera już indywidualnych urządzeń, co pozwala im na dzielenie się przestrzenią dyskową ze wszystkimi systemami plików w puli. Nie trzeba już dłużej z góry definiować wielkości systemu plików, rośnie on automatycznie w przestrzeni dyskowej, jaką zadedykowano na potrzeby puli. W momencie gdy zostają dodane nowe urządzenia, wszystkie systemy plików potrafią używać dodatkowej przestrzeni, bez potrzeby ingerencji. W pewien sposób pule nośników danych zachowują się podobnie do systemu pamięć wirtualnej. Kiedy dodawane są pamięci DIMM do systemu, system operacyjny nie wymusza wykonania jakichkolwiek poleceń, aby skonfigurować pamięć, by przypisać ją do indywidualnego procesu. Wszystkie procesy w systemie automatycznie wykorzystują dodatkową pamięć.</para>
 </sect2>
 <sect2 xml:id="gaypi">
 <title>Terminologia transakcyjna</title>
-<para>ZFS jest transakcyjnym systemem plików, co znaczy że stan systemu plików na dysku jest zawsze spójny. Tradycyjny system plików nadpisuje dane, co oznacza iż jeśli zdarzy się utrata zasilania, przykładowo, pomiędzy czasem kiedy blok danych zostanie zaalokowany a kiedy zostanie połączony wewnątrz katalogu, system plików pozostanie w stanie nieustalonym (niespójnym). Wcześniej problem ten był rozwiązywany poprzez użycie polecenia <command>fsck</command>. Było ono odpowiedzialne za przeczytanie i zweryfikowanie stanu systemu plików oraz wykonanie prób naprawy każdej napotkanej niespójności. Problem ten było dokuczliwy i nigdy nie gwarantował rozwiązania wszystkich problemów. Dopiero niedawno przedstawiono koncepcję <emphasis>indeksowania</emphasis> (journaling). Polega ona na zapisywaniu wszystkich działań w oddzielnym indeksie, który może być odtworzony bezpiecznie, jeśli system ulegnie awarii. Taki proces tworzy niepotrzebną nadmiarowość, ponieważ dane muszą być zapisywane podwójnie, a czasem wynikiem są dodatkowe problemy, takie jak wtedy, gdy indeksowania nie mogą być odtworzone poprawnie.<indexterm xml:id="indexterm-4">
+<para>ZFS jest transakcyjnym systemem plików, co znaczy że stan systemu plików na dysku jest zawsze spójny. Tradycyjny system plików nadpisuje dane, co oznacza iż jeśli zdarzy się utrata zasilania, przykładowo, pomiędzy czasem kiedy blok danych zostanie zaalokowany a kiedy zostanie połącstrefy wewnątrz katalogu, system plików pozostanie w stanie nieustalonym (niespójnym). Wcześniej problem ten był rozwiązywany poprzez użycie polecenia <command>fsck</command>. Było ono odpowiedzialne za przeczytanie i zweryfikowanie stanu systemu plików oraz wykonanie prób naprawy każdej napotkanej niespójności. Problem ten było dokuczliwy i nigdy nie gwarantował rozwiązania wszystkich problemów. Dopiero niedawno przedstawiono koncepcję <emphasis>indeksowania</emphasis> (journaling). Polega ona na zapisywaniu wszystkich działań w oddzielnym indeksie, który może być odtworstrefy bezpiecznie, jeśli system ulegnie awarii. Taki proces tworzy niepotrzebną nadmiarowość, ponieważ dane muszą być zapisywane podwójnie, a czasem wynikiem są dodatkowe problemy, takie jak wtedy, gdy indeksowania nie mogą być odtworzone poprawnie.<indexterm xml:id="indexterm-4">
 <primary>System plików ZFS</primary>
 <secondary>terminologia transakcyjna</secondary>
 <tertiary>opis</tertiary>
@@ -263,7 +262,7 @@ W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="819-2240" rema
 <sect2 xml:id="gayou">
 <title>Niezrównana skalowalność</title>
 
-<para>ZFS został zaprojektowany od podstaw, aby być najbardziej skalowalnym systemem plików. System sam w sobie jest 128-bitowy, pozwalając na 2<superscript>128</superscript> bajtów danych. Wszystkie dane są alokowane dynamicznie, zatem nie ma potrzeby wcześniejszego alokowania danych, innymi słowy ograniczenia skalowalności systemu plików, kiedy jest on tworzony na początku. Całość algorytmów została napisana z myślą o skalowalności. Katalogi mogą zawierać do 2<superscript>48</superscript> (256 trylionów) wpisów oraz nie ma limitu dla ilości systemów plików jak i ilości plików jakie może on zawierać.</para>
+<para>ZFS został zaprojektowany od podstaw, aby być najbardziej skalowalnym systemem plików. System sam w sobie jest 128-bitowy, pozwalając na 2<superscript>128</superscript> bajtów danych. Wszystkie dane są alokowane dynamicznie, zatem nie ma potrzeby wcześniejszego alokowania danych, innymi słowy ograniczenia skalowalności systemu plików, kiedy jest on tworstrefy na początku. Całość algorytmów została napisana z myślą o skalowalności. Katalogi mogą zawierać do 2<superscript>48</superscript> (256 trylionów) wpisów oraz nie ma limitu dla ilości systemów plików jak i ilości plików jakie może on zawierać.</para>
 </sect2>
 <sect2 xml:id="gbcbn">
 <title>Obrazy ZFS</title>
@@ -274,7 +273,7 @@ W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="819-2240" rema
 <sect2 xml:id="gayoc">
 <title>Uproszczona Administracja</title>
 
-<para>Co najważniejsze, ZFS posiada znacznie uproszczony model administrowania. Poprzez użycie hierarchicznego wyglądu systemu plików, dziedziczenie właściwości, samozarządzalność punktów montowania i semantykę udostępniania NFS, ZFS umożliwia tworzenie i zarządzanie systemem plików bez bez potrzeby stosowania wielu poleceń lub edytowań plików konfiguracyjnych. Możesz łatwo ustawić quota'y lub rezerwacje, włączyć / wyłączyć kompresję lub zarządzać punktami montowań dla kilku systemu plików za pomocą jednego polecenia. Urządzenia mogą być przetestowane lub naprawione bez potrzeby znajomości oddzielnego zestawu poleceń dla managera woluminów. Możliwym jest też stworzenie nieograniczonej ilości obrazów systemu plików w trybie natychmiastowym. Można tworzyć kopie zapasowe i odtwarzać dane indywidualnych systemów plików.<indexterm xml:id="indexterm-8">
+<para>Co najważniejsze, ZFS posiada znacznie uproszcstrefy model administrowania. Poprzez użycie hierarchicznego wyglądu systemu plików, dziedziczenie właściwości, samozarządzalność punktów montowania i semantykę udostępniania NFS, ZFS umożliwia tworzenie i zarządzanie systemem plików bez bez potrzeby stosowania wielu poleceń lub edytowań plików konfiguracyjnych. Możesz łatwo ustawić quota'y lub rezerwacje, włączyć / wyłączyć kompresję lub zarządzać punktami montowań dla kilku systemu plików za pomocą jednego polecenia. Urządzenia mogą być przetestowane lub naprawione bez potrzeby znajomości oddzielnego zestawu poleceń dla managera woluminów. Możliwym jest też stworzenie nieograniczonej ilości obrazów systemu plików w trybie natychmiastowym. Można tworzyć kopie zapasowe i odtwarzać dane indywidualnych systemów plików.<indexterm xml:id="indexterm-8">
 <primary>System plików ZFS</primary>
 <secondary>uproszczona administracja</secondary>
 <tertiary>opis</tertiary>
@@ -459,7 +458,7 @@ W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="819-2240" rema
 <varlistentry>
 <term>resilvering</term>
 <listitem>
-<para>Proces transferu danych z jednego urządzenia na drugie jest znany jako <emphasis>resilvering</emphasis>. Przykładowo, jeśli mirror zostanie wymieniony lub zostanie wyłączony, dane z mirror'a który jest aktualny są kopiowane do nowo przywróconego komponentu mirror'u. Ten proces odpowiada <emphasis>resynchronizacji mirror'a</emphasis> w tradycyjnym managerze woluminów.</para>
+<para>Proces transferu danych z jednego urządzenia na drugie jest znany jako <emphasis>resilvering</emphasis>. Przykładowo, jeśli mirror zostanie wymieniony lub zostanie wyłącstrefy, dane z mirror'a który jest aktualny są kopiowane do nowo przywróconego komponentu mirror'u. Ten proces odpowiada <emphasis>resynchronizacji mirror'a</emphasis> w tradycyjnym managerze woluminów.</para>
 <para>W celu uzyskania dodatkowych informacji, zobacz <olink targetdoc="" remap="internal" targetptr="gbcus">Podgląd postępu resilvering'u</olink>.<indexterm xml:id="indexterm-31">
 <primary>pule nośników danych ZFS</primary>
 <secondary>resilvering</secondary>
