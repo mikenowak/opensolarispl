@@ -157,14 +157,14 @@ przestawiono w poniższych przykładach:<indexterm xml:id="indexterm-499">
 <para>Dla ZFS nie istnieje równoważne narzędzie jak <command>fsck</command>. To narzędzie było stosowane w celu naprawiania danych oraz sprawdzania ich poprawności.</para>
 <sect2 xml:id="gbbyc">
 <title>Naprawa danych</title>
-<para>W tradycyjnych systemach plików, sposób w jaki dane są zapisywane jest podatny na uszkodzenia co powoduje błędy w regularności danych. Ponieważ tradycyjne systemy plików nie są transakcyjne, niepowiązane bloki, uszkodzone linki lub inne niespójne struktury dane są dozwolone.  The addition of journaling does solve some of these problems, but can introduce additional problems when the log cannot be rolled back. Żaden z powyższych problemów nie istnieje dla ZFS. The only way for inconsistent data to exist on disk is through hardware failure (in which case the pool should have been replicated) or a bug in the ZFS software exists.<indexterm xml:id="indexterm-505"> <primary>Pule pamięci ZFS</primary> <secondary>data repair</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-506"> <primary>checking</primary> <secondary>ZFS data integrity</secondary> </indexterm> <indexterm xml:id="indexterm-507"> <primary>data</primary> <secondary>repair</secondary> </indexterm>
+<para>W tradycyjnych systemach plików, sposób w jaki dane są zapisywane jest podatny na uszkodzenia co powoduje błędy w regularności danych. Ponieważ tradycyjne systemy plików nie są transakcyjne, niepowiązane bloki, uszkodzone linki lub inne niespójne struktury dane są dozwolone.  Dodatkowo dzienniki (jouornal) rozwiązują niektóre z tych problemów, ale mogą powodować dodatkowe, kiedy dziennik nie może zostać odtworzony. Żaden z powyższych problemów nie istnieje dla ZFS. Jedynym sposobem na niespójne dane na dysku jest uszkodzenie sprzętowe (w tym wypadku pula pula powinna była zostać zreplikowana) lub błąd w oprogramowaniu ZFS.<indexterm xml:id="indexterm-505"><primary>Pule pamięci ZFS</primary><secondary>naprawa danych</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-506"><primary>sprawdzanie</primary><secondary>Spójność danych ZFS</secondary></indexterm><indexterm xml:id="indexterm-507"><primary>dane</primary><secondary>naprawa</secondary></indexterm>
 </para>
 <para>Biorąc pod uwagę, że narzędzie <command>fsck</command> zostało stworzone do naprawy znanych problemów specyficznych dla danych systemów plików, napisanie takiego narzędzia dla systemu plików, w którym problemy są nieznane nie jest możliwe. W przyszłości, problemy mogą okazać się na tyle wspólne, że stworzenie takiego narzędzia stanie się możliwe. Jednak problemy te mogą zostać zawsze ominięte przy użyciu replikowanych pul.</para>
 <para>Jeśli pule nie są replikowane, szansa niedostępności danych jest zawsze możliwa.</para>
 </sect2>
 <sect2 xml:id="gbbyd">
 <title>Sprawdzanie poprawności danych</title>
-<para>Dodatkowo, oprócz naprawy danych, narzędzie <command>fsck</command> sprawdza dane na dysku pod względem ich poprawności. Tradycyjnie to zadanie odbywa się poprzez odmontowanie systemu plików oraz uruchomnienie narzędzia <command>fsck</command>. W tym przypadku może zaistnieć potrzeba uruchomienia systemu w trybie pojedyńczego użytkownika. Ten scenariusz powoduje przestój działania proporcjonalny do rozmiaru sprawdzanego systemu plików. Instead of requiring an explicit utility to perform the necessary checking, ZFS provides a mechanism to perform regular checking of all data. This functionality, known as <emphasis>scrubbing</emphasis>, is commonly used in memory and other systems as a method of detecting and preventing errors before they result in hardware or software failure.<indexterm xml:id="indexterm-508"> <primary>Pule pamięci ZFS</primary> <secondary>data validation</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-509"> <primary>data</primary> <secondary>validation (scrubbing)</secondary> </indexterm> <indexterm xml:id="indexterm-510"> <primary>scrubbing</primary> <secondary>data validation</secondary> </indexterm>
+<para>Dodatkowo, oprócz naprawy danych, narzędzie <command>fsck</command> sprawdza dane na dysku pod względem ich poprawności. Tradycyjnie to zadanie odbywa się poprzez odmontowanie systemu plików oraz uruchomnienie narzędzia <command>fsck</command>. W tym przypadku może zaistnieć potrzeba uruchomienia systemu w trybie pojedyńczego użytkownika. Ten scenariusz powoduje przestój działania proporcjonalny do rozmiaru sprawdzanego systemu plików. Zamiast konieczności używania odpowiedniego narzędzia do sprawdzania danych, ZFS oferuje mechanizm sprawdzający je regularnie. Ta funkcjonalność jest znana jako <emphasis>weryfikacja danych (scrubbing)</emphasis> i jest w powrzechnym użyciu w pamięci podręcznej jako metoda wykrywania i zapobiegania błędom, zanim spowodują awarie sprzętową lub programową. <indexterm xml:id="indexterm-508"><primary>Pule pamięci ZFS</primary><secondary>sprawdzanie poprawności danych</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-509"><primary>dane</primary><secondary>weryfikacja danych (scrubbing)</secondary></indexterm><indexterm xml:id="indexterm-510"><primary>weryfikacja danych</primary><secondary>sprawdzanie poprawności danych</secondary></indexterm>
 </para>
 </sect2>
 <sect2 xml:id="gbbxi">
@@ -975,50 +975,16 @@ to a less convenient location, allowing the original object to be restored
 in place.</para>
 </sect2>
 <sect2 xml:id="gbctt">
-<title>Repairing ZFS Storage Pool-Wide Damage</title>
-<para>If the damage is in pool metadata that damage prevents the pool from being opened, then you must restore the pool and all its data from backup. The mechanism you use varies widely by the pool configuration and backup strategy. Najpierw, zachowaj konfiguracje puli uzyskaną przy użyciu komendy <command>zpool status</command>, umożliwi to jej odtworzenie, kiedy zostanie zniszczona. Później użyj komendy <command>zpool destroy</command> <option>f</option> w celu zniszenia puli. Also, keep a file describing the layout of the datasets and the various locally set properties somewhere safe, as this information will become inaccessible if the pool is ever rendered inaccessible. With the pool configuration and dataset layout, you can reconstruct your complete configuration after destroying the pool. The data can then be populated by using whatever backup or restoration strategy you use.<indexterm xml:id="indexterm-561"> <primary>Pule pamięci ZFS</primary> <secondary>repairing pool-wide damage</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-562"> <primary>repairing</primary> <secondary>pool-wide damage</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-563"> <primary>usuwanie problemów</primary> <secondary>repairing pool-wide damage</secondary> <tertiary>opis</tertiary> </indexterm>
+<title>Naprawa szeroko uszkodzonej puli pamięci ZFS</title>
+<para>Jeśli uszkodzenie wystąpiło w metadanych puli, uniemożliwia ono dostęp do niej. W takim przypadku pula wraz z danymi musi zostać odtworzona z kopii bezpieczeństwa. Użyty mechanizm znacząco różni się ze względu na konfiguracje puli oraz strategie kopii bezpieczeństwa. Najpierw, zachowaj konfiguracje puli uzyskaną przy użyciu komendy <command>zpool status</command>, umożliwi to jej odtworzenie, kiedy zostanie zniszczona. Później użyj komendy <command>zpool destroy</command> <option>f</option> w celu zniszenia puli. Również zachowaj w bezpiecznym miejscu plik opisujący rozmieszczenie danych i różnego rodzaju lokalne parametry, ponieważ te informacje staną się niedostępne, jeśli pula kiedykolwiek zostanie niedostępna. Posiadając konfiguracje puli oraz rozmieszczenie danych, możesz zrekonstruować kompletną konfiguracje po zniszczeniu puli. W takim przypadku dane mogą zostać ponownie zapisane w zależności od kopii zapasowej oraz użytej strategii.<indexterm xml:id="indexterm-561"><primary>Pule pamięci ZFS</primary><secondary>naprawa szeroko uszkodzonej puli</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-562"><primary>naprawa</primary><secondary>szeroko uszkodzona pula</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-563"><primary>usuwanie problemów</primary><secondary>naprawa szeroko uszkodzonej puli</secondary><tertiary>opis</tertiary></indexterm>
 </para>
 </sect2>
 </sect1>
 <sect1 xml:id="gbbwc">
 <title>Naprawa nie ładującego sie systemu</title>
-<para>ZFS is designed to be robust and stable despite errors. Even so, software
-bugs or certain unexpected pathologies might cause the system to panic when
-a pool is accessed. As part of the boot process, each pool must be opened,
-which means that such failures will cause a system to enter into a panic-reboot
-loop. In order to recover from this situation, ZFS must be informed not to
-look for any pools on startup.<indexterm xml:id="indexterm-564">
-<primary>Pule pamięci ZFS</primary>
-<secondary>repairing an unbootable system</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-565">
-<primary>repairing</primary>
-<secondary>an unbootable system</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-566">
-<primary>usuwanie problemów</primary>
-<secondary>repairing an unbootable system</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
+<para>ZFS jest zaprojektowany tak, aby był odporny i stabilny w przypadku napotkania błędów. Jednak różnego rodzaju nieprzewidziane błędy w oprogramowaniu lub inne patologie mogą doprowadzić do awarii systemu w trakcie operacji dostępu do puli. Jako część uruchamiania systemu, każda z pul musi zostać otwarta, co oznacza, że tego typu awaria zostanie zapętlona. Aby wyjść z tej sytuacji, ZFS musi zostać poinformowane, aby nie otwierać żadnej z pul podczas startu systemu. <indexterm xml:id="indexterm-564"><primary>Pule pamięci ZFS</primary><secondary>naprawa nie ładującego się systemu</secondary><tertiary>opis&gt;</tertiary></indexterm><indexterm xml:id="indexterm-565"><primary>naprawa</primary><secondary>nie ładujący się system</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-566"><primary>usuwanie problemów</primary><secondary>naprawa nie ładującego się systemu</secondary><tertiary>opis</tertiary></indexterm>
 </para>
-<para>ZFS maintains an internal cache of available pools and their configurations
-in <filename>/etc/zfs/zpool.cache</filename>. The location and contents of
-this file are private and are subject to change. If the system becomes unbootable,
-boot to the <literal>none</literal> milestone by using the <option>
-m milestone=none</option> boot option. Once the system is up, remount your root file system
-as writable and then remove <filename>/etc/zfs/zpool.cache</filename>. These
-actions cause ZFS to forget that any pools exist on the system, preventing
-it from trying to access the bad pool causing the problem. You can then proceed
-to a normal system state by issuing the <command>svcadm milestone all</command> command.
-You can use a similar process when booting from an alternate root to perform
-repairs.</para>
-<para>Once the system is up, you can attempt to import the pool by using the <command>zpool import</command> command. However, doing so will likely cause the same
-error that occurred during boot, because the command uses the same mechanism
-to access pools. If more than one pool is on the system and you want to import
-a specific pool without accessing any other pools, you must re-initialize
-the devices  in the damaged
-pool, at which point you can safely import the good pool.</para>
+<para>ZFS zachowuje wewnętrzny bufor dostępnych puli i ich konfiguracji w pliku <filename>/etc/zfs/zpool.cache</filename> Lokalizacja pliku oraz jego zawartość są prywatne i mogą się zmienić. Jeśli system nie może zostać uruchomiony, uruchom system w trybie <literal>none</literal> używając opcji <option>milestone=none</option> podczas uruchamiania systemu. Kiedy system jest podniesiony, odmontuj system plików root i zamontuj ponownie jako system plików z możliwością zapisu i usuń plik <filename>/etc/zfs/zpool.cache</filename>. Te akcje spowodują, że ZFS zapomni o istniejących pulach w systemie, zapobiegając próbę dostępu do uszkodzonej puli powodującej problem. Można wtedy uruchomić system w normalnym stanie, używając komendy <command>svcadm milestone all</command>. Podobny proces może zostać użyty, w przypadku uruchomienia systemu z zastępczego systemu plików root w celu wykonania napraw.</para>
+<para>Kiedy system jest podniesiony, można spróbować zaimportować pulę, używając komendy <command>zpool import</command>. Jednak to działanie najprawdopodobniej spowoduje wystąpienie tego samego błędu, który wystąpił podczas uruchamiania systemu, ponieważ komenda używa tego samego mechanizmu dostępu do puli. Jeśli w systemie jest więcej niż jedna pula i chcesz zaimportować konkretną, bez dostępu do innych puli, musisz zainicjować ponownie urządzenia w uszkodzonej puli, po czym można bezpiecznie zaimportować zdrową pule.</para>
 </sect1>
 </chapter>
