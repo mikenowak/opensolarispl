@@ -842,7 +842,7 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 <literal>5:everyone@</literal>
 </term>
 <listitem>
-<para>Każdy, kto nie jest właściciel lub nie należy do grupy, ma prawa do odczytu pliku i atrybutów (<literal>read_data/read_xattr/read_attributes/read_acl/synchronize:allow</literal>). Uprawnienie <literal>synchronize</literal> nie zostało jeszcze zaimplementowane.</para>
+<para>Każdy, kto nie jest właścicielem lub nie należy do grupy, ma prawa do odczytu pliku i atrybutów (<literal>read_data/read_xattr/read_attributes/read_acl/synchronize:allow</literal>). Uprawnienie <literal>synchronize</literal> nie zostało jeszcze zaimplementowane.</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -1158,7 +1158,7 @@ drwxr-xr-x   2 root     root           2 Feb 16 11:12 test.dir
 </indexterm>
 <indexterm xml:id="indexterm-450">
 <primary>zerowanie</primary>
-<secondary>proste ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
+<secondary>prostych ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-451">
@@ -1221,7 +1221,7 @@ drwxr-xr-x   2 root     root           2 Feb 16 11:23 test5.dir
 
 <title>Domyślne dziedziczenie ACL-i</title>
 <para>Domyślnie ACL-e nie są propagowane po strukturze katalogów.</para>
-<para>W poniższym przykładzie szczegółowy ACE <literal>read_data/write_data/execute</literal> dla użytkownika <literal>gozer</literal> ustalany jest dla katalogu <literal>test.dir</literal>.</para>
+<para>W poniższym przykładzie szczegółowy ACL <literal>read_data/write_data/execute</literal> dla użytkownika <literal>gozer</literal> ustalany jest dla katalogu <literal>test.dir</literal>.</para>
 <screen># <userinput>chmod A+user:gozer:read_data/write_data/execute:allow test.dir</userinput>
 # <userinput>ls -dv test.dir</userinput>
 drwxr-xr-x+  2 root     root           2 Feb 17 14:45 test.dir
@@ -1236,7 +1236,7 @@ drwxr-xr-x+  2 root     root           2 Feb 17 14:45 test.dir
          /write_attributes/write_acl/write_owner:deny
      6:everyone@:list_directory/read_data/read_xattr/execute/read_attributes
          /read_acl/synchronize:allow</screen>
-<para>Jeśli tworzony jest podkatalog <filename>test.dir</filename>, ACE dla użytkownika <literal>gozer</literal> nie będzie dziedziczony. Użytkownik <literal>gozer</literal> będzie miał dostęp do <filename>sub.dir</filename> tylko wtedy, gdy prawa dla <filename>sub.dir</filename> zezwalają mu na dostęp jako właścicielowi, członkowi grupy lub zezwalają na dostęp dla <literal>everyone@</literal>.</para>
+<para>Jeśli tworzony jest podkatalog <filename>test.dir</filename>, ACL dla użytkownika <literal>gozer</literal> nie będzie dziedziczony. Użytkownik <literal>gozer</literal> będzie miał dostęp do <filename>sub.dir</filename> tylko wtedy, gdy prawa dla <filename>sub.dir</filename> zezwalają mu na dostęp jako właścicielowi, członkowi grupy lub zezwalają na dostęp dla <literal>everyone@</literal>.</para>
 <screen># <userinput>mkdir test.dir/sub.dir</userinput>
 # <userinput>ls -dv test.dir/sub.dir</userinput>
 drwxr-xr-x   2 root     root           2 Feb 17 14:46 test.dir/sub.dir
@@ -1254,7 +1254,7 @@ drwxr-xr-x   2 root     root           2 Feb 17 14:46 test.dir/sub.dir
 <example xml:id="gcale">
 
 <title>Ustalanie dziedziczenia ACL-i dla plików i katalogów</title>
-<para>Poniższe przykłady identyfikują ACE dla plików i katalogów, ustanawiane po ustawieniu flagi <literal>file_inherit</literal>.</para>
+<para>Poniższe przykłady identyfikują ACL dla plików i katalogów, ustanawiane po ustawieniu flagi <literal>file_inherit</literal>.</para>
 <para>W poniższym przykładzie użytkownikowi <literal>gozer</literal> dodaje się prawa <literal>read_data/write_data</literal> dotyczące plików w katalogu <filename>test.dir</filename>, tak aby miał dostęp do każdego nowego pliku w tym katalogu.</para>
 <screen># <userinput>chmod A+user:gozer:read_data/write_data:file_inherit:allow test2.dir</userinput>
 # <userinput>ls -dv test2.dir</userinput>
@@ -1455,7 +1455,7 @@ drwxr--r--   2 root     root           2 Feb 16 11:23 test5.dir
 <example xml:id="gbche">
 
 <title>Dziedziczenie ACL-i z trybem dziedziczenia ustalonym na Noallow</title>
-<para>W poniższym przykładzie ustanowiono dwa szczegółowe ACL-e z włączonym dziedziczeniem dla plików. Jeden ACL daje prawo <literal>read_data</literal>, drugi odmawia prawa <literal>read_data</literal>. Przykład ten ilustruje jak można ustalić dwa ACE w jednym wywołaniu komendy <command>chmod</command>.</para>
+<para>W poniższym przykładzie ustanowiono dwa szczegółowe ACL-e z włączonym dziedziczeniem dla plików. Jeden ACL daje prawo <literal>read_data</literal>, drugi odmawia prawa <literal>read_data</literal>. Przykład ten ilustruje jak można ustalić dwa ACL-e w jednym wywołaniu komendy <command>chmod</command>.</para>
 <screen># <userinput>zfs set aclinherit=nonallow tank/cindy</userinput>
 # <userinput>chmod A+user:gozer:read_data:file_inherit:deny,user:lp:read_data:file_inherit:allow test6.dir</userinput>
 # <userinput>ls -dv test6.dir</userinput>
