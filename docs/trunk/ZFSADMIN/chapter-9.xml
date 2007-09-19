@@ -409,33 +409,13 @@ errors: The following persistent errors have been detected:
 </sect1>
 <sect1 xml:id="gbbve">
 <title>Naprawa uszkodzonej konfiguracji ZFS</title>
-<para>ZFS maintains a cache of active pools and their configuration on the root file system. If this file is corrupted or somehow becomes out of sync with what is stored on disk, the pool can no longer be opened. ZFS tries to avoid this situation, though arbitrary corruption is always possible given the qualities of the underlying file system and storage. Ta sytuacja zwykle powoduje zniknięcie puli z systemu, kiedy w przeciwnym przypadku powinna być dostępna. This situation can also manifest itself as a partial configuration that is missing an unknown number of top-level virtual devices. In either case, the configuration can be recovered by exporting the pool (if it is visible at all), and re-importing it.<indexterm xml:id="indexterm-531"> <primary>Pule pamięci ZFS</primary> <secondary>repairing a damaged ZFS configuration</secondary> </indexterm> <indexterm xml:id="indexterm-532"> <primary>repairing</primary> <secondary>a damaged ZFS configuration</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-533"> <primary>usuwanie problemów</primary> <secondary>repairing a damaged ZFS configuration</secondary> </indexterm>
+<para>ZFS utrzymuje bufor aktywnych pul i ich konfiguracji w głównym systemu plików. Jeśli plik jest uszkodzony lub w jakiś sposób jest niezsynchronizowany, pula nie może zostać otwarta. ZFS próbuje ominąć taki przypadek, aczkolwiek dowolne uszkodzenie jest zawsze możliwe. Ta sytuacja zwykle powoduje zniknięcie puli z systemu, kiedy w przeciwnym przypadku powinna być dostępna. Sytuacja ta może również zgłosić nieznaną liczbę brakujących urządzeń wirtualnych w najwyższym poziomie. W każdym z przypadków, konfiguracja może zostać odzyskana poprzez eksportowanie puli (jeżeli jest w ogóle widoczna) i ponownym imporcie puli.<indexterm xml:id="indexterm-531"> <primary>Pule pamięci ZFS</primary> <secondary>naprawa uszkodzonej konfiguracji ZFS</secondary> </indexterm> <indexterm xml:id="indexterm-532"> <primary>naprawa</primary> <secondary>uszkodzona konfiguracja ZFS</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-533"> <primary>usuwanie problemów</primary> <secondary>naprawa uszkodzonej konfiguracji ZFS</secondary> </indexterm>
 </para>
-<para>For more information about importing and exporting pools, see <olink targetdoc="" remap="internal" targetptr="gbchy">Migrating ZFS Storage Pools/Pule pamięci ZFS</olink>.</para>
+<para>Więcej informacji na temat importowania i exportowania puli można znaleźć w <olink targetdoc="" remap="internal" targetptr="gbchy">Migracja Pul Pamięci ZFS </olink>.</para>
 </sect1>
 <sect1 xml:id="gbbvb">
 <title>Naprawa brakującego urządzenia</title>
-<para>If a device cannot be opened, it displays as <literal>UNAVAILABLE</literal> in
-the <command>zpool status</command> output. This status means that ZFS was
-unable to open the device when the pool was first accessed, or the device
-has since become unavailable. If the device causes a top-level virtual device
-to be unavailable, then nothing in the pool can be accessed. Otherwise, the
-fault tolerance of the pool might be compromised. In either case, the device
-simply needs to be reattached to the system to restore normal operation.<indexterm xml:id="indexterm-534">
-<primary>Pule pamięci ZFS</primary>
-<secondary>replacing a missing device</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-535">
-<primary>replacing</primary>
-<secondary>a missing device</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-536">
-<primary>usuwanie problemów</primary>
-<secondary>replacing a missing device</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
+<para>Jeśli urządzenie nie może zostać otwarte, wyświetlane zostaje jako   <literal>UNAVAILABLE</literal> w komunikacie komendy <command>zpool status</command> Ten status oznacza, że ZFS nie udało się otworzyć urządzenia, kiedy następował dostęp do puli po raz pierwszy, lub urządzenie zostało niedostępne. Jeśli urządzenie powoduje niedostępność wirtualnego urządzenia najwyższego poziomu, wtedy nic z puli nie jest dostępne. W przeciwnym przypadku, tolerancja uszkodzeń może zostać wzięta pod uwagę. W każdym z przypadków, urządzenie musi zostać ponownie zamontowane w systemie w celu odzyskania normalnej pracy.<indexterm xml:id="indexterm-534"> <primary>Pule pamięci ZFS</primary> <secondary>wymiana brakującego urządzenia</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-535"> <primary>wymiana</primary> <secondary>brakujące urządzenie</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-536"> <primary>usuwanie problemów</primary> <secondary>wymiana brakującego urządzenia</secondary> <tertiary>(przykład)</tertiary> </indexterm>
 </para>
 <para>Na przykład, po awarii urządzenia, możesz zobaczyć podobny komunikat pochodzący z <command>fmd</command>:</para>
 <screen>SUNW-MSG-ID: ZFS-8000-D3, TYPE: Fault, VER: 1, SEVERITY: Major
@@ -446,28 +426,28 @@ EVENT-ID: 043bb0dd-f0a5-4b8f-a52d-8809e2ce2e0a
 DESC: A ZFS device failed.  Refer to http://sun.com/msg/ZFS-8000-D3 for more information.
 AUTO-RESPONSE: No automated response will occur.
 IMPACT: Fault tolerance of the pool may be compromised.
-RE-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
+REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
 <para>Następnym krokiem jest uzycie komendy <command>zpool status</command> <option>x</option> w celu zobaczenia dokładniejszej informacji na temat problemu urządzenia i podjęcia decyzji. Na przykład:</para>
 <screen># <userinput>zpool status -x</userinput>
   pool: tank
  state: DEGRADED
 status: One or more devices could not be opened.  Sufficient replicas exist for
-        the pool continue functioning in a degraded state.
+        the pool to continue functioning in a degraded state.
 action: Attach the missing device and online it using 'zpool online'.
    see: http://www.sun.com/msg/ZFS-8000-D3
- scrub: resilver completed with 0 errors on Fri Mar 10 11:08:29 2006 
+ scrub: resilver completed with 0 errors on Fri Mar 10 11:08:29 2006
 config:
 
         NAME         STATE     READ WRITE CKSUM
         tank         DEGRADED     0     0     0
           mirror     DEGRADED     0     0     0
             c0t1d0   UNAVAIL      0     0     0  cannot open
-            c1t1d0      ONLINE        0        0        0</screen>
-<para>You can see from this output that the missing device <literal>c0t1d0</literal> is not functioning. Jesli zostanie stwierdzone, ze urządzenie jest wadliwe, należy je wymienić.</para>
-<para>Then, use the <command>zpool online</command> command to online the replaced device. Na przykład:</para>
+            c1t1d0   ONLINE       0     0     0</screen>
+<para>Z tego komunikatu można zobaczyć, że brakujące urządzenie <literal>c0t1d0</literal> nie pracuje. Jesli zostanie stwierdzone, ze urządzenie jest wadliwe, należy je wymienić.</para>
+<para>Wtedy użyj komendy <command>zpool online</command> w celu przywrócenia wymienionego urządzenia do stanu online. Na przykład:</para>
 <screen># <userinput>zpool online tank c0t1d0</userinput>
 </screen>
-<para>Confirm that the pool with the replaced device is healthy.</para>
+<para>Sprawdź, czy pula z wymienionym urządzeniem jest zdrowa.</para>
 <screen># <userinput>zpool status -x tank</userinput>
 pool 'tank' is healthy</screen>
 <sect2 xml:id="gbbxn">
