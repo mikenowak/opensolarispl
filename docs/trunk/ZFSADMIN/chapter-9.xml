@@ -451,41 +451,12 @@ config:
 <screen># <userinput>zpool status -x tank</userinput>
 pool 'tank' is healthy</screen>
 <sect2 xml:id="gbbxn">
-<title>Physically Reattaching the Device</title>
-<para>Exactly how a missing device is reattached depends on the device in
-question. If the device is a network-attached drive, connectivity should be
-restored. If the device is a USB or other removable media, it should be reattached
-to the system. If the device is a local disk, a controller might have failed
-such that the device is no longer visible to the system. In this case, the
-controller should be replaced at which point the disks will again be available.
-Other pathologies can exist and depend on the type of hardware and its configuration.
-If a drive fails and it is no longer visible to the system (an unlikely event),
-the device should be treated as a damaged device. Follow the procedures outlined
-in <olink targetdoc="" remap="internal" targetptr="gbbvf">Naprawa uszkodzonego urządzenia</olink>.</para>
+<title>Fizyczne Ponowne Podłączenie Urządzenia</title>
+<para>Exactly how a missing device is reattached depends on the device in question. Jeśli jest to urządzenie sieciowe, połączenie powinno zostać odzyskane. Jeśli jest to urządzenie USB lub inne wymienne media, powinno zostać ponownie podłączone do systemu. If the device is a local disk, a controller might have failed such that the device is no longer visible to the system. In this case, the controller should be replaced at which point the disks will again be available. Other pathologies can exist and depend on the type of hardware and its configuration. If a drive fails and it is no longer visible to the system (an unlikely event), the device should be treated as a damaged device. Postępuj z procedurą opisaną w  <olink targetdoc="" remap="internal" targetptr="gbbvf">Naprawa uszkodzonego urządzenia</olink>.</para>
 </sect2>
 <sect2 xml:id="gbbyi">
 <title>Notifying ZFS of Device Availability</title>
-<para>Once a device is reattached to the system, ZFS might or might not automatically
-detect its availability. If the pool was previously faulted, or the system
-was rebooted as part of the attach procedure, then ZFS automatically rescans
-all devices when it tries to open the pool. If the pool was degraded and the
-device was replaced while the system was up, you must notify ZFS that the
-device is now available and ready to be reopened by using the <command>zpool
-online</command> command. For example:<indexterm xml:id="indexterm-537">
-<primary>Pule pamięci ZFS</primary>
-<secondary>notifying ZFS of reattached device (<command>zpool online</command>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-538">
-<primary>notifying</primary>
-<secondary>ZFS of reattached device (<command>zpool online</command>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-539">
-<primary>usuwanie problemów</primary>
-<secondary>notifying ZFS of reattached device (<command>zpool online</command>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
+<para>Once a device is reattached to the system, ZFS might or might not automatically detect its availability. If the pool was previously faulted, or the system was rebooted as part of the attach procedure, then ZFS automatically rescans all devices when it tries to open the pool. If the pool was degraded and the device was replaced while the system was up, you must notify ZFS that the device is now available and ready to be reopened by using the <command>zpool online</command> command. Na przykład:<indexterm xml:id="indexterm-537"> <primary>Pule pamięci ZFS</primary> <secondary>powiadomienie ZFS o ponownym podłączeniu urządzenia (<command>zpool online</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-538"> <primary>powiadomienie</primary> <secondary>ZFS o ponownym podłączeniu urządzenia (<command>zpool online</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-539"> <primary>usuwanie problemów</primary> <secondary>powiadomienie ZFS o ponownym podłączeniu urządzenia (<command>zpool online</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> 
 </para>
 <screen># <userinput>zpool online tank c0t1d0</userinput>
 </screen>
@@ -518,7 +489,7 @@ describe a number of possible situations:<indexterm xml:id="indexterm-540">
 <itemizedlist>
 <listitem>
 <para>
-<emphasis role="strong">Bit rot</emphasis> – Over time, random events, such as magnetic influences and cosmic rays, can cause bits stored on disk to flip in unpredictable events. These events are relatively rare but common enough to cause potential data corruption in large or long-running systems. [fuzzy] Te błędy są podzielone na trzy kategorie:</para>
+<emphasis role="strong">Bit rot</emphasis> – Over time, random events, such as magnetic influences and cosmic rays, can cause bits stored on disk to flip in unpredictable events. These events are relatively rare but common enough to cause potential data corruption in large or long-running systems. Te błędy są zwykle tymczasowe:</para>
 </listitem>
 <listitem>
 <para>
@@ -529,19 +500,15 @@ though a large number might indicate a faulty drive.</para>
 </listitem>
 <listitem>
 <para>
-<emphasis role="strong">Administrator error</emphasis> – Administrators can unknowingly overwrite portions of the disk with bad data (such as copying <filename>/dev/zero</filename> over portions of the disk) that cause permanent corruption on disk. [fuzzy] [fuzzy] Te błędy są podzielone na trzy kategorie:</para>
+<emphasis role="strong">Administrator error</emphasis> – Administrators can unknowingly overwrite portions of the disk with bad data (such as copying <filename>/dev/zero</filename> over portions of the disk) that cause permanent corruption on disk. Te błędy są zawsze tymczasowe:</para>
 </listitem>
 <listitem>
 <para>
-<emphasis role="strong">Temporary outage</emphasis>–
-A disk might become unavailable for a period time, causing I/Os to fail. This
-situation is typically associated with network-attached devices, though local
-disks can experience temporary outages as well. These errors might or might
-not be transient.</para>
+<emphasis role="strong">Temporary outage</emphasis>– Dysk może zostać niedostępny na jakiś czas powodując błędy we/wy. Ta sytuacja jest zwykle związana z urządzeniami sieciowymi, aczkolwiek lokalne dyski również mogą być tymczasowo niedostępne. Te błędy mogą, ale nie muszą być tymczasowe.</para>
 </listitem>
 <listitem>
 <para>
-<emphasis role="strong">Bad or flaky hardware</emphasis> – This situation is a catch-all for the various problems that bad hardware exhibits. This could be consistent I/O errors, faulty transports causing random corruption, or any number of failures. Te błędy są zwykle trwałe.</para>
+<emphasis role="strong">Bad or flaky hardware</emphasis> – Ta sytuacja występuje kiedy występują różnego rodzaju awarie związane z błędnym sprzętem. This could be consistent I/O errors, faulty transports causing random corruption, or any number of failures. Te błędy są zwykle trwałe.</para>
 </listitem>
 <listitem>
 <para>
@@ -551,145 +518,68 @@ in this state because it is presumed faulty. The administrator who placed
 the device in this state can determine is this assumption is accurate.</para>
 </listitem>
 </itemizedlist>
-<para>Determining exactly what is wrong can be a difficult process. The first
-step is to examine the error counts in the <command>zpool status</command> output
-as follows:</para>
+<para>Odnalezienie dokładnej przyczyny błędu może być trudnym zadaniem. Pierwszym krokiem jest sprawdzenie licznika błędów, przy użyciu polecenia <command>zpool status</command>, jak pokazano poniżej:</para>
 <screen># <userinput>zpool status -v</userinput> <replaceable>pool</replaceable>
 </screen>
-<para>The errors are divided into I/O errors and checksum errors, both of which might indicate the possible failure type. Typical operation predicts a very small number of errors (just a few over long periods of time). If you are seeing large numbers of errors, then this situation probably indicates impending or complete device failure. However, the pathology for administrator error can result in large error counts. Innym źródłem informacji jest log systemowy. If the log shows a large number of SCSI or fibre channel driver messages, then this situation probably indicates serious hardware problems. If no syslog messages are generated, then the damage is likely transient.</para>
-<para>The goal is to answer the following question:</para>
+<para>The errors are divided into I/O errors and checksum errors, both of which might indicate the possible failure type. Typical operation predicts a very small number of errors (just a few over long periods of time). If you are seeing large numbers of errors, then this situation probably indicates impending or complete device failure. However, the pathology for administrator error can result in large error counts. Innym źródłem informacji jest log systemowy. If the log shows a large number of SCSI or fibre channel driver messages, then this situation probably indicates serious hardware problems. Jeśli wiadomości systemowe nie są generowane, wtedy uszkodzenie jest najprawdopodobniej tymczasowe.</para>
+<para>Celem jest odpowiedź na następujące pytania:</para>
 <para>
 <emphasis>Is another error likely to occur on this device?</emphasis>
 </para>
-<para>Errors that happen only once are considered <emphasis>transient</emphasis>,
-and do not indicate potential failure. Errors that are persistent or severe
-enough to indicate potential hardware failure are considered “fatal.”
-The act of determining the type of error is beyond the scope of any automated
-software currently available with ZFS, and so much must be done manually by
-you, the administrator. Once the determination is made, the appropriate action
-can be taken. Either clear the transient errors or replace the device due
-to fatal errors. These repair procedures are described in the next sections.</para>
-<para>Even if the device errors are considered transient, it still may have
-caused uncorrectable data errors within the pool. These errors require special
-repair procedures, even if the underlying device is deemed healthy or otherwise
-repaired. For more information on repairing data errors, see <olink targetdoc="" remap="internal" targetptr="gbbwl">Repairing Damaged Data</olink>.</para>
+<para>Errors that happen only once are considered <emphasis>transient</emphasis>, and do not indicate potential failure. Errors that are persistent or severe enough to indicate potential hardware failure are considered “fatal.” The act of determining the type of error is beyond the scope of any automated software currently available with ZFS, and so much must be done manually by you, the administrator. Once the determination is made, the appropriate action can be taken. Either clear the transient errors or replace the device due to fatal errors. Procedura naprawy jest opisana w następnej sekcji.</para>
+<para>Even if the device errors are considered transient, it still may have caused uncorrectable data errors within the pool. These errors require special repair procedures, even if the underlying device is deemed healthy or otherwise repaired. Więcej informacji na temat naprawy błędów danych można zobaczyć w   <olink targetdoc="" remap="internal" targetptr="gbbwl">Naprawa Uszkodzonych Danych</olink>.</para>
 </sect2>
 <sect2 xml:id="gbbzv">
-<title>Clearing Transient Errors</title>
-<para>If the device errors are deemed transient, in that they are unlikely
-to effect the future health of the device, then the device errors can be safely
-cleared to indicate that no fatal error occurred. To clear error counters
-for RAID-Z or mirrored devices, use the <command>zpool clear</command> command.
-For example:<indexterm xml:id="indexterm-543">
-<primary>Pule pamięci ZFS</primary>
-<secondary>clearing device errors (<command>zpool clear</command>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-544">
-<primary>clearing</primary>
-<secondary>device errors (<command>zpool clear</command>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-545">
-<primary>usuwanie problemów</primary>
-<secondary>clear device errors (<command>zpool clear</command>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
+<title>Kasowanie Tymczasowych Błędów</title>
+<para>If the device errors are deemed transient, in that they are unlikely to effect the future health of the device, then the device errors can be safely cleared to indicate that no fatal error occurred. To clear error counters for RAID-Z or mirrored devices, use the <command>zpool clear</command> command. Na przykład: <indexterm xml:id="indexterm-543"> <primary>Pule pamięci ZFS</primary> <secondary>kasowanie błędów urządzeń (<command>zpool clear</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-544"> <primary>kasowanie</primary> <secondary>błędy urządzeń (<command>zpool clear</command>)</secondary> <tertiary>(przykłąd)</tertiary> </indexterm> <indexterm xml:id="indexterm-545"> <primary>usuwanie problemów</primary> <secondary>kasowanie błędów urządzeń (<command>zpool clear</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm>
 </para>
 <screen># <userinput>zpool clear tank c1t0d0</userinput>
 </screen>
-<para>This syntax clears any errors associated with the device and clears
-any data error counts associated with the device.</para>
+<para>Ta komenda kasuje wszystkie błędy oraz licznik błędów związany z urządzeniem.</para>
 <para>To clear all errors associated with the virtual devices in the pool,
 and clear any data error counts associated with the pool, use the following
 syntax:</para>
 <screen># <userinput>zpool clear tank</userinput>
 </screen>
-<para>For more information about clearing pool errors, see <olink targetdoc="" remap="internal" targetptr="gazge">Clearing Storage Pool Devices</olink>.</para>
+<para>Więcej informacji na temat kasowania błędół puli można znaleźć w   <olink targetdoc="" remap="internal" targetptr="gazge">Kasowanie Błędów Puli Pamięci</olink>.</para>
 </sect2>
 <sect2 xml:id="gbbzy">
-<title>Replacing a Device in a ZFS Storage Pool</title>
-<para>If device damage is permanent or future permanent damage is likely,
-the device must be replaced. Whether the device can be replaced depends on
-the configuration.</para>
+<title>Wymiana Urządzenia w Puli Pamięci ZFS</title>
+<para>Jeżeli uszkodzenie urządzenia jest trwałe lub przyszłe uszkodzenie jest prawdopodobne, musi ono zostać wymienione. Czy urządzenie może zostać wymienione, zależy od konfiguracji.</para>
 <sect3 xml:id="gbcfb">
-<title>Determining if a Device Can Be Replaced</title>
-<para>For a device to be replaced, the pool must be in the <literal>ONLINE</literal> state.
-The device must be part of a replicated configuration, or it must be healthy
-(in the <literal>ONLINE</literal> state). If the disk is part of a replicated
-configuration, sufficient replicas from which to retrieve good data must exist.
-If two disks in a four-way mirror are faulted, then either disk can be replaced
-because healthy replicas are available. However, if two disks in a four-way
-RAID-Z device are faulted, then neither disk can be replaced because not enough
-replicas from which to retrieve data exist. If the device is damaged but otherwise
-online, it can be replaced as long as the pool is not in the <literal>FAULTED</literal> state.
-However, any bad data on the device is copied to the new device unless there
-are sufficient replicas with good data.<indexterm xml:id="indexterm-546">
-<primary>Pule pamięci ZFS</primary>
-<secondary>determining if a device can be replaced</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-547">
-<primary>determining</primary>
-<secondary>if a device can be replaced</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-548">
-<primary>usuwanie problemów</primary>
-<secondary>determining if a device can be replaced</secondary>
-<tertiary>opis</tertiary>
-</indexterm>
+<title>Sprawdzenie czy Urządzenie Może Zostać Wymienione</title>
+<para>Aby wymienić urządzenie pula musi być w stanie <literal>ONLINE</literal>. Urządzenie musi być częścią replikowanej konfiguracji, lub musi być w zdrowe (w stanie<literal>ONLINE</literal>).  If the disk is part of a replicated configuration, sufficient replicas from which to retrieve good data must exist. If two disks in a four-way mirror are faulted, then either disk can be replaced because healthy replicas are available. However, if two disks in a four-way RAID-Z device are faulted, then neither disk can be replaced because not enough replicas from which to retrieve data exist. If the device is damaged but otherwise online, it can be replaced as long as the pool is not in the <literal>FAULTED</literal> state. However, any bad data on the device is copied to the new device unless there are sufficient replicas with good data.<indexterm xml:id="indexterm-546"> <primary>Pule pamięci ZFS</primary> <secondary>determining if a device can be replaced</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-547"> <primary>determining</primary> <secondary>if a device can be replaced</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-548"> <primary>usuwanie problemów</primary> <secondary>determining if a device can be replaced</secondary> <tertiary>opis</tertiary> </indexterm>
 </para>
 <para>In the following configuration, the disk <literal>c1t1d0</literal> can
 be replaced, and any data in the pool is copied from the good replica, <literal>c1t0d0</literal>.</para>
-<screen>[fuzzy] mirror      DEGRADED        0        0        0
-    [fuzzy] c1t0d0      ONLINE        0        0        0
-    [fuzzy] c1t1d0      ONLINE        0        0        0</screen>
+<screen>mirror            DEGRADED
+    c1t0d0             ONLINE
+    c1t1d0             FAULTED</screen>
 <para>The disk <literal>c1t0d0</literal> can also be replaced, though no self-healing
 of data can take place because no good replica is available.</para>
 <para>In the following configuration, neither of the faulted disks can be
 replaced. The <literal>ONLINE</literal> disks cannot be replaced either, because
 the pool itself is faulted.</para>
-<screen>[fuzzy] [fuzzy] c1t1d0      ONLINE        0        0        0
-    [fuzzy] c1t0d0      ONLINE        0        0        0
-    [fuzzy] [fuzzy] c1t1d0      ONLINE        0        0        0
-    [fuzzy] [fuzzy] c1t1d0      ONLINE        0        0        0
-    [fuzzy] [fuzzy] c1t0d0      ONLINE        0        0        0</screen>
+<screen>raidz             FAULTED
+    c1t0d0             ONLINE
+    c2t0d0             FAULTED
+    c3t0d0             FAULTED
+    c3t0d0             ONLINE</screen>
 <para>In the following configuration, either top-level disk can be replaced,
 though any bad data present on the disk is copied to the new disk.</para>
-<screen>[fuzzy] [fuzzy] c1t0d0      ONLINE        0        0        0</screen>
+<screen>c1t0d0         ONLINE
+c1t1d0         ONLINE</screen>
 <para>If either disk were faulted, then no replacement could be performed
 because the pool itself would be faulted.</para>
 </sect3>
 <sect3 xml:id="gbcdv">
-<title>Unreplaceable Devices</title>
-<para>If the loss of a device causes the pool to become faulted, or the device
-contains too many data errors in an unreplicated configuration, then the device
-cannot safely be replaced. Without sufficient replicas, no good data with
-which to heal the damaged device exists. In this case, the only option is
-to destroy the pool and re-create the configuration, restoring your data in
-the process.</para>
+<title>Niewymienialne Urządzenia</title>
+<para>Jeśli zgubienie urządzenia powoduje, że pula zostaje uszkodzona, lub urządzenie zawiera zbyt dużo błędów w niereplikowanej konfiguracji, wtedy nie może ono być bezpiecznie wymienione. Bez wystarczających replik, nie istnieją dobre dane, które mogły by uzdrowić uszkodzone urządzenie. In this case, the only option is to destroy the pool and re-create the configuration, restoring your data in the process.</para>
 <para>For more information about restoring an entire pool, see <olink targetdoc="" remap="internal" targetptr="gbctt">Repairing ZFS Storage Pool-Wide Damage</olink>.</para>
 </sect3>
 <sect3 xml:id="gbcet">
-<title>[fuzzy] Naprawa Uszodzonego Urządzenia</title>
-<para>Once you have determined that a device can be replaced, use the <command>zpool
-replace</command> command to replace the device. If you are replacing the
-damaged device with another different device, use the following command:<indexterm xml:id="indexterm-549">
-<primary>Pule pamięci ZFS</primary>
-<secondary>replacing a device (<command>zpool replace</command>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-550">
-<primary>replacing</primary>
-<secondary>a device (<command>zpool replace</command>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-551">
-<primary>usuwanie problemów</primary>
-<secondary>replacing a device (<command>zpool replace</command>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
+<title>Wymiana Urządzenia</title>
+<para>Once you have determined that a device can be replaced, use the <command>zpool replace</command> command to replace the device. Jeśli wymieniasz uszkodzone urządzenie z innym urządzeniem, użyj nastepującej komendy:<indexterm xml:id="indexterm-549"> <primary>Pule pamięci ZFS</primary> <secondary>wymiana urządzenia (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-550"> <primary>wymiana</primary> <secondary>urządzenie (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-551"> <primary>usuwanie problemów</primary> <secondary>wymiana urządzenia (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm>
 </para>
 <screen># <userinput>zpool replace tank c1t0d0 c2t0d0</userinput>
 </screen>
@@ -702,62 +592,36 @@ then begins resilvering data from the rest of the configuration.</para>
 see <olink targetdoc="" remap="internal" targetptr="gazgd">Replacing Devices in a Storage Pool</olink>.</para>
 </sect3>
 <sect3 xml:id="gbcus">
-<title>Viewing Resilvering Status</title>
+<title>Podgląd Statusu Resilweringu</title>
 <para>The process of replacing a drive can take an extended period of time,
 depending on the size of the drive and the amount of data in the pool. The
 process of moving data from one device to another device is known as <emphasis>resilvering</emphasis>, and can be monitored by using the <command>zpool status</command> command.</para>
-<para>Traditional file systems resilver data at the block level. Because ZFS
-eliminates the artificial layering of the volume manager, it can perform resilvering
-in a much more powerful and controlled manner. The two main advantages of
-this feature are as follows:</para>
+<para>Traditional file systems resilver data at the block level. Because ZFS eliminates the artificial layering of the volume manager, it can perform resilvering in a much more powerful and controlled manner. Istnieją dwie główne zalety tej funkcji:</para>
 <itemizedlist>
 <listitem>
-<para>ZFS only resilvers the minimum amount of necessary data. In
-the case of a short outage (as opposed to a complete device replacement),
-the entire disk can be resilvered in a matter of minutes or seconds, rather
-than resilvering the entire disk, or complicating matters with “dirty
-region” logging that some volume managers support. When an entire disk
-is replaced, the resilvering process takes time proportional to the amount
-of data used on disk. Replacing a 500-Gbyte disk can take seconds if only
-a few gigabytes of used space is in the pool.<indexterm xml:id="indexterm-552">
-<primary>Pule pamięci ZFS</primary>
-<secondary>viewing resilvering process</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-553">
-<primary>replacing</primary>
-<secondary>a device (<command>zpool replace</command>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
-<indexterm xml:id="indexterm-554">
-<primary>usuwanie problemów</primary>
-<secondary>replacing a device (<command>zpool replace</command>)</secondary>
-<tertiary>(example of)</tertiary>
-</indexterm>
+<para>ZFS only resilvers the minimum amount of necessary data. In the case of a short outage (as opposed to a complete device replacement), the entire disk can be resilvered in a matter of minutes or seconds, rather than resilvering the entire disk, or complicating matters with “dirty region” logging that some volume managers support. Kiedy cały dysk zostaje wymieniony, czas operacji resilweringu jest proporcjonalny do ilości danych użytych na tym dysku. Wymiana dysku o pojemności 500-Gbyte może zająć kilka sekund, jeśli kilka gigabajtów jest użytych w puli.<indexterm xml:id="indexterm-552"> <primary>Pule pamięci ZFS</primary> <secondary>podgląd procesu resilweringu</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-553"> <primary>wymiana</primary> <secondary>urządzenie (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-554"> <primary>usuwanie problemów</primary> <secondary>wymiana urządzenia (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm>
 </para>
 </listitem>
 <listitem>
-<para>Resilvering is interruptible and safe. If the system loses
-power or is rebooted, the resilvering process resumes exactly where it left
-off, without any need for manual intervention.</para>
+<para>Operacja resilweringu jest bezpieczna i nie można jej przerwać. If the system loses power or is rebooted, the resilvering process resumes exactly where it left off, without any need for manual intervention.</para>
 </listitem>
 </itemizedlist>
 <para>Aby zobaczyć status jawnej kontroli danych, użyj komendy <command>zpool status</command> Na przykład:</para>
 <screen># <userinput>zpool status tank</userinput>
   pool: tank
  state: DEGRADED
-status: One or more devices is being resilvered.
+reason: One or more devices is being resilvered.
 action: Wait for the resilvering process to complete.
    see: http://www.sun.com/msg/ZFS-XXXX-08
- scrub: none requestes
+ scrub: none requested
 config:
-        NAME        STATE    READ  WRITE  CKSUM 
-        tank         DEGRADED        0        0        0
-          mirror      DEGRADED        0        0        0
+        NAME                  STATE     READ WRITE CKSUM 
+        tank                  DEGRADED     0     0     0
+          mirror              DEGRADED     0     0     0
             replacing         DEGRADED     0     0     0  52% resilvered
-              c1t0d0      ONLINE        0        0        0
-              c2t0d0      ONLINE        0        0        0  
-            c1t1d0      ONLINE        0        0        0</screen>
+              c1t0d0          ONLINE       0     0     0
+              c2t0d0          ONLINE       0     0     0  
+            c1t1d0            ONLINE       0     0     0</screen>
 <para>In this example, the disk <literal>c1t0d0</literal> is being replaced
 by <literal>c2t0d0</literal>. This event is observed in the status output
 by presence of the <emphasis>replacing</emphasis> virtual device in the configuration.
@@ -840,7 +704,7 @@ status: One or more devices has experienced an error resulting in data
 
 		  DATASET  OBJECT  RANGE
 		  tank     6       0-512</screen>
-<para>Each error indicates only that an error occurred at the given point in time. Each error is not necessarily still present on the system. W zwykłych przypadkach ta sytuacja jest prawdziwa. Certain temporary outages might result in data corruption that is automatically repaired once the outage ends. A complete scrub of the pool is guaranteed to examine every active block in the pool, so the error log is reset whenever a scrub finishes. If you determine that the errors are no longer present, and you don't want to wait for a scrub to complete, reset all errors in the pool by using the <command>zpool online</command> command.</para>
+<para>Każdy z błędów wskazuje, że błąd wystąpił w danym momencie. Niekoniecznie każdy z błędół jest ciągle obecny w systemie. W zwykłych przypadkach ta sytuacja jest prawdziwa. Certain temporary outages might result in data corruption that is automatically repaired once the outage ends. A complete scrub of the pool is guaranteed to examine every active block in the pool, so the error log is reset whenever a scrub finishes. If you determine that the errors are no longer present, and you don't want to wait for a scrub to complete, reset all errors in the pool by using the <command>zpool online</command> command.</para>
 <para>If the data corruption is in pool-wide metadata, the output is slightly different. Na przykład:</para>
 <screen># <userinput>zpool status -v morpheus</userinput>
   pool: morpheus
