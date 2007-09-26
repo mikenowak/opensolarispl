@@ -7,7 +7,7 @@
 
 
 
-<title>Usuwanie problemów i odzyskiwanie danych w ZFS-ie</title>
+<title>Usuwanie problemów i odzyskiwanie danych w ZFS-iec</title>
 <toc>
 <para>Ten rozdział opisuje w jaki sposłób identyfikować i naprawiać błędy w ZFS-ie. Zawarto równierz informacje dotyczącą zapobieganiu powstawania błędow.</para>
 <para>W tym rozdziale znajduja sa nastepujace sekcje:</para>
@@ -561,13 +561,11 @@ c1t1d0         ONLINE</screen>
 </sect3>
 <sect3 xml:id="gbcus">
 <title>Podgląd Statusu Resilveringu</title>
-<para>The process of replacing a drive can take an extended period of time,
-depending on the size of the drive and the amount of data in the pool. The
-process of moving data from one device to another device is known as <emphasis>resilvering</emphasis>, and can be monitored by using the <command>zpool status</command> command.</para>
-<para>Tradycyjne systemy plików używają operacji resilveringu danych na poziomie bloków. Because ZFS eliminates the artificial layering of the volume manager, it can perform resilvering in a much more powerful and controlled manner. Istnieją dwie główne zalety tej funkcji:</para>
+<para>Proces wymiany dysku, może zająć więcej czasu, w zależności od rozmiaru dysku oraz ilości danych w puli. Proces przenoszenia danych z jednego dysku na drugi jest znany jako <emphasis>resilvering</emphasis> i może być monitorowany, przy użyciu komendy  <command>zpool status</command>.</para>
+<para>Tradycyjne systemy plików używają operacji resilveringu danych na poziomie bloków. Ponieważ ZFS eliminuje sztuczną warstwę menadżera wolumenu, może wykonać operację resilveringu w bardziej efektywny i kontrolowany sposób. Istnieją dwie główne zalety tej funkcji:</para>
 <itemizedlist>
 <listitem>
-<para>ZFS używa operacji resilveringu tylko dla minimalnej ilości potrzebnych danych. In the case of a short outage (as opposed to a complete device replacement), the entire disk can be resilvered in a matter of minutes or seconds, rather than resilvering the entire disk, or complicating matters with “dirty region” logging that some volume managers support. Kiedy cały dysk zostaje wymieniony, czas operacji resilweringu jest proporcjonalny do ilości danych użytych na tym dysku. Wymiana dysku o pojemności 500-Gbyte może zająć kilka sekund, jeśli kilka gigabajtów jest użytych w puli.<indexterm xml:id="indexterm-552"> <primary>Pule pamięci ZFS</primary> <secondary>podgląd procesu resilweringu</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-553"> <primary>wymiana</primary> <secondary>urządzenie (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-554"> <primary>usuwanie problemów</primary> <secondary>wymiana urządzenia (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm>
+<para>ZFS używa operacji resilveringu tylko dla minimalnej ilości potrzebnych danych. W tym wypadku występuje krótki przestój (w przeciwieństwie do całkowitej wymiany urządzenia), cały dysk może zostać poddany operacji resilveringowi w ciągu minut lub sekund. W wypadku resilveringu całego dysku lub skomplikowanej metody logowania błędnych regionów (¨dirty region¨), które są obsługiwane przez niektóre menadżery wolumenów. Kiedy cały dysk zostaje wymieniony, czas operacji resilweringu jest proporcjonalny do ilości danych użytych na tym dysku. Wymiana dysku o pojemności 500-Gbyte może zająć kilka sekund, jeśli kilka gigabajtów jest użytych w puli.<indexterm xml:id="indexterm-552"> <primary>Pule pamięci ZFS</primary> <secondary>podgląd procesu resilweringu</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-553"> <primary>wymiana</primary> <secondary>urządzenie (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-554"> <primary>usuwanie problemów</primary> <secondary>wymiana urządzenia (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm>
 </para>
 </listitem>
 <listitem>
@@ -590,8 +588,8 @@ config:
               c1t0d0          ONLINE       0     0     0
               c2t0d0          ONLINE       0     0     0  
             c1t1d0            ONLINE       0     0     0</screen>
-<para>W tym wypadku dysk <literal>c1t0d0</literal> zostaje wymieniony na  <literal>c2t0d0</literal>. This event is observed in the status output by presence of the <emphasis>replacing</emphasis> virtual device in the configuration. This device is not real, nor is it possible for you to create a pool by using this virtual device type. The purpose of this device is solely to display the resilvering process, and to identify exactly which device is being replaced.</para>
-<para>Note that any pool currently undergoing resilvering is placed in the <literal>DEGRADED</literal> state, because the pool cannot provide the desired replication level until the resilvering process is complete. Proces resilveringu wykonuje się z maksymalną możliwą prędkością, aczkolwiek operacje we/wy są zawsze ustawiane na niższym priorytecie niż operacje we/wy wykonywane przez użytkownika, aby zminimalizować wpływ na działanie systemu. Kiedy operacja resilveringu jest zakończona, konfiguracja zostaje przywrócona do nowej, kompletnej. Na przykład:</para>
+<para>W tym wypadku dysk <literal>c1t0d0</literal> zostaje wymieniony na  <literal>c2t0d0</literal>. To zdarzenie jest obserwowane w istnieniu wirtualnego urządzenia w  statusie wyniku komendy  <emphasis>replacing</emphasis>. To urządzenie nie jest prawdziwe, również nie jest możliwe stworzenie puli przy jego użyciu. Powodem istnienia tego urządzenia jest wyświetlenie procesu resilveringu i identyfikowanie które urzadzenie podlega wymianie.</para>
+<para>Prosze zauważyć, że jakakolwiek pula, która wykonuje operacje resilveringu jest w stanie <literal>DEGRADED</literal>, ponieważ nie może zapewnić określonego poziomu replikacji, zanim proces jest zakończony. Proces resilveringu wykonuje się z maksymalną możliwą prędkością, aczkolwiek operacje we/wy są zawsze ustawiane na niższym priorytecie niż operacje we/wy wykonywane przez użytkownika, aby zminimalizować wpływ na działanie systemu. Kiedy operacja resilveringu jest zakończona, konfiguracja zostaje przywrócona do nowej, kompletnej. Na przykład:</para>
 <screen># <userinput>zpool status tank</userinput>
   pool: tank
  state: ONLINE
@@ -611,19 +609,13 @@ errors: No known data errors</screen>
 </sect1>
 <sect1 xml:id="gbbwl">
 <title>Naprawa uszkodzonych danych</title>
-<para>ZFS używa sum kontrolnych, replikacji i automatycznej naprawy danych (self-healing), aby zminimalizować szanse uszkodzenia danych. Nonetheless, data corruption can occur if the pool isn't replicated, if corruption occurred while the pool was degraded, or an unlikely series of events conspired to corrupt multiple copies of a piece of data. Regardless of the source, the result is the same: The data is corrupted and therefore no longer accessible. The action taken depends on the type of data being corrupted, and its relative value. Dwa podstawowe typy danych mogą zostać uszkodzone:</para>
+<para>ZFS używa sum kontrolnych, replikacji i automatycznej naprawy danych (self-healing), aby zminimalizować szanse uszkodzenia danych. Co więcej, uszkodzenie danych może nastąpić, jeśli pula nie jest replikowana, uszkodzenie nastąpiło, gdy pula była w stanie degraded lub rzadko spotykane serie zdarzeń powodujące uszkodzenie tych wielu samych kopi danych. Bez względu na źródło, rezultat jest taki sam: Dane są uszkodzone i niedostępne. Wykonane czynności zależą od typu uszkodzenia danych i jest wartością relatywną. Dwa podstawowe typy danych mogą zostać uszkodzone:</para>
 <itemizedlist>
 <listitem>
-<para>Pool metadata – ZFS requires a certain amount of data
-to be parsed to open a pool and access datasets. If this data is corrupted,
-the entire pool or complete portions of the dataset hierarchy will become
-unavailable.</para>
+<para>Metadane puli - ZFS wymage odpowiedniej ilości danych, które muszą zostać spraswoane w celu otwarcia puli i dostępu do jej danych. Jeśli te dane są uszkodzone, cała pula lub odpowiednie dane w strukturze hierarchii będą niedostępne. </para>
 </listitem>
 <listitem>
-<para>Object data – In this case, the corruption is within
-a specific file or directory. This problem might result in a portion of the
-file or directory being inaccessible, or this problem might cause the object
-to be broken altogether.</para>
+<para>Dane objektowe - W tym wypadku, uszkodzenie nastąpiło w odpowiednim pliku lub katalogu. Ten problem może spowodować, że część pliku lub katalogu, będzie niedostępna, lub może spowodować, ze obiekty będą wspólnie niedostępne.</para>
 </listitem>
 </itemizedlist>
 <para>Dane są sprawdzane podczas normalnych operacji, ale również podczas sprawdzania weryfikacji danych. Więcej informacji na temat weryfikacji spójności danych puli można znaleźć w  <olink targetdoc="" remap="internal" targetptr="gbbwa">Sprawdzanie Spójności Danych ZFS</olink>.</para>
@@ -651,30 +643,27 @@ status: One or more devices has experienced an error resulting in data
 
 		  DATASET  OBJECT  RANGE
 		  tank     6       0-512</screen>
-<para>Każdy z błędów wskazuje, że błąd wystąpił w danym momencie. Niekoniecznie każdy z błędół jest ciągle obecny w systemie. W zwykłych przypadkach ta sytuacja jest prawdziwa. Certain temporary outages might result in data corruption that is automatically repaired once the outage ends. A complete scrub of the pool is guaranteed to examine every active block in the pool, so the error log is reset whenever a scrub finishes. If you determine that the errors are no longer present, and you don't want to wait for a scrub to complete, reset all errors in the pool by using the <command>zpool online</command> command.</para>
-<para>If the data corruption is in pool-wide metadata, the output is slightly different. Na przykład:</para>
+<para>Każdy z błędów wskazuje, że błąd wystąpił w danym momencie. Niekoniecznie każdy z błędół jest ciągle obecny w systemie. W zwykłych przypadkach ta sytuacja jest prawdziwa. Pewne tymczasowe awarie mogą spowodować naprawe danych przed ich zakończeniem. Całkowita operacja jawnej kontroli danych dla puli, gwarantuje zbadanie każdego aktywnego bloku w puli, tak więc rejestr błędów jest resetowany, gdy operacja jest ukończona. Jeśli określisz, że błędy zostały usunięte i nie chcesz czekać na zakończenie operacji kontroli danych, zresetuj błędy w puli używając komendy  <command>zpool online</command>&gt;.</para>
+<para>Jeśli błędy danych są w metadanych puli, wynik jest nieco inny. Na przykład:</para>
 <screen># <userinput>zpool status -v morpheus</userinput>
   pool: morpheus
     id: 1422736890544688191
  state: FAULTED
 status: The pool metadata is corrupted.
-action: The pool cannot be imported due to damaged devices/uszkodzone urządzenia or data.
+action: The pool cannot be imported due to damaged devices
    see: http://www.sun.com/msg/ZFS-8000-72
+config:
 
         morpheus    FAULTED   corrupted data
           c1t10d0   ONLINE</screen>
-<para>In the case of pool-wide corruption, the pool is placed into the <literal>FAULTED</literal> state, because the pool cannot possibly provide the needed replication
-level.</para>
+<para>W przypadku globalnego uszkodzenia puli, jest ona postawiona w stanie <literal>FAULTED</literal>, ponieważ nie może zapewnić odpowiedniego poziomu replikacji.</para>
 </sect2>
 <sect2 xml:id="gbctx">
 <title>Naprawa uszkodzonego pliku lub katalogu</title>
-<para>If a file or directory is corrupted, the system might still be able to function depending on the type of corruption. Uszkodzenie jest nie do naprawienia. Żadne zdrowe kopie danych nie istnieją w innych miejscach systemu. If the data is valuable, you have no choice but to restore the affected data from backup. Even so, you might be able to recover from this corruption without restoring the entire pool.<indexterm xml:id="indexterm-558"> <primary>Pule pamięci ZFS</primary> <secondary>repairing a corrupted file or directory</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-559"> <primary>repairing</primary> <secondary>repairing a corrupted file or directory</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-560"> <primary>usuwanie problemów</primary> <secondary>repairing a corrupted file or directory</secondary> <tertiary>opis</tertiary> </indexterm>
+<para>Jeśli plik lub katalog jest uszkodzony, system może dalej funkcjonować, w zależności od typu awarii. Uszkodzenie jest nie do naprawienia. Żadne zdrowe kopie danych nie istnieją w innych miejscach systemu. Jeśli dane są cenne, nie ma innej możliwości, jak odzyskanie ich z innej zdrowej kopii zapasowej. Nawet wtedy może być możliwe odtworzenie uszkodzonych danych bez odtwarzania całej puli.<indexterm xml:id="indexterm-558"> <primary>Pule pamięci ZFS</primary> <secondary>naprawa uszkodzonego pliku lub katalogu</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-559"> <primary>naprawa</primary> <secondary>naprawa uszkodzonego pliku lub katalogu</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-560"> <primary>usuwanie problemów</primary> <secondary>naprawa uszkodzonego pliku lub katalogu</secondary> <tertiary>opis</tertiary> </indexterm> 
 </para>
-<para>If the damage is within a file data block, then the file can safely be removed, thereby clearing the error from the system. Pierwszym krokiem jest próba usunięcia pliku, używając komendy <command>rm</command>. If this command doesn't work, the corruption is within the file's metadata, and ZFS cannot determine which blocks belong to the file in order to remove the corruption.</para>
-<para>If the corruption is within a directory or a file's metadata, the only
-choice is to move the file elsewhere. You can safely move any file or directory
-to a less convenient location, allowing the original object to be restored
-in place.</para>
+<para>Jeśli uszkodzenie jest w bloku danych pliku, może on zostać bezpiecznie usunięty, usuwając błędy z systemu. Pierwszym krokiem jest próba usunięcia pliku, używając komendy <command>rm</command>. Jeśli ta komenda nie działa, uszkodzenie jest w metadanych pliku i ZFS nie może określić, które bloki danych należą do niego w celu usunięcia awarii.</para>
+<para>Jeśli uszkodzenie jest w katalogu lub metadanych pliku, jedyną możliwością jest przeniesienie go w inne miejsce. Możesz bezpiecznie przenieść jakikolwiek plik lub katalog w inne wygodne miejsce, pozwalając oryginalnemu objektowi na zwolnienie miejsca.</para>
 </sect2>
 <sect2 xml:id="gbctt">
 <title>Naprawa szeroko uszkodzonej puli pamięci ZFS</title>
