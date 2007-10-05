@@ -12,4 +12,5 @@
 <!ENTITY % local.chapter.class "| xi:include">
 <!ENTITY % local.preface.class "| xi:include">
 <!ENTITY % local.appendix.class "| xi:include">
+<!ENTITY % local.glossary.class "| xi:include">
 <!ENTITY % local.index.class "| xi:include">
