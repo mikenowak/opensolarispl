@@ -2642,11 +2642,13 @@ automatycznie montuje ten system plików, jeśli zostanie wywołane polecenie
 <filename>/export/stuff</filename>, wtedy <filename>pool/home/user</filename> dziedziczy <filename>/export/stuff/user</filename> dla
 swojego parametru <property>mountpoint</property>.</para>
 <para>Parametr <property>mountpoint</property> może być ustawiony jako <literal>none</literal> 
-w celu zapobiegnięcia montowania systemu plików.<indexterm xml:id="indexterm-345">
+w celu zapobiegnięcia montowania systemu plików. Dodatkowo jest dostępny parametr <property>canmount</property>
+określający, czy system plików może być montowany. Więcej informacji na temat parametru <property>canmount</property>
+znajduje się pod <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gdrcf">The <command>canmount</command> Property</olink>.<indexterm xml:id="indexterm-358">
 <primary>mount points</primary>
 <secondary>legacy</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-346">
+<indexterm xml:id="indexterm-359">
 <primary>ZFS file systems</primary>
 <secondary>managing legacy mount points</secondary>
 <tertiary>description</tertiary>
@@ -2658,7 +2660,7 @@ wartość <property>legacy</property> poleceniem <command>zfs set</command>. Zap
 automatycznemu montowaniu i zarządzaniu tym systemem plików przez ZFS. W zamian muszą zostać
 użyte standardowe narzędzia, włączając w to polecenia <command>mount</command> i <command>umount</command>
 oraz plik <filename>/etc/vfstab</filename>. Więcej informacji o tradycjnym montowaniu systemu
-plików znajduje się pod <olink targetdoc="" remap="internal" targetptr="gbaln">Legacy Mount Points</olink>.</para>
+plików znajduje się pod <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gbaln">Legacy Mount Points</olink>.</para>
 <para>W przypadku zmiany strategii zarządzania punktem montowania, mogą mieć miejsce następujące zachowania:</para>
 <itemizedlist>
 <listitem>
@@ -2684,11 +2686,11 @@ pozostaje odmontowany.</para>
 <para>Można także określić domyślny punkt montowania dla głównego datasetu w czasie tworzenia
 poleceniem <command>zpool create</command> poprzez użycie opcji <option>
 m</option>.
-Więcej informacji o tworzeniu puli znajduje się pod <olink targetdoc="" remap="internal" targetptr="gaynr">Creating a ZFS Storage Pool</olink>.<indexterm xml:id="indexterm-347">
+Więcej informacji o tworzeniu puli znajduje się pod <olink targetdoc="" remap="internal" targetptr="gaynr">Creating a ZFS Storage Pool</olink>.<indexterm xml:id="indexterm-360">
 <primary>mount points</primary>
 <secondary>automatic</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-348">
+<indexterm xml:id="indexterm-361">
 <primary>ZFS file systems</primary>
 <secondary>managing automatic mount points</secondary>
 </indexterm>
@@ -2696,10 +2698,10 @@ Więcej informacji o tworzeniu puli znajduje się pod <olink targetdoc="" remap=
 <para>Wszystkie datasety, których parametr <property>mountpoint</property> nie ma wartości <literal>legacy</literal> są zarządzane przez ZFS.
 W poniższym przykładzie punkt montowania tworzonego datasetu jest automatycznie zarządzany przez ZFS.</para>
 <screen># <userinput>zfs create pool/filesystem</userinput>
-# zfs get mountpoint pool/filesystem
+# <userinput>zfs get mountpoint pool/filesystem</userinput>
 NAME             PROPERTY      VALUE                      SOURCE
 pool/filesystem  mountpoint    /pool/filesystem           default
-# zfs get mounted pool/filesystem
+# <userinput>zfs get mounted pool/filesystem</userinput>
 NAME             PROPERTY      VALUE                      SOURCE
 pool/filesystem  mounted       yes                        -</screen>
 <para>Można także ustawić parametr <property>mountpoint</property>, jak
@@ -2715,18 +2717,18 @@ pool/filesystem  mounted       yes                        -</screen>
 zostaje automatycznie odmontowany ze starego punktu montowania i zamontowany w nowym
 miejscu. W razie potrzeby katalogi punktu montowania są tworzone. Jeśli ZFS nie jest
 w stanie odmontować systemu plików z powodu jego aktywności, zostanie zgłoszony błąd i 
-jest konieczne ręczne odmontowanie systemu plików.<indexterm xml:id="indexterm-349">
+jest konieczne ręczne odmontowanie systemu plików.<indexterm xml:id="indexterm-362">
 <primary>setting</primary>
 <secondary>ZFS mount points (<command>zfs set mountpoint</command>)</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-350">
+<indexterm xml:id="indexterm-363">
 <primary>
 <command>zfs set mountpoint</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-351">
+<indexterm xml:id="indexterm-364">
 <primary>ZFS file systems</primary>
 <secondary>setting mount point (<command>zfs set mountpoint</command>)</secondary>
 <tertiary>(example of)</tertiary>
@@ -2750,18 +2752,18 @@ datasetu. Poniższy przykład pokazuje jak ustawić i zarządzać datasetem ZFS 
 jako tradycyjne systemy plików. Dodatkowo muszą być one montowane poprzez stworzenie
 odpowiednich wpisów w pliku <filename>/etc/vfstab</filename>. W przeciwnym przypadku
 serwis <filename>system/filesystem/local</filename> wejdzie w tryb "maintenance"
-w trakcie startu systemu.<indexterm xml:id="indexterm-352">
+w trakcie startu systemu.<indexterm xml:id="indexterm-365">
 <primary>setting</primary>
 <secondary>legacy mount points</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-353">
+<indexterm xml:id="indexterm-366">
 <primary>
 <command>zfs set mountpoint=legacy</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-354">
+<indexterm xml:id="indexterm-367">
 <primary>ZFS file systems</primary>
 <secondary>setting legacy mount point</secondary>
 <tertiary>(example of)</tertiary>
@@ -2781,7 +2783,7 @@ są ustawione jako <literal>-</literal>. Składnia ta wynika z faktu, że polece
 <command>fsck</command> nie ma zastosowania w przypadku systemów plików ZFS.
 Więcej informacji na temat integralności danych i braku potrzeby istnienia
 polecenia <command>fsck</command> w ZFS znajduje się pod
-<olink targetdoc="" remap="internal" targetptr="gaypi">Transactional Semantics</olink>.</para>
+<olink remap="external" targetdoc="chapter-1.xml" targetptr="gaypi">Transactional Semantics</olink>.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gamns">
@@ -2805,18 +2807,18 @@ przez ZFS. Tradycyjnie zarządzane systemy plików są nie montowane. Na przykł
 </screen>
 <para>Domyślnie ZFS nie pozwoli zamontować systemu plików w katalogu, który nie jest pusty.
 W celu wymuszenia zamontowania systemu plików w takim katalogu, należy użyć opcji <option>O</option>.
-Na przykład:<indexterm xml:id="indexterm-355">
+Na przykład:<indexterm xml:id="indexterm-368">
 <primary>mounting</primary>
 <secondary>ZFS file systems</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-356">
+<indexterm xml:id="indexterm-369">
 <primary>
 <command>zfs mount</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-357">
+<indexterm xml:id="indexterm-370">
 <primary>ZFS file systems</primary>
 <secondary>mounting</secondary>
 <tertiary>(example of)</tertiary>
@@ -2888,7 +2890,7 @@ montowania wygląda następująco:</para>
 <para>Opcja montowania <literal>nosuid</literal> jest aliasem na <literal>nodevices,nosetuid</literal>.</para>
 </sect2>
 <sect2 xml:id="gamnt">
-<title>Tymczasowe parametry montowania</title>
+<title>Używanie tymczasowych parametrów montowania</title>
 <para>Jeśli jakakolwiek z powyższych opcji jest dokładnie określona poprzez
 użycie opcji <option>o</option> polecenia <command>zfs mount</command>,
 odpowiednio skojarzona wartość parametru zostaje tymczasowo nadpisana. Te
@@ -2911,7 +2913,7 @@ dla systemu plików, który jest zamontowany:</para>
 NAME             PROPERTY      VALUE                      SOURCE
 tank/home/perrin atime         off                        temporary</screen>
 <para>Więcej informacji na temat polecenia <command>zfs mount</command>
-znajduje się pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+znajduje się pod <olink remap="external" targetdoc="819-2240" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
@@ -2924,18 +2926,18 @@ znajduje się pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m
 <title>Odmontowywanie systemów plików ZFS</title>
 <para>Systemy plików można odmontować poprzez użycie polecenia <command>zfs unmount</command>.
 Polecenie <command>unmount</command> przyjmuje jako argumenty punkt montowania
-lub nazwę systemu plików.<indexterm xml:id="indexterm-358">
+lub nazwę systemu plików.<indexterm xml:id="indexterm-371">
 <primary>unmounting</primary>
 <secondary>ZFS file systems</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-359">
+<indexterm xml:id="indexterm-372">
 <primary>
 <command>zfs unmount</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-360">
+<indexterm xml:id="indexterm-373">
 <primary>ZFS file systems</primary>
 <secondary>unmounting</secondary>
 <tertiary>(example of)</tertiary>
@@ -2965,7 +2967,7 @@ Na przykład:</para>
 <screen># <userinput>umount /export/home/bob</userinput>
 </screen>
 <para>Więcej informacji o poleceniu <command>zfs umount</command> znajduje się
-pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+pod <olink remap="external" targetdoc="819-2240" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
@@ -2975,7 +2977,7 @@ pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gamnd">
-<title>Udostępnianie (sharing) systemów plików ZFS</title>
+<title>Udostępnianie (sharing) i wyłączanie udostępniania systemów plików ZFS</title>
 <para>Analogicznie do punktów montowania ZFS może automatycznie udostępniać
 systemy plików poprzez użycie parametru <property>sharenfs</property>. Używając
 tej metody nie ma potrzeby modyfikacji pliku <filename>/etc/dfs/dfstab</filename>,
@@ -2987,17 +2989,17 @@ Specjalna wartość <literal>off</literal> określa, że ten system plików
 nie jest zarządzany przez ZFS i może być udostępniony tradycyjnymi metodami,
 jak plik <filename>/etc/dfs/dfstab</filename>.
 Wszystkie systemy plików, których parametr <property>sharenfs</property> nie jest ustawiony
-na <literal>off</literal> są udostępniane na etapie startu systemu.<indexterm xml:id="indexterm-361">
+na <literal>off</literal> są udostępniane na etapie startu systemu.<indexterm xml:id="indexterm-374">
 <primary>sharing</primary>
 <secondary>ZFS file systems</secondary>
 <tertiary>description</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-362">
+<indexterm xml:id="indexterm-375">
 <primary>
 <property>sharenfs</property> property</primary>
 <secondary>description</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-363">
+<indexterm xml:id="indexterm-376">
 <primary>ZFS file systems</primary>
 <secondary>sharing</secondary>
 <tertiary>description</tertiary>
@@ -3012,18 +3014,18 @@ ze składnią podobną do poniższej:</para>
 </screen>
 <para>Parametr jest dziedziczony i wszystkie systemy plików są automatycznie udostępniane,
 jeśli ich dziedziczony parametr nie przyjmuje wartości <literal>off</literal>. Na
-przykład:<indexterm xml:id="indexterm-364">
+przykład:<indexterm xml:id="indexterm-377">
 <primary>sharing</primary>
 <secondary>ZFS file systems</secondary>
 <tertiary>example of</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-365">
+<indexterm xml:id="indexterm-378">
 <primary>
 <command>zfs set sharenfs=on</command>
 </primary>
 <secondary>example of</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-366">
+<indexterm xml:id="indexterm-379">
 <primary>ZFS file systems</primary>
 <secondary>sharing</secondary>
 <tertiary>example of</tertiary>
@@ -3051,12 +3053,12 @@ Na przykład:</para>
 </screen>
 <para>To polecenie wyłączy udostępnianie systemu plików <filename>tank/home/tabriz</filename>.
 W celu wyłączenia udostępniania wszystkich systemów plików ZFS należy użyć opcji <option>
-a</option>.<indexterm xml:id="indexterm-367">
+a</option>.<indexterm xml:id="indexterm-380">
 <primary>unsharing</primary>
 <secondary>ZFS file systems</secondary>
 <tertiary>example of</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-368">
+<indexterm xml:id="indexterm-381">
 <primary>ZFS file systems</primary>
 <secondary>unsharing</secondary>
 <tertiary>example of</tertiary>
@@ -3103,7 +3105,7 @@ parametru <property>quota</property> narzuca limit wielkości miejsca, jaki
 system plików może użyć. Dodatkowo można ustawić parametr <property>reservation</property>
 w celu zagwarantowania, że podana ilość miejsca będzie dostępna dla systemu
 plików. Obydwa parametry dotyczą datasetu, dla którego są ustawiane oraz
-dla wszystkich potomnych dla niego datasetów.<indexterm xml:id="indexterm-369">
+dla wszystkich potomnych dla niego datasetów.<indexterm xml:id="indexterm-382">
 <primary>quotas and reservations</primary>
 <secondary>description</secondary>
 </indexterm>
@@ -3119,18 +3121,18 @@ poprzez parametr <property>used</property>.</para>
 <title>Ustawianie limitu dla systemów plików ZFS</title>
 <para>Limity ZFS mogą być ustawiane i wyświetlane poprzez użycie poleceń
 <command>zfs set</command> oraz <command>zfs get</command>. W poniższym przykładzie
-dla systemu plików <filename>tank/home/bonwick</filename> zostaje ustawiony limit 10 gigabajtów.<indexterm xml:id="indexterm-370">
+dla systemu plików <filename>tank/home/bonwick</filename> zostaje ustawiony limit 10 gigabajtów.<indexterm xml:id="indexterm-383">
 <primary>setting</primary>
 <secondary>ZFS file system quota (<command>zfs set quota</command>)</secondary>
 <tertiary>example of</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-371">
+<indexterm xml:id="indexterm-384">
 <primary>
 <command>zfs set quota</command>
 </primary>
 <secondary>example of</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-372">
+<indexterm xml:id="indexterm-385">
 <primary>ZFS file systems (<command>zfs set quota</command>)</primary>
 <secondary>setting a quota</secondary>
 <tertiary>example of</tertiary>
@@ -3166,18 +3168,18 @@ zarezerwować miejsca dla datasetu, jeśli to miejsce nie jest w danym momencie
 dostępne w puli. Sumaryczna wielkość dla wszystkich rezerwacji nie może
 przekroczyć wielkości niewykorzystanego miejsca w puli. Rezerwacje ZFS
 mogą być ustawiane i wyświetlane poprzez użycie poleceń <command>zfs set</command>
-oraz <command>zfs get</command>. Na przykład:<indexterm xml:id="indexterm-373">
+oraz <command>zfs get</command>. Na przykład:<indexterm xml:id="indexterm-386">
 <primary>setting</primary>
 <secondary>ZFS file system reservation</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-374">
+<indexterm xml:id="indexterm-387">
 <primary>
 <command>zfs set reservation</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-375">
+<indexterm xml:id="indexterm-388">
 <primary>ZFS file systems</primary>
 <secondary>setting a reservation</secondary>
 <tertiary>(example of)</tertiary>
