@@ -15,22 +15,22 @@
 <itemizedlist>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbgxg">Zalecenia sprzętowe i programowe odnośnie ZFS-a</olink>
+<olink remap="internal" targetdoc="chapter-2.xml" targetptr="gbgxg">Zalecenia sprzętowe i programowe odnośnie ZFS-a</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gaypm">Tworzenie podstawowego systemu plików ZFS-a</olink>
+<olink remap="internal" targetdoc="chapter-2.xml" targetptr="gaypm">Tworzenie podstawowego systemu plików ZFS-a</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gayob">Tworzenie puli ZFS-a</olink>
+<olink remap="internal" targetdoc="chapter-2.xml" targetptr="gayob">Tworzenie puli ZFS-a</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gaypa">Tworzenie hierarchii systemów plików ZFS-a</olink>
+<olink remap="internal" targetdoc="chapter-2.xml" targetptr="gaypa">Tworzenie hierarchii systemów plików ZFS-a</olink>
 </para>
 </listitem>
 </itemizedlist>
@@ -43,7 +43,7 @@
 </para>
 <itemizedlist>
 <listitem>
-<para>System oparty na architekturze <trademark>SPARC</trademark> lub x86, pracujący pod kontrolą systemu operacyjnego <trademark>Solaris</trademark> wydanie Nevada, budowa 27 lub późniejsza.</para>
+<para>System oparty na architekturze <trademark>SPARC</trademark> lub x86, pracujący pod kontrolą systemu operacyjnego Solaris Express, wydanie 12/05 lub późniejsze.</para>
 </listitem>
 <listitem>
 <para>Minimalny rozmiar dysku to 128 MB. Minimalna ilość miejsca na dysku dla puli to około 64 MB.</para>
@@ -59,9 +59,19 @@
 <sect1 xml:id="gaypm">
 <title>Tworzenie podstawowego systemu plików ZFS-a</title>
 <para>Zarządzanie ZFS-em zostało zaprojektowane z założeniem prostoty obsługi. Wśród celów projektowych ZFS-a, było zredukowanie ilości komend, z których należy skorzystać, aby stworzyć działający system plików. Przy tworzeniu nowej puli, automatycznie tworzony jest i montowany nowy system plików ZFS-a.</para>
-<para>Poniższy przykład ilustruje tworzenie nowej puli nazwanej <literal>tank</literal> i system plików ZFS nazwany <filename>tank</filename>, przy użyciu jednej komendy. Zakładamy, że cały dysk <filename>/dev/dsk/c1t0d0</filename> jest dostępny do użycia.</para>
+<para>Poniższy przykład ilustruje tworzenie nowej puli bez nadmiarowości (non-redundant) nazwanej <literal>tank</literal> i system plików ZFS nazwany <filename>tank</filename>, przy użyciu jednej komendy. Zakładamy, że cały dysk <filename>/dev/dsk/c1t0d0</filename> jest dostępny do użycia.</para>
 <screen># <userinput>zpool create tank c1t0d0</userinput>
 </screen>
+<note>
+
+<para>To polecenie tworzy pulę bez jakiejkolwiek nadmiarowości danych. Taka konfiguracja
+nie jest zalecana w środowisku produkcyjnym nawet w przypadku, gdy pojedyncze urządzenie
+jest używane ze sprzętowego kontrolera RAID lub programowego zarządcy woluminów.
+W takiej konfiguracji ZFS potrafi tylko wykrywać błędy. W przypadku konfiguracji
+z nadmiarowością danych, ZFS potrafi także poprawiać powstałe błędy. Więcej
+informacji o konfiguracji puli z nadmiarowością danych znajduje się w
+<olink remap="external" targetdoc="chapter-4.xml" targetptr="gcfof">opcjach replikacji danych w pulach ZFS</olink>.</para>
++</note>
 <para>Nowy system plików ZFS, <filename>tank</filename>, może używać tyle miejsca na dysku <systemitem>c1t0d0</systemitem>, ile tylko potrzebuje i jest automatycznie zamontowany w katalogu <filename>/tank</filename>.</para>
 <screen># <userinput>mkfile 100m /tank/foo</userinput>
 # <userinput>df -h /tank</userinput>
@@ -69,7 +79,7 @@ Filesystem             size   used  avail capacity  Mounted on
 tank                   80G   100M    80G     1%    /tank</screen>
 <para>Prawdopodobnie zajdzie potrzeba utworzenia większej ilości systemów plików wewnątrz puli. Z administracyjnego punktu widzenia, systemy plików pozwalają na zarządzanie różnymi zestawami danych w tej samej puli.</para>
 <para>Poniższy przykład ilustruje tworzenie nowego systemu plików nazwanego <literal>fs</literal> w puli <literal>tank</literal>. Zakładamy, że cały dysk <filename>/dev/dsk/c1t0d0</filename> jest dostępny do użytku.</para>
-<screen># <userinput>zpool create tank c1t0d0</userinput>
+<screen># <userinput>zpool create tank mirror c1t0d0 c2t0d0</userinput>
 # <userinput>zfs create tank/fs</userinput>
 </screen>
 <para>Nowy system plików ZFS, <filename>tank/fs</filename>, może użyć tyle miejsca na dysku <systemitem>c1t0d0</systemitem>, ile tylko potrzebuje i jest automatycznie zamontowany w katalogu <filename>/tank/fs</filename>.<indexterm xml:id="indexterm-47">
@@ -93,13 +103,16 @@ tank                   80G   100M    80G     1%    /tank</screen>
 # <userinput>df -h /tank/fs</userinput>
 Filesystem             size   used  avail capacity  Mounted on
 tank/fs                 80G   100M    80G     1%    /tank/fs</screen>
-<para>W większości przypadków prawdopodobnie należy stworzyć hierarchię systemów plików odzwierciedlającą potrzeby organizacyjne. Więcej informacji o tworzeniu hierarchii systemów plików ZFS w <olink targetdoc="" remap="internal" targetptr="gaypa">Hierarchiczna organizacja systemów plików ZFS</olink>.</para>
+<para>W większości przypadków prawdopodobnie należy stworzyć hierarchię systemów plików odzwierciedlającą potrzeby organizacyjne. Więcej informacji o tworzeniu hierarchii systemów plików ZFS w <olink remap="internal" targetdoc="chapter-2.xml" targetptr="gaypa">Hierarchiczna organizacja systemów plików ZFS</olink>.</para>
 </sect1>
 <sect1 xml:id="gayob">
 <title>Tworzenie puli ZFS</title>
 <para>Poprzedni przykład ilustrował prostotę ZFS-a. Pozostała część rozdziału demonstruje pełniejsze przykłady, podobne do zadań w prawdziwym świecie. Pierwszym zadaniem jest zidentyfikowanie wymagań i stworzenie puli. Pula określa fizyczne właściwości nośników danych i musi zostać utworzona przed wszelkimi systemami plików.</para>
-<task xml:id="gayol">
-<title>Identyfikowanie wymagań</title>
+<sect2>
+<title/>
+<task id="gayol">
+
+<title>Jak określić wymagania pamięci masowej dla puli ZFS</title>
 <procedure>
 <step>
 <para>Określenie dostępnych urządzeń.</para>
@@ -112,28 +125,32 @@ tank/fs                 80G   100M    80G     1%    /tank/fs</screen>
 <secondary>identyfikowanie</secondary>
 </indexterm>
 </para>
-<para>Przyjmijmy, że w przykładzie z <olink targetdoc="" remap="internal" targetptr="gayok">tworzenia puli ZFS</olink> całe dwa dyski <filename>/dev/dsk/c1t0d0</filename> oraz <filename>/dev/dsk/c1t0d0</filename> są dostępne do użytku.</para>
-<para>Więcej informacji o dyskach oraz o sposobie ich użytkowania i etykietowania w <olink targetdoc="" remap="internal" targetptr="gazdp">używaniu dysków w puli ZFS</olink>.</para>
+<para>Przyjmijmy, że w przykładzie z <olink remap="internal" targetdoc="chapter-2.xml" targetptr="gayok">jak tworzyć pule ZFS</olink> całe dwa dyski <filename>/dev/dsk/c1t0d0</filename> oraz <filename>/dev/dsk/c1t0d0</filename> są dostępne do użytku.</para>
+<para>Więcej informacji o dyskach oraz o sposobie ich użytkowania i etykietowania w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gazdp">używaniu dysków w puli ZFS</olink>.</para>
 </step>
 <step>
 <para>Wybór sposobu replikacji danych.</para>
 <para>ZFS obsługuje wiele typów replikacji danych, które determinują jakie rodzaje awarii sprzętowych pula przetrzyma. ZFS obsługuje zarówno konfiguracje nienadmiarowe (striped), jak i mirroring i RAID-Z (rodzaj RAID-5).</para>
-<para>W przykładzie użytym w <olink targetdoc="" remap="internal" targetptr="gayok">tworzeniu puli ZFS</olink>, użyto prostego mirrorowania dwóch dostępnych dysków.</para>
-<para>Więcej informacji o opcjach replikacji w ZFS-ie w <olink targetdoc="" remap="internal" targetptr="gcfof">opcje replikacji w pulach ZFS-a</olink>.</para>
+<para>W przykładzie użytym w <olink remap="internal" targetdoc="chapter-2.xml" targetptr="gayok">jak tworzyć pule ZFS</olink>, użyto prostego mirrorowania dwóch dostępnych dysków.</para>
+<para>Więcej informacji o opcjach replikacji w ZFS-ie w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gcfof">opcje replikacji w pulach ZFS-a</olink>.</para>
 </step>
 </procedure>
 </task>
-<task xml:id="gayok">
-<title>Tworzenie puli ZFS</title>
+</sect2>
+<sect2>
+<title/>
+<task id="gayok">
+
+<title>Jak tworzyć pule ZFS</title>
 <procedure>
 <step>
 <para>Należy zalogować się jako root, bądź użyć roli z odpowiednimi prawami do ZFS-a.</para>
-<para>Więcej informacji o profilach praw do ZFS-a w <olink targetdoc="" remap="internal" targetptr="gbfvq">profilach praw do ZFS-a</olink>.</para>
+<para>Więcej informacji o profilach praw do ZFS-a w <olink remap="external" targetdoc="chapter-8.xml" targetptr="gbfvq">profilach praw do ZFS-a</olink>.</para>
 </step>
 <step>
 <para>Wybór nazwy dla puli.</para>
 <para>Nazwa puli służy do identyfikacji puli przy pracy z komendami <command>zpool</command> i <command>zfs</command>.
-Większość systemów wymaga pojedynczej puli, można zatem wybrać dowolną nazwę, przy zachowaniu wymagań nazewniczych wymienionych w <olink targetdoc="" remap="internal" targetptr="gbcpt">wymaganiach nazewniczych komponentów ZFS</olink>. </para>
+Większość systemów wymaga pojedynczej puli, można zatem wybrać dowolną nazwę, przy zachowaniu wymagań nazewniczych wymienionych w <olink remap="external" targetdoc="chapter-1.xml" targetptr="gbcpt">wymaganiach nazewniczych komponentów ZFS</olink>. </para>
 </step>
 <step>
 <para>Tworzenie puli.</para>
@@ -147,8 +164,8 @@ Większość systemów wymaga pojedynczej puli, można zatem wybrać dowolną na
 <screen># <userinput>zpool create tank mirror c1t0d0 c1t1d0</userinput>
 </screen>
 <para>Jeśli jedno lub więcej urządzeń zawiera już system plików, bądź jest w użyciu, komenda nie utworzy puli.</para>
-<para>Więcej informacji o tworzeniu pul w <olink targetdoc="" remap="internal" targetptr="gaynr">tworzeniu pul ZFS</olink>.</para>
-<para>Więcej informacji o ustalaniu użytkowania urządzeń w <olink targetdoc="" remap="internal" targetptr="gazht">wykrywanie używanych urządzeń</olink>.</para>
+<para>Więcej informacji o tworzeniu pul w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gaynr">tworzeniu pul ZFS</olink>.</para>
+<para>Więcej informacji o ustalaniu użytkowania urządzeń w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gazht">wykrywanie używanych urządzeń</olink>.</para>
 </step>
 <step>
 <para>Sprawdzenie wyników.</para>
@@ -166,10 +183,11 @@ Większość systemów wymaga pojedynczej puli, można zatem wybrać dowolną na
 <screen># <userinput>zpool list</userinput>
 NAME                    SIZE    USED   AVAIL    CAP  HEALTH     ALTROOT
 tank                     80G    137K     80G     0%  ONLINE     -</screen>
-<para>Więcej informacji o sprawdzaniu statusu pul w <olink targetdoc="" remap="internal" targetptr="gaynp">sprawdzanie stanu pul ZFS</olink>.</para>
+<para>Więcej informacji o sprawdzaniu statusu pul w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gaynp">sprawdzanie stanu pul ZFS</olink>.</para>
 </step>
 </procedure>
 </task>
+</sect2>
 </sect1>
 <sect1 xml:id="gaypa">
 <title>Tworzenie hierarchii systemu plików ZFS</title>
@@ -183,35 +201,42 @@ tank                     80G    137K     80G     0%  ONLINE     -</screen>
 </indexterm>
 </para>
 <para>ZFS umożliwia organizowanie systemów plików w hierarchie, w których każdy system plików ma tylko jednego rodzica. Korzeniem hierarchii jest zawsze nazwa puli. ZFS wykorzystuje tę hierarchię zezwalając na dziedziczenie właściwości, dzięki czemu można szybko i łatwo ustalić wspólne właściwości dla całego drzewa systemów plików.</para>
-<task xml:id="gaypd">
-<title>Ustalanie hierarchii systemu plików ZFS</title>
+<sect2>
+<title/>
+<task id="gaypd">
+
+<title>Jak ustalić hierarchię systemu plików ZFS</title>
 <procedure>
 <step>
 <para>Wybór ziarnistości systemu plików.</para>
 <para>Systemy plików ZFS są centralnym elementem zarządzania. Są lekkie i łatwo się je tworzy. Dobrym modelem jest używanie jednego systemu plików na jednego użytkownika lub projekt, ponieważ umożliwia to kontrolowanie właściwości, migawki oraz kopii zapasowych, na podstawie użytkownika bądź projektu. </para>
-<para>Stworzono dwa systemy plików , <filename>bonwick</filename> i <filename>billm</filename>, w <olink targetdoc="" remap="internal" targetptr="gayog">tworzeniu systemów plików ZFS</olink>.</para>
-<para>Więcej o zarządzaniu systemami plików w <olink targetdoc="" remap="internal" targetptr="gavwq">Rozdział 5, zarządzania systemami plików ZFS</olink>.</para>
+<para>Stworzono dwa systemy plików , <filename>bonwick</filename> i <filename>billm</filename>, w <olink remap="internal" targetdoc="chapter-2.xml" targetptr="gayog">jak tworzyć systemy plików ZFS</olink>.</para>
+<para>Więcej o zarządzaniu systemami plików w <olink remap="external" targetdoc="chapter-5.xml" targetptr="gavwq">Rozdział 5, zarządzania systemami plików ZFS</olink>.</para>
 </step>
 <step>
 <para>Grupy podobnych systemów plików.</para>
 <para>ZFS umożliwia hierarchiczną organizację systemów plików, a zatem podobne systemy plików mogą być grupowane. Model ten wprowadza centralny punkt kontroli właściwości oraz zarządzania systemami plików. Podobne systemy plików powinno tworzyć się pod podobną nazwą.</para>
-<para>Na przykład, w <olink targetdoc="" remap="internal" targetptr="gayog">tworzeniu systemów plików ZFS</olink> dwa systemy plików umieszczone są w systemie plików o nazwie <filename>home</filename>. </para>
+<para>Na przykład, w <olink remap="internal" targetdoc="chapter-2.xml" targetptr="gayog">jak tworzyć systemy plików ZFS</olink> dwa systemy plików umieszczone są w systemie plików o nazwie <filename>home</filename>. </para>
 </step>
 <step>
 <para>Wybór właściwości systemów plików.</para>
 <para>Większość cech systemów plików kontrolowana jest za pomocą prostych właściwości. Kontrolują one różnorodne właściwości, włącznie z miejscem montowania systemów plików, sposobu ich współdzielenia, kompresji oraz użycia limitów (quote). </para>
-<para>Na przykład, w <olink targetdoc="" remap="internal" targetptr="gayog">tworzeniu systemów plików ZFS</olink> wszystkie katalogi domowe zamontowane są w hierarchii <filename>/export/zfs/</filename>
+<para>Na przykład, w <olink remap="internal" targetdoc="chapter-2.xml" targetptr="gayog">jak tworzyć systemy plików ZFS</olink> wszystkie katalogi domowe zamontowane są w hierarchii <filename>/export/zfs/</filename>
 <replaceable>user</replaceable>, są współdzielone za pośrednictwem NFS-a i mają włączoną kompresję. Dodatkowo ustalono limit w wysokości 10 GB dla <filename>bonwick</filename>.</para>
-<para>Więcej informacji o właściwościach w <olink targetdoc="" remap="internal" targetptr="gazss">właściwościach ZFS</olink>.</para>
+<para>Więcej informacji o właściwościach we <olink remap="external" targetdoc="chapter-5.xml" targetptr="gazss">wprowadzeniu do parametrów ZFS</olink>.</para>
 </step>
 </procedure>
 </task>
-<task xml:id="gayog">
-<title>Tworzenie systemów plików ZFS</title>
+</sect2>
+<sect2>
+<title/>
+<task id="gayog">
+
+<title>Jak tworzyć systemy plików ZFS</title>
 <procedure>
 <step>
 <para>Zaloguj się jako root, bądź przyjmij rolę z odpowiednimi prawami do ZFS.</para>
-<para>Więcej informacji o profilach praw do ZFS w <olink targetdoc="" remap="internal" targetptr="gbfvq">profilach praw do ZFS</olink>.</para>
+<para>Więcej informacji o profilach praw do ZFS w <olink remap="external" targetdoc="chapter-8.xml" targetptr="gbfvq">profilach praw do ZFS</olink>.</para>
 </step>
 <step>
 <para>Tworzenie przyjętej hierarchii.</para>
@@ -239,7 +264,11 @@ tank                     80G    137K     80G     0%  ONLINE     -</screen>
 # <userinput>zfs get compression tank/home</userinput>
 NAME             PROPERTY       VALUE                      SOURCE
 tank/home        compression    on                         local</screen>
-<para>Więcej informacji o właściwościach i ich dziedziczeniu w <olink targetdoc="" remap="internal" targetptr="gazss">właściwościach ZFS</olink>.<indexterm xml:id="indexterm-59">
+<para>Została dodana nowa funkcja, która umożliwia ustawienie parametrów systemu plików
+w czasie jego tworzenia. Na przykład:</para>
+<screen># <userinput>zfs create -o mountpoint=/export/zfs -o sharenfs=on -o compression=on tank/home</userinput>
+</screen>
+<para>Więcej informacji o właściwościach i ich dziedziczeniu we <olink remap="external" targetdoc="chapter-5.xml" targetptr="gazss">wprowadzeniu do parametrów ZFS</olink>.<indexterm xml:id="indexterm-59">
 <primary>
 <command>zfs set mountpoint</command>
 </primary>
@@ -284,8 +313,8 @@ tank/home        compression    on                         local</screen>
 </screen>
 <para>Powyższe systemy plików dziedziczą swoje właściwości od swojego rodzica, zatem ich punkt montowania został automatycznie ustalony na <filename>/export/zfs/</filename>
 <replaceable>user</replaceable> i są współdzielone za pośrednictwem NFS-a. Nie ma potrzeby dokonywania zmian w plikach <filename>/etc/vfstab</filename> i <filename>/etc/dfs/dfstab</filename>.</para>
-<para>Więcej informacji o tworzeniu systemów plików w <olink targetdoc="" remap="internal" targetptr="gazsf">tworzeniu systemów plików ZFS</olink>.</para>
-<para>Więcej informacji o montowaniu i współdzieleniu systemu plików w <olink targetdoc="" remap="internal" targetptr="gaynd">montowaniu i współdzieleniu systemów plików ZFS</olink>.</para>
+<para>Więcej informacji o tworzeniu systemów plików w <olink remap="external" targetdoc="chapter-5.xml" targetptr="gazsf">tworzeniu systemów plików ZFS</olink>.</para>
+<para>Więcej informacji o montowaniu i współdzieleniu systemu plików w <olink remap="external" targetdoc="chapter-5.xml" targetptr="gaynd">montowaniu i współdzieleniu systemów plików ZFS</olink>.</para>
 </step>
 <step>
 <para>Ustalenie właściwości charakterystycznych dla systemu plików.</para>
@@ -325,8 +354,8 @@ tank/home/bonwick        8K  10.0G     8K  /export/zfs/bonwick</screen>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>Więcej informacji o sprawdzaniu statusu systemów plików w <olink targetdoc="" remap="internal" targetptr="gazsu">sprawdzaniu informacji o systemie plików ZFS</olink>. </para>
-<para>Więcej informacji o obliczaniu zużycia miejsca w <olink targetdoc="" remap="internal" targetptr="gbchp">śledzeniu zużycia miejsca w ZFS</olink>.</para>
+<para>Więcej informacji o sprawdzaniu statusu systemów plików w <olink remap="external" targetdoc="chapter-5.xml" targetptr="gazsu">sprawdzaniu informacji o systemie plików ZFS</olink>. </para>
+<para>Więcej informacji o obliczaniu zużycia miejsca w <olink remap="external" targetdoc="chapter-3.xml" targetptr="gbchp">śledzeniu zużycia miejsca w ZFS</olink>.</para>
 </step>
 </procedure>
 </task>
