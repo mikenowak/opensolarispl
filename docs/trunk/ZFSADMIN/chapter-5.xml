@@ -2514,7 +2514,14 @@ NAME             PROPERTY       VALUE                      SOURCE
 tank/home          atime          off                      temporary
 tank/home/bonwick  atime          off                      temporary
 tank/home/marks    atime          off                      temporary</screen>
-<para>Więcej informacji o poleceniu <command>zfs get</command> znajduje się pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<para>Ostatnio dodane możliwości dają możliwość odpytywania o parametry przy użyciu polecenia
+<command>zfs get</command> bez określania docelowego systemu plików, co oznacza wykonanie operacji na wszystkich
+pulach lub systemach plików. Na przykład:</para>
+<screen># <userinput>zfs get -s local all</userinput>
+tank/home               atime          off                    local
+tank/home/bonwick       atime          off                    local
+tank/home/marks         quota          50G                    local</screen>
+<para>Więcej informacji o poleceniu <command>zfs get</command> znajduje się pod <olink remap="external" ="819-2240" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
@@ -2522,8 +2529,7 @@ tank/home/marks    atime          off                      temporary</screen>
 </manvolnum>
 </citerefentry>
 </olink>.</para>
-</sect2>
-<sect2 xml:id="gazum">
+<sect3 xml:id="gazum">
 <title>Odpytywanie o wartości parametrów ZFS dla skryptów</title>
 <para>Polecenie <command>zfs get</command> wspiera także opcje <option>
 H</option> oraz <option>
@@ -2533,21 +2539,21 @@ oraz wszystkie białe spacje powinny być zamienione na tabulatory. Ujednolicony
 format białych znaków pozwala łatwo przetwarzać dane. Użycie opcji <option>
 o</option> pozwala dostosować format wyjścia. Przyjmuje ona parametry w postaci
 listy parametrów do wyświetlenia oddzielonej przecinkami. Wszystkie parametry
-zdefiniowane w <olink targetdoc="" remap="internal" targetptr="gazss">parametrach ZFS</olink>, włącznie
+zdefiniowane we <olink remap="internal" targetdoc="chapter-5.xml"  targetptr="gazss">wprowadzeniu do parametrów ZFS</olink>, włącznie
 z <literal>name</literal>, <literal>value</literal>, <literal>property</literal> oraz <literal>source</literal>
 mogą być użyte w liście argumentów opcji <option>
-o</option>.<indexterm xml:id="indexterm-340">
+o</option>.<indexterm xml:id="indexterm-353">
 <primary>listing</primary>
 <secondary>ZFS properties for scripting</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-341">
+<indexterm xml:id="indexterm-354">
 <primary>
 <command>zfs get -H -o</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-342">
+<indexterm xml:id="indexterm-355">
 <primary>ZFS file systems</primary>
 <secondary>listing properties for scripting</secondary>
 <tertiary>(example of)</tertiary>
@@ -2576,23 +2582,51 @@ nagłówka:</para>
 export/home     5.57G
 export/home/marks       1.43G
 export/home/maybee      2.15G</screen>
+</sect3>
 </sect2>
 </sect1>
 <sect1 xml:id="gaynd">
 <title>Montowanie i udostępnianie systemów plików ZFS</title>
 <para>Ten podrozdział opisuje jak punkty montowania i udostępniane systemy plików są zarządzane
 w ZFS.</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gaztn">Zarządzanie punktami montowania ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gamns">Montowanie systemów plików ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gamnt">Używanie parametrów dla tymczasowego montowania</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gamnr">Odmontowanie systemów plików ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gamnd">Udostępnianie i wyłączenie udostępniania systemów plików ZFS</olink>
+</para>
+</listitem>
+</itemizedlist>
 <sect2 xml:id="gaztn">
 <title>Zarządzanie punktami montowania ZFS</title>
 <para>Domyślnie wszystkie systemy plików ZFS są montowane przez ZFS w trakcie startu systemu
 poprzez użycie serwisu SMF <filename>svc://system/filesystem/local</filename>. Systemy plików
 są montowane w lokalizacji <replaceable>/ścieżka</replaceable>, gdzie <replaceable>ścieżka</replaceable> jest
-nazwą systemu plików.<indexterm xml:id="indexterm-343">
+nazwą systemu plików.<indexterm xml:id="indexterm-356">
 <primary>mount points</primary>
 <secondary>managing ZFS</secondary>
 <tertiary>description</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-344">
+<indexterm xml:id="indexterm-357">
 <primary>ZFS file systems</primary>
 <secondary>managing mount points</secondary>
 <tertiary>description</tertiary>
