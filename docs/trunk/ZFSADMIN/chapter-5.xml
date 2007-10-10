@@ -1740,27 +1740,82 @@ pod <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gcfhk">The <pro
 </listitem>
 <listitem>
 <para>
+<property>xattr</property>
+</para>
+</listitem>
+<listitem>
+<para>
 <property>zoned</property>
 </para>
 </listitem>
 </itemizedlist>
+<sect3 xml:id="gdrcf">
+<title>Parametr <command>canmount</command></title>
+<para>Jeśli ten parametr jest ustawiony na <literal>no</literal>, system plików nie może
+być zamontowany poprzez użycie poleceń <command>zfs mount</command> lub
+<command>zfs mount</command> <option>a</option>.
+Parametr ten jest podobny do ustawienia parametru <property>mountpoint</property>
+na <literal>none</literal>, z wyjątkiem tego, że dataset ciągle ma ustawiony
+parametr <property>mountpoint</property>, który może być dziedziczony. Na przykład
+można ustawić parametr <property>canmount</property> na <literal>none</literal>,
+ustawić dziedziczone parametry dla potomnych systemów plików, ale nie zostanie
+on sam z siebie nigdy zamontowany, ani nie będzie dostępny dla użytkowników.
+W tym przypadku nadrzędny system plików z ustawionym tym parametrem na <literal>no</literal>
+służy jako <emphasis>kontener</emphasis>, w którym można ustawiać atrybuty,
+ale sam z siebie nigdy nie będzie dostępny.<indexterm xml:id="indexterm-312">
+<primary>ZFS properties</primary>
+<secondary>
+<property>canmount</property>
+</secondary>
+<tertiary>detailed description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-313">
+<primary>settable properties of ZFS</primary>
+<secondary>
+<property>canmount</property>
+</secondary>
+<tertiary>detailed description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-314">
+<primary>
+<property>canmount</property> property</primary>
+<secondary>detailed description</secondary>
+</indexterm>
+</para>
+<para>W poniższym przykładzie zostaje utworzony dataset <filename>userpool</filename> z ustawionym
+parametrem <property>canmount</property> na <literal>off</literal>. Punkty montowania dla
+potomnych systemów plików są ustawione w jednym wspólnym punkcie montowania <filename>/export/home</filename>.
+Parametry, które są ustawiony w nadrzędnym systemie plików są dziedziczone na potomne, ale nadrzędny
+system plików nigdy nie zostanie zamontowany.</para>
+<screen># <userinput>zpool create userpool mirror c0t5d0 c1t6d0</userinput>
+# <userinput>zfs set canmount=off userpool</userinput>
+# <userinput>zfs set mountpoint=/export/home userpool</userinput>
+# <userinput>zfs set compression=on userpool</userinput>
+# <userinput>zfs create userpool/user1</userinput>
+# <userinput>zfs create userpool/user2</userinput>
+# <userinput>zfs list -r userpool</userinput>
+NAME             USED  AVAIL  REFER  MOUNTPOINT
+userpool         140K  8.24G  24.5K  /export/home
+userpool/user1  24.5K  8.24G  24.5K  /export/home/user1
+userpool/user2  24.5K  8.24G  24.5K  /export/home/user2</screen>
+</sect3>
 <sect3 xml:id="gcfgv">
 <title>Parametr <property>recordsize</property></title>
-<para>Określa sugerowaną wielkość bloku dla plików w systemie plików.<indexterm xml:id="indexterm-305">
+<para>Określa sugerowaną wielkość bloku dla plików w systemie plików.<indexterm xml:id="indexterm-315">
 <primary>ZFS properties</primary>
 <secondary>
 <property>recordsize</property>
 </secondary>
 <tertiary>detailed description</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-306">
+<indexterm xml:id="indexterm-316">
 <primary>settable properties of ZFS</primary>
 <secondary>
 <property>recordsize</property>
 </secondary>
 <tertiary>detailed description</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-307">
+<indexterm xml:id="indexterm-317">
 <primary>
 <property>recordsize</property> property</primary>
 <secondary>detailed description</secondary>
@@ -1791,21 +1846,21 @@ nieprzewidywalne działanie lub uszkodzenie danych, w zależności od tego, jak
 wolumin jest używany. Efekty te mogą mieć także miejsce, kiedy wielkość
 woluminu jest zmieniana w trakcie używania, szczególnie podczas zmniejszania
 rozmiaru. Przy zmianie rozmiaru woluminu należy wykazać szczególną
-ostrożność.<indexterm xml:id="indexterm-308">
+ostrożność.<indexterm xml:id="indexterm-318">
 <primary>ZFS properties</primary>
 <secondary>
 <property>volsize</property>
 </secondary>
 <tertiary>detailed description</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-309">
+<indexterm xml:id="indexterm-319">
 <primary>settable properties of ZFS</primary>
 <secondary>
 <property>volsize</property>
 </secondary>
 <tertiary>detailed description</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-310">
+<indexterm xml:id="indexterm-320">
 <primary>
 <property>volsize</property> property</primary>
 <secondary>detailed description</secondary>
@@ -1818,8 +1873,77 @@ już woluminu. <emphasis>Rozrzedzony wolumin</emphasis> jest definiowany jako wo
 gdzie rezerwacja nie jest równa wielkości woluminu. Dla takiego woluminu zmiany
 parametru <property>volsize</property> nie są przenoszone na zmianę rezerwacji.
 </para>
-<para>Więcej informacji o używaniu woluminów znajduje się pod <olink targetdoc="" remap="internal" targetptr="gaypf">Emulated Volumes</olink>.</para>
+<para>Więcej informacji o używaniu woluminów znajduje się pod <olink remap="external" targetdoc="chapter-8.xml" targetptr="gaypf">ZFS Volumes</olink>.</para>
 </sect3>
+</sect2>
+
+<sect2 xml:id="gdrcw">
+<title>Parametry użytkownika ZFS</title>
+<para>Dodatkowo ZFS wspiera dowolne parametry użytkownika. Nie mają one
+wpływu na zachowanie ZFS-a, ale można je wykorzystać do opisywania
+datasetów informacjami, które mogę być przydatne w środowisku użytkownika.</para>
+<para>Nazwy parametrów użytkownika muszą spełniać następujące założenia:<indexterm xml:id="indexterm-321">
+<primary>ZFS properties</primary>
+<secondary>user properties</secondary>
+<tertiary>detailed description</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-322">
+<primary>user properties of ZFS</primary>
+<secondary>detailed description</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-323">
+<primary>user properties of ZFS</primary>
+<secondary>(example of)</secondary>
+</indexterm>
+</para>
+<itemizedlist>
+<listitem>
+<para>Zawierać znak dwukropka (':') w celu odróżnienia ich od głównych parametrów.</para>
+</listitem>
+<listitem>
+<para>Zawierać małe litery, cyfry i następujące znaki przestankowe: ':', + ,'.', '_'.  </para>
+</listitem>
+<listitem>
+<para>Zawierać maksymalnie 256 znaków.</para>
+</listitem>
+</itemizedlist>
+<para>Sugerowana konwencja jest taka, że nazwa parametru jest dzielona na dwa kompopnenty,
+ale nie jest ona narzucana przez ZFS:</para>
+<screen>
+<replaceable>moduł:parametr</replaceable>
+</screen>
+<para>W przypadku używania parametrów użytkownika przy programowaniu, sugerowane jest używanie odwrotnej nazwy domeny DNS jako nazwy <replaceable>modułu</replaceable> w celu zminimalizowania sznasy, że dwa niezależnie rozwijane pakiety będą używać tej samej nazwy parametru do różnych celów. Nazwy parametrów, których zaczynają się od "com.sun." są zarezerwowane do użytku przez Sun Microsystems.</para>
+<para>Wartości parametrów użytkownika mają następujące założenia:</para>
+<itemizedlist>
+<listitem>
+<para>Dowolny łańcuch znaków, który jest zawsze dziedziczony i nigdy weryfikowany pod kątem poprawności.</para>
+</listitem>
+<listitem>
+<para>Zawierać maksymalnie 1024 znaków.</para>
+</listitem>
+</itemizedlist>
+<para>Na przykład:</para>
+<screen># <userinput>zfs set dept:users=finance userpool/user1</userinput>
+# <userinput>zfs set dept:users=general userpool/user2</userinput>
+# <userinput>zfs set dept:users=itops userpool/user3</userinput>
+</screen>
+<para>Wszystkie polecenia, które operują na parametrach, takie jak <command>zfs
+list</command>, <command>zfs get</command>, <command>zfs set</command> i inne mogą
+być użyte do obsługi parametrów zarówno głównych, jak i użytkownika.</para>
+<para>Na przykład:</para>
+<screen>
+<userinput>zfs get -r dept:users userpool</userinput>
+NAME            PROPERTY    VALUE           SOURCE
+userpool        dept:users  all             local
+userpool/user1  dept:users  finance         local
+userpool/user2  dept:users  general         local
+userpool/user3  dept:users  itops           local</screen>
+<para>Do wyczyeszcznie parametru użytkownika należy użyć polecenia <command>zfs inherit</command>.
+Na przykład:</para>
+<screen># <userinput>zfs inherit -r dept:users userpool</userinput>
+</screen>
+<para>Jeśli parametr ten nie jest zdefiniowany w żadnym nadrzędnym datasecie, zostanie on
+całkowicie usunięty.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gazsu">
@@ -1834,18 +1958,18 @@ jak i złożona tych zapytań została omówiona w tej części rozdziału.</par
 datasetów w systemie wraz z ich parametrami <property>used</property>,
 <property>available</property>, <property>referenced</property> oraz
 <property>mountpoint</property>.
-Więcej informacji o tych parametrach znajduje się pod <olink targetdoc="" remap="internal" targetptr="gazss">ZFS Properties</olink>.<indexterm xml:id="indexterm-311">
+Więcej informacji o tych parametrach znajduje się pod <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazss">Introducing ZFS Properties</olink>.<indexterm xml:id="indexterm-324">
 <primary>listing</primary>
 <secondary>ZFS file systems</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-312">
+<indexterm xml:id="indexterm-325">
 <primary>
 <command>zfs list</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-313">
+<indexterm xml:id="indexterm-326">
 <primary>ZFS file systems</primary>
 <secondary>listing</secondary>
 <tertiary>(example of)</tertiary>
@@ -1854,41 +1978,50 @@ Więcej informacji o tych parametrach znajduje się pod <olink targetdoc="" rema
 <para>Na przykład:</para>
 <screen># <userinput>zfs list</userinput>
 NAME                   USED  AVAIL  REFER  MOUNTPOINT
-pool                  84.0K  33.5G      -  /pool
-pool/clone                0  33.5G  8.50K  /pool/clone
-pool/test                8K  33.5G     8K  /test
-pool/home             17.5K  33.5G  9.00K  /pool/home
-pool/home/marks       8.50K  33.5G  8.50K  /pool/home/marks
-pool/home/marks@snap      0      -  8.50K  /pool/home/marks@snap</screen>
+pool                   476K  16.5G    21K  /pool
+pool/clone              18K  16.5G    18K  /pool/clone
+pool/home              296K  16.5G    19K  /pool/home
+pool/home/marks        277K  16.5G   277K  /pool/home/marks
+pool/home/marks@snap      0      -   277K  -
+pool/test               18K  16.5G    18K  /test</screen>
 <para>Można także użyć tego polecenia do wyświetlenia informacji określonych
 datasetów poprzez podanie ich nazw w wierszu poleceń. Dodatkowo użycie opcji
-<option>r</option> wyświetli rekursywnie wszystkich potomków podanego datasetu.</para>
+<option>r</option> wyświetli rekursywnie wszystkich potomków podanego datasetu. Na przykład:</para>
+<screen># <userinput>zfs list -r pool/home/marks</userinput>
+NAME                   USED  AVAIL  REFER  MOUNTPOINT
+pool/home/marks        277K  16.5G   277K  /pool/home/marks
+pool/home/marks@snap      0      -   277K  -</screen>
+<para>Istnieje również możliwość użycia polecenia <command>zfs list</command> z bezwzględnymi ścieżkami
+do datasetów, obrazów i woluminów. Na przykład:</para>
+<screen># <userinput>zfs list /pool/home/marks</userinput>
+NAME              USED  AVAIL  REFER  MOUNTPOINT
+pool/home/marks   277K  16.5G   277K  /pool/home/marks</screen>
 <para>Kolejny przykład pokazuje, jak wyświetlić informacje o <filename>tank/home/chua</filename>
-i potomnych dla niego datasetach.<indexterm xml:id="indexterm-314">
+i potomnych dla niego datasetach.<indexterm xml:id="indexterm-327">
 <primary>listing</primary>
-<secondary>descendants of ZFS file systems</secondary>
+<secondary>descendents of ZFS file systems</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-315">
+<indexterm xml:id="indexterm-328">
 <primary>
 <command>zfs list -r</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-316">
+<indexterm xml:id="indexterm-329">
 <primary>ZFS file systems</primary>
-<secondary>listing descendants</secondary>
+<secondary>listing descendents</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zfs list -r tank/home/chua</userinput>
 NAME                        USED  AVAIL  REFER  MOUNTPOINT 
-tank/home/chua		        26.0K  4.81G  10.0K  /tank/home/chua 
+tank/home/chua                   26.0K  4.81G  10.0K  /tank/home/chua
 tank/home/chua/projects       16K  4.81G   9.0K  /tank/home/chua/projects
 tank/home/chua/projects/fs1    8K  4.81G     8K  /tank/home/chua/projects/fs1 
 tank/home/chua/projects/fs2    8K  4.81G     8K  /tank/home/chua/projects/fs2</screen>
 <para>Więcej informacji o poleceniu <command>zfs list</command> znajduje się pod
-<olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<olink remap="external" targetdoc="819-2240" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
