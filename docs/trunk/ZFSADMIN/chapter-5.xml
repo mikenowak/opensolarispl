@@ -2041,50 +2041,30 @@ H</option>.</para>
 <para>Format wyjścia można dostosować poprzez użycie opcji <option>
 o</option> oraz listy żądanych parametrów oddzielonych przecinkami. Jakikolwiek
 parametr datasetu jest poprawną wartością. Lista wszystkich wspieranych parametrów
-datasetu znajduje się pod <olink targetdoc="" remap="internal" targetptr="gazss">ZFS Properties</olink>.
+datasetu znajduje się pod <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazss">Introducing ZFS Properties</olink>.
 Dodatkowo wśród podanych parametrów opcja <option>
 o</option> może zawierać także parametr <literal>name</literal>, który określa, że wyjście
 powinno zawierać nazwę datasetu.</para>
 <para>Poniższy przykład używa polecenia <command>zfs list</command>, żeby wyświetlić
 nazwę datasetu włącznie z parametrami <property>sharenfs</property> oraz <property>mountpoint</property>.</para>
-<screen># <userinput>zfs list -o name,sharenfs,mountpoint</userinput> 
-NAME                  SHARENFS         MOUNTPOINT
-tank                  rw               /export
-tank/archives         rw               /export/archives
-tank/archives/zfs     rw               /export/archives/zfs
-tank/calendar         off              /var/spool/calendar
-tank/cores            rw               /cores
-tank/dumps            rw               /export/dumps
-tank/home             rw               /export/home
-tank/home/ahl         rw               /export/home/ahl
-tank/home/ahrens      rw               /export/home/ahrens
-tank/home/andrei      rw               /export/home/andrei
-tank/home/barts       rw               /export/home/barts
-tank/home/billm       rw               /export/home/billm
-tank/home/bjw         rw               /export/home/bjw
-tank/home/bmc         rw               /export/home/bmc
-tank/home/bonwick     rw               /export/home/bonwick
-tank/home/brent       rw               /export/home/brent
-tank/home/dilpreet    rw               /export/home/dilpreet
-tank/home/dp          rw               /export/home/dp
-tank/home/eschrock    rw               /export/home/eschrock
-tank/home/fredz       rw               /export/home/fredz
-tank/home/johansen    rw               /export/home/johansen
-tank/home/jwadams     rw               /export/home/jwadams
-tank/home/lling       rw               /export/home/lling
-tank/home/mws         rw               /export/home/mws
-tank/home/rab         rw               /export/home/rab
-tank/home/sch         rw               /export/home/sch
-tank/home/tabriz      rw               /export/home/tabriz
-tank/home/tomee       rw               /export/home/tomee</screen>
+<screen># zfs list -o name,sharenfs,mountpoint
+NAME                   SHARENFS         MOUNTPOINT
+tank                   off              /tank
+tank/home              on               /tank/home
+tank/home/ahrens       on               /tank/home/ahrens
+tank/home/bonwick      on               /tank/home/bonwick
+tank/home/chua         on               /tank/home/chua
+tank/home/eschrock     on               legacy
+tank/home/moore        on               /tank/home/moore
+tank/home/tabriz       ro               /tank/home/tabriz</screen>
 <para>Użycie opcji <option>
 t</option> pozwala określić rodzaj datasetów do wyświetlenia.
-Właściwe rodzaje są wymienione w tabeli poniżej.<indexterm xml:id="indexterm-317">
+Właściwe rodzaje są wymienione w tabeli poniżej.<indexterm xml:id="indexterm-330">
 <primary>ZFS file systems</primary>
 <secondary>dataset types</secondary>
 <tertiary>description</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-318">
+<indexterm xml:id="indexterm-331">
 <primary>dataset types</primary>
 <secondary>description</secondary>
 </indexterm>
@@ -2144,48 +2124,48 @@ t</option> przyjmuje jako parametr listę rodzajów datasetów do wyświetlenia 
 przecinkami. Poniższy przykład używa opcji <option>
 t</option> oraz <option>
 o</option> jednocześnie, żeby wyświetlić nazwę oraz parametr <property>used</property>
-dla wszystkich systemów plików:<indexterm xml:id="indexterm-319">
+dla wszystkich systemów plików:<indexterm xml:id="indexterm-332">
 <primary>listing</primary>
 <secondary>types of ZFS file systems</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-320">
+<indexterm xml:id="indexterm-333">
 <primary>
 <command>zfs list -t</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-321">
+<indexterm xml:id="indexterm-334">
 <primary>ZFS file systems</primary>
 <secondary>listing types of</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
 <screen># <userinput>zfs list -t filesystem -o name,used</userinput>
-NAME                  USED
-pool                  105K
-pool/container        0
-pool/home             26.0K
-pool/home/tabriz      26.0K
-pool/home/tabriz_clone  0</screen>
+NAME              USED
+pool              476K
+pool/clone         18K
+pool/home         296K
+pool/home/marks   277K
+pool/test          18K</screen>
 <para>Użycie opcji <option>
 H</option> pozwala pominąć nagłówek w wyjściu polecenia <command>zfs list</command>
 Przy użyciu tej opcji wszystkie białe spacje są zamieniane na tabulatory.
 Ta opcja może być użyteczna, jeśli jest potrzebne parsowalne wyjścia, na przykład
 dla potrzeb skryptów. Kolejny przykład pokazuje wyjście po użyciu polecenia
 <command>zfs list</command> z opcją <option>
-H</option>:<indexterm xml:id="indexterm-322">
+H</option>:<indexterm xml:id="indexterm-335">
 <primary>listing</primary>
 <secondary>ZFS file systems without header information</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-323">
+<indexterm xml:id="indexterm-336">
 <primary>
 <command>zfs list -H</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-324">
+<indexterm xml:id="indexterm-337">
 <primary>ZFS file systems</primary>
 <secondary>listing without header information</secondary>
 <tertiary>(example of)</tertiary>
@@ -2193,37 +2173,52 @@ H</option>:<indexterm xml:id="indexterm-322">
 </para>
 <screen># <userinput>zfs list -H -o name</userinput>
 pool
-pool/container
+pool/clone
 pool/home
-pool/home/tabriz
-pool/home/tabriz@now
-pool/home/tabriz/container
-pool/home/tabriz/container/fs1
-pool/home/tabriz/container/fs2
-pool/home/tabriz_clone</screen>
+pool/home/marks
+pool/home/marks@snap
+pool/test</screen>
 </sect2>
 </sect1>
 <sect1 xml:id="gayns">
 <title>Zarządzanie parametrami ZFS</title>
 <para>Parametry datasetów są zarządzane poleceniem <command>zfs</command> z komendami <command>set</command>, <command>inherit</command>oraz <command>get</command>.</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazsp">Ustawianie parametrów ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazup">Dziedziczenie parametrów ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazuk">Odpytywanie o parametry ZFS</olink>
+</para>
+</listitem>
+</itemizedlist>
 <sect2 xml:id="gazsp">
 <title>Ustawianie parametrów ZFS</title>
 <para>Polecenie <command>zfs set</command> służy do modyfikacji jakiegokolwiek
-ustawialnego parametru datasetu. Lista ustawialnych parametrów datasetu znajduje
-się pod <olink targetdoc="" remap="internal" targetptr="gazsd">Settable ZFS Properties</olink>.
+ustawialnego parametru datasetu. Można także użyć polecenia <command>zfs create</command>
+w celu ustawienia parametrów podczas tworzenia datasetu. Lista ustawialnych parametrów datasetu znajduje
+się pod <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazsd">Settable ZFS Native Properties</olink>.
 Polecenie <command>zfs set</command> przyjmuje sekwencję parametr/wartość w formacie
-<replaceable>parametr</replaceable>=<replaceable>wartość</replaceable> oraz nazwę datasetu.<indexterm xml:id="indexterm-325">
+<replaceable>parametr</replaceable>=<replaceable>wartość</replaceable> oraz nazwę datasetu.<indexterm xml:id="indexterm-338">
 <primary>setting</primary>
 <secondary>ZFS <property>atime</property> property</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-326">
+<indexterm xml:id="indexterm-339">
 <primary>
 <command>zfs set</command> <property>atime</property>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-327">
+<indexterm xml:id="indexterm-340">
 <primary>ZFS file systems</primary>
 <secondary>setting <property>atime</property> property</secondary>
 <tertiary>(example of)</tertiary>
@@ -2233,6 +2228,10 @@ Polecenie <command>zfs set</command> przyjmuje sekwencję parametr/wartość w f
 Tylko jeden parametr może być ustawiany lub modyfikowany podczas każdego
 wykonania polecenia <command>zfs set</command>.</para>
 <screen># <userinput>zfs set atime=off tank/home</userinput>
+</screen>
+<para>Dodatkowo każdy parametr systemu plików może być ustawiony w czasie
+jego tworzenia. Na przykład:</para>
+<screen># <userinput>zfs create -o atime=off tank/home</userinput>
 </screen>
 <para>Duże wartości numeryczne mogą być określane z użyciem łatwych do zrozumienia
 przyrostków (w kolejności rosnącej): <literal>BKMGTPEZ</literal>.  Każdy z tych
@@ -2246,26 +2245,26 @@ ustawiony na wartość 50 gigabajtów dla systemu plików <filename>tank/home/ma
 # <userinput>zfs set quota=50GB tank/home/marks</userinput>
 # <userinput>zfs set quota=50gb tank/home/marks</userinput>
 </screen>
-<para>Wartości nienumeryczne są wrażliwe na wielkość liter i muszą być podawane małymi literami,
+<para>Wartości parametrów nienumerycznych są wrażliwe na wielkość liter i muszą być podawane małymi literami,
 z wykluczeniem parametrów <property>mountpoint</property> oraz <property>sharenfs</property>.
-Te dwa parametry mogą mieć wartości podawane zarówno wielkimi, jak i małymi literami.<indexterm xml:id="indexterm-328">
+Te dwa parametry mogą mieć wartości podawane zarówno wielkimi, jak i małymi literami.<indexterm xml:id="indexterm-341">
 <primary>setting</primary>
 <secondary>ZFS quota</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-329">
+<indexterm xml:id="indexterm-342">
 <primary>
 <command>zfs set</command> <property>quota</property>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-330">
+<indexterm xml:id="indexterm-343">
 <primary>ZFS file systems</primary>
 <secondary>setting <property>quota</property> property</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
 </para>
-<para>Więcej informacji o poleceniu <command>zfs set</command> znajduje się pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<para>Więcej informacji o poleceniu <command>zfs set</command> znajduje się pod <olink remap="external" targetdoc="819-2240" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
@@ -2281,18 +2280,18 @@ swoje wartości od "rodziców". Jeśli żaden z nadrzędnych datasetów nie ma u
 dokładnej wartości dla dziedziczonego parametru, przyjmowana jest wartość domyślna.
 Polecenie <command>zfs inherit</command> służy do usunięcia ustawionej wartości
 parametru, poprzez co przyjmuje wartość odziedziczoną od nadrzędnego datasetu.
-<indexterm xml:id="indexterm-331">
+<indexterm xml:id="indexterm-344">
 <primary>inheriting</primary>
 <secondary>ZFS properties (<command>zfs inherit</command>)</secondary>
 <tertiary>description</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-332">
+<indexterm xml:id="indexterm-345">
 <primary>
 <command>zfs inherit</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-333">
+<indexterm xml:id="indexterm-346">
 <primary>ZFS file systems</primary>
 <secondary>inheriting property of (<command>zfs inherit</command>)</secondary>
 <tertiary>(example of)</tertiary>
@@ -2317,7 +2316,7 @@ tank/home/bonwick compression   on                      local
 NAME             PROPERTY      VALUE                    SOURCE
 tank             compression   off                      default
 tank/home        compression   off                      default
-tank/home/bonwick compression  off                      inherited from tank/home</screen>
+tank/home/bonwick compression  off                      default</screen>
 <para>Komenda <command>inherit</command> jest wykonywana rekursywnie, jeśli zostanie
 wykonana z opcją <option>r</option>. W kolejnym przykładzie polecenie to powoduje,
 że parametr <property>compression</property> będzie dziedziczony przez 
@@ -2331,7 +2330,7 @@ posiadać.</para>
 r</option> czyści aktualne ustawienie parametru dla wszystkich potomnych
 datasetów.</para>
 </note>
-<para>Więcej informacji o poleceniu <command>zfs</command> znajduje się pod <olink targetdoc="819-2240" remap="external" targetptr="zfs-1m">
+<para>Więcej informacji o poleceniu <command>zfs</command> znajduje się pod <olink remap="external" targetdoc="819-2240" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
@@ -2343,21 +2342,21 @@ datasetów.</para>
 <sect2 xml:id="gazuk">
 <title>Odpytywanie o wartości parametrów ZFS</title>
 <para>Najprostszą metodą odpytania o wartości parametru jest użycie polecenia <command>zfs
-list</command>. Więcej informacji znajduje się pod <olink targetdoc="" remap="internal" targetptr="gaztd">Listing Basic ZFS Information</olink>.
+list</command>. Więcej informacji znajduje się pod <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gaztd">Listing Basic ZFS Information</olink>.
 W przypadku bardziej skomplikowanych zapytań i do pisania skryptów można
 użyć polecenia <command>zfs get</command> w celu dostarczenia bardziej dokładnych
-informacji w dokładnie określonym formacie.<indexterm xml:id="indexterm-334">
+informacji w dokładnie określonym formacie.<indexterm xml:id="indexterm-347">
 <primary>listing</primary>
 <secondary>ZFS properties (<command>zfs list</command>)</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-335">
+<indexterm xml:id="indexterm-348">
 <primary>
 <command>zfs get</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-336">
+<indexterm xml:id="indexterm-349">
 <primary>ZFS file systems</primary>
 <secondary>listing properties of (<command>zfs list</command>)</secondary>
 <tertiary>(example of)</tertiary>
@@ -2367,8 +2366,8 @@ informacji w dokładnie określonym formacie.<indexterm xml:id="indexterm-334">
 jakiegokolwiek parametru datasetu. Poniższy przykład pokazuje, jak pobrać
 wartość jednego parametru datasetu:</para>
 <screen># <userinput>zfs get checksum tank/ws</userinput>
-NAME    	         PROPERTY      VALUE                      SOURCE
-tank/ws             checksum      on                         default</screen>
+NAME             PROPERTY       VALUE                      SOURCE
+tank/ws          checksum       on                         default</screen>
 <para>Czwarta kolumna, <literal>SOURCE</literal>, określa, gdzie ten parametr
 został ustawiony. Poniższa tabela definiuje znaczenie możliwych wartości. </para>
 <table frame="topbot" xml:id="gbavh">
@@ -2433,7 +2432,7 @@ użycie polecenia <command>zfs set</command>.</para>
 o</option> polecenia <command>zfs mount</command>
 i obowiązuje przez czas zamontowania tego systemu plików. Więcej informacji
 na temat tymczasowych parametrów punktu montowania znajduje się pod
-<olink targetdoc="" remap="internal" targetptr="gamnt">Temporary Mount Properties</olink>.</para>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gamnt">Using Temporary Mount Properties</olink>.</para>
 </entry>
 </row>
 <row>
@@ -2450,31 +2449,34 @@ na temat tymczasowych parametrów punktu montowania znajduje się pod
 <para>Użycie specjalnego słowa kluczowego <literal>all</literal> pozwala pobrać
 wszystkie parametry datasetu. Poniższy przykład używa słowa kluczowego <literal>all</literal>
 w celu pobrania wszystkich istniejących parametrów datasetu:</para>
-<screen># <userinput>zfs get all pool</userinput>
-NAME             PROPERTY       VALUE                      SOURCE
-pool             type           filesystem                 -
-pool             creation       Mon Mar 13 11:41 2006      -
-pool             used           2.62M                      -
-pool             available      33.5G                      -
-pool             referenced     10.5K                      -
-pool             compressratio  1.00x                      -
-pool             mounted        yes                        -
-pool             quota          none                       default
-pool             reservation    none                       default
-pool             recordsize     128K                       default
-pool             mountpoint     /pool                      default
-pool             sharenfs       off                        default
-pool             checksum       on                         default
-pool             compression    off                        default
-pool             atime          on                         default
-pool             devices        on                         default
-pool             exec           on                         default
-pool             setuid         on                         default
-pool             readonly       off                        default
-pool             zoned          off                        default
-pool             snapdir        hidden                     default
-pool             aclmode        groupmask                  default
-pool             aclinherit     secure                     default</screen>
+<screen># <userinput>zfs get all tank</userinput>
+NAME  PROPERTY       VALUE                  SOURCE
+tank  type           filesystem             -
+tank  creation       Wed Jan 10 12:18 2007  -
+tank  used           144K                   -
+tank  available      134G                   -
+tank  referenced     25.5K                  -
+tank  compressratio  1.00x                  -
+tank  mounted        yes                    -
+tank  quota          none                   default
+tank  reservation    none                   default
+tank  recordsize     128K                   default
+tank  mountpoint     /tank                  default
+tank  sharenfs       off                    default
+tank  shareiscsi     off                    default
+tank  checksum       on                     default
+tank  compression    off                    default
+tank  atime          on                     default
+tank  devices        on                     default
+tank  exec           on                     default
+tank  setuid         on                     default
+tank  readonly       off                    default
+tank  zoned          off                    default
+tank  snapdir        hidden                 default
+tank  aclmode        groupmask              default
+tank  aclinherit     secure                 default
+tank  canmount       on                     default
+tank  xattr          on                     default</screen>
 <para>Opcja <option>
 s</option> polecenia <command>zfs get</command> pozwala określić, poprzez
 wartość SOURCE, rodzaj parametrów do wyświetlenia. Opcja ta przyjmuje listę wartości
@@ -2482,18 +2484,18 @@ oddzielonych przecinkiem określającą żądany typ wartości. Tylko parametry
 o określonym typie "SOURCE" zostaną wyświetlone. Dopuszczalne wartości to
 <literal>local</literal>, <literal>default</literal>, <literal>inherited</literal>, <literal>temporary</literal> oraz <literal>none</literal>.
 Poniższy przykład pokazuje wszystkie parametry, które zostały ustawione lokalnie
-dla datasetu <literal>pool</literal>.<indexterm xml:id="indexterm-337">
+dla datasetu <literal>pool</literal>.<indexterm xml:id="indexterm-350">
 <primary>listing</primary>
 <secondary>ZFS properties by source value</secondary>
 <tertiary>(example of)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-338">
+<indexterm xml:id="indexterm-351">
 <primary>
 <command>zfs get -s</command>
 </primary>
 <secondary>(example of)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-339">
+<indexterm xml:id="indexterm-352">
 <primary>ZFS file systems</primary>
 <secondary>listing properties by source value</secondary>
 <tertiary>(example of)</tertiary>
