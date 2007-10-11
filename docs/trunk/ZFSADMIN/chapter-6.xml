@@ -495,7 +495,7 @@ tank/test/productAlegacy      0  8.24G   288K  /tank/test/productAlegacy</screen
 <itemizedlist>
 <listitem>
 <para>Obrazy systemu plików i cofanie zmian. Kopie systemu plików można w łatwy sposób utworzyć za pomocą komendy <command>zfs snapshot</command>, natomiast wycofać zmiany do wcześniej ustalonego punku można za pomocą komendy <command>zfs rollback</command>. Można w ten sposób na przykład odzyskać pliki z poprzedniej wersji systemu plików.</para>
-<para>Więcej informacji o tworzeniu obrazów i wycofywaniu zmian w <olink targetdoc="" remap="internal" targetptr="gbciq">Obrazy ZFS-a</olink>.</para>
+<para>Więcej informacji o tworzeniu obrazów i wycofywaniu zmian we <olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbciq">Wprowadzeniu do obrazów ZFS.</olink>.</para>
 </listitem>
 <listitem>
 <para>Zapisywanie obrazów. Wykonuje się je za pomocą komendy <command>zfs send</command> lub <command>zfs receive</command>, które zapisują i odzyskują obrazy ZFS-a. Można zapisać przyrostowe zmiany między obrazami, ale nie można odzyskać pojedynczych plików - konieczne jest odzyskanie całego obrazu.</para>
@@ -507,77 +507,124 @@ tank/test/productAlegacy      0  8.24G   288K  /tank/test/productAlegacy</screen
 <sect2 xml:id="gbscu">
 <title>Zapisywanie danych ZFS-a z innymi produktami kopii zapasowych</title>
 <para>Oprócz wykorzystania komend <command>zfs send</command> i <command>zfs receive</command>, można zapisać pliki ZFS-a korzystając z narzędzi archiwizujących, takich jak <command>tar</command> i <command>cpio</command>. Wszystkie te narzędzia zapisują i odtwarzają atrybuty plików i ACL-e ZFS-a. Przed wykonanie kopii należy sprawdzić opcje wywołania komend <command>tar</command> i <command>cpio</command>.</para>
-<para>Informacje o problemach ZFS-a z produktami archiwizującymi od osób trzecich znajdują się w notach do wydań Solaris Express.</para>
+<para>Informacje o problemach ZFS-a z produktami archiwizującymi od firm trzecich znajdują się w notach do wydań Solaris Express.</para>
 </sect2>
 <sect2 xml:id="gbinw">
 <title>Zapisywanie obrazu ZFS-a</title>
-<para>Najprostsza forma wywołania komendy <command>zfs send</command>, to zapisanie kopii obrazu. Na przykład:<indexterm xml:id="indexterm-405">
+<para>Najczęstszą formą użycia polecenia <command>zfs send</command> jest zapis kopii obrazu i przesłanie go do innego systemu, który służy do przechowywania kopii danych.
+Na przykład:<indexterm xml:id="indexterm-420">
 <primary>saving</primary>
 <secondary>dane systemu plików ZFS-a (<command>zfs send</command>)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-406">
+<indexterm xml:id="indexterm-421">
 <primary>
 <command>zfs send</command>
 </primary>
 <secondary>(przykład)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-407">
+<indexterm xml:id="indexterm-422">
 <primary>systemy plików ZFS-a</primary>
 <secondary>zapisywanie strumieni danych (<command>zfs send</command>)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<screen># <userinput>zfs send tank/dana@040706 &gt; /dev/rmt/0</userinput>
+<screen>host1# <userinput>zfs send tank/dana@snap1 | ssh host2 zfs recv newtank/dana</userinput>
 </screen>
+<para>W przypadku przesyłania pełnego obrazu, docelowy system plików nie może istnieć.</para>
 <para>Inkrementalne zapisy danych można wykonać za pomocą komendy <command>zfs send</command> z opcją <option>
 i</option>. Na przykład:</para>
-<screen># <userinput>zfs send -i tank/dana@040706 tank/dana@040806 &gt; /dev/rmt/0</userinput>
+<screen>host1# <userinput>zfs send -i tank/dana@snap1 tank/dana@snap2 | ssh host2 zfs recv newtank/dana</userinput>
 </screen>
-<para>Pierwszym argumentem jest wcześniejszy obraz, drugim zaś obraz późniejszy.</para>
+<para>Pierwszym argumentem jest wcześniejszy obraz, drugim zaś obraz późniejszy. W tym przypadku system plików <filename>newtank/dana</filename>
+musi istnieć na docelowym systemie, żeby przesył inkrementalny się powiódł.</para>
+<para>Źródło dla przesyłu inkrementalnego <replaceable>snap1</replaceable> może być określone jako
+ostatni człon nazwy obrazu. Ten skrót oznacza, że wystarczy podać nazwę po znaku <literal>@</literal>
+dla <replaceable>snap1</replaceable>, co zakłada, że nazwa systemu pliku jest taka sama, jak
+dla <replaceable>snap2</replaceable>. Na przykład:</para>
+<screen>host1# <userinput>zfs send -i snap1 tank/dana@snap2 &gt; ssh host2 zfs recv newtank/dana</userinput>
+</screen>
+<para>Ta składnia jest równoważna przykładowi powyżej dla przesyłu inkrementalnego.</para>
+<para>Następujący komunikat zostanie wyświetlony w przypadku próby wygenerowania strumienia inkrementalnego
+z innego systemu plików niż <replaceable>snapshot1</replaceable>:</para>
+<screen>cannot send 'pool/fs@name': not an earlier snapshot from the same fs</screen>
 <para>Jeśli zachodzi konieczność utworzenia wielu kopii, strumieniową reprezentację obrazu można spakować za pomocą komendy <command>gzip</command>. Na przykład:</para>
 <screen># <userinput>zfs send pool/fs@snap | gzip &gt; backupfile.gz</userinput>
 </screen>
 </sect2>
 <sect2 xml:id="gbimy">
 <title>Odzyskiwanie obrazu ZFS-a</title>
-<para>Przy odzyskiwaniu obrazu systemu plików, odzyskiwany jest także sam system plików. Podczas odzyskiwania system plików jest odmontowany i niedostępny. Oryginalny odzyskiwany właśnie system plików nie może istnieć. Jeśli istnieje nazwa wywołująca konflikt, można użyć komendy <command>zfs
-rename</command> do zmiany nazwy systemu plików. Na przykład:<indexterm xml:id="indexterm-408">
+<para>Należy pamiętać o następujących rzeczach przy odzyskiwaniu systemu plików z obrazu: <indexterm xml:id="indexterm-423">
 <primary>odzyskiwanie</primary>
 <secondary>dane systemu plików ZFS-a (<command>zfs receive</command>)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-409">
+<indexterm xml:id="indexterm-424">
 <primary>
 <command>zfs receive</command>
 </primary>
 <secondary>(przykład)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-410">
+<indexterm xml:id="indexterm-425">
 <primary>systemy plików ZFS-a</primary>
 <secondary>odzyskiwanie strumieni danych (<command>zfs receive</command>)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<screen># <userinput>zfs send tank/gozer@040706 &gt; /dev/rmt/0</userinput>
-
-.
-.
-.
-# <userinput>zfs receive tank/gozer2@today &lt; /dev/rmt/0</userinput>
+<itemizedlist>
+<listitem>
+<para>Obraz i system plików zostaną odtworzone.</para>
+</listitem>
+<listitem>
+<para>System pliku i jego potomne zostaną odmontowane.</para>
+</listitem>
+<listitem>
+<para>Systemy plików są niedostępne w czasie procesu odtwarzania.</para>
+</listitem>
+<listitem>
+<para>Oryginalny system plików nie może istnieć w czasie odtwarzania.</para>
+</listitem>
+<listitem>
+<para>Jeśli występuje konflikt nazw systemów plików, można użyć polecenia <command>zfs rename</command>
+Do zmiany nazwy.</para>
+</listitem>
+</itemizedlist>
+<para>Na przykład:</para>
+<screen># <userinput>zfs send tank/gozer@0830 &gt; /bkups/gozer.083006</userinput>
+# <userinput>zfs receive tank/gozer2@today &lt; /bkups/gozer.083006</userinput>
 # <userinput>zfs rename tank/gozer tank/gozer.old</userinput>
 # <userinput>zfs rename tank/gozer2 tank/gozer</userinput>
 </screen>
 <para>Jako skrótu komendy <command>zfs receive</command> można użyć <command>zfs recv</command>.</para>
-<para>Przy odzyskiwaniu przyrostowych obrazów systemu plików, należy wycofywać zmiany w kolejności odwrotnej do utworzenia: najpierw najnowszy obraz. Musi również istnieć docelowy system plików. W poniższym przykładzie odzyskiwana jest poprzednia przyrostowa kopia systemu plików <filename>tank/dana</filename>.</para>
-<screen># <userinput>zfs rollback tank/dana@040706</userinput>
-cannot rollback to 'tank/dana@040706': more recent snapshots exist
-use '-r' to force deletion of the following snapshots:
-tank/dana@now
-# <userinput>zfs rollback -r tank/dana@040706/</userinput>
-# <userinput>zfs recv tank/dana &lt; /dev/rmt/0</userinput>
+<para>Jeśli wystąpiły zmiany na systemie plików, zanim nastąpi próba przesłania inkrementalnego obrazu plików,
+muszą być cofnięte zmiany na systemie plików, który będzie odbierał dane.</para>
+<para>Na przykład, jeśli została wykonana zmiana, jak poniżej:</para>
+<screen>host2# <userinput>rm newtank/dana/file.1</userinput>
 </screen>
-<para>Podczas przyrostowego procesu odzyskiwania system plików jest odmontowany i niedostępny. </para>
+<para>I użytkownik chce przesłać inkrementalnie obraz <filename>tank/dana@snap3</filename>,
+trzeba najpierw cofnąć zmiany na systemie plików odbierającym nowy inkrementalny obraz. Można
+ominąć ten krok poprzez użycie opcji <option>F</option>. Na przykład:</para>
+<screen>host1# <userinput>zfs send -i tank/dana@snap2 tank/dana@snap3 | ssh host2 zfs recv -F newtank/dana</userinput>
+</screen>
+<para>W przypadku odbierania obrazu inkrementalnego, docelowy system plików musi już istnieć.</para>
+<para>Jeśli istnieją zmiany na docelowym systemie plików, a użytkownik ani nie cofnął tych zmian,
+ani nie użył opcji <option>F</option> do przesyłu inkrementalnego, zobaczy następujący komunikat:</para>
+<screen>host1# <userinput>zfs send -i tank/dana@snap4 tank/dana@snap5 | ssh host2 zfs recv newtank/dana</userinput>
+cannot receive: destination has been modified since most recent snapshot</screen>
+<para>Użycie opcji <option>F</option> musi spełnić następujące założenia, zanim powiedzie się sukcesem:</para>
+<itemizedlist>
+<listitem>
+<para>Jeśli najświeższy obraz nie odpowiada źródłu do przesyłu inkrementalnego, jak również
+nie jest zakończone odzyskiwanie systemu plików z obrazu lub odbiór innego obrazu, zostanie wyświetlony
+komunikat o błędzie.</para>
+</listitem>
+<listitem>
+<para>Jeśli do polecenia <command>zfs receive</command> zostanie podana nazwa innego
+systemu plików, która nie odpowiada źródłu inkrementalnego obrazu, zostanie wyświetlony
+komunikat o błędzie:</para>
+<screen>cannot send 'pool/fs@name': not an earlier snapshot from the same fs</screen>
+</listitem>
+</itemizedlist>
 </sect2>
 <sect2 xml:id="gbinz">
 <title>Zdalna replikacja danych ZFS-a</title>
