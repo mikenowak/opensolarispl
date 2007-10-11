@@ -16,54 +16,54 @@ Rozdział ten informuje również jak zapisywać stworzone obrazy.</para>
 <itemizedlist>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbciq">Obrazy ZFS</olink>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbciq">Wprowadzenie do obrazów ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbcya">Tworzenie i niszczenie obrazów ZFS</olink>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbcya">Tworzenie i niszczenie obrazów ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbiqe">Wyświetlanie i uzyskiwanie dostępu do obrazów ZFS</olink>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbiqe">Wyświetlanie i uzyskiwanie dostępu do obrazów ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbcxk">Uzyskiwanie dostępu i przywracanie obrazów ZFS</olink>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbcxk">Uzyskiwanie dostępu i przywracanie obrazów ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbcxz">Klony ZFS</olink>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbcxz">Wprowadzenie do klonów ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbcyg">Tworzenie klona ZFS</olink>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbcyg">Tworzenie klona ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbiob">Niszczenie klona ZFS</olink>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbiob">Niszczenie klona ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbchx">Zapis i odtwarzanie danych ZFS</olink>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbchx">Zapis i odtwarzanie danych ZFS</olink>
 </para>
 </listitem>
 </itemizedlist>
 </toc>
 <sect1 xml:id="gbciq">
-<title>Obrazy ZFS</title>
-<para><emphasis>Obraz</emphasis> jest kopią systemu plików (tylko do odczytu) lub woluminu. Obrazy mogą być stworzone niemal natychmiastowo i początkowo nie zajmują dodatkowego miejsca na dysku poza pulą. Niemniej jednak, wraz z kolejnymi zmianami danych, obraz pochłania przestrzeń dyskową poprzez czynienie kolejnych odniesień do starych danych.<indexterm xml:id="indexterm-376">
+<title>Wprowadzenie do obrazów ZFS</title>
+<para><emphasis>Obraz</emphasis> jest kopią systemu plików (tylko do odczytu) lub woluminu. Obrazy mogą być stworzone niemal natychmiastowo i początkowo nie zajmują dodatkowego miejsca na dysku poza pulą. Niemniej jednak, wraz z kolejnymi zmianami danych, obraz pochłania przestrzeń dyskową poprzez czynienie kolejnych odniesień do starych danych.<indexterm xml:id="indexterm-389">
 <primary>System plików ZFS</primary>
 <secondary>obraz</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-377">
+<indexterm xml:id="indexterm-390">
 <primary>obraz</primary>
 <secondary>funkcje</secondary>
 </indexterm>
@@ -77,10 +77,16 @@ Rozdział ten informuje również jak zapisywać stworzone obrazy.</para>
 <para>Teoretyczna liczba możliwych do stworzenia obrazów wynosi 2<superscript>64</superscript>.</para>
 </listitem>
 <listitem>
-<para>Nie używa osobnego nośnika danych na potrzeby kopii. Obrazy zajmują przestrzeń dyskową bezpośrednio z puli nośników danych tak samo jak system plików, pod którym zostały stworzone.</para>
+<para>Nie używają osobnego nośnika danych na potrzeby kopii. Obrazy zajmują przestrzeń dyskową bezpośrednio z puli nośników danych tak samo jak system plików, pod którym zostały stworzone.</para>
+</listitem>
+<listitem>
+<para>Rekursywne obrazy są tworzone jako jedna atomowa operacja. Są one
+tworzone wszystkie naraz (w jednym czasie) lub w ogóle. Zyskiem z takiej
+atomowej operacji tworzenia obrazów jest to, że zapewniają spójność czasu
+utworzenia obrazu, nawet dla potomnych systemów plików.</para>
 </listitem>
 </itemizedlist>
-<para>Obrazy woluminów nie są dostępne bezpośrednio, mogą być jednakże klonowane, zapisywane, przywracane i tak dalej. Więcej informacji o zapisywaniu obrazu ZFS w <olink targetdoc="" remap="internal" targetptr="gbchx">Zapis i odtwarzanie danych ZFS</olink>.</para>
+<para>Obrazy woluminów nie są dostępne bezpośrednio, mogą być jednakże klonowane, zapisywane, przywracane i tak dalej. Więcej informacji o zapisywaniu obrazu ZFS w <olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbchx">Zapis i odtwarzanie danych ZFS</olink>.</para>
 <sect2 xml:id="gbcya">
 <title>Tworzenie i niszczenie obrazów ZFS</title>
 <para>Obrazy tworzone są za pomocą komendy <command>zfs snapshot</command>, której jedynym argumentem jest nazwa obrazu do utworzenia. Nazwę tworzy się w sposób następujący:</para>
@@ -88,18 +94,18 @@ Rozdział ten informuje również jak zapisywać stworzone obrazy.</para>
 <replaceable>systemplików@nazwaobrazu</replaceable>
 <replaceable>wolumin@nazwaobrazu</replaceable>
 </screen>
-<para>Nazwa obrazu musi spełniać wymogi konwencji zdefiniowane w <olink targetdoc="" remap="internal" targetptr="gbcpt">Wymogi nazewnicze komponentów ZFS</olink>.</para>
-<para>W poniższym przykładzie utworzony zostanie obraz systemu plików <filename>tank/home/ahrens</filename> o nazwie <filename>friday</filename>.<indexterm xml:id="indexterm-378">
+<para>Nazwa obrazu musi spełniać wymogi konwencji zdefiniowane w <olink remap="external" targetdoc="chapter-1.xml" targetptr="gbcpt">Wymogi nazewnicze komponentów ZFS</olink>.</para>
+<para>W poniższym przykładzie utworzony zostanie obraz systemu plików <filename>tank/home/ahrens</filename> o nazwie <filename>friday</filename>.<indexterm xml:id="indexterm-391">
 <primary>systemy plików ZFS</primary>
 <secondary>obraz</secondary>
 <tertiary>tworzenie</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-379">
+<indexterm xml:id="indexterm-392">
 <primary>tworzenie</primary>
 <secondary>obrazu ZFS-a</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-380">
+<indexterm xml:id="indexterm-393">
 <primary>obraz</primary>
 <secondary>tworzenie</secondary>
 <tertiary>(przykład)</tertiary>
@@ -107,6 +113,16 @@ Rozdział ten informuje również jak zapisywać stworzone obrazy.</para>
 </para>
 <screen># <userinput>zfs snapshot tank/home/ahrens@friday</userinput>
 </screen>
+<para>Można także tworzyć obrazy dla wszystkich potomnych systemów plików poprzez użycie opcji <option>
++r</option>. Na przykład:</para>
+<screen># <userinput>zfs snapshot -r tank/home@now</userinput>
+# <userinput>zfs list -t snapshot</userinput>
+NAME                   USED  AVAIL  REFER  MOUNTPOINT
+tank/home@now             0      -  29.5K  -
+tank/home/ahrens@now      0      -  2.15M  -
+tank/home/anne@now        0      -  1.89M  -
+tank/home/bob@now         0      -  1.89M  -
+tank/home/cindys@now      0      -  2.15M  -</screen>
 <para>Obrazy nie mają żadnych modyfikowalnych właściwości, nie można też do obrazu przypisać właściwości datasetu.</para>
 <screen># zfs set compression=on tank/home/ahrens@tuesday
 cannot set compression property for 'tank/home/ahrens@tuesday': snapshot
@@ -121,67 +137,96 @@ use '-r' to destroy the following datasets:
 tank/home/ahrens@tuesday
 tank/home/ahrens@wednesday
 tank/home/ahrens@thursday</screen>
-<para>Jeśli dodatkowo istnieją klony obrazu, muszą zostać zniszczone zanim zniszczony będzie obraz.<indexterm xml:id="indexterm-381">
+<para>Jeśli dodatkowo istnieją klony obrazu, muszą zostać zniszczone zanim zniszczony będzie obraz.<indexterm xml:id="indexterm-394">
 <primary>systemy plików ZFS</primary>
 <secondary>obraz</secondary>
 <tertiary>niszczenie</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-382">
+<indexterm xml:id="indexterm-395">
 <primary>niszczenie</primary>
 <secondary>obrazy ZFS-a</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-383">
+<indexterm xml:id="indexterm-396">
 <primary>obraz</primary>
 <secondary>niszczenie</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>Więcej informacji o podkomendzie <command>destroy</command> w <olink targetdoc="" remap="internal" targetptr="gammq">Niszczenie systemów plików ZFS-a</olink>.</para>
+<para>Więcej informacji o podkomendzie <command>destroy</command> w <olink remap="external" targetdoc="chapter-5.xml" targetptr="gammq">Niszczenie systemów plików ZFS-a</olink>.</para>
 <sect3 xml:id="gbion">
 <title>Zmiana nazwy obrazu ZFS</title>
-<para>Zmiana nazwy obrazu jest możliwa, musi się jednak odbyć w ramach puli i datasetu, z których został utworzony. Na przykład:<indexterm xml:id="indexterm-384">
+<para>Zmiana nazwy obrazu jest możliwa, musi się jednak odbyć w ramach puli i datasetu, z których został utworzony. Na przykład:<indexterm xml:id="indexterm-397">
 <primary>systemy plików ZFS-a</primary>
 <secondary>obraz</secondary>
 <tertiary>zmiana nazwy</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-385">
+<indexterm xml:id="indexterm-398">
 <primary>zmiana nazwy</primary>
 <secondary>obraz ZFS-a</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-386">
+<indexterm xml:id="indexterm-399">
 <primary>obraz</primary>
 <secondary>zmiana nazwy</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<screen># zfs rename tank/home/cindys@031306 tank/home/cindys@today</screen>
+<screen># <userinput>zfs rename tank/home/cindys@083006 tank/home/cindys@today</userinput>
+</screen>
+<para>Dodatkowo można używać podanej poniżej składni skróconej przy zmienianiu nazwy obrazu, dającej ten sam efekt końcowy,
+jak przykład powyżej.</para>
+<screen># <userinput>zfs rename tank/home/cindys@083006 today</userinput>
+</screen>
 <para>Poniższej operacji zmiany nazwy nie da się wykonać, ponieważ docelowa pula i system plików są inne, niż pula i system plików, dla których utworzono obraz.</para>
 <screen># zfs rename tank/home/cindys@today pool/home/cindys@saturday
 cannot rename to 'pool/home/cindys@today': snapshots must be part of same 
 dataset</screen>
+<para>Można także zmieniać nazwy obrazów rekursywnie poprzez użycie opcji <option>
+r</option> dla polecenia <command>zfs rename</command>. Na przykład:</para>
+<screen># <userinput>zfs list</userinput>
+NAME                         USED  AVAIL  REFER  MOUNTPOINT
+users                        270K  16.5G    22K  /users
+users/home                    76K  16.5G    22K  /users/home
+users/home@yesterday            0      -    22K  -
+users/home/markm              18K  16.5G    18K  /users/home/markm
+users/home/markm@yesterday      0      -    18K  -
+users/home/marks              18K  16.5G    18K  /users/home/marks
+users/home/marks@yesterday      0      -    18K  -
+users/home/neil               18K  16.5G    18K  /users/home/neil
+users/home/neil@yesterday       0      -    18K  -
+# <userinput>zfs rename -r users/home@yesterday @2daysago</userinput>
+# <userinput>zfs list -r users/home</userinput>
+NAME                        USED  AVAIL  REFER  MOUNTPOINT
+users/home                   76K  16.5G    22K  /users/home
+users/home@2daysago            0      -    22K  -
+users/home/markm             18K  16.5G    18K  /users/home/markm
+users/home/markm@2daysago      0      -    18K  -
+users/home/marks             18K  16.5G    18K  /users/home/marks
+users/home/marks@2daysago      0      -    18K  -
+users/home/neil              18K  16.5G    18K  /users/home/neil
+users/home/neil@2daysago       0      -    18K  -</screen>
 </sect3>
 </sect2>
 <sect2 xml:id="gbiqe">
 <title>Przeglądanie i dostęp do obrazów ZFS</title>
-<para>Obrazy systemu plików dostępne są w katalogu <filename>.zfs/snapshot</filename> w szczycie hierarchii zawierającego obraz systemu plików. Na przykład, jeśli system plików <filename>tank/home/ahrens</filename> zamontowano w katalogu  <filename>/home/ahrens</filename>, to obraz <filename>tank/home/ahrens@thursday</filename> będzie dostępny w katalogu <filename>/home/ahrens/.zfs/snapshot/thursday</filename>.<indexterm xml:id="indexterm-387">
+<para>Obrazy systemu plików dostępne są w katalogu <filename>.zfs/snapshot</filename> w szczycie hierarchii zawierającego obraz systemu plików. Na przykład, jeśli system plików <filename>tank/home/ahrens</filename> zamontowano w katalogu  <filename>/home/ahrens</filename>, to obraz <filename>tank/home/ahrens@thursday</filename> będzie dostępny w katalogu <filename>/home/ahrens/.zfs/snapshot/thursday</filename>.<indexterm xml:id="indexterm-400">
 <primary>systemy plików ZFS-a</primary>
 <secondary>obraz</secondary>
 <tertiary>dostęp</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-388">
+<indexterm xml:id="indexterm-401">
 <primary>dostęp</primary>
 <secondary>ZFS snapshot</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-389">
+<indexterm xml:id="indexterm-402">
 <primary>obraz</primary>
 <secondary>dostęp</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<screen># <userinput>ls /home/ahrens/.zfs/snapshot</userinput>
+<screen># <userinput>ls /tank/home/ahrens/.zfs/snapshot</userinput>
 tuesday wednesday thursday</screen>
 <para>Listę obrazów można wydrukować następująco:</para>
 <screen># <userinput>zfs list -t snapshot</userinput>
@@ -193,19 +238,22 @@ tank/home/ahrens@wednesday 8.50K      -  1.01M  -
 tank/home/ahrens@thursday      0      -  1.77M  -
 tank/home/cindys@today     8.50K      -   524K  -</screen>
 <para>Listę obrazów dla konkretnego systemu plików można wydrukować następująco:</para>
-<screen># <userinput>zfs list -r -t snapshot -o name,creation pool/home</userinput>
-NAME                   CREATION
-pool/home/anne@monday  Mon Mar 13 11:46 2006
-pool/home/bob@monday   Mon Mar 13 11:46 2006</screen>
+<screen># <userinput>zfs list -r -t snapshot -o name,creation tank/home</userinput>
+NAME                       CREATION
+tank/home@now               Wed Aug 30 10:53 2006
+tank/home/ahrens@tuesday    Wed Aug 30 10:53 2006
+tank/home/ahrens@wednesday  Wed Aug 30 10:54 2006
+tank/home/ahrens@thursday   Wed Aug 30 10:53 2006
+tank/home/cindys@now        Wed Aug 30 10:57 2006</screen>
 <sect3 xml:id="gbcxc">
 <title>Zużycie miejsca przez obraz</title>
 <para>Po utworzeniu obrazu współdzieli on początkowo miejsce z systemem plików oraz, być może, z poprzednimi obrazami. Wraz z postępowaniem zmian w systemie plików, współdzielone uprzednio miejsce staje się unikalne dla obrazu i zostaje wliczone do właściwości obrazu <property>used</property>. Dodatkowo, usunięcie obrazu może spowodować wzrost unikalnej przestrzeni 
 (a tym samym również <emphasis>used</emphasis>) innych obrazów.</para>
-<para>Właściwość <property>referenced</property> przestrzeni obrazu jest taka sama jak systemu plików, kiedy obraz został utworzony.<indexterm xml:id="indexterm-390">
+<para>Właściwość <property>referenced</property> przestrzeni obrazu jest taka sama jak systemu plików, kiedy obraz został utworzony.<indexterm xml:id="indexterm-403">
 <primary>systemy plików ZFS-a</primary>
 <secondary>zużycie miejsca przez obraz</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-391">
+<indexterm xml:id="indexterm-404">
 <primary>obraz</primary>
 <secondary>zużycie miejsca</secondary>
 </indexterm>
@@ -220,17 +268,17 @@ pool/home/bob@monday   Mon Mar 13 11:46 2006</screen>
 <note>
 <para>Należy odmontować i ponownie zamontować system plików, aby cofnięcie do obrazu powiodło się. Jeśli nie można odmontować systemu plików, nie uda się wycofanie zmian. W celu wymuszenia odmontowania systemu plików można użyć opcji <option>f</option>.</para>
 </note>
-<para>W poniższym przykładzie system plików <filename>tank/home/ahrens</filename> cofany jest do obrazu o nazwie <filename>tuesday</filename>:<indexterm xml:id="indexterm-392">
+<para>W poniższym przykładzie system plików <filename>tank/home/ahrens</filename> cofany jest do obrazu o nazwie <filename>tuesday</filename>:<indexterm xml:id="indexterm-405">
 <primary>systemy plików ZFS-a</primary>
 <secondary>obraz</secondary>
 <tertiary>wycofywanie zmian</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-393">
+<indexterm xml:id="indexterm-406">
 <primary>wycofywanie zmian</primary>
 <secondary>obraz ZFS-a</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-394">
+<indexterm xml:id="indexterm-407">
 <primary>obraz</primary>
 <secondary>wycofywanie zmian</secondary>
 <tertiary>(przykład)</tertiary>
@@ -245,39 +293,57 @@ tank/home/ahrens@thursday
 </screen>
 <para>W powyższym przykładzie obrazy o nazwach <literal>wednesday</literal> i <literal>thursday</literal> zostały zniszczone, ponieważ wycofywano system do poprzedzającego je obrazu o nazwie <literal>tuesday</literal>.</para>
 <screen># <userinput>zfs list -r -t snapshot -o name,creation tank/home/ahrens</userinput>
-NAME                  CREATION
-tank/home/ahrens@tuesday  Mon Mar 13 11:05 2006</screen>
+NAME                      CREATION
+tank/home/ahrens@tuesday  Wed Aug 30 10:53 2006</screen>
 </sect2>
 </sect1>
 <sect1 xml:id="gbcxz">
-<title>Klony ZFS-a</title>
-<para><emphasis>Klon</emphasis> jest zapisywalnym woluminem lub systemem plików, którego początkowa zawartość jest taka sama, jak zawartość datasetu, z którego został utworzony. Podobnie jak w przypadku obrazów, tworzenie klonów jest natychmiastowe i początkowo nie zajmuje miejsca na dysku.<indexterm xml:id="indexterm-395">
+<title>Wprowadzenie do klonów ZFS</title>
+<para><emphasis>Klon</emphasis> jest zapisywalnym woluminem lub systemem plików, którego początkowa zawartość jest taka sama, jak zawartość datasetu, z którego został utworzony. Podobnie jak w przypadku obrazów, tworzenie klonów jest natychmiastowe i początkowo nie zajmuje miejsca na dysku. Dodatkowo można także stworzyć obraz klona.<indexterm xml:id="indexterm-408">
 <primary>systemy plików ZFS-a</primary>
 <secondary>klony</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-396">
+<indexterm xml:id="indexterm-409">
 <primary>klony</primary>
 <secondary>możliwości</secondary>
 </indexterm>
 </para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbcyg">Tworzenie klona ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbiob">Niszczenie klona ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gcvfl">Zastąpienie systemu plików ZFS klonem</olink>
+</para>
+</listitem>
+</itemizedlist>
+
 <para>Klony można utworzyć wyłącznie z obrazu. Po sklonowaniu obrazu powstaje implikowana zależność między klonem a obrazem. Pomimo tego, że klon jest tworzony w innym miejscu hierarchii datasetu, nie można zniszczyć oryginalnego obrazu tak długo, jak długo istnieje jego klon. Właściwość <property>origin</property> eksponuje tę zależność, a komenda <command>zfs destroy</command> podaje listę takich zależności, jeśli istnieją.</para>
 <para>Klony nie dziedziczą właściwości datasetu, z którego są tworzone, ale raczej dziedziczą właściwości wynikłe z miejsca utworzenia ich w hierarchii puli. Do drukowania i modyfikowania właściwości sklonowanego datasetu służą odpowiednio komendy <command>zfs get</command> i <command>zfs set</command>.
-Więcej informacji o ustawianiu właściwości datasetu ZFS-a w <olink targetdoc="" remap="internal" targetptr="gazsp">Ustawianie właściwości ZFS-a</olink>.</para>
+Więcej informacji o ustawianiu właściwości datasetu ZFS-a w <olink remap="external" targetdoc="chapter-5.xml" targetptr="gazsp">Ustawianie właściwości ZFS-a</olink>.</para>
 <para>Klon zaraz po utworzeniu współdzieli przestrzeń dyskową z oryginalnym obrazem, dlatego jego właściwość <property>used</property> jest początkowo równa zeru. W miarę postępowania zmian w klonie, zaczyna on zużywać więcej przestrzeni. Właściwość <property>used</property> oryginalnego obrazu nie obejmuje przestrzeni zużytej przez jego klony.</para>
 <sect2 xml:id="gbcyg">
 <title>Tworzenie klonu ZFS-a</title>
-<para>Klon tworzy się przy pomocy komendy <command>klon ZFS-a</command>, podając nazwę klonowanego obrazu i nazwę nowego systemu plików lub woluminu. Nowy system plików lub wolumin może znajdować się w dowolnym miejscu hierarchii ZFS-a. Typ nowego datasetu (system plików lub wolumin) jest taki sam, jak typ klonowanego obrazu. Nie można utworzyć klonu systemu plików w puli innej niż pula, w której znajduje się klonowany obraz.<indexterm xml:id="indexterm-397">
+<para>Klon tworzy się przy pomocy komendy <command>klon ZFS-a</command>, podając nazwę klonowanego obrazu i nazwę nowego systemu plików lub woluminu. Nowy system plików lub wolumin może znajdować się w dowolnym miejscu hierarchii ZFS-a. Typ nowego datasetu (system plików lub wolumin) jest taki sam, jak typ klonowanego obrazu. Nie można utworzyć klonu systemu plików w puli innej niż pula, w której znajduje się klonowany obraz.<indexterm xml:id="indexterm-410">
 <primary>systemy plików ZFS-a</primary>
 <secondary>klon</secondary>
 <tertiary>tworzenie</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-398">
+<indexterm xml:id="indexterm-411">
 <primary>tworzenie</primary>
 <secondary>klon ZFS-a</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-399">
+<indexterm xml:id="indexterm-412">
 <primary>klony</primary>
 <secondary>tworzenie</secondary>
 <tertiary>(przykład)</tertiary>
@@ -296,17 +362,17 @@ Więcej informacji o ustawianiu właściwości datasetu ZFS-a w <olink targetdoc
 </sect2>
 <sect2 xml:id="gbiob">
 <title>Niszczenie klonu ZFS-a</title>
-<para>Klony ZFS-a niszczone są komendą <command>zfs destroy</command>. Na przykład:<indexterm xml:id="indexterm-400">
+<para>Klony ZFS-a niszczone są komendą <command>zfs destroy</command>. Na przykład:<indexterm xml:id="indexterm-413">
 <primary>systemy plików ZFS-a</primary>
 <secondary>klon</secondary>
 <tertiary>niszczenie</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-401">
+<indexterm xml:id="indexterm-414">
 <primary>niszczenie</primary>
 <secondary>klon ZFS-a</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-402">
+<indexterm xml:id="indexterm-415">
 <primary>klony</primary>
 <secondary>niszczenie</secondary>
 <tertiary>(przykład)</tertiary>
@@ -316,20 +382,100 @@ Więcej informacji o ustawianiu właściwości datasetu ZFS-a w <olink targetdoc
 </screen>
 <para>Przed zniszczeniem obrazu trzeba zniszczyć wszystkie jego klony.</para>
 </sect2>
+<sect2 xml:id="gcvfl">
+<title>Replacing a ZFS File System With a ZFS Clone</title>
+<para>You can use the <command>zfs promote</command> command to replace an
+active ZFS file system with a clone of that file system. This feature facilitates
+the ability to clone and replace file systems so that the “origin”
+file system become the clone of the specified file system. In addition, this
+feature makes it possible to destroy the file system from which the clone
+was originally created. Without clone promotion, you cannot destroy a “origin”
+file system of active clones. For more information about destroying clones,
+see <olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbiob">Destroying a ZFS Clone</olink>.<indexterm xml:id="indexterm-416">
+<primary>ZFS file systems</primary>
+<secondary>clone</secondary>
+<tertiary>replacing a file system with (example of)</tertiary>
+</indexterm>
+<indexterm xml:id="indexterm-417">
+<primary>
+<command>zfs promote</command>
+</primary>
+<secondary>clone promotion (example of)</secondary>
+</indexterm>
+</para>
+<para>In the following example, the <filename>tank/test/productA</filename> file
+system is cloned and then the clone file system, <filename>tank/test/productAbeta</filename> becomes the <filename>tank/test/productA</filename> file system.</para>
+<screen># <userinput>zfs create tank/test</userinput>
+# <userinput>zfs create tank/test/productA</userinput>
+# <userinput>zfs snapshot tank/test/productA@today</userinput>
+# <userinput>zfs clone tank/test/productA@today tank/test/productAbeta</userinput>
+# <userinput>zfs list -r tank/test</userinput>
+NAME                   USED  AVAIL  REFER  MOUNTPOINT
+tank/test              314K  8.24G  25.5K  /tank/test
+tank/test/productA     288K  8.24G   288K  /tank/test/productA
+tank/test/productA@today      0      -   288K  -
+tank/test/productAbeta      0  8.24G   288K  /tank/test/productAbeta
+# <userinput>zfs promote tank/test/productAbeta</userinput>
+# <userinput>zfs list -r tank/test</userinput>
+NAME                   USED  AVAIL  REFER  MOUNTPOINT
+tank/test              316K  8.24G  27.5K  /tank/test
+tank/test/productA        0  8.24G   288K  /tank/test/productA
+tank/test/productAbeta   288K  8.24G   288K  /tank/test/productAbeta
+tank/test/productAbeta@today      0      -   288K  -</screen>
+<para>In the above <command>zfs</command> <option>
+list</option> output, you
+can see that the space accounting of the original <filename>productA</filename> file
+system has been replaced with the <filename>productAbeta</filename> file system.</para>
+<para>Complete the clone replacement process by renaming the file systems.
+For example:</para>
+<screen># <userinput>zfs rename tank/test/productA tank/test/productAlegacy</userinput>
+# <userinput>zfs rename tank/test/productAbeta tank/test/productA</userinput>
+# <userinput>zfs list -r tank/test</userinput>
+NAME                   USED  AVAIL  REFER  MOUNTPOINT
+tank/test              316K  8.24G  27.5K  /tank/test
+tank/test/productA     288K  8.24G   288K  /tank/test/productA
+tank/test/productA@today      0      -   288K  -
+tank/test/productAlegacy      0  8.24G   288K  /tank/test/productAlegacy</screen>
+<para>Optionally, you can remove the legacy file system. For example:</para>
+<screen># <userinput>zfs destroy tank/test/productAlegacy</userinput>
+</screen>
+</sect2>
 </sect1>
 <sect1 xml:id="gbchx">
 <title>Zapisywanie i odzyskiwanie danych ZFS-a</title>
-<para>Komenda <command>zfs send</command> tworzy strumieniową reprezentację obrazu drukowaną na standardowym wyjściu. Domyślnie drukuje się cały strumień. Wyjście komendy można przekierować do pliku lub do innego systemu. Komenda <command>zfs receive</command> tworzy obraz ze strumienia, którego zawartość pochodzi ze standardowego wejścia. Przy pomocy tych komend można zapisywać i odczytywać dane obrazów i systemów plików ZFS-a. Przykłady w następnym podrozdziale.<indexterm xml:id="indexterm-403">
+<para>Komenda <command>zfs send</command> tworzy strumieniową reprezentację obrazu drukowaną na standardowym wyjściu. Domyślnie drukuje się cały strumień. Wyjście komendy można przekierować do pliku lub do innego systemu. Komenda <command>zfs receive</command> tworzy obraz ze strumienia, którego zawartość pochodzi ze standardowego wejścia. Przy pomocy tych komend można zapisywać i odczytywać dane obrazów i systemów plików ZFS-a. Przykłady w następnym podrozdziale.<indexterm xml:id="indexterm-418">
 <primary>zapisywanie i odzyskiwanie</primary>
 <secondary>dane systemów plików ZFS-a</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-404">
+<indexterm xml:id="indexterm-419">
 <primary>systemy plików ZFS-a</primary>
 <secondary>zapisywanie i odzyskiwanie</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbscu">Zapisywanie danych ZFS przy użyciu innynch produktów do backupu</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbinw">Zapisywanie obrazu ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbimy">Przywracanie obrazu ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbinz">Zdalna replikacja danych ZFS</olink>
+</para>
+</listitem>
+</itemizedlist>
 <para>Dane ZFS-a można zapisywać w następujący sposób:</para>
 <itemizedlist>
 <listitem>
