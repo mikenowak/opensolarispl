@@ -16,37 +16,37 @@ danych ZFS.</para>
 <itemizedlist>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gcfog">Składniki puli ZFS
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gcfog">Składniki puli ZFS
 </olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gaypw">Tworzenie i usuwanie puli
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gaypw">Tworzenie i usuwanie puli
  ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gayrd">Zarządzanie urządzeniami 
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gayrd">Zarządzanie urządzeniami 
 w puli ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gaynp">Sprawdzanie statusu puli 
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gaynp">Sprawdzanie statusu puli 
 ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gbchy">Przenoszenie puli ZFS
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gbchy">Przenoszenie puli ZFS
 </olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink targetdoc="" remap="internal" targetptr="gcikw">Powiększanie puli ZFS
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gcikw">Powiększanie puli ZFS
 </olink>
 </para>
 </listitem>
@@ -58,13 +58,19 @@ ZFS</olink>
 komponentach puli nośników danych:</para>
 <itemizedlist>
 <listitem>
-<para>Dyski</para>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazdp">Używanie dysków w pulach danych ZFS</olink>
+</para>
 </listitem>
 <listitem>
-<para>Pliki</para>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazcr">Używanie plików w pulach danych ZFS</olink>
+</para>
 </listitem>
 <listitem>
-<para>Urządzenia wirtualne</para>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazca">Rozpoznawanie wirtualnych urządzeń w pulach danych ZFS</olink>
+</para>
 </listitem>
 </itemizedlist>
 <sect2 xml:id="gazdp">
@@ -169,13 +175,34 @@ się w katalogu<filename>/dev/dsk</filename>, na przykład <filename>c1t0d0
 </para>
 </listitem>
 </itemizedlist>
-<para>ZFS działa najlepiej przy użyciu całych dysków. Wprawdzie tworzenie dysków
- logicznych przy użyciu zarządców woluminów jest możliwe, na przykład Solaris 
-Volume Manager (SVM), Veritas Volume Manager (VxVM), bądź sprzętowych zarządców 
-woluminów (LUN-y lub sprzętowe RAID-Y), konfiguracje takie nie są zalecane. 
-O ile ZFS działa z takimi urządzeniami prawidłowo, wynikiem może być 
-nieoptymalna wydajność.</para>
-<para>Dyski identyfikuje się za równo za pomocą ścieżki, jak i ich ID, jeśli 
+<para>Using whole physical disks is the simplest way to create ZFS storage
+pools. ZFS configurations become progressively more complex, from management,
+reliability, and performance perspectives, when you build pools from disk
+slices, LUNs in hardware RAID arrays, or volumes presented by software-based
+volume managers. The following considerations might help you determine how
+to configure ZFS with other hardware or software storage solutions:</para>
+<itemizedlist>
+<listitem>
+<para>If you construct ZFS configurations on top of LUNs from hardware
+RAID arrays, you need to understand the relationship between ZFS redundancy
+features and the redundancy features offered by  the array. Certain configurations
+might provide adequate redundancy and performance, but other configurations
+might not.</para>
+</listitem>
+<listitem>
+<para>You can construct logical devices for ZFS using volumes presented
+by software-based volume managers, such as <trademark>Solaris</trademark> Volume
+Manager (SVM) or Veritas Volume Manager (VxVM).  However, these configurations
+are not recommended. While ZFS functions properly on such devices, less-than-optimal
+performance might be the result.</para>
+</listitem>
+</itemizedlist>
+<para>For additional information about storage pool recommendations, see the
+ZFS best practices site:</para>
+<para>
+<link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://www.solarisinternals.com/wiki/index.php/ZFS_Best_Practices_Guide">http://www.solarisinternals.com/wiki/index.php/ZFS_Best_Practices_Guide</link>
+</para>
+<para>Dyski identyfikuje się zarówno za pomocą ścieżki, jak i ich ID, jeśli 
 jest dostępne. Metoda ta pozwala na rekonfigurowanie urządzeń w systemie bez 
 uaktualniania stanu ZFS. Jeśli dysk zostanie przeniesiony z kontrolera 1., 
 do kontrolera 2., ZFS użyje ID urządzenia do wykrycia go i ustalenia, że powinno
@@ -214,7 +241,7 @@ wyeksportowana i zaimportowana, ponieważ plikom nie przypisuje się żadnego
 unikalnego ID, po którym mogłyby być znów odnalezione.</para>
 </sect2>
 <sect2 xml:id="gazca">
-<title>Urządzenia wirtualne w pulach nośników danych</title>
+<title>Rozpoznawanie urządzeń wirtualne w pulach nośników danych</title>
 <para>Każda pula nośników składa się z jednego lub więcej wirtualnych urządzeń. 
 <emphasis>Urządzenie wirtualne</emphasis> to wewnętrzna reprezentacja puli 
 nośników, opisująca układ fizycznych nośników i ich charakterystyki awaryjności.
@@ -240,12 +267,34 @@ urządzenia najwyższego poziomu w puli.</para>
 </sect1>
 <sect1 xml:id="gcfof">
 <title>Opcje replikacji danych w pulach ZFS</title>
-<para>ZFS zapewnia dwa poziomy renuncjacji danych w konfiguracji mirror i 
-RAID-Z.<indexterm xml:id="indexterm-92">
+<para>ZFS zapewnia redundancję danych, jak i właściwości samonaprawiania
+uszkodzonych danych w konfiguracji mirror oraz RAID-Z.<indexterm xml:id="indexterm-92">
 <primary>opcje replikacji danych w ZFS</primary>
 <secondary>mirror lub RAID-Z</secondary>
 </indexterm>
 </para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamss">Konfiguracja puli nośników danych: mirror</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamtu">Konfiguracja puli nośników danych RAID-Z</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazch">Samonaprawiające się dane w konfiguracjach z replikacją</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazdd">Dynamiczny striping w pulach danych</olink>
+</para>
+</listitem>
+</itemizedlist>
 <sect2 xml:id="gamss">
 <title>Konfiguracja puli nośników danych: mirror</title>
 <para>Konfiguracja lustrzana (mirrored) puli nośników danych wymaga użycia 
@@ -258,7 +307,7 @@ lustro w puli. Prosta konfiguracja lustrzana wygląda podobnie do poniższej:
 </indexterm>
 <indexterm xml:id="indexterm-94">
 <primary>konfiguracja lustrzana</primary>
-<secondary>opcja replikacji</secondary>
+<secondary>opcja redundancji</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-95">
 <primary>konfiguracja lustrzana</primary>
@@ -273,26 +322,32 @@ lustro w puli. Prosta konfiguracja lustrzana wygląda podobnie do poniższej:
 <para>Bardziej skomplikowana konfiguracja będzie podobna do poniższej:</para>
 <screen>mirror c1t0d0 c2t0d0 c3t0d0 mirror c4t0d0 c5t0d0 c6t0d0</screen>
 <para>Więcej informacji o tworzeniu lustrzanej konfiguracji puli nośników 
-danych w <olink targetdoc="" remap="internal" targetptr="gazhv">tworzeniu 
+danych w <olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazhv">tworzeniu 
 lustrzanych pul nośników danych</olink>.</para>
 </sect2>
 <sect2 xml:id="gamtu">
 <title>Konfiguracja puli nośników danych RAID-Z</title>
 <para>Oprócz konfiguracji lustrzanej puli nośników danych, ZFS umożliwia 
-konfigurację RAID-Z. RAID-Z  jest podobne do RAID-5.
+konfigurację RAID-Z z pojedynczą lub podwójną kontrolą parzystości.
+RAID-Z z pojedynczą kontrolą parzystości jest podobny do RAID-5. RAID-Z
+z podwójną kontrolą parzystości jest zbliżony do RAID-6.
 <indexterm xml:id="indexterm-97">
 <primary>konfiguracja RAID-Z</primary>
-<secondary>opis</secondary>
+<secondary>pojedyncza parzystość, opis</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-98">
 <primary>konfiguracja RAID-Z</primary>
-<secondary>opcja replikacji</secondary>
+<secondary>podwójna parzystość, opis</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-99">
 <primary>konfiguracja RAID-Z</primary>
-<secondary>koncepcja</secondary>
+<secondary>opcja redundancji</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-100">
+<primary>konfiguracja RAID-Z</primary>
+<secondary>koncepcja</secondary>
+</indexterm>
+<indexterm xml:id="indexterm-101">
 <primary>pule nośników danych ZFS</primary>
 <secondary>konfiguracja RAID-Z, opis</secondary>
 </indexterm>
@@ -306,33 +361,52 @@ chyba że następny zapis pełnego bloku nadpisze ten fragment. W RAID-Z ZFS uż
 bloków o zmiennej długości, zatem każdy zapis zapis jest zapisem pełnego bloku. 
 Jest to możliwe tylko dlatego, że ZFS integruje system plików i zarządzanie 
 urządzeniami w taki sposób, że metadane systemu plików zawierają wystarczająco 
-dużo informacji o modelu replikacji w niższej warstwie, aby poradzić sobie z 
+dużo informacji o modelu redundancji w niższej warstwie, aby poradzić sobie z 
 blokami RAID o zmiennej długości. RAID-Z to pierwszy to pierwsze na świecie 
 czysto programowe rozwiązanie problemu luki zapisu RAID-5.</para>
 <para>Do konfiguracji RAID-Z wymagane są co najmniej dwa dyski. Obecnie RAID-Z 
 zapewnia pojedynczą parzystość. Na przykład, jeśli w puli RAID-Z są trzy dyski, 
 dane parzystości zajmują miejsce równe pojemności jednego z dysków.</para>
+<para>A RAID-Z configuration with N disks of size X with P parity disks can
+hold approximately (N-P)*X bytes and can withstand one device failing before
+data integrity is compromised.  You need at least two disks for a single-parity
+RAID-Z configuration and at least three disks for a double-parity RAID-Z configuration.
+For example, if you have three disks in a single-parity RAID-Z configuration,
+parity data occupies space equal to one of the three disks. Otherwise, no
+special hardware is required to create a RAID-Z configuration. </para>
 <para>Koncepcyjnie, konfiguracja RAID-Z z trzema dyskami wygląda jak poniżej:
 </para>
 <screen>raidz c1t0d0 c2t0d0 c3t0d0</screen>
 <para>Bardziej skomplikowana konfiguracja RAID-Z wygląda podobnie do poniższej:
 </para>
-<screen>raidz c1t0d0 c2t0d0 c3t0d0 c4t0d0 c5t0d0 c6t0d0 c7t0d0 raidz c8t0d0 c9t0d0 c10t0d0 c11t0d0 c12t0d0 c13t0d0 c14t0d0</screen>
+<screen remap="wide">raidz c1t0d0 c2t0d0 c3t0d0 c4t0d0 c5t0d0 c6t0d0 c7t0d0 raidz c8t0d0 c9t0d0 c10t0d0 c11t0d0
+c12t0d0 c13t0d0 c14t0d0</screen>
 <para>Jeśli tworzona jest konfiguracja z wieloma dyskami, jak w powyższym 
 przykładzie, konfiguracja RAID-Z z 14 dyskami sprawdza się lepiej jako dwie 
 konfiguracje RAID-Z z 7 dyskami każda. Konfiguracje RAID-Z grupami o 
 jednocyfrowej liczbie dysków powinny mieć lepszą wydajność.</para>
 <para>Więcej informacji o tworzeniu pul RAID-Z w 
-<olink targetdoc="" remap="internal" targetptr="gazhe">Tworzenie pul RAID-Z
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gcvjg">Tworzenie pul RAID-Z
 </olink>.</para>
+<para>For more information about choosing between a mirrored configuration
+or a RAID-Z configuration based on performance and space considerations, see
+the following blog:</para>
+<para>
+<link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://blogs.sun.com/roller/page/roch?entry=when_to_and_not_to">http://blogs.sun.com/roller/page/roch?entry=when_to_and_not_to</link>
+</para>
+<para>For additional information on RAID-Z storage pool recommendations, see
+the ZFS best practices site:</para>
+<para>
+<link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://www.solarisinternals.com/wiki/index.php/ZFS_Best_Practices_Guide">http://www.solarisinternals.com/wiki/index.php/ZFS_Best_Practices_Guide</link>
+</para>
 </sect2>
 <sect2 xml:id="gazch">
-<title>Samonaprawiające się dane w konfiguracjach z replikacją</title>
+<title>Samonaprawiające się dane w konfiguracjach z redundancją</title>
 <para>W konfiguracji lustrzanej lub RAID-Z ZFS zapewnia samonaprawianie się 
 danych.</para>
 <para>Kiedy wykryty zostanie blok z uszkodzonymi danymi, ZFS nie tylko pobiera 
 poprawne dane z innej kopii, ale również naprawia uszkodzone dane zastępując je 
-poprawną kopią.<indexterm xml:id="indexterm-101">
+poprawną kopią.<indexterm xml:id="indexterm-102">
 <primary>samonaprawiające się dane</primary>
 <secondary>opis</secondary>
 </indexterm>
@@ -344,15 +418,15 @@ poprawną kopią.<indexterm xml:id="indexterm-101">
 zapisuje dane równomiernie na wszystkich dostępnych dyskach (stripe). Decyzja 
 o tym, gdzie zapisać dane podejmowana jest w momencie zapisu, nie pojawiają się 
 zatem bloki o stałej wielkości w momencie alokacji.
-<indexterm xml:id="indexterm-102">
+<indexterm xml:id="indexterm-103">
 <primary>dynamiczny striping</primary>
 <secondary>opis</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-103">
+<indexterm xml:id="indexterm-104">
 <primary>dynamiczny striping</primary>
 <secondary>możliwości puli nośników danych</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-104">
+<indexterm xml:id="indexterm-105">
 <primary>Pule nośników danych ZFS</primary>
 <secondary>dynamiczny striping</secondary>
 </indexterm>
