@@ -2030,18 +2030,18 @@ config:
             c1t0d0          FAULTED      0     0     0  cannot open
             c1t1d0          ONLINE       0     0     0
 errors: No known data errors</screen>
-<para>Powyższy wynik podaje dokładne powody, dla których pula jest w obecnym stanie, włącznie z czytelnym opisem i odnośnikiem do artykułu w bazie wiedzy dotyczącym danego problemu. Każdy artykuł w bazie wiedzy zawiera najświeższe informacje o najlepszych sposobach naprawiana danego błędu. Przy użyciu dokładnych danych o konfiguracji powinno dać się ustalić, które urządzenie jest uszkodzone i jak naprawić pulę.<indexterm xml:id="indexterm-175">
+<para>Powyższy wynik podaje dokładne powody, dla których pula jest w obecnym stanie, włącznie z czytelnym opisem i odnośnikiem do artykułu w bazie wiedzy dotyczącym danego problemu. Każdy artykuł w bazie wiedzy zawiera najświeższe informacje o najlepszych sposobach naprawiana danego błędu. Przy użyciu dokładnych danych o konfiguracji powinno dać się ustalić, które urządzenie jest uszkodzone i jak naprawić pulę.<indexterm xml:id="indexterm-179">
 <primary>drukowanie</primary>
 <secondary>szczegółowe informacje o zdrowiu puli nośników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-176">
+<indexterm xml:id="indexterm-180">
 <primary>
 <command>zpool status -v</command>
 </primary>
 <secondary>(przykład)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-177">
+<indexterm xml:id="indexterm-181">
 <primary>pule nośników danych ZFS</primary>
 <secondary>drukowanie szczegółowych informacji o zdrowiu</secondary>
 <tertiary>(przykład)</tertiary>
@@ -2056,36 +2056,76 @@ all pools are healthy</screen>
 <screen># <userinput>zpool status -x</userinput>
   pool: tank
  state: DEGRADED
-status: One or more devices could not be opened.  Sufficient replicas exist for
-        the pool to continue functioning in a degraded state.
-action: Attach the missing device and online it using 'zpool online'.
-   see: http://www.sun.com/msg/ZFS-8000-D3
- scrub: resilver completed with 0 errors on Fri Mar 17 14:38:47 2006
+status: One or more devices has been taken offline by the adminstrator.
+        Sufficient replicas exist for the pool to continue functioning in a
+        degraded state.
+action: Online the device using 'zpool online' or replace the device with
+        'zpool replace'.
+ scrub: none requested
 config:
 
         NAME         STATE     READ WRITE CKSUM
         tank         DEGRADED     0     0     0
           mirror     DEGRADED     0     0     0
-            c1t0d0   UNAVAIL      0     0     0  cannot open
-            c1t1d0   ONLINE       0     0     0</screen>
+             c1t0d0  ONLINE       0     0     0
+             c1t1d0  OFFLINE      0     0     0
+
+errors: No known data errors</screen>
 <para>Kolumny <literal>READ</literal> i <literal>WRITE</literal> podają liczbę błędów We/Wy, które pojawiły się na danych urządzeniu, a kolumna <literal>CKSUM</literal> podaje liczbę błędów sum kontrolnych, które pojawiły się na danych urządzeniu. Obydwa liczniki wskazują prawdopodobnie potencjalne uszkodzenie urządzenia i należy podjąć działania naprawcze. Jeśli wartości różne od zera podawane są dla urządzeń wirtualnych najwyższego poziomu, część danych może być niedostępna. Liczniki błędów rejestrują wszystkie znane błędy danych.</para>
 <para>W powyższym przykładzie wyłączone urządzenie nie powoduje żadnych błędów w danych.</para>
-<para>Więcej informacji o diagnozowaniu i reperowaniu uszkodzonych pul i danych w <olink targetdoc="" remap="internal" targetptr="gavwg">Rozdziale 9, Rozwiązywanie problemów i odzyskiwanie danych na ZFS</olink>.</para>
+<para>Więcej informacji o diagnozowaniu i reperowaniu uszkodzonych pul i danych w <olink remap="external" targetdoc="chapter-9.xml" targetptr="gavwg">Rozdziale 9, Rozwiązywanie problemów i odzyskiwanie danych na ZFS</olink>.</para>
 </sect3>
 </sect2>
 </sect1>
 <sect1 xml:id="gbchy">
 <title>Migracja pul nośników danych ZFS</title>
-<para>Zdarza się, że konieczne jest przeniesienie puli między komputerami. Aby to zrobić, urządzenia należy odłączyć od oryginalnego komputera i podłączyć je w docelowym. Można to zrobić przez fizyczne przełączenie okablowania lub przez urządzenia wieloportowe, jak urządzenia w SAN. ZFS umożliwia eksport puli z maszyny i import jej na inną, nawet jeśli komputery mają inny porządek bitów (ang. endianness). Więcej informacji o replikacji lub migracji systemów plików między różnymi pulami nośników danych, które mogą znajdować się na różnych maszynach w <olink targetdoc="" remap="internal" targetptr="gbchx">Zapisywanie i odzyskiwanie danych ZFS</olink>.<indexterm xml:id="indexterm-178">
+<para>Zdarza się, że konieczne jest przeniesienie puli między komputerami. Aby to zrobić, urządzenia należy odłączyć od oryginalnego komputera i podłączyć je w docelowym. Można to zrobić przez fizyczne przełączenie okablowania lub przez urządzenia wieloportowe, jak urządzenia w SAN. ZFS umożliwia eksport puli z maszyny i import jej na inną, nawet jeśli komputery mają inny porządek bitów (ang. endianness). Więcej informacji o replikacji lub migracji systemów plików między różnymi pulami nośników danych, które mogą znajdować się na różnych maszynach w <olink remap="external" targetdoc="chapter-6.xml" targetptr="gbchx">Zapisywanie i odzyskiwanie danych ZFS</olink>.<indexterm xml:id="indexterm-182">
 <primary>migracja pul nośników danych ZFS</primary>
 <secondary>opis</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-179">
+<indexterm xml:id="indexterm-183">
 <primary>pule nośników danych ZFS</primary>
 <secondary>migracja</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazre">Preparing for ZFS Storage Pool Migration</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazqr">Exporting a ZFS Storage Pool</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazru">Determining Available Storage Pools to Import</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gaztk">Finding ZFS Storage Pools From Alternate Directories</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazuf">Importing ZFS Storage Pools</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gcfhw">Recovering Destroyed ZFS Storage Pools</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gcikw">Upgrading ZFS Storage Pools</olink>
+</para>
+</listitem>
+</itemizedlist>
 <sect2 xml:id="gazre">
 <title>Przygotowanie do migracji puli nośników danych ZFS</title>
 <para>Pule nośników danych muszą być ręcznie eksportowane, aby zaznaczyć, że są gotowe do migracji. Operacja ta zapisuje wszelkie niezapisane wcześniej dane, nanosi dane wskazujące, że wykonano eksport i usuwa wszelką znajomość puli z systemu.</para>
@@ -2102,25 +2142,25 @@ Na przykład:</para>
 cannot unmount '/export/home/eschrock': Device busy
 # <userinput>zpool export -f tank</userinput>
 </screen>
-<para>Jeśli w trakcie eksportu urządzenia są niedostępne, nie można oznaczyć dysków jako wyeksportowane. Jeśli jeden z tych dysków zostanie później podłączony do systemu bez żadnych działających urządzeń, będzie oznaczony jako potencjalnie aktywny. Jeśli emulowane urządzenia w puli są używane, puli nie można wyeksportować nawet z użyciem opcji <option>
-f</option>. Aby wyeksportować pulę z emulowanym urządzeniem, najpierw należy upewnić się, że wszyscy użytkownicy wolumenu już go nie używają.<indexterm xml:id="indexterm-180">
+<para>Jeśli w trakcie eksportu urządzenia są niedostępne, nie można oznaczyć dysków jako wyeksportowane. Jeśli jeden z tych dysków zostanie później podłączony do systemu bez żadnych działających urządzeń, będzie oznaczony jako potencjalnie aktywny. Jeśli woluminy ZFS w puli są używane, puli nie można wyeksportować nawet z użyciem opcji <option>
+f</option>. Aby wyeksportować pulę z woluminem ZFS, najpierw należy upewnić się, że wszyscy użytkownicy wolumenu już go nie używają.<indexterm xml:id="indexterm-184">
 <primary>eksportowanie</primary>
 <secondary>puli nośników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-181">
+<indexterm xml:id="indexterm-185">
 <primary>
 <command>zpool export</command>
 </primary>
 <secondary>(przykład)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-182">
+<indexterm xml:id="indexterm-186">
 <primary>pule nośników danych ZFS</primary>
 <secondary>eksportowanie</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>Więcej informacji o emulowanych wolumenach w <olink targetdoc="" remap="internal" targetptr="gaypf">Emulowanych wolumenach</olink>.</para>
+<para>Więcej informacji o ZFS woluminach w <olink remap="external" targetdoc="chapter-8.xml" targetptr="gaypf">Woluminach ZFS</olink>.</para>
 </sect2>
 <sect2 xml:id="gazru">
 <title>Określanie pul nośników danych gotowych do importu</title>
@@ -2136,25 +2176,25 @@ config:
           mirror    ONLINE
             c1t0d0  ONLINE
             c1t1d0  ONLINE</screen>
-<para>W tym przykładzie pula <literal>tank</literal> jest dostępna do zaimportowania w systemie docelowym. Każda pula jest identyfikowana po nazwie oraz po unikalnym identyfikatorze liczbowym. Jeśli dostępnych jest kilka pul o tej samej nazwie, można je rozróżnić po identyfikatorach liczbowych.<indexterm xml:id="indexterm-183">
+<para>W tym przykładzie pula <literal>tank</literal> jest dostępna do zaimportowania w systemie docelowym. Każda pula jest identyfikowana po nazwie oraz po unikalnym identyfikatorze liczbowym. Jeśli dostępnych jest kilka pul o tej samej nazwie, można je rozróżnić po identyfikatorach liczbowych.<indexterm xml:id="indexterm-187">
 <primary>identyfikowanie</primary>
 <secondary>puli nośników danych ZFS do importu (<command>zpool import -a</command>)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-184">
+<indexterm xml:id="indexterm-188">
 <primary>
 <command>zpool import -a</command>
 </primary>
 <secondary>(przykład)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-185">
+<indexterm xml:id="indexterm-189">
 <primary>pule nośników danych ZFS</primary>
 <secondary>identyfikowanie do importu (<command>zpool import -a</command>)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
 <para>Podobnie jak komenda <command>zpool status</command>, polecenie <command>zpool
-import</command> odsyła do artykułu w bazie wiedzy zawierającego najaktualniejsze informacje odnośnie procedur naprawiania dla danego problemu. W tym przypadku, użytkownik może zmusić system do zaimportowania puli. Import puli podłączonej przez sieć i wykorzystywanej przez inny system może spowodować uszkodzenia danych i panikę jądra, ponieważ oba systemy będą usiłowały zapisywać na tych samych nośnikach. Jeśli nie wszystkie urządzenia w puli są dostępne, lecz zachowana jest wystarczająca redundancja aby pula była użyteczna, stan jej określany jest jako <literal>DEGRADED</literal>. Na przykład:</para>
+import</command> odsyła do artykułu w bazie wiedzy zawierającego najaktualniejsze informacje odnośnie procedur naprawiania problemu, który uniemożliwia zaimportowanie puli. W tym przypadku, użytkownik może zmusić system do zaimportowania puli. Import puli podłączonej przez sieć i wykorzystywanej przez inny system może spowodować uszkodzenia danych i panikę jądra, ponieważ oba systemy będą usiłowały zapisywać na tych samych nośnikach. Jeśli nie wszystkie urządzenia w puli są dostępne, lecz zachowana jest wystarczająca redundancja aby pula była użyteczna, stan jej określany jest jako <literal>DEGRADED</literal>. Na przykład:</para>
 <screen># <userinput>zpool import</userinput>
   pool: tank
     id: 3778921145927357706
@@ -2183,7 +2223,7 @@ config:
           c1t1d0    FAULTED
           c1t2d0    ONLINE
           c1t3d0    FAULTED</screen>
-<para>W tym przykładzie brakuje dwóch dysków w wirtualnym urządzeniu RAID-Z, co oznacza brak wystarczającej replikacji danych i niemożność odtworzenia puli. W tym przypadku ZFS nie wie, które jeszcze urządzenia są częścią puli, aczkolwiek stara się dostarczyć jak najwięcej informacji. Na przykład:</para>
+<para>W tym przykładzie brakuje dwóch dysków w wirtualnym urządzeniu RAID-Z, co oznacza brak wystarczającej redundancji danych i niemożność odtworzenia puli. W tym przypadku ZFS nie wie, które jeszcze urządzenia są częścią puli, aczkolwiek stara się dostarczyć jak najwięcej informacji. Na przykład:</para>
 <screen># <userinput>zpool import</userinput>
 pool: dozer
     id: 12090808386336829175
@@ -2205,34 +2245,33 @@ config:
 <sect2 xml:id="gaztk">
 <title>Szukanie pul nośników danych ZFS w alternatywnych katalogach</title>
 <para>Domyślnie komenda <command>zpool import</command> szuka urządzeń tylko w katalogu <filename>/dev/dsk</filename>. Jeśli urządzenie istnieje w innym katalogu lub używana jest pula zbudowana z plików, należy użyć opcji <option>d</option> w celu przeszukania innych katalogów. Na przykład:</para>
-<screen># <userinput>zpool create dozer /file/a /file/b</userinput>
+<screen># <userinput>zpool create dozer mirror /file/a /file/b</userinput>
 # <userinput>zpool export dozer</userinput>
-# <userinput>zpool import</userinput>
-no pools available
 # <userinput>zpool import -d /file</userinput>
   pool: dozer
-    id: 672153753596386982
+    id: 10952414725867935582
  state: ONLINE
 action: The pool can be imported using its name or numeric identifier.
 config:
 
-        dozer       ONLINE
-          /file/a   ONLINE
-          /file/b   ONLINE
+        dozer        ONLINE
+          mirror     ONLINE
+            /file/a  ONLINE
+            /file/b  ONLINE
 # <userinput>zpool import -d /file dozer</userinput>
 </screen>
-<para>Jeśli urządzenia znajdują się w kliku katalogach można podać kilka opcji <option>d</option>.<indexterm xml:id="indexterm-186">
+<para>Jeśli urządzenia znajdują się w kliku katalogach można podać kilka opcji <option>d</option>.<indexterm xml:id="indexterm-190">
 <primary>importowanie</primary>
 <secondary>puli nośników danych ZFS z alternatywnych katalogów (<command>zpool import -d</command>)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-187">
+<indexterm xml:id="indexterm-191">
 <primary>
 <command>zpool import -d</command>
 </primary>
 <secondary>(przykład)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-188">
+<indexterm xml:id="indexterm-192">
 <primary>pule nośników danych ZFS</primary>
 <secondary>importowanie z alternatywnych katalogów (<command>zpool import -d</command>)</secondary>
 <tertiary>(przykład)</tertiary>
@@ -2278,18 +2317,18 @@ use '-f' to import anyway
 # <userinput>zpool import -f dozer</userinput>
 </screen>
 <para>Pule można też importować z alternatywnym głównym katalogiem przy pomocy opcji <option>R</option> .
-Więcej informacji o alternatywnych katalogach głównych w <olink targetdoc="" remap="internal" targetptr="gbcgl">Alternatywne katalogi główne pul nośników danych ZFS</olink>.<indexterm xml:id="indexterm-189">
+Więcej informacji o alternatywnych katalogach głównych w <olink remap="external" targetdoc="chapter-8.xml" targetptr="gbcgl">Używanie alternatywnych katalogów głównych pul nośników danych ZFS</olink>.<indexterm xml:id="indexterm-193">
 <primary>importowanie</primary>
 <secondary>puli nośników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-190">
+<indexterm xml:id="indexterm-194">
 <primary>
 <command>zpool import</command> <replaceable>name</replaceable>
 </primary>
 <secondary>(przykład)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-191">
+<indexterm xml:id="indexterm-195">
 <primary>pule nośników danych ZFS</primary>
 <secondary>importowanie</secondary>
 <tertiary>(przykład)</tertiary>
@@ -2331,18 +2370,18 @@ config:
             c1t1d0  ONLINE       0     0     0
 
 errors: No known data errors</screen>
-<para>Jeśli jedno z urządzeń w zniszczonej puli jest niedostępne lub uszkodzone, odzyskanie zniszczonej puli może być niemożliwe. W takim przypadku należy najpierw zaimportować zdegradowana pulę, a następnie spróbować naprawić uszkodzenie. Na przykład:<indexterm xml:id="indexterm-192">
+<para>Jeśli jedno z urządzeń w zniszczonej puli jest niedostępne lub uszkodzone, odzyskanie zniszczonej puli może być niemożliwe. W takim przypadku należy najpierw zaimportować zdegradowana pulę, a następnie spróbować naprawić uszkodzenie. Na przykład:<indexterm xml:id="indexterm-196">
 <primary>odzyskiwanie</primary>
 <secondary>zniszczonej puli nośników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-193">
+<indexterm xml:id="indexterm-197">
 <primary>
 <command>zpool import -D</command>
 </primary>
 <secondary>(przykład)</secondary>
 </indexterm>
-<indexterm xml:id="indexterm-194">
+<indexterm xml:id="indexterm-198">
 <primary>pule nośników danych ZFS</primary>
 <secondary>odzyskiwanie uszkodzonej puli</secondary>
 <tertiary>(przykład)</tertiary>
@@ -2393,18 +2432,22 @@ all pools are healthy</screen>
 </sect2>
 <sect2 xml:id="gcikw">
 <title>Uaktualnianie pul nośników danych ZFS</title>
-<para>W przyszłych wersjach ZFS może okazać się konieczne uaktualnienie pul, aby możliwe było skorzystanie z wszystkich opcji nowej wersji ZFS. 
-Komenda <command>zpool upgrade</command> służy do przeprowadzenia tego procesu. Komenda <command>zpool status</command> dodatkowo informuje, jeśli pule pracują pod kontrolą starszej wersji ZFS. Na przykład:<indexterm xml:id="indexterm-195">
+<para>If you have ZFS storage pools from a previous Solaris release, such
+as the Solaris 10 6/06 release, you can upgrade your pools with the <command>zpool
+upgrade</command> command to take advantage of the pool features in the Solaris
+10 11/06 release. In addition, the <command>zpool status</command> command
+has been modified to notify you when your pools are running older versions.
+For example:<indexterm xml:id="indexterm-199">
 <primary>uaktualnianie</primary>
 <secondary>pula nośników danych ZFS</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
-<indexterm xml:id="indexterm-196">
+<indexterm xml:id="indexterm-200">
 <primary>
 <command>zpool upgrade</command>
 </primary>
 </indexterm>
-<indexterm xml:id="indexterm-197">
+<indexterm xml:id="indexterm-201">
 <primary>pule nośników danych ZFS</primary>
 <secondary>uaktualnianie</secondary>
 <tertiary>opis</tertiary>
@@ -2425,27 +2468,33 @@ config:
           c1t27d0   ONLINE       0     0     0
 
 errors: No known data errors</screen>
-<para>W tym wydaniu ZFS wydanie polecenia <command>zpool upgrade</command> do uaktualnienia puli nie powinno być konieczne. Obecnie komenda ta drukuje informacje o wersji ZFS.</para>
-<screen># <userinput>zpool upgrade</userinput>
-This system is currently running ZFS version 1.
-
-All pools are formatted using this version.</screen>
-<para>W przyszłych wydaniach ZFS będzie można użyć poniższej składni do uzyskania dodatkowych informacji o wersji i obsługiwanych wydaniach.</para>
+<para>You can use the following syntax to identify additional information
+about a particular version and supported releases.</para>
 <screen># <userinput>zpool upgrade -v</userinput>
-This system is currently running ZFS version 1.
+This system is currently running ZFS version 3.
 
 The following versions are supported:
 
 VER  DESCRIPTION
 ---  --------------------------------------------------------
- 1   Initial ZFS version.
+ 1   Initial ZFS version
+ 2   Ditto blocks (replicated metadata)
+ 3   Hot spares and double parity RAID-Z
 
 For more information on a particular version, including supported releases, see:
 
 http://www.opensolaris.org/os/community/zfs/version/N
 
 Where 'N' is the version number.</screen>
-<para>Więcej informacji o procesie uaktualniania puli będzie w przyszłych wydaniach tego dokumentu.</para>
+<para>Then, you can run the <command>zpool upgrade</command> command to upgrade
+your pools. For example:</para>
+<screen># <userinput>zpool upgrade -a</userinput>
+</screen>
+<note>
+
+<para>If you upgrade your pools to the latest version, they will not
+be accessible on systems that run older ZFS versions.</para>
+</note>
 </sect2>
 </sect1>
 </chapter>
