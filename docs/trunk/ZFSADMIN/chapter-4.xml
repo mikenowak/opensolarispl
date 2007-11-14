@@ -181,15 +181,11 @@ się w katalogu<filename>/dev/dsk</filename>, na przykład <filename>c1t0d0
 <para>Przy tworzeniu konfiguracji ZFS na LUN-ach ze sprzętowych macierzy RAID-u, należy zrozumieć zależności między opcjami nadmiarowości ZFS a opcjami nadmiarowości macierzy. Niektóre konfiguracje mogą dawać w rezultacie taką samą nadmiarowość i wydajność, inne nie.</para>
 </listitem>
 <listitem>
-<para>You can construct logical devices for ZFS using volumes presented
-by software-based volume managers, such as <trademark>Solaris</trademark> Volume
-Manager (SVM) or Veritas Volume Manager (VxVM).  However, these configurations
-are not recommended. While ZFS functions properly on such devices, less-than-optimal
-performance might be the result.</para>
+<para>Można użyć dla ZFS logicznych woluminów dostarczanych przez programowae produkty do zarządzania nośnikami danych, na przykład <trademark>Solaris</trademark> Volume
+Manager (SVM) lub Veritas Volume Manager (VxVM). Konfiguracje takie są jednak niezalecane. ZFS pracuje wprawdzie prawidłowo, ale rezultatem może być nieoptymalna wydajność.</para>
 </listitem>
 </itemizedlist>
-<para>For additional information about storage pool recommendations, see the
-ZFS best practices site:</para>
+<para>Więcej informacji o zaleceniach dotyczących pul nośników danych na stronie najlepszych praktyk ZFS:</para>
 <para>
 <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="url" xlink:href="http://www.solarisinternals.com/wiki/index.php/ZFS_Best_Practices_Guide">http://www.solarisinternals.com/wiki/index.php/ZFS_Best_Practices_Guide</link>
 </para>
@@ -288,10 +284,9 @@ uszkodzonych danych w konfiguracji mirror oraz RAID-Z.<indexterm xml:id="indexte
 </itemizedlist>
 <sect2 xml:id="gamss">
 <title>Konfiguracja puli nośników danych: mirror</title>
-<para>Konfiguracja lustrzana (mirrored) puli nośników danych wymaga użycia 
-przynajmniej dwóch dysków, najlepiej na osobnych kontrolerach. W konfiguracji 
-lustrzanej można używać wielu dysków. Dodatkowo można stworzyć więcej niż jedno 
-lustro w puli. Prosta konfiguracja lustrzana wygląda podobnie do poniższej:
+<para>Konfiguracja mirror puli nośników danych wymaga użycia 
+przynajmniej dwóch dysków, najlepiej na osobnych kontrolerach. W mirrorze można używać wielu dysków. Dodatkowo można stworzyć więcej niż jedno 
+lustro w puli. Prosta konfiguracja mirror wygląda podobnie do poniższej:
 <indexterm xml:id="indexterm-93">
 <primary>konfiguracja lustrzana</primary>
 <secondary>opis</secondary>
@@ -318,7 +313,7 @@ lustrzanych pul nośników danych</olink>.</para>
 </sect2>
 <sect2 xml:id="gamtu">
 <title>Konfiguracja puli nośników danych RAID-Z</title>
-<para>Oprócz konfiguracji lustrzanej puli nośników danych, ZFS umożliwia 
+<para>Oprócz mirrora ZFS umożliwia 
 konfigurację RAID-Z z pojedynczą lub podwójną kontrolą parzystości.
 RAID-Z z pojedynczą kontrolą parzystości jest podobny do RAID-5. RAID-Z
 z podwójną kontrolą parzystości jest zbliżony do RAID-6.
@@ -349,7 +344,7 @@ RDP i PARZYSTE-NIEPARZYSTE na przykład) obarczone są problemem tak zwanej
  i nastąpi awaria zasilania zanim wszystkie bloki zostaną zapisane na dysk, 
 parzystość i dane będą rozsynchronizowane, a przez to bezużyteczne na zawsze, 
 chyba że następny zapis pełnego bloku nadpisze ten fragment. W RAID-Z ZFS używa 
-bloków o zmiennej długości, zatem każdy zapis zapis jest zapisem pełnego bloku. 
+bloków o zmiennej długości, zatem każdy zapis jest zapisem pełnego bloku. 
 Jest to możliwe tylko dlatego, że ZFS integruje system plików i zarządzanie 
 urządzeniami w taki sposób, że metadane systemu plików zawierają wystarczająco 
 dużo informacji o modelu redundancji w niższej warstwie, aby poradzić sobie z 
@@ -359,8 +354,7 @@ czysto programowe rozwiązanie problemu luki zapisu RAID-5.</para>
 na dane parzystości może pomieścić około (N-P)*X bajtów i wytrzymać uszkodzenie
 jednego dysku zanim zostanie stracona spójność danych. Wymagane są co najmniej
 dwa dyski dla konfiguracji RAID-Z z pojedynczą kontrolą parzystości i przynajmniej
-trzy dyski dla konfiguracji RAID-Z z podwójną kontrolą parzystości. Jeśli na przykład
-posiadamy trzy dyski w konfiguracji RAID-Z z pojedynczą kontrolą parzystości, dane
+trzy dyski dla konfiguracji RAID-Z z podwójną kontrolą parzystości. Na przykład przy trzech dyskach w konfiguracji RAID-Z z pojedynczą kontrolą parzystości, dane
 parzystości zajmują przestrzeń dokładnie odpowiadającą jednemu z trzech dysków.
 Poza tym nie jest wymagany żadedn specjalny sprzęt do utworzenia konfiguracji
 RAID-Z.</para>
@@ -523,21 +517,21 @@ zaetykietowane przez ZFS tak, aby zawierały jeden duży blok. Dane będą
 dynamicznie stripowane po wszystkich dyskach.</para>
 </sect3>
 <sect3 xml:id="gazhv">
-<title>Tworzenie lustrzanej konfiguracji puli nośników danych</title>
-<para>Do stworzenia lustrzanej puli służy słowo kluczowe <literal>mirror
+<title>Tworzenie konfiguracji mirror puli nośników danych</title>
+<para>Do stworzenia puli mirror służy słowo kluczowe <literal>mirror
 </literal>, po którym następuje dowolna liczba dysków, z których będzie się 
 składało lustro. Poprzez powtarzanie słowa kluczowego <literal>mirror</literal> 
-można stworzyć wiele luster. Poniższa komenda tworzy pulę z dwoma 
-dwuurządzeniowymi lustrami:</para>
+można stworzyć wiele mirrorów. Poniższa komenda tworzy pulę z dwoma 
+dwuurządzeniowymi mirrorami:</para>
 <screen># <userinput>zpool create tank mirror c1d0 c2d0 mirror c3d0 c4d0
 </userinput>
 </screen>
 <para>Drugie słowo kluczowe <literal>mirror</literal> wskazuje, że konfigurowane
  jest nowe urządzenie wirtualne najwyższej warstwy. Dane są dynamicznie 
-stripowane na oba lustra z redundancją pomiędzy odpowiednimi dyskami.
+stripowane na oba mirrory z redundancją pomiędzy odpowiednimi dyskami.
 <indexterm xml:id="indexterm-111">
 <primary>tworzenie</primary>
-<secondary>lustrzanej puli nośników danych ZFS (<command>zpool create</command>)
+<secondary>mirrorowanej puli nośników danych ZFS (<command>zpool create</command>)
 </secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
@@ -545,23 +539,22 @@ stripowane na oba lustra z redundancją pomiędzy odpowiednimi dyskami.
 <primary>
 <command>zpool create</command>
 </primary>
-<secondary>lustrzana konfiguracja puli nośników danych</secondary>
+<secondary>konfiguracja mirror puli nośników danych</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-113">
-<primary>lustrzana konfiguracja puli nośników danych (<command>zpool create
+<primary>konfiguracja mirror puli nośników danych (<command>zpool create
 </command>)</primary>
 <secondary>(przykład)</secondary>
 </indexterm>
 <indexterm xml:id="indexterm-114">
 <primary>Pule nośników danych ZFS</primary>
-<secondary>tworzenie konfiguracji lustrzanej (<command>zpool create</command>)
+<secondary>tworzenie konfiguracji mirror (<command>zpool create</command>)
 </secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>Currently, the following operations
-are supported on a ZFS mirrored configuration:</para>
+<para>Na mirrorze ZFS można obecnie wykonać poniższe operacje:</para>
 <itemizedlist>
 <listitem>
 <para>Adding another set of disks for an additional top-level <literal>vdev</literal> to an existing mirrored configuration. For more information,
