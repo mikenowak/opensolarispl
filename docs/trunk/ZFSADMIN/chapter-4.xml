@@ -1474,42 +1474,25 @@ config:
 <para>Komendy <command>zpool remove</command> można obecnie używać tylko do usuwania z puli urządzeń hot spare.</para>
 </listitem>
 <listitem>
-<para>Add a disk as a spare that is equal to or larger than the
-size of the largest disk in the pool. Adding a smaller disk as a spare to
-a pool is allowed. However, when the smaller spare disk is activated, either
-automatically or with the <command>zpool replace</command> command, the operation
-fails with an error similar to the following:</para>
+<para>Urządzenie hot spare powinno być nie mniejsze niż największe urządzenie w puli. Wprawdzie dozwolone jest tworzenie mniejszych hot spare, ale przy awarii większego dysku próba uruchomienia urządzenia hot spare, automatycznie bądź komendą <command>zpool replace</command>, powoduje błąd podobny do poniższego:</para>
 <screen>cannot replace <replaceable>disk3</replaceable> with <replaceable>disk4</replaceable>: device is too small</screen>
 </listitem>
 </itemizedlist>
 <sect3 xml:id="gcvdi">
-<title>Activating and Deactivating Hot Spares in Your Storage
-Pool</title>
-<para>Hot spares are activated in the following ways:</para>
+<title>Włączanie i wyłączanie urządzeń hot spare w puli</title>
+<para>Urządzenia hot spare włączane są w następujący sposób:</para>
 <itemizedlist>
 <listitem>
-<para>Manually replacement – Replace a failed device in a
-storage pool with a hot spare by using the <command>zpool replace</command> command.</para>
+<para>Ręczna wymiana - ręczna wymiana uszkodzonego urządzenia w puli za pomocą komendy <command>zpool replace</command>.</para>
 </listitem>
 <listitem>
-<para>Automatic replacement – When a fault is received, an
-FMA agent examines the pool to see if it has any available hot spares. If
-so, it replaces the faulted device with an available spare.</para>
-<para>If
-a hot spare that is currently in use fails, the agent detaches the spare and
-thereby cancels the replacement. The agent then attempts to replace the device
-with another hot spare, if one is available. This feature is currently limited
-by the fact that the ZFS diagnosis engine only emits faults when a device
-disappears from the system. </para>
-<para>Currently, no automated response
-is available to bring the original device back online. You must explicitly
-take one of the actions described in the example below. A future enhancement
-will allow ZFS to subscribe to hotplug events and automatically replace the
-affected device when it is replaced on the system.</para>
+<para>Automatyczna wymiana – po pojawieniu się informacji o uszkodzeniu urządzenia, agent FMA szuka w puli wolnych urządzeń hot spare. Jeśli takie są, podmienia uszkodzone urządzenie.</para>
+<para>Jeśli urządzeni hot spare zawiedzie, agent je odłącze, efektywnie anulując podmianę. Próbuje wtedy podłączyć inne urządzenie hot spare, jeśli jest dostępne. W chwili obecnej mechanizm ten jest ograniczony przez fakt, że ZFS emituje sygnał faul, tylko wtedy, gdy urządzenie zniknie z puli. </para>
+<para>Nie ma obecnie możliwości automatycznego przywrócenia oryginalnego urządzenia. Należy samodzielnie wykonać polecenia z poniższego przykładu. W przyszłości ZFS będzie umiał korzystać ze zdarzeń hotplug u automatycznie wymieniać uszkodzone urządzenia po ich wymianie w systemie.</para>
 </listitem>
 </itemizedlist>
-<para>Manually replace a device with a hot spare by using the <command>zpool
-replace</command> command. For example:</para>
+<para>Ręczna wymiana urządzenia na hot spare komendą <command>zpool
+replace</command>. Na przykład:</para>
 <screen># <userinput>zpool replace zeepool c2t1d0 c2t3d0</userinput>
 # <userinput>zpool status zeepool</userinput>
   pool: zeepool
@@ -1529,8 +1512,7 @@ config:
           c2t3d0        INUSE     currently in use
 
 errors: No known data errors</screen>
-<para>A faulted device is automatically replaced if a hot spare is available.
-For example:</para>
+<para>Uszkodzone urządzenie jest automatycznie wymieniane, jeśli jest dostępne hot spare. Na przykład:</para>
 <screen># <userinput>zpool status -x</userinput>
   pool: zeepool
  state: DEGRADED
@@ -1553,20 +1535,19 @@ config:
           c2t3d0             INUSE     currently in use
 
 errors: No known data errors</screen>
-<para>Currently, three ways to deactivate hot spares are available:</para>
+<para>Hot spare można wyłączyć na trzy sposoby:</para>
 <itemizedlist>
 <listitem>
-<para>Canceling the hot spare by removing it from the storage pool</para>
+<para>Usuwając hot spare z puli</para>
 </listitem>
 <listitem>
-<para>Replacing the original device with a hot spare</para>
+<para>Wymieniając oryginalne urządzenie na hot spare</para>
 </listitem>
 <listitem>
-<para>Permanently swapping in the hot spare</para>
+<para>Włączając urządzenie hot spare jako aktywne urządzenie w puli</para>
 </listitem>
 </itemizedlist>
-<para>After the faulted device is replaced, use the <command>zpool detach</command> command
-to return the hot spare back to the spare set. For example:</para>
+<para>Po wymianie uszkodzonego urządzenia, komendą <command>zpool detach</command> należy odłączyć urządzenie hot spare, aby przywrócić je do zestawu urządzeń hot spare w puli. Na przykład:</para>
 <screen># <userinput>zpool detach zeepool c2t3d0</userinput>
 # <userinput>zpool status zeepool</userinput>
   pool: zeepool
