@@ -384,27 +384,19 @@ Więcej informacji o ustawianiu właściwości datasetu ZFS w <olink remap="exte
 </sect2>
 <sect2 xml:id="gcvfl">
 <title>Podmiana systemu plików ZFS na jego klon</title>
-<para>Komendą <command>zfs promote</command> można zamienić aktywny system plików ZFS na jego klon.  command to replace an
-active ZFS file system with a clone of that file system. This feature facilitates
-the ability to clone and replace file systems so that the “origin”
-file system become the clone of the specified file system. In addition, this
-feature makes it possible to destroy the file system from which the clone
-was originally created. Without clone promotion, you cannot destroy a “origin”
-file system of active clones. For more information about destroying clones,
-see <olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbiob">Destroying a ZFS Clone</olink>.<indexterm xml:id="indexterm-416">
-<primary>ZFS file systems</primary>
-<secondary>clone</secondary>
-<tertiary>replacing a file system with (example of)</tertiary>
+<para>Komendą <command>zfs promote</command> można zamienić aktywny system plików ZFS na jego klon. Umożliwia to sklonowanie systemu plików i zamianę, tak że klon staje się systemem plików, a system plików klonem. Pozwala to także na niszczenie systemów plików, z których utworzono klon. Bez wypromowania klonu niemożliwe jest zniszczenie systemu plików z aktywnymi klonami. Więcej o niszczeniu klonów w <olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbiob">Niszczenie klonu ZFS</olink>.<indexterm xml:id="indexterm-416">
+<primary>systemy plików ZFS</primary>
+<secondary>klon</secondary>
+<tertiary>zamiana systemu plików (przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-417">
 <primary>
 <command>zfs promote</command>
 </primary>
-<secondary>clone promotion (example of)</secondary>
+<secondary>promocja klonu (przykład)</secondary>
 </indexterm>
 </para>
-<para>In the following example, the <filename>tank/test/productA</filename> file
-system is cloned and then the clone file system, <filename>tank/test/productAbeta</filename> becomes the <filename>tank/test/productA</filename> file system.</para>
+<para>W poniższym przykładzie system plików <filename>tank/test/productA</filename> jest sklonowanym systemem plików, poźniej klon <filename>tank/test/productAbeta</filename> zostaje wypromowany na główny system plików <filename>tank/test/productA</filename>.</para>
 <screen># <userinput>zfs create tank/test</userinput>
 # <userinput>zfs create tank/test/productA</userinput>
 # <userinput>zfs snapshot tank/test/productA@today</userinput>
@@ -422,12 +414,9 @@ tank/test              316K  8.24G  27.5K  /tank/test
 tank/test/productA        0  8.24G   288K  /tank/test/productA
 tank/test/productAbeta   288K  8.24G   288K  /tank/test/productAbeta
 tank/test/productAbeta@today      0      -   288K  -</screen>
-<para>In the above <command>zfs</command> <option>
-list</option> output, you
-can see that the space accounting of the original <filename>productA</filename> file
-system has been replaced with the <filename>productAbeta</filename> file system.</para>
-<para>Complete the clone replacement process by renaming the file systems.
-For example:</para>
+<para>W powyższym wydruku komendy <command>zfs</command> <option>
+list</option> widoczne jest, że obliczanie zużycia miejsca oryginalnego systemu plików <filename>productA</filename> zamieniono na system plików <filename>productAbeta</filename></para>
+<para>Dokończenie podmiany następuje przez zmianę nazw systemów plików. Na przykład:</para>
 <screen># <userinput>zfs rename tank/test/productA tank/test/productAlegacy</userinput>
 # <userinput>zfs rename tank/test/productAbeta tank/test/productA</userinput>
 # <userinput>zfs list -r tank/test</userinput>
@@ -436,7 +425,7 @@ tank/test              316K  8.24G  27.5K  /tank/test
 tank/test/productA     288K  8.24G   288K  /tank/test/productA
 tank/test/productA@today      0      -   288K  -
 tank/test/productAlegacy      0  8.24G   288K  /tank/test/productAlegacy</screen>
-<para>Optionally, you can remove the legacy file system. For example:</para>
+<para>Można dodatkowo zniszczyć system plików, z którego pochodzi wypromowany klon. Na przykład:</para>
 <screen># <userinput>zfs destroy tank/test/productAlegacy</userinput>
 </screen>
 </sect2>

@@ -8,10 +8,10 @@
 
 
 
-<title>Używanie ACL do ochrony plików w ZFS-ie</title>
+<title>Używanie ACL do ochrony plików w ZFS</title>
 <toc>
 <para>Ten rozdział dostarcza informacji na temat używania list kontroli dostępu (ACL)
-do ochrony plików w ZFS-ie poprzez dostarczenie bardziej dokładnych uprawnień niż
+do ochrony plików w ZFS poprzez dostarczenie bardziej dokładnych uprawnień niż
 standardowe UNIX.</para>
 <para>Rozdział składa się z następujących podrozdziałów:</para>
 <itemizedlist>
@@ -22,17 +22,17 @@ standardowe UNIX.</para>
 </listitem>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbace">Ustawianie ACL-i dla plików w ZFS-ie</olink>
+<olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbace">Ustawianie ACL-i dla plików w ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbabw">Ustawianie i wyświetlanie ACL-i dla plików w ZFS-ie w formacie rozszerzonym</olink>
+<olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbabw">Ustawianie i wyświetlanie ACL-i dla plików w ZFS w formacie rozszerzonym</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbchf">Ustawianie i wyświetlanie ACL-i dla plików w ZFS-ie w formacie skróconym</olink>
+<olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbchf">Ustawianie i wyświetlanie ACL-i dla plików w ZFS w formacie skróconym</olink>
 </para>
 </listitem>
 </itemizedlist>
@@ -136,7 +136,7 @@ się komunikat podobny do poniższego:</para>
 <screen>chmod: ERROR: ACL type's are different</screen>
 </listitem>
 <listitem>
-<para>Przy próbie ustawienia ACL-a w stylu POSIX dla pliku na ZFS-ie, pokaże
+<para>Przy próbie ustawienia ACL-a w stylu POSIX dla pliku na ZFS, pokaże
 się komunikat podobny do poniższego:</para>
 <screen># getfacl filea
 File system doesn't support aclent_t style ACL's.
@@ -736,25 +736,25 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 </sect2>
 </sect1>
 <sect1 xml:id="gbace">
-<title>Ustawianie ACL-i dla plików ZFS-a</title>
-<para>W implementacji ZFs-a ACL-e składają się z tablicy definicji ACL-i. ZFS implementuje <emphasis>czysty</emphasis> model ACL-i, co oznacza, że każdy plik ma ACL-a. Najczęściej ACL-e są <emphasis>proste</emphasis> w tym znaczeniu, że reprezentują tradycyjny model UNIX-a <literal>właściciel/grupa/inni(ang. owner/group/other)</literal>.<indexterm xml:id="indexterm-451">
+<title>Ustawianie ACL-i dla plików ZFS</title>
+<para>W implementacji ZFS ACL-e składają się z tablicy definicji ACL-i. ZFS implementuje <emphasis>czysty</emphasis> model ACL-i, co oznacza, że każdy plik ma ACL-a. Najczęściej ACL-e są <emphasis>proste</emphasis> w tym znaczeniu, że reprezentują tradycyjny model UNIX-a <literal>właściciel/grupa/inni(ang. owner/group/other)</literal>.<indexterm xml:id="indexterm-451">
 <primary>ACL-e</primary>
-<secondary>ustawianie dla plików ZFS-a</secondary>
+<secondary>ustawianie dla plików ZFS</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-452">
 <primary>setting</primary>
-<secondary>ACL-e dla plików ZFS-a</secondary>
+<secondary>ACL-e dla plików ZFS</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-453">
-<primary>systemy plików ZFS-a</primary>
-<secondary>ustawianie ACL-i dla plików ZFS-a</secondary>
+<primary>systemy plików ZFS</primary>
+<secondary>ustawianie ACL-i dla plików ZFS</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
-<para>Pliki ZFS-a wciąż mają bity uprawnień i tryb, ale wartości te są raczej cachem reprezentacji ACl-i. W związku z tym równocześnie do zmiany uprawnień pliku, zmieniają się jego ACL-e. Dodatkowo po usunięciu szczegółowego ACL-a zezwalającego użytkownikowi dostęp do pliku lub katalogu, użytkownik nadal może mieć dostęp do pliku lub katalogu ze względu na bity uprawnień pliku lub katalogu, zezwalające na dostęp grupie lub wszystkim użytkownikom. Wszystkie decyzje o dostępie podejmowane są na podstawie uprawnień reprezentowanych w ACL-ach pliku lub katalogu.</para>
-<para>Podstawowe reguły dostępu ACL-i do w ZFS-ie są następujące:</para>
+<para>Pliki ZFS wciąż mają bity uprawnień i tryb, ale wartości te są raczej cachem reprezentacji ACl-i. W związku z tym równocześnie do zmiany uprawnień pliku, zmieniają się jego ACL-e. Dodatkowo po usunięciu szczegółowego ACL-a zezwalającego użytkownikowi dostęp do pliku lub katalogu, użytkownik nadal może mieć dostęp do pliku lub katalogu ze względu na bity uprawnień pliku lub katalogu, zezwalające na dostęp grupie lub wszystkim użytkownikom. Wszystkie decyzje o dostępie podejmowane są na podstawie uprawnień reprezentowanych w ACL-ach pliku lub katalogu.</para>
+<para>Podstawowe reguły dostępu ACL-i do w ZFS są następujące:</para>
 <itemizedlist>
 <listitem>
 <para>ZFS przetwarza wpisy ACL-i w kolejności w jakiej pojawiają się w ACL-ach, od góry do dołu.</para>
@@ -770,7 +770,7 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
 <para>W przypadku zabronionego dostępu lub gdy brak sprecyzowanego uprawnienia, podsystem przywilejów ustala, jakiego dostępu udziela się właścicielowi pliku lub superużytkownikowi. Unika się dzięki temu wykluczenia właścicieli plików z dostępu do ich własnych plików oraz pozwala superużytkownikowi na modyfikacje plików w celu odzyskania danych.</para>
 </listitem>
 </itemizedlist>
-<para>Szczegółowy ACL ustalony dla katalogu nie jest automatycznie dziedziczony przez jego podkatalogi i pliki. Jeśli szczegółowy ACL ma być dziedziczony, należy użyć flag dziedziczenia ACL-i. Więcej informacji w <olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbbhx">tabeli 7–3</olink> oraz <olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbabx">Ustalanie dziedziczenia ACl-i dla plików ZFS-a w formacie verbose</olink>.</para>
+<para>Szczegółowy ACL ustalony dla katalogu nie jest automatycznie dziedziczony przez jego podkatalogi i pliki. Jeśli szczegółowy ACL ma być dziedziczony, należy użyć flag dziedziczenia ACL-i. Więcej informacji w <olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbbhx">tabeli 7–3</olink> oraz <olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbabx">Ustalanie dziedziczenia ACl-i dla plików ZFS w formacie verbose</olink>.</para>
 <para>Po utworzeniu pliku, w oparciu o wartość parametru <command>umask</command>, tworzony jest domyślny prosty ACL, podobny do poniższego:</para>
 <screen>$ <userinput>ls -v file.1</userinput>
 -r--r--r--   1 root     root      206663 May  4 11:52 file.1
@@ -785,12 +785,12 @@ wykonania poleceń <command>chown</command> lub <command>chgrp</command> na plik
          :allow</screen>
 <para>Należy zwrócić uwagę, że każda kategoria użytkownika (<literal>owner@</literal>, <literal>group@</literal>, <literal>everyone@</literal>) ma w tym przykładzie dwa spisy ACL. Jeden wpis dla prawa <literal>deny</literal> i jeden dla <literal>allow</literal>.<indexterm xml:id="indexterm-454">
 <primary>ACL-e</primary>
-<secondary>ACL-e na plikach ZFS-a</secondary>
+<secondary>ACL-e na plikach ZFS</secondary>
 <tertiary>szczegółowy opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-455">
-<primary>systemy plików ZFS-a</primary>
-<secondary>ACL-e na plikach ZFS-a</secondary>
+<primary>systemy plików ZFS</primary>
+<secondary>ACL-e na plikach ZFS</secondary>
 <tertiary>szczegółowy opis</tertiary>
 </indexterm>
 </para>
@@ -861,12 +861,12 @@ drwxr-xr-x   2 root     root           2 Feb 23 10:37 dir.1
          /read_acl/synchronize:allow</screen>
 <para>Szczegółowy opis ACL-i dla tego katalogu:<indexterm xml:id="indexterm-456">
 <primary>ACL-e</primary>
-<secondary>ACL-e dla katalogów ZFS-a</secondary>
+<secondary>ACL-e dla katalogów ZFS</secondary>
 <tertiary>szczegółowy opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-457">
-<primary>systemy plików ZFS-a</primary>
-<secondary>ACL-e dla katalogów ZFS-a</secondary>
+<primary>systemy plików ZFS</primary>
+<secondary>ACL-e dla katalogów ZFS</secondary>
 <tertiary>szczegółowy opis</tertiary>
 </indexterm>
 </para>
@@ -922,20 +922,20 @@ drwxr-xr-x   2 root     root           2 Feb 23 10:37 dir.1
 </variablelist>
 </sect1>
 <sect1 xml:id="gbabw">
-<title>Ustalanie i drukowanie ACL-i dla plików ZFS-a w formacie verbose</title>
-<para>Do zmiany ACL-i plików ZFS-a służy komenda <command>chmod</command>. Poniższa składnia <command>chmod</command> do zmiany ACL-i używa <emphasis>acl-specification</emphasis> do identyfikacji formatu ACL-i. Opis <emphasis>acl-specification</emphasis> znajduje się w<olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbaay">Opis składni ustalania ACL-i</olink>.<indexterm xml:id="indexterm-458">
+<title>Ustalanie i drukowanie ACL-i dla plików ZFS w formacie verbose</title>
+<para>Do zmiany ACL-i plików ZFS służy komenda <command>chmod</command>. Poniższa składnia <command>chmod</command> do zmiany ACL-i używa <emphasis>acl-specification</emphasis> do identyfikacji formatu ACL-i. Opis <emphasis>acl-specification</emphasis> znajduje się w<olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbaay">Opis składni ustalania ACL-i</olink>.<indexterm xml:id="indexterm-458">
 <primary>ACL-e</primary>
-<secondary>ustalanie ACL-i dla plików ZFS-a (tryb verbose)</secondary>
+<secondary>ustalanie ACL-i dla plików ZFS (tryb verbose)</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-459">
 <primary>ustalanie</primary>
-<secondary>ustalanie ACL-i dla plików ZFS-a (tryb verbose)</secondary>
+<secondary>ustalanie ACL-i dla plików ZFS (tryb verbose)</secondary>
 <tertiary>(opis)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-460">
-<primary>systemy plików ZFS-a</primary>
-<secondary>ustalanie ACL-i dla plików ZFS-a (tryb verbose)</secondary>
+<primary>systemy plików ZFS</primary>
+<secondary>ustalanie ACL-i dla plików ZFS (tryb verbose)</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
@@ -999,23 +999,23 @@ v</option>. Na przykład:</para>
          /write_acl/write_owner:deny
      5:everyone@:read_data/read_xattr/read_attributes/read_acl/synchronize
          :allow</screen>
-<para>Więcej informacji o używaniu skróconego formatu ACL-i w <olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbchf">Ustalanie i drukowanie ACL-i dla plików ZFS-a w skróconym formacie</olink>.</para>
+<para>Więcej informacji o używaniu skróconego formatu ACL-i w <olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbchf">Ustalanie i drukowanie ACL-i dla plików ZFS w skróconym formacie</olink>.</para>
 <example xml:id="gbsdc">
 
-<title>Zmiana prostych ACL-i dla plików ZFS-a</title>
+<title>Zmiana prostych ACL-i dla plików ZFS</title>
 <para>W tym podrozdziale podane są przykłady ustalania i zmiany prostych ACL-i.<indexterm xml:id="indexterm-461">
 <primary>ACL-e</primary>
-<secondary>zmiana prostych ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
+<secondary>zmiana prostych ACL-i dla plików ZFS (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-462">
 <primary>zmiana</primary>
-<secondary>zmiana prostych ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
+<secondary>zmiana prostych ACL-i dla plików ZFS (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-463">
-<primary>systemy plików ZFS-a</primary>
-<secondary>zmiana prostych ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
+<primary>systemy plików ZFS</primary>
+<secondary>zmiana prostych ACL-i dla plików ZFS (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
@@ -1061,7 +1061,7 @@ v</option>. Na przykład:</para>
 </example>
 <example xml:id="gcpsk">
 
-<title>Ustalanie szczegółowych ACL-i dla plików ZFS-a</title>
+<title>Ustalanie szczegółowych ACL-i dla plików ZFS</title>
 <para>W tym podrozdziale przedstawione są przykłady ustalania i drukowania szczegółowych ACL-i.</para>
 <para>W poniższym przykładzie przydziela się użytkownikowi <literal>gozer</literal> prawo <literal>read_data/execute</literal> do katalogu <filename>test.dir</filename>.</para>
 <screen># <userinput>chmod A+user:gozer:read_data/execute:allow test.dir</userinput>
@@ -1095,7 +1095,7 @@ drwxr-xr-x   2 root     root           2 Feb 16 11:12 test.dir
 </example>
 <example xml:id="gbsby">
 
-<title>Interakcja ACL-i z uprawnieniami w plikach ZFS-a</title>
+<title>Interakcja ACL-i z uprawnieniami w plikach ZFS</title>
 <para>Poniższe przykłady ilustrują interakcję między ustalaniem ACL-i, a późniejszymi zmianami bitów praw plików i katalogów.</para>
 <para>W poniższym przykładzie istnieje prosty ACL dla pliku <filename>file.2</filename>:</para>
 <screen># <userinput>ls -v file.2</userinput>
@@ -1150,20 +1150,20 @@ drwxr-xr-x   2 root     root           2 Feb 16 11:12 test.dir
 </example>
 <example xml:id="gbsdg">
 
-<title>Odtwarzanie prostych ACL-i dla plików ZFS-a</title>
+<title>Odtwarzanie prostych ACL-i dla plików ZFS</title>
 <para>Przy pomocy komendy <command>chmod</command> można usunąć szczegółowe ACL-e dla plików i katalogów.<indexterm xml:id="indexterm-464">
 <primary>ACL-e</primary>
-<secondary>zerowanie prostych ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
+<secondary>zerowanie prostych ACL-i dla plików ZFS (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-465">
 <primary>zerowanie</primary>
-<secondary>prostych ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
+<secondary>prostych ACL-i dla plików ZFS (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-466">
-<primary>systemy plików ZFS-a</primary>
-<secondary>zerowanie prostych ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
+<primary>systemy plików ZFS</primary>
+<secondary>zerowanie prostych ACL-i dla plików ZFS (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
@@ -1198,20 +1198,20 @@ drwxr-xr-x   2 root     root           2 Feb 16 11:23 test5.dir
          /read_acl/synchronize:allow</screen>
 </example>
 <sect2 xml:id="gbabx">
-<title>Ustalanie dziedziczenia ACL-i dla plików ZFS-a w trybie szczegółowym</title>
+<title>Ustalanie dziedziczenia ACL-i dla plików ZFS w trybie szczegółowym</title>
 <para>Możliwe jest ustalenie, jak wygląda dziedziczenie ACL-i dla plików i katalogów. Domyślnie ACL-e nie są propagowane. Szczegółowy ACL ustalony dla katalogu nie jest dziedziczone przez zawarte w nim pliki i podkatalogi. Dla każdego pliku i katalogu dziedziczenie ACL-i musi został ustalone ręcznie.<indexterm xml:id="indexterm-467">
 <primary>ACL-e</primary>
-<secondary>ustalanie dziedziczenia ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
+<secondary>ustalanie dziedziczenia ACL-i dla plików ZFS (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-468">
 <primary>ustalanie</primary>
-<secondary>dziedziczenie ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
+<secondary>dziedziczenie ACL-i dla plików ZFS (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-469">
-<primary>systemy plików ZFS-a</primary>
-<secondary>ustalanie dziedziczenia ACL-i dla plików ZFS-a (tryb szczegółowy)</secondary>
+<primary>systemy plików ZFS</primary>
+<secondary>ustalanie dziedziczenia ACL-i dla plików ZFS (tryb szczegółowy)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
@@ -1490,20 +1490,20 @@ drwxr-xr-x+  2 root     root           2 May  4 14:23 test6.dir
 </sect2>
 </sect1>
 <sect1 xml:id="gbchf">
-<title>Ustalanie i drukowanie ACL-i na plikach ZFS-a w skróconym formacie</title>
-<para>Prawa dla plików ZFS-a można ustalać i drukować w formie skróconej, w której 14 liter reprezentuje prawa. Jednoliterowe reprezentacje praw przedstawione są w <olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbbht">tabeli 7–2</olink> i w <olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbbhx">tabeli 7–3</olink>.<indexterm xml:id="indexterm-470">
+<title>Ustalanie i drukowanie ACL-i na plikach ZFS w skróconym formacie</title>
+<para>Prawa dla plików ZFS można ustalać i drukować w formie skróconej, w której 14 liter reprezentuje prawa. Jednoliterowe reprezentacje praw przedstawione są w <olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbbht">tabeli 7–2</olink> i w <olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbbhx">tabeli 7–3</olink>.<indexterm xml:id="indexterm-470">
 <primary>ACL-e</primary>
-<secondary>ustalanie ACL-i dla plików ZFS-a (tryb skrócony)</secondary>
+<secondary>ustalanie ACL-i dla plików ZFS (tryb skrócony)</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-471">
 <primary>setting</primary>
-<secondary>ACL-e dla plików ZFS-a (tryb skrócony)</secondary>
+<secondary>ACL-e dla plików ZFS (tryb skrócony)</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-472">
-<primary>systemy plików ZFS-a</primary>
-<secondary>ustalanie ACL-i dla plików ZFS-a (tryb skrócony)</secondary>
+<primary>systemy plików ZFS</primary>
+<secondary>ustalanie ACL-i dla plików ZFS (tryb skrócony)</secondary>
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
@@ -1580,23 +1580,23 @@ V</option>. Na przykład:</para>
 <para>W ten sam sposób podaje się uprawnienia i flagi dziedziczenia.</para>
 </listitem>
 </itemizedlist>
-<para>Więcej informacji o szczegółowym formacie w <olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbabw">Ustalanie i drukowanie ACL-i dla plików ZFS-a w formacie szczegółowym</olink>.</para>
+<para>Więcej informacji o szczegółowym formacie w <olink remap="internal" targetdoc="chapter-7.xml" targetptr="gbabw">Ustalanie i drukowanie ACL-i dla plików ZFS w formacie szczegółowym</olink>.</para>
 <example xml:id="gcfhr">
 
 <title>Ustawianie i wyświetlanie list ACL w formacie skróconym</title>
 <para>W poniższym przykładzie istnieje prosty wpis ACL dla pliku <filename>file.1</filename>:<indexterm xml:id="indexterm-473">
 <primary>ACL-e</primary>
-<secondary>ustalanie ACL-i dla plików ZFS-a (tryb skrócony)</secondary>
+<secondary>ustalanie ACL-i dla plików ZFS (tryb skrócony)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-474">
 <primary>ustalanie</primary>
-<secondary>ACL-e dla plików ZFS-a (tryb skrócony)</secondary>
+<secondary>ACL-e dla plików ZFS (tryb skrócony)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 <indexterm xml:id="indexterm-475">
-<primary>systemy plików ZFS-a</primary>
-<secondary>ustalanie ACL-i dla plików ZFS-a (tryb skrócony)</secondary>
+<primary>systemy plików ZFS</primary>
+<secondary>ustalanie ACL-i dla plików ZFS (tryb skrócony)</secondary>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
