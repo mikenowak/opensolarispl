@@ -8,16 +8,13 @@
 
 
 
-<title>DTrace Basics</title>
+<title>Podstawy DTrace</title>
 <toc>
-<para>This chapter provides a tour of the DTrace facility and provides examples
-of several basic tasks.</para>
+<para>W rozdziale tym przedstawiono DTrace oraz kilka przykładów prostych zadań.</para>
 </toc>
 <sect1 xml:id="gcfah">
-<title>Listing Probes</title>
-<para>You can list all DTrace probes by passing the <option>
-l</option> option
-to the <command>dtrace</command> command:</para>
+<title>Drukowanie sond</title>
+<para>Wszystkie sondy DTrace można wydrukować opcją <option>l</option> komendy <command>dtrace</command>:</para>
 <programlisting># <emphasis role="strong">dtrace -l</emphasis>
 ID   PROVIDER    MODULE        FUNCTION NAME
  1     dtrace                           BEGIN
@@ -32,28 +29,16 @@ ID   PROVIDER    MODULE        FUNCTION NAME
 10    syscall                      read entry
 11    syscall                      read return
 ...</programlisting>
-<para>To count all the probes that are available on your system, you can type
-the following command:</para>
+<para>Obliczenie wszystkich sond dostępnych w systemie:</para>
 <programlisting># <emphasis role="strong">dtrace -l | wc -l</emphasis>
 </programlisting>
-<para>The number of probes reported will vary depending on your operating
-platform and the software you have installed. Some probes do not list an entry
-under the <literal>MODULE</literal> or <literal>FUNCTION</literal> columns,
-such as the <literal>BEGIN</literal> and <literal>END</literal> probes in
-the previous example. Probes with blank entries in these fields do not correspond
-to a specifically instrumented program function or location. These probes
-refer to more abstract concepts, such as the end of a tracing request. A probe
-that has a module and function as part of its name is called an <emphasis>anchored
-probe</emphasis>. A probe that is not associated with a module and function
-is called an <emphasis>unanchored probe</emphasis>.</para>
-<para>You can use additional options to list specific probes, as seen in the
-following examples.</para>
+<para>Ilość sond w systemie może się różnić, w zależności od wersji systemu operacyjnego oraz zainstalowanego oprogramowania. Niektóre sondy nie podają nic w kolumnie <literal>MODULE</literal> lub <literal>FUNCTION</literal>, na przykład sondy <literal>BEGIN</literal> i <literal>END</literal> z poprzedniego przykładu. Sondy takie nie są powiązane z jakąś konkretną funkcją lub miejscem w programie. Reprezentują raczej bardziej abstrakcyjne pojęcia, jak początek lub koniec śledzenia. Sonda, która ma w nazwie moduł i funkcję nazywa się  <emphasis>sondą osadzoną (ang. anchored probe)</emphasis>. Sonda niepowiązana z modułem i funkcją jest <emphasis>sondą nieosadzoną (ang. unanchored probe)</emphasis>.</para>
+<para>Można użyć dodatkowych opcji do drukowania konkretnych sond, jak w poniższych przykładach.</para>
 <example xml:id="gcfac">
 
-<title>Listing Probes by Specific Function</title>
-<para>You can list probes that are associated with a specific function by
-passing that function name to DTrace with the <option>
-f</option> option.</para>
+<title>Drukowanie sond ze względu na pewne funkcje</title>
+<para>Można wydrukować listę sond powiązanych z pewną funkcją podając nazwę tej funkcji DTrace´owi z opcją <option>
+f</option>.</para>
 <programlisting># <emphasis role="strong">dtrace -l -f cv_wait</emphasis>
 ID      PROVIDER        MODULE        FUNCTION NAME
 12921        fbt       genunix         cv_wait entry
@@ -61,10 +46,9 @@ ID      PROVIDER        MODULE        FUNCTION NAME
 </example>
 <example xml:id="gcfao">
 
-<title>Listing Probes by Specific Module</title>
-<para>You can list probes that are associated with a specific module by passing
-that module name to DTrace with the <option>
-m</option> option.</para>
+<title>Drukowanie sond ze względu na pewne moduły</title>
+<para>Można wydrukować listę sond powiązanych z pewnym modułem podając nazwę tego modułu DTrace´owi z opcją <option>
+m</option>.</para>
 <programlisting># <emphasis role="strong">dtrace -l -m sd</emphasis>
 ID      PROVIDER        MODULE        FUNCTION NAME
 17147        fbt            sd          sdopen entry
@@ -77,20 +61,18 @@ ID      PROVIDER        MODULE        FUNCTION NAME
 </example>
 <example xml:id="gcfaf">
 
-<title>Listing Probes by Specific Name</title>
-<para>You can list probes that have a specific name by passing that name to
-DTrace with the <option>
-n</option> option.</para>
+<title>Drukowanie sond ze względu na nazwę</title>
+<para>Można wydrukowac listę sond o pewnej nazwie, podając tę nazwę DTrace´owi z opcją <option>
+n</option>.</para>
 <programlisting># <emphasis role="strong">dtrace -l -n BEGIN</emphasis>
 ID      PROVIDER        MODULE        FUNCTION NAME
 1         dtrace                               BEGIN</programlisting>
 </example>
 <example xml:id="gcfag">
 
-<title>Listing Probes by Provider of Origin</title>
-<para>You can list probes that are originate from a specific provider by passing
-the provider name to DTrace with the <option>
-P</option> option.</para>
+<title>Drukowanie sond ze względu na dostawcę</title>
+<para>Można wydrukować listę sond powiązanych z pewnym dostawcą podając nazwę tego dostawcy DTrace´owi z opcją <option>
+P</option>.</para>
 <programlisting># <emphasis role="strong">dtrace -l -P lockstat</emphasis>
 ID        PROVIDER        MODULE             FUNCTION NAME
 469       lockstat       genunix          mutex_enter adaptive-acquire
@@ -103,10 +85,8 @@ ID        PROVIDER        MODULE             FUNCTION NAME
 </example>
 <example xml:id="gcfad">
 
-<title>Multiple Providers Supporting a Specific Function
-or Module</title>
-<para>A specific function or specific module can be supported by multiple
-providers, as the following example shows.</para>
+<title>Kilku dostawców obsługujących pewne funkcje lub moduły</title>
+<para>Pewne funkje lub moduły mogą być obsługiwane przez kilku dostawców, jak pokazano w poniższym przykładzie.</para>
 <programlisting># <emphasis role="strong">dtrace -l -f read</emphasis>
 ID        PROVIDER        MODULE             FUNCTION NAME
   10       syscall                               read entry
@@ -116,33 +96,31 @@ ID        PROVIDER        MODULE             FUNCTION NAME
 7885           fbt       genunix                 read entry
 7886           fbt       genunix                 read return</programlisting>
 </example>
-<para>As the previous examples show, the output for a listing of probes displays
-the following information:</para>
+<para>Powyżej widać, że wynik komendy drukuje następujące informacje:</para>
 <itemizedlist>
 <listitem>
-<para>The probe's uniquely assigned integer probe ID</para>
+<para>Unikalny identyfikator liczbowy (ID) sondy</para>
 <note>
 
-<para>The probe ID is only unique within a given release or patch level
-of the Solaris operating system.</para>
+<para>ID jest unikalne tylko w konkretnym wydaniu systemu Solaris lub dla konkretnego zestawu łat.</para>
 </note>
 </listitem>
 <listitem>
-<para>The provider name</para>
+<para>Nazwa dostawcy</para>
 </listitem>
 <listitem>
-<para>The module name, if applicable</para>
+<para>Nazwa modułu, jeśli dotyczy</para>
 </listitem>
 <listitem>
-<para>The function name, if applicable</para>
+<para>Nazwa funkcji, jeśli dotyczy</para>
 </listitem>
 <listitem>
-<para>The probe name</para>
+<para>Nazwa sondy</para>
 </listitem>
 </itemizedlist>
 </sect1>
 <sect1 xml:id="gcfar">
-<title>Specifying Probes in DTrace</title>
+<title>Wskazywanie sond w DTrace</title>
 <para>You can fully specify a probe by listing each component of the 4–tuple
 that uniquely identifies that probe. The format for the probe specification
 is <emphasis>provider:module:function:name</emphasis>. An empty component
