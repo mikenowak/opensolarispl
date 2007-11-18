@@ -121,54 +121,36 @@ ID        PROVIDER        MODULE             FUNCTION NAME
 </sect1>
 <sect1 xml:id="gcfar">
 <title>Wskazywanie sond w DTrace</title>
-<para>You can fully specify a probe by listing each component of the 4–tuple
-that uniquely identifies that probe. The format for the probe specification
-is <emphasis>provider:module:function:name</emphasis>. An empty component
-in a probe specification matches anything. For example, the specification <command>fbt::alloc:entry</command> specifies a probe with the following attributes:</para>
+<para>Można wskazać konkretną sondę przez podanie wszystkich czterech elementów identyfikatora sonda. Format jest następujący: <emphasis>dostawca:moduł:funkcja:nazwa</emphasis>. Pusty element w czwórce nazywającej sondę oznacza dowolne dopasowanie. Na przykład nazwa <command>fbt::alloc:entry</command> wskazuje sondę o następujących atrybutach:</para>
 <itemizedlist>
 <listitem>
-<para>The probe must be from the <literal>fbt</literal> provider</para>
+<para>Sonda musi pochodzić od dostawcy <literal>fbt</literal></para>
 </listitem>
 <listitem>
-<para>The probe may be in any module</para>
+<para>Może znajdować się dowolnym module</para>
 </listitem>
 <listitem>
-<para>The probe must be in the <literal>alloc</literal> function</para>
+<para>Musi być w funkcji <literal>alloc</literal></para>
 </listitem>
 <listitem>
-<para>The probe must be named <literal>entry</literal>
+<para>Musi nazywać się <literal>entry</literal>
 </para>
 </listitem>
 </itemizedlist>
-<para>Elements on the left hand side of the 4–tuple are optional. The
-probe specification <literal>::open:entry</literal> is equivalent to the specification <literal>open:entry</literal>. Either specification will match probes from all providers
-and kernel modules that have a function name of <literal>open</literal> and
-are named <literal>entry</literal>.</para>
+<para>Elementy po lewej stronie czwórki są opcjonalne. Specyfikacja <literal>::open:entry</literal> jest równoznaczna z <literal>open:entry</literal>. Obydwie oznaczają sondy <literal>entry</literal> w funkcji <literal>open</literal> we wszystkich modułach jądra.</para>
 <programlisting># <emphasis role="strong">dtrace -l -n open:entry</emphasis>
   ID      PROVIDER        MODULE             FUNCTION NAME
   14       syscall                               open entry
 7386           fbt       genunix                 open entry</programlisting>
-<para>You can also describe probes with a pattern matching syntax that is
-similar to the syntax that is described in the <emphasis>File Name Generation</emphasis> section
-of the <literal remap="137">sh(1)</literal> man page. The syntax supports
-the special characters <literal>*</literal>, <literal>?</literal>, <literal>[</literal>,
-and <literal>]</literal>. The probe description <literal>syscall::open*:entry</literal> matches
-both the <literal>open</literal> and <literal>open64</literal> system calls.
-The <literal>?</literal> character represents any single character in the
-name. The <literal>[</literal> and <literal>]</literal> characters are used
-to specify a set of specific characters in the name.</para>
+<para>Sondy można też wskazywać przy użyciu składni wyrażeń regularnych podobnej do opisanej w sekcji <emphasis>File Name Generation</emphasis> strony man <literal remap="137">sh(1)</literal>. Składnia obsługuje specjalne znaki <literal>*</literal>, <literal>?</literal>, <literal>[</literal> i <literal>]</literal>. Opis sondy <literal>syscall::open*:entry</literal> oznacza zarówno wywołanie systemowe <literal>open</literal> jak i <literal>open64</literal>. Znak <literal>?</literal> oznacza dowolny jeden znak w nazwie. <literal>[</literal> i <literal>]</literal> używane są do wskazania grupy lub zakresu znaków.</para>
 </sect1>
 <sect1 xml:id="gcfay">
-<title>Enabling Probes</title>
-<para>You enable probes with the <command>dtrace</command> command by specifying
-the probes without the <option>
-l</option> option. Without further directions,
-DTrace performs the default action when the specified probe fires. The default
-probe action indicates only that the specified probe has fired and does not
-record any other data. The following code example enables every probe in the <command>sd</command> module.</para>
+<title>Włączanie sond</title>
+<para>Sondy włącza się komendą <command>dtrace</command> bez opcji <option>
+l</option>. Bez dalszych wskazówek DTrace wykonuje domyślną akcję przy odpalaniu sondy. Domyślna akcja wskazuje tylko, ze dana sonda odpaliła i nie zapisuje żadnych innych informacji. Poniższa komenda włącza wszystkie sondy w module <command>sd</command>.</para>
 <example xml:id="gcfbm">
 
-<title>Enabling Probes by Module</title>
+<title>Włączanie sond na podstawie modułu</title>
 <programlisting># <emphasis role="strong">dtrace -m sd</emphasis>
 CPU     ID                     FUNCTION:NAME
   0  17329           sd_media_watch_cb:entry
@@ -193,13 +175,11 @@ CPU     ID                     FUNCTION:NAME
   0  17181             sd_core_iostart:entry
   0  17407         sd_add_buf_to_waitq:entry
 ...</programlisting>
-<para>The output in this example shows that the default action displays the
-CPU where the probe fired, the integer probe ID that is assigned by DTrace,
-the function where the probe fired, and the probe name.</para>
+<para>Wynik w powyższym przykładzie pokazuje domyślną akcję, drukującą numer procesora, na którym odpaliła sonda, numeryczne ID sondy przydzielone przez DTrace, funkcja, w której odpaliła sonda i nazwa sondy.</para>
 </example>
 <example xml:id="gcfcx">
 
-<title>Enabling Probes by Provider</title>
+<title>Włączanie sond ze względu na dostawcę</title>
 <programlisting># <emphasis role="strong">dtrace -P syscall</emphasis>
 dtrace: description 'syscall' matched 452 probes
 CPU     ID                     FUNCTION:NAME
@@ -226,7 +206,7 @@ CPU     ID                     FUNCTION:NAME
 </example>
 <example xml:id="gcfbu">
 
-<title>Enabling Probes by Name</title>
+<title>Włączanie sond ze względu na nazwę</title>
 <programlisting># <emphasis role="strong">dtrace -n zfod</emphasis>
 dtrace: description 'zfod' matched 3 probes
 CPU     ID                     FUNCTION:NAME
@@ -237,7 +217,7 @@ CPU     ID                     FUNCTION:NAME
 </example>
 <example xml:id="gcfcs">
 
-<title>Enabling Probes by Fully Specified Name</title>
+<title>Włączanie sond ze względu na pełną nazwę</title>
 <programlisting># <emphasis role="strong">dtrace -n clock:entry</emphasis>
 dtrace: description 'clock:entry' matched 1 probe
 CPU     ID                     FUNCTION:NAME
@@ -247,29 +227,18 @@ CPU     ID                     FUNCTION:NAME
 </example>
 </sect1>
 <sect1 xml:id="gcfbn">
-<title>DTrace Action Basics</title>
-<para>Actions enable DTrace to interact with the system outside of the DTrace
-framework. The most common actions record data to a DTrace buffer. Other actions
-can stop the current process, raise a specific signal on the current process,
-or cease tracing. Actions that change the system state are considered <emphasis>destructive
-actions</emphasis>. Data recording actions record data to the <emphasis>principal
-buffer</emphasis> by default. The principal buffer is present in every DTrace
-invocation and is always allocated on a per-CPU basis. Tracing and buffer
-allocation can be restricted to a single CPU by using the <option>
-cpu</option> option.
-See <olink remap="external" targetdoc="817-6223" targetptr="chp-buf">Chapter 11, <citetitle remap="chapter">Buffers and Buffering,</citetitle> in <citetitle remap="book">Solaris
-Dynamic Tracing Guide</citetitle>
-</olink> for more information about DTrace
-buffering.</para>
-<para>The examples in this section use D expressions that consist of built-in
-D variables. Some of the most commonly used D variables are listed below:</para>
+<title>Podstawy akcji DTrace</title>
+<para>Akcje umożliwiają DTrace´owi współpracę z systemem poza frameworkiem DTrace. Najczęściej używana akcja to zapisywanie danych do bufora DTrace. Inne akcje mogą zatrzymać proces, wysłać dla procesu sygnał lub wyłączyć śledzenie. Akcje ingerujące w stan systemu nazywane są <emphasis>akcjami niszczącymi (ang. destructive actions)</emphasis>. Akcje zapisujące dane domyślnie zapisują dane do <emphasis>głównego bufora (ang. principal buffer)</emphasis>. Główny bufor jest obecny w każdym wywołaniu DTrace i jest zawsze alokowany lokalnie dla procesora. Bufor i śledzenie można ograniczyć do jednego procesora opcją <option>cpu</option>.
+Więcej informacji o buforowaniu w DTrace w <olink remap="external" targetdoc="817-6223" targetptr="chp-buf">Chapter 11, <citetitle remap="chapter">Buffers and Buffering,</citetitle> w <citetitle remap="book">Solaris
+Dynamic Tracing Guide</citetitle></olink>.</para>
+<para>Poniższe przykłady wykorzystują wbudowane typy danych D w skryptach D. Pewne najczęściej wykorztystywane zmienne w D podano poniżej:</para>
 <variablelist>
 <varlistentry>
 <term>
 <literal>pid</literal>
 </term>
 <listitem>
-<para>This variable contains the current process ID.</para>
+<para>Zmienna zawiera ID aktualnego procesu.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -277,7 +246,7 @@ D variables. Some of the most commonly used D variables are listed below:</para>
 <literal>execname</literal>
 </term>
 <listitem>
-<para>This variable contains the current executable name.</para>
+<para>Zawiera nazwę aktualnie wykonywanego pliku.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -285,7 +254,7 @@ D variables. Some of the most commonly used D variables are listed below:</para>
 <literal>timestamp</literal>
 </term>
 <listitem>
-<para>This variable contains the time since boot, expressed in nanoseconds.</para>
+<para>Czas od startu systemu wyrażony w nanosekundach.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -293,8 +262,7 @@ D variables. Some of the most commonly used D variables are listed below:</para>
 <literal>curthread</literal>
 </term>
 <listitem>
-<para>This variable contains a pointer to the <literal>kthread_t</literal> structure
-that represents the current thread.</para>
+<para>Wskaźnik do struktury <literal>kthread_t</literal> reprezentującej aktualny wątek.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -302,7 +270,7 @@ that represents the current thread.</para>
 <literal>probemod</literal>
 </term>
 <listitem>
-<para>This variable contains the module name of the current probe.</para>
+<para>Moduł zawierający aktualną sondę.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -310,7 +278,7 @@ that represents the current thread.</para>
 <literal>probefunc</literal>
 </term>
 <listitem>
-<para>This variable contains the function name of the current probe.</para>
+<para>Nazwa funkcji zawierającej aktualną sondę.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -318,46 +286,36 @@ that represents the current thread.</para>
 <literal>probename</literal>
 </term>
 <listitem>
-<para>This variable contains the name of the current probe.</para>
+<para>Zmienna zawiera nazwę aktualnej sondy.</para>
 </listitem>
 </varlistentry>
 </variablelist>
-<para>For a complete list of the built-in variables of the D scripting language,
-see Variables.</para>
-<para>The D scripting language also provides built-in functions that perform
-specific actions. You can find a complete list of these built-in functions
-at <olink remap="external" targetdoc="817-6223" targetptr="chp-actsub">Chapter 10, <citetitle remap="chapter">Actions and Subroutines,</citetitle> in <citetitle remap="book">Solaris
+<para>Kompletna lista wbudowanych zmiennych języka D w Zmiennych.</para>
+<para>Język D zawiera również wbudowane funkcje wykonujące pewne akcje. Kompletna lista funkcji w <olink remap="external" targetdoc="817-6223" targetptr="chp-actsub">Chapter 10, <citetitle remap="chapter">Actions and Subroutines,</citetitle> w
 Dynamic Tracing Guide</citetitle>
-</olink>. The <function>trace
-</function> function
-records the result of a D expression to the trace buffer, as in the following
-examples:</para>
+</olink>. Funkcja <function>trace</function> zapisuje wynik wyrażenia D do bufora, jak w poniższym przykładzie:</para>
 <itemizedlist>
 <listitem>
 <para>
-<literal>trace(pid)</literal> traces the current process ID</para>
+<literal>trace(pid)</literal> śledzi ID aktualnego procesu</para>
 </listitem>
 <listitem>
 <para>
-<literal>trace(execname)</literal> traces the name of the
-current executable</para>
+<literal>trace(execname)</literal> śledzi nazwę aktualnie wykonywanego pliku</para>
 </listitem>
 <listitem>
 <para>
-<literal>trace(curthread-&gt;t_pri)</literal> traces the <literal>t_pri</literal> field of the current thread</para>
+<literal>trace(curthread-&gt;t_pri)</literal> śledzi pole <literal>t_pri</literal> aktualnego wątku</para>
 </listitem>
 <listitem>
 <para>
-<literal>trace(probefunc)</literal> traces the function name
-of the probe</para>
+<literal>trace(probefunc)</literal> śledzi nazwę funkcji aktualnej sondy</para>
 </listitem>
 </itemizedlist>
-<para>To indicate a particular action you want a probe to take, type the name
-of the action between <literal>{}</literal> characters, as in the following
-example.</para>
+<para>Do wskazania sondzie konretnej akcji do wykonania po odpaleniu służą klamry <literal>{}</literal>, jak w poniższym przykładzie.</para>
 <example xml:id="gcfdz">
 
-<title>Specifying a Probe's Action</title>
+<title>Wskazywanie sondzie żądanej akcji</title>
 <programlisting># <emphasis role="strong">dtrace -n 'readch {trace(pid)}'</emphasis>
 dtrace: description 'readch ' matched 4 probes
 CPU     ID                     FUNCTION:NAME
@@ -369,13 +327,11 @@ CPU     ID                     FUNCTION:NAME
   0   4036                       read:readch          2181
   0   4036                       read:readch             7
 ...</programlisting>
-<para xml:id="gcfdq">Since the requested action is <literal>trace(pid)</literal>,
-the process identification number (PID) appears in the last column of the
-output.</para>
+<para xml:id="gcfdq">W odstaniej kolumnie wydruku pojawia się identyfikator procesu (PID), ponieważ zażądano od sondy akcji <literal>trace(pid)</literal>.</para>
 </example>
 <example xml:id="gcfel">
 
-<title>Tracing an Executable Name</title>
+<title>Śledzienie nazwy wykonywanego pliku</title>
 <programlisting># <emphasis role="strong">dtrace -m 'ufs {trace(execname)}'</emphasis>
 dtrace: description 'ufs ' matched 889 probes
 CPU     ID                     FUNCTION:NAME
@@ -392,7 +348,7 @@ CPU     ID                     FUNCTION:NAME
 </example>
 <example xml:id="gcfgm">
 
-<title>Tracing A System Call's Time of Entry</title>
+<title>Śledzenie czasu wejścia do wywołania systemowego</title>
 <programlisting># <emphasis role="strong">dtrace -n 'syscall:::entry {trace(timestamp)}'</emphasis>
 dtrace: description 'syscall:::entry ' matched 226 probes
 CPU     ID                     FUNCTION:NAME
@@ -409,8 +365,8 @@ CPU     ID                     FUNCTION:NAME
 </example>
 <example xml:id="gcfgt">
 
-<title>Specifying Multiple Actions</title>
-<para>To specify multiple actions, list the actions separated by the <literal>;</literal> character.</para>
+<title>Wskazywanie kilku akcji</title>
+<para>Kilka akcji do wykonania wskazuje się podając jedną po drugiej, oddzielone średnikiem (<literal>;</literal>).</para>
 <programlisting># <emphasis role="strong">dtrace -n 'zfod {trace(pid);trace(execname)}'</emphasis>
 dtrace: description 'zfod ' matched 3 probes
 CPU     ID                     FUNCTION:NAME
@@ -425,21 +381,18 @@ CPU     ID                     FUNCTION:NAME
 ...</programlisting>
 </example>
 <sect2 xml:id="gcggx">
-<title>Data Recording Actions</title>
+<title>Akcje zapisujące dane</title>
 <para>
 <indexterm xml:id="indexterm-2">
-<primary>data recording actions</primary>
+<primary>akcje zapisujące dane</primary>
 </indexterm>
 <indexterm xml:id="indexterm-3">
 <primary>actions</primary>
 <secondary>data recording</secondary>
-</indexterm>The actions in this section record data to the principal buffer
-by default, but each action may also be used to record data to speculative
-buffers. See <olink remap="external" targetdoc="chapter-4.xml" targetptr="gbxxu">Speculative Tracing</olink> for more
-details on speculative buffers.</para>
+</indexterm>Akcje w tym podrozdziale domyślnie zapisują dane do głównego bufora, ale każdej akcji można nakazać zapis danych do spekulatywne (ang. speculative) buforów. Więcej informacji w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gbxxu">Śledzenie spekulatywne</olink>.</para>
 <sect3 xml:id="gcggi">
-<title>The <function>trace
-</function> function</title>
+<title>Funckja <function>trace
+</function></title>
 <programlisting>void trace(<replaceable>expression</replaceable>)</programlisting>
 <para>
 <indexterm xml:id="indexterm-4">
@@ -447,14 +400,10 @@ details on speculative buffers.</para>
 <secondary>
 <literal>trace</literal>
 </secondary>
-</indexterm>The most basic action is the <function>trace
-</function> action,
-which takes a D expression as its argument and traces the result to the directed
-buffer.</para>
+</indexterm>Najbardziej podstawową akcją jest<function>trace</function>, która przyjmuje jako argument wyrażenie D i zapisuje wynik działania do wskazanego bufora.</para>
 </sect3>
 <sect3 xml:id="gcgge">
-<title>The <function>tracemem
-</function> function</title>
+<title>Funkcja <function>tracemem</function></title>
 <programlisting>void tracemem(<replaceable>address</replaceable>, size_t <replaceable>nbytes</replaceable>)</programlisting>
 <para>
 <indexterm xml:id="indexterm-5">
@@ -462,16 +411,10 @@ buffer.</para>
 <secondary>
 <literal>tracemem</literal>
 </secondary>
-</indexterm>The <function>tracemem
-</function> action copies data from an address
-in memory to a buffer . The number of bytes that this action copies is specified
-in <replaceable>nbytes</replaceable>. The address that the data is copied
-from is specified in <replaceable>addr</replaceable> as a D expression. The
-buffer that the data is copied to is specified in <replaceable>buf</replaceable>.</para>
+</indexterm>Akcja <function>tracemem</function> kopiuje dane z adresu w pamięci do bufora. Ilość bajtów do skopiowania podane jest w argumencie <replaceable>nbytes</replaceable>. Adres pamięci spod którego należy skopiować dane podawany jset w argumencie <replaceable>addr</replaceable> jako wyrażenie D. Bufor, do którego należy skopiować dane podany jest w argumencie <replaceable>buf</replaceable>.</para>
 </sect3>
 <sect3 xml:id="gcgfz">
-<title>The <function>printf
-</function> function</title>
+<title>Funkcja <function>printf</function></title>
 <programlisting>void printf(string <replaceable>format</replaceable>, ...) </programlisting>
 <para>
 <indexterm xml:id="indexterm-6">
@@ -479,26 +422,18 @@ buffer that the data is copied to is specified in <replaceable>buf</replaceable>
 <secondary>
 <literal>printf</literal>
 </secondary>
-</indexterm>Like the <function>trace
-</function> action, the <function>printf
-</function> action
-traces D expressions. However, the <function>printf
-</function> action lets
-you control formatting in ways similar to the <olink remap="external" targetdoc="816-5168" targetptr="printf-3c">
+</indexterm>Podobnie do akcji <function>trace
+</function> <function>printf
+</function> śledzi wyrażenia D, pozwala jednak na sprecyzowanie formatu wyjścia w sposób podobny do <olink remap="external" targetdoc="816-5168" targetptr="printf-3c">
 <citerefentry>
 <refentrytitle>printf</refentrytitle>
 <manvolnum>
 3C
 </manvolnum>
 </citerefentry>
-</olink> function.  Like the <literal>printf</literal> function, the parameters consists of a <replaceable>format</replaceable> string
-followed by a variable number of arguments.  By default, the arguments are
-traced to the directed buffer.  The arguments are later formatted for output
-by the <literal>dtrace</literal> command according to the specified format
-string.</para>
-<para>For more information on the <function>printf
-</function> action, see <olink remap="external" targetdoc="817-6223" targetptr="chp-fmt">Chapter 12, <citetitle remap="chapter">Output Formatting,</citetitle> in <citetitle remap="book">Solaris
-Dynamic Tracing Guide</citetitle>
+</olink>. Podobnie jak w funkcji <literal>printf</literal> parametry składają się z łańcucha <replaceable>format</replaceable>, po którym następuje zmienna liczba argumentów. Domyślnie argumenty są kierowane do bufora [FIXME]directed[/FIXME]. Argumenty są później formatowane do wydruku przez komendę <literal>dtrace</literal> według zdefiniowanego łańcucha formatu.</para>
+<para>Więcej informacji o akcji <function>printf
+</function> w <olink remap="external" targetdoc="817-6223" targetptr="chp-fmt">Chapter 12, <citetitle remap="chapter">Output Formatting,</citetitle> in <citetitle remap="book">Solaris Dynamic Tracing Guide</citetitle>
 </olink>.</para>
 </sect3>
 <sect3 xml:id="gcggy">
