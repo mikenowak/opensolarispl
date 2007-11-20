@@ -762,9 +762,56 @@ config:
 </sect2>
 <sect2 xml:id="gbctx">
 <title>Naprawa uszkodzonego pliku lub katalogu</title>
-<para>Jeśli plik lub katalog jest uszkodzony, system może dalej funkcjonować, w zależności od typu awarii. Uszkodzenie jest nie do naprawienia. Żadne zdrowe kopie danych nie istnieją w innych miejscach systemu. Jeśli dane są cenne, nie ma innej możliwości, jak odzyskanie ich z innej zdrowej kopii zapasowej. Nawet wtedy może być możliwe odtworzenie uszkodzonych danych bez odtwarzania całej puli.<indexterm xml:id="indexterm-558"> <primary>Pule pamięci ZFS</primary> <secondary>naprawa uszkodzonego pliku lub katalogu</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-559"> <primary>naprawa</primary> <secondary>naprawa uszkodzonego pliku lub katalogu</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-560"> <primary>usuwanie problemów</primary> <secondary>naprawa uszkodzonego pliku lub katalogu</secondary> <tertiary>opis</tertiary> </indexterm> 
+<para>Jeśli plik lub katalog jest uszkodzony, system może dalej funkcjonować, w zależności od typu awarii. Uszkodzenie jest nie do naprawienia. Żadne zdrowe kopie danych nie istnieją w innych miejscach systemu. Jeśli dane są cenne, nie ma innej możliwości, jak odzyskanie ich z innej zdrowej kopii zapasowej. Nawet wtedy może być możliwe odtworzenie uszkodzonych danych bez odtwarzania całej puli.<indexterm xml:id="indexterm-573"> <primary>Pule pamięci ZFS</primary> <secondary>naprawa uszkodzonego pliku lub katalogu</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-574"> <primary>naprawa</primary> <secondary>naprawa uszkodzonego pliku lub katalogu</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-575"> <primary>usuwanie problemów</primary> <secondary>naprawa uszkodzonego pliku lub katalogu</secondary> <tertiary>opis</tertiary> </indexterm> 
 </para>
-<para>Jeśli uszkodzenie jest w bloku danych pliku, może on zostać bezpiecznie usunięty, usuwając błędy z systemu. Pierwszym krokiem jest próba usunięcia pliku, używając komendy <command>rm</command>. Jeśli ta komenda nie działa, uszkodzenie jest w metadanych pliku i ZFS nie może określić, które bloki danych należą do niego w celu usunięcia awarii.</para>
+<para>Jeśli uszkodzenie jest w bloku danych pliku, może on zostać bezpiecznie usunięty, usuwając błędy z systemu. Do wyświetlenia listy plików z istniejącymi błędami, użyj komendy: <command>zpool status</command> <option>v</option>. Na przykład:</para>
+<screen># <userinput>zpool status -v</userinput>
+   pool: monkey
+state: ONLINE
+status: One or more devices has experienced an error resulting in data
+         corruption.  Applications may be affected.
+action: Restore the file in question if possible.  Otherwise restore the
+         entire pool from backup.
+    see: http://www.sun.com/msg/ZFS-8000-8A
+scrub: none requested
+config:
+
+         NAME        STATE     READ WRITE CKSUM
+         monkey      ONLINE       0     0     0
+           c1t1d0s6  ONLINE       0     0     0
+           c1t1d0s7  ONLINE       0     0     0
+
+errors: Permanent errors have been detected in the following files: 
+
+/monkey/a.txt
+/monkey/bananas/b.txt
+/monkey/sub/dir/d.txt
+/monkey/ghost/e.txt
+/monkey/ghost/boo/f.txt</screen>
+<para>Powyższy wynik jest opisany w następujący sposób:</para>
+<itemizedlist>
+<listitem>
+<para>Jeśli została odnaleziona pełna ścieżka do pliku i system plików ZFS jest zamontowany, pełna ścieżka do pliku zostanie wyświetlnoa. Na przykład:</para>
+<screen>/monkey/a.txt</screen>
+</listitem>
+<listitem>
+<para>Jeśli została odnaleziona pełna ścieżka do pliku, ale system plików ZFS jest niezamontowany, wtedy zostanie wyświetlona ścieżka do pliku w danym systemie plików ZFS bez poprzedzającego znaku slash (/). Na przykład:</para>
+<screen>monkey/ghost:/e.txt</screen>
+</listitem>
+<listitem>
+<para>Jeśli numer objektu nie może zostać zamieniony na ścieżkę do pliku, w wyniku błędu lub braku powiązania ścieżki z numerem objektu dla <literal>dnode_t</literal>, wtedy zostaje wyświetlnny numer objektu poprzedzony nazwą systemu plików ZFS. Na przykład: </para>
+<screen>monkey/dnode:&lt;0x0&gt;</screen>
+</listitem>
+<listitem>
+<para>Jeśli objekt jest uszkodzony w danych meta-object (MOS), wtedy wyświetlony zostanie numer objektu poprzedzony specjalnym znacznikiem <literal>&lt;metadata&gt;</literal>.</para>
+</listitem>
+</itemizedlist>
+<para>Jeśli uszkodzenie jest w bloku danych pliku, wtedy plik może być bezpiecznie usunięty, czyszcząc system z błędu. Pierwszy krok prowadzący do zlokalizowania pliku jest przy użyciu komendy <command>find</command> i numeru identyfikującego plik z wyniku komendy <command>zpool status</command> w części <literal>DATASET/OBJECT/RANGE</literal>. Na przykład:</para>
+<screen># <userinput>find -inum 6</userinput>
+</screen>
+<para>Wtedy spróbuj usunąć plik przy pomocy komendy <command>rm</command>.
+Jeśli ta komenda nie zadziała, oznacza to, że uszkodzenie jest w metadanych pliku i ZFS nie może określić które bloki danych należą do pliku w celu usunięcia uszkodzenia.</para>
+Pierwszym krokiem jest próba usunięcia pliku, używając komendy <command>rm</command>. Jeśli ta komenda nie działa, uszkodzenie jest w metadanych pliku i ZFS nie może określić, które bloki danych należą do niego w celu usunięcia awarii.</para>
 <para>Jeśli uszkodzenie jest w katalogu lub metadanych pliku, jedyną możliwością jest przeniesienie go w inne miejsce. Możesz bezpiecznie przenieść jakikolwiek plik lub katalog w inne wygodne miejsce, pozwalając oryginalnemu objektowi na zwolnienie miejsca.</para>
 </sect2>
 <sect2 xml:id="gbctt">
