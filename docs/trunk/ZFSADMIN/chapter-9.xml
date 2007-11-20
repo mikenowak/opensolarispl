@@ -562,14 +562,36 @@ pool 'tank' is healthy</screen>
 <para>Aby wyczyścić wszystkie błędy związane z wirtualnymi urządzeniami w puli i wyczyścić jakiekolwiek liczniki błędów związanych z pulą, użyj następującej składni:</para>
 <screen># <userinput>zpool clear tank</userinput>
 </screen>
-<para>Więcej informacji na temat kasowania błędół puli można znaleźć w   <olink targetdoc="" remap="internal" targetptr="gazge">Kasowanie Błędów Puli Pamięci</olink>.</para>
+<para>Więcej informacji na temat kasowania błędół puli można znaleźć w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gazge">Kasowanie Błędów Puli Pamięci</olink>.</para>
 </sect2>
 <sect2 xml:id="gbbzy">
 <title>Wymiana Urządzenia w Puli Pamięci ZFS</title>
 <para>Jeżeli uszkodzenie urządzenia jest trwałe lub przyszłe uszkodzenie jest prawdopodobne, musi ono zostać wymienione. Czy urządzenie może zostać wymienione, zależy od konfiguracji.</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbcfb">Sprawdzenie, czy urządzenie może zostać wymienione</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbcdv">Urządzenie, które nie może zostać wymienione</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbcet">Wymiana urządzenia w puli pamięci ZFS</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbcus">Podgląd statusu operacji weryfikacji danych</olink>
+</para>
+</listitem>
+</itemizedlist>
 <sect3 xml:id="gbcfb">
 <title>Sprawdzenie czy Urządzenie Może Zostać Wymienione</title>
-<para>Aby wymienić urządzenie pula musi być w stanie <literal>ONLINE</literal>. Urządzenie musi być częścią replikowanej konfiguracji, lub musi być w zdrowe (w stanie<literal>ONLINE</literal>).  Jeśli dysk jest częścią replikowalnej konfiguracji, wystarczające repliki z których można uzyskać poprawne dane muszą istnieć. Jeśli dwa dyski w macierzy cztero-kierunkowej (four-way mirror) są w stanie fauted, wtedy każdy z dysków może zostać wymieniony, ponieważ istnieją zdrowe repliki. Jakkolwiek, jeśli dwa dyski w cztero-kierunkowej macierzy RAID-Z są w stanie faulted, wtedy żaden z dysków nie może zostać wymieniony, ponieważ nie istnieje wystarczająca ilość replik, aby otrzymać poprawne dane. Jeśli urządzenie jest uszkodzone i nie jest w stanie online, może zostać wymienione tak długo, jak pula nie jest w stanie <literal>FAULTED</literal>. Aczkolwiek, dane są kopiowane na nowe urządzenie, tak długo jak istnieją odpowiednie repliki z dobrymi danymi.<indexterm xml:id="indexterm-561"> <primary>Pule pamięci ZFS</primary> <secondary>sprawdzanie, czy urządzenie może zostać wymienione</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-562"> <primary>sprawdzanie</primary> <secondary>czy urządzenie może zostać wymienione</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-563"> <primary>usuwanie problemów</primary> <secondary>sprawdzanie, czy urządzenie może zostać wymienione</secondary> <tertiary>opis</tertiary> </indexterm>
+<para>Aby wymienić urządzenie pula musi być w stanie <literal>ONLINE</literal>. Urządzenie musi być częścią redundantnej konfiguracji, lub musi być w zdrowe (w stanie<literal>ONLINE</literal>).  Jeśli dysk jest częścią redundantnej konfiguracji, wystarczające repliki z których można uzyskać poprawne dane muszą istnieć. Jeśli dwa dyski w macierzy cztero-kierunkowej (four-way mirror) są w stanie fauted, wtedy każdy z dysków może zostać wymieniony, ponieważ istnieją zdrowe repliki. Jakkolwiek, jeśli dwa dyski w cztero-kierunkowej macierzy RAID-Z są w stanie faulted, wtedy żaden z dysków nie może zostać wymieniony, ponieważ nie istnieje wystarczająca ilość replik, aby otrzymać poprawne dane. Jeśli urządzenie jest uszkodzone i nie jest w stanie online, może zostać wymienione tak długo, jak pula nie jest w stanie <literal>FAULTED</literal>. Aczkolwiek, dane są kopiowane na nowe urządzenie, tak długo jak istnieją odpowiednie repliki z dobrymi danymi.<indexterm xml:id="indexterm-561"> <primary>Pule pamięci ZFS</primary> <secondary>sprawdzanie, czy urządzenie może zostać wymienione</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-562"> <primary>sprawdzanie</primary> <secondary>czy urządzenie może zostać wymienione</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-563"> <primary>usuwanie problemów</primary> <secondary>sprawdzanie, czy urządzenie może zostać wymienione</secondary> <tertiary>opis</tertiary> </indexterm>
 </para>
 <para>W następującej konfiguracji dysk <literal>c1t1d0</literal> może zostać wymieniony i wszystkie dane z puli są kopiowane ze zdrowej repliki  <literal>c1t0d0</literal>.</para>
 <screen>mirror            DEGRADED
@@ -588,13 +610,13 @@ c1t1d0         ONLINE</screen>
 <para>Jeśli oba dyski będą w stanie faulted, wymiana urządzenia nie może zostać wykonana, ponieważ pula będzie znajdowała się w stanie faulted.</para>
 </sect3>
 <sect3 xml:id="gbcdv">
-<title>Niewymienialne Urządzenia</title>
-<para>Jeśli zgubienie urządzenia powoduje, że pula zostaje uszkodzona, lub urządzenie zawiera zbyt dużo błędów w niereplikowanej konfiguracji, wtedy nie może ono być bezpiecznie wymienione. Bez wystarczających replik, nie istnieją dobre dane, które mogły by uzdrowić uszkodzone urządzenie. W tym wypadku jedyną możliwością jest zniszczenie puli i ponowne utworzenie jej konfiguracji, wraz z odtworzeniem danych podczas tego procesu.</para>
-<para>Więcej informacji na temat odtwarzania całej puli można znaleźć w <olink targetdoc="" remap="internal" targetptr="gbctt">Naprawa Szeroko Uszkodzonej Puli ZFS</olink>.</para>
+<title>Urządzenia, które nie mogą być wymienione</title>
+<para>Jeśli zgubienie urządzenia powoduje, że pula zostaje uszkodzona, lub urządzenie zawiera zbyt dużo błędów w nieredundantnej konfiguracji, wtedy nie może ono być bezpiecznie wymienione. Bez wystarczającej redunancji, nie istnieją dobre dane, które mogły by uzdrowić uszkodzone urządzenie. W tym wypadku jedyną możliwością jest zniszczenie puli i ponowne utworzenie jej konfiguracji, wraz z odtworzeniem danych podczas tego procesu.</para>
+<para>Więcej informacji na temat odtwarzania całej puli można znaleźć w <olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbctt">Naprawa Szeroko Uszkodzonej Puli ZFS</olink>.</para>
 </sect3>
 <sect3 xml:id="gbcet">
-<title>Wymiana Urządzenia</title>
-<para>W przypadku, gdy zostało ustalone, że urządzenie może zostać wymienione, należy użyć komendy <command>zpool replace</command> w celu jego wymiany. Jeśli wymieniasz uszkodzone urządzenie z innym urządzeniem, użyj nastepującej komendy:<indexterm xml:id="indexterm-549"> <primary>Pule pamięci ZFS</primary> <secondary>wymiana urządzenia (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-550"> <primary>wymiana</primary> <secondary>urządzenie (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-551"> <primary>usuwanie problemów</primary> <secondary>wymiana urządzenia (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm>
+<title>Wymiana Urządzenia w Puli Pamięci ZFS</title>
+<para>W przypadku, gdy zostało ustalone, że urządzenie może zostać wymienione, należy użyć komendy <command>zpool replace</command> w celu jego wymiany. Jeśli wymieniasz uszkodzone urządzenie z innym urządzeniem, użyj nastepującej komendy:<indexterm xml:id="indexterm-564"> <primary>Pule pamięci ZFS</primary> <secondary>wymiana urządzenia (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-565"> <primary>wymiana</primary> <secondary>urządzenie (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-566"> <primary>usuwanie problemów</primary> <secondary>wymiana urządzenia (<command>zpool replace</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm>
 </para>
 <screen># <userinput>zpool replace tank c1t0d0 c2t0d0</userinput>
 </screen>
@@ -634,18 +656,18 @@ config:
               c2t0d0          ONLINE       0     0     0  
             c1t1d0            ONLINE       0     0     0</screen>
 <para>W tym wypadku dysk <literal>c1t0d0</literal> zostaje wymieniony na  <literal>c2t0d0</literal>. To zdarzenie jest obserwowane w istnieniu wirtualnego urządzenia w  statusie wyniku komendy  <emphasis>replacing</emphasis>. To urządzenie nie jest prawdziwe, również nie jest możliwe stworzenie puli przy jego użyciu. Powodem istnienia tego urządzenia jest wyświetlenie procesu resilveringu i identyfikowanie które urzadzenie podlega wymianie.</para>
-<para>Prosze zauważyć, że jakakolwiek pula, która wykonuje operacje resilveringu jest w stanie <literal>DEGRADED</literal>, ponieważ nie może zapewnić określonego poziomu replikacji, zanim proces jest zakończony. Proces resilveringu wykonuje się z maksymalną możliwą prędkością, aczkolwiek operacje we/wy są zawsze ustawiane na niższym priorytecie niż operacje we/wy wykonywane przez użytkownika, aby zminimalizować wpływ na działanie systemu. Kiedy operacja resilveringu jest zakończona, konfiguracja zostaje przywrócona do nowej, kompletnej. Na przykład:</para>
+<para>Prosze zauważyć, że jakakolwiek pula, która wykonuje operacje resilveringu jest w stanie <literal>DEGRADED</literal>, ponieważ nie może zapewnić określonego poziomu redundancji, zanim proces jest zakończony. Proces resilveringu wykonuje się z maksymalną możliwą prędkością, aczkolwiek operacje we/wy są zawsze ustawiane na niższym priorytecie niż operacje we/wy wykonywane przez użytkownika, aby zminimalizować wpływ na działanie systemu. Kiedy operacja resilveringu jest zakończona, konfiguracja zostaje przywrócona do nowej, kompletnej. Na przykład:</para>
 <screen># <userinput>zpool status tank</userinput>
   pool: tank
  state: ONLINE
- scrub: scrub completed with 0 errors on Tue Mar  7 15:27:36 2006
+ scrub: scrub completed with 0 errors on Thu Aug 31 11:20:18 2006
 config:
 
-        NAME         STATE     READ WRITE CKSUM
-        tank         ONLINE       0     0     0
-          mirror     ONLINE       0     0     0
-            [fuzzy] c2t0d0      ONLINE        0        0        0
-            c1t1d0   ONLINE       0     0     0
+        NAME        STATE     READ WRITE CKSUM
+        tank        ONLINE       0     0     0
+          mirror    ONLINE       0     0     0
+            c2t0d0  ONLINE       0     0     0
+            c1t1d0  ONLINE       0     0     0
 
 errors: No known data errors</screen>
 <para>Pula jest znowu w stanie <literal>ONLINE</literal>, a oryginalny uszkodzony dysk  (<literal>c1t0d0</literal>) został usunięty z konfiguracji.</para>
@@ -654,7 +676,25 @@ errors: No known data errors</screen>
 </sect1>
 <sect1 xml:id="gbbwl">
 <title>Naprawa uszkodzonych danych</title>
-<para>ZFS używa sum kontrolnych, replikacji i automatycznej naprawy danych (self-healing), aby zminimalizować szanse uszkodzenia danych. Co więcej, uszkodzenie danych może nastąpić, jeśli pula nie jest replikowana, uszkodzenie nastąpiło, gdy pula była w stanie degraded lub rzadko spotykane serie zdarzeń powodujące uszkodzenie tych wielu samych kopi danych. Bez względu na źródło, rezultat jest taki sam: Dane są uszkodzone i niedostępne. Wykonane czynności zależą od typu uszkodzenia danych i jest wartością relatywną. Dwa podstawowe typy danych mogą zostać uszkodzone:</para>
+<para>Poniższe sekcje opisują w jaki sposób identyfikować rodzaj uszkodzenia i jeśli to możliwe w jaki sposób naprawić dane.</para>
+<itemizedlist>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbcuz">Identyfikowanie Rodzaju Uszkodzenia Danych</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbctx">Naprawa Uszkodzonego Pliku lub Katalogu</olink>
+</para>
+</listitem>
+<listitem>
+<para>
+<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbctt">Naprawa Szeroko Uszkodzonej Puli ZFS</olink>
+</para>
+</listitem>
+</itemizedlist>
+<para>ZFS używa sum kontrolnych, redundancji i automatycznej naprawy danych (self-healing), aby zminimalizować szanse uszkodzenia danych. Co więcej, uszkodzenie danych może nastąpić, jeśli pula nie jest redundantna, uszkodzenie nastąpiło, gdy pula była w stanie degraded lub rzadko spotykane serie zdarzeń powodujące uszkodzenie tych wielu samych kopi danych. Bez względu na źródło, rezultat jest taki sam: Dane są uszkodzone i niedostępne. Wykonane czynności zależą od typu uszkodzenia danych i jest wartością relatywną. Dwa podstawowe typy danych mogą zostać uszkodzone:</para>
 <itemizedlist>
 <listitem>
 <para>Metadane puli - ZFS wymage odpowiedniej ilości danych, które muszą zostać spraswoane w celu otwarcia puli i dostępu do jej danych. Jeśli te dane są uszkodzone, cała pula lub odpowiednie dane w strukturze hierarchii będą niedostępne. </para>
@@ -688,6 +728,23 @@ status: One or more devices has experienced an error resulting in data
 
 		  DATASET  OBJECT  RANGE
 		  tank     6       0-512</screen>
+<screen># <userinput>zpool status</userinput>
+   pool: monkey
+state: ONLINE
+status: One or more devices has experienced an error resulting in data
+         corruption.  Applications may be affected.
+action: Restore the file in question if possible.  Otherwise restore the
+         entire pool from backup.
+    see: http://www.sun.com/msg/ZFS-8000-8A
+scrub: none requested
+config:
+
+         NAME        STATE     READ WRITE CKSUM
+         monkey      ONLINE       0     0     0
+           c1t1d0s6  ONLINE       0     0     0
+           c1t1d0s7  ONLINE       0     0     0
+
+errors: 8 data errors, use '-v' for a list </screen>
 <para>Każdy z błędów wskazuje, że błąd wystąpił w danym momencie. Niekoniecznie każdy z błędół jest ciągle obecny w systemie. W zwykłych przypadkach ta sytuacja jest prawdziwa. Pewne tymczasowe awarie mogą spowodować naprawe danych przed ich zakończeniem. Całkowita operacja jawnej kontroli danych dla puli, gwarantuje zbadanie każdego aktywnego bloku w puli, tak więc rejestr błędów jest resetowany, gdy operacja jest ukończona. Jeśli określisz, że błędy zostały usunięte i nie chcesz czekać na zakończenie operacji kontroli danych, zresetuj błędy w puli używając komendy  <command>zpool online</command>&gt;.</para>
 <para>Jeśli błędy danych są w metadanych puli, wynik jest nieco inny. Na przykład:</para>
 <screen># <userinput>zpool status -v morpheus</userinput>
