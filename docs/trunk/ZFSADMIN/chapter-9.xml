@@ -247,6 +247,15 @@ errors: No known data errors</screen>
 <para>Podstawowy proces odtworzenia wygląda następująco:</para>
 <itemizedlist>
 <listitem>
+<para>Jeśli to możliwe, użyj komendy <command>zpool history</command> w celu zidentyfikowania wcześniejszych komend ZFS, które spowodowały błędne działanie. Na przykład:</para>
+<screen># <userinput>zpool history</userinput>
+History for 'tank':
+2007-04-25.10:19:42 zpool create tank mirror c0t8d0 c0t9d0 c0t10d0
+2007-04-25.10:19:45 zfs create tank/erick
+2007-04-25.10:19:55 zfs set checksum=off tank/erick</screen>
+<para>Proszę zwrócić uwagę na powyższy wynik komendy. Sumy kontrolne są wyłączone dla systemu plików <filename>tank/erick</filename>. Ta konfiguracja nie jest rekomendowana.</para>
+</listitem>
+<listitem>
 <para>Indentyfikowanie błędów poprzez komunikaty komendy <command>fmd</command>, które są wyświetlane na konsoli lub w plikach <filename>/var/adm/messages</filename>.</para>
 </listitem>
 <listitem>
@@ -262,7 +271,7 @@ errors: No known data errors</screen>
 <para>Odzyskaj brakujące dane lub błędną konfiguracje z kopi zapasowej.</para>
 </listitem>
 <listitem>
-<para>Potwierdź odzyskanie danych używając komende <command>zpool status</command> <command>x</command>.</para>
+<para>Potwierdź odzyskanie danych używając komende <command>zpool status</command> <option>x</option>.</para>
 </listitem>
 <listitem>
 <para>Stwórz kopie zapasową odzyskanej konfiguracji.</para>
@@ -278,10 +287,10 @@ errors: No known data errors</screen>
 all pools are healthy</screen>
 <para>Bez flagi <option>x</option>, komenda wyświetla kompletny status dla wszystkich pul (lub dla określonej puli, jeśli została sprecyzowana w lini poleceń), nawet jeśli pule są zdrowe.<indexterm xml:id="indexterm-536"> <primary>Pule pamięci ZFS</primary> <secondary>ustalanie czy istnieją problemy (<command>zpool status</command> <option> x</option>)</secondary> <tertiary>opis</tertiary></indexterm> <indexterm xml:id="indexterm-537"> <primary>usuwanie problemów</primary> <secondary>ustalanie czy istnieją problemy  (<command>zpool status</command> <option> x</option>)</secondary></indexterm> 
 </para>
-<para>Więcej informacji na temat argumentów komendy <command>zpool status</command> można znaleźć w <olink targetdoc="" remap="internal" targetptr="gaynp">Zapytania Statusu Puli Pamęci ZFS</olink></para>
+<para>Więcej informacji na temat argumentów komendy <command>zpool status</command> można znaleźć w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gaynp">Zapytania Statusu Puli Pamęci ZFS</olink></para>
 </sect2>
 <sect2 xml:id="gbcve">
-<title>Zrozumienie wyniku działania komendy <command>zpool status</command></title>
+<title>Przegląd wyniku działania komendy <command>zpool status</command></title>
 <para>Kompletny wynik komendy <command>zpool status</command> jest podobny do następującego:</para>
 <screen># <userinput>zpool status tank</userinput>
   pool: tank
@@ -419,12 +428,12 @@ errors: The following persistent errors have been detected:
           DATASET  OBJECT  RANGE
           5        0       lvl=4294967295 blkid=0</screen>
 <para>Podobny komunikat jest wyświetlony przy użyciu komendy  <command>fmd</command> w konsoli systemowej oraz w pliku  <filename>/var/adm/messages</filename>. Ten komunikat może zostać również śledzony używając komendy <command>fmdump</command>.</para>
-<para>Więcej informacji na temat interpretowania błędów danych można znaleźć w  <olink targetdoc="" remap="internal" targetptr="gbcuz">Identyfikowanie Typów Błędów Danych</olink>.</para>
+<para>Więcej informacji na temat interpretowania błędów danych można znaleźć w <olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbcuz">Identyfikowanie Typów Błędów Danych</olink>.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gbcvk">
 <title>Raport Systemowy Błędów ZFS</title>
-<para>Jako uzupełnienie śledzenia błędów w puli, ZFS również zgłasza interesujące informacje w logu systemowym (syslog). Następujący scenariusze generują wiadomości, aby poinformować administratora: <indexterm xml:id="indexterm-528"> <primary>Pule pamięci ZFS</primary> <secondary>wiadomości błędów systemowych</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-529"> <primary>wyświetlanie</primary> <secondary>log systemowy reportujący błędy ZFS</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-530"> <primary>usuwanie problemów</primary> <secondary>log systemowy reportujący błędy ZFS</secondary> </indexterm>
+<para>Jako uzupełnienie śledzenia błędów w puli, ZFS również zgłasza interesujące informacje w logu systemowym (syslog). Następujący scenariusze generują wiadomości, aby poinformować administratora: <indexterm xml:id="indexterm-543"> <primary>Pule pamięci ZFS</primary> <secondary>wiadomości błędów systemowych</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-544"> <primary>wyświetlanie</primary> <secondary>log systemowy reportujący błędy ZFS</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-545"> <primary>usuwanie problemów</primary> <secondary>log systemowy reportujący błędy ZFS</secondary> </indexterm>
 </para>
 <itemizedlist>
 <listitem>
@@ -445,20 +454,20 @@ errors: The following persistent errors have been detected:
 </sect1>
 <sect1 xml:id="gbbve">
 <title>Naprawa uszkodzonej konfiguracji ZFS</title>
-<para>ZFS utrzymuje bufor aktywnych pul i ich konfiguracji w głównym systemu plików. Jeśli plik jest uszkodzony lub w jakiś sposób jest niezsynchronizowany, pula nie może zostać otwarta. ZFS próbuje ominąć taki przypadek, aczkolwiek dowolne uszkodzenie jest zawsze możliwe. Ta sytuacja zwykle powoduje zniknięcie puli z systemu, kiedy w przeciwnym przypadku powinna być dostępna. Sytuacja ta może również zgłosić nieznaną liczbę brakujących urządzeń wirtualnych w najwyższym poziomie. W każdym z przypadków, konfiguracja może zostać odzyskana poprzez eksportowanie puli (jeżeli jest w ogóle widoczna) i ponownym imporcie puli.<indexterm xml:id="indexterm-531"> <primary>Pule pamięci ZFS</primary> <secondary>naprawa uszkodzonej konfiguracji ZFS</secondary> </indexterm> <indexterm xml:id="indexterm-532"> <primary>naprawa</primary> <secondary>uszkodzona konfiguracja ZFS</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-533"> <primary>usuwanie problemów</primary> <secondary>naprawa uszkodzonej konfiguracji ZFS</secondary> </indexterm>
+<para>ZFS utrzymuje bufor aktywnych pul i ich konfiguracji w głównym systemu plików. Jeśli plik jest uszkodzony lub w jakiś sposób jest niezsynchronizowany, pula nie może zostać otwarta. ZFS próbuje ominąć taki przypadek, aczkolwiek dowolne uszkodzenie jest zawsze możliwe. Ta sytuacja zwykle powoduje zniknięcie puli z systemu, kiedy w przeciwnym przypadku powinna być dostępna. Sytuacja ta może również zgłosić nieznaną liczbę brakujących urządzeń wirtualnych w najwyższym poziomie. W każdym z przypadków, konfiguracja może zostać odzyskana poprzez eksportowanie puli (jeżeli jest w ogóle widoczna) i ponownym imporcie puli.<indexterm xml:id="indexterm-546"> <primary>Pule pamięci ZFS</primary> <secondary>naprawa uszkodzonej konfiguracji ZFS</secondary> </indexterm> <indexterm xml:id="indexterm-547"> <primary>naprawa</primary> <secondary>uszkodzona konfiguracja ZFS</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-548"> <primary>usuwanie problemów</primary> <secondary>naprawa uszkodzonej konfiguracji ZFS</secondary> </indexterm>
 </para>
-<para>Więcej informacji na temat importowania i exportowania puli można znaleźć w <olink targetdoc="" remap="internal" targetptr="gbchy">Migracja Pul Pamięci ZFS </olink>.</para>
+<para>Więcej informacji na temat importowania i exportowania puli można znaleźć w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gbchy">Migracja Pul Pamięci ZFS </olink>.</para>
 </sect1>
 <sect1 xml:id="gbbvb">
 <title>Naprawa brakującego urządzenia</title>
-<para>Jeśli urządzenie nie może zostać otwarte, wyświetlane zostaje jako   <literal>UNAVAILABLE</literal> w komunikacie komendy <command>zpool status</command> Ten status oznacza, że ZFS nie udało się otworzyć urządzenia, kiedy następował dostęp do puli po raz pierwszy, lub urządzenie zostało niedostępne. Jeśli urządzenie powoduje niedostępność wirtualnego urządzenia najwyższego poziomu, wtedy nic z puli nie jest dostępne. W przeciwnym przypadku, tolerancja uszkodzeń może zostać wzięta pod uwagę. W każdym z przypadków, urządzenie musi zostać ponownie zamontowane w systemie w celu odzyskania normalnej pracy.<indexterm xml:id="indexterm-534"> <primary>Pule pamięci ZFS</primary> <secondary>wymiana brakującego urządzenia</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-535"> <primary>wymiana</primary> <secondary>brakujące urządzenie</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-536"> <primary>usuwanie problemów</primary> <secondary>wymiana brakującego urządzenia</secondary> <tertiary>(przykład)</tertiary> </indexterm>
+<para>Jeśli urządzenie nie może zostać otwarte, wyświetlane zostaje jako   <literal>UNAVAILABLE</literal> w komunikacie komendy <command>zpool status</command> Ten status oznacza, że ZFS nie udało się otworzyć urządzenia, kiedy następował dostęp do puli po raz pierwszy, lub urządzenie zostało niedostępne. Jeśli urządzenie powoduje niedostępność wirtualnego urządzenia najwyższego poziomu, wtedy nic z puli nie jest dostępne. W przeciwnym przypadku, tolerancja uszkodzeń może zostać wzięta pod uwagę. W każdym z przypadków, urządzenie musi zostać ponownie zamontowane w systemie w celu odzyskania normalnej pracy.<indexterm xml:id="indexterm-549"> <primary>Pule pamięci ZFS</primary> <secondary>wymiana brakującego urządzenia</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-550"> <primary>wymiana</primary> <secondary>brakujące urządzenie</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-551"> <primary>usuwanie problemów</primary> <secondary>wymiana brakującego urządzenia</secondary> <tertiary>(przykład)</tertiary> </indexterm>
 </para>
 <para>Na przykład, po awarii urządzenia, możesz zobaczyć podobny komunikat pochodzący z <command>fmd</command>:</para>
 <screen>SUNW-MSG-ID: ZFS-8000-D3, TYPE: Fault, VER: 1, SEVERITY: Major
-EVENT-TIME: Fri Mar 17 14:38:47 MST 2006
-PLATFORM: SUNW,Ultra-60, CSN: -, HOSTNAME: neo
+EVENT-TIME: Thu Aug 31 11:40:59 MDT 2006
+PLATFORM: SUNW,Sun-Blade-1000, CSN: -, HOSTNAME: tank
 SOURCE: zfs-diagnosis, REV: 1.0
-EVENT-ID: 043bb0dd-f0a5-4b8f-a52d-8809e2ce2e0a
+EVENT-ID: e11d8245-d76a-e152-80c6-e63763ed7e4e
 DESC: A ZFS device failed.  Refer to http://sun.com/msg/ZFS-8000-D3 for more information.
 AUTO-RESPONSE: No automated response will occur.
 IMPACT: Fault tolerance of the pool may be compromised.
@@ -471,7 +480,7 @@ status: One or more devices could not be opened.  Sufficient replicas exist for
         the pool to continue functioning in a degraded state.
 action: Attach the missing device and online it using 'zpool online'.
    see: http://www.sun.com/msg/ZFS-8000-D3
- scrub: resilver completed with 0 errors on Fri Mar 10 11:08:29 2006
+ scrub: resilver completed with 0 errors on Thu Aug 31 11:45:59 MDT 2006
 config:
 
         NAME         STATE     READ WRITE CKSUM
@@ -488,15 +497,15 @@ config:
 pool 'tank' is healthy</screen>
 <sect2 xml:id="gbbxn">
 <title>Fizyczne Ponowne Podłączenie Urządzenia</title>
-<para>Sposób ponownego podłączenia brakującego urządzenia, zależy od jego typu. Jeśli jest to urządzenie sieciowe, połączenie powinno zostać odzyskane. Jeśli jest to urządzenie USB lub inne wymienne media, powinno zostać ponownie podłączone do systemu. Jeśli jest to lokalny dysk, mogła nastąpić awaria kontrolera, dlatego urządzenie nie jest widoczne przez system. W takim wypadku, kontroler powinien zostać wymieniony. W tym momencie dyski będą ponownie dostępne. Inne problemy mogą istnieć i zależeć od typu sprzętu oraz konfiguracji. Jeśli napęd zostanie uszkodzony i nie jest już widoczny przez system (rzadki przypadek), urządzenie powinno być traktowane jako uszkodzone. Postępuj z procedurą opisaną w  <olink targetdoc="" remap="internal" targetptr="gbbvf">Naprawa uszkodzonego urządzenia</olink>.</para>
+<para>Sposób ponownego podłączenia brakującego urządzenia, zależy od jego typu. Jeśli jest to urządzenie sieciowe, połączenie powinno zostać odzyskane. Jeśli jest to urządzenie USB lub inne wymienne media, powinno zostać ponownie podłączone do systemu. Jeśli jest to lokalny dysk, mogła nastąpić awaria kontrolera, dlatego urządzenie nie jest widoczne przez system. W takim wypadku, kontroler powinien zostać wymieniony. W tym momencie dyski będą ponownie dostępne. Inne problemy mogą istnieć i zależeć od typu sprzętu oraz konfiguracji. Jeśli napęd zostanie uszkodzony i nie jest już widoczny przez system (rzadki przypadek), urządzenie powinno być traktowane jako uszkodzone. Postępuj z procedurą opisaną w <olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbvf">Naprawa uszkodzonego urządzenia</olink>.</para>
 </sect2>
 <sect2 xml:id="gbbyi">
 <title>Powiadomienie ZFS o Dostępnośći Urządzenia</title>
-<para>W przypadku gdy urządzenie jest ponownie podłączone do systemu, ZFS może, ale nie musi automatycznie wykryć jego istnienie. Jeśli pula była wcześniej w stanie faulted, lub system został zrestartowany jako część procedury podłączania, wtedy ZFS automatycznie przeskanuje wszystkie urządzenia kiedy próbuje otworzyć pule. Jeśli pula była w stanie degraded i urządzenie zostało wymienione w czasie, gdy system był uruchomiony, musisz powiadomić ZFS, że to urządzenie jest dostępne i gotowe do ponownego otwarcia, używając komendy <command>zpool online</command>. Na przykład:<indexterm xml:id="indexterm-537"> <primary>Pule pamięci ZFS</primary> <secondary>powiadomienie ZFS o ponownym podłączeniu urządzenia (<command>zpool online</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-538"> <primary>powiadomienie</primary> <secondary>ZFS o ponownym podłączeniu urządzenia (<command>zpool online</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-539"> <primary>usuwanie problemów</primary> <secondary>powiadomienie ZFS o ponownym podłączeniu urządzenia (<command>zpool online</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> 
+<para>W przypadku gdy urządzenie jest ponownie podłączone do systemu, ZFS może, ale nie musi automatycznie wykryć jego istnienie. Jeśli pula była wcześniej w stanie faulted, lub system został zrestartowany jako część procedury podłączania, wtedy ZFS automatycznie przeskanuje wszystkie urządzenia kiedy próbuje otworzyć pule. Jeśli pula była w stanie degraded i urządzenie zostało wymienione w czasie, gdy system był uruchomiony, musisz powiadomić ZFS, że to urządzenie jest dostępne i gotowe do ponownego otwarcia, używając komendy <command>zpool online</command>. Na przykład:<indexterm xml:id="indexterm-552"> <primary>Pule pamięci ZFS</primary> <secondary>powiadomienie ZFS o ponownym podłączeniu urządzenia (<command>zpool online</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-553"> <primary>powiadomienie</primary> <secondary>ZFS o ponownym podłączeniu urządzenia (<command>zpool online</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-554"> <primary>usuwanie problemów</primary> <secondary>powiadomienie ZFS o ponownym podłączeniu urządzenia (<command>zpool online</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> 
 </para>
 <screen># <userinput>zpool online tank c0t1d0</userinput>
 </screen>
-<para>Więcej informacji na temat podnoszenia urządzeń do stanu online, można znaleźć w <olink targetdoc="" remap="internal" targetptr="gazgk">Podnoszenie Urządzenia do Stanu Online</olink>.</para>
+<para>Więcej informacji na temat podnoszenia urządzeń do stanu online, można znaleźć w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gazgk">Podnoszenie Urządzenia do Stanu Online</olink>.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gbbvf">
@@ -504,7 +513,7 @@ pool 'tank' is healthy</screen>
 <para>Ta sekcja opisuje w jaki sposób określić typ błędu urządzenia, wyczyścić tymczasowe błędy oraz wymienić urządzenie.</para>
 <sect2 xml:id="gbbzs">
 <title>Określanie Typu Błędu Urządzenia</title>
-<para>Określenie <emphasis>uszkodzone urządzenie</emphasis> jest szerokie i może opisywać wiele możliwych sytuacji:<indexterm xml:id="indexterm-540"> <primary>Pule pamięci ZFS</primary> <secondary>określanie typu błędy urządzenia</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-541"> <primary>określanie</primary> <secondary>typ błędu urządzenia</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-542"> <primary>usuwanie problemów</primary> <secondary>określanie typu błędu urządzenia</secondary> <tertiary>opis</tertiary> </indexterm>
+<para>Określenie <emphasis>uszkodzone urządzenie</emphasis> jest szerokie i może opisywać wiele możliwych sytuacji:<indexterm xml:id="indexterm-555"> <primary>Pule pamięci ZFS</primary> <secondary>określanie typu błędy urządzenia</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-556"> <primary>określanie</primary> <secondary>typ błędu urządzenia</secondary> <tertiary>opis</tertiary> </indexterm> <indexterm xml:id="indexterm-557"> <primary>usuwanie problemów</primary> <secondary>określanie typu błędu urządzenia</secondary> <tertiary>opis</tertiary> </indexterm>
 </para>
 <itemizedlist>
 <listitem>
@@ -541,11 +550,11 @@ pool 'tank' is healthy</screen>
 <emphasis>Czy występowały inne błędy na tym urządzeniu?</emphasis>
 </para>
 <para>Błędy które wystąpiły tylko raz, są rozpatrywane jako <emphasis>tymczasowe (transient)</emphasis> i niekoniecznie oznaczają potencjalną awarię. Trwałe błędy, lub kilka, które mogą oznaczać potencjalną awarie sprzętową, są rozpatrywane jako “fatalne (fatal).” Działania pozwalające na określeniu typu błędu jest poza zasięgiem istniejących automatycznych narzędzi, dostępnych wraz z ZFS, tak więc muszą zostać określone ręcznie przec Ciebie, czyli administratora. Kiedy operacja określenia typu błędu jest wykonana, odpowiednie czynności mogą zostać podjęte. Może to być wyczyszczenie ulotnych błędów lub wymiana uszkodzonego urządzenia związana z fatalnymi błędami. Procedura naprawy jest opisana w następnej sekcji.</para>
-<para>Nawet gdy błędy urządzenia zostały rozwarzone jako ulotne, mogło to spowodować nienaprawialne błędy danych w puli. Te błędy wymagają specjalnych procedur naprawy, nawet jeśli odpowiednie urządzenie jest uznane jako zdrowe lub w innym przypadku naprawione. Więcej informacji na temat naprawy błędów danych można zobaczyć w   <olink targetdoc="" remap="internal" targetptr="gbbwl">Naprawa Uszkodzonych Danych</olink>.</para>
+<para>Nawet gdy błędy urządzenia zostały rozwarzone jako ulotne, mogło to spowodować nienaprawialne błędy danych w puli. Te błędy wymagają specjalnych procedur naprawy, nawet jeśli odpowiednie urządzenie jest uznane jako zdrowe lub w innym przypadku naprawione. Więcej informacji na temat naprawy błędów danych można zobaczyć w <olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbwl">Naprawa Uszkodzonych Danych</olink>.</para>
 </sect2>
 <sect2 xml:id="gbbzv">
 <title>Kasowanie Tymczasowych Błędów</title>
-<para>Jeśli błędy urządzenia zostały uznane jako tymczasowe i nie spowodujące przyszłych błędów w zdrowym urządzeniu, mogą zostać bezpiecznie wyczyszczone, aby zpobiec wykazaniu jako błędy fatalne. Aby wyczyścić licznik błędów dla macierzy RAID-Z, użyj komendy <command>zpool clear</command>. Na przykład: <indexterm xml:id="indexterm-543"> <primary>Pule pamięci ZFS</primary> <secondary>kasowanie błędów urządzeń (<command>zpool clear</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-544"> <primary>kasowanie</primary> <secondary>błędy urządzeń (<command>zpool clear</command>)</secondary> <tertiary>(przykłąd)</tertiary> </indexterm> <indexterm xml:id="indexterm-545"> <primary>usuwanie problemów</primary> <secondary>kasowanie błędów urządzeń (<command>zpool clear</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm>
+<para>Jeśli błędy urządzenia zostały uznane jako tymczasowe i nie spowodujące przyszłych błędów w zdrowym urządzeniu, mogą zostać bezpiecznie wyczyszczone, aby zpobiec wykazaniu jako błędy fatalne. Aby wyczyścić licznik błędów dla macierzy RAID-Z, użyj komendy <command>zpool clear</command>. Na przykład: <indexterm xml:id="indexterm-558"> <primary>Pule pamięci ZFS</primary> <secondary>kasowanie błędów urządzeń (<command>zpool clear</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-559"> <primary>kasowanie</primary> <secondary>błędy urządzeń (<command>zpool clear</command>)</secondary> <tertiary>(przykłąd)</tertiary> </indexterm> <indexterm xml:id="indexterm-560"> <primary>usuwanie problemów</primary> <secondary>kasowanie błędów urządzeń (<command>zpool clear</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm>
 </para>
 <screen># <userinput>zpool clear tank c1t0d0</userinput>
 </screen>
