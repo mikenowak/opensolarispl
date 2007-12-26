@@ -559,9 +559,9 @@ CPU     ID                     FUNCTION:NAME
           </citerefentry> </olink>. Podobnie jak w funkcji
         <literal>printf</literal> parametry składają się z łańcucha
         <replaceable>format</replaceable>, po którym następuje zmienna liczba
-        argumentów. Domyślnie argumenty są kierowane do bufora
-        [FIXME]directed[/FIXME]. Argumenty są później formatowane do wydruku
-        przez komendę <literal>dtrace</literal> według zdefiniowanego łańcucha
+        argumentów. Domyślnie argumenty są kierowane do kierunkowego bufora.
+        Argumenty są później formatowane do wydruku przez komendę
+        <literal>dtrace</literal> według zdefiniowanego łańcucha
         formatu.</para>
 
         <para>Więcej informacji o akcji <function>printf </function> w <olink
@@ -625,24 +625,24 @@ void ustack(void)</programlisting>
             <primary>actions</primary>
 
             <secondary><literal>ustack</literal></secondary>
-          </indexterm>The <function>ustack </function> action records a user
-        stack trace to the directed buffer. The depth of the user stack is
-        equal to the value specified in <replaceable>nframes</replaceable>. If
-        there is no value for <replaceable>nframes</replaceable>, the
-        <literal>ustack</literal> action records a number of stack frames that
-        is specified by the <literal>ustackframes</literal> option. The
-        <function>ustack </function> action determines the address of the
-        calling frames when the probe fires. The <function>ustack </function>
-        action does not translate the stack frames into symbols until the
-        DTrace consumer processes the <function>ustack </function> action at
-        the user level. If a value for <replaceable>strsize</replaceable> is
-        specified and not zero, the <function>ustack </function> action
-        allocates the specified amount of string space and uses it to perform
-        address-to-symbol translation directly from the kernel.</para>
+          </indexterm>Akcja <function>ustack</function> zapisuje stos
+        użytkownika do bufora kierunkowego {FIXME}Sprawdzić, czy directed to
+        nie przypadkiem zarządzalny{/FIXME}. Wielkość stosu użytkownika jest
+        równa wartości podanej w <replaceable>nframes</replaceable>. Jeśli nie
+        podano wartości dla <replaceable>nframes</replaceable>, akcja
+        <literal>ustack</literal> zapisuje liczbę ramek stosu podaną w opcji
+        <literal>ustackframes</literal>. Akcja <function>ustack
+        </function>ustala adres wywołujących ją ramek przy odpaleniu sondy.
+        Akcja <function>ustack </function>nie tłumaczy ramek stosu na symbole
+        aż do momentu przetworzenia akcji przez konsumenta DTrace na poziomie
+        użytkownika. Jesli podano wartość <replaceable>strsize</replaceable> i
+        jest ona niezerowa, akcja alokuje podaną ilość przestrzeni na łańcuch
+        znaków i używa jej do bezpośredniego tłumaczenia adres-symbol w
+        jądrze.</para>
       </sect3>
 
       <sect3 xml:id="gcgfq">
-        <title>The <function>jstack </function> function</title>
+        <title>Funkcja <function>jstack</function></title>
 
         <programlisting>void jstack(int <replaceable>nframes</replaceable>, int <replaceable>strsize</replaceable>)
 void jstack(int <replaceable>nframes</replaceable>)
@@ -652,18 +652,18 @@ void jstack(void)</programlisting>
             <primary>actions</primary>
 
             <secondary><literal>jstack</literal></secondary>
-          </indexterm>The <function>jstack </function> action is an alias for
-        <function>ustack </function> that uses the value specified by the
-        <literal>jstackframes</literal> option for the number of stack frames.
-        The <literal>jstack</literal> action uses the value specified by the
-        <literal>jstackstrsize</literal> option to determine the string space
-        size. The <literal>jstacksize</literal> action defaults to a non-zero
-        value.</para>
+          </indexterm>Akcja <function>jstack </function>jest dowiązaniem do
+        akcji <function>ustack</function> używającym wartości podanej w opcji
+        <literal>jstackframes</literal> do określenia ilości ramek. Akcja
+        <literal>jstack</literal> używa wartości podanej w opcji
+        <literal>jstackstrsize</literal> do określenia wielkości łańcucha
+        znakowego. Akcja <literal>jstacksize</literal> jest domyślnie
+        niezerowa.</para>
       </sect3>
     </sect2>
 
     <sect2 xml:id="gcfsm">
-      <title>Destructive Actions</title>
+      <title>Akcje niszczycielskie (ang. destructive actions) </title>
 
       <para><indexterm xml:id="indexterm-11">
           <primary>destructive actions</primary>
@@ -671,39 +671,39 @@ void jstack(void)</programlisting>
           <primary>actions</primary>
 
           <secondary>destructive</secondary>
-        </indexterm>You must explicitly enable destructive actions in order to
-      use them. You can enable destructive actions by using the <option>
-      w</option> option. If you attempt to use destructive actions in
-      <command>dtrace</command> without explicitly enabling them,
-      <command>dtrace</command> fails with a message similar to the following
-      example:</para>
+        </indexterm>W celu używania akcji niszczycielskich, trzeba na nie
+      samodzielnie zezwolić. Można to zrobić używając opcji
+      <option>w</option>. Przy próbie użycia niszczycielskiej akcji bez
+      zezwolenia na nie, <command>dtrace</command> nie wykona akcji i
+      wydrukuje komunikat podobny do poniższego:</para>
 
       <programlisting>dtrace: failed to enable 'syscall': destructive actions not allowed</programlisting>
 
-      <para>For more information on DTrace actions, including destructive
-      actions, see <olink remap="external" targetdoc="817-6223"
+      <para>Więcej informacji o akcjach DTrace, włącznie z niszczycielskimi, w
+      <olink remap="external" targetdoc="817-6223"
       targetptr="chp-actsub">Chapter 10, <citetitle remap="chapter">Actions
       and Subroutines,</citetitle> in <citetitle remap="book">Solaris Dynamic
       Tracing Guide</citetitle> </olink>.</para>
 
       <sect3 xml:id="gcfrv">
-        <title>Process Destructive Actions</title>
+        <title>Akcje niszczycielskie w stosunku do niektórych procesów (ang.
+        process destructive actions)</title>
 
         <para><indexterm xml:id="indexterm-13">
             <primary>destructive actions</primary>
 
             <secondary>process</secondary>
-          </indexterm>Some actions are destructive only to a particular
-        process. These actions are available to users with the
-        <literal>dtrace_proc</literal> or <literal>dtrace_user</literal>
-        privileges. See <olink remap="external" targetdoc="817-6223"
-        targetptr="chp-sec">Chapter 35, <citetitle
+          </indexterm>Niektóre akcje są niszczycielskie tylko w przypadku
+        pewnych procesów. Akcje te są dostępne użytkownikom o przywilejach
+        <literal>dtrace_proc</literal> i <literal>dtrace_user</literal>.
+        Więcej o przywilejach DTrace w <olink remap="external"
+        targetdoc="817-6223" targetptr="chp-sec">Chapter 35, <citetitle
         remap="chapter">Security,</citetitle> in <citetitle
-        remap="book">Solaris Dynamic Tracing Guide</citetitle> </olink> for
-        details on DTrace security privileges.</para>
+        remap="book">Solaris Dynamic Tracing Guide</citetitle>
+        </olink>.</para>
 
         <sect4 xml:id="gcfrz">
-          <title>The <function>stop </function> function</title>
+          <title>Funckja <function>stop</function></title>
 
           <para><indexterm xml:id="indexterm-14">
               <primary>actions</primary>
@@ -711,19 +711,19 @@ void jstack(void)</programlisting>
               <secondary>destructive</secondary>
 
               <tertiary><literal>stop</literal></tertiary>
-            </indexterm>When a probe fires with the <function>stop </function>
-          action enabled, the process that fired that probe stops upon leaving
-          the kernel. This process stops in the same way as a process that is
-          stopped by a <olink remap="external" targetdoc="816-5174"
+            </indexterm>Kiedy odpalona zostaje sonda przy włączonej akcji
+          <function>stop</function>, proces odpalający sondę zatrzymuje sie po
+          opuszczeniu jądra. Proces zatrzymuje się w sposób identyczny do
+          akcji <olink remap="external" targetdoc="816-5174"
           targetptr="proc-4"> <citerefentry>
               <refentrytitle>proc</refentrytitle>
 
               <manvolnum>4</manvolnum>
-            </citerefentry> </olink> action.</para>
+            </citerefentry> </olink>.</para>
         </sect4>
 
         <sect4 xml:id="gcfqz">
-          <title>The <function>raise </function> function</title>
+          <title>Funkcja <function>raise</function></title>
 
           <programlisting>void raise(int <replaceable>signal</replaceable>)</programlisting>
 
@@ -733,12 +733,12 @@ void jstack(void)</programlisting>
               <secondary>destructive</secondary>
 
               <tertiary><literal>raise</literal></tertiary>
-            </indexterm>The <function>raise </function> action sends the
-          specified signal to the currently running process.</para>
+            </indexterm>Akcja <function>raise </function>wysyła określony
+          sygnał do wykonywanego właśnie procesu.</para>
         </sect4>
 
         <sect4 xml:id="gcfsd">
-          <title>The <function>copyout </function> function</title>
+          <title>Funkcja <function>copyout</function></title>
 
           <programlisting>void copyout(void *<replaceable>buf</replaceable>, uintptr_t <replaceable>addr</replaceable>, size_t <replaceable>nbytes</replaceable>)</programlisting>
 
@@ -748,18 +748,17 @@ void jstack(void)</programlisting>
               <secondary>destructive</secondary>
 
               <tertiary><literal>copyout</literal></tertiary>
-            </indexterm>The <function>copyout </function> action copies data
-          from a buffer to an address in memory. The number of bytes that this
-          action copies is specified in <replaceable>nbytes</replaceable>. The
-          buffer that the data is copied from is specified in
-          <replaceable>buf</replaceable>. The address that the data is copied
-          to is specified in <replaceable>addr</replaceable>. That address is
-          in the address space of the process that is associated with the
-          current thread.</para>
+            </indexterm>Akcja <function>copyout </function> kopiuje dane z
+          bufora do podanego adresu w pamięci. Ilość kopiowanych bajtów
+          określana jest przez <replaceable>nbytes</replaceable>. Bufor
+          źródłowy wskazywany jest przez <replaceable>buf</replaceable>. Adres
+          docelowy wskazywany jest przez <replaceable>addr</replaceable>.
+          Adres ten należy do przestrzeni adresów procesu związanego z
+          aktualnym wątkiem.</para>
         </sect4>
 
         <sect4 xml:id="gcfrq">
-          <title>The <function>copyoutstr </function> function</title>
+          <title>TFunkcja <function>copyoutstr</function></title>
 
           <programlisting>void copyoutstr(string <replaceable>str</replaceable>, uintptr_t <replaceable>addr</replaceable>, size_t <replaceable>maxlen</replaceable>)</programlisting>
 
@@ -769,16 +768,15 @@ void jstack(void)</programlisting>
               <secondary>destructive</secondary>
 
               <tertiary><literal>copyoutstr</literal></tertiary>
-            </indexterm>The <function>copyoutstr </function> action copies a
-          string to an address in memory. The string to copy is specified in
-          <replaceable>str</replaceable>. The address that the string is
-          copied to is specified in <replaceable>addr</replaceable>. That
-          address is in the address space of the process that is associated
-          with the current thread.</para>
+            </indexterm>Akcja <function>copyoutstr </function>kopiuje łańcuch
+          wskazany przez <replaceable>str</replaceable> do pamięci o wskazanym
+          adresie. adresu w pamięci. Docelowy adres wskazywany jest przez
+          <replaceable>addr</replaceable>. Adres ten należy do przestrzeni
+          adresów procesu związanego z aktualnym wątkiem.</para>
         </sect4>
 
         <sect4 xml:id="gcfsj">
-          <title>The <function>system </function> function</title>
+          <title>Funkcja <function>system</function></title>
 
           <programlisting>void system(string <replaceable>program</replaceable>, ...) </programlisting>
 
@@ -788,27 +786,27 @@ void jstack(void)</programlisting>
               <secondary>destructive</secondary>
 
               <tertiary><literal>system</literal></tertiary>
-            </indexterm>The <function>system </function> action causes the
-          program specified by <replaceable>program</replaceable> to be
-          executed by the system as if it were given to the shell as
-          input.</para>
+            </indexterm>Akcja <function>system </function>powoduje wykonanie
+          programu wskazanego przez <replaceable>program</replaceable>, jakby
+          był podany na wejściu powłoce.</para>
         </sect4>
       </sect3>
 
       <sect3 xml:id="gcfre">
-        <title>Kernel Destructive Actions</title>
+        <title>Akcje niszczycielskie w odniesieniu do jądra (ang. kernel
+        destructive actions)</title>
 
         <para><indexterm xml:id="indexterm-19">
             <primary>destructive actions</primary>
 
             <secondary>kernel</secondary>
-          </indexterm>Some destructive actions are destructive to the entire
-        system. Use these actions with caution. These actions affect every
-        process on the system and may affect other systems, depending upon the
-        affected system's network services.</para>
+          </indexterm>Niektóre akcje niszczycielskie mogą mieć wpływ na cały
+        system. Należy użwać ich ze szczególną ostrożnością. Mają wpływ na
+        wszystkie procesy w systemie i mogą mieć wpływ na inne systemy,
+        zależnie od usług sieciowych oferowanych przez system.</para>
 
         <sect4 xml:id="gcfra">
-          <title>The <function>breakpoint </function> function</title>
+          <title>Funkcja <function>breakpoint</function></title>
 
           <programlisting>void breakpoint(void)</programlisting>
 
@@ -818,14 +816,14 @@ void jstack(void)</programlisting>
               <secondary>destructive</secondary>
 
               <tertiary><literal>breakpoint</literal></tertiary>
-            </indexterm>The <function>breakpoint </function> action induces a
-          kernel breakpoint, causing the system to stop and transfer control
-          to the kernel debugger. The kernel debugger will emit a string that
-          denotes the DTrace probe that triggered the action.</para>
+            </indexterm>Akcja <function>breakpoint</function> uruchamia punk
+          zatrzymania (ang. breakpoint) jądra, powodując zatrzymanie wykonania
+          jądra i przekazanie kontrolu debuggerowi jądra. Debugger jądra
+          wydrukuje wskazanie sondy DTrace, która uruchomiła akcję.</para>
         </sect4>
 
         <sect4 xml:id="gcfru">
-          <title>The <function>panic </function> function</title>
+          <title>Funkcja <function>panic</function></title>
 
           <programlisting>void panic(void)</programlisting>
 
@@ -835,23 +833,24 @@ void jstack(void)</programlisting>
               <secondary>destructive</secondary>
 
               <tertiary><literal>panic</literal></tertiary>
-            </indexterm>When a probe with the <function>panic </function>
-          action triggers, the kernel panics. This action can force a system
-          crash dump at a time of interest. You can use this action in
-          conjunction with ring buffering and postmortem analysis to diagnose
-          a system problem. For more information, see <olink remap="external"
-          targetdoc="817-6223" targetptr="chp-buf">Chapter 11, <citetitle
-          remap="chapter">Buffers and Buffering,</citetitle> in <citetitle
-          remap="book">Solaris Dynamic Tracing Guide</citetitle> </olink> and
-          <olink remap="external" targetdoc="817-6223"
+            </indexterm>Po uruchomieniu przez sondę akcji <function>panic
+          </function>jądro panikuje. Można w ten sposób wymusić zrzut obrazu
+          jądra (ang. kernel crash dump) w konkretnym momencie. Można jej
+          używać z połączeniu z buforowaniem pierścieniowym (ang. ring
+          buffering) i analizą pośmiertną (ang. postmortem analysis) do
+          diagnozowania problemów z systemem. Więcej informacji w <olink
+          remap="external" targetdoc="817-6223" targetptr="chp-buf">Chapter
+          11, <citetitle remap="chapter">Buffers and Buffering,</citetitle> in
+          <citetitle remap="book">Solaris Dynamic Tracing Guide</citetitle>
+          </olink> i <olink remap="external" targetdoc="817-6223"
           targetptr="chp-post">Chapter 37, <citetitle
           remap="chapter">Postmortem Tracing,</citetitle> in <citetitle
-          remap="book">Solaris Dynamic Tracing Guide</citetitle> </olink>
-          respectively.</para>
+          remap="book">Solaris Dynamic Tracing Guide</citetitle>
+          </olink>.</para>
         </sect4>
 
         <sect4 xml:id="gcfsp">
-          <title>The <function>chill </function> function</title>
+          <title>Funkcja <function>chill</function></title>
 
           <programlisting>void chill(int <replaceable>nanoseconds</replaceable>)</programlisting>
 
@@ -861,52 +860,49 @@ void jstack(void)</programlisting>
               <secondary>destructive</secondary>
 
               <tertiary><literal>chill</literal></tertiary>
-            </indexterm>When a probe with the <function>chill </function>
-          action triggers, DTrace spins for the specified number of
-          nanoseconds. The <function>chill </function> action is useful for
-          exploring problems related to timing. Because interrupts are
-          disabled while in DTrace probe context, any use of <function>chill
-          </function> will induce interrupt latency, scheduling latency,
-          dispatch latency.</para>
+            </indexterm>Po uruchomieniu akcji <function>chill</function>
+          DTrace wykonuje pętlę przez podaną liczbę nanosekund. Akcja ta jest
+          przydatna przy analizowaniu problemów związanych z czasem. W
+          kontekście sond DTrace wyłączone są przerwania, stąd dowolne użycie
+          akcji<function> chill</function> spowoduje opóźnienia przerwań,
+          planisty i egzekutora (ang. dispatch).</para>
         </sect4>
       </sect3>
     </sect2>
   </sect1>
 
   <sect1 xml:id="gcggh">
-    <title>DTrace Aggregations</title>
+    <title>Agregacje DTrace</title>
 
-    <para>For performance-related questions, aggregated data is often more
-    useful than individual data points. DTrace provides several built-in
-    aggregating functions. When an aggregating function is applied to subsets
-    of a collection of data, then applied again to the results of the analysis
-    of those subsets, the results are identical to the results returned by the
-    aggregating function when it is applied to the collection as a
-    whole.</para>
+    <para>Przy analizowaniu zagadnień związanych z wydajnością dane
+    zagregowane są częściej bardziej przydatne od pojedynczych danych. DTrace
+    ma kilka wbudowanych funkcji agregujących. Jeśli funkcja agregująca
+    zastosowana jest do podzbiorów danych a później znów zastosowana do
+    wyników analizy tych podzbiorów, wynik jest identyczny, jak przy
+    zastosowaniu funkcji do całego zbioru danych. </para>
 
-    <para>The DTrace facility stores a running count of data items for
-    aggregations. The aggregating functions store only the current
-    intermediate result and the new element that the function is being applied
-    to. The intermediate results are allocated on a per-CPU basis. Because
-    this allocation scheme does not require locks, the implementation is
-    inherently scalable.</para>
+    <para>DTrace przechowuje aktualny licznik danych do agregacji. Funkcje
+    agregacyjne przechowują wyłącznie aktualny wynik i nowy element, do
+    którego stosuje się funkcję. Aktualne pośrednie wyniki przechowywane są
+    odnośnie każdego procesora. Taki schemat alokacji nie wymaga blokad, jest
+    więc bardzo skalowalny. </para>
 
     <sect2 xml:id="gcggc">
-      <title>DTrace Aggregation Syntax</title>
+      <title>Składna agregacji DTrace</title>
 
-      <para>A DTrace aggregation takes the following general form:</para>
+      <para>Agregacja DTrace ma następującą fpostać uogólnioną:</para>
 
       <programlisting>@name[ <replaceable>keys</replaceable> ] = aggfunc( <replaceable>args</replaceable> );</programlisting>
 
-      <para>In this general form, the variables are defined as follows:</para>
+      <para>W tej postaci zmienne definiowane są jak poniżej:</para>
 
       <variablelist>
         <varlistentry>
           <term><literal>name</literal></term>
 
           <listitem>
-            <para>The name of the aggregation, preceded by the
-            <literal>@</literal> character.</para>
+            <para>Nazwa gregacji poprzedzona znakiem
+            <literal>@</literal>.</para>
           </listitem>
         </varlistentry>
 
@@ -914,7 +910,8 @@ void jstack(void)</programlisting>
           <term><literal>keys</literal></term>
 
           <listitem>
-            <para>A comma-separated list of D expressions.</para>
+            <para>Oddzielona przecinkami lista wyrażeń języka skryptowego
+            D.</para>
           </listitem>
         </varlistentry>
 
@@ -922,7 +919,7 @@ void jstack(void)</programlisting>
           <term><literal>aggfunc</literal></term>
 
           <listitem>
-            <para>One of the DTrace aggregating functions.</para>
+            <para>Jedna z funkcji agregacyjnych DTrace.</para>
           </listitem>
         </varlistentry>
 
@@ -930,8 +927,8 @@ void jstack(void)</programlisting>
           <term><literal>args</literal></term>
 
           <listitem>
-            <para>A comma-separated list of arguments appropriate to the
-            aggregating function.</para>
+            <para>Oddzielona przecinkami lista argumentów właściwych dla
+            funkcji agregacyjnej.</para>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -948,11 +945,11 @@ void jstack(void)</programlisting>
 
           <thead>
             <row rowsep="1">
-              <entry><para>Function Name</para></entry>
+              <entry><para>Nazwa funkcji</para></entry>
 
-              <entry><para>Arguments</para></entry>
+              <entry><para>Argumenty</para></entry>
 
-              <entry><para>Result</para></entry>
+              <entry><para>Wynik</para></entry>
             </row>
           </thead>
 
@@ -960,72 +957,69 @@ void jstack(void)</programlisting>
             <row>
               <entry><para> <literal>count</literal> </para></entry>
 
-              <entry><para>none</para></entry>
+              <entry><para>brak</para></entry>
 
-              <entry><para>The number of times that the
-              <literal>count</literal> function is called.</para></entry>
+              <entry><para>Ilość razy wywołania fukcji
+              <literal>count</literal>.</para></entry>
             </row>
 
             <row>
               <entry><para> <literal>sum</literal> </para></entry>
 
-              <entry><para>scalar expression</para></entry>
+              <entry><para>wyrażenie skalarne</para></entry>
 
-              <entry><para>The total value of the specified
-              expressions.</para></entry>
+              <entry><para>Całkowita wartość podanych wyrażeń.</para></entry>
             </row>
 
             <row>
               <entry><para> <literal>avg</literal> </para></entry>
 
-              <entry><para>scalar expression</para></entry>
+              <entry><para>wyrażenie skalarne</para></entry>
 
-              <entry><para>The arithmetic average of the specified
-              expressions.</para></entry>
+              <entry><para>Arytmetyczna średnia z podanych
+              wyrażeń.</para></entry>
             </row>
 
             <row>
               <entry><para> <literal>min</literal> </para></entry>
 
-              <entry><para>scalar expression</para></entry>
+              <entry><para>wyrażenie skalarne</para></entry>
 
-              <entry><para>The smallest value among the specified
-              expressions.</para></entry>
+              <entry><para>Minimum z podanych wyrażeń.</para></entry>
             </row>
 
             <row>
               <entry><para> <literal>max</literal> </para></entry>
 
-              <entry><para>scalar expression</para></entry>
+              <entry><para>wyrażenie skalarne</para></entry>
 
-              <entry><para>The largest value among the specified
-              expressions.</para></entry>
+              <entry><para>Maksimum z podanych wyrażeń.</para></entry>
             </row>
 
             <row>
               <entry><para> <literal>lquantize</literal> </para></entry>
 
-              <entry><para>scalar expression, lower bound, upper bound, step
-              value</para></entry>
+              <entry><para>wyrażenie skalarne, ograniczenie dolne,
+              ograniczenie górne, krok</para></entry>
 
-              <entry><para>A linear frequency distribution of the values of
-              the specified expressions that is sized by the specified range.
-              This aggregating function increments the value in the
-              <emphasis>highest</emphasis> bucket that is
-              <emphasis>less</emphasis> than the specified
-              expression.</para></entry>
+              <entry><para>Liniowy rozkład gęstości z wartości podanych
+              wyrażeń przedziale wyznaczonym przez podane ograniczenia dolne i
+              górne. Funkcja ta zwiększa wartość <emphasis>najwyższego
+              </emphasis> wiadra, które ma wartość
+              <emphasis>niższą</emphasis>, niż podane
+              wyrażenie.</para></entry>
             </row>
 
             <row>
               <entry><para> <literal>quantize</literal> </para></entry>
 
-              <entry><para>scalar expression</para></entry>
+              <entry><para>wyrażenie skalarne</para></entry>
 
-              <entry><para>A power-of-two frequency distribution of the values
-              of the specified expressions. This aggregating function
-              increments the value in the <emphasis>highest</emphasis>
-              power-of-two bucket that is <emphasis>less</emphasis> than the
-              specified expression.</para></entry>
+              <entry><para>Kwadratowy rozkład gęstości wartości z podanych
+              wyrażeń. Funkcja zwiększa wartość w
+              <emphasis>najwyższym</emphasis> kwadracie wiadra, które ma
+              wartość <emphasis>niższą</emphasis>, niż podane
+              wyrażenie.</para></entry>
             </row>
           </tbody>
         </tgroup>
@@ -1034,17 +1028,18 @@ void jstack(void)</programlisting>
       <example xml:id="gcgfw">
         <title>Using an Aggregating Function</title>
 
-        <para>This example uses the <command>count</command> aggregating
-        function to count the number of <olink remap="external"
-        targetdoc="816-5167" targetptr="write-2"> <citerefentry>
+        <para>W poniższym przykładzie funkcja agregacyjna
+        <command>count</command> została użyta do zliczenia ilości wykonania
+        wywołania systemowego <olink remap="external" targetdoc="816-5167"
+        targetptr="write-2"> <citerefentry>
             <refentrytitle>write</refentrytitle>
 
             <manvolnum>2</manvolnum>
-          </citerefentry> </olink> system calls per process. The aggregation
-        does not output any data until the <command>dtrace</command> command
-        is terminated. The output data represents a summary of the data
-        collected during the time that the <command>dtrace</command> command
-        was active.</para>
+          </citerefentry> </olink> dla każdego procesu. Agregacja nie drukuje
+        żadnych danych do momentu przerwania wykonywania komendy
+        <command>dtrace</command>. Dane wyjściowe przedstawiane są jako suma
+        danych zebranych podczas działania komendy
+        <command>dtrace</command>.</para>
 
         <screen># <userinput>cat writes.d</userinput>
 #!/usr/sbin/dtrace -s
