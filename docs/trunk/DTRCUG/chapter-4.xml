@@ -737,7 +737,7 @@ rm /tmp/findtxt$$
         Procesy komunikują się intensywnie za pomocą potoków (ang. pipes).
         Liczba potoków powoduje, że skrypt jest bardzo zasobożerny. Skrypt
         wyszukuje wszystkie pliki tekstowe w systemie, a póżniej szuka w nich
-        pewnego fragmentu. </para>
+        pewnego fragmentu.</para>
       </example>
     </sect2>
   </sect1>
@@ -977,24 +977,24 @@ CPU     ID                    FUNCTION:NAME
 
       <para>Akcja <function>ustack </function>zapisuje wartości licznika
       programu dla stosu (ang. program counter - <acronym>PC</acronym>).
-      Komenda<command>dtrace</command> rozwiązuje wartości
+      Komenda<command> dtrace</command> rozwiązuje wartości
       <acronym>PC</acronym> na nazwy symboiczne za pomocą tablicy symboli
       procesów. Wartości <acronym>PC</acronym>, których komenda
       <command>dtrace</command> nie potrafiła rozwiązać, drukowane są jako
       liczby całkowite w systemie szesnastkowym.</para>
 
-      <para>When a process exits or is killed before the <function>ustack
-      </function> data is formatted for output, the <command>dtrace</command>
-      command might be unable to convert the <acronym>PC</acronym> values in
-      the stack trace to symbol names. In that event the
-      <command>dtrace</command> command displays these values as hexadecimal
-      integers. To work around this limitation, specify a process of interest
-      with the <option> c</option> or <option> p</option> option to
-      <literal>dtrace</literal>. If the process ID or command is not known in
-      advance, the following example D program that can be used to work around
-      the limitation. The example uses the <literal>open</literal> system call
-      probe, but this technique can be used with any script that uses the
-      <literal>ustack</literal> action.</para>
+      <para>Kiedy proces zakończy działanie lub zostane zabity, zanim dane
+      <function>ustack </function>zostaną sformatowane do wydruku, komenda
+      <command>dtrace</command> może nie dać rady przetłumaczyć wartości
+      <acronym>PC</acronym> na nazwy symboliczne. W takim przypadku komenda
+      <command>dtrace</command> drukuje te wartości w postaci szesnastkowych
+      liczb całkowitych. Można spróbować obejść to ogranizecznie, wskazując
+      proces z opcją <option>c</option> lub <option>p</option>. Jeśli ID
+      procesu lub komenda nie są znane z góry, można użyć poniższego
+      D-skryptu. W przykładzie używana jest sonda wywołania
+      systemowego<literal> open</literal>, ale techniki tej można użyć z
+      dowolnym skryptem, który korzysta z akcji
+      <literal>ustack</literal>.</para>
 
       <programlisting> syscall::open:entry
 {
@@ -1010,13 +1010,12 @@ syscall::rexit:entry
 	stop_pids[pid] = 0;
 }</programlisting>
 
-      <para>The previous script stops a process just before the process exits,
-      if the <function>ustack </function> action has been applied to a thread
-      in that process. This technique ensures that the
-      <command>dtrace</command> command can resolve the <acronym>PC</acronym>
-      values to symbolic names. The value of <literal>stop_pids[pid]</literal>
-      is set to <literal>0</literal> after clearing the dynamic
-      variable.</para>
+      <para>Skrypt zatrzymuje proces na chwilę, zanim zakończy on działanie,
+      jeśli użyto wobec wątku tego procesu akcji <function>ustack</function>.
+      Zapewnia to, że komenda <command>dtrace</command> będzie mogła rozwiązać
+      wartości licznika <acronym>PC</acronym> na nazwy symboliczne. Wartość
+      <literal>stop_pids[pid]</literal> jest zerowana po wyczyszczeniu
+      zmiennej dynamicznej.</para>
     </sect2>
 
     <sect2 xml:id="gcgmc">
