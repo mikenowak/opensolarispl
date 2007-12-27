@@ -1019,29 +1019,29 @@ syscall::rexit:entry
     </sect2>
 
     <sect2 xml:id="gcgmc">
-      <title>The <literal>pid</literal> Provider</title>
+      <title>Dostawca <literal>pid</literal></title>
 
       <para><indexterm xml:id="indexterm-33">
           <primary><literal>pid</literal> provider</primary>
-        </indexterm>The <literal>pid</literal> provider enables you to trace
-      any instruction in a process. Unlike most other providers,
-      <literal>pid</literal> probes are created on demand, based on the probe
-      descriptions found in your D programs.</para>
+        </indexterm>Dostawca <literal>pid</literal> pozwala na śledzenie
+      każdej instrukcji w procesie. W odróżnieniu od większości dostawców,
+      sondy <literal>pid</literal> tworzone są na żądanie w oparciu o opis
+      sondy w programie D.</para>
 
       <sect3 xml:id="gcglh">
-        <title>User Function Boundary Tracing</title>
+        <title>Śledzenie granic wykonania funkcji użytkownika</title>
 
         <para><indexterm xml:id="indexterm-34">
             <primary>function boundary testing (FBT)</primary>
-          </indexterm>The simplest mode of operation for the
-        <literal>pid</literal> provider is as the user space analogue to the
-        <literal>fbt</literal> provider. The following example program traces
-        all function entries and returns that are made from a single function.
-        The <literal>$1</literal> macro variable expands to the first operand
-        on the command line. This macro variable is the process ID for the
-        process to trace. The <literal>$2</literal> macro variable expands to
-        the second operand on the command line. This macro variable is the
-        name of the function that all function calls are traced from.</para>
+          </indexterm>Najprostszym sposobem użycia dostawcy
+        <literal>pid</literal> jest wykorzystanie go jako odpowiednika
+        dostawcy <literal>fbt</literal> dla procesów przestrzeni użytkownika.
+        Poniższy przykład śledzi wszystkie wejścia i wyjścia z pojedynczej
+        funkcji. Zmienna makro <literal>$1</literal> rozszerzana jest do
+        pierwszego operandu w linii poleceń. Jest to PID procesu, który ma być
+        śledzony. Druga zmienna makro <literal>$2</literal> jest rozszerzana
+        do drugiego operandu w linii poleceń, czyli nazwy funkcji do
+        śledzenia. </para>
 
         <example xml:id="gcgkx">
           <title><filename>userfunc.d</filename>: Trace User Function Entry
@@ -1065,8 +1065,8 @@ pid$1:::return
 }</programlisting>
         </example>
 
-        <para>This script produces output that is similar to the following
-        example:</para>
+        <para>Wynik działania tego skyrptu jest podobny do poniższego
+        wydruku:</para>
 
         <screen># <userinput>./userfunc.d 15032 execute</userinput>
 dtrace: script './userfunc.d' matched 11594 probes
@@ -1091,28 +1091,26 @@ dtrace: script './userfunc.d' matched 11594 probes
   0        &lt;- s_strcmp                        
 ...</screen>
 
-        <para>The <literal>pid</literal> provider can only be used on
-        processes that are already running. You can use the
-        <literal>$target</literal> macro variable and the
-        <command>dtrace</command> options <option> c</option> and <option>
-        p</option> to create and instrument processes of interest using the
-        <command>dtrace</command> facility. The following D script determines
-        the distribution of function calls that are made to
-        <literal>libc</literal> by a particular subject process:</para>
+        <para>Sond dostawcy <literal>pid</literal> można używać tylko do
+        procesów, które już działają. Aby uruchomić konkretny proces wraz z
+        jego śledzeniem, można użyć zmiennej makro <literal>$target</literal>
+        oraz opcji <command>dtrace</command> <option>c</option> i
+        <option>p</option>. Poniższy D-skrypt ustala dystrybucję wywołań
+        funkcji do biblioteki <literal>libc</literal> z konkretnego
+        procesu:</para>
 
         <programlisting>pid$target:libc.so::entry
 {
 	@[probefunc] = count();
 }</programlisting>
 
-        <para>To determine the distribution of such calls made by the <olink
+        <para>Poniższa komenda ustala dystrybucję wywołań z komendy <olink
         remap="external" targetdoc="816-5165" targetptr="date-1">
         <citerefentry>
             <refentrytitle>date</refentrytitle>
 
             <manvolnum>1</manvolnum>
-          </citerefentry> </olink> command, execute the following
-        command:</para>
+          </citerefentry> </olink>:</para>
 
         <screen># <userinput>dtrace -s libc.d -c date</userinput>
 dtrace: script 'libc.d' matched 2476 probes
@@ -1137,20 +1135,20 @@ dtrace: pid 109196 has exited
       </sect3>
 
       <sect3 xml:id="gcgkv">
-        <title>Tracing Arbitrary Instructions</title>
+        <title>Śledzenie dowolnych instrukcji</title>
 
         <para><indexterm xml:id="indexterm-35">
             <primary><literal>pid</literal> provider</primary>
           </indexterm> <indexterm xml:id="indexterm-36">
             <primary>tracing instructions</primary>
-          </indexterm>You can use the <literal>pid</literal> provider to trace
-        any instruction in any user function. Upon demand, the
-        <literal>pid</literal> provider creates a probe for every instruction
-        in a function. The name of each probe is the offset of its
-        corresponding instruction in the function expressed as a hexadecimal
-        integer. To enable a probe that is associated with the instruction at
-        offset <literal>0x1c</literal> in function <literal>foo</literal> of
-        module <literal>bar.so</literal> in the process with PID 123, use the
+          </indexterm>Za pomocą sond dostawcy <literal>pid</literal> można
+        śledzić dowolną instrukcję w dowolnej funkcji użytkownika. Dostawca
+        <literal>pid</literal> tworzy na żądanie sondę dla każdej instrukcji w
+        funkcji. The name of each probe is the offset of its corresponding
+        instruction in the function expressed as a hexadecimal integer. To
+        enable a probe that is associated with the instruction at offset
+        <literal>0x1c</literal> in function <literal>foo</literal> of module
+        <literal>bar.so</literal> in the process with PID 123, use the
         following command.</para>
 
         <screen># <userinput>dtrace -n pid123:bar.so:foo:1c</userinput>
