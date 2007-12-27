@@ -684,29 +684,29 @@ dtrace: description 'xcalls ' matched 3 probes
   file                                               89889
 #</screen>
 
-        <para>This output indicates that the bulk of the cross calls are
-        originating from <olink remap="external" targetdoc="816-5165"
+        <para>Wydruk komedy wskazuje, że większość międzywywołań pochodzi z
+        procesów <olink remap="external" targetdoc="816-5165"
         targetptr="file-1"> <citerefentry>
             <refentrytitle>file</refentrytitle>
 
             <manvolnum>1</manvolnum>
-          </citerefentry> </olink> and <olink remap="external"
+          </citerefentry> </olink> i <olink remap="external"
         targetdoc="816-5165" targetptr="xargs-1"> <citerefentry>
             <refentrytitle>xargs</refentrytitle>
 
             <manvolnum>1</manvolnum>
-          </citerefentry> </olink> processes. You can find these processes
-        with the <olink remap="external" targetdoc="816-5165"
-        targetptr="pgrep-1"> <citerefentry>
+          </citerefentry> </olink>. Można je odnaleźć za pomocą poleceń <olink
+        remap="external" targetdoc="816-5165" targetptr="pgrep-1">
+        <citerefentry>
             <refentrytitle>pgrep</refentrytitle>
 
             <manvolnum>1</manvolnum>
-          </citerefentry> </olink> and <olink remap="external"
+          </citerefentry> </olink> i <olink remap="external"
         targetdoc="816-5165" targetptr="ptree-1"> <citerefentry>
             <refentrytitle>ptree</refentrytitle>
 
             <manvolnum>1</manvolnum>
-          </citerefentry> </olink> commands.</para>
+          </citerefentry> </olink>.</para>
 
         <screen># <userinput>pgrep xargs</userinput>
 15973
@@ -720,10 +720,9 @@ dtrace: description 'xcalls ' matched 3 probes
             15973 xargs file
               16686 file /usr/bin/tbl /usr/bin/troff /usr/bin/ul /usr/bin/vgrind /usr/bin/catman</screen>
 
-        <para>This output indicates that the <command>xargs</command> and
-        <command>file</command> commands form part of a custom user shell
-        script. To locate this script, you can perform the following
-        commands:</para>
+        <para>Wydruk ten wskazuje, że komendy <command>xargs</command> i
+        <command>file</command> są częścią skryptu powłoki użytkownika. Skrypt
+        ten można znaleźć w poniższy sposób:</para>
 
         <screen># <userinput>find / -name findtxt</userinput>
 /usrs1/james/findtxt
@@ -734,25 +733,25 @@ cat /tmp/findtxt$$ | xargs grep $1
 rm /tmp/findtxt$$
 #</screen>
 
-        <para>This script runs many process concurrently. A large amount of
-        interprocess communication is happening through pipes. The number of
-        pipes makes the script resource intensive. The script attempts to find
-        every text file on the system and then searches each file for a
-        specific text.</para>
+        <para>Skrypt ten wykonuje uruchamia równocześnie wiele procesów.
+        Procesy komunikują się intensywnie za pomocą potoków (ang. pipes).
+        Liczba potoków powoduje, że skrypt jest bardzo zasobożerny. Skrypt
+        wyszukuje wszystkie pliki tekstowe w systemie, a póżniej szuka w nich
+        pewnego fragmentu. </para>
       </example>
     </sect2>
   </sect1>
 
   <sect1 xml:id="gcgkk">
-    <title>Tracing User Processes</title>
+    <title>Śledzenie procesów użytkownika</title>
 
     <para>This section focuses on the DTrace facilities that are useful for
     tracing user process activity and provides examples to illustrate their
     use.</para>
 
     <sect2 xml:id="gcglu">
-      <title>Using the <function>copyin </function> and <function>copyinstr
-      </function> Subroutines</title>
+      <title>Używanie podprogramów <function>copyin </function>i
+      <function>copyinstr</function></title>
 
       <para><indexterm xml:id="indexterm-25">
           <primary>subroutines</primary>
@@ -768,52 +767,52 @@ rm /tmp/findtxt$$
           <primary><function>copyin </function></primary>
         </indexterm> <indexterm xml:id="indexterm-29">
           <primary>user process tracing</primary>
-        </indexterm>DTrace probes execute in the Solaris kernel. Probes use
-      the <function>copyin </function> or <function>copyinstr </function>
-      subroutines to copy user process data into the kernel's address
-      space.</para>
+        </indexterm>Sondy DTrace uruchamiane są w przestrzeni jądra Solarisa.
+      Do kopiowania danych z procesów użytkownika do pamięci jądra używają
+      podprogramów <function>copyin </function>i
+      <function>copyinstr</function>.</para>
 
-      <para>Consider the following <function>write </function> system
-      call:</para>
+      <para>Niech rozważone będzie wywołanie systemowe
+      <function>write</function>:</para>
 
       <programlisting>ssize_t write(int fd, const void *buf, size_t nbytes);</programlisting>
 
-      <para>The following D program illustrates an incorrect attempt to print
-      the contents of a string that is passed to the <command>write</command>
-      system call:</para>
+      <para>Poniższy D-skrypt ilustruje próbę nieprawidłowego wydrukowania
+      zawartości łańcucha przekazanego wywołaniu systemowemu
+      <command>write</command>:</para>
 
       <programlisting>syscall::write:entry
 {
 	printf("%s", stringof(arg1)); /* incorrect use of arg1 */
 }</programlisting>
 
-      <para>When you run this script, DTrace produces error messages similar
-      to the following example.</para>
+      <para>Przy próbie wykonania DTrace wydrukuje komunikat o błędzie podobny
+      do poniższego:</para>
 
       <screen>dtrace: error on enabled probe ID 1 (ID 37: syscall::write:entry): \
     invalid address (0x10038a000) in action #1</screen>
 
-      <para>The <literal>arg1</literal> variable is an address that refers to
-      memory in the process that is executing the system call. Use the
-      <function>copyinstr </function> subroutine to read the string at that
-      address. Record the result with the <function>printf </function>
-      action:</para>
+      <para>Zmienna <literal>arg1</literal> zawiera adres w pamięci należącej
+      do procesu, który wykonuje wywołanie systemowe. Zawartość łańcucha
+      znaków znajdującego się pod tym adresem można odczytać za pomocą
+      podprogramów <function>copyinstr</function> i zapisać akcją
+      <function>printf</function>:</para>
 
       <programlisting>syscall::write:entry
 {
 	printf("%s", copyinstr(arg1)); /* correct use of arg1 */</programlisting>
 
-      <para>The output of this script shows all of the strings that are passed
-      to the <command>write</command> system call.</para>
+      <para>Skrypt drukuje wszystkie łańcuchy przekazane do wywołania
+      systemowego <command>write</command>.</para>
 
       <sect3 xml:id="gcgkr">
-        <title>Avoiding Errors</title>
+        <title>Unikanie błędów</title>
 
-        <para>The <function>copyin </function> and <function>copyinstr
-        </function> subroutines cannot read from user addresses which have not
-        yet been touched. A valid address might cause an error if the page
-        that contains that address has not been faulted in by an access
-        attempt. Consider the following example:</para>
+        <para>Podprogramy <function>copyin </function>i
+        <function>copyinstr</function> nie mogą czytać z nieużywanych jeszcze
+        adresów w przestrzeni użytkownika. Poprawny adres może spowodować
+        błąd, jeśli strona zwierająca ten adres nie pojawił się błąd strony,
+        do której próbowano sięgnąć. Ilustruje to poniższy przykład:</para>
 
         <screen># <userinput>dtrace -n syscall::open:entry'{ trace(copyinstr(arg0)); }'</userinput>
 dtrace: description 'syscall::open:entry' matched 1 probe
@@ -821,14 +820,13 @@ CPU     ID                    FUNCTION:NAME
 dtrace: error on enabled probe ID 2 (ID 50: syscall::open:entry): invalid address
 (0x9af1b) in action #1 at DIF offset 52</screen>
 
-        <para>In the output from the previous example, the application was
-        functioning properly and the address in <literal>arg0</literal> was
-        valid. However, the address in <literal>arg0</literal> referred to a
-        page that the corresponding process had not accessed. To resolve this
-        issue, wait for the kernel or application to use the data before
-        tracing the data. For example, you might wait until the system call
-        returns to apply <function>copyinstr </function>, as shown in the
-        following example:</para>
+        <para>W wydruku aplikacja działa poprawnie i adres przekazany w
+        <literal>arg0</literal> jest poprawny. Niemniej jednak aplikacja nie
+        sięgała jeszcze do strony, w której znajduje się ten adres. Aby
+        uniknąć tego problemu, należy poczekać, aż jądro lub aplikacja użyje
+        danych, zanim zacznie się je śledzić. Można na przykład poczekać, aż
+        wróci wywołanie systemowe, zanim uruchomi się podprogram
+        <function>copyinstr</function>:</para>
 
         <screen># <userinput>dtrace -n syscall::open:entry'{ self-&gt;file = arg0; }' \
 -n syscall::open:return'{ trace(copyinstr(self-&gt;file)); self-&gt;file = 0; }'</userinput>
@@ -839,18 +837,17 @@ CPU     ID                    FUNCTION:NAME
     </sect2>
 
     <sect2 xml:id="gcgmh">
-      <title>Eliminating <command>dtrace</command> Interference</title>
+      <title>Unikanie zakłóceń z <command>dtrace</command></title>
 
       <para><indexterm xml:id="indexterm-30">
           <primary><literal>dtrace</literal> interference</primary>
-        </indexterm>If you trace every call to the <command>write</command>
-      system call, you will cause a cascade of output. Each call to the
-      <function>write </function> function causes the
-      <command>dtrace</command> command to call the <function>write
-      </function> function as it displays the output. This feedback loop is a
-      good example of how the <command>dtrace</command> command can interfere
-      with the desired data. You can use a simple predicate to avoid this
-      behavior, as shown in the following example:</para>
+        </indexterm>Przy śledzeniu wszystkich wywołań systemowych
+      <command>write</command> łatwo spowodować lwainę wydruków. Każde
+      wywołanie funkcji <function>write </function>spowoduje, że komenda
+      <command>dtrace</command> wywoła funkcję <function>write</function>, aby
+      wydrukować wynik pracy. To sprzężenie zwrotne świetnie ilustruje, w jaki
+      sposób <command>dtrace</command> może zakłócić pożądane dane. Przy
+      pomocy prostego predykatu można tego uniknąć:</para>
 
       <programlisting>syscall::write:entry
 /pid != $pid/
@@ -858,40 +855,39 @@ CPU     ID                    FUNCTION:NAME
 	printf("%s", stringof(copyin(arg1, arg2)));
 }</programlisting>
 
-      <para>The <literal>$pid</literal> macro variable expands to the process
-      identifier of the process that enabled the probes. The
-      <literal>pid</literal> variable contains the process identifier of the
-      process whose thread was running on the CPU where the probe was fired.
-      The predicate <literal>/pid != $pid/</literal> ensures that the script
-      does not trace any events related to the running of this script.</para>
+      <para>Zmienna makro <literal>$pid</literal> rozszerzana jest do pełnego
+      identyfikatora procesu, który uruchmił sondy. Zmienna
+      <literal>pid</literal> zawiera identyfikator procesu, ktrego wątek był
+      wykonywany przez procesor w momencie odpalenia sondy. Predykat
+      <literal>/pid != $pid/</literal> zapewnia, że skrypt nie śledzi wyników
+      swojej własnej pracy.</para>
     </sect2>
 
     <sect2 xml:id="gcgld">
-      <title><literal>syscall</literal> Provider</title>
+      <title>Dostawca syscall</title>
 
       <para><indexterm xml:id="indexterm-31">
           <primary>probes</primary>
 
           <secondary><function>syscall </function></secondary>
-        </indexterm>The <literal>syscall</literal> provider enables you to
-      trace every system call entry and return. You can use the <olink
-      remap="external" targetdoc="816-5166" targetptr="prstat-1m">
-      <citerefentry>
+        </indexterm>Dostawca <literal>syscall</literal> pozwala na śledznie
+      punktów wejścia i wyjścia z dowolnego wywołania systemowego. Zachowanie
+      procesu można sprawdzić za pomocą komendy <olink remap="external"
+      targetdoc="816-5166" targetptr="prstat-1m"><citerefentry>
           <refentrytitle>prstat</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> command to see examine process
-      behavior.</para>
+        </citerefentry> </olink>.</para>
 
       <screen>$ <userinput>prstat -m -p 31337</userinput>
    PID USERNAME USR SYS TRP TFL DFL LCK SLP LAT VCX ICX SCL SIG PROCESS/NLWP  
  13499 user1     53  44 0.0 0.0 0.0 0.0 2.5 0.0  4K  24  9K   0 mystery/6</screen>
 
-      <para>This example shows that the process is consuming a large amount of
-      system time. One possible explanation for this behavior is that the
-      process is executing a large number of system calls. You can use a
-      simple D program specified on the command line to see which system calls
-      are happening most often:</para>
+      <para>W powyższym wydruku proces zużywia bardzo dużo czasu systemowego.
+      Jednym z wytłumaczeń może być duża ilość wykonywanych wywołań
+      systemowych. Przy pomocy prostego D-programu zapisanego w linii poleceń
+      można sprawdzić, które wywołania systemowe wykonywane są
+      najczęściej:</para>
 
       <screen># <userinput>dtrace -n syscall:::entry'/pid == 31337/{ @syscalls[probefunc] = count(); }'</userinput>
 dtrace: description 'syscall:::entry' matched 215 probes
@@ -908,10 +904,9 @@ dtrace: description 'syscall:::entry' matched 215 probes
   sigprocmask                                                     106
   write                                                          1092</screen>
 
-      <para>This report shows a large number of system calls to the
-      <function>write </function> function. You can use the
-      <literal>syscall</literal> provider to further examine the source of all
-      the <function>write </function> system calls:</para>
+      <para>Powyższy wydruk pokazuje dużą ilość wywołań funkcji
+      <function>write</function>. Źródło tych wywołań można ustalić za pomocą
+      sond dostawcy <literal>syscall</literal>:</para>
 
       <screen>
 <userinput># dtrace -n syscall::write:entry'/pid == 31337/{ @writes[arg2] = quantize(); }'</userinput>
@@ -933,21 +928,21 @@ dtrace: description 'syscall::write:entry' matched 1 probe
             1024 |@                                        5        
             2048 |                                         0        </screen>
 
-      <para>The output shows that the process is executing many
-      <function>write </function> system calls with a relatively small amount
-      of data.</para>
+      <para>Proces wykonuje dużo wywołań funkcji <function>write </function>z
+      relatywnie małymi porcjami danych.</para>
     </sect2>
 
     <sect2 xml:id="gcgma">
-      <title>The <function>ustack </function> Action</title>
+      <title>Akcja <function>ustack</function></title>
 
       <para><indexterm xml:id="indexterm-32">
           <primary><function>ustack </function></primary>
-        </indexterm>The <function>ustack </function> action traces the user
-      thread's stack. If a process that opens many files occasionally fails in
-      the <function>open </function> system call, you can use the
-      <function>ustack </function> action to discover the code path that
-      executes the failed <function>open </function>:</para>
+        </indexterm>Akcja <function>ustack </function>śledzi stos wątku
+      użytkownika. Jeśli proces otwierający wiele plików co jakiś czas nie
+      potrafi wykonać wywoałania systemowego <function>open</function>, za
+      pomocą akcji <function>ustack </function>można odczytać śceżkę
+      wykonania, która doprowadziła do nieudanego wywołania <function>open
+      </function>:</para>
 
       <programlisting>syscall::open:entry
 /pid == $1/
@@ -962,9 +957,9 @@ syscall::open:return
 	ustack();
 }</programlisting>
 
-      <para>This script also illustrates the use of the <literal>$1</literal>
-      macro variable. This macro variable takes the value of the first operand
-      that is specified on the <command>dtrace</command> command line:</para>
+      <para>Skrypt ten ilustruje także użycie zmiennej makro
+      <literal>$1</literal>. Ta zmienna makro zawiera pierwszy operand
+      przekazany w linii poleceń komendzie <command>dtrace</command>:</para>
 
       <screen># <userinput>dtrace -s ./badopen.d 31337</userinput>
 dtrace: script './badopen.d' matched 2 probes
@@ -980,12 +975,13 @@ CPU     ID                    FUNCTION:NAME
               tcsh`main+0x1d54
               tcsh`_start+0xdc</screen>
 
-      <para>The <function>ustack </function> action records program counter
-      (<acronym>PC</acronym>) values for the stack. The
-      <command>dtrace</command> command resolves those <acronym>PC</acronym>
-      values to symbol names by looking though the process's symbol tables.
-      The <command>dtrace</command> command prints out <acronym>PC</acronym>
-      values that cannot be resolved as hexadecimal integers.</para>
+      <para>Akcja <function>ustack </function>zapisuje wartości licznika
+      programu dla stosu (ang. program counter - <acronym>PC</acronym>).
+      Komenda<command>dtrace</command> rozwiązuje wartości
+      <acronym>PC</acronym> na nazwy symboiczne za pomocą tablicy symboli
+      procesów. Wartości <acronym>PC</acronym>, których komenda
+      <command>dtrace</command> nie potrafiła rozwiązać, drukowane są jako
+      liczby całkowite w systemie szesnastkowym.</para>
 
       <para>When a process exits or is killed before the <function>ustack
       </function> data is formatted for output, the <command>dtrace</command>
