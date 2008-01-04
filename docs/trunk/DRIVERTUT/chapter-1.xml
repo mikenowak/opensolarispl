@@ -55,32 +55,32 @@
       <title>Różnice między modułami jądra a programami przestrzeni
       użytkownika</title>
 
-      <para>This section discusses several important differences between
-      kernel modules and user programs.</para>
+      <para>W podrozdziale przedstawiono ważne różnice między modułami jądra a
+      programami przestrzeni użytkownika.</para>
 
       <sect3 xml:id="emqpr">
-        <title>Execution Differences Between Kernel Modules and User
-        Programs</title>
+        <title>Różnice wykonywania między modułami jądra a programami
+        przestrzeni użytkownika</title>
 
         <itemizedlist>
-          <para>The following characteristics of kernel modules highlight
-          important differences between the execution of kernel modules and
-          the execution of user programs:</para>
+          <para>Poniższa charakterystyka modułów jądra podkreśla ważne różnice
+          między wykonywaniem modułów jądra a programów użytkownika:</para>
 
           <listitem>
             <para><indexterm xml:id="indexterm-6">
                 <primary>kernel</primary>
 
                 <secondary>address space</secondary>
-              </indexterm> <emphasis role="strong">Kernel modules have
-            separate address space.</emphasis> A module runs in
-            <emphasis>kernel space</emphasis>. An application runs in
-            <emphasis>user space</emphasis>. System software is protected from
-            user programs. Kernel space and user space have their own memory
-            address spaces. See <olink remap="internal"
-            targetdoc="chapter-1.xml" targetptr="eoqob">User and Kernel
-            Address Spaces on x86 and SPARC Machines</olink> for important
-            information about address spaces.</para>
+              </indexterm> <emphasis role="strong">Moduły jądra mają odrębną
+            przestrzeń adresową.</emphasis> Moduł działa w
+            <emphasis>przestrzeni jądra</emphasis>. Program działa w
+            <emphasis>przestrzeni użytkownika</emphasis>. Oprogramowanie
+            systemowe jest chronione przed programami użytkownika. Przestrzeń
+            jądra i prrzestrzeń użytkownika mają własne, odrębne przestrzenie
+            adresowe. Więcej informacji o przestrzeniach adresowych w <olink
+            remap="internal" targetdoc="chapter-1.xml" targetptr="eoqob">User
+            and Kernel Address Spaces on x86 and SPARC
+            Machines</olink>.</para>
           </listitem>
 
           <listitem>
@@ -90,54 +90,57 @@
                 <secondary>privilege</secondary>
 
                 <seealso>kernel mode</seealso>
-              </indexterm> <emphasis role="strong">Kernel modules have higher
-            execution privilege.</emphasis> Code that runs in kernel space has
-            greater privilege than code that runs in user space. Driver
-            modules potentially have a much greater impact on the system than
-            user programs. Test and debug your driver modules carefully and
-            thoroughly to avoid adverse impact on the system. See <olink
-            remap="external" targetdoc="chapter-4.xml"
-            targetptr="fdlbq">Device Driver Testing Tips</olink>.</para>
+              </indexterm> <emphasis role="strong">Moduły jądra mają wyższy
+            przywilej.</emphasis> Kod działający w przestrzeni jądra ma wyższy
+            przywilej, niż kod działający w przestrzeni użytkownika.
+            Sterowniki urządzeń mają możliwość większego oddziaływania na
+            system, niż programy użytkowników. Kod sterowników musi być
+            dokładnie przetestowany, aby uniknąć niegatywnego wpłuwy na
+            system. Więcej informacji w <olink remap="external"
+            targetdoc="chapter-4.xml" targetptr="fdlbq">Device Driver Testing
+            Tips</olink>.</para>
           </listitem>
 
           <listitem>
-            <para><emphasis role="strong">Kernel modules do not execute
-            sequentially.</emphasis> A user program typically executes
-            sequentially and performs a single task from beginning to end. A
-            kernel module does not execute sequentially. A kernel module
-            registers itself in order to serve future requests.</para>
+            <para><emphasis role="strong">Moduły jądra nie są wykonywane
+            sekwencyjnie.</emphasis> Program użytkownika zazwyczaj wykonywany
+            jest sekwencyjnie i wykonuje jedno zadanie od początku do końca.
+            Moduł jądra nie jest wykonywany sekwencyjnie. Moduł jądra
+            rejestruje się w celu obsługi późniejszych żądań.</para>
           </listitem>
 
           <listitem>
-            <para><emphasis role="strong">Kernel modules can be
-            interrupted.</emphasis> More than one process can request your
-            driver at the same time. An interrupt handler can request your
-            driver at the same time that your driver is serving a system call.
-            In a symmetric multiprocessor (SMP) system, your driver could be
-            executing concurrently on more than one CPU.</para>
+            <para><emphasis role="strong">Działanie modułu jądra podlega
+            przerwaniom.</emphasis> Więcej niż jeden proces może żądać
+            działania od sterownika urządzenia. Obsługa przerwań może zarządać
+            działania od sterownika w tym samym momencie, gdy obsługue on już
+            jakieś żądanie. W środowisku równoczesnego wykonywania
+            wieloprocesorowego (SMP) sterownik może być wykonywany
+            równocześnie na wielu procesorach.</para>
           </listitem>
 
           <listitem>
-            <para><emphasis role="strong">Kernel modules must be
-            preemptable.</emphasis> You cannot assume that your driver code is
-            safe just because your driver code does not block. Design your
-            driver assuming your driver might be preempted.</para>
+            <para><emphasis role="strong">Moduł jądra musi dać się
+            wywłaszczać.</emphasis> Nawet jeśli kod sterownika nie zakłada
+            blokad, nie można założyć, że jest bezpieczny. Sterowniki należy
+            projektować z założeniem, że mogą być wywłaszczane.</para>
           </listitem>
 
           <listitem>
-            <para><emphasis role="strong">Kernel modules can share
-            data.</emphasis> Different threads of an application program
-            usually do not share data. By contrast, the data structures and
-            routines that constitute a driver are shared by all threads that
-            use the driver. Your driver must be able to handle contention
-            issues that result from multiple requests. Design your driver data
-            structures carefully to keep multiple threads of execution
-            separate. Driver code must access shared data without corrupting
-            the data. See <olink remap="external" targetdoc="819-3196"
-            targetptr="mt-17026">Chapter 3, <citetitle
+            <para><emphasis role="strong">Moduły jądra mogą współdzielić
+            dane.</emphasis> Odrębne wątki wykonywanego programu zazwyczaj nie
+            daje współdzielą danych. Natomiast struktury danych i podprogramy,
+            które składają się na sterownik urządzenia są współdzielone przez
+            wszystkie wątki, które użytkują sterownik. Sterownik musi więc
+            obsłużyć problemy ze spójnością wynikłe z wielu równoczesnych
+            żądań. Struktury danych muszą być projektowane bardzo ostrożnie,
+            aby utrzymać rozłączność wykonywanych równocześnie wątków. Kod
+            sterownika musi obsługiwać współdzielone dane bez niszczenia lub
+            psucia ich. Więcej informacji w <olink remap="external"
+            targetdoc="819-3196" targetptr="mt-17026">Chapter 3, <citetitle
             remap="chapter">Multithreading,</citetitle> in <citetitle
-            remap="book">Writing Device Drivers</citetitle> </olink> and
-            <olink remap="external" targetdoc="816-5137"> <citetitle
+            remap="book">Writing Device Drivers</citetitle> </olink> i <olink
+            remap="external" targetdoc="816-5137"> <citetitle
             remap="book">Multithreaded Programming Guide</citetitle>
             </olink>.</para>
           </listitem>
@@ -145,13 +148,12 @@
       </sect3>
 
       <sect3 xml:id="emqqh">
-        <title>Structural Differences Between Kernel Modules and User
-        Programs</title>
+        <title>Różnice strukturalne między modułami jądra a programami
+        użytkownika</title>
 
         <itemizedlist>
-          <para>The following characteristics of kernel modules highlight
-          important differences between the structure of kernel modules and
-          the structure of user programs:</para>
+          <para>Poniższa charakterystyka modułów jądra podkreśla ważne różnice
+          w strukturze modułów jądra a programów użytkownika:</para>
 
           <listitem>
             <para><indexterm xml:id="indexterm-8">
@@ -160,20 +162,20 @@
                 <secondary>entry points</secondary>
 
                 <seealso>entry points</seealso>
-              </indexterm> <emphasis role="strong">Kernel modules do not
-            define a main program.</emphasis> Kernel modules, including device
-            drivers, have no <function>main </function> routine. Instead, a
-            kernel module is a collection of subroutines and data. A device
-            driver is a kernel module that forms a software interface to an
-            input/output (I/O) device. The subroutines in a device driver
-            provide <emphasis>entry points</emphasis> to the device. The
-            kernel uses a device number attribute to locate the <function>open
-            </function> routine and other routines of the correct device
-            driver. See <olink remap="internal" targetdoc="chapter-1.xml"
-            targetptr="emjjs">Device Drivers</olink> for more information on
-            entry points. See <olink remap="internal"
-            targetdoc="chapter-1.xml" targetptr="fgove">Device Numbers</olink>
-            for a description of device numbers.</para>
+              </indexterm> <emphasis role="strong">Moduły jądra nie mają
+            części main.</emphasis> Moduły jądra, włącznie ze sterownikami
+            urządzeń, nie mają funkcji <function>main</function>. Moduł jest
+            zbiorem funkcji i struktur danych. Sterownik jest modułem jądra,
+            który zapewnia programowy interfejs I/O urządzenia. Funkcje
+            sterownika zapewaniają <emphasis>punkty wejścia</emphasis> do
+            urządzenia. Jądro używa numeru urządzenia do zlokalizowania
+            funkcji <function>open</function> oraz innych funkcji właściwych
+            dla sterownika urządzenia. Więcej informacji o punktach wejścia w
+            <olink remap="internal" targetdoc="chapter-1.xml"
+            targetptr="emjjs">Device Drivers</olink>. Więcej informacji o
+            numerach urządzeń w <olink remap="internal"
+            targetdoc="chapter-1.xml" targetptr="fgove">Device
+            Numbers</olink>.</para>
           </listitem>
 
           <listitem>
@@ -185,28 +187,29 @@
                 <secondary><command>ld</command></secondary>
               </indexterm> <indexterm xml:id="indexterm-11">
                 <primary><command>ld</command> command</primary>
-              </indexterm> <emphasis role="strong">Kernel modules are linked
-            only to the kernel.</emphasis> Kernel modules do not link in the
-            same libraries that user programs link in. The only functions a
-            kernel module can call are functions that are exported by the
-            kernel. If your driver references symbols that are not defined in
-            the kernel, your driver will compile but will fail to load.
-            Solaris OS driver modules should use prescribed DDI/DKI (Device
-            Driver Interface, Driver-Kernel Interface) interfaces. When you
-            use these standard interfaces you can upgrade to a new Solaris
-            release or migrate to a new platform without recompiling your
-            driver. For more information on the DDI, see<olink
-            remap="external" targetdoc="819-3196" targetptr="kernelovr-40">
-            <citetitle remap="section">DDI/DKI Interfaces</citetitle> in
-            <citetitle remap="book">Writing Device Drivers</citetitle>
-            </olink>. Kernel modules can depend on other kernel modules by
-            using the <option> N</option> option during link editing. See the
-            <olink remap="external" targetdoc="819-2239" targetptr="ld-1">
-            <citerefentry>
+              </indexterm> <emphasis role="strong">Moduły jądra są
+            konsolidowane (ang. linked) tylko z jądrem.</emphasis> Moduły
+            jądra nie są konsolidowane z tymi samymi bibliotekami, z którymi
+            konsolidowane są programy użytkownika. JEdynymi funkcjami, które
+            może wywołać moduł jądra są funkcje eksportowane przez jądro.
+            Jeśli sterownik odwołuje się do funkcji niezdefiniowanych w
+            jądrze, skompiluje się, ale nie da się załadować. Sterowniki
+            Solaris OS powinny używać interfejsów DDI/DKI (Device Driver
+            Interface, Driver-Kernel Interface). Używanie tych interfejsów
+            pozwala na migrację do nowej platformy lub uaktualnienie systemu
+            bez rekompilowania sterownika. Więcej informacji o DDI w <olink
+            remap="external" targetdoc="819-3196"
+            targetptr="kernelovr-40"><citetitle remap="section">DDI/DKI
+            Interfaces</citetitle> in <citetitle remap="book">Writing Device
+            Drivers</citetitle> </olink>. Moduły jądra mogą zależeć od innych
+            modułów. Wskazuje się to opcją <option>N</option> podczas
+            edytowania konsolidacji. Więcej informacji na ten temat w
+            podręczniku man <olink remap="external" targetdoc="819-2239"
+            targetptr="ld-1"> <citerefentry>
                 <refentrytitle>ld</refentrytitle>
 
                 <manvolnum>1</manvolnum>
-              </citerefentry> </olink> man page for more information.</para>
+              </citerefentry> </olink>.</para>
           </listitem>
 
           <listitem>
