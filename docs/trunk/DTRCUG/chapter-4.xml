@@ -783,7 +783,7 @@ rm /tmp/findtxt$$
 
       <programlisting>syscall::write:entry
 {
-	printf("%s", stringof(arg1)); /* incorrect use of arg1 */
+	printf("%s", stringof(arg1)); /* Nieprawidłowe użycie arg1 */
 }</programlisting>
 
       <para>Przy próbie wykonania DTrace wydrukuje komunikat o błędzie podobny
@@ -800,7 +800,7 @@ rm /tmp/findtxt$$
 
       <programlisting>syscall::write:entry
 {
-	printf("%s", copyinstr(arg1)); /* correct use of arg1 */</programlisting>
+	printf("%s", copyinstr(arg1)); /* prawidłowe użycie arg1 */</programlisting>
 
       <para>Skrypt drukuje wszystkie łańcuchy przekazane do wywołania
       systemowego <command>write</command>.</para>
@@ -1241,7 +1241,7 @@ CPU     ID                    FUNCTION:NAME
       sond, predykatów akcji i opcji. Komenda <command>dtrace</command>
       dołączy do pliku konfiguracyjnego sterownika <olink remap="external"
       targetdoc="816-5177" targetptr="dtrace-7d"><citerefentry>
-          <refentrytitle> dtrace</refentrytitle>
+          <refentrytitle>dtrace</refentrytitle>
 
           <manvolnum>7D</manvolnum>
         </citerefentry></olink> pewną liczbę właściwości sterownika
@@ -1299,7 +1299,7 @@ CPU     ID                    FUNCTION:NAME
       <para>Komenda <command>dtrace</command> drukuje komunikaty o błędzie
       przy wystąpieniu błędów i zrzutów podczas podłączania do stanu
       anonimowego. Komunikaty te są takie same dla śledzenia anonimowego jak i
-      nieanonimowego. </para>
+      nieanonimowego.</para>
     </sect2>
 
     <sect2 xml:id="gcgki">
@@ -1473,12 +1473,12 @@ dtrace: run update_drv(1M) or reboot to enable changes
     predykaty. Są jednak przydatne tylko w sytuacji, gdy wiadomo z góry, które
     sondy należy śledzić, nie nadają się jednak w sytuacji, gdy nie można z
     góry ustalić, czy zdarzenie powiązane z odpaleniem danej sondy ma
-    znaczenie, czy też nie. </para>
+    znaczenie, czy też nie.</para>
 
     <para>Jeśli zdarza się co jakiś czas, że wywołanie systemowe zwraca ten
     sam błąd, można prześledzić ścieżkę wykonania wiodącą do tego błędu. Przy
     pomocy śledzenia spekulatywnego można prześledzić dane w kliku miejscach
-    próbkowania, a póżniej zdecydować, które dołączyć do buforu głównego. W
+    próbkowania, a później zdecydować, które dołączyć do buforu głównego. W
     rezultacie ślad zawiera tylko interesujące z tego punktu widzenia dane i
     nie wymaga póżniejszego przetwarzania.</para>
 
@@ -1514,10 +1514,10 @@ dtrace: run update_drv(1M) or reboot to enable changes
             <row>
               <entry><para> <literal>speculation</literal> </para></entry>
 
-              <entry><para>None</para></entry>
+              <entry><para>Brak</para></entry>
 
-              <entry><para>Returns an identifier for a new speculative
-              buffer</para></entry>
+              <entry><para>Zwraca identyfikator nowego buforu
+              spekulacyjnego</para></entry>
             </row>
 
             <row>
@@ -1525,8 +1525,9 @@ dtrace: run update_drv(1M) or reboot to enable changes
 
               <entry><para>ID</para></entry>
 
-              <entry><para>Denotes that the remainder of the clause should be
-              traced to the speculative buffer specified by ID</para></entry>
+              <entry><para>Oznacza moment w klauzuli, od którego powinno
+              rozpocząć się śledzenie do buforu spekulacyjnego wskazanego
+              przez ID</para></entry>
             </row>
 
             <row>
@@ -1534,8 +1535,8 @@ dtrace: run update_drv(1M) or reboot to enable changes
 
               <entry><para>ID</para></entry>
 
-              <entry><para>Commits the speculative buffer that is associated
-              with ID</para></entry>
+              <entry><para>Zapisuje bufor spekulacyjny wskazywany przez
+              ID</para></entry>
             </row>
 
             <row>
@@ -1543,7 +1544,7 @@ dtrace: run update_drv(1M) or reboot to enable changes
 
               <entry><para>ID</para></entry>
 
-              <entry><para>Discards the speculative buffer associated with
+              <entry><para>Odrzuca bufor spekulacyjny wskazywany przez
               ID</para></entry>
             </row>
           </tbody>
@@ -1598,11 +1599,11 @@ dtrace: run update_drv(1M) or reboot to enable changes
       </function>będzie śledziła domyślną akcję, która śledzi tylko ID
       włączonej sondy.</para>
 
-      <para>The typical use of the <function>speculation </function> function
-      is to assign the result of the <function>speculation </function>
-      function to a thread-local variable. That thread-local variable acts as
-      a subsequent predicate to other probes, as well as an argument to
-      <function>speculate </function>.</para>
+      <para>Typowym przykładem użycia funkcji <function>speculation
+      </function>jest zapisanie wyniku działania tej funkcji do zmiennej
+      lokalnej dla wątku. Zmienna lokalna dla wątku pełni funkcję predykatu
+      dla innych sond oraz jako argument dla funkcji
+      <function>speculate</function>.</para>
 
       <example xml:id="gcgmg">
         <title>Typical Use of The <function>speculation </function>
@@ -1617,58 +1618,59 @@ syscall:::
 /self-&gt;spec/
 {
 	speculate(self-&gt;spec);
-	printf("this is speculative");
+	printf("To jest spekulatywne.");
 }</programlisting>
       </example>
     </sect2>
 
     <sect2 xml:id="gcglw">
-      <title>Committing a Speculation</title>
+      <title>Zapisywanie spekulacji</title>
 
       <para><indexterm xml:id="indexterm-46">
           <primary>speculation</primary>
 
           <secondary>committing</secondary>
-        </indexterm>Commit speculations by using the <function>commit
-      </function> function. When you commit a speculative buffer the buffer's
-      data is copied into the principal buffer. If the data in the speculative
-      buffer exceeds the available space in the principal buffer, no data is
-      copied and the drop count for the buffer increments. If the buffer has
-      been speculatively traced on more than one CPU, the speculative data on
-      the committing CPU is copied immediately, while speculative data on
-      other CPUs is copied after the <function>commit </function>.</para>
+        </indexterm>Spekulację zapisuje się przy pomocy funkcji
+      <function>commit</function>. Po zapisaniu buforu spekulacyjnego jego
+      dane kopiowane są do głównego buforu. Jeśli dane w buforze spekulacyjnym
+      są większa od wolnej przestrzeni w głównym buforze, dane nie zostaną
+      skopiowane a licznik odrzuceń buforu będzie zwiększony. Jeśli śledzenie
+      spekulatywne odbywa się równocześnie na kilku procesorach, dane ze
+      śledzącego procesora zapisywane są najpierw, natomiast dane z
+      pozostałych procesorów zapisywane są po
+      <function>commit</function>.</para>
 
-      <para>A speculative buffer that is being committed is not available to
-      subsequent <function>speculation </function> calls until each per-CPU
-      speculative buffer is completely copied into its corresponding per-CPU
-      principal buffer. Subsequent attempts to write the results of a
-      <function>speculate </function> function call to the committing buffer
-      discard the data without generating an error. Subsequent calls to
-      <function>commit </function> or <function>discard </function> also fail
-      without generating an error. A clause that contains a <function>commit
-      </function> function cannot contain a data recording action, but a
-      clause can contain multiple <function>commit </function> calls to commit
-      disjoint buffers.</para>
+      <para>Podczas kopiowania danych do głównego buforu, aż do skopiowania
+      wszystkich buforów spekulacyjnych na każdym procesorze do
+      odpowiadających im buforów główych, bufory spekulacyjne są nieosiągalne
+      dla następnych wywołań <function>speculation</function>. Kolejne próby
+      zapisania wyników funkcji <function>speculate</function> do kopiowanego
+      buforu są odrzucane bez zgłaszania błędu. Kolejne wywołania
+      <function>commit </function>lub <function>discard </function>są również
+      po cichu odrzucane. Klauzula zawierająca wywołanie funkcji
+      <function>commit</function> nie może zawierać akcji zapisujących dane,
+      ale może zawierać wiele wywoań funkcji <function>commit </function>w
+      celu zapisania oddzielnych buforów.</para>
     </sect2>
 
     <sect2 xml:id="gcgkq">
-      <title>Discarding a Speculation</title>
+      <title>Odrzucanie spekulacji</title>
 
       <para><indexterm xml:id="indexterm-47">
           <primary>speculation</primary>
 
           <secondary>discarding</secondary>
-        </indexterm>Discard speculations by using the <function>discard
-      </function> function. If the speculation has only been active on the CPU
-      that is calling the <function>discard </function> function, the buffer
-      is immediately available for subsequent calls to the
-      <function>speculation </function> function. If the speculation has been
-      active on more than one CPU, the discarded buffer will be available for
-      subsequent calls to the <function>speculation </function> function after
-      the call to <function>discard </function>. If no speculative buffers are
-      available at the time that the <function>speculation </function>
-      function is called a<command>dtrace</command> message that is similar to
-      the following example is generated:</para>
+        </indexterm>Spekulacje odrzuca się za pomocą funkcji
+      <function>discard</function>. Jeśli spekulacja odbywała się tylko na
+      procesorze, który wywołuje <function>discard</function>, bufor jest
+      natychmiast dostępny dla kolejnych wywołań funkcji
+      <function>speculation</function>. Jeśli spekulacja była wykonywana na
+      większej ilości procesorów, odrzucony bufor będzie dostępny dla
+      kolejnych wywołań funkcji <function>speculation</function> po
+      zakończeniu wywołania <function>discard</function>. Jeśli nie ma wolnych
+      buforów spekulacyjnych podczas wywoływania funkcji
+      <function>speculation</function>, <command>dtrace</command> drukuje
+      wiadomość podobną do poniższej:</para>
 
       <screen>dtrace: 905 failed speculations (available buffer(s) still busy)</screen>
     </sect2>
@@ -1704,18 +1706,18 @@ syscall::open:entry,
 syscall::open64:entry
 {
 	/*
-	 * The call to speculation() creates a new speculation.  If this fails,
-	 * dtrace(1M) will generate an error message indicating the reason for
-	 * the failed speculation(), but subsequent speculative tracing will be
-	 * silently discarded.
+	 * Odwołanie do speculation() tworzy nową spekulację. Jeśli się nie powiedzie,
+	 * dtrace(1M) wydrukuje informację o błędzie wskazującą przyczynę 
+	 * niepowodzenia wywołania speculation(), ale następne spekulacyjne ślady będą 
+	 * po cichu odrzucone.
 	 */
 	self-&gt;spec = speculation();
 	speculate(self-&gt;spec);
 
 	/*
-	 * Because this printf() follows the speculate(), it is being 
-	 * speculatively traced; it will only appear in the data buffer if the
-	 * speculation is subsequently commited.
+	 * Ten printf() pojawia się po speculate(), dlatego jest 
+	 * śledzony spekulatywnie; pojawi się w buforze śledzenia
+	 * tylko po zapisaniu danych spekulatywnych.
 	 */
 	printf("%s", stringof(copyinstr(arg0)));
 }
@@ -1724,8 +1726,8 @@ fbt:::
 /self-&gt;spec/
 {
 	/*
-	 * A speculate() with no other actions speculates the default action:
-	 * tracing the EPID.
+	 * Akcja speculate() bez innych akcji wykonuje akcję domyślną:
+	 * śledznie EPID.
 	 */
 	speculate(self-&gt;spec);
 }
@@ -1735,10 +1737,11 @@ syscall::open64:return
 /self-&gt;spec/
 {
 	/*
-	 * To balance the output with the -F option, we want to be sure that
-	 * every entry has a matching return.  Because we speculated the
-	 * open entry above, we want to also speculate the open return.
-	 * This is also a convenient time to trace the errno value.
+	 * W celu utrzymania równowagi dla opcji -F, należy upewnić się, 
+	 * że kaźdy punkt wejścia ma odpowiadający mu punkt wyjścia.
+	 * Ponieważ spekulowane było powyżej wejście do open , tutaj 
+	 * spekulowane będzie wyjście z open. To jest również dobry moment
+	 * na sprawdzenie errno.
 	 */
 	speculate(self-&gt;spec);
 	trace(errno);
@@ -1749,7 +1752,7 @@ syscall::open64:return
 /self-&gt;spec &amp;&amp; errno != 0/
 {
 	/*
-	 * If errno is non-zero, we want to commit the speculation.
+	 * Jeśli errno jets różne od zera, spekulacja będzie zapisana.
 	 */
 	commit(self-&gt;spec);
 	self-&gt;spec = 0;
@@ -1760,7 +1763,7 @@ syscall::open64:return
 /self-&gt;spec &amp;&amp; errno == 0/
 {
 	/*
-	 * If errno is not set, we discard the speculation.
+	 * Jeśli nie ustawiono errno, spekulacja będzie odrzucona.
 	 */
 	discard(self-&gt;spec);
 	self-&gt;spec = 0;
