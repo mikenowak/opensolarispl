@@ -996,18 +996,18 @@ REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
     </sect2>
 
     <sect2 xml:id="gaypi">
-      <title>Terminologia transakcyjna</title>
+      <title>Semantyka transakcyjna</title>
 
       <para>ZFS jest transakcyjnym systemem plików, co znaczy, że stan systemu
       plików na dysku jest zawsze spójny. Tradycyjny system plików nadpisuje
-      dane. W przypadku utraty zasilania na przykład między zapisem bloku a
+      dane. W przypadku utraty zasilania przykładowo między zapisem bloku a
       podlinkowaniem do katalogu, system plików będzie w niespójnym stanie.
       Wcześniej problem ten był rozwiązywany poprzez użycie polecenia
       <command>fsck</command>. Było ono odpowiedzialne za przeczytanie i
       zweryfikowanie stanu systemu plików oraz wykonanie prób naprawy każdej
-      napotkanej niespójności. Problem ten było dokuczliwy i nigdy nie
+      napotkanej niespójności. Problem ten był dokuczliwy i nigdy nie
       gwarantował rozwiązania wszystkich problemów. Dopiero niedawno
-      przedstawiono koncepcję <emphasis>indeksowania</emphasis> (journaling).
+      przedstawiono koncepcję <emphasis>dziennika zmian</emphasis> (journaling).
       Polega ona na zapisywaniu wszystkich działań w oddzielnym dzienniku,
       który może być odtworzony bezpiecznie, jeśli system ulegnie awarii. Taki
       proces tworzy niepotrzebną nadmiarowość, ponieważ dane muszą być
@@ -1033,9 +1033,9 @@ REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
       zasilania lub awarię systemu. Zatem nie ma potrzeby, by istniał
       odpowiednik polecenia <command>fsck</command>. Kiedy ostatnio zapisywane
       części danych mogły zostać utracone, system plików zawsze pozostaje
-      spójny. Ponadto zsynchronizowane dane (zapisywane z flagą
-      <varname>O_DSYNC</varname>), są zawsze zapisywane zanim zostaną
-      zwrócone, dlatego istnieje gwarancja, iż nie ma możliwości ich
+      spójny. Ponadto dane synchroniczne (zapisywane z flagą
+      <varname>O_DSYNC</varname>), są zawsze zapisywane fizycznie zanim nastąpi
+      powrót z funkcji zapisu, dlatego istnieje gwarancja, że nie ma możliwości ich
       utraty.</para>
     </sect2>
 
