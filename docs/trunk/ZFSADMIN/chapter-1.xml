@@ -262,7 +262,7 @@ users/home/oldfiles   compression  gzip-9          local</screen>
       możliwość. Są to tak zwane <emphasis>bloki ditto</emphasis>.</para>
 
       <para>W tej wersji Solarisa można nakazać również równoczesne
-      przechowywanie kilku kopii danych użytkowników za pomocą komendy
+      przechowywanie kilku kopii danych użytkowników za pomocą polecenia
       <command>zfs set copies</command>. Na przykład:</para>
 
       <screen># <userinput>zfs set copies=2 users/home</userinput>
@@ -288,7 +288,7 @@ users/home  copies    2           local</screen>
         </listitem>
 
         <listitem>
-          <para>Umożliwia na precyzowanie zasad ochrony danych na poziomie
+          <para>Umożliwia określenie zasad ochrony danych na poziomie
           systemu plików, niezależnie od możliwości puli.</para>
         </listitem>
       </itemizedlist>
@@ -320,14 +320,13 @@ users/home  copies    2           local</screen>
       <title>Poprawione wyjście polecenia <command>zpool status</command></title>
 
       <para><emphasis role="strong">Solaris Express 1/07:</emphasis> Za pomocą
-      komendy <command>zpool status</command> <option> v</option> można
-      wydrukować listę plików z nieodwracalnymi błędami. Poprzednio należało
-      użyć komendy <command>find</command> <option> inum</option> do
+      komendy <command>zpool status</command> <option>v</option> można
+      wyświetlić listę plików z nieodwracalnymi błędami. Poprzednio należało
+      użyć komendy <command>find</command> <option>inum</option> do
       zidentyfikowania plików na podstawie listy inode'ów.</para>
 
-      <para>Więcej informacji o drukowaniu listy plików z nieodwracalnymi
-      błędami w <olink remap="external" targetdoc="chapter-9.xml"
-      targetptr="gbctx">Naprawianie uszkodzonych plików i
+      <para>Więcej informacji: <olink remap="external" targetdoc="chapter-9.xml"
+      targetptr="gbctx">Naprawa uszkodzonych plików i
       katalogów</olink>.</para>
     </sect2>
 
@@ -335,8 +334,8 @@ users/home  copies    2           local</screen>
       <title>Poprawienie funkcjonalności ZFS oraz Solaris iSCSI</title>
 
       <para><emphasis role="strong">Solaris Express, Developer Edition
-      2/07:</emphasis> W tej wersji Solarisa można tworzyć wolumeny ZFS jako
-      cele Solaris iSCSI ustawiając dla wolumenu parametr
+      2/07:</emphasis> W tej wersji Solarisa można tworzyć woluminy ZFS jako
+      cele Solaris iSCSI ustawiając dla woluminu parametr
       <literal>shareiscsi</literal>. Jest to wygodna metoda szybkiego
       konfigurowania celów Solaris iSCSI. Na przykład:</para>
 
@@ -348,38 +347,37 @@ Target: tank/volumes/v2
     Connections: 0</screen>
 
       <para>Po stworzeniu celu iSCSI należy skonfigurować inicjatora iSCSI.
-      Więcej informacji na ten temat w <olink remap="external"
+      Więcej informacji na ten temat: <olink remap="external"
       targetdoc="819-2723" targetptr="fmvcd">Rozdział 14, <citetitle
       remap="chapter">Configuring Solaris iSCSI Targets and Initiators
-      (Tasks),</citetitle> in <citetitle remap="book">System Administration
+      (Tasks),</citetitle> w <citetitle remap="book">System Administration
       Guide: Devices and File Systems</citetitle> </olink>.</para>
 
-      <para>Więcej informacji o zarządzaniu wolumenami ZFS jako celami iSCSI w
-      <olink remap="external" targetdoc="chapter-8.xml"
-      targetptr="gechv">Używanie wolumenu ZFS jako celu Solaris
-      iSCSI</olink>.</para>
+      <para>Więcej informacji: <olink remap="external" targetdoc="chapter-8.xml"
+      targetptr="gechv">Używanie woluminu ZFS jako celu iSCSI</olink>.</para>
     </sect2>
 
     <sect2 xml:id="gebwp">
       <title>Rozszerzenia w udostępnianiu systemów plików ZFS</title>
 
       <para><emphasis role="strong">Solaris Express, Developer Edition
-      2/07:</emphasis> W tej wersji Solarisa poprawiono proces współdzielenia
-      systemów plików. Wprawdzie nie ma konieczności poprawiania plików
+      2/07:</emphasis> W tej wersji Solarisa poprawiono proces udostępniania
+      systemów plików. Chociaż nie ma konieczności poprawiania plików
       konfiguracyjnych, jak na przykład <filename>/etc/dfs/dfstab</filename>,
-      można użyć komendy <command>sharemgr</command> do zarządzania
-      właściwościami współdzielenia ZFS. Komenda <command>sharemgr</command>
-      umożliwia zarządzanie grupami współdzielenia. Systemy współdzielone ZFS
-      są automatycznie częścią grupy <literal>zfs</literal>.</para>
+      można użyć polecenia <command>sharemgr</command> do zarządzania
+      właściwościami udostępniania systemów plików ZFS. Polecenie
+      <command>sharemgr</command> umożliwia zarządzanie grupami udostępniania.
+      Udostępniane systemy plików ZFS są automatycznie częścią grupy
+      <literal>zfs</literal>.</para>
 
-      <para>Tak jak w poprzednich wersjach, można ustawić właściwość ZFS
-      <literal>sharenfs</literal> w celu współdzielenia go. Na
+      <para>Tak jak w poprzednich wersjach, można ustawić parametr ZFS
+      <literal>sharenfs</literal> w celu udostępnienia go. Na
       przykład:</para>
 
       <screen># zfs set sharenfs=on tank/home</screen>
 
-      <para>Można też użyć nowej komendy <command>sharemgr</command>
-      <command>add-share</command>. Na przykład:</para>
+      <para>Można też użyć nowego polecenia <command>sharemgr</command>
+      <command>add-share</command>. Przykładowo:</para>
 
       <screen># sharemgr add-share -s tank/data zfs
 # sharemgr show -vp zfs
@@ -390,9 +388,9 @@ zfs nfs=()
           /tank/data/2
           /tank/data/3</screen>
 
-      <para>Można wtedy używać komendy <command>sharemgr</command> do
+      <para>Można wtedy używać polecenia <command>sharemgr</command> do
       zarządzania udziałami ZFS. W poniższym przykładzie na udziale ZFS
-      ustawiono właściwość <literal>nosuid</literal>. Należy poprzedzić
+      ustawiono parametr <literal>nosuid</literal>. Należy poprzedzić
       ścieżki ZFS nazwą grupy <literal>/zfs</literal>.</para>
 
       <screen># sharemgr set -P nfs -p nosuid=true zfs/tank/data
@@ -404,7 +402,7 @@ zfs nfs=()
           /tank/data/2
           /tank/data/3</screen>
 
-      <para>Więcej informacji w <olink remap="external" targetdoc="819-2240"
+      <para>Więcej informacji: <olink remap="external" targetdoc="819-2240"
       targetptr="sharemgr-1m"> <citerefentry>
           <refentrytitle>sharemgr</refentrytitle>
 
@@ -435,7 +433,7 @@ History for 'tank':
       <emphasis>dokładnej</emphasis> historii wykonanych poleceń, ułatwiając
       poszukiwanie błędu.</para>
 
-      <para>Można wskazać konkretną pulę komendzie <command>zpool
+      <para>Można wskazać konkretną pulę poleceniu <command>zpool
       history</command>. Na przykład:</para>
 
       <screen># <userinput>zpool history newpool</userinput>
@@ -447,7 +445,7 @@ History for 'newpool':
 2007-04-25.11:38:09 zfs create newpool/user1
 2007-04-25.11:38:15 zfs destroy newpool/user1</screen>
 
-      <para>Możliwości historii poleceń są następujące:</para>
+      <para>Historia poleceń ma następujące właściwości:</para>
 
       <itemizedlist>
         <listitem>
@@ -460,7 +458,7 @@ History for 'newpool':
         </listitem>
 
         <listitem>
-          <para>Minimalna wielkość bufora to 128 Kb, maksymalna to 32
+          <para>Minimalna wielkość bufora to 128 KB, maksymalna to 32
           MB.</para>
         </listitem>
 
@@ -472,16 +470,15 @@ History for 'newpool':
 
         <listitem>
           <para>Nie wymaga administracji, co oznacza, że nie ma konieczności
-          zmiany wielkości logu lub jego lokacji.</para>
+          zmiany wielkości logu lub jego położenia.</para>
         </listitem>
       </itemizedlist>
 
-      <para>Obecnie komenda <command>zpool history</command> nie drukuje
+      <para>Obecnie komenda <command>zpool history</command> nie wyświetla
       <replaceable>user-ID</replaceable>, <replaceable>hostname</replaceable>
       ani <replaceable>zone-name</replaceable>.</para>
 
-      <para>Więcej informacji o rozwiązywaniu problemów z ZFS w <olink
-      remap="external" targetdoc="chapter-9.xml"
+      <para>Więcej informacji: <olink remap="external" targetdoc="chapter-9.xml"
       targetptr="gbbuw">Identyfikacja problemów z ZFS</olink>.</para>
     </sect2>
 
@@ -489,24 +486,24 @@ History for 'newpool':
       <title>Rozszerzenia parametrów ZFS</title>
 
       <sect3 xml:id="gebwr">
-        <title>Właściwość ZFS <literal>xattr</literal></title>
+        <title>Parametr ZFS <literal>xattr</literal></title>
 
-        <para><emphasis role="strong">Solaris Express 1/07:</emphasis> Komendą
+        <para><emphasis role="strong">Solaris Express 1/07:</emphasis> Parametrem
         <literal>xattr</literal> można włączać i wyłączać rozszerzone atrybuty
         ZFS dla każdego systemu plików. Domyślnie rozszerzone atrybuty są
-        włączone. Więcej na temat rozszerzonych atrybutów ZFS w <olink
+        włączone. Więcej na ten temat: <olink
         remap="external" targetdoc="chapter-5.xml"
-        targetptr="gazss">Wprowadzenie do właściwości ZFS</olink>.</para>
+        targetptr="gazss">Wprowadzenie do parametrów ZFS</olink>.</para>
       </sect3>
 
       <sect3 xml:id="gdswd">
-        <title>Właściwość ZFS <command>canmount</command></title>
+        <title>Parametr ZFS <command>canmount</command></title>
 
-        <para><emphasis role="strong">Solaris Express 10/06:</emphasis> Nowa
-        właściwość <command>canmount</command> umożliwia decydowanie, czy dany
-        dataset może być montowany za pomocą komendy <command>zfs
-        mount</command>. Więcej informacji w <olink remap="external"
-        targetdoc="chapter-5.xml" targetptr="gdrcf">Właściwość
+        <para><emphasis role="strong">Solaris Express 10/06:</emphasis> Nowy
+        parametr <command>canmount</command> umożliwia określenie, czy dany
+        dataset może być montowany za pomocą polecenia <command>zfs
+        mount</command>. Więcej informacji: <olink remap="external"
+        targetdoc="chapter-5.xml" targetptr="gdrcf">Parametr
         <command>canmount</command></olink>.</para>
       </sect3>
 
