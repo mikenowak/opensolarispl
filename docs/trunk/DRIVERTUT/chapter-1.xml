@@ -651,9 +651,11 @@
         file</primary>
       </indexterm>
 
-      <para>Device drivers and other kernel modules are organized into the
-      following directories in the Solaris OS. See the <olink remap="external"
-      targetdoc="819-2240" targetptr="kernel-1m"> <citerefentry>
+      <para>Sterowniki urządzeń i inne moduły jądra są uporządkowane w
+      następujacej hierarchii katalogów w systemie operacyjnyjm Solaris.
+      Więcej informacji o organizacji jądra i dodawaniu katalogów do ścieżki
+      wyszukiwania w jądrze w <olink remap="external" targetdoc="819-2240"
+      targetptr="kernel-1m"> <citerefentry>
           <refentrytitle>kernel</refentrytitle>
 
           <manvolnum>1M</manvolnum>
@@ -662,18 +664,16 @@
           <refentrytitle>system</refentrytitle>
 
           <manvolnum>4</manvolnum>
-        </citerefentry> </olink> man pages for more information about kernel
-      organization and how to add directories to your kernel module search
-      path.</para>
+        </citerefentry> </olink> .</para>
 
       <variablelist>
         <varlistentry>
           <term><filename>/kernel</filename></term>
 
           <listitem>
-            <para>These modules are common across most platforms. Modules that
-            are required for booting or for system initialization belong in
-            this directory.</para>
+            <para>Moduły wspólne dla większości platform. Moduły wymagane do
+            startu startu i inicjalizacji systemu muszą znależć się w tym
+            katalogu.</para>
           </listitem>
         </varlistentry>
 
@@ -681,8 +681,8 @@
           <term><filename>/platform/`uname -i`/kernel</filename></term>
 
           <listitem>
-            <para>These modules are specific to the platform identified by the
-            command <literal>uname -i</literal>.</para>
+            <para>Moduły specyficzne dla platform identyfikowane przez
+            <literal>uname -i</literal>.</para>
           </listitem>
         </varlistentry>
 
@@ -690,10 +690,10 @@
           <term><filename>/platform/`uname -m`/kernel</filename></term>
 
           <listitem>
-            <para>These modules are specific to the platform identified by the
-            command <literal>uname -m</literal>. These modules are specific to
-            a hardware class but more generic than modules in the
-            <literal>uname -i</literal> kernel directory.</para>
+            <para>Moduły specyficzne dla platform identyfikowanych przez
+            <literal>uname -m</literal>. Są związane z platformą sprzętową,
+            ale bardziej ogólne niż te w katalogu <literal>uname
+            -i</literal>.</para>
           </listitem>
         </varlistentry>
 
@@ -707,10 +707,9 @@
           </term>
 
           <listitem>
-            <para>These are user modules. Modules that are not essential to
-            booting belong in this directory. This tutorial instructs you to
-            put all your drivers in the <filename>/usr/kernel</filename>
-            directory.</para>
+            <para>Moduły użytkownika. Moduły niewymagane podczas startu i
+            inicjalizacji systemu. Ten podręcznik instruuje, aby umieszczać
+            własny kod w katalogu <filename>/usr/kernel</filename>.</para>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -725,15 +724,14 @@
           <secondary><command>boot</command></secondary>
         </indexterm> <indexterm xml:id="indexterm-44">
           <primary><command>boot</command> command</primary>
-        </indexterm>One benefit of organizing drivers into different
-      directories is that you can selectively load different groups of drivers
-      on startup when you boot interactively at the boot prompt as shown in
-      the following example. See the <olink remap="external"
+        </indexterm>Zaletą takiego zorganizowania sterowników jest możliwość
+      ładowania wybranych grup sterowników podczas startu systemu, jak to
+      pokazano poniżej. Więcej informacji w <olink remap="external"
       targetdoc="819-2240" targetptr="boot-1m"> <citerefentry>
           <refentrytitle>boot</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> man page for more information.</para>
+        </citerefentry> </olink>.</para>
 
       <screen>Type    b [file-name] [boot-flags] &lt;ENTER&gt;      to boot with options
 or      i &lt;ENTER&gt;                               to enter boot interpreter
@@ -757,32 +755,31 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
           <secondary>directories</secondary>
 
           <tertiary>adding</tertiary>
-        </indexterm>In this example, the <literal>/usr/kernel</literal>
-      location is omitted from the list of directories to search for modules
-      to load. You might want to do this if you have a driver in
-      <literal>/usr/kernel</literal> that causes the kernel to panic during
-      startup or on attach. Instead of omitting all
-      <filename>/usr/kernel</filename> modules, a better method for testing
-      drivers is to put them in their own directory. Use the
-      <literal>moddir</literal> kernel variable to add this test directory to
-      your kernel modules search path. The <literal>moddir</literal> kernel
-      variable is described in <citerefentry>
+        </indexterm>W poniższym przykładzie pominięto katalog
+      <literal>/usr/kernel</literal> w liście katalogów przeszukiwania modułów
+      do ładowania. Można tak robić, jeśli w katalogu
+      <literal>/usr/kernel</literal> znajduje się moduł powodujący panikę
+      systemu podczas startu systemu lub podłączania sterownika. Lepszą metodą
+      jest jednak umieszczenie modułu w osobnym katalogu. Za pomocą zmiennej
+      jądra <literal>moddir</literal> należy dodać katalog do ścieżki
+      przeszukiwania jądra. Zmienna <literal>moddir</literal> opisana jest w
+      <citerefentry>
           <refentrytitle>kernel</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> and <citerefentry>
+        </citerefentry> i <citerefentry>
           <refentrytitle>system</refentrytitle>
 
           <manvolnum>4</manvolnum>
-        </citerefentry>. Another method for working with drivers that might
-      have startup problems is described in <olink remap="external"
-      targetdoc="chapter-4.xml" targetptr="fdlbq">Device Driver Testing
-      Tips</olink>.</para>
+        </citerefentry>. Inna metoda pracy ze sterownikami, ktorę mogą
+      powodwać problemy podczas startu systemu opisana jest w <olink
+      remap="external" targetdoc="chapter-4.xml" targetptr="fdlbq">Device
+      Driver Testing Tips</olink>.</para>
     </sect2>
   </sect1>
 
   <sect1 xml:id="fgomr">
-    <title>Devices as Files</title>
+    <title>Urządzenia jako pliki</title>
 
     <indexterm xml:id="indexterm-48">
       <primary>special files</primary>
@@ -806,14 +803,15 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
       <secondary>character</secondary>
     </indexterm>
 
-    <para>In UNIX, almost everything can be treated as a file. UNIX user
-    applications access devices as if the devices were files. Files that
-    represent devices are called <emphasis>special files</emphasis> or
-    <emphasis>device nodes</emphasis>. Device special files are divided into
-    two classes: <emphasis>block</emphasis> devices and
-    <emphasis>character</emphasis> devices. See <olink remap="internal"
-    targetdoc="chapter-1.xml" targetptr="fgoue">Character and Block
-    Devices</olink> for more information.</para>
+    <para>W systemach UNIX niemal wszystko można traktować jak plik. Programy
+    użytkownika odwołują się do urządzeń tak, jakby były one plikami. Pliki
+    reprezentujące urządzenia nazywane są <emphasis>plikami
+    specjalnymi</emphasis> lub <emphasis>node'ami urządzeń (ang. device
+    nodes)</emphasis>. Pliki specjalne urządzeń podzielone są na dwie klasy:
+    <emphasis>urządzenia blokowe (ang. block</emphasis> devices) i
+    <emphasis>urządzenia znakowe (ang. character devices)</emphasis>. Więcej w
+    <olink remap="internal" targetdoc="chapter-1.xml"
+    targetptr="fgoue">Character and Block Devices</olink>.</para>
 
     <para><indexterm xml:id="indexterm-52">
         <primary><function>read </function> system call</primary>
@@ -821,15 +819,16 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
         <primary>system calls</primary>
 
         <secondary><function>read </function></secondary>
-      </indexterm>Every I/O service request initially refers to a named file.
-    Most I/O operations that read or write data perform equally well on
-    ordinary or special files. For example, the same <olink remap="external"
-    targetdoc="819-2241" targetptr="read-2"> <citerefentry>
+      </indexterm>Każde żądanie I/O wstępnie odnosi się do nazwy pliku.
+    Większość operacji czytających i zapisujących dane działają równie dobrze
+    na plikach zwykłych i specjalnych. Na przykład to samo wywołanie systemowe
+    <olink remap="external" targetdoc="819-2241" targetptr="read-2">
+    <citerefentry>
         <refentrytitle>read</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry> </olink> system call reads bytes from a file created
-    with a text editor and reads bytes from a terminal device.</para>
+      </citerefentry> </olink> czyta bajty zarówno z pliku utworzonego
+    edytorem tekstowym jak i z urządzenia terminala.</para>
 
     <para><indexterm xml:id="indexterm-54">
         <primary><function>ioctl </function> entry point</primary>
@@ -837,15 +836,16 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
         <primary>entry points</primary>
 
         <secondary><function>ioctl </function></secondary>
-      </indexterm>Control signals also are handled as files. Use the <olink
-    remap="external" targetdoc="819-2255" targetptr="ioctl-9e"> <citerefentry>
+      </indexterm>Sygnały kontrolne są również obsługiwane jak pliki.
+    Sygnałami kontrolnymi zarządza się za pomocą <olink remap="external"
+    targetdoc="819-2255" targetptr="ioctl-9e"> <citerefentry>
         <refentrytitle>ioctl</refentrytitle>
 
         <manvolnum>9E</manvolnum>
-      </citerefentry> </olink> function to manipulate control signals.</para>
+      </citerefentry> </olink>.</para>
 
     <sect2 xml:id="emjjv">
-      <title>Devices Directories</title>
+      <title>Katalogi urządzeń</title>
 
       <indexterm xml:id="indexterm-56">
         <primary>devices</primary>
@@ -861,12 +861,12 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
         <primary><literal>/devices</literal> directory</primary>
       </indexterm>
 
-      <para>The Solaris OS includes both <literal>/dev</literal> and
-      <literal>/devices</literal> directories for device drivers. Almost all
-      the drivers in the <literal>/dev</literal> directory are links to the
-      <literal>/devices</literal> directory. The <literal>/dev</literal>
-      directory is UNIX standard. The <literal>/devices</literal> directory is
-      specific to the Solaris OS.</para>
+      <para>system operacyjny Solaris ma katalogi <literal>/dev</literal> i
+      <literal>/devices</literal>. Niemal wszystkie sterowniki w katalogu
+      <literal>/dev</literal> są odnośnikami do katalogu
+      <literal>/devices</literal>. Katalog <literal>/dev</literal> jest
+      standardem UNIX-owym. Katalog <literal>/devices</literal> jest
+      specyficzny dla Solaris OS.</para>
 
       <para><indexterm xml:id="indexterm-59">
           <primary>commands</primary>
@@ -874,21 +874,20 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
           <secondary><command>prtconf</command></secondary>
         </indexterm> <indexterm xml:id="indexterm-60">
           <primary><command>prtconf</command> command</primary>
-        </indexterm>By convention, file names in the <literal>/dev</literal>
-      directory are more readable. For example, the <literal>/dev</literal>
-      directory might contain files with names such as <literal>kdb</literal>
-      and <literal>mouse</literal> that are links to files such as
-      <literal>/devices/pseudo/conskbd@0:kbd</literal> and
-      <literal>/devices/pseudo/consms@0:mouse</literal>. The <olink
+        </indexterm>Zgodnie z konwencją nazwy w katalogu
+      <literal>/dev</literal> są czytelniejsze dla człowieka. Na przykład w
+      katalogu <literal>/dev</literal> mogą znajdować się pliki o nazwach
+      <literal>kdb</literal> i <literal>mouse</literal> będące odnośnikami do
+      plików <literal>/devices/pseudo/conskbd@0:kbd</literal> i
+      <literal>/devices/pseudo/consms@0:mouse</literal>. Komenda <olink
       remap="external" targetdoc="819-2240" targetptr="prtconf-1m">
       <citerefentry>
           <refentrytitle>prtconf</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> command shows device names that are very
-      similar to the file names in the <literal>/devices</literal> directory.
-      In the following example, only selected output of the command is
-      shown.</para>
+        </citerefentry> </olink> drukuje nazwy podobne do tych w katalogu
+      <literal>/devices</literal>. W poniższym przykładzie pokazano tylko
+      fragment wydruku tej komendy.</para>
 
       <screen>% <userinput>prtconf -P</userinput>
         conskbd, instance #0
@@ -914,22 +913,22 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
           <primary>major number</primary>
         </indexterm> <indexterm xml:id="indexterm-67">
           <primary>minor number</primary>
-        </indexterm>Entries in the <literal>/dev</literal> directory that are
-      not links to the <literal>/devices</literal> directory are device nodes
-      or special files created by <olink remap="external" targetdoc="819-2240"
-      targetptr="mknod-1m"> <citerefentry>
+        </indexterm>Pozycje w <literal>/dev</literal> niebędące odnośnikami do
+      katalogu <literal>/devices</literal> są node'ami urządzeń lub plikami
+      specjalnymi stworzonymi przez <olink remap="external"
+      targetdoc="819-2240" targetptr="mknod-1m"> <citerefentry>
           <refentrytitle>mknod</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> or <olink remap="external"
+        </citerefentry> </olink> lub <olink remap="external"
       targetdoc="819-2241" targetptr="mknod-2"> <citerefentry>
           <refentrytitle>mknod</refentrytitle>
 
           <manvolnum>2</manvolnum>
-        </citerefentry> </olink>. These are zero-length files that just have a
-      major number and minor number attached to them. Linking to the physical
-      name of the device in the <literal>/devices</literal> directory is
-      preferred to using <citerefentry>
+        </citerefentry> </olink>. Są to pliki o zerowej długości, które mają
+      tylko starszy i młodszy numer. Preferowane jest tworzenie odnośników do
+      urządzeń w katalogu <literal>/devices</literal> zamiast używania
+      <citerefentry>
           <refentrytitle>mknod</refentrytitle>
 
           <manvolnum>1M</manvolnum>
@@ -937,11 +936,11 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
 
       <para><indexterm xml:id="indexterm-68">
           <primary><literal>/devices</literal> directory</primary>
-        </indexterm>Prior to the Solaris 10 OS, <literal>/devices</literal>
-      was an on-disk filesystem composed of subdirectories and files.
-      Beginning with the Solaris 10 OS, <literal>/devices</literal> is a
-      virtual filesystem that creates these subdirectories and special files
-      on demand.</para>
+        </indexterm>W wersjach Soalris OS wcześniejszych niż 10
+      <literal>/devices</literal> był systemem plików na dysku składającym się
+      z katalogów i plików. Począwszy od wersji 10 <literal>/devices</literal>
+      jest wirtualnym systemem plików tworzącym katalogi i pliki na
+      żądanie.</para>
 
       <para><indexterm xml:id="indexterm-69">
           <primary><literal>devfs</literal> devices file system</primary>
@@ -951,17 +950,17 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
           <secondary>file system</secondary>
 
           <tertiary><literal>devfs</literal></tertiary>
-        </indexterm>For more information about the devices file system, see
-      the <olink remap="external" targetdoc="819-2254" targetptr="devfs-7fs">
+        </indexterm>Więcej infrormacji o sysmie plików urządzeń w <olink
+      remap="external" targetdoc="819-2254" targetptr="devfs-7fs">
       <citerefentry>
           <refentrytitle>devfs</refentrytitle>
 
           <manvolnum>7FS</manvolnum>
-        </citerefentry> </olink> man page.</para>
+        </citerefentry> </olink>.</para>
     </sect2>
 
     <sect2 xml:id="eoqof">
-      <title>Device Tree</title>
+      <title>Drzewo urządzeń</title>
 
       <indexterm xml:id="indexterm-71">
         <primary>device tree</primary>
@@ -973,8 +972,8 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
         <secondary>device tree</secondary>
       </indexterm>
 
-      <para>The device files in the <literal>/devices</literal> directory are
-      also called the <emphasis>device tree</emphasis>.</para>
+      <para>Pliki urządzeń w katalogu <literal>/devices</literal> nazywane są
+      <emphasis>drzewem urządzeń (ang. device tree</emphasis>).</para>
 
       <para><indexterm xml:id="indexterm-73">
           <primary>nexus device</primary>
@@ -982,11 +981,12 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
           <primary>devices</primary>
 
           <secondary>nexus</secondary>
-        </indexterm>The device tree shows relationships among devices. In the
-      device tree, a directory represents a <emphasis>nexus</emphasis> device.
-      A nexus is a device that can be a parent of other devices. In the
-      following example, <literal>pci@1f,0</literal> is a nexus device. Only
-      selected output from the command is shown.</para>
+        </indexterm>Drzewo urządzeń obrazuje związki między urządzedniami. W
+      drzewie urządzeń katalog reprezentuje <emphasis>splot (ang.
+      nexus)</emphasis> urządzeń. Splot jest urządzeniem, które może być
+      rodzicem innych urządzeń. W poniższym przykładzie
+      <literal>pci@1f,0</literal> jest splotem. Tylko fragment wydruku komendy
+      został zamieszczony poniżej.</para>
 
       <screen># <userinput>ls -l /devices</userinput>
 drwxr-xr-x   4 root     sys          512 <replaceable>date</replaceable> <replaceable>time</replaceable> pci@1f,0/
@@ -1004,26 +1004,25 @@ crw-------   1 root     sys      111,255 <replaceable>date</replaceable> <replac
           <primary>commands</primary>
 
           <secondary><command>prtpicl</command></secondary>
-        </indexterm>You can use <olink remap="external" targetdoc="819-2240"
-      targetptr="prtconf-1m"> <citerefentry>
+        </indexterm>Graficzną reprezentację drzewa urządzeń drukują komendy
+      <olink remap="external" targetdoc="819-2240" targetptr="prtconf-1m">
+      <citerefentry>
           <refentrytitle>prtconf</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> or <olink remap="external"
+        </citerefentry> </olink> i <olink remap="external"
       targetdoc="819-2240" targetptr="prtpicl-1m"> <citerefentry>
           <refentrytitle>prtpicl</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> to see a graphic representation of the device
-      tree. See <olink remap="external" targetdoc="819-3196"
-      targetptr="kernelovr-64300"> <citetitle remap="section">Overview of the
-      Device Tree</citetitle> in <citetitle remap="book">Writing Device
-      Drivers</citetitle> </olink> for more information about the device
-      tree.</para>
+        </citerefentry> </olink>. Więcej informacji w <olink remap="external"
+      targetdoc="819-3196" targetptr="kernelovr-64300"> <citetitle
+      remap="section">Overview of the Device Tree</citetitle> in <citetitle
+      remap="book">Writing Device Drivers</citetitle> </olink>.</para>
     </sect2>
 
     <sect2 xml:id="fgoue">
-      <title>Character and Block Devices</title>
+      <title>Urządzenia znakowe i blokowe</title>
 
       <indexterm xml:id="indexterm-79">
         <primary>character device</primary>
@@ -1045,18 +1044,18 @@ crw-------   1 root     sys      111,255 <replaceable>date</replaceable> <replac
         <secondary>block</secondary>
       </indexterm>
 
-      <para>A file in the device tree that is not a directory represents
-      either a <emphasis>character</emphasis> device or a
-      <emphasis>block</emphasis> device.</para>
+      <para>Plik w drzewie plików niebędący katalogiem reprezentuje albo
+      <emphasis>urządzenie znakowe</emphasis>, albo <emphasis>urządzenie
+      blokowe</emphasis>.</para>
 
       <para><indexterm xml:id="indexterm-83">
           <primary><literal>/devices/pseudo</literal> directory</primary>
-        </indexterm>A block device can contain addressable, reusable data. An
-      example of a block device is a file system. Any device can be a
-      character device. Most block devices also have character interfaces.
-      Disks have both block and character interfaces. In your
-      <filename>/devices/pseudo</filename> directory, you might find devices
-      such as the following:</para>
+        </indexterm>Urządzenie blokowe może zawierać dane adresowalne i
+      używalne wielokrotnie. Przykładem takiego urządzenia jest system plików.
+      Dowolne urządzenie może być urządzeniem znakowym. Większość urządzeń
+      blokowych ma znakowe interfejsy. Dyski mają interfejsy blokowe i
+      znakowe. W katalogu <filename>/devices/pseudo</filename> Mogą znajdować
+      się urządzenia podobne do poniższych:</para>
 
       <programlisting>brw-r-----   1 root     sys       85,  0 Nov  3 09:43 md@0:0,0,blk
 crw-r-----   1 root     sys       85,  0 Nov  3 09:43 md@0:0,0,raw
@@ -1077,12 +1076,11 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <primary>devices</primary>
 
           <secondary><literal>raw</literal></secondary>
-        </indexterm>Block devices have a <literal>b</literal> as the first
-      character of their file mode. Character devices have a
-      <literal>c</literal> as the first character of their file mode. In this
-      example, the block devices have <literal>blk</literal> in their names
-      and the character devices have <literal>raw</literal> in their
-      names.</para>
+        </indexterm>Urządzenia blokowe mają w trybie pliku znak
+      <literal>b</literal> jako pierwszy znak. Urządzenia znakowe mają znak
+      <literal>c</literal>. W powyższym wydruku urządzenia blokowe zawierają w
+      nazwie <literal>blk</literal> a urządzenia znakowe zawierają w nazwie
+      <literal>raw</literal>.</para>
 
       <para><indexterm xml:id="indexterm-88">
           <primary>metadevice</primary>
@@ -1090,16 +1088,16 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <primary>devices</primary>
 
           <secondary><literal>md</literal> metadevice</secondary>
-        </indexterm>The <olink remap="external" targetdoc="819-2254"
+        </indexterm>Urządzenie <olink remap="external" targetdoc="819-2254"
       targetptr="md-7d"> <citerefentry>
           <refentrytitle>md</refentrytitle>
 
           <manvolnum>7D</manvolnum>
-        </citerefentry> </olink> device is a metadevice that provides disk
-      services. The block devices access the disk using the system's normal
-      buffering mechanism. The character devices provide for direct
-      transmission between the disk and the user's read or write
-      buffer.</para>
+        </citerefentry> </olink> jest metaurządzeniem dostarczającym usług
+      dyskowych. Urządzenia blokowe używają dysku za pośrednictwem
+      standardowych mechanizmów buforujących w systemie. Urządzenia znakowe
+      zezwalają na bezpośredni dostęp do urządzenia buforom zapisu i odczytu
+      użytkownika.</para>
     </sect2>
 
     <sect2 xml:id="fgovo">
