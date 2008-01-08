@@ -22,7 +22,7 @@ danych ZFS.</para>
 </listitem>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gaypw">Tworzenie i usuwanie puli
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gaypw">Tworzenie i usuwanie pul
  ZFS</olink>
 </para>
 </listitem>
@@ -53,18 +53,18 @@ ZFS</olink>
 </itemizedlist>
 </toc>
 <sect1 xml:id="gcfog">
-<title>Składniki puli nośników danych ZFS</title>
-<para>Poniższe paragrafy dostarczają dokładnych informacji o następujących 
+<title>Składniki puli ZFS</title>
+<para>Poniższe podrozdziały dostarczają dokładnych informacji o następujących 
 komponentach puli nośników danych:</para>
 <itemizedlist>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazdp">Używanie dysków w pulach nośników danych ZFS</olink>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazdp">Używanie dysków w pulach ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazcr">Używanie plików w pulach danych ZFS</olink>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazcr">Używanie plików w pulach ZFS</olink>
 </para>
 </listitem>
 <listitem>
@@ -74,7 +74,7 @@ komponentach puli nośników danych:</para>
 </listitem>
 </itemizedlist>
 <sect2 xml:id="gazdp">
-<title>Używanie dysków w pulach nośników danych ZFS</title>
+<title>Używanie dysków w pulach ZFS</title>
 <para>Najbardziej podstawowym elementem puli nośników danych jest fizyczny 
 nośnik danych. Może nim być urządzenie blokowe o pojemności nie mniejszej niż 
 128 MB. Najczęściej urządzeniem tym jest dysk twardy widoczny dla systemu 
@@ -88,29 +88,29 @@ w katalogu <filename>/dev/dsk</filename>.<indexterm xml:id="indexterm-81">
 </indexterm>
 </para>
 <para>Nośnikiem danych może być cały dysk (<filename>c1t0d0</filename>), 
-lub pojedynczy blok (ang. slice), (<filename>c0t0d0s7</filename>). Zaleca się 
+lub pojedynczy segment (ang. slice), (<filename>c0t0d0s7</filename>). Zaleca się 
 używania całych dysków, w którym to przypadku dysk nie wymaga specjalnego 
-formatowania. ZFS formatuje dysk używają etykiet EFI do przechowywania jednego 
-bloku. W takim przypadku tablica partycji wyświetlana przez komendę <command>
+formatowania. ZFS formatuje dysk używając etykiet EFI do przechowywania jednego
+dużego segmentu. W takim przypadku tablica partycji wyświetlana przez komendę <command>
 format</command> wygląda podobnie:</para>
 <screen>Current partition table (original):
 Total disk sectors available: 71670953 + 16384 (reserved sectors)
 
 Part      Tag    Flag     First Sector        Size        Last Sector
-  0        usr    wm                34      34.18GB         71670953    
-  1 unassigned    wm                 0          0              0    
-  2 unassigned    wm                 0          0              0    
-  3 unassigned    wm                 0          0              0    
-  4 unassigned    wm                 0          0              0    
-  5 unassigned    wm                 0          0              0    
-  6 unassigned    wm                 0          0              0    
-  7 unassigned    wm                 0          0              0    
-  8   reserved    wm          71670954       8.00MB         71687337</screen>
+0        usr    wm                34      34.18GB         71670953    
+1 unassigned    wm                 0          0              0    
+2 unassigned    wm                 0          0              0    
+3 unassigned    wm                 0          0              0    
+4 unassigned    wm                 0          0              0    
+5 unassigned    wm                 0          0              0    
+6 unassigned    wm                 0          0              0    
+7 unassigned    wm                 0          0              0    
+8   reserved    wm          71670954       8.00MB         71687337</screen>
 <para>Aby użyć całego dysku, musi być nazwany zgodnie z konwencją Solarisa, na 
 przykład <filename>/dev/dsk/cXtXdXsX</filename>. Niektóre sterowniki od 
 niezależnych dostawców używają innych konwencji nazewniczych lub umieszczają 
 dyski w innych katalogach, niż <filename>/dev/dsk</filename>. Aby użyć tych 
-dysków, należy ręcznie je etykietować i udostępnić blok ZFS-owi.
+dysków, należy ręcznie je etykietować i udostępnić segmenty (slice'y) ZFS-owi.
 <indexterm xml:id="indexterm-83">
 <primary>Etykiety EFI</primary>
 <secondary>opis</secondary>
@@ -122,8 +122,8 @@ dysków, należy ręcznie je etykietować i udostępnić blok ZFS-owi.
 </para>
 <para>ZFS nadaje etykietę EFI w momencie tworzenia puli przy użyciu całego 
 dysku. Można też etykietować dyski tradycyjnym Solarisowym VTOC przy tworzeniu 
-puli z użyciem bloku.</para>
-<para>Bloki powinny być używane tylko w poniższych warunkach:</para>
+puli z użyciem segmentów (slice'ów).</para>
+<para>Segmenty (slice'y) powinny być używane tylko w poniższych warunkach:</para>
 <itemizedlist>
 <listitem>
 <para>Nazwa urządzenia jest niestandardowa.</para>
@@ -133,13 +133,13 @@ puli z użyciem bloku.</para>
 system plików, na przykład UFS.</para>
 </listitem>
 <listitem>
-<para>Dysk jest używany na potrzeby swap bądź zrzutów (dump).</para>
+<para>Dysk jest używany jako urządzenie wymiany danych (swap) bądź zrzutów pamięci (dump).</para>
 </listitem>
 </itemizedlist>
 <para>Dyski można wskazać zarówno poprzez użycie pełnej ścieżki, na przykład 
 <filename>/dev/dsk/c1t0d0</filename>, lub przez nazwę urządzenia znajdującego 
 się w katalogu<filename>/dev/dsk</filename>, na przykład <filename>c1t0d0
-</filename>. Poniższe są prawidłowymi nazwami dysków:
+</filename>. Poniższe przykłady są prawidłowymi nazwami dysków:
 <indexterm xml:id="indexterm-85">
 <primary>pule nośników danych ZFS</primary>
 <secondary>używanie całego dysku</secondary>
@@ -175,7 +175,7 @@ się w katalogu<filename>/dev/dsk</filename>, na przykład <filename>c1t0d0
 </para>
 </listitem>
 </itemizedlist>
-<para>Użycie całych dysków jest najprostszą metodą tworzenia pul nośników danych ZFS. Konfiguracje ZFS - z punktu widzenia zarządzalności, stabilności i wydajności - stają się bardziej skomplikowane przy tworzeniu pul z bloków, LUN-ów, macierzy sprzętowego RAID-u lub wolumenów eksportowanych przez programowych zarządców wolumenów. Poniższe uwagi mogą pomóc w wyborze konfiguracji ZFS ze sprzętem i programowymi produktami zarządzania nośnikami danych:</para>
+<para>Użycie całych dysków jest najprostszą metodą tworzenia pul nośników danych ZFS. Konfiguracje ZFS - z punktu widzenia zarządzalności, stabilności i wydajności - stają się bardziej skomplikowane przy tworzeniu pul z segmentów, LUN-ów, macierzy sprzętowego RAID-u lub woluminów eksportowanych przez programowych zarządców wolumenów. Poniższe uwagi mogą pomóc w wyborze konfiguracji ZFS ze sprzętem i programowymi produktami zarządzania nośnikami danych:</para>
 <itemizedlist>
 <listitem>
 <para>Przy tworzeniu konfiguracji ZFS na LUN-ach ze sprzętowych macierzy RAID-u, należy zrozumieć zależności między opcjami nadmiarowości ZFS a opcjami nadmiarowości macierzy. Niektóre konfiguracje mogą dawać w rezultacie taką samą nadmiarowość i wydajność, inne nie.</para>
@@ -193,7 +193,7 @@ Manager (SVM) lub Veritas Volume Manager (VxVM). Konfiguracje takie są jednak n
 jest dostępne. Metoda ta pozwala na rekonfigurowanie urządzeń w systemie bez 
 uaktualniania stanu ZFS. Jeśli dysk zostanie przeniesiony z kontrolera 1., 
 do kontrolera 2., ZFS użyje ID urządzenia do wykrycia go i ustalenia, że powinno
- być teraz używane za pośrednictwem kontrolera 2. ID urządzenia jest unikalne 
+być teraz używane za pośrednictwem kontrolera 2. ID urządzenia jest unikalne 
 dla firmware'u. Wprawdzie mało prawdopodobna jest zmiana ID urządzenia, jednak 
 niektóre uaktualnienia firmware'u dokonywały takich zmian. W takiej sytuacji, 
 ZFS może użyć urządzenia za pośrednictwem jego ścieżki systemowej i 
@@ -204,7 +204,7 @@ wyeksportować pulę, a później ją zaimportować.</para>
 <sect2 xml:id="gazcr">
 <title>Używanie plików w pulach ZFS</title>
 <para>ZFS umożliwia korzystanie z plików UFS jako urządzeń w puli. Opcja ta jest
- pomyślana głównie w celach testowych i do prostych eksperymentów, nie zaś do 
+pomyślana głównie w celach testowych i do prostych eksperymentów, nie zaś do 
 użycia w środowisku produkcyjnym. Powodem jest to, że <emphasis role="strong">
 spójność plików zależy od systemu plików, na których pliki są przechowywane.
 </emphasis>. Jeśli zostanie utworzona pula ZFS na bazie plików przechowywanych 
@@ -228,7 +228,7 @@ wyeksportowana i zaimportowana, ponieważ plikom nie przypisuje się żadnego
 unikalnego ID, po którym mogłyby być znów odnalezione.</para>
 </sect2>
 <sect2 xml:id="gazca">
-<title>Rozpoznawanie urządzeń wirtualnych w pulach nośników danych</title>
+<title>Rozpoznawanie wirtualnych urządzeń w pulach nośników danych</title>
 <para>Każda pula nośników składa się z jednego lub więcej wirtualnych urządzeń. 
 <emphasis>Urządzenie wirtualne</emphasis> to wewnętrzna reprezentacja puli 
 nośników, opisująca układ fizycznych nośników i ich charakterystyki awaryjności.
@@ -263,12 +263,12 @@ uszkodzonych danych w konfiguracji mirror oraz RAID-Z.<indexterm xml:id="indexte
 <itemizedlist>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamss">Konfiguracja puli nośników danych: mirror</olink>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamss">Konfiguracja puli nośników danych typu mirror</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamtu">Konfiguracja puli nośników danych RAID-Z</olink>
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamtu">Konfiguracja puli nośników danych typu RAID-Z</olink>
 </para>
 </listitem>
 <listitem>
@@ -283,7 +283,7 @@ uszkodzonych danych w konfiguracji mirror oraz RAID-Z.<indexterm xml:id="indexte
 </listitem>
 </itemizedlist>
 <sect2 xml:id="gamss">
-<title>Konfiguracja puli nośników danych: mirror</title>
+<title>Konfiguracja puli nośników danych typu mirror</title>
 <para>Konfiguracja mirror puli nośników danych wymaga użycia 
 przynajmniej dwóch dysków, najlepiej na osobnych kontrolerach. W mirrorze można używać wielu dysków. Dodatkowo można stworzyć więcej niż jedno 
 lustro w puli. Prosta konfiguracja mirror wygląda podobnie do poniższej:
@@ -441,7 +441,7 @@ na tym samym poziomie redundancji w każdym urządzeniu.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gaypw">
-<title>Tworzenie i usuwanie pul nośników danych ZFS</title>
+<title>Tworzenie i usuwanie pul ZFS</title>
 <para>Następujące podrozdziały opisują różne scenariusze dla tworzenia i niszczenia
 pul nośników danych ZFS.</para>
 <itemizedlist>
@@ -965,10 +965,8 @@ danych ZFS</olink>.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gayrd">
-<title>Zarządzanie urządzeniami w pulach nośników danych ZFS</title>
-<para>Większość podstawowych informacji dotyczących urządzeń znajduje się w
-<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gcfog">Komponenty 
-puli nośników danych ZFS</olink>. Po utworzeniu puli możliwych jest kilka 
+<title>Zarządzanie urządzeniami w puli ZFS</title>
+<para>Większość podstawowych informacji dotyczących urządzeń zawiera podrozdział <olink remap="internal" targetdoc="chapter-4.xml" targetptr="gcfog">Składniki puli ZFS</olink>. Po utworzeniu puli możliwych jest kilka 
 akcji służących zarządzaniu fizycznym urządzeniami w puli.</para>
 <itemizedlist>
 <listitem>
@@ -2014,7 +2012,7 @@ errors: No known data errors</screen>
 </sect2>
 </sect1>
 <sect1 xml:id="gbchy">
-<title>Migracja pul nośników danych ZFS</title>
+<title>Przenoszenie puli ZFS</title>
 <para>Zdarza się, że konieczne jest przeniesienie puli między komputerami. Aby to zrobić, urządzenia należy odłączyć od oryginalnego komputera i podłączyć je w docelowym. Można to zrobić przez fizyczne przełączenie okablowania lub przez urządzenia wieloportowe, jak urządzenia w SAN. ZFS umożliwia eksport puli z maszyny i import jej na inną, nawet jeśli komputery mają inny porządek bitów (ang. endianness). Więcej informacji o replikacji lub migracji systemów plików między różnymi pulami nośników danych, które mogą znajdować się na różnych maszynach zawiera podrozdział <olink remap="external" targetdoc="chapter-6.xml" targetptr="gbchx">Zapis i odtwarzanie danych ZFS</olink>.<indexterm xml:id="indexterm-182">
 <primary>migracja pul nośników danych ZFS</primary>
 <secondary>opis</secondary>
