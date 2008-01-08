@@ -262,34 +262,34 @@
       </sect3>
 
       <sect3 xml:id="emqpt">
-        <title>Data Transfer Differences Between Kernel Modules and User
-        Programs</title>
+        <title>Różnice w przesyłaniu danych między modułami jądra i programami
+        użytkowymi</title>
 
-        <para>Data transfer between a device and the system typically is
-        slower than data transfer within the CPU. Therefore, a driver
-        typically suspends execution of the calling thread until the data
-        transfer is complete. While the thread that called the driver is
-        suspended, the CPU is free to execute other threads. When the data
-        transfer is complete, the device sends an interrupt. The driver
-        handles the interrupt that the driver receives from the device. The
-        driver then tells the CPU to resume execution of the calling thread.
-        See <olink remap="external" targetdoc="819-3196"
+        <para>Przesył danych między urządzeniem a systemem jest zazwyczaj
+        wolniejszy od przesyłu danych wewnątrz CPU. W związku z tym sterownik
+        zazwyczaj zawiesza wykonanie wywołującego wątku aź do zakończenia
+        przesyłania danych. Dopóki wątek wywołujący sterownik jest zawieszony,
+        CPU może wykonywać inne wątki. Kiedy przesył danych się zakończy,
+        sterownik dostaje przerwanie od urządzenia i obsługuje je, a później
+        nakazuje procesorowi dalsze wykonywanie zawieszonego wątku. Więcej
+        informacji w <olink remap="external" targetdoc="819-3196"
         targetptr="interrupt-15678">Chapter 8, <citetitle
         remap="chapter">Interrupt Handlers,</citetitle> in <citetitle
         remap="book">Writing Device Drivers</citetitle> </olink>.</para>
 
-        <para>Drivers must work with user process (virtual) addresses, system
-        (kernel) addresses, and I/O bus addresses. Drivers sometimes copy data
-        from one address space to another address space and sometimes just
-        manipulate address-mapping tables. See <olink remap="external"
-        targetdoc="819-3196" targetptr="hwovr-18"> <citetitle
-        remap="section">Bus Architectures</citetitle> in <citetitle
+        <para>Sterowniki muszą pracować z adresami (wirtualnymi) procesów
+        użytkownika, adresami (jądra) systemowymi i adresami szyny I/O.
+        Sterowniki czasami kopiują dane między przestrzeniami adresowymi, a
+        czasami manipulują tablicami mapującymi adresy. Węcej informacji w
+        <olink remap="external" targetdoc="819-3196" targetptr="hwovr-18">
+        <citetitle remap="section">Bus Architectures</citetitle> in <citetitle
         remap="book">Writing Device Drivers</citetitle> </olink>.</para>
       </sect3>
     </sect2>
 
     <sect2 xml:id="eoqob">
-      <title>User and Kernel Address Spaces on x86 and SPARC Machines</title>
+      <title>Przestrzenie adresowe jądra i użytkownika na platformach SPARC i
+      x86</title>
 
       <indexterm xml:id="indexterm-12">
         <primary>x86</primary>
@@ -349,48 +349,41 @@
         <secondary><function>mmap </function></secondary>
       </indexterm>
 
-      <para>On SPARC machines, the system panics when a kernel module attempts
-      to directly access user address space. You must make sure your driver
-      does not attempt to directly access user address space on a SPARC
-      machine.</para>
+      <para>Na komputerach z rodziny SPARC system panikuje, jeśli moduł jądra
+      próbuje bezpośrednio sięgnąć do przestrzeni adresowej użytkownika.
+      Należy upewnić się, że sterownik nie sięga bezpośrednio do przestrzeni
+      adresowej użytkownika.</para>
 
-      <para>On x86 machines, the system does not enter an error state when a
-      kernel module attempts to directly access user address space. You still
-      should make sure your driver does not attempt to directly access user
-      address space on an x86 machine. Drivers should be written to be as
-      portable as possible. Any driver that directly accesses user address
-      space is a poorly written driver.</para>
+      <para>Na komputerach z rodziny x86 podczas próby bezpośredniego
+      sięgnięcia do przestrzeni adresowej użytkownika nie pjawia się żaden
+      błąd sprzętowy. Nadal jednak należy upewnić się, że sterownik nie sięga
+      bezpośrednio do przestrzeni adresowej użytkownika. Sterowniki powinny
+      być tak przenośne, jak to tylko możliwe. Każdy sterownik sięgający
+      bezpośrednio do przestrzeni użytkownika jest źle napisany.</para>
 
       <caution>
-        <para>A driver that works on an x86 machine might not work on a SPARC
-        machine because the driver might access an invalid address.</para>
+        <para>Sterownik działający na maszynie z rodziny x86 może nie działać
+        na maszynie z rodziny SPARC, ponieważ sięga do niewłaściwego
+        adresu.</para>
       </caution>
 
-      <para>Do not access user data directly. A driver that directly accesses
-      user address space is using poor programming practice. Such a driver is
-      not portable and is not supportable. Use the <olink remap="external"
-      targetdoc="819-2256" targetptr="ddi-copyin-9f"> <citerefentry>
+      <para>Nie należy bezpośrednio pracować na danych użytkownika. Sterownik,
+      który tak robi został źle napisany, jest nieprzenośny i nieutrzymywalny.
+      Do przenoszenia danych między przestrzeniami jądra i użytkownika służą
+      funkcje <olink remap="external" targetdoc="819-2256"
+      targetptr="ddi-copyin-9f"> <citerefentry>
           <refentrytitle>ddi_copyin</refentrytitle>
 
           <manvolnum>9F</manvolnum>
-        </citerefentry> </olink> and <olink remap="external"
+        </citerefentry> </olink> i <olink remap="external"
       targetdoc="819-2256" targetptr="ddi-copyout-9f"> <citerefentry>
           <refentrytitle>ddi_copyout</refentrytitle>
 
           <manvolnum>9F</manvolnum>
-        </citerefentry> </olink> routines to transfer data to and from user
-      address space. These two routines are the only supported interfaces for
-      accessing user memory. <olink remap="external" targetdoc="chapter-3.xml"
-      targetptr="ffdqq">Modifying Data Stored in Kernel Memory</olink> shows
-      an example driver that uses <citerefentry>
-          <refentrytitle>ddi_copyin</refentrytitle>
-
-          <manvolnum>9F</manvolnum>
-        </citerefentry> and <citerefentry>
-          <refentrytitle>ddi_copyout</refentrytitle>
-
-          <manvolnum>9F</manvolnum>
-        </citerefentry>.</para>
+        </citerefentry> </olink>. Te dwie funkcje to jedyne utrzymywane
+      interfejsy do dostępu do przestrzeni użytkownika. Przykłady użycia tych
+      funkcji w sterowniku: <olink remap="external" targetdoc="chapter-3.xml"
+      targetptr="ffdqq">Modifying Data Stored in Kernel Memory</olink>.</para>
 
       <para>The <olink remap="external" targetdoc="819-2241"
       targetptr="mmap-2"> <citerefentry>
@@ -415,7 +408,7 @@
     </sect2>
 
     <sect2 xml:id="emjjs">
-      <title>Device Drivers</title>
+      <title>Sterowniki urządzeń</title>
 
       <indexterm xml:id="indexterm-23">
         <primary>device drivers</primary>
@@ -463,34 +456,34 @@
         <secondary><literal>cb_ops</literal></secondary>
       </indexterm>
 
-      <para>A device driver is a loadable kernel module that manages data
-      transfers between a device and the OS. Loadable modules are loaded at
-      boot time or by request and are unloaded by request. A device driver is
-      a collection of C routines and data structures that can be accessed by
-      other kernel modules. These routines must use standard interfaces called
-      <emphasis>entry points</emphasis>. Through the use of entry points, the
-      calling modules are shielded from the internal details of the driver.
-      See <olink remap="external" targetdoc="819-3196" targetptr="eqbqy">
-      <citetitle remap="section">Device Driver Entry Points</citetitle> in
-      <citetitle remap="book">Writing Device Drivers</citetitle> </olink> for
-      more information on entry points.</para>
+      <para>Sterownik urządzenia jest ładowalnym modułem jądra zarządzającym
+      wymianą danych między urządzeniem a systemem operacyjnym. Moduły
+      ładowalne są ładowane do jądra w trakcie startu systemu lub na żądanie i
+      usuwane z jądra na żądanie. Sterownik jest zbiorem funkcji i struktur
+      danych w języku C osiągalnych dla innych modułów jądra. Funkcje te muszą
+      używać standardowych interfejsów nazywanych <emphasis>punktami wejścia
+      (ang. entry points)</emphasis>. Dzięki użyciu punktów wejścia moduły
+      wywołujące są oddzielone od wewnzetrznych mechanizmów sterownia. Więcej
+      o punktach wejścia w <olink remap="external" targetdoc="819-3196"
+      targetptr="eqbqy"> <citetitle remap="section">Device Driver Entry
+      Points</citetitle> in <citetitle remap="book">Writing Device
+      Drivers</citetitle> </olink>.</para>
 
-      <para>A device driver declares its general entry points in its <olink
-      remap="external" targetdoc="819-2257" targetptr="dev-ops-9s">
+      <para>Sterownik deklaruje swoje ogólne punkty wejścia w strukturze
+      <olink remap="external" targetdoc="819-2257" targetptr="dev-ops-9s">
       <citerefentry>
           <refentrytitle>dev_ops</refentrytitle>
 
           <manvolnum>9S</manvolnum>
-        </citerefentry> </olink> structure. A driver declares entry points for
-      routines that are related to character or block data in its <olink
+        </citerefentry> </olink>. Punkty wejścia dla funkcji związanych z
+      urządzeniami znakowymi lub blokowymi są deklarowane w strukturze <olink
       remap="external" targetdoc="819-2257" targetptr="cb-ops-9s">
       <citerefentry>
           <refentrytitle>cb_ops</refentrytitle>
 
           <manvolnum>9S</manvolnum>
-        </citerefentry> </olink> structure. Some entry points and structures
-      that are common to most drivers are shown in the following
-      diagram.</para>
+        </citerefentry> </olink>. Niektóre z najpowszechniejszych punktów
+      wejścia pokazane są na diagramie poniżej.</para>
 
       <figure xml:id="feowi">
         <title>Typical Device Driver Entry Points</title>
@@ -501,8 +494,8 @@
           </imageobject>
 
           <textobject>
-            <simpara>Diagram shows entry points that are common to most
-            drivers and how the entry points are used.</simpara>
+            <simpara>Diagram pokazuje punkty wejścia najczęściej spotykane w
+            sterownikach urządzeń oraz ich przeznaczenie.</simpara>
           </textobject>
         </mediaobject>
       </figure>
@@ -511,11 +504,11 @@
           <primary>device drivers</primary>
 
           <secondary>entry points</secondary>
-        </indexterm>The Solaris OS provides many driver entry points.
-      Different types of devices require different entry points in the driver.
-      The following diagram shows some of the available entry points, grouped
-      by driver type. No single device driver would use all the entry points
-      shown in the diagram.</para>
+        </indexterm>System operacyjny Solaris ma dużo puntów wejścia
+      sterowników. Różne typy urządzeń wymagają różnych punktów wejścia w
+      sterowniku. Poniższy diagram pokazuje niektóre dostępne punkty wejścia
+      pogrupowanych według typu sterownika. Żaden pojedynczy sterownik nie
+      używa wszystkich tych punktów.</para>
 
       <figure xml:id="fevyr">
         <title>Entry Points for Different Types of Drivers</title>
@@ -526,8 +519,8 @@
           </imageobject>
 
           <textobject>
-            <simpara>Diagram shows subsets of entry points that are used by
-            various types of device drivers.</simpara>
+            <simpara>Diagram pokazuje podzbiór punktów wejścia używanych przez
+            różne typy sterownbików urządzeń.</simpara>
           </textobject>
         </mediaobject>
       </figure>
