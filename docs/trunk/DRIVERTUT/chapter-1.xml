@@ -1101,7 +1101,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
     </sect2>
 
     <sect2 xml:id="fgovo">
-      <title>Device Names</title>
+      <title>Nazwy urządzeń</title>
 
       <indexterm xml:id="indexterm-90">
         <primary>devices</primary>
@@ -1132,28 +1132,28 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         <tertiary><command>devfsadmd</command></tertiary>
       </indexterm>
 
-      <para>This section shows a complex device name and explains the meaning
-      of each part of the name in <filename>/dev</filename> and also in
-      <filename>/devices</filename>. The following example is the name of a
-      disk slice:</para>
+      <para>Za chwilę wyjaśnione zostanie znaczenie poszczególnych elementów
+      skomplikowanych i długich nazw urządzeń w <filename>/dev</filename> oraz
+      w <filename>/devices</filename>. W przykładzie użyto nazwy wycinka (ang.
+      slice) dysku:</para>
 
       <screen>/dev/dsk/c0t0d0s7 -&gt; ../../devices/pci@1c,600000/scsi@2/sd@0,0:h</screen>
 
-      <para>First, examine the name of the file in the
-      <filename>/dev</filename> directory. These names are managed by the
-      <olink remap="external" targetdoc="819-2240" targetptr="devfsadmd-1m">
+      <para>Jako pierwsza zostanie wyjaśniona nazwa urządzenia w katalogu
+      <filename>/dev</filename>. Nazwami tymi zarządza daemon <olink
+      remap="external" targetdoc="819-2240" targetptr="devfsadmd-1m">
       <citerefentry>
           <refentrytitle>devfsadmd</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> daemon.</para>
+        </citerefentry> </olink>.</para>
 
       <variablelist>
         <varlistentry>
           <term><literal>c0</literal></term>
 
           <listitem>
-            <para>Controller 0</para>
+            <para>Kontroler 0</para>
           </listitem>
         </varlistentry>
 
@@ -1161,8 +1161,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <term><literal>t0</literal></term>
 
           <listitem>
-            <para>Target 0. On SCSI controllers, this value is the disk
-            number.</para>
+            <para>Cel 0. Na kontrolerach SCSI jest to numer dysku.</para>
           </listitem>
         </varlistentry>
 
@@ -1170,8 +1169,8 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <term><literal>d0</literal></term>
 
           <listitem>
-            <para>SCSI LUN. This value indicates a virtual partitioning of a
-            target or single physical device.</para>
+            <para>SCSI LUN. Wskazuje wirtualne partycje na fizyczneym
+            celu.</para>
           </listitem>
         </varlistentry>
 
@@ -1179,26 +1178,25 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <term><literal>s7</literal></term>
 
           <listitem>
-            <para>Slice 7 on the target 0 disk.</para>
+            <para>Wycinek numer 7 na dysku docelowym numer 0.</para>
           </listitem>
         </varlistentry>
       </variablelist>
 
       <para><indexterm xml:id="indexterm-95">
           <primary><literal>/devices</literal> directory</primary>
-        </indexterm>For the same device, compare the name of the file in the
-      <filename>/devices</filename> directory. These names show the physical
-      structure and real device names. Note that some of the components of the
-      device name in the <filename>/devices</filename> directory are
-      subdirectories.</para>
+        </indexterm>To samo urządzenie ma swój odpowiednik w katalogu
+      <filename>/devices</filename>. Te nazwy pokazują fizyczną strukturę i
+      prawdziwe nazwy urządzeń. Niektóre części nazwy urządzenia w katalogu
+      <filename>/devices</filename> same są katalogami.</para>
 
       <variablelist>
         <varlistentry>
           <term><literal>pci@1c,600000</literal></term>
 
           <listitem>
-            <para>PCI bus at address <literal>1c,600000</literal>. These
-            addresses are meaningful only to the parent device.</para>
+            <para>Szyna PCI o adresie <literal>1c,600000</literal>. Adresy te
+            mają znaczenie tylko dla urządzenia-rodzica.</para>
           </listitem>
         </varlistentry>
 
@@ -1206,9 +1204,9 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <term><literal>scsi@2</literal></term>
 
           <listitem>
-            <para>SCSI controller at address <literal>2</literal> on the PCI
-            bus at address <literal>1c,600000</literal>. This name corresponds
-            to the <literal>c0</literal> in
+            <para>Kontroler SCSI o adresie 2 na szynie PCI o adresie
+            <literal>1c,600000</literal>. Ta część jest równoważna
+            <literal>c0</literal> w nazwie
             <filename>/dev/dsk/c0t0d0s7</filename>.</para>
           </listitem>
         </varlistentry>
@@ -1217,11 +1215,12 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <term><literal>sd@0,0</literal></term>
 
           <listitem>
-            <para>SCSI disk at address <literal>0,0</literal> on the SCSI
-            controller at address <literal>2</literal>. This name represents
-            target 0, LUN 0 and corresponds to the <literal>t0d0</literal> in
-            <filename>/dev/dsk/c0t0d0s7</filename>. The <literal>sd</literal>
-            name and driver can also apply to IDE CD-ROM devices.</para>
+            <para>Dysk SCSI o adresie <literal>0,0</literal> na kontrolerze
+            SCSI o adresie <literal>2</literal>. Nazwa ta oznacza cel 0, LUN 0
+            i odpowiada części <literal>t0d0</literal> w nazwie
+            <filename>/dev/dsk/c0t0d0s7</filename>. Nazwa i sterownik
+            <literal>sd</literal> mogą odnosić się również do napędu IDE
+            CD-ROM.</para>
           </listitem>
         </varlistentry>
 
@@ -1229,9 +1228,9 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <term><literal>sd@0,0:h</literal></term>
 
           <listitem>
-            <para>Minor node <literal>h</literal> on the SCSI disk at address
-            <literal>0,0</literal>. This name corresponds to the
-            <literal>s7</literal> in
+            <para>Młodszy node <literal>h</literal> na dysku SCSI o adresie
+            <literal>0,0</literal>. Jest to część równoważna fragmentowi
+            <literal>s7</literal> z zapisu
             <filename>/dev/dsk/c0t0d0s7</filename>.</para>
           </listitem>
         </varlistentry>
@@ -1239,7 +1238,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
     </sect2>
 
     <sect2 xml:id="fgove">
-      <title>Device Numbers</title>
+      <title>Numery urządzeń</title>
 
       <indexterm xml:id="indexterm-96">
         <primary>device number</primary>
@@ -1251,22 +1250,22 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         <secondary>numbers</secondary>
       </indexterm>
 
-      <para>A <emphasis>device number</emphasis> identifies a particular
-      device and minor node in the device tree. The <literal>dev_t</literal>
-      parameter that is required in many DDI/DKI routines is this device
-      number.</para>
+      <para><emphasis>Numer urządzenia (ang. device number)</emphasis>
+      identyfikuje dane urządzenie i młodszy node w drzewie urządzeń.
+      Parametr<literal> dev_t</literal> wymagany w wielu funkcjach DDI/DKI to
+      jest właśnie ten numer urządzenia.</para>
 
       <para><indexterm xml:id="indexterm-98">
           <primary>major number</primary>
         </indexterm> <indexterm xml:id="indexterm-99">
           <primary>minor number</primary>
-        </indexterm>Each device has a major number and a minor number. A
-      device number is a
-      <replaceable>major</replaceable>,<replaceable>minor</replaceable> pair.
-      A long file listing shows the device number in the column where file
-      sizes are usually listed. In the following example, the device number is
-      86,255. The device major number is 86, and the device minor number is
-      255.</para>
+        </indexterm>Każde urządznie ma starszy numer (ang. major number) i
+      młodszy numer (ang. minor number). Numer urządzenia to para
+      <replaceable>starszy</replaceable>,<replaceable>młodszy</replaceable>. W
+      liście z długimi nazwami para ta drukowana A long file listing shows the
+      device number in the column where file sizes are usually listed. In the
+      following example, the device number is 86,255. The device major number
+      is 86, and the device minor number is 255.</para>
 
       <screen>% <userinput>ls -l /devices/pci@0,0:devctl</userinput>
 crw-------   1 root     sys       86,255 <replaceable>date</replaceable> <replaceable>time</replaceable> /devices/pci@0,0:devctl</screen>
