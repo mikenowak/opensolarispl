@@ -10,12 +10,12 @@
 
 <title>Rozpoczęcie pracy z ZFS</title>
 <toc>
-<para>W tym rozdziale przedstawiono krok po kroku tworzenie prostych konfiguracji ZFS. Po zakończeniu lektury tego rozdziału czytelnik powinien mieć podstawowe pojęcie o komendach ZFS, a także powinien umieć tworzyć proste pule i systemy plików. Rozdział ten nie jest wyczerpującym przeglądem i odsyła do następnych rozdziałów w celu uzyskania dokładniejszych informacji.</para>
+<para>W tym rozdziale przedstawiono krok po kroku tworzenie prostych konfiguracji ZFS. Po zakończeniu lektury tego rozdziału czytelnik powinien mieć podstawowe pojęcie o poleceniach ZFS, a także powinien umieć tworzyć proste pule i systemy plików. Rozdział ten nie jest wyczerpującym przeglądem i odsyła do następnych rozdziałów w celu uzyskania dokładniejszych informacji.</para>
 <para>Rozdział składa się z następujących podrozdziałów:</para>
 <itemizedlist>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-2.xml" targetptr="gbgxg">Zalecenia sprzętowe i programowe odnośnie ZFS</olink>
+<olink remap="internal" targetdoc="chapter-2.xml" targetptr="gbgxg">Zalecenia sprzętowe i programowe dotyczące systemu plików ZFS</olink>
 </para>
 </listitem>
 <listitem>
@@ -58,19 +58,19 @@
 </sect1>
 <sect1 xml:id="gaypm">
 <title>Tworzenie podstawowego systemu plików ZFS</title>
-<para>Zarządzanie ZFS zostało zaprojektowane z założeniem prostoty obsługi. Wśród celów projektowych ZFS było zredukowanie ilości komend, z których należy skorzystać, aby stworzyć działający system plików. Przy tworzeniu nowej puli, automatycznie tworzony jest i montowany nowy system plików ZFS.</para>
-<para>Poniższy przykład ilustruje tworzenie nowej puli bez nadmiarowości (non-redundant) nazwanej <literal>tank</literal> i system plików ZFS nazwany <filename>tank</filename>, przy użyciu jednej komendy. Założono, że cały dysk <filename>/dev/dsk/c1t0d0</filename> jest dostępny do użycia.</para>
+<para>Zarządzanie ZFS zostało zaprojektowane z założeniem prostoty obsługi. Wśród celów projektowych ZFS było zredukowanie ilości poleceń, z których należy skorzystać, aby stworzyć działający system plików. Przy tworzeniu nowej puli, automatycznie tworzony jest i montowany nowy system plików ZFS.</para>
+<para>Poniższy przykład ilustruje tworzenie nowej puli bez nadmiarowości (non-redundant) nazwanej <literal>tank</literal> i system plików ZFS nazwany <filename>tank</filename>, przy użyciu jednego polecenia. Założono, że cały dysk <filename>/dev/dsk/c1t0d0</filename> jest dostępny do użycia.</para>
 <screen># <userinput>zpool create tank c1t0d0</userinput>
 </screen>
 <note>
 
 <para>To polecenie tworzy pulę bez jakiejkolwiek nadmiarowości danych. Taka konfiguracja
 nie jest zalecana w środowisku produkcyjnym nawet w przypadku, gdy pojedyncze urządzenie
-jest używane ze sprzętowego kontrolera RAID lub programowego zarządcy woluminów.
+jest używane ze sprzętowego kontrolera RAID lub programowego managera woluminów.
 W takiej konfiguracji ZFS potrafi tylko wykrywać błędy. W przypadku konfiguracji
 z nadmiarowością danych ZFS potrafi także poprawiać powstałe błędy. Więcej
-informacji o konfiguracji puli z nadmiarowością danych znajduje się w
-<olink remap="external" targetdoc="chapter-4.xml" targetptr="gcfof">opcje replikacji danych w pulach ZFS</olink>.</para>
+informacji o konfiguracji puli z nadmiarowością danych:
+<olink remap="external" targetdoc="chapter-4.xml" targetptr="gcfof">Opcje replikacji danych w pulach ZFS</olink>.</para>
 +</note>
 <para>Nowy system plików ZFS, <filename>tank</filename>, może używać tyle miejsca na dysku <systemitem>c1t0d0</systemitem>, ile tylko potrzebuje i jest automatycznie zamontowany w katalogu <filename>/tank</filename>.</para>
 <screen># <userinput>mkfile 100m /tank/foo</userinput>
@@ -103,7 +103,7 @@ tank                   80G   100M    80G     1%    /tank</screen>
 # <userinput>df -h /tank/fs</userinput>
 Filesystem             size   used  avail capacity  Mounted on
 tank/fs                 80G   100M    80G     1%    /tank/fs</screen>
-<para>W większości przypadków prawdopodobnie należy stworzyć hierarchię systemów plików odzwierciedlającą potrzeby organizacyjne. Więcej informacji o tworzeniu hierarchii systemów plików ZFS w <olink remap="internal" targetdoc="chapter-2.xml" targetptr="gaypa">Hierarchiczna organizacja systemów plików ZFS</olink>.</para>
+<para>W większości przypadków prawdopodobnie należy stworzyć hierarchię systemów plików odzwierciedlającą potrzeby organizacyjne. Więcej informacji na ten temat: <olink remap="internal" targetdoc="chapter-2.xml" targetptr="gaypa">Tworzenie hierarchii systemów plików ZFS</olink>.</para>
 </sect1>
 <sect1 xml:id="gayob">
 <title>Tworzenie puli ZFS</title>
@@ -125,14 +125,14 @@ tank/fs                 80G   100M    80G     1%    /tank/fs</screen>
 <secondary>identyfikowanie</secondary>
 </indexterm>
 </para>
-<para>Przyjęto, że w przykładzie z <olink remap="internal" targetdoc="chapter-2.xml" targetptr="gayok">jak tworzyć pule ZFS</olink> całe dwa dyski <filename>/dev/dsk/c1t0d0</filename> oraz <filename>/dev/dsk/c1t0d0</filename> są dostępne do użytku.</para>
-<para>Więcej informacji o dyskach oraz o sposobie ich użytkowania i etykietowania w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gazdp">używaniu dysków w puli ZFS</olink>.</para>
+<para>W przykładzie <olink remap="internal" targetdoc="chapter-2.xml" targetptr="gayok">Jak tworzyć pule ZFS</title> przyjęto, że całe dwa dyski <filename>/dev/dsk/c1t0d0</filename> oraz <filename>/dev/dsk/c1t0d0</filename> są dostępne do użytku.</para>
+<para>Więcej informacji o dyskach oraz o sposobie ich użytkowania i etykietowania: <olink remap="external" targetdoc="chapter-4.xml" targetptr="gazdp">Używanie dysków w pulach nośników danych ZFS</olink>.</para>
 </step>
 <step>
 <para>Wybór sposobu replikacji danych.</para>
 <para>ZFS obsługuje wiele typów replikacji danych, które determinują jakie rodzaje awarii sprzętowych pula przetrzyma. ZFS obsługuje zarówno konfiguracje nienadmiarowe (striped), jak i mirroring i RAID-Z (rodzaj RAID-5).</para>
-<para>W przykładzie użytym w <olink remap="internal" targetdoc="chapter-2.xml" targetptr="gayok">jak tworzyć pule ZFS</olink>, użyto prostego mirrorowania dwóch dostępnych dysków.</para>
-<para>Więcej informacji o opcjach replikacji w ZFS w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gcfof">opcje replikacji w pulach ZFS</olink>.</para>
+<para>Przykład <olink remap="internal" targetdoc="chapter-2.xml" targetptr="gayok">Jak tworzyć pule ZFS</title> demonstruje użycie prostego mirrorowania dwóch dostępnych dysków.</para>
+<para>Więcej informacji o opcjach replikacji w ZFS: <olink remap="external" targetdoc="chapter-4.xml" targetptr="gcfof">Opcje replikacji danych w pulach ZFS</olink>.</para>
 </step>
 </procedure>
 </task>
@@ -145,16 +145,16 @@ tank/fs                 80G   100M    80G     1%    /tank/fs</screen>
 <procedure>
 <step>
 <para>Należy zalogować się jako root, bądź użyć roli z odpowiednimi prawami do ZFS.</para>
-<para>Więcej informacji o profilach praw do ZFS w <olink remap="external" targetdoc="chapter-8.xml" targetptr="gbfvq">profile praw do ZFS</olink>.</para>
+<para>Więcej informacji o uprawnieniach: <olink remap="external" targetdoc="chapter-8.xml" targetptr="gbfvq">Profile uprawnień do zarządzania systemami plików ZFS</olink>.</para>
 </step>
 <step>
 <para>Wybór nazwy dla puli.</para>
-<para>Nazwa puli służy do identyfikacji puli przy pracy z komendami <command>zpool</command> i <command>zfs</command>.
+<para>Nazwa puli służy do identyfikacji puli przy pracy z poleceniami <command>zpool</command> i <command>zfs</command>.
 Większość systemów wymaga pojedynczej puli, można zatem wybrać dowolną nazwę przy zachowaniu wymagań nazewniczych, które omawia podrozdział <olink remap="external" targetdoc="chapter-1.xml" targetptr="gbcpt">Wymogi nazewnictwa komponentów ZFS</olink>. </para>
 </step>
 <step>
 <para>Tworzenie puli.</para>
-<para>Stwórzona zostanie pula nazwana <literal>tank</literal>.<indexterm xml:id="indexterm-52">
+<para>Zostanie stworzona pula o nazwie <literal>tank</literal>.<indexterm xml:id="indexterm-52">
 <primary>
 <command>zpool create</command>
 </primary>
@@ -163,13 +163,13 @@ Większość systemów wymaga pojedynczej puli, można zatem wybrać dowolną na
 </para>
 <screen># <userinput>zpool create tank mirror c1t0d0 c1t1d0</userinput>
 </screen>
-<para>Jeśli jedno lub więcej urządzeń zawiera już system plików, bądź jest w użyciu, komenda nie utworzy puli.</para>
-<para>Więcej informacji o tworzeniu pul w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gaynr">tworzenie pul ZFS</olink>.</para>
-<para>Więcej informacji o ustalaniu użytkowania urządzeń w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gazht">wykrywanie używanych urządzeń</olink>.</para>
+<para>Jeśli jedno lub więcej urządzeń zawiera już system plików, bądź jest w użyciu, polecenie nie utworzy puli.</para>
+<para>Więcej informacji o tworzeniu pul: <olink remap="external" targetdoc="chapter-4.xml" targetptr="gaynr">Tworzenie puli nośników danych ZFS</olink>.</para>
+<para>Więcej informacji o ustalaniu używanych urządzeń: <olink remap="external" targetdoc="chapter-4.xml" targetptr="gazht">Wykrywanie używanych urządzeń</olink>.</para>
 </step>
 <step>
 <para>Sprawdzenie wyników.</para>
-<para>Komendą <command>zpool list</command> można sprawdzić, czy pula została utworzona.<indexterm xml:id="indexterm-53">
+<para>Poleceniem <command>zpool list</command> można sprawdzić, czy pula została utworzona.<indexterm xml:id="indexterm-53">
 <primary>
 <command>zpool list</command>
 </primary>
@@ -183,14 +183,14 @@ Większość systemów wymaga pojedynczej puli, można zatem wybrać dowolną na
 <screen># <userinput>zpool list</userinput>
 NAME                    SIZE    USED   AVAIL    CAP  HEALTH     ALTROOT
 tank                     80G    137K     80G     0%  ONLINE     -</screen>
-<para>Więcej informacji o sprawdzaniu statusu pul w <olink remap="external" targetdoc="chapter-4.xml" targetptr="gaynp">sprawdzanie stanu pul ZFS</olink>.</para>
+<para>Więcej informacji: <olink remap="external" targetdoc="chapter-4.xml" targetptr="gaynp">Sprawdzanie statusu puli ZFS</olink>.</para>
 </step>
 </procedure>
 </task>
 </sect2>
 </sect1>
 <sect1 xml:id="gaypa">
-<title>Tworzenie hierarchii systemu plików ZFS</title>
+<title>Tworzenie hierarchii systemów plików ZFS</title>
 <para>Po stworzeniu puli dla danych można utworzyć system plików. Hierarchiczna struktura to prosty ale potężny mechanizm organizacji informacji. Jest do tego doskonale znana wszystkim, którzy używali systemu plików.<indexterm xml:id="indexterm-55">
 <primary>tworzenie</primary>
 <secondary>hierarchii systemów plików ZFS</secondary>
@@ -236,7 +236,7 @@ tank                     80G    137K     80G     0%  ONLINE     -</screen>
 <procedure>
 <step>
 <para>Należy zalogować się jako root, bądź przyjąć rolę z odpowiednimi prawami do ZFS.</para>
-<para>Więcej informacji o profilach praw do ZFS w <olink remap="external" targetdoc="chapter-8.xml" targetptr="gbfvq">profile praw do ZFS</olink>.</para>
+<para>Więcej informacji o profilach uprawnień: <olink remap="external" targetdoc="chapter-8.xml" targetptr="gbfvq">Profile uprawnień do zarządzania systemami plików ZFS</olink>.</para>
 </step>
 <step>
 <para>Tworzenie przyjętej hierarchii.</para>
