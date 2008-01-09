@@ -1262,20 +1262,19 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         </indexterm>Każde urządznie ma starszy numer (ang. major number) i
       młodszy numer (ang. minor number). Numer urządzenia to para
       <replaceable>starszy</replaceable>,<replaceable>młodszy</replaceable>. W
-      liście z długimi nazwami para ta drukowana A long file listing shows the
-      device number in the column where file sizes are usually listed. In the
-      following example, the device number is 86,255. The device major number
-      is 86, and the device minor number is 255.</para>
+      liście z długimi nazwami para ta drukowana jest w kolumnie, w której
+      zazwyczaj drukowana jest wielkość pliku. W przykładzie numer urządzenia
+      to 86,255. Starzy numer to 86, młodszy numer to 255.</para>
 
       <screen>% <userinput>ls -l /devices/pci@0,0:devctl</userinput>
 crw-------   1 root     sys       86,255 <replaceable>date</replaceable> <replaceable>time</replaceable> /devices/pci@0,0:devctl</screen>
 
-      <para>In the Solaris OS, the major number is chosen for you when you
-      install the driver so that it will not conflict with any other major
-      number. The kernel uses the major number to associate the I/O request
-      with the correct driver code. The kernel uses this association to decide
-      which driver to execute when the user reads or writes the device file.
-      All devices and their major numbers are listed in the file
+      <para>W systemie Solaris starszy numer jest wybierany automatycznie
+      podczas instalacji sterownika, aby zapobiec konfliktom z innymi
+      starszymi numerami. Jądro używa tego numeru do powiązania żądań I/O z
+      kodem sterownika. Na tej podstawie jądro decyduje, który sterownik
+      wykonać, kiedy użytkownik wykonuje odczyt lub zapis do urządzenia.
+      Wszystkie urządzenia i ich starsze numery wydrukowane są w pliku
       <filename>/etc/name_to_major</filename>.</para>
 
       <screen>% <userinput>grep 86 /etc/name_to_major</userinput>
@@ -1287,16 +1286,14 @@ pci 86</screen>
           <primary>devices</primary>
 
           <secondary>instances</secondary>
-        </indexterm>The minor number is assigned in the driver. The minor
-      number must map each driver to a specific device instance. Minor numbers
-      usually refer to sub-devices. For example, a disk driver might
-      communicate with a hardware controller device that has several disk
-      drives attached. Minor nodes do not necessarily have a physical
-      representation.</para>
+        </indexterm>Młodszy numer przydzielany jest w sterowniku. Młodszy
+      numer musi przyporządkować każdemu urządzeniu jego sterownik. Numery te
+      zazwyczaj odpowiadają podurządzeniom. Na przykład sterownik dysku może
+      komunikować się z kontrolerem dysku, do którego podłączono kilka dysków.
+      Młodsze numery niekoniecznie mają swoje fizyczne odpowiedniki.</para>
 
-      <para>The following example shows instances 0, 1, and 2 of the
-      <literal>md</literal> device. The numbers 0, 1, and 2 are the minor
-      numbers.</para>
+      <para>Poniższy przykład pokazuje instancje 0, 1 i 2 urządzenia
+      <literal>md</literal>. Numery 0, 1 i 2 są młodszymi numerami.</para>
 
       <programlisting>brw-r-----   1 root     sys       85,  0 Nov  3 09:43 md@0:0,0,blk
 crw-r-----   1 root     sys       85,  0 Nov  3 09:43 md@0:0,0,raw
@@ -1305,12 +1302,12 @@ crw-r-----   1 root     sys       85,  1 Nov  3 09:43 md@0:0,1,raw
 brw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,blk
 crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisting>
 
-      <para>In the name <filename>sd@0,0:h,</filename>, <literal>h</literal>
-      represents a minor node. When the driver receives a request for minor
-      node <literal>h</literal>, the driver actually receives a corresponding
-      minor number. The driver for the <literal>sd</literal> node interprets
-      that minor number to be a particular section of disk, such as slice 7
-      mounted on <filename>/export</filename>.</para>
+      <para>W nazwie <filename>sd@0,0:h,</filename>młodszy numer
+      reprezentowany jest przez <literal>h</literal>. Kiedy sterownik
+      otrzymuje żądanie dla młodszego node'u <literal>h</literal>, tak
+      naprawdę otrzymuje odpowiedni młodszy numer. Sterownik node'u
+      <literal>sd</literal> tłumaczy ten numer na odpowiedni wycinek partycji,
+      czyli na przykład 7. zamontowany na <filename>/export</filename>.</para>
 
       <para><indexterm xml:id="indexterm-102">
           <primary><function>ddi_get_instance </function> kernel
@@ -1320,79 +1317,74 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
 
           <secondary><function>ddi_get_instance </function></secondary>
         </indexterm> <olink remap="external" targetdoc="chapter-2.xml"
-      targetptr="eoqrt">Chapter 2, Template Driver Example</olink> shows how
-      to use the <olink remap="external" targetdoc="819-2256"
+      targetptr="eoqrt">Chapter 2, Template Driver Example</olink> opisuje
+      funkcję <olink remap="external" targetdoc="819-2256"
       targetptr="ddi-get-instance-9f"> <citerefentry>
           <refentrytitle>ddi_get_instance</refentrytitle>
 
           <manvolnum>9F</manvolnum>
-        </citerefentry> </olink> routine in your driver to get an instance
-      number for the device you are driving.</para>
+        </citerefentry> </olink> wykorzystywaną w sterowniku do uzyskania
+      numeru instancji w sterowniku.</para>
     </sect2>
   </sect1>
 
   <sect1 xml:id="frymm">
-    <title>Development Environment and Tools</title>
+    <title>Środowisko i narzędzia deweloperskie</title>
 
-    <para>This section summarizes the driver development process and provides
-    some pointers to resources. For more information on the development
-    process, see <olink remap="external" targetdoc="819-3196"
-    targetptr="fcaqh"> <citetitle remap="section">Driver Development
-    Summary</citetitle> in <citetitle remap="book">Writing Device
+    <para>W tym podrozdziale przestawiono proces tworzenia sterowników i kilka
+    wskazówek odnośnie źródeł. Więcej informacji w <olink remap="external"
+    targetdoc="819-3196" targetptr="fcaqh"> <citetitle remap="section">Driver
+    Development Summary</citetitle> in <citetitle remap="book">Writing Device
     Drivers</citetitle> </olink>.</para>
 
-    <para>Sun offers training courses in Solaris OS internals, crash dump
-    analysis, writing device drivers, DTrace, Sun Studio, and other topics
-    useful to Solaris developers. See <link
-    xlink:href="http://www.sun.com/training/" xlink:type="url"
-    xmlns:xlink="http://www.w3.org/1999/xlink"> </link> for more
-    information.</para>
+    <para>Sun oferuje szkolenia związane z wnętrznościami systemu Solaris,
+    analizą crash dumpów, pisaniem sterowników, DTrace, Sun Studio i innymi
+    tematami przydatnymi deweloperom Solarisów. </para>
 
     <orderedlist>
-      <para>The general steps in writing a device driver are as
-      follows:</para>
+      <para>Uogólniony proces pisania sterowników wygląda tak:</para>
 
       <listitem>
-        <para>Write a <literal>.c</literal> source file using the interfaces
-        and structures defined in man page sections <literal>9E</literal>,
-        <literal>9F</literal>, and <literal>9S</literal>. Most of the include
-        files you need are in <literal>/usr/include/sys</literal>. The
-        function and structure man pages show which include files you
-        need.</para>
+        <para>Stworzenie pliku źródłowego <literal>.c</literal> przy użyciu
+        interfejsów i struktur zdefiniowanych na stronach podręczników man w
+        sekcjach <literal>9E</literal>, <literal>9F</literal> i
+        <literal>9S</literal>. Większość potrzebnych plików nagłówkowych
+        znajduje się w <literal>/usr/include/sys</literal>. Strony man funkcji
+        i struktur informują, które pliki nagłówkowe są dla nich
+        wymagane.</para>
       </listitem>
 
       <listitem>
-        <para>Write a <literal>.conf</literal> hardware configuration file to
-        define property values for your driver.</para>
+        <para>Zdefiniowanie właściwości sterownika w pliku konfiguracji
+        sprzętowej <literal>.conf</literal> .</para>
       </listitem>
 
       <listitem>
-        <para>Compile and link your driver. Always use the <option>
-        D_KERNEL</option> option when you compile a driver for the Solaris OS.
-        The default compile result is 32-bit. To get a 64-bit result on a
-        64-bit platform, specify the appropriate 64-bit option as described in
-        <olink remap="internal" targetdoc="chapter-1.xml"
+        <para>Kompilacja i konsolidacja. Podczas kompilacji sterownika dla
+        jądra systemu Solaris należy zawsze używać opcji<option>
+        D_KERNEL</option>. Domyślnie produkowany jest plik 32bitowy. Aby
+        uzyskać plik 64bitowy należy wskazać odpowiednią opcję, jak to opisano
+        w <olink remap="internal" targetdoc="chapter-1.xml"
         targetptr="fgouv">Building a Driver</olink>.</para>
       </listitem>
 
       <listitem>
-        <para>Copy your driver binary file and your driver configuration file
-        to the appropriate
-        <filename>[<replaceable>platform</replaceable>]/kernel</filename>
-        directories. See <olink remap="internal" targetdoc="chapter-1.xml"
-        targetptr="fgomm">Driver Directory Organization</olink> for
-        descriptions of driver directories.</para>
+        <para>Skopiowanie pliku binarnego ze sterownikiem i pliku konfiguracji
+        sterownika do właściwego katalogu
+        <filename>[<replaceable>platform</replaceable>]/kernel</filename>.
+        Więcej w <olink remap="internal" targetdoc="chapter-1.xml"
+        targetptr="fgomm">Driver Directory Organization</olink>.</para>
       </listitem>
 
       <listitem>
-        <para>Use the <citerefentry>
+        <para>Załadowanie sterownika komendą <citerefentry>
             <refentrytitle>add_drv</refentrytitle>
 
             <manvolnum>1M</manvolnum>
-          </citerefentry> command to load your driver. When your driver is
-        loaded, you can see your driver in <filename>/dev</filename> and
-        <filename>/devices</filename>. You can also see an entry for your
-        driver in the <filename>/etc/name_to_major</filename> file.</para>
+          </citerefentry>. Po załadowaniu sterownika powinien pojawić się w
+        katalogach <filename>/dev</filename> i <filename>/devices</filename>.
+        Odpowiedni wpis pojawi się również w pliku
+        <filename>/etc/name_to_major</filename>.</para>
       </listitem>
     </orderedlist>
 
