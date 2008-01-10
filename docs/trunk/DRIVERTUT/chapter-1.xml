@@ -1339,7 +1339,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
 
     <para>Sun oferuje szkolenia związane z wnętrznościami systemu Solaris,
     analizą crash dumpów, pisaniem sterowników, DTrace, Sun Studio i innymi
-    tematami przydatnymi deweloperom Solarisów. </para>
+    tematami przydatnymi deweloperom Solarisów.</para>
 
     <orderedlist>
       <para>Uogólniony proces pisania sterowników wygląda tak:</para>
@@ -1389,37 +1389,38 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
     </orderedlist>
 
     <sect2 xml:id="fsujc">
-      <title>Writing a Driver</title>
+      <title>Pisanie sterownika</title>
 
-      <para>A driver consists of a C source file and a hardware configuration
-      file.</para>
+      <para>Sterownik składa się z pliku żródłowego napisane w języku C i
+      pliku konfiguracji sprzętu.</para>
 
       <sect3 xml:id="ganag">
-        <title>Writing a Driver Module</title>
+        <title>Pisanie modułu sterownika</title>
 
-        <para>The C code for a driver is a collection of data and functions
-        that define a kernel module. As noted in <olink remap="internal"
-        targetdoc="chapter-1.xml" targetptr="emqqh">Structural Differences
-        Between Kernel Modules and User Programs</olink>, a driver has no
-        <function>main </function> routine. Many of the subroutines of a
-        driver are special functions called entry points. See <olink
-        remap="internal" targetdoc="chapter-1.xml" targetptr="emjjs">Device
-        Drivers</olink> for information about entry points.</para>
+        <para>Kod C sterownika to zbiór funkcji i struktur danych
+        definiujących moduł jądra. Jak zauważono w punkcie <olink
+        remap="internal" targetdoc="chapter-1.xml" targetptr="emqqh">Różnice
+        strukturalne między modułami jądra a programami użytkownika</olink>,
+        sterownik nie ma funkcji <function>main</function>. Wiele z funkcji
+        sterownika to specjalne funkcje zwane punktami weścia. Więcej
+        informacji w <olink remap="internal" targetdoc="chapter-1.xml"
+        targetptr="emjjs">Device Drivers</olink>.</para>
 
-        <para>The function man pages provide both the function declaration
-        that you need in your driver and the list of header files you need to
-        include. Make sure you consult the correct man page. For example, the
-        following command displays the <command>ioctl</command>(2) man page.
-        The <command>ioctl</command>(2) system call cannot be used in a device
-        driver.</para>
+        <para>Strony man funkcji zwierają zarówno deklaracje funkcji
+        potrzebnych w terowniku oraz listę plików nagłówkowych, które trzeba
+        włączyć do kodu. Uwaga: podczas czytania stron man należy sprawdzić,
+        czy wyświetlana jest właściwa strona. Na przykład poniższa komenda
+        wyświetli stronę <command>ioctl</command>(2), ale wywołanie systemowe
+        <command>ioctl</command>(2) nie może być użyte w sterowniku
+        urządzenia.</para>
 
         <screen>% <userinput>man ioctl</userinput>
 </screen>
 
-        <para>Use one of the following commands to display the
-        <command>ioctl</command>(9E) man page. The
-        <command>ioctl</command>(9E) subroutine is a device driver entry
-        point.</para>
+        <para>Poniższa komenda wyświetli stronę man
+        <command>ioctl</command>(9E) opisującą funkcję
+        <command>ioctl</command>(9E), będącą punktem wejścia sterownika
+        urządzenia.</para>
 
         <screen>% <userinput>man ioctl.9e</userinput>
 % <userinput>man -s 9e ioctl</userinput>
@@ -1431,14 +1432,14 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
             <primary>devices</primary>
 
             <secondary>prefixes</secondary>
-          </indexterm>By convention, the names of functions and data that are
-        unique to this driver begin with a common prefix. The prefix is the
-        name of this driver or an abbreviation of the name of this driver. Use
-        the same prefix for all names that are specific to this driver. This
-        practice makes debugging much easier. Instead of seeing an error
-        related to an ambiguous <function>attach </function> function, you see
-        an error message about <function>mydriver_attach </function> or
-        <function>newdriver_attach </function>.</para>
+          </indexterm>Konwencja nakazuje, aby nazwy funkcji i danych
+        unikalnych dla danego sterownika zaczynały się wspólnym prefiksem.
+        Prefiks jest nazwą lub skrótem nazwy sterownika i używa się go do
+        wszystkich nazw właściwych dla danego sterownika. Ułatwia to szukanie
+        i usuwanie błędów. Zamiast komunikatu o błędzie związanym z jakąś
+        funkcją <function>attach</function>, błąd będzie dotyczył funkcji
+        <function>mydriver_attach </function>lub
+        <function>newdriver_attach</function>.</para>
 
         <para><indexterm xml:id="indexterm-106">
             <primary>data model</primary>
@@ -1452,93 +1453,80 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
 
             <secondary><function>ddi_model_convert_from
             </function></secondary>
-          </indexterm>A 64-bit system can run both 32-bit user programs and
-        64-bit user programs. A 64-bit system runs 32-bit programs by
-        converting all data needed between the two data models. A 64-bit
-        kernel supports both 64-bit and 32-bit user data. Whenever a 64-bit
-        driver copies data between kernel space and user space, the driver
-        must use the <olink remap="external" targetdoc="819-2256"
-        targetptr="ddi-model-convert-from-9f"> <citerefentry>
+          </indexterm>64bitowy system może wykonywać programy użytkownia
+        64bitowe i 32bitowe. System 64bitowy wykonuje 32bitowe programy
+        konwertując dane między tymi dwoma modelami danych. Jądro 64bitowe
+        obsługuje dane użytkownia w obydwóch modelach: 64bitowym i 32bitowym.
+        Gdy 64bitowy sterownik kopiuje dane między przestrzenią jądra a
+        przestrzenią użytkownika, używa funkcji <olink remap="external"
+        targetdoc="819-2256" targetptr="ddi-model-convert-from-9f">
+        <citerefentry>
             <refentrytitle>ddi_model_convert_from</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function to determine whether the data must
-        be converted between 32-bit and 64-bit models. For an example, see
-        <olink remap="external" targetdoc="chapter-3.xml"
-        targetptr="fgham">Reporting and Setting Device Size and
-        Re-initializing the Device</olink>.</para>
+          </citerefentry> </olink> do ustalenia konieczności konwersji między
+        modelami 32bitowym i 64bitowym. Przykład dostępny jest w <olink
+        remap="external" targetdoc="chapter-3.xml" targetptr="fgham">Reporting
+        and Setting Device Size and Re-initializing the Device</olink>.</para>
 
-        <para>The Sun Studio IDE includes the following three source editors:
-        GVIM, XEmacs, and the built-in Source Editor provided by NetBeans. The
-        IDE provides online help for these tools. You can also run GVIM and
-        XEmacs from the command line. See <command>vim</command>(1) and
+        <para>Sun Studio IDE zawiera trzy edytory plików źródłowych: GVIM,
+        XEmacs i wbudowany edytor NetBeans. IDE zwiera pomoc dla każdego z
+        tych edytorów. Edytory GVIM i Emacs można też wywołać z wiersza
+        poleceń. Więcej w <command>vim</command>(1) i
         <command>xemacs</command>(1).</para>
 
         <itemizedlist>
-          <para>For more information, see the following resources:</para>
+          <para>Więcej informacji:</para>
 
           <listitem>
-            <para>For more information about writing device drivers, see
-            <olink remap="external" targetdoc="chapter-4.xml"
-            targetptr="fdlbn">Device Driver Coding Tips</olink> and <olink
+            <para>Więcej informacji o pisaniu sterowników urządzeń w <olink
+            remap="external" targetdoc="chapter-4.xml"
+            targetptr="fdlbn">Device Driver Coding Tips</olink> i <olink
             remap="external" targetdoc="819-3196"> <citetitle
             remap="book">Writing Device Drivers</citetitle> </olink>.</para>
           </listitem>
 
           <listitem>
-            <para>For simple example source files, see <olink remap="external"
+            <para>Przykładowe pliki źródłowe są w <olink remap="external"
             targetdoc="chapter-2.xml" targetptr="eoqrt">Chapter 2, Template
-            Driver Example</olink> and <olink remap="external"
+            Driver Example</olink> i <olink remap="external"
             targetdoc="chapter-3.xml" targetptr="faatl">Chapter 3, Reading and
             Writing Data in Kernel Memory</olink>.</para>
           </listitem>
 
           <listitem>
-            <para>For production driver sources, go to <link
+            <para>Źródła produkcyjnych sterowników są w <link
             xlink:href="http://www.opensolaris.org/" xlink:type="url"
-            xmlns:xlink="http://www.w3.org/1999/xlink"> </link> and click
-            “Source Browser.”</para>
+            xmlns:xlink="http://www.w3.org/1999/xlink">[ FIXME]</link> w
+            zakładce “Source Browser.”</para>
           </listitem>
 
           <listitem>
-            <para>For more driver source and documentation, go to the driver
-            development OpenSolaris community at <link
-            xlink:href="http://www.opensolaris.org/os/community/device_drivers/"
-            xlink:type="url" xmlns:xlink="http://www.w3.org/1999/xlink">
-            </link> and the Solaris OS driver development site on the Sun
-            Developer Network (SDN) at <link
-            xlink:href="http://developers.sun.com/solaris/driverdev/"
-            xlink:type="url" xmlns:xlink="http://www.w3.org/1999/xlink">
-            </link>.</para>
+            <para>Więcej źródeł i dokumentacji można znaleźć na stronach
+            społeczności sterowników urządzeńOpenSolarisa pod adresem [FIXME]
+            oraz stronie deweloperów sterowników Solarisa na stronie Sun
+            Developer Network (SDN) pod adresem [FIXME].</para>
           </listitem>
 
           <listitem>
-            <para>For advice and examples on a wide variety of driver topics,
-            see the Driver Development <link
+            <para>Porady oraz przykłady wielu rozwiązań i tematów związanych z
+            tworzeniem sterowników znajdują się w Driver Development <link
             xlink:href="http://developers.sun.com/solaris/developer/support/driver/faqs.html"
             xlink:type="text"
             xmlns:xlink="http://www.w3.org/1999/xlink">FAQ</link> (Frequently
-            Asked Questions).</para>
+            Asked Questions - często zadawane pytania).</para>
           </listitem>
 
           <listitem>
-            <para>For more help, search the Driver Development Solaris forum
-            at <link
-            xlink:href="http://forum.sun.com/jive/forum.jspa?forumID=294"
-            xlink:type="url" xmlns:xlink="http://www.w3.org/1999/xlink">
-            </link> or the Kernel forum at <link
-            xlink:href="http://forum.sun.com/jive/forum.jspa?forumID=293"
-            xlink:type="url" xmlns:xlink="http://www.w3.org/1999/xlink">
-            </link>. See all the Solaris forums at <link
-            xlink:href="http://forum.sun.com/jive/index.jspa?tab=solaris"
-            xlink:type="url" xmlns:xlink="http://www.w3.org/1999/xlink">
-            </link>.</para>
+            <para>Więcej pomocy na forum Driver Development Solaris lub forum
+            Kernel [FIXME] adresy www [/FIXME]. Wszystkie tematy można
+            przejrzeć pod adresem [FIXME].</para>
           </listitem>
         </itemizedlist>
       </sect3>
 
       <sect3 xml:id="ganar">
-        <title>Writing a Configuration File</title>
+        <title>Pisanie pliku konfiguracyjnego</title>
 
         <para><indexterm xml:id="indexterm-109">
             <primary>configuration files</primary>
@@ -1570,40 +1558,40 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
             <primary>files</primary>
 
             <secondary><literal>driver.conf</literal></secondary>
-          </indexterm>A driver that is not self-identifying must have a
-        configuration file named <replaceable>node_name</replaceable>
-        <literal>.conf</literal>, where <replaceable>node_name</replaceable>
-        is the prefix for the device. A self-identifying driver is a driver
-        that can obtain all the property information it needs from the DDI
-        property interfaces such as <olink remap="external"
-        targetdoc="819-2256" targetptr="ddi-prop-get-int-9f"> <citerefentry>
+          </indexterm>Sterownik, który nie jest samoidentyfikujący musi mieć
+        plik konfiguracyjny o nazwie <replaceable>nazwa_node'a</replaceable>
+        <literal>.conf</literal>, gdzie
+        <replaceable>nazwa_node'a</replaceable> jest prefiksem dla urządzenia.
+        Samoidentyfikujący się sterownik to taki, który umie uzyskać wszystkie
+        właściwości i informacje z interfejsów właściwości DDI, takich jak
+        <olink remap="external" targetdoc="819-2256"
+        targetptr="ddi-prop-get-int-9f"> <citerefentry>
             <refentrytitle>ddi_prop_get_int</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> and <olink remap="external"
+          </citerefentry> </olink> i <olink remap="external"
         targetdoc="819-2256" targetptr="ddi-prop-lookup-9f"> <citerefentry>
             <refentrytitle>ddi_prop_lookup</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink>. The minimum information that a
-        configuration file must contain is the name of the device node and the
-        name or type of the device's parent.</para>
+          </citerefentry> </olink>. Minimalna ilość informacji w pliku
+        konfiguracyjnym to nazwa node'u urządzenia oraz nazwa lub typ rodzica
+        urządzenia.</para>
 
-        <para>For more information about device driver configuration files,
-        see the <olink remap="external" targetdoc="819-2251"
+        <para>Więcej informacji o plikach konfiguracyjnych sterowników
+        urządzeń w <olink remap="external" targetdoc="819-2251"
         targetptr="driver.conf-4"> <citerefentry>
             <refentrytitle>driver.conf</refentrytitle>
 
             <manvolnum>4</manvolnum>
-          </citerefentry> </olink> man page. For an example configuration
-        file, see <olink remap="external" targetdoc="chapter-2.xml"
-        targetptr="eoxzw">Writing the Device Configuration
-        File</olink>.</para>
+          </citerefentry> </olink>. Przykładowy plik konfiguracyjny <olink
+        remap="external" targetdoc="chapter-2.xml" targetptr="eoxzw">Writing
+        the Device Configuration File</olink>.</para>
       </sect3>
     </sect2>
 
     <sect2 xml:id="fgouv">
-      <title>Building a Driver</title>
+      <title>Budowanie sterownika</title>
 
       <para><indexterm xml:id="indexterm-118">
           <primary>device drivers</primary>
@@ -1627,8 +1615,8 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <primary>linking</primary>
         </indexterm> <indexterm xml:id="indexterm-124">
           <primary>path environment variable</primary>
-        </indexterm>This section tells you how to compile and link a driver
-      for different architectures.</para>
+        </indexterm>W tym podrozdziale napisane jest jak skompilować i
+      skonsolidować sterownik dla różnych architektur.</para>
 
       <para>Make sure you have installed the Solaris OS at the Developer level
       or above. Follow the instructions in <olink remap="external"
