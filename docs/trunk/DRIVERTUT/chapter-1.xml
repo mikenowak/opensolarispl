@@ -1618,29 +1618,29 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         </indexterm>W tym podrozdziale napisane jest jak skompilować i
       skonsolidować sterownik dla różnych architektur.</para>
 
-      <para>Make sure you have installed the Solaris OS at the Developer level
-      or above. Follow the instructions in <olink remap="external"
-      targetdoc="819-2393" targetptr="webstart-91">Chapter 2, <citetitle
-      remap="chapter">Installing With the Solaris Installation Program
-      (Tasks),</citetitle> in <citetitle remap="book">Solaris Express
-      Installation Guide: Basic Installations</citetitle> </olink>. Select
-      Custom Install, and select the Developer cluster or above.</para>
+      <para>System operacyjny Solaris OS musi być zainstalowany conajmniej na
+      poziomie Developer wg instrukcji z <olink remap="external"
+      targetdoc="819-2393" targetptr="webstart-91">Rozdział 2, <citetitle
+      remap="chapter">Instalacja za pomocą programu instalacyjnego Solaris
+      (zadania),</citetitle> w <citetitle remap="book">Podręcznik Instalacji
+      Solaris Express: podstawowe instalacje</citetitle> </olink>. Należy
+      wybrać Custom Install i zestaw Developer lub wyżej.</para>
 
-      <para>In your path environment variable, include
-      <filename>/opt/SUNWspro/bin</filename> followed by
+      <para>W ścieżce należy dodać <filename>/opt/SUNWspro/bin</filename> i
       <filename>/usr/ccs/bin</filename>.</para>
 
-      <para>A 64-bit kernel cannot use a 32-bit driver. A 64-bit kernel can
-      use only 64-bit drivers. All parts of any particular program must use
-      the same data model. A device driver is not a complete program. The
-      kernel is a complete program. A driver is a part of the kernel program.
-      If you want your device to work with the Solaris OS in 32-bit mode and
-      with the Solaris OS in 64-bit mode, then you must provide both a 32-bit
-      driver and a 64-bit driver.</para>
+      <para>Kernel 64bitowy nie może używać 32bitowego sterownika, może używać
+      tylko 64bitowych strowników. Wszystkie części pojedynczego programu
+      muszą używać tego samego modelu danych. Sterownik urządzenia nie jest
+      samodzielnym programem, ale jest częścią programu jądra. Jeśli
+      urządzenie ma współpracować z systemem operacyjnym Solaris w trybie
+      64bitowym i 32bitowym, należy zapewnić dwa sterowniki: 32bitowy i
+      64bitowy.</para>
 
-      <para>By default, compilation on the Solaris OS yields a 32-bit result
-      on every architecture. To obtain a 64-bit result, use the compilation
-      options specified in this section for 64-bit architectures.</para>
+      <para>Domyślnie kompilacja pod Soalrisem produkuje 32bitowy plik na
+      każdej architekturze. Aby skompilować do postaci 64bitowej należy użyć
+      opcji kompilacji dla architektur 64bitowych wymienionej w tym
+      podrozdziale.</para>
 
       <para><indexterm xml:id="indexterm-125">
           <primary>commands</primary>
@@ -1648,16 +1648,17 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <secondary><command>prtconf</command></secondary>
         </indexterm> <indexterm xml:id="indexterm-126">
           <primary><command>prtconf</command> command</primary>
-        </indexterm>Use the <olink remap="external" targetdoc="819-2240"
+        </indexterm>Komenda <olink remap="external" targetdoc="819-2240"
       targetptr="prtconf-1m"> <citerefentry>
           <refentrytitle>prtconf</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> command with the <option> x</option> option
-      to determine whether the firmware on this system is 64-bit ready.</para>
+        </citerefentry> </olink> z opcją <option>x</option> poinformuje, czy
+      firmware na danej maszynie jest gotowy do pracy w trybie
+      64bitowym.</para>
 
       <sect3 xml:id="gamyf">
-        <title>Compiling with Sun Studio</title>
+        <title>Kompilacja z Sun Studio</title>
 
         <indexterm xml:id="indexterm-127">
           <primary>Sun Studio</primary>
@@ -1684,12 +1685,12 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         </indexterm>
 
         <itemizedlist>
-          <para>Use the <option> D_KERNEL</option> option to indicate that
-          this code defines a kernel module.</para>
+          <para>Opcja <option>D_KERNEL</option> wskazuje, że kod jest modułem
+          jądra.</para>
 
           <listitem>
-            <para>If you are compiling for a 64-bit SPARC architecture, use
-            the <option> xarch=v9</option> option:</para>
+            <para>Kompilacja dla SPARC 64bit wymaga opcji
+            <option>xarch=v9</option>:</para>
 
             <screen>% <userinput>cc -D_KERNEL -xarch=v9 -c mydriver.c</userinput>
 % <userinput>/usr/ccs/bin/ld -r -o mydriver mydriver.o</userinput>
@@ -1697,9 +1698,9 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           </listitem>
 
           <listitem>
-            <para>If you are compiling for a 64-bit x86 architecture, use both
-            the <option> xarch=amd64</option> option and the <option>
-            xmodel=kernel</option> option:</para>
+            <para>Kompilacja na 64bitowej architekturze x86 wymaga opcji
+            <option>xarch=amd64</option> i<option>
+            xmodel=kernel</option>:</para>
 
             <screen>% <userinput>cc -D_KERNEL -xarch=amd64 -xmodel=kernel -c mydriver.c</userinput>
 % <userinput>/usr/ccs/bin/ld -r -o mydriver mydriver.o</userinput>
@@ -1707,8 +1708,8 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           </listitem>
 
           <listitem>
-            <para>If you are compiling for a 32-bit architecture, use the
-            following build commands:</para>
+            <para>Kompilacja dla 32bitowej architektury wymaga poniższej
+            komendy:</para>
 
             <screen>% <userinput>cc -D_KERNEL -c mydriver.c</userinput>
 % <userinput>/usr/ccs/bin/ld -r -o mydriver mydriver.o</userinput>
@@ -1716,7 +1717,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           </listitem>
         </itemizedlist>
 
-        <para>For more information on compile and link options, see the <olink
+        <para>Więcej informacji o opcjach kompilacji i konsolidacji w <olink
         remap="external" targetdoc="819-2239" targetptr="as-1"> <citerefentry>
             <refentrytitle>as</refentrytitle>
 
@@ -1726,31 +1727,30 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
             <refentrytitle>cc</refentrytitle>
 
             <manvolnum>1B</manvolnum>
-          </citerefentry> </olink>, and <olink remap="external"
+          </citerefentry> </olink> i <olink remap="external"
         targetdoc="819-2239" targetptr="ld-1"> <citerefentry>
             <refentrytitle>ld</refentrytitle>
 
             <manvolnum>1</manvolnum>
-          </citerefentry> </olink> man pages. See also the <olink
+          </citerefentry> </olink>. Można zajrzeć także do <olink
         remap="external" targetdoc="819-3688"> <citetitle remap="book">Sun
-        Studio 11: C User’s Guide</citetitle> </olink>. Click <citetitle>Sun
-        Studio 11 Collection</citetitle> at the top left of this page to see
-        Sun Studio books about <command>dbx</command>,
-        <command>dmake</command>, Performance Analyzer, and other software
-        development topics. To read technical articles about Sun Studio or to
-        download Sun Studio, go to <link
-        xlink:href="http://developers.sun.com/sunstudio/" xlink:type="url"
-        xmlns:xlink="http://www.w3.org/1999/xlink"> </link>.</para>
+        Studio 11: C User’s Guide</citetitle> </olink>. W lewym górnym rogu
+        tej strony jest odnośnik <citetitle>Sun Studio 11
+        Collection</citetitle> prowadzący do zbioru książek o
+        <command>dbx</command>, <command>dmake</command>, Performance Analyzer
+        i innych tematach związanych z oprogramowaniem deweloperskim. Artykuły
+        techniczne o Sun Studio oraz Sun Studio do pobrania pod adresem
+        [FIXME].</para>
 
         <note>
-          <para>Sun Studio 9 does not support 64-bit x86 architectures. Use
-          Sun Studio 10 or Sun Studio 11 to compile and debug drivers for
-          64-bit x86 architectures.</para>
+          <para>Sun Studio 9 obsługuje 64bitowych architektur x86. Kompilację
+          i debagowanie 64bitowych sterowników dla architektur x86 można
+          wykonać Sun Studio 10 lub Sun Studio 11.</para>
         </note>
       </sect3>
 
       <sect3 xml:id="gamzm">
-        <title>Compiling with the GNU C Compiler</title>
+        <title>Kompilacja za pomocą GNU C Compiler (gcc)</title>
 
         <indexterm xml:id="indexterm-132">
           <primary>GNU C</primary>
@@ -1766,51 +1766,47 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <primary><command>gcc</command> command</primary>
         </indexterm>
 
-        <para>To get the GNU C compiler, you must install the Solaris OS at
-        the Developer level or above. Follow the instructions in <olink
-        remap="external" targetdoc="819-2393" targetptr="webstart-91">Chapter
-        2, <citetitle remap="chapter">Installing With the Solaris Installation
-        Program (Tasks),</citetitle> in <citetitle remap="book">Solaris
-        Express Installation Guide: Basic Installations</citetitle> </olink>.
-        Select Custom Install, and select the Developer cluster or above. The
-        GNU C compiler is installed in <filename>/usr/sfw</filename>.</para>
+        <para>Kompilator GNU C Compiler zawarty jest w zestawie Developer
+        podczas instalacji systemu operacyjnego Solaris. Należy postępować wg
+        instrukcji z <olink remap="external" targetdoc="819-2393"
+        targetptr="webstart-91">Rozdział 2, <citetitle
+        remap="chapter">Instalacja za pomocą programu instalacyjnego Solaris
+        (zadania),</citetitle> w <citetitle remap="book">Podręcznik Instalacji
+        Solaris Express: podstawowe instalacje</citetitle></olink>.Należy
+        wybrać Custom Install i zestaw Developer lub wyżej. GNU C Compiler
+        zainstalowany zostanie w ścieżce <filename>/usr/sfw</filename>.</para>
 
         <itemizedlist>
-          <para>Use the <option> D_KERNEL</option> option to indicate that
-          this code defines a kernel module. These examples show options that
-          are required for correct functionality of the result.</para>
+          <para>Opcja <option>D_KERNEL</option> wskazuje, że kod jest modułem
+          jądra. Poniższe przykłady pokazują opcje wymagane do poprawnej
+          kompilacji.</para>
 
           <listitem>
-            <para>If you are compiling for a 64-bit SPARC architecture, use
-            the following build commands:</para>
+            <para>Kompilacja dla 64bitowej architektury SPARC: </para>
 
             <screen>% <userinput>gcc -D_KERNEL -m64 -mcpu=v9 -mcmodel=medlow -fno-pic -mno-fpu
 -ffreestanding -nodefaultlibs -c mydriver.c</userinput>
 % <userinput>/usr/ccs/bin/ld -r -o mydriver mydriver.o</userinput>
 </screen>
 
-            <para>You might also want to use the <option>
-            mtune=ultrasparc</option> option and the <option> O2</option>
-            option.</para>
+            <para>Można użyć opcji <option>mtune=ultrasparc</option>
+            oraz<option> O2</option>.</para>
           </listitem>
 
           <listitem>
-            <para>If you are compiling for a 64-bit x86 architecture, use the
-            following build commands:</para>
+            <para>Kompilacja dla 64bitowej architektury x86:</para>
 
             <screen>% <userinput>gcc -D_KERNEL -m64 -mcmodel=kernel -mno-red-zone -ffreestanding
 -nodefaultlibs -c mydriver.c</userinput>
 % <userinput>/usr/ccs/bin/ld -r -o mydriver mydriver.o</userinput>
 </screen>
 
-            <para>You might also want to use the <option>
-            mtune=opteron</option> option and the <option> O2</option>
-            option.</para>
+            <para>Można użyć opcji<option> mtune=opteron</option> oraz<option>
+            O2</option>.</para>
           </listitem>
 
           <listitem>
-            <para>If you are compiling for a 32-bit architecture, use the
-            following build commands:</para>
+            <para>Kompilacja dla 32bitowej architektury:</para>
 
             <screen>% <userinput>gcc -D_KERNEL -ffreestanding -nodefaultlibs -c mydriver.c</userinput>
 % <userinput>/usr/ccs/bin/ld -r -o mydriver mydriver.o</userinput>
@@ -1818,12 +1814,10 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           </listitem>
         </itemizedlist>
 
-        <para>For more information on these and other options, see the
-        <command>gcc</command>(1) man page. See also the GCC web site at <link
-        xlink:href="http://gcc.gnu.org/" xlink:type="url"
-        xmlns:xlink="http://www.w3.org/1999/xlink"> </link>. More information
-        about using the <command>gcc</command> compiler with the Solaris OS is
-        on the OpenSolaris web site at <link
+        <para>Więcej informacji o tych opcjach na stronie man
+        <command>gcc</command>(1) oraz na stronie GCC [FIXME]. Więcej
+        informacji o używaniu kompilatora <command>gcc</command> z systemem
+        operacyjnym Solaris na stronie OpenSolaris [FIXME]. <link
         xlink:href="http://opensolaris.org/os/community/tools/gcc/"
         xlink:type="url" xmlns:xlink="http://www.w3.org/1999/xlink">
         </link>.</para>
@@ -1831,7 +1825,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
     </sect2>
 
     <sect2 xml:id="fsfqv">
-      <title>Installing a Driver</title>
+      <title>Instalcja sterownika</title>
 
       <indexterm xml:id="indexterm-135">
         <primary>device drivers</primary>
@@ -1869,83 +1863,81 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         <primary><function>attach </function> entry point</primary>
       </indexterm>
 
-      <para>After you write and build your driver, you must install the driver
-      binary. To install a driver, copy the driver binary and the
-      configuration file to the appropriate <filename>/kernel/drv</filename>
-      directory.</para>
+      <para>Po napisaniu i zbudowaniu sterownika należy go zainstalować.
+      Instalacja polega na skopiowaniu pliku binarnego i pliku konfiguracji do
+      właściwego katalogu <filename>/kernel/drv</filename>.</para>
 
-      <para>Make sure you are user <literal>root</literal> when you install a
-      driver.</para>
+      <para>Instalacji można dokonać tylko jako użytkownik
+      <literal>root</literal>.</para>
 
-      <para>Copy the configuration file to the kernel driver area of the
-      system.</para>
+      <para>Kopiowanie pliku konfiguracyjnego do katalogu sterowników
+      jądra</para>
 
       <screen># <userinput>cp mydriver.conf /usr/kernel/drv</userinput>
 </screen>
 
-      <para>Install drivers in the <filename>/tmp</filename> directory until
-      you are finished modifying and testing the <function>_info </function>,
-      <function>_init </function>, and <function>attach </function> routines.
-      See <olink remap="external" targetdoc="chapter-4.xml"
-      targetptr="fdlbq">Device Driver Testing Tips</olink> for more
-      information.</para>
+      <para>Przed ukończeniem testowania funkcji<function>_info </function>,
+      <function>_init </function>i <function>attach </function>sterownik
+      powinien być zainstalowany w katalogu<filename>/tmp</filename> . Więcej
+      informacji w <olink remap="external" targetdoc="chapter-4.xml"
+      targetptr="fdlbq">Device Driver Testing Tips</olink>.</para>
 
-      <para>Copy the driver binary to the <filename>/tmp</filename>
-      directory.</para>
+      <para>Kopiowanie pliku binarnego sterownika do katalogu
+      <filename>/tmp</filename>.</para>
 
       <screen># <userinput>cp mydriver /tmp</userinput>
 </screen>
 
       <itemizedlist>
-        <para>Link to the driver from the kernel driver directory.</para>
+        <para>Tworzenie odnośnika do sterownika z katalogu sterowników
+        jądra.</para>
 
         <listitem>
-          <para>On a 64-bit SPARC architecture, link to the
-          <filename>sparcv9</filename> directory:</para>
+          <para>Na 64bitowej architekturze SPARC tworzy się dowiązanie do
+          katalogu <filename>sparcv9</filename>:</para>
 
           <screen># <userinput>ln -s /tmp/mydriver /usr/kernel/drv/sparcv9/mydriver</userinput>
 </screen>
         </listitem>
 
         <listitem>
-          <para>On a 64-bit x86 architecture, link to the
-          <filename>amd64</filename> directory:</para>
+          <para>Na 64bitowej architekturze x86 tworzy się dowiązanie do
+          katalogu <filename>amd64</filename>:</para>
 
           <screen># <userinput>ln -s /tmp/mydriver /usr/kernel/drv/amd64/mydriver</userinput>
 </screen>
         </listitem>
 
         <listitem>
-          <para>On a 32-bit architecture, create the link as follows:</para>
+          <para>Na 32bitowej architekturze:</para>
 
           <screen># <userinput>ln -s /tmp/mydriver /usr/kernel/drv/mydriver</userinput>
 </screen>
         </listitem>
       </itemizedlist>
 
-      <para>When the driver is well tested, copy the driver directly to the
-      appropriate kernel driver area of the system.</para>
+      <para>Po ukończeniu testów sterownik należy skopiować do właściwego mu
+      katalogu.</para>
 
       <itemizedlist>
         <listitem>
-          <para>On a 64-bit SPARC architecture, copy the driver to the
-          <filename>sparcv9</filename> directory:</para>
+          <para>Na 64bitowej architekturze SPARC kopiuje się do katalogu
+          <filename>sparcv9</filename>:</para>
 
           <screen># <userinput>cp mydriver /usr/kernel/drv/sparcv9/mydriver</userinput>
 </screen>
         </listitem>
 
         <listitem>
-          <para>On a 64-bit x86 architecture, copy the driver to the
-          <filename>amd64</filename> directory:</para>
+          <para>Na 64bitowej architekturze x86 kopiuje się do katalogu
+          <filename>amd64</filename>:</para>
 
           <screen># <userinput>cp mydriver /usr/kernel/drv/amd64/mydriver</userinput>
 </screen>
         </listitem>
 
         <listitem>
-          <para>On a 32-bit architecture, copy the driver to the kernel driver
-          area of the system:</para>
+          <para>Na 32bitowej architekturze:</para>
 
           <screen># <userinput>cp mydriver /usr/kernel/drv/mydriver</userinput>
 </screen>
@@ -1954,7 +1946,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
     </sect2>
 
     <sect2 xml:id="fsujf">
-      <title>Adding, Updating, and Removing a Driver</title>
+      <title>Dodawanie, uaktualnianie i usuwanie sterownika</title>
 
       <indexterm xml:id="indexterm-142">
         <primary>device drivers</primary>
@@ -1972,27 +1964,23 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         <primary><command>add_drv</command> command</primary>
       </indexterm>
 
-      <para>Use the <olink remap="external" targetdoc="819-2240"
-      targetptr="add-drv-1m"> <citerefentry>
+      <para>Do dodania sterownika używa się komendy <olink remap="external"
+      targetdoc="819-2240" targetptr="add-drv-1m"> <citerefentry>
           <refentrytitle>add_drv</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> command to make the installed driver usable.
-      Be sure you are user <literal>root</literal> when you use the
-      <citerefentry>
-          <refentrytitle>add_drv</refentrytitle>
-
-          <manvolnum>1M</manvolnum>
-        </citerefentry> command.</para>
+        </citerefentry> </olink>. Do użycia tej okmendy wymagany jest
+      użytkownik <literal>root</literal>.</para>
 
       <screen># <userinput>add_drv mydriver</userinput>
 </screen>
 
       <itemizedlist>
-        <para>The following events take place when you add a driver:</para>
+        <para>Podczas dodawania sterownika zachodzą w systemie następujące
+        zdarzenia:</para>
 
         <listitem>
-          <para>The <citerefentry>
+          <para>Wywoływane są punkty wejścia <citerefentry>
               <refentrytitle>_info</refentrytitle>
 
               <manvolnum>9E</manvolnum>
@@ -2000,18 +1988,18 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
               <refentrytitle>_init</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry>, and <citerefentry>
+            </citerefentry> i <citerefentry>
               <refentrytitle>attach</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> entry points are called in that order.</para>
+            </citerefentry> w tym porządku.</para>
         </listitem>
 
         <listitem>
           <para><indexterm xml:id="indexterm-145">
               <primary><literal>/devices</literal> directory</primary>
-            </indexterm>The driver is added to the
-          <filename>/devices</filename> directory.</para>
+            </indexterm>TSterownik jest dodawany do katalogu
+          <filename>/devices</filename>.</para>
         </listitem>
 
         <listitem>
@@ -2021,8 +2009,8 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
               <secondary><command>modinfo</command></secondary>
             </indexterm> <indexterm xml:id="indexterm-147">
               <primary><command>modinfo</command> command</primary>
-            </indexterm>The driver is the most recent module listed by <olink
-          remap="external" targetdoc="819-2240" targetptr="modinfo-1m">
+            </indexterm>Sterownik jest najnowszym modułem drukowanym przez
+          <olink remap="external" targetdoc="819-2240" targetptr="modinfo-1m">
           <citerefentry>
               <refentrytitle>modinfo</refentrytitle>
 
@@ -2037,71 +2025,72 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
               <secondary><filename>/etc/name_to_major</filename></secondary>
             </indexterm> <indexterm xml:id="indexterm-149">
               <primary><filename>/etc/name_to_major</filename> file</primary>
-            </indexterm>The driver is the most recent module listed in the
-          file <filename>/etc/name_to_major</filename>.</para>
+            </indexterm>Sterownik jest najnowszym modułem wpisanym do pliku
+          <filename>/etc/name_to_major</filename>.</para>
         </listitem>
       </itemizedlist>
 
       <para><indexterm xml:id="indexterm-150">
           <primary><literal>/etc/driver_aliases</literal> file</primary>
-        </indexterm>The file <filename>/etc/driver_aliases</filename> might be
-      updated. The <filename>/etc/driver_aliases</filename> file shows which
-      devices are bound to which drivers. If a driver is not listed in the
-      <filename>/etc/driver_aliases</filename> file, then the Solaris OS does
-      not load that driver or attach to that driver. Each line of the
-      <filename>/etc/driver_aliases</filename> file shows a driver name
-      followed by a device name. You can search this file to determine which
-      driver is managing your device.</para>
+        </indexterm>Plik <filename>/etc/driver_aliases</filename> może być
+      uaktualniony. Plik ten informuje o powiązaniach między urządzeniami i
+      sterownikami. Jeśli sterownika nie ma w pliku
+      <filename>/etc/driver_aliases</filename>, znaczy to, że system
+      operacyjny Solaris nie ładuje tego sterownika lub nie podłącza do tego
+      sterownika. Każda linia w pliku pokazuje nazwę sterownika oraz nazwę
+      urządzenia. Można w nim znależć, który sterownik obsługuje które
+      urządzenie.</para>
 
       <note>
-        <para>Do not edit the <filename>/etc/driver_aliases</filename> file
-        manually. Use the <citerefentry>
+        <para>Pliku <filename>/etc/driver_aliases</filename> nie powinno się
+        zmieniać ręcznie, ale powiązania powinno ustalać się komendą
+        <citerefentry>
             <refentrytitle>add_drv</refentrytitle>
 
             <manvolnum>1M</manvolnum>
-          </citerefentry> command to establish a device binding. Use the
+          </citerefentry>. Zmiany powiązania można dokonać komendą
         <citerefentry>
             <refentrytitle>update_drv</refentrytitle>
 
             <manvolnum>1M</manvolnum>
-          </citerefentry> command to change a device binding.</para>
+          </citerefentry>.</para>
       </note>
 
       <para><indexterm xml:id="indexterm-151">
           <primary>PCI ID numbers</primary>
-        </indexterm>The example drivers shown in this book manage pseudo
-      devices. If your driver manages real hardware, then you need to use the
-      <option> c</option> and <option> i</option> options on the <citerefentry>
+        </indexterm>Przykładowe sterowniki pokazane w tej książce zarządzają
+      pseudourządzeniami. Jeśli sterownik zarządza urządzeniem sprzętowym, do
+      opcji komendy <citerefentry>
           <refentrytitle>add_drv</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> command or the <option> i</option> option on the
-      <citerefentry>
+        </citerefentry> należy dodać opcje <option>c</option> i
+      <option>i</option> lub opcję <option>i</option> do komendy <citerefentry>
           <refentrytitle>update_drv</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> command. To specify a device class or device ID, you
-      might find the following sites useful. This information also is useful
-      to search the <filename>/etc/driver_aliases</filename> file to find out
-      whether a device already is supported.</para>
+        </citerefentry>. Poniższe strony mogą okazać się pomocne przy
+      wskazywaniu klasy urządzenia lub ID urządzenia. Przydają się też przy
+      przeszukiwaniu pliku <filename>/etc/driver_aliases</filename> podczas
+      sprawdzania, czy urządzenie jest już obsługiwane.</para>
 
       <itemizedlist>
         <listitem>
-          <para>List of devices currently supported by the Solaris OS: <link
+          <para>Lista urządzeń aktualnie obsługiwanych przez Solaris OS: <link
           xlink:href="http://www.sun.com/bigadmin/hcl/driverlist.html"
           xlink:type="url" xmlns:xlink="http://www.w3.org/1999/xlink">
           </link></para>
         </listitem>
 
         <listitem>
-          <para>Searchable PCI vendor and device lists: <link
+          <para>Przeszukiwalna lista urządzeń i producentów PCI: <link
           xlink:href="http://www.pcidatabase.com/" xlink:type="url"
           xmlns:xlink="http://www.w3.org/1999/xlink"> </link></para>
         </listitem>
 
         <listitem>
-          <para>Repository of vendor IDs, device IDs, subsystems, and device
-          classes used in PCI devices: <link
+          <para>Repozytorium ID producentów, ID urządzeń, podsystemów i klas
+          urządzeń używanych w urządzeniach PCI: <link
           xlink:href="http://pciids.sourceforge.net/" xlink:type="url"
           xmlns:xlink="http://www.w3.org/1999/xlink"> </link></para>
         </listitem>
@@ -2123,27 +2112,22 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <secondary><command>prtconf</command></secondary>
         </indexterm> <indexterm xml:id="indexterm-156">
           <primary><command>prtconf</command> command</primary>
-        </indexterm>Use the <olink remap="external" targetdoc="819-2240"
-      targetptr="update-drv-1m"> <citerefentry>
+        </indexterm>Komenda <olink remap="external" targetdoc="819-2240"
+      targetptr="update-drv-1m"><citerefentry>
           <refentrytitle>update_drv</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> command to notify the system about attribute
-      changes to an installed device driver. By default, the <citerefentry>
-          <refentrytitle>update_drv</refentrytitle>
-
-          <manvolnum>1M</manvolnum>
-        </citerefentry> command reloads the hardware configuration file for
-      the specified driver. Use the <olink remap="external"
+        </citerefentry> </olink> służy do informowania dystemu o zmianach
+      atrybutów zainstalowanych sterowników. Domyślnie komenda odczytuje
+      ponownie plik konfiguracyjny sprzętu dla sterownika. Aktualną
+      kondifurację sterownika można wydrukować komendą <olink remap="external"
       targetdoc="819-2240" targetptr="prtconf-1m"> <citerefentry>
           <refentrytitle>prtconf</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> command to review the current configuration
-      information for a device and driver. For example, the <option>
-      D</option> option shows which driver manages a particular device. The
-      <option> P</option> option shows information about pseudo
-      devices.</para>
+        </citerefentry> </olink>. Przykładowo opcja <option>D</option> drukuje
+      powiązania sterowników i urządzeń, natomiast opcja <option>P</option>
+      drukuje informacje o pseudourządzeniach.</para>
 
       <para><indexterm xml:id="indexterm-157">
           <primary>device drivers</primary>
@@ -2155,27 +2139,22 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <secondary><command>rem_drv</command></secondary>
         </indexterm> <indexterm xml:id="indexterm-159">
           <primary><command>rem_drv</command> command</primary>
-        </indexterm>Use the <olink remap="external" targetdoc="819-2240"
+        </indexterm>Komenda <olink remap="external" targetdoc="819-2240"
       targetptr="rem-drv-1m"> <citerefentry>
           <refentrytitle>rem_drv</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> command to update the system driver
-      configuration files so that the driver is no longer usable. The
-      <citerefentry>
+        </citerefentry> </olink> uaktualnia systemową konfigurację sterownika
+      w taki sposób, że sterownik ten jest nieużywalny. Komenda ta nie usuwa
+      fizycznie plików sterownika. Jeśli to możliwe, <citerefentry>
           <refentrytitle>rem_drv</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> command does not physically delete driver files. If
-      possible, the <citerefentry>
-          <refentrytitle>rem_drv</refentrytitle>
-
-          <manvolnum>1M</manvolnum>
-        </citerefentry> command unloads the driver from memory.</para>
+        </citerefentry> wyładowuje sterownik z pamięci.</para>
     </sect2>
 
     <sect2 xml:id="ganoc">
-      <title>Loading and Unloading a Driver</title>
+      <title>Ładowanie i wyładowywanie sterownika</title>
 
       <indexterm xml:id="indexterm-160">
         <primary>device drivers</primary>
@@ -2199,75 +2178,76 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         <primary><command>rem_drv</command> command</primary>
       </indexterm>
 
-      <para>A driver is loaded into memory when a device that the driver
-      manages is accessed. A driver might be unloaded from memory when the
-      driver is not being used. Normally, you do not need to load a driver
-      into memory manually or unload a driver from memory manually.</para>
+      <para>Sterownik jest ładowany do pamięci, gdy pojawia się próba dostępu
+      do urządzenia. Sterownik może być wyładowany z pamięci, gdy urządzenie
+      nie jest już wykorzystywane. Zazwyczaj ręczne ładowanie i wyładowywanie
+      sterownika z pamięci nie jest konieczne.</para>
 
-      <para>To manually load a loadable module into memory, use the <olink
+      <para>Ręczne ładowanie modułu do pamięci wykonywane jest komendą <olink
       remap="external" targetdoc="819-2240" targetptr="modload-1m">
       <citerefentry>
           <refentrytitle>modload</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> command.</para>
+        </citerefentry> </olink>.</para>
 
-      <para>While you are developing your driver, you might want to manually
-      unload the driver and then update the driver. To manually unload a
-      loadable module from memory, use the <olink remap="external"
-      targetdoc="819-2240" targetptr="modunload-1m"> <citerefentry>
+      <para>Podczas pisania sterownika może zajść potrzeba ręcznego
+      załadowania sterownika i jego wyładowania i uaktualnienia. Ręczne
+      wyładowanie sterownika z pamięci wykonywane jest komendą <olink
+      remap="external" targetdoc="819-2240"
+      targetptr="modunload-1m"><citerefentry>
           <refentrytitle>modunload</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> command.</para>
+        </citerefentry> </olink>.</para>
     </sect2>
 
     <sect2 xml:id="fsujg">
-      <title>Testing a Driver</title>
+      <title>Testowanie sterownika</title>
 
       <itemizedlist>
         <para><indexterm xml:id="indexterm-164">
             <primary>device drivers</primary>
 
             <secondary>test areas</secondary>
-          </indexterm>Drivers should be thoroughly tested in the following
-        areas:</para>
+          </indexterm>Sterowniki powinny być szczegółowo przetestowane w
+        następujących obszarach:</para>
 
         <listitem>
-          <para>Configuration</para>
+          <para>Konfiguracja</para>
         </listitem>
 
         <listitem>
-          <para>Functionality</para>
+          <para>Funkcjonalność</para>
         </listitem>
 
         <listitem>
-          <para>Error handling</para>
+          <para>Obsługa błędów</para>
         </listitem>
 
         <listitem>
-          <para>Loading, unloading, and removing</para>
+          <para>Ładowanie, wyładowywanie i usuwanie</para>
 
-          <para>All drivers will need to be removed eventually. Make sure that
-          your driver can be successfully removed.</para>
+          <para>Prędzej czy póżniej każdy sterownik będzie musiał być
+          usunięty. Należy upewnić się, że można go czysto usunąć.</para>
         </listitem>
 
         <listitem>
-          <para>Stress, performance, and interoperability</para>
+          <para>Obciążenie, wydajność i współpraca</para>
         </listitem>
 
         <listitem>
-          <para>DDI/DKI compliance</para>
+          <para>Zgodność z DDI/DKI</para>
         </listitem>
 
         <listitem>
-          <para>Installation and packaging</para>
+          <para>Instalacja i pakowanie</para>
         </listitem>
       </itemizedlist>
 
       <itemizedlist>
-        <para>For detailed information on how to test your driver and how to
-        avoid problems during testing, see the following references:</para>
+        <para>Szczegółowe informacje i testowaniu sterowników i unikaniu
+        problemów podczas testów w poniższych publikacjach:</para>
 
         <listitem>
           <para><olink remap="external" targetdoc="chapter-4.xml"
@@ -2290,7 +2270,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         </listitem>
       </itemizedlist>
 
-      <para>Additional testing is specific to the type of driver.</para>
+      <para>Dodatkowe testy zależne są od rodzaju sterownika.</para>
     </sect2>
   </sect1>
 </chapter>
