@@ -23,7 +23,7 @@
     punkt wyjścia do napisania skomplikowanego sterownika.</para>
 
     <itemizedlist>
-      <para>W rozdziale omawiane sąnastępujące kroki tworzenia
+      <para>W rozdziale omawiane są następujące kroki tworzenia
       sterownika:</para>
 
       <listitem>
@@ -662,7 +662,7 @@ _init(void)
             <refentrytitle>_info</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> musi zwrócić wartość zwracaną przez funckję <olink
+          </citerefentry> musi zwrócić wartość zwracaną przez funkcję <olink
         remap="external" targetdoc="819-2256" targetptr="mod-info-9f">
         <citerefentry>
             <refentrytitle>mod_info</refentrytitle>
@@ -1010,15 +1010,14 @@ _fini(void)
         <literal>cmn_err.h</literal>, <literal>ddi.h </literal>i
         <literal>sunddi.h</literal>.</para>
 
-        <para>The following header files are required by the three loadable
-        module configuration routines that you have written in this section.
-        Include this code near the top of your <filename>dummy.c</filename>
-        file.</para>
+        <para>Poniższe pliki nagłówkowe są wymagane przez trzy funkcje
+        konfiguracji modułu ładowalnego napisane w tym rozdziale. Poniższy kod
+        należy włączyć na początku pliku <filename>dummy.c</filename>.</para>
 
-        <programlisting>#include &lt;sys/modctl.h&gt;  /* used by _init, _info, _fini */
-#include &lt;sys/cmn_err.h&gt; /* used by all entry points for this driver */
-#include &lt;sys/ddi.h&gt;     /* used by all entry points for this driver */
-#include &lt;sys/sunddi.h&gt;  /* used by all entry points for this driver */</programlisting>
+        <programlisting>#include &lt;sys/modctl.h&gt;  /* używane przez _init, _info, _fini */
+#include &lt;sys/cmn_err.h&gt; /* używane przez wszystkie punkty wejścia w tym sterowniku */
+#include &lt;sys/ddi.h&gt;     /* używane przez wszystkie punkty wejścia w tym sterowniku */
+#include &lt;sys/sunddi.h&gt;  /* używane przez wszystkie punkty wejścia w tym sterowniku */</programlisting>
       </sect3>
     </sect2>
 
@@ -1104,103 +1103,102 @@ _fini(void)
       </indexterm>
 
       <itemizedlist>
-        <para>Every character driver must define at least the following
-        autoconfiguration entry points. The kernel calls these routines when
-        the device driver is loaded.</para>
+        <para>Każdy sterownik znakowy musi zdefiniować przynajmniej poniższe
+        punkty wejścia autokonfiguracji. Jądro wywołuje te funkcje kiedy
+        sterownik jest ładowany.</para>
 
         <listitem>
-          <para>The <olink remap="external" targetdoc="819-2255"
+          <para>Funkcja <olink remap="external" targetdoc="819-2255"
           targetptr="attach-9e"> <citerefentry>
               <refentrytitle>attach</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> </olink> routine must call <olink remap="external"
+            </citerefentry> </olink> musi wywołać <olink remap="external"
           targetdoc="819-2256" targetptr="ddi-create-minor-node-9f">
           <citerefentry>
               <refentrytitle>ddi_create_minor_node</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> </olink>. The <citerefentry>
+            </citerefentry> </olink>. Funkcja <citerefentry>
               <refentrytitle>ddi_create_minor_node</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> function provides the information the system needs
-          to create the device files.</para>
+            </citerefentry> dostarcza informacji potrzebnych systemowi do
+          stworzenia plików urządzenia.</para>
         </listitem>
 
         <listitem>
-          <para>The <olink remap="external" targetdoc="819-2255"
+          <para>Funkcja <olink remap="external" targetdoc="819-2255"
           targetptr="detach-9e"> <citerefentry>
               <refentrytitle>detach</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> </olink> routine must call <olink remap="external"
+            </citerefentry> </olink> musi wywołać <olink remap="external"
           targetdoc="819-2256" targetptr="ddi-remove-minor-node-9f">
           <citerefentry>
               <refentrytitle>ddi_remove_minor_node</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> </olink> to deallocate everything that was
-          allocated by <citerefentry>
+            </citerefentry> </olink> do uwolnienia wszystkiego, co zostało
+          zaalokowane przez <citerefentry>
               <refentrytitle>ddi_create_minor_node</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry>. The <citerefentry>
+            </citerefentry>. Funkcja <citerefentry>
               <refentrytitle>detach</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> routine must undo everything that the
-          <citerefentry>
+            </citerefentry> musi wykonać pracę odwrotną do pracy wykonanej
+          przez <citerefentry>
               <refentrytitle>attach</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> routine did.</para>
+            </citerefentry>.</para>
         </listitem>
 
         <listitem>
-          <para>The <olink remap="external" targetdoc="819-2255"
+          <para>Funkcja <olink remap="external" targetdoc="819-2255"
           targetptr="getinfo-9e"> <citerefentry>
               <refentrytitle>getinfo</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> </olink> routine returns requested device driver
-          information through one of its arguments.</para>
+            </citerefentry> </olink> zwraca informacje o wskazanym sterowniku
+          przez jeden ze swoich argumentów.</para>
         </listitem>
 
         <listitem>
-          <para>The <olink remap="external" targetdoc="819-2255"
+          <para>Funkcja <olink remap="external" targetdoc="819-2255"
           targetptr="prop-op-9e"> <citerefentry>
               <refentrytitle>prop_op</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> </olink> routine returns requested device driver
-          property information through a pointer. You can call the <olink
-          remap="external" targetdoc="819-2256" targetptr="ddi-prop-op-9f">
-          <citerefentry>
-              <refentrytitle>ddi_prop_op</refentrytitle>
-
-              <manvolnum>9F</manvolnum>
-            </citerefentry> </olink> function instead of writing your own
+            </citerefentry> </olink> zwraca przez wskaźnik informacje o
+          wskazanym sterowniku. Zamiast pisać własny punkt wywołania
           <citerefentry>
               <refentrytitle>prop_op</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> entry point. Use the <citerefentry>
+            </citerefentry> można użyć <olink remap="external"
+          targetdoc="819-2256" targetptr="ddi-prop-op-9f"> <citerefentry>
+              <refentrytitle>ddi_prop_op</refentrytitle>
+
+              <manvolnum>9F</manvolnum>
+            </citerefentry> </olink>. Punktu wejścia <citerefentry>
               <refentrytitle>prop_op</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> entry point to customize the behavior of the
+            </citerefentry> można użyć do zmodyfikowania zachowania funkcji
           <citerefentry>
               <refentrytitle>ddi_prop_op</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> function.</para>
+            </citerefentry>.</para>
         </listitem>
       </itemizedlist>
 
-      <para>In this section, the following code is added:</para>
+      <para>W tej sekcji dodano następujący kod:</para>
 
-      <programlisting>/* Device autoconfiguration entry points */
+      <programlisting>/* Punkty wejścia autokonfiguracji sterownika */
 static int
 dummy_attach(dev_info_t *dip, ddi_attach_cmd_t cmd)
 {
@@ -1264,7 +1262,7 @@ dummy_prop_op(dev_t dev, dev_info_t *dip, ddi_prop_op_t prop_op,
       <sect3 xml:id="epmqa">
         <title>Declaring the Autoconfiguration Entry Points</title>
 
-        <para>The <citerefentry>
+        <para>Punkty wejścia <citerefentry>
             <refentrytitle>attach</refentrytitle>
 
             <manvolnum>9E</manvolnum>
@@ -1276,13 +1274,12 @@ dummy_prop_op(dev_t dev, dev_info_t *dip, ddi_prop_op_t prop_op,
             <refentrytitle>getinfo</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry>, and <citerefentry>
+          </citerefentry> i <citerefentry>
             <refentrytitle>prop_op</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point routines need to be uniquely named for
-        this driver. Choose a prefix to use with each entry point
-        routine.</para>
+          </citerefentry> muszą mieć nazwy unikalne dla danego sterownika.
+        Należy wybrać prefiks dla każdej funkcji punktu wejścia.</para>
 
         <note>
           <para><indexterm xml:id="indexterm-219">
@@ -1291,21 +1288,19 @@ dummy_prop_op(dev_t dev, dev_info_t *dip, ddi_prop_op_t prop_op,
               <primary>devices</primary>
 
               <secondary>prefixes</secondary>
-            </indexterm>By convention, the prefix used for function and data
-          names that are unique to this driver is either the name of this
-          driver or an abbreviation of the name of this driver. Use the same
-          prefix throughout the driver. This practice makes debugging much
-          easier.</para>
+            </indexterm>Konwencja nakazuje, aby prefiks używany dla funkcji i
+          danych unikalnych dla sterownika jest albo nazwą sterownika, albo
+          jej skrótem. Prefiksu należy używać w całym sterowniku. Ułatwia to
+          poszukiwanie błędów.</para>
         </note>
 
-        <para>In the example shown in this chapter, <literal>dummy_</literal>
-        is used for the prefix to each function and data name that is unique
-        to this example.</para>
+        <para>W przykładzie omawianym w tym rozdziale jako prefiksu dla każdej
+        funkcji i danej unikalnej dla modułu używa się
+        <literal>dummy_</literal>.</para>
 
-        <para>The following declarations are the autoconfiguration entry point
-        declarations you should have in your <filename>dummy.c</filename>
-        file. Note that each of these functions is declared
-        <literal>static</literal>.</para>
+        <para>Poniższe deklaracje to punkty wejścia autokonfiguracji wymagane
+        w pliku <filename>dummy.c</filename>. Należy zauważyć, że każda z tych
+        funkcji zadeklarowana jest jako <literal>static</literal>.</para>
 
         <programlisting>static int dummy_attach(dev_info_t *dip, ddi_attach_cmd_t cmd);
 static int dummy_detach(dev_info_t *dip, ddi_detach_cmd_t cmd);
@@ -1339,84 +1334,76 @@ static int dummy_prop_op(dev_t dev, dev_info_t *dip, ddi_prop_op_t prop_op,
           <secondary><function>ddi_soft_state </function></secondary>
         </indexterm>
 
-        <para>The <olink remap="external" targetdoc="819-2255"
+        <para>Funkcja <olink remap="external" targetdoc="819-2255"
         targetptr="attach-9e"> <citerefentry>
             <refentrytitle>attach</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> </olink> routine returns type
-        <literal>int</literal>. The <citerefentry>
-            <refentrytitle>attach</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine must return either
-        <literal>DDI_SUCCESS</literal> or <literal>DDI_FAILURE</literal>.
-        These two constants are defined in <filename>sunddi.h</filename>. All
-        of the autoconfiguration entry point routines except for <citerefentry>
+          </citerefentry> </olink> zwraca typ <literal>int</literal> równy
+        <literal>DDI_SUCCESS</literal> albo <literal>DDI_FAILURE</literal>. Te
+        dwie stałe są zdefiniowane w <filename>sunddi.h</filename>. Wszystkie
+        funkcje punktów wejścia autokonfiguracji, za wyjątkiem <citerefentry>
             <refentrytitle>prop_op</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> return either <literal>DDI_SUCCESS</literal> or
+          </citerefentry>, zwracają <literal>DDI_SUCCESS</literal> lub
         <literal>DDI_FAILURE</literal>.</para>
 
-        <para>The <citerefentry>
+        <para>Funkcja <citerefentry>
             <refentrytitle>attach</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine takes two arguments. The first argument is a
-        pointer to the <literal>dev_info</literal> structure for this driver.
-        All of the autoconfiguration entry point routines take a
-        <literal>dev_info</literal> argument. The second argument is a
-        constant that specifies the attach type. The value that is passed
-        through this second argument is either <literal>DDI_ATTACH</literal>
-        or <literal>DDI_RESUME</literal>. Every <citerefentry>
+          </citerefentry> pobiera dwa argumenty. Pierwszy to wstaźnik do
+        struktury <literal>dev_info</literal> sterownika. Wszystkie funkcje
+        punktów wejścia autokonfiguracji pobierają <literal>dev_info</literal>
+        jako argument. Drugi argument to stała wskazująca typ podłączenia.
+        Wartość to <literal>DDI_ATTACH</literal> lub
+        <literal>DDI_RESUME</literal>. Każda funkcja <citerefentry>
             <refentrytitle>attach</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine must define behavior for at least
+          </citerefentry> mudi zdefiniować zachowanie przynajmniej dla
         <literal>DDI_ATTACH</literal>.</para>
 
-        <para>The <literal>DDI_ATTACH</literal> code must initialize a device
-        instance. In a realistic driver, you define and manage multiple
-        instances of the driver by using a state structure and the <olink
+        <para>Kod <literal>DDI_ATTACH</literal>musi inicjalizować instancę
+        urządzenia. W rzeczywistym sterowniku definiuje się i zarządza wieloma
+        instancjami sterownika przy użyciu struktury stanu i funkcji <olink
         remap="external" targetdoc="819-2256" targetptr="ddi-soft-state-9f">
         <citerefentry>
             <refentrytitle>ddi_soft_state</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> functions. Each instance of the driver has
-        its own copy of the state structure that holds data specific to that
-        instance. One of the pieces of data that is specific to each instance
-        is the device instance pointer. Each instance of the device driver is
-        represented by a separate device file in
-        <filename>/devices</filename>. Each device instance file is pointed to
-        by a separate device instance pointer. See <olink remap="external"
-        targetdoc="chapter-3.xml" targetptr="fcowf">Managing Device
-        State</olink> for information about state structures and <citerefentry>
+          </citerefentry> </olink>. Każda instancja ma swoją kopię struktury
+        stanu zawierającą dane lokalne dla tej instancji. Jedną z takich
+        danych lokalnych dla instancji jest jest wskaźnik instancji
+        urządzenia. Każda instancja sterownika reprezentowana jest osobnym
+        plikiem urządzenia w katalogu <filename>/devices</filename>. Na każdy
+        plik wskazuje inny wskaźnik instancji urządzenia. Więcej informacji o
+        funkcjach <citerefentry>
             <refentrytitle>ddi_soft_state</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> functions. See <olink remap="external"
-        targetdoc="chapter-1.xml" targetptr="fgomr">Devices as Files</olink>
-        for information about device files and instances.</para>
+          </citerefentry> w <olink remap="external" targetdoc="chapter-3.xml"
+        targetptr="fcowf">Managing Device State</olink>. Więcej informacji o
+        instancjach w <olink remap="external" targetdoc="chapter-1.xml"
+        targetptr="fgomr">Devices as Files</olink>.</para>
 
-        <para>This <literal>dummy</literal> driver allows only one instance.
-        Because this driver allows only one instance, this driver does not use
-        a state structure. This driver still must declare a device instance
-        pointer and initialize the pointer value in the <citerefentry>
+        <para>Opisywany sterownik <literal>dummy</literal> pozwala na tylko
+        jedną instancję. Z tego względu sterownik nie zawiera struktury stanu,
+        ale nadal musi zadeklarować wskaźnik na instancję urządzenia i
+        zainicjować wskaźnik w funkcji <citerefentry>
             <refentrytitle>attach</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine. Enter the following code near the beginning
-        of <filename>dummy.c</filename> to declare a device instance pointer
-        for this driver:</para>
+          </citerefentry>. Poniższy kod wprowadzony blisko początku pliku
+        <filename>dummy.c</filename> zadeklaruje wskaźnik na instancję
+        sterownika:</para>
 
-        <programlisting>dev_info_t *dummy_dip;  /* keep track of one instance */</programlisting>
+        <programlisting>dev_info_t *dummy_dip;  /* śledzenie jednej instancji */</programlisting>
 
-        <para>The following code is the <function>dummy_attach </function>
-        routine that you should enter into your <filename>dummy.c</filename>
-        file. You can copy the name portion of this function definition
-        directly from the declaration you entered in <olink remap="internal"
+        <para>Poniższy kod to funkcja <function>dummy_attach</function> z
+        pliku <filename>dummy.c</filename>. Nazwę funkcji można skopiować
+        bezpośrednio z deklaracji wprowadzonej w <olink remap="internal"
         targetdoc="chapter-2.xml" targetptr="epmqa">Declaring the
         Autoconfiguration Entry Points</olink>.</para>
 
@@ -1475,106 +1462,97 @@ dummy_attach(dev_info_t *dip, ddi_attach_cmd_t cmd)
             <primary>devices</primary>
 
             <secondary>instances</secondary>
-          </indexterm>First, use <citerefentry>
+          </indexterm>Najpierw należy użyć <citerefentry>
             <refentrytitle>cmn_err</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> to write a message to the system log, as you did in
-        your <citerefentry>
+          </citerefentry> do zapisania wiadomości do logu systemu, jak w
+        punkcie wejścia <citerefentry>
             <refentrytitle>_init</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point. Then provide
-        <literal>DDI_ATTACH</literal> behavior. Within the
-        <literal>DDI_ATTACH</literal> code, first assign the device instance
-        pointer from the <function>dummy_attach </function> argument to the
-        <literal>dummy_dip</literal> variable that you declared above. You
-        need to save this pointer value in the global variable so that you can
-        use this pointer to get information about this instance from
-        <function>dummy_getinfo </function> and detach this instance in
-        <function>dummy_detach </function>. In this <function>dummy_attach
-        </function> routine, the device instance pointer is used by the <olink
-        remap="external" targetdoc="819-2256" targetptr="ddi-get-instance-9f">
-        <citerefentry>
+          </citerefentry>. Potem trzeba zdefiniować zachowanie
+        <literal>DDI_ATTACH</literal>. W kodzie <literal>DDI_ATTACH</literal>
+        najpierw przypisany zostanie wskaźnik instancji urządzenia
+        przekazywany jako argument <function>dummy_attach </function>do
+        zmiennej the <literal>dummy_dip</literal> zadeklarowanej wyżej.
+        Wartość wskaźńika trzeba zapisać w zmiennej globalnej aby móc
+        wykorzystać go do uzyskania informacji o instancji sterownika z
+        <function>dummy_getinfo </function>i odłączyć go za pomocą
+        <function>dummy_detach</function>. W funkcji
+        <function>dummy_attach</function> wskaźnik instacji urządzenia jest
+        używany przez funkcję <olink remap="external" targetdoc="819-2256"
+        targetptr="ddi-get-instance-9f"> <citerefentry>
             <refentrytitle>ddi_get_instance</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function to return the instance number. The
-        device instance pointer and the instance number both are used by
-        <olink remap="external" targetdoc="819-2256"
-        targetptr="ddi-create-minor-node-9f"> <citerefentry>
+          </citerefentry> </olink> do uzyskania numeru instancji. Wskaźnik
+        instancji i numer instancji są używane przez <olink remap="external"
+        targetdoc="819-2256" targetptr="ddi-create-minor-node-9f">
+        <citerefentry>
             <refentrytitle>ddi_create_minor_node</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> to create a new device node.</para>
+          </citerefentry> </olink> do stworzenia nowego node'u
+        urządzenia.</para>
 
-        <para>A realistic driver probably would use the <citerefentry>
+        <para>Rzeczywisty sterownik prawdopodobnie użyłby funkcji
+        <citerefentry>
             <refentrytitle>ddi_soft_state</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> functions to create and manage a device node. This
-        <literal>dummy</literal> driver uses the <citerefentry>
-            <refentrytitle>ddi_create_minor_node</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> function to create a device node. The <citerefentry>
-            <refentrytitle>ddi_create_minor_node</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> function takes six arguments. The first argument to
-        the <citerefentry>
-            <refentrytitle>ddi_create_minor_node</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> function is the device instance pointer that points
-        to the <literal>dev_info</literal> structure of this device. The
-        second argument is the name of this minor node. The third argument is
-        <literal>S_IFCHR</literal> if this device is a character minor device
-        or is <literal>S_IFBLK</literal> if this device is a block minor
-        device. This <literal>dummy</literal> driver is a character
-        driver.</para>
-
-        <para>The fourth argument to the <citerefentry>
-            <refentrytitle>ddi_create_minor_node</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> function is the minor number of this minor device.
-        This number is also called the instance number. The <citerefentry>
-            <refentrytitle>ddi_get_instance</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> function returns this instance number. The fifth
-        argument to the <citerefentry>
-            <refentrytitle>ddi_create_minor_node</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> function is the node type. The <citerefentry>
-            <refentrytitle>ddi_create_minor_node</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> man page lists the possible node types. The
-        <literal>DDI_PSEUDO</literal> node type is for pseudo devices. The
-        sixth argument to the <citerefentry>
-            <refentrytitle>ddi_create_minor_node</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> function specifies whether this is a clone device.
-        This is not a clone device, so set this argument value to 0.</para>
-
-        <para>If the <citerefentry>
-            <refentrytitle>ddi_create_minor_node</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> call is not successful, write a message to the
-        system log and return <literal>DDI_FAILURE</literal>. If the
+          </citerefentry> do stworzenia i zarządzania nodem urządzenia.
+        Opisywany prosty sterownik <literal>dummy</literal> używa funkcji
         <citerefentry>
             <refentrytitle>ddi_create_minor_node</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> call is successful, return
-        <literal>DDI_SUCCESS</literal>. If this <function>dummy_attach
-        </function> routine receives any <literal>cmd</literal> other than
-        <literal>DDI_ATTACH</literal>, return
+          </citerefentry> do stworzenia node'u urządzenia. Funkcja
+        <citerefentry>
+            <refentrytitle>ddi_create_minor_node</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> pobiera sześć argumentów. Pierwszy argument to
+        wskaźnik instacji urządzenia wskazujący na strukturę
+        <literal>dev_info</literal> danego urządzenia. Drugi argument to nazwa
+        mniejszego node'u. Trzeci argument to <literal>S_IFCHR</literal> jeśli
+        urządzenie jest znakowe, lub <literal>S_IFBLK</literal> jeśli
+        urządzenie jest blokowe. Sterownik <literal>dummy</literal> to
+        urządzenie znakowe.</para>
+
+        <para>Czwarty argument funkcji <citerefentry>
+            <refentrytitle>ddi_create_minor_node</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> to młodszy numer młodszego urządzenia nazywany także
+        numerem instancji. Funkcja <citerefentry>
+            <refentrytitle>ddi_get_instance</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> zwraca ten numer instancji. Piąty argument to rodzaj
+        node'u. Strona man dla funkcji <citerefentry>
+            <refentrytitle>ddi_create_minor_node</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> zawiera listę możliwych typów node'ów. Node
+        <literal>DDI_PSEUDO</literal> jest pseudourządzeniem. Szósty argument
+        wskazuje, czy jest to urządzenie-klon. W przypadku przykładowego
+        urządzenia tak nie jest, należy więc przekazać 0.</para>
+
+        <para>Jeśli wywołanie <citerefentry>
+            <refentrytitle>ddi_create_minor_node</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> zakończy się błędem, zapisana zostanie wiadomość do
+        logów systemowych i zwrócona zostanie wartość
+        <literal>DDI_FAILURE</literal>. Jeśli wywołanie <citerefentry>
+            <refentrytitle>ddi_create_minor_node</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> zakończy się sukcesem, funkcja zwróci
+        <literal>DDI_SUCCESS</literal>. Jeśli
+        <function>dummy_attach</function> otrzyma inne <literal>cmd</literal>
+        niż <literal>DDI_ATTACH</literal>, należy zwrócić
         <literal>DDI_FAILURE</literal>.</para>
       </sect3>
 
@@ -1626,65 +1604,62 @@ dummy_attach(dev_info_t *dip, ddi_attach_cmd_t cmd)
           <secondary>instances</secondary>
         </indexterm>
 
-        <para>The <olink remap="external" targetdoc="819-2255"
+        <para>Funkcja <olink remap="external" targetdoc="819-2255"
         targetptr="detach-9e"> <citerefentry>
             <refentrytitle>detach</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> </olink> routine takes two arguments. The first
-        argument is a pointer to the <literal>dev_info</literal> structure for
-        this driver. The second argument is a constant that specifies the
-        detach type. The value that is passed through this second argument is
-        either <literal>DDI_DETACH</literal> or
-        <literal>DDI_SUSPEND</literal>. Every <citerefentry>
+          </citerefentry> </olink> pobiera dwa arumenty. Pierwszy argument
+        jest wskaźnikiem na struktury <literal>dev_info</literal> tego
+        sterownika. Drugi argument jest stałą wskazująca rodzaj odłączenia.
+        Argumentem może być albo <literal>DDI_DETACH</literal>, alboor
+        <literal>DDI_SUSPEND</literal>. Każda funkcja <citerefentry>
             <refentrytitle>detach</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine must define behavior for at least
+          </citerefentry> musi zdefiniować zachowanie przynajmniej dla
         <literal>DDI_DETACH</literal>.</para>
 
-        <para>The <literal>DDI_DETACH</literal> code must undo everything that
-        the <literal>DDI_ATTACH</literal> code did. In the
-        <literal>DDI_ATTACH</literal> code in your <citerefentry>
+        <para>Kod <literal>DDI_DETACH</literal> musi wykonać pracę odwrotną do
+        tej wykonanej przez <literal>DDI_ATTACH</literal>. W kodzie
+        <literal>DDI_ATTACH</literal> funkcja <citerefentry>
             <refentrytitle>attach</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine, you saved the address of a new
-        <literal>dev_info</literal> structure and you called the <citerefentry>
+          </citerefentry> zapisała adres nowej struktury
+        <literal>dev_info</literal> i wywołała funkcję <citerefentry>
             <refentrytitle>ddi_create_minor_node</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function to create a new node. In the
-        <literal>DDI_DETACH</literal> code in this <citerefentry>
+          </citerefentry> do stworzenia nowego node'u. W kodzie
+        <literal>DDI_DETACH</literal> w funkcji <citerefentry>
             <refentrytitle>detach</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine, you need to reset the variable that pointed
-        to the <literal>dev_info</literal> structure for this node. You also
-        need to call the <olink remap="external" targetdoc="819-2256"
+          </citerefentry> należy zresetować zmienną wskazującą na strukturę
+        <literal>dev_info</literal> tego node'u. Należy także wywołać <olink
+        remap="external" targetdoc="819-2256"
         targetptr="ddi-remove-minor-node-9f"> <citerefentry>
             <refentrytitle>ddi_remove_minor_node</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function to remove this node. The
-        <citerefentry>
+          </citerefentry> </olink> aby usunąć node. Funkcja <citerefentry>
             <refentrytitle>detach</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine must deallocate anything that was allocated,
-        close anything that was opened, and destroy anything that was created
-        in the <citerefentry>
+          </citerefentry> musi uwolnić wszystko, co było zaalokowane, zamknąć
+        wszystko, co było otwarte i zniszczyć wszystko, co było utworzone w
+        funkcji <citerefentry>
             <refentrytitle>attach</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine.</para>
+          </citerefentry>.</para>
 
-        <para>The following code is the <function>dummy_detach </function>
-        routine that you should enter into your <filename>dummy.c</filename>
-        file. You can copy the name portion of this function definition
-        directly from the declaration you entered in <olink remap="internal"
-        targetdoc="chapter-2.xml" targetptr="epmqa">Declaring the
-        Autoconfiguration Entry Points</olink>.</para>
+        <para>Poniższy kod to funkcja <function>dummy_detach</function>, który
+        należy dołączyć do pliku <filename>dummy.c</filename>. Nazwę funkcji
+        można skopiować bezpośrednio z deklaracji wprowadzonej w <olink
+        remap="internal" targetdoc="chapter-2.xml" targetptr="epmqa">Declaring
+        the Autoconfiguration Entry Points</olink>.</para>
 
         <programlisting>static int
 dummy_detach(dev_info_t *dip, ddi_detach_cmd_t cmd)
@@ -1700,53 +1675,50 @@ dummy_detach(dev_info_t *dip, ddi_detach_cmd_t cmd)
     }
 }</programlisting>
 
-        <para>First, use <citerefentry>
+        <para>Użyto <citerefentry>
             <refentrytitle>cmn_err</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> to write a message to the system log, as you did in
-        your <citerefentry>
+          </citerefentry> do zapisania wiadomości w logu systemowym, jak w
+        punkcie wejścia <citerefentry>
             <refentrytitle>_init</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point. Then provide
-        <literal>DDI_DETACH</literal> behavior. Within the
-        <literal>DDI_DETACH</literal> code, first reset the
-        <literal>dummy_dip</literal> variable that you set in
-        <function>dummy_attach </function> above. You cannot reset this device
-        instance pointer unless you remove all instances of the device. This
-        <literal>dummy</literal> driver supports only one instance.</para>
+          </citerefentry>. Następnie zdefiniowano zachowanie
+        <literal>DDI_DETACH</literal>. Wewnątrz kodu
+        <literal>DDI_DETACH</literal> zresetowano zmienną<literal>
+        dummy_dip</literal> ustawioną wcześniej w
+        <function>dummy_attach</function>. Nie można zresetować tego wskaźnika
+        instancji zanim usunie się wszystkie instancje urządzenia. Sterownik
+        <literal>dummy</literal> obsługuje tylko jedną instancję.</para>
 
-        <para>Next, call the <citerefentry>
+        <para>Następnie funkcja <citerefentry>
             <refentrytitle>ddi_remove_minor_node</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function to remove this device node. The
-        <citerefentry>
+          </citerefentry> usuwa node urządzenia. Funkcja <citerefentry>
             <refentrytitle>ddi_remove_minor_node</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function takes two arguments. The first argument is
-        the device instance pointer that points to the
-        <literal>dev_info</literal> structure of this device. The second
-        argument is the name of the minor node you want to remove. If the
-        value of the minor node argument is <literal>NULL</literal>, then
-        <citerefentry>
+          </citerefentry> pobiera dwa argumenty. Pierwszy argument jest
+        wskaźnikiem instancji urządzenia wskazującym strukturę
+        <literal>dev_info</literal> tego urządzenia. Drugi argument to nazwa
+        młodszego node'u do usunięcia. Jeśli wartość młodszego node'u równa
+        jest <literal>NULL</literal>, funkcja <citerefentry>
             <refentrytitle>ddi_remove_minor_node</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> removes all instances of this device. Because the
-        <literal>DDI_DETACH</literal> code of this driver always removes all
-        instances, this <literal>dummy</literal> driver supports only one
-        instance.</para>
+          </citerefentry> usunie wszystkie instancje urządzenia. Kod
+        <literal>DDI_DETACH</literal> tego sterownika usuwa zawsze wszystkie
+        instancje, dlatego <literal>dummy</literal> obsługuje tylko jedną
+        instancję.</para>
 
-        <para>If the value of the <literal>cmd</literal> argument to this
-        <function>dummy_detach </function> routine is
-        <literal>DDI_DETACH</literal>, remove all instances of this device and
-        return <literal>DDI_SUCCESS</literal>. If this <function>dummy_detach
-        </function> routine receives any <literal>cmd</literal> other than
-        <literal>DDI_DETACH</literal>, return
-        <literal>DDI_FAILURE</literal>.</para>
+        <para>Jeśli wartość argumentu <literal>cmd</literal> funkcji
+        <function>dummy_detach</function> równy jest
+        <literal>DDI_DETACH</literal>, usuwa się wszystkie instancje
+        urządzenia i zwraca <literal>DDI_SUCCESS</literal>. Jeśli funkcja
+        <function>dummy_detach</function> dostanie inny argument
+        <literal>cmd</literal>, zwraca <literal>DDI_FAILURE</literal>.</para>
       </sect3>
 
       <sect3 xml:id="epmql">
@@ -1786,14 +1758,16 @@ dummy_detach(dev_info_t *dip, ddi_detach_cmd_t cmd)
           <secondary>instances</secondary>
         </indexterm>
 
-        <para>The <olink remap="external" targetdoc="819-2255"
+        <para>Funkcja <olink remap="external" targetdoc="819-2255"
         targetptr="getinfo-9e"> <citerefentry>
             <refentrytitle>getinfo</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> </olink> routine takes a pointer to a device number
-        and returns a pointer to a device information structure or returns a
-        device instance number. The return value of the <citerefentry>
+          </citerefentry> </olink> pobiera wskaźnik do numeru urządzenia i
+        zwraca wskaźnik do struktury informacji urządzenia lub numer instancji
+        urządzenia. routine takes a pointer to a device number and returns a
+        pointer to a device information structure or returns a device instance
+        number. The return value of the <citerefentry>
             <refentrytitle>getinfo</refentrytitle>
 
             <manvolnum>9E</manvolnum>
