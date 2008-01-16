@@ -1765,69 +1765,46 @@ dummy_detach(dev_info_t *dip, ddi_detach_cmd_t cmd)
             <manvolnum>9E</manvolnum>
           </citerefentry> </olink> pobiera wskaźnik do numeru urządzenia i
         zwraca wskaźnik do struktury informacji urządzenia lub numer instancji
-        urządzenia. routine takes a pointer to a device number and returns a
-        pointer to a device information structure or returns a device instance
-        number. The return value of the <citerefentry>
+        urządzenia. Wartość zwracana przez tę funkcję jest równa stałej
+        <literal>DDI_SUCCESS</literal> lub <literal>DDI_FAILURE</literal>.
+        Wskaźnik lub numer instancji żądany od funkcji <citerefentry>
             <refentrytitle>getinfo</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine is <literal>DDI_SUCCESS</literal> or
-        <literal>DDI_FAILURE</literal>. The pointer or instance number
-        requested from the <citerefentry>
+          </citerefentry> zwracany jest przez argument wskaźnikowy.</para>
+
+        <para>Funkcja <citerefentry>
             <refentrytitle>getinfo</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine is returned through a pointer
-        argument.</para>
+          </citerefentry> pobiera cztery argumenty. Pierwszy to wskaźnik do
+        struktury <literal>dev_info</literal> dla danego sterownika. Argument
+        ten jest przestarzały (ang. obsolete) i nieużywany przez
+        funkcję.</para>
 
-        <para>The <citerefentry>
+        <para>Drugi argument to stała wskazująca, jaki rodzaj informacji
+        żądany jest od <citerefentry>
             <refentrytitle>getinfo</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine takes four arguments. The first argument is
-        a pointer to the <literal>dev_info</literal> structure for this
-        driver. This <literal>dev_info</literal> structure argument is
-        obsolete and is no longer used by the <citerefentry>
+          </citerefentry>. Wartość tego argumentu to albo
+        <literal>DDI_INFO_DEVT2DEVINFO</literal>, albo
+        <literal>DDI_INFO_DEVT2INSTANCE</literal>. Trzeci argument to wskaźnik
+        do numeru urządzenia. Czwarty argument jest wskaźnikiem do miejsca, w
+        którym funkcja <citerefentry>
             <refentrytitle>getinfo</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine.</para>
+          </citerefentry> musi zapisać żądane dane. Dane zapisane w tym
+        miejscu zależą od wartości drugiego argumentu przekazanego
+        funkcji.</para>
 
-        <para>The second argument to the <citerefentry>
+        <para>Poniższa tabela opisuje związek międxzy drugim i czwartym
+        argumentem funkcji <citerefentry>
             <refentrytitle>getinfo</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine is a constant that specifies what
-        information the <citerefentry>
-            <refentrytitle>getinfo</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine must return. The value of this second
-        argument is either <literal>DDI_INFO_DEVT2DEVINFO</literal> or
-        <literal>DDI_INFO_DEVT2INSTANCE</literal>. The third argument to the
-        <citerefentry>
-            <refentrytitle>getinfo</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine is a pointer to a device number. The fourth
-        argument is a pointer to the place where the <citerefentry>
-            <refentrytitle>getinfo</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine must store the requested information. The
-        information stored at this location depends on the value you passed in
-        the second argument to the <citerefentry>
-            <refentrytitle>getinfo</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine.</para>
-
-        <para>The following table describes the relationship between the
-        second and fourth arguments to the <citerefentry>
-            <refentrytitle>getinfo</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine.</para>
+          </citerefentry>.</para>
 
         <table frame="topbot" xml:id="eqbiy">
           <title>Get Driver Information Entry Point Arguments</title>
@@ -1855,30 +1832,29 @@ dummy_detach(dev_info_t *dip, ddi_detach_cmd_t cmd)
                 <entry><para> <literal>DDI_INFO_DEVT2DEVINFO</literal>
                 </para></entry>
 
-                <entry><para>Device number</para></entry>
+                <entry><para>Numer urządzenia</para></entry>
 
-                <entry><para>Device information structure
-                pointer</para></entry>
+                <entry><para>Wkaźnik do struktury informacji
+                urządzenia</para></entry>
               </row>
 
               <row>
                 <entry><para> <literal>DDI_INFO_DEVT2INSTANCE</literal>
                 </para></entry>
 
-                <entry><para>Device number</para></entry>
+                <entry><para>Numer urządzenia</para></entry>
 
-                <entry><para>Device instance number</para></entry>
+                <entry><para>Numer instancji urządzenia</para></entry>
               </row>
             </tbody>
           </tgroup>
         </table>
 
-        <para>The following code is the <function>dummy_getinfo </function>
-        routine that you should enter into your <filename>dummy.c</filename>
-        file. You can copy the name portion of this function definition
-        directly from the declaration you entered in <olink remap="internal"
-        targetdoc="chapter-2.xml" targetptr="epmqa">Declaring the
-        Autoconfiguration Entry Points</olink>.</para>
+        <para>Poniższy kod to funkcja <function>dummy_getinfo</function> do
+        włączenia do kodu pliku <filename>dummy.c</filename>. Nazwę funkcji
+        można skopiować bezpośrednio z deklaracji wprowadzonej w <olink
+        remap="internal" targetdoc="chapter-2.xml" targetptr="epmqa">Declaring
+        the Autoconfiguration Entry Points</olink>.</para>
 
         <programlisting>static int
 dummy_getinfo(dev_info_t *dip, ddi_info_cmd_t cmd, void *arg, 
@@ -1897,34 +1873,35 @@ dummy_getinfo(dev_info_t *dip, ddi_info_cmd_t cmd, void *arg,
     }
 }</programlisting>
 
-        <para>First, use <citerefentry>
+        <para>Użyto <citerefentry>
             <refentrytitle>cmn_err</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> to write a message to the system log, as you did in
-        your <citerefentry>
+          </citerefentry> do zapisania wiadomości w logu systemowym, jak w
+        punkcie wejścia <citerefentry>
             <refentrytitle>_init</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point. Then provide
-        <literal>DDI_INFO_DEVT2DEVINFO</literal> behavior. A realistic driver
-        would use <replaceable>arg</replaceable> to get the instance number of
-        this device node. A realistic driver would then call the <citerefentry>
+          </citerefentry>. Później zdefiniowano zachowanie
+        <literal>DDI_INFO_DEVT2DEVINFO</literal>. Prawdziwy sterownik użyłby
+        <replaceable>arg</replaceable> do uzyskania numeru instancji tego
+        node'u urządzenia, a później wywołałby <citerefentry>
             <refentrytitle>ddi_get_soft_state</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function and return the device information structure
-        pointer from that state structure. This <literal>dummy</literal>
-        driver supports only one instance and does not use a state structure.
-        In the <literal>DDI_INFO_DEVT2DEVINFO</literal> code of this
-        <function>dummy_getinfo </function> routine, simply return the one
-        device information structure pointer that the <function>dummy_attach
-        </function> routine saved.</para>
+          </citerefentry> i zwrócił wskaźnik do struktury informacji z tej
+        struktury. Sterownik <literal>dummy</literal> obsługuje tylko
+        jedną instancję urządzenia, dlatego w kodzie
+        <literal>DDI_INFO_DEVT2DEVINFO</literal> funkcji
+        <function>dummy_getinfo</function> po prostu zwracany jest jedyny
+        wskaźnik do struktury informacji o urządzeniu, który zapisała funkcja
+        <function>dummy_attach</function>.</para>
 
-        <para>Next, provide <literal>DDI_INFO_DEVT2INSTANCE</literal>
-        behavior. Within the <literal>DDI_INFO_DEVT2INSTANCE</literal> code,
-        simply return 0. This <literal>dummy</literal> driver supports only
-        one instance. The instance number of that one instance is 0.</para>
+        <para>Następnie zdefiniowano zachowanie
+        <literal>DDI_INFO_DEVT2INSTANCE</literal>. Kod
+        <literal>DDI_INFO_DEVT2INSTANCE</literal> po prostu zwraca 0.
+        Sterownik <literal>dummy</literal> obsługuje tylko jedeną instancję
+        urządzenia, której numerem jest 0.</para>
       </sect3>
 
       <sect3 xml:id="epmqj">
