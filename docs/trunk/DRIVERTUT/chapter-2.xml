@@ -2035,45 +2035,44 @@ dummy_prop_op(dev_t dev, dev_info_t *dip, ddi_prop_op_t prop_op,
       <sect3 xml:id="epmqe">
         <title>Including Autoconfiguration Header Files</title>
 
-        <para>All of the autoconfiguration entry point routines and all of the
-        user context entry point routines require that you include the
-        <filename>ddi.h</filename> and <filename>sunddi.h</filename> header
-        files. You already included these two header files for the
-        <citerefentry>
+        <para>Wszystkie funkcje punktów wejścia autokonfiguracji i wszystkie
+        funkcje punktów wejścia kontekstu użytkownika wymagają włączenia
+        plików nagłówkowych <filename>ddi.h</filename> i
+        <filename>sunddi.h</filename>, które zostały już włączone wcześniej
+        zer względu na funkcję <citerefentry>
             <refentrytitle>cmn_err</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function.</para>
+          </citerefentry>.</para>
 
-        <para>The <olink remap="external" targetdoc="819-2256"
+        <para>Funkcja <olink remap="external" targetdoc="819-2256"
         targetptr="ddi-create-minor-node-9f"> <citerefentry>
             <refentrytitle>ddi_create_minor_node</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function requires the
-        <filename>stat.h</filename> header file. The <function>dummy_attach
-        </function> routine calls the <citerefentry>
+          </citerefentry> </olink> wymaga pliku nagłówkowego
+        <filename>stat.h</filename>. Funkcja <function>dummy_attach
+        </function> wywołuje <citerefentry>
             <refentrytitle>ddi_create_minor_node</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function. The <olink remap="external"
+          </citerefentry>. Funkcje <olink remap="external"
         targetdoc="819-2255" targetptr="prop-op-9e"> <citerefentry>
             <refentrytitle>prop_op</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> </olink> and the <olink remap="external"
+          </citerefentry> </olink> i <olink remap="external"
         targetdoc="819-2256" targetptr="ddi-prop-op-9f"> <citerefentry>
             <refentrytitle>ddi_prop_op</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> functions require the
-        <filename>types.h</filename> header file.</para>
+          </citerefentry> </olink> wymagają pliku nagłówkowego
+        <filename>types.h</filename>.</para>
 
-        <para>The following code is the list of header files that you now
-        should have included in your <filename>dummy.c</filename> file for the
-        four autoconfiguration routines you have written in this section and
-        the three loadable module configuration routines you wrote in the
-        previous section.</para>
+        <para>Poniżej zamieszczono listę plików nagłówkowych, które powinny
+        być wlączone do pliku <filename>dummy.c</filename> ze względu na
+        funkcje autokonfiguracji napisane w tym podrozdziale oraz trzy funkcje
+        konfiguracji ładowalnego modułu z poprzedniego podrozdziału.</para>
 
         <programlisting>#include &lt;sys/modctl.h&gt;  /* używane przez _init, _info, _fini */
 #include &lt;sys/types.h&gt;   /* używane przez prop_op, ddi_prop_op */
@@ -2185,56 +2184,54 @@ dummy_prop_op(dev_t dev, dev_info_t *dip, ddi_prop_op_t prop_op,
 
       <itemizedlist>
         <listitem>
-          <para>The <olink remap="external" targetdoc="819-2255"
+          <para>Funkcja <olink remap="external" targetdoc="819-2255"
           targetptr="open-9e"> <citerefentry>
               <refentrytitle>open</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> </olink> routine gains access to the
-          device.</para>
+            </citerefentry> </olink> otwiera dostęp do urządzenia.</para>
         </listitem>
 
         <listitem>
-          <para>The <olink remap="external" targetdoc="819-2255"
+          <para>Funkcja <olink remap="external" targetdoc="819-2255"
           targetptr="close-9e"> <citerefentry>
               <refentrytitle>close</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> </olink> routine relinquishes access to the
-          device. The <citerefentry>
+            </citerefentry> </olink> zamyka dostęp do urządzenia. Funkcja
+          <citerefentry>
               <refentrytitle>close</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> routine must undo everything that the
+            </citerefentry> musi wykonać pracę odwrotną do wykonanej przez
           <citerefentry>
               <refentrytitle>open</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> routine did.</para>
+            </citerefentry>.</para>
         </listitem>
 
         <listitem>
-          <para>The <olink remap="external" targetdoc="819-2255"
+          <para>Funkcja <olink remap="external" targetdoc="819-2255"
           targetptr="read-9e"> <citerefentry>
               <refentrytitle>read</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> </olink> routine reads data from the device
-          node.</para>
+            </citerefentry> </olink> czyta dane z node'u urządzenia.</para>
         </listitem>
 
         <listitem>
-          <para>The <olink remap="external" targetdoc="819-2255"
+          <para>Funkcja <olink remap="external" targetdoc="819-2255"
           targetptr="write-9e"> <citerefentry>
               <refentrytitle>write</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> </olink> routine writes data to the device
-          node.</para>
+            </citerefentry> </olink> zapisuje dane do node'u
+          urządzenia.</para>
         </listitem>
       </itemizedlist>
 
-      <para>In this section, the following code is added:</para>
+      <para>W tym podrozdziale napisano poniższy kod:</para>
 
       <programlisting>/* Punkty wejścia kontekstu użytkownika */
 static int
@@ -2268,12 +2265,11 @@ dummy_write(dev_t dev, struct uio *uiop, cred_t *credp)
       <sect3 xml:id="eqbim">
         <title>Declaring the User Context Entry Points</title>
 
-        <para>The user context entry point routines need to be uniquely named
-        for this driver. Use the same prefix for each of the user context
-        entry points that you used for each of the autoconfiguration entry
-        point routines. The following declarations are the entry point
-        declarations you should have in your <filename>dummy.c</filename>
-        file:</para>
+        <para>Funkcje punktów wejścia kontekstu użytkownika muszą mieć nazwy
+        unikalne dla danego sterownika. W tym celu użytko dla każdego punktu
+        wejścia kontekstu użytkownika takiego samego prefiksu jak przy
+        punktach wejścia autokonfiguracji. Poniższe deklaracje punktów wejścia
+        powinny znaleźć się w pliku <filename>dummy.c</filename>:</para>
 
         <programlisting>static int dummy_attach(dev_info_t *dip, ddi_attach_cmd_t cmd);
 static int dummy_detach(dev_info_t *dip, ddi_detach_cmd_t cmd);
@@ -2300,45 +2296,45 @@ static int dummy_write(dev_t dev, struct uio *uiop, cred_t *credp);</programlist
           <primary><function>open </function> entry point</primary>
         </indexterm>
 
-        <para>The <olink remap="external" targetdoc="819-2255"
+        <para>Funkcja <olink remap="external" targetdoc="819-2255"
         targetptr="open-9e"> <citerefentry>
             <refentrytitle>open</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> </olink> routine returns type
-        <literal>int</literal>. The <citerefentry>
-            <refentrytitle>open</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine should return either
-        <literal>DDI_SUCCESS</literal> or the appropriate error number.</para>
-
-        <para>The <citerefentry>
-            <refentrytitle>open</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine takes four arguments. This
-        <literal>dummy</literal> driver is so simple that this
-        <function>dummy_open </function> routine does not use any of the
+          </citerefentry> </olink> zwraca <literal>int</literal>. Funkcja
         <citerefentry>
             <refentrytitle>open</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> arguments. The examples in <olink remap="external"
-        targetdoc="chapter-3.xml" targetptr="faatl">Chapter 3, Reading and
-        Writing Data in Kernel Memory</olink> show the <citerefentry>
+          </citerefentry> powinna zwrócić albo <literal>DDI_SUCCESS</literal>,
+        albo odpowiedni numer błędu.</para>
+
+        <para>Funkcja <citerefentry>
             <refentrytitle>open</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine in more detail.</para>
+          </citerefentry> Pobiera dwa argumenty. Sterownik
+        <literal>dummy</literal> jest tak prosty, że funkcja
+        <function>dummy_open</function> nie używa żadnego z argumentów funkcji
+        <citerefentry>
+            <refentrytitle>open</refentrytitle>
 
-        <para>The following code is the <function>dummy_open </function>
-        routine that you should enter into your <filename>dummy.c</filename>
-        file. You can copy the name portion of this function definition
-        directly from the declaration you entered in <olink remap="internal"
-        targetdoc="chapter-2.xml" targetptr="eqbim">Declaring the User Context
-        Entry Points</olink>. Write a message to the system log and return
-        success.</para>
+            <manvolnum>9E</manvolnum>
+          </citerefentry>. Przykłady w <olink remap="external"
+        targetdoc="chapter-3.xml" targetptr="faatl">Chapter 3, Reading and
+        Writing Data in Kernel Memory</olink> demonstrują więcej szczegółów
+        funkcji <citerefentry>
+            <refentrytitle>open</refentrytitle>
+
+            <manvolnum>9E</manvolnum>
+          </citerefentry>.</para>
+
+        <para>Poniższy kod dla funkcji <function>dummy_open</function> należy
+        włączyć do pliku <filename>dummy.c</filename>. Nazwę funkcji można
+        skopiować bezpośrednio z deklaracji wprowadzonej w <olink
+        remap="internal" targetdoc="chapter-2.xml" targetptr="eqbim">Declaring
+        the User Context Entry Points</olink>. Do logu systemowego zapisywana
+        jest wiadomość i zwracany jest symbol sukcesu.</para>
 
         <programlisting>static int
 dummy_open(dev_t *devp, int flag, int otyp, cred_t *cred)
@@ -2361,75 +2357,72 @@ dummy_open(dev_t *devp, int flag, int otyp, cred_t *cred)
           <primary><function>close </function> entry point</primary>
         </indexterm>
 
-        <para>The <olink remap="external" targetdoc="819-2255"
+        <para>Funkcja <olink remap="external" targetdoc="819-2255"
         targetptr="close-9e"> <citerefentry>
             <refentrytitle>close</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> </olink> routine returns type
-        <literal>int</literal>. The <citerefentry>
-            <refentrytitle>close</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine should return either
-        <literal>DDI_SUCCESS</literal> or the appropriate error number.</para>
-
-        <para>The <citerefentry>
-            <refentrytitle>close</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine takes four arguments. This
-        <literal>dummy</literal> driver is so simple that this
-        <function>dummy_close </function> routine does not use any of the
+          </citerefentry> </olink> zwraca typ <literal>int</literal>. Funkcja
         <citerefentry>
             <refentrytitle>close</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> arguments. The examples in <olink remap="external"
+          </citerefentry> powinna zwracać <literal>DDI_SUCCESS</literal> lub
+        właściwy numer błędu.</para>
+
+        <para>Funkcja <citerefentry>
+            <refentrytitle>close</refentrytitle>
+
+            <manvolnum>9E</manvolnum>
+          </citerefentry> pobiera cztery argumenty. Ten sterownik
+        <literal>dummy</literal> jest tak prosty, że funkcja
+        <function>dummy_close </function>nie używa żadnego z argumentów
+        funkcji <citerefentry>
+            <refentrytitle>close</refentrytitle>
+
+            <manvolnum>9E</manvolnum>
+          </citerefentry>. Przykłady w <olink remap="external"
         targetdoc="chapter-3.xml" targetptr="faatl">Chapter 3, Reading and
-        Writing Data in Kernel Memory</olink> show the <citerefentry>
+        Writing Data in Kernel Memory</olink> demonstrują więcej szczegółów
+        funkcji <citerefentry>
             <refentrytitle>close</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine in more detail.</para>
+          </citerefentry>.</para>
 
-        <para>The <citerefentry>
+        <para>Funkcja <citerefentry>
             <refentrytitle>close</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine must undo everything that the <citerefentry>
+          </citerefentry> musi wykonać pracę odwrotną do tej wykonanej przez
+        funkcję <citerefentry>
             <refentrytitle>open</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine did. The <citerefentry>
-            <refentrytitle>close</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine must deallocate anything that was allocated,
-        close anything that was opened, and destroy anything that was created
-        in the <citerefentry>
+          </citerefentry>. Musi uwolnić wszystie zaalokowane zasoby, zamknąć
+        wszystko co było otwarte i zniszczyć wszystko co było utworzone w
+        funkcji <citerefentry>
             <refentrytitle>open</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine. In this <literal>dummy</literal> driver,
-        the <citerefentry>
+          </citerefentry>. W sterowniku <literal>dummy</literal> funkcja
+        <citerefentry>
             <refentrytitle>open</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine is so simple that nothing needs to be
-        reclaimed or undone in the <citerefentry>
+          </citerefentry> jest tak prosta, że nie w kodzie funkcji
+        <citerefentry>
             <refentrytitle>close</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine.</para>
+          </citerefentry> nie trzeba nic wykonywać.</para>
 
-        <para>The following code is the <function>dummy_close </function>
-        routine that you should enter into your <filename>dummy.c</filename>
-        file. You can copy the name portion of this function definition
-        directly from the declaration you entered in <olink remap="internal"
-        targetdoc="chapter-2.xml" targetptr="eqbim">Declaring the User Context
-        Entry Points</olink>. Write a message to the system log and return
-        success.</para>
+        <para>Poniższy kod funkcji <function>dummy_close </function>należy
+        włączyć do pliku <filename>dummy.c</filename>. Nazwę funkcji można
+        skopiować bezpośrednio z deklaracji wprowadzonej w <olink
+        remap="internal" targetdoc="chapter-2.xml" targetptr="eqbim">Declaring
+        the User Context Entry Points</olink>. Do logu systemowego zapisywana
+        jest wiadomość i zwracany jest symbol sukcesu.</para>
 
         <programlisting>static int
 dummy_close(dev_t dev, int flag, int otyp, cred_t *cred)
@@ -2452,45 +2445,45 @@ dummy_close(dev_t dev, int flag, int otyp, cred_t *cred)
           <primary><function>read </function> entry point</primary>
         </indexterm>
 
-        <para>The <olink remap="external" targetdoc="819-2255"
+        <para>Funkcja <olink remap="external" targetdoc="819-2255"
         targetptr="read-9e"> <citerefentry>
             <refentrytitle>read</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> </olink> routine returns type
-        <literal>int</literal>. The <citerefentry>
-            <refentrytitle>read</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine should return either
-        <literal>DDI_SUCCESS</literal> or the appropriate error number.</para>
-
-        <para>The <citerefentry>
-            <refentrytitle>read</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine takes three arguments. This
-        <literal>dummy</literal> driver is so simple that this
-        <function>dummy_read </function> routine does not use any of the
+          </citerefentry> </olink> zwraca typ <literal>int</literal>. Funkcja
         <citerefentry>
             <refentrytitle>read</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> arguments. The examples in <olink remap="external"
-        targetdoc="chapter-3.xml" targetptr="faatl">Chapter 3, Reading and
-        Writing Data in Kernel Memory</olink> show the <citerefentry>
+          </citerefentry> powinna zwrócić <literal>DDI_SUCCESS</literal> albo
+        właściwy numer błędu.</para>
+
+        <para>Funkcja <citerefentry>
             <refentrytitle>read</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine in more detail.</para>
+          </citerefentry> pobiera trzy argumenty. Sterownik
+        <literal>dummy</literal> jest tak prosty, że funkcja
+        <function>dummy_read </function>nie używa żadnego z argumentów funkcji
+        <citerefentry>
+            <refentrytitle>read</refentrytitle>
 
-        <para>The following code is the <function>dummy_read </function>
-        routine that you should enter into your <filename>dummy.c</filename>
-        file. You can copy the name portion of this function definition
-        directly from the declaration you entered in <olink remap="internal"
-        targetdoc="chapter-2.xml" targetptr="eqbim">Declaring the User Context
-        Entry Points</olink>. Write a message to the system log and return
-        success.</para>
+            <manvolnum>9E</manvolnum>
+          </citerefentry>. Przykłady w <olink remap="external"
+        targetdoc="chapter-3.xml" targetptr="faatl">Chapter 3, Reading and
+        Writing Data in Kernel Memory</olink> demonstrują więcej szczegółów
+        funkcji <citerefentry>
+            <refentrytitle>read</refentrytitle>
+
+            <manvolnum>9E</manvolnum>
+          </citerefentry>.</para>
+
+        <para>Poniższy kod funkcji <function>dummy_read </function>należy
+        włączyć do pliku <filename>dummy.c</filename>. Nazwę funkcji można
+        skopiować bezpośrednio z deklaracji wprowadzonej w <olink
+        remap="internal" targetdoc="chapter-2.xml" targetptr="eqbim">Declaring
+        the User Context Entry Points</olink>. Do logu systemowego zapisywana
+        jest wiadomość i zwracany jest symbol sukcesu.</para>
 
         <programlisting>static int
 dummy_read(dev_t dev, struct uio *uiop, cred_t *credp)
@@ -2513,45 +2506,45 @@ dummy_read(dev_t dev, struct uio *uiop, cred_t *credp)
           <primary><function>write </function> entry point</primary>
         </indexterm>
 
-        <para>The <olink remap="external" targetdoc="819-2255"
+        <para>Funkcja <olink remap="external" targetdoc="819-2255"
         targetptr="write-9e"> <citerefentry>
             <refentrytitle>write</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> </olink> routine returns type
-        <literal>int</literal>. The <citerefentry>
-            <refentrytitle>write</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine should return either
-        <literal>DDI_SUCCESS</literal> or the appropriate error number.</para>
-
-        <para>The <citerefentry>
-            <refentrytitle>write</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> routine takes three arguments. This
-        <literal>dummy</literal> driver is so simple that this
-        <function>dummy_write </function> routine does not use any of the
+          </citerefentry> </olink> zwraca typ <literal>int</literal>. Funkcja
         <citerefentry>
             <refentrytitle>write</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> arguments. The examples in <olink remap="external"
-        targetdoc="chapter-3.xml" targetptr="faatl">Chapter 3, Reading and
-        Writing Data in Kernel Memory</olink> show the <citerefentry>
+          </citerefentry> zwraca <literal>DDI_SUCCESS</literal> albo właściwy
+        numer błędu.</para>
+
+        <para>Funkcja <citerefentry>
             <refentrytitle>write</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine in more detail.</para>
+          </citerefentry> pobiera trzy argumenty. Sterownik
+        <literal>dummy</literal> jest tak prosty, że funkcja
+        <function>dummy_write </function>nie używa żadnego z argumentów
+        funkcji <citerefentry>
+            <refentrytitle>write</refentrytitle>
 
-        <para>The following code is the <function>dummy_write </function>
-        routine that you should enter into your <filename>dummy.c</filename>
-        file. You can copy the name portion of this function definition
-        directly from the declaration you entered in <olink remap="internal"
-        targetdoc="chapter-2.xml" targetptr="eqbim">Declaring the User Context
-        Entry Points</olink>. Write a message to the system log and return
-        success.</para>
+            <manvolnum>9E</manvolnum>
+          </citerefentry>. Przykłady w <olink remap="external"
+        targetdoc="chapter-3.xml" targetptr="faatl">Chapter 3, Reading and
+        Writing Data in Kernel Memory</olink> demonstrują więcej szczegółów
+        funkcji <citerefentry>
+            <refentrytitle>write</refentrytitle>
+
+            <manvolnum>9E</manvolnum>
+          </citerefentry>.</para>
+
+        <para>Poniższy kod funkcji<function>dummy_write </function>należy
+        włączyć do pliku <filename>dummy.c</filename>. Nazwę funkcji można
+        skopiować bezpośrednio z deklaracji wprowadzonej w <olink
+        remap="internal" targetdoc="chapter-2.xml" targetptr="eqbim">Declaring
+        the User Context Entry Points</olink>. Do logu systemowego zapisywana
+        jest wiadomość i zwracany jest symbol sukcesu.</para>
 
         <programlisting>static int
 dummy_write(dev_t dev, struct uio *uiop, cred_t *credp)
@@ -2564,37 +2557,35 @@ dummy_write(dev_t dev, struct uio *uiop, cred_t *credp)
       <sect3 xml:id="eqbit">
         <title>Including User Context Header Files</title>
 
-        <para>The four user context entry point routines require your module
-        to include several header files. You already have included the
-        <filename>types.h</filename> header file, the
-        <filename>ddi.h</filename> header file, and the
-        <filename>sunddi.h</filename> header file. You need to include the
+        <para>Funkcje punktów wejścia kontekstu użytkownika wymagają włączenia
+        kilku plików nagłówkowych. Pliki <filename>types.h</filename>, the
+        <filename>ddi.h</filename> i <filename>sunddi.h</filename> zostały
+        włączone wcześniej. Do listy należy dopisać
         <filename>file.h</filename>, <filename>errno.h</filename>,
-        <filename>open.h</filename>, <filename>cred.h</filename>, and
-        <filename>uio.h</filename> header files.</para>
+        <filename>open.h</filename>, <filename>cred.h</filename> i
+        <filename>uio.h</filename>.</para>
 
-        <para>The following code is the list of header files that you now
-        should have included in your <filename>dummy.c</filename> file for all
-        the entry points you have written in this section and the previous two
-        sections:</para>
+        <para>Poniżej wydrukowana jest lista plików nagłówkowych, które - ze
+        względu na punkty wejście z tego i dwóch poprzednich podrozdziałów -
+        powinny być włączone do pliku <filename>dummy.c</filename>:</para>
 
-        <programlisting>#include &lt;sys/modctl.h&gt;  /* used by modlinkage, modldrv, _init, _info, */
+        <programlisting>#include &lt;sys/modctl.h&gt;  /* używane przez modlinkage, modldrv, _init, _info, */
                          /* and _fini */
-#include &lt;sys/types.h&gt;   /* used by open, close, read, write, prop_op, */
-                         /* and ddi_prop_op */
-#include &lt;sys/file.h&gt;    /* used by open, close */
-#include &lt;sys/errno.h&gt;   /* used by open, close, read, write */
-#include &lt;sys/open.h&gt;    /* used by open, close, read, write */
-#include &lt;sys/cred.h&gt;    /* used by open, close, read */
-#include &lt;sys/uio.h&gt;     /* used by read */
-#include &lt;sys/stat.h&gt;    /* defines S_IFCHR used by ddi_create_minor_node */
-#include &lt;sys/cmn_err.h&gt; /* used by all entry points for this driver */
-#include &lt;sys/ddi.h&gt;     /* used by all entry points for this driver */
-                         /* also used by ddi_get_instance and */
+#include &lt;sys/types.h&gt;   /* używane przez open, close, read, write, prop_op, */
                          /* ddi_prop_op */
-#include &lt;sys/sunddi.h&gt;  /* used by all entry points for this driver */
-                         /* also used by ddi_create_minor_node, */
-                         /* ddi_get_instance, and ddi_prop_op */</programlisting>
+#include &lt;sys/file.h&gt;    /* używane przez open, close */
+#include &lt;sys/errno.h&gt;   /* używane przez open, close, read, write */
+#include &lt;sys/open.h&gt;    /* używane przez open, close, read, write */
+#include &lt;sys/cred.h&gt;    /* używane przez open, close, read */
+#include &lt;sys/uio.h&gt;     /* używane przez read */
+#include &lt;sys/stat.h&gt;    /* definiuje S_IFCHR używane przez ddi_create_minor_node */
+#include &lt;sys/cmn_err.h&gt; /* używane przez wszystkie punkty wejścia tego sterownik */
+#include &lt;sys/ddi.h&gt;     /* używane przez wszystkie punkty wejścia tego sterownik */
+                         /* oraz używane przez ddi_get_instance i */
+                         /* ddi_prop_op */
+#include &lt;sys/sunddi.h&gt;  /* używane przez wszystkie punkty wejścia tego sterownik */
+                         /* oraz używane przez ddi_create_minor_node, */
+                         /* ddi_get_instance, ddi_prop_op */</programlisting>
       </sect3>
     </sect2>
 
@@ -2641,60 +2632,59 @@ dummy_write(dev_t dev, struct uio *uiop, cred_t *credp)
         <secondary><literal>modlinkage</literal></secondary>
       </indexterm>
 
-      <para>All of the data structures described in this section are required
-      for every device driver. All drivers must define a <olink
-      remap="external" targetdoc="819-2257" targetptr="dev-ops-9s">
-      <citerefentry>
+      <para>Opisane w tym podrozdziale struktury danych wymagane są w każdym
+      sterowniku urządzenia. Każdy sterownik musi zdefiniować strukturę
+      operacji urządzenia <olink remap="external" targetdoc="819-2257"
+      targetptr="dev-ops-9s"> <citerefentry>
           <refentrytitle>dev_ops</refentrytitle>
 
           <manvolnum>9S</manvolnum>
-        </citerefentry> </olink> device operations structure. Because the
-      <citerefentry>
+        </citerefentry> </olink>, natomiast struktura <citerefentry>
           <refentrytitle>dev_ops</refentrytitle>
 
           <manvolnum>9S</manvolnum>
-        </citerefentry> structure includes a pointer to the <olink
-      remap="external" targetdoc="819-2257" targetptr="cb-ops-9s">
+        </citerefentry> zawiera wskaźnik do struktury operacji znakowych i
+      blokowych <olink remap="external" targetdoc="819-2257"
+      targetptr="cb-ops-9s"> <citerefentry>
+          <refentrytitle>cb_ops</refentrytitle>
+
+          <manvolnum>9S</manvolnum>
+        </citerefentry> </olink> i dlatego napierw trzeba zdefiniować
+      strukturę <citerefentry>
+          <refentrytitle>cb_ops</refentrytitle>
+
+          <manvolnum>9S</manvolnum>
+        </citerefentry>. Struktura powiązań dla ładowalnych sterowników <olink
+      remap="external" targetdoc="819-2257" targetptr="modldrv-9s">
       <citerefentry>
-          <refentrytitle>cb_ops</refentrytitle>
-
-          <manvolnum>9S</manvolnum>
-        </citerefentry> </olink> character and block operations structure, you
-      must define the <citerefentry>
-          <refentrytitle>cb_ops</refentrytitle>
-
-          <manvolnum>9S</manvolnum>
-        </citerefentry> structure first. The <olink remap="external"
-      targetdoc="819-2257" targetptr="modldrv-9s"> <citerefentry>
           <refentrytitle>modldrv</refentrytitle>
 
           <manvolnum>9S</manvolnum>
-        </citerefentry> </olink> linkage structure for loadable drivers
-      includes a pointer to the <citerefentry>
+        </citerefentry> </olink> zawiera wskaźnik do struktury <citerefentry>
           <refentrytitle>dev_ops</refentrytitle>
 
           <manvolnum>9S</manvolnum>
-        </citerefentry> structure. The <olink remap="external"
+        </citerefentry>. Struktura powiązań modułu <olink remap="external"
       targetdoc="819-2257" targetptr="modlinkage-9s"> <citerefentry>
           <refentrytitle>modlinkage</refentrytitle>
 
           <manvolnum>9S</manvolnum>
-        </citerefentry> </olink> module linkage structure includes a pointer
-      to the <citerefentry>
+        </citerefentry> </olink> zawiera wskaźnik do struktury <citerefentry>
           <refentrytitle>modldrv</refentrytitle>
 
           <manvolnum>9S</manvolnum>
-        </citerefentry> structure.</para>
+        </citerefentry>.</para>
 
-      <para>Except for the loadable module configuration entry points, all of
-      the required entry points for a driver are initialized in the character
-      and block operations structure or in the device operations structure.
-      Some optional entry points and other related data also are initialized
-      in these data structures. Initializing the entry points in these data
-      structures enables the driver to be dynamically loaded.</para>
+      <para>Za wyjątkiem punktów wejścia modułów ładowalnych, wszystkie
+      wymagane punkty wejścia dla sterownika są inicjalizowane w strukturze
+      operacji znakowych i blokowych lub w strukturze operacji urządzenia.
+      Niektóre opcjonalne punkty wejścia i powiązane dane są również
+      inicjalizowane w tcy strukturach. Inicjalizacja punktów wejścia w tych
+      strukturach umożliwia dynamiczne ładowanie sterownika.</para>
 
-      <para>The loadable module configuration entry points are not initialized
-      in driver data structures. The <citerefentry>
+      <para>Punkty wejścia konfiguracji ładowalnego modułu nie są
+      inicjalizowane w strukturach danych sterownika, ponieważ punkty wejścia
+      <citerefentry>
           <refentrytitle>_init</refentrytitle>
 
           <manvolnum>9E</manvolnum>
@@ -2702,69 +2692,70 @@ dummy_write(dev_t dev, struct uio *uiop, cred_t *credp)
           <refentrytitle>_info</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry>, and <citerefentry>
+        </citerefentry> i <citerefentry>
           <refentrytitle>_fini</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry> entry points are required for all kernel modules and
-      are not specific to device driver modules.</para>
+        </citerefentry> są wymagane przez wszystkie moduły jądra i nie są
+      specyficzne dla modułów sterowników</para>
 
-      <para>In this section, the following code is added:</para>
+      <para>W tym podrozdziale dodano następujący kod:</para>
 
-      <programlisting>/* cb_ops structure */
+      <programlisting>/* struktura cb_ops */
 static struct cb_ops dummy_cb_ops = {
     dummy_open,
     dummy_close,
-    nodev,              /* no strategy - nodev returns ENXIO */
-    nodev,              /* no print */
-    nodev,              /* no dump */
+    nodev,              /* brak strategy - nodev zwraca ENXIO */
+    nodev,              /* brak print */
+    nodev,              /* brak dump */
     dummy_read,
     dummy_write,
-    nodev,              /* no ioctl */
-    nodev,              /* no devmap */
-    nodev,              /* no mmap */
-    nodev,              /* no segmap */
-    nochpoll,           /* returns ENXIO for non-pollable devices */
+    nodev,              /* brak ioctl */
+    nodev,              /* brak devmap */
+    nodev,              /* brak mmap */
+    nodev,              /* brak segmap */
+    nochpoll,           /* zwraca ENXIO dla urządzeń, z ktorych nie można */
+                        /* pobierać danych (ang. non-pollable) */
     dummy_prop_op,
-    NULL,               /* streamtab struct; if not NULL, all above */
-                        /* fields are ignored */
-    D_NEW | D_MP,       /* compatibility flags: see conf.h */
-    CB_REV,             /* cb_ops revision number */
-    nodev,              /* no aread */
-    nodev               /* no awrite */
+    NULL,               /* struktura streamtab; jeśli nie NULL, to wszystkie */
+                        /* powyższe pola są ignorowane */
+    D_NEW | D_MP,       /* flagi kompatybilności: więcej w conf.h */
+    CB_REV,             /* numer wersji cb_ops */
+    nodev,              /* brak aread */
+    nodev               /* brak awrite */
 };
 
-/* dev_ops structure */
+/* struktura dev_ops */
 static struct dev_ops dummy_dev_ops = {
     DEVO_REV,
-    0,                  /* reference count */
+    0,                  /* licznik referencji */
     dummy_getinfo,
-    nulldev,            /* no identify - nulldev returns 0 */
-    nulldev,            /* no probe */
+    nulldev,            /* brak identify - nulldev zwraca 0 */
+    nulldev,            /* brak probe */
     dummy_attach,
     dummy_detach,
-    nodev,              /* no reset - nodev returns ENXIO */
+    nodev,              /* brak reset - nodev zwraca ENXIO */
     &amp;dummy_cb_ops,
     (struct bus_ops *)NULL,
-    nodev               /* no power */
+    nodev               /* brak power */
 };
 
-/* modldrv structure */
+/* struktura modldrv */
 static struct modldrv md = {
-    &amp;mod_driverops,     /* Type of module. This is a driver. */
-    "dummy driver",     /* Name of the module. */
+    &amp;mod_driverops,     /* Typ modułu. To jest sterownik. */
+    "dummy driver",     /* Nazwa modułu. */
     &amp;dummy_dev_ops
 };
 
-/* modlinkage structure */
+/* struktura modlinkage */
 static struct modlinkage ml = {
     MODREV_1,
     &amp;md,
     NULL
 };
 
-/* dev_info structure */
-dev_info_t *dummy_dip;  /* keep track of one instance */</programlisting>
+/* struktura dev_info */
+dev_info_t *dummy_dip;  /* śledzenie jednej instancji */</programlisting>
 
       <sect3 xml:id="eoyag">
         <title>Defining the Character and Block Operations Structure</title>
@@ -2785,86 +2776,84 @@ dev_info_t *dummy_dip;  /* keep track of one instance */</programlisting>
           <secondary><literal>cb_ops</literal></secondary>
         </indexterm>
 
-        <para>The <olink remap="external" targetdoc="819-2257"
+        <para>Struktura <olink remap="external" targetdoc="819-2257"
         targetptr="cb-ops-9s"> <citerefentry>
             <refentrytitle>cb_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> </olink> structure initializes standard character
-        and block interfaces. See the <citerefentry>
+          </citerefentry> </olink> inicjalizuje standardowe interfejsy znakowe
+        i blokowe. Więcej informacji o poszczególnych elementach na stronie
+        man s<citerefentry>
             <refentrytitle>cb_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> man page to learn what each element is and what the
-        value of each element should be. This <literal>dummy</literal> driver
-        does not use all of the elements in the <citerefentry>
+          </citerefentry>. Sterownik <literal>dummy</literal> nie używa
+        wszystkich elementów struktury <citerefentry>
             <refentrytitle>cb_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure. See the description that follows the code
-        sample.</para>
+          </citerefentry>. Więcej w opisie pod kodem.</para>
 
-        <para>When you name this structure, use the same
-        <literal>dummy_</literal> prefix that you used for the names of the
-        autoconfiguration routines and the names of the user context routines.
-        Prepend the <literal>static</literal> type modifier to the
-        declaration.</para>
+        <para>Podczas nazywa struktury użyto prefiksu
+        <literal>dummy_</literal>, podobnie jak w przypadku punktów wejścia
+        autokonfiguracji. Deklarację należy poprzedzić modyfikatorem
+        <literal>static</literal>.</para>
 
-        <para>The following code is the <citerefentry>
+        <para>Poniższy kod struktury <citerefentry>
             <refentrytitle>cb_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure that you should enter into your
-        <filename>dummy.c</filename> file:</para>
+          </citerefentry> należy włączyć do pliku
+        <filename>dummy.c</filename>:</para>
 
         <programlisting>static struct cb_ops dummy_cb_ops = {
     dummy_open,
     dummy_close,
-    nodev,              /* no strategy - nodev returns ENXIO */
-    nodev,              /* no print */
-    nodev,              /* no dump */
+    nodev,              /* brak strategy - nodev zwraca ENXIO */
+    nodev,              /* brak print */
+    nodev,              /* brak dump */
     dummy_read,
     dummy_write,
-    nodev,              /* no ioctl */
-    nodev,              /* no devmap */
-    nodev,              /* no mmap */
-    nodev,              /* no segmap */
-    nochpoll,           /* returns ENXIO for non-pollable devices */
+    nodev,              /* brak ioctl */
+    nodev,              /* brak devmap */
+    nodev,              /* brak mmap */
+    nodev,              /* brak segmap */
+    nochpoll,           /* zwraca ENXIO dla urządzeń, z ktorych nie można */
+                        /* pobierać danych (ang. non-pollable) */
     dummy_prop_op,
-    NULL,               /* streamtab struct; if not NULL, all above */
-                        /* fields are ignored */
-    D_NEW | D_MP,       /* compatibility flags: see conf.h */
-    CB_REV,             /* cb_ops revision number */
-    nodev,              /* no aread */
-    nodev               /* no awrite */
+    NULL,               /* struktura streamtab; jeśli nie NULL, to wszystkie */
+                        /* powyższe pola są ignorowane */
+    D_NEW | D_MP,       /* flagi kompatybilności: więcej w conf.h */
+    CB_REV,             /* numer wersji cb_ops */
+    nodev,              /* brak aread */
+    nodev               /* brak awrite */
 };</programlisting>
 
-        <para>Enter the names of the <citerefentry>
+        <para>Nazwy punktów wejścia <citerefentry>
             <refentrytitle>open</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> and <citerefentry>
+          </citerefentry> i <citerefentry>
             <refentrytitle>close</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry points for this driver as the values of the
-        first two elements of this structure. Enter the names of the
+          </citerefentry> dla tego sterownika (z prefiksem) muszą pojawić
+        się jako dwa pierwsz elementy struktury. Nazwy punktów wejścia
         <citerefentry>
             <refentrytitle>read</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> and <citerefentry>
+          </citerefentry> i <citerefentry>
             <refentrytitle>write</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry points for this driver as the values of the
-        sixth and seventh elements of this structure. Enter the name of the
-        <citerefentry>
+          </citerefentry> dla tego sterownika muszą pojawić się jako szósty i
+        siódmy element. Nazwa punktu wejścia <citerefentry>
             <refentrytitle>prop_op</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point for this driver as the value of the
-        thirteenth element in this structure.</para>
+          </citerefentry> dla tego sterownika powinna pojawić się jako
+        trzynasty element struktury.</para>
 
         <para><indexterm xml:id="indexterm-287">
             <primary><function>nodev </function> kernel function</primary>
@@ -2878,7 +2867,7 @@ dev_info_t *dummy_dip;  /* keep track of one instance */</programlisting>
             <primary>kernel functions</primary>
 
             <secondary><function>nochpoll </function></secondary>
-          </indexterm>The <citerefentry>
+          </indexterm>Funkcje <citerefentry>
             <refentrytitle>strategy</refentrytitle>
 
             <manvolnum>9E</manvolnum>
@@ -2886,19 +2875,18 @@ dev_info_t *dummy_dip;  /* keep track of one instance */</programlisting>
             <refentrytitle>print</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry>, and <citerefentry>
+          </citerefentry> i <citerefentry>
             <refentrytitle>dump</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routines are for block drivers only. This
-        <literal>dummy</literal> driver does not define these three routines
-        because this driver is a character driver. This driver does not define
-        an <citerefentry>
+          </citerefentry> istnieją tylko dla sterowników blokowych. Sterownik
+        <literal>dummy</literal> nie definiuje ich, ponieważ jest sterownikiem
+        znakowym. Nie definiuje też punktu wejścia <citerefentry>
             <refentrytitle>ioctl</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point because this driver does not use I/O
-        control commands. This driver does not define <citerefentry>
+          </citerefentry>, ponieważ nie używa komend kontrolujących I/O. Nie
+        definiuje punktów wejścia <citerefentry>
             <refentrytitle>devmap</refentrytitle>
 
             <manvolnum>9E</manvolnum>
@@ -2906,74 +2894,67 @@ dev_info_t *dummy_dip;  /* keep track of one instance */</programlisting>
             <refentrytitle>mmap</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry>, or <citerefentry>
+          </citerefentry> i <citerefentry>
             <refentrytitle>segmap</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry points because this driver does not support
-        memory mapping. This driver does not does not define <citerefentry>
+          </citerefentry>, ponieważ nie obsługuje mapowania pamięci. Nie
+        definiuje punktów wejścia <citerefentry>
             <refentrytitle>aread</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> or <citerefentry>
+          </citerefentry> i <citerefentry>
             <refentrytitle>awrite</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry points because this driver does not perform
-        any asynchronous reads or writes. Initialize all of these unused
-        function elements to <olink remap="external" targetdoc="819-2256"
+          </citerefentry>, ponieważ nie wykonuje asynchronicznych operacji
+        zapisu i odczytu. Wszystkie te nieużywane elementy są inicjalizowane
+        funkcją <olink remap="external" targetdoc="819-2256"
         targetptr="nodev-9f"> <citerefentry>
             <refentrytitle>nodev</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink>. The <citerefentry>
-            <refentrytitle>nodev</refentrytitle>
+          </citerefentry> </olink>, zwracającą kod błędu
+        <literal>ENXIO</literal>.</para>
 
-            <manvolnum>9F</manvolnum>
-          </citerefentry> function returns the <literal>ENXIO</literal> error
-        code.</para>
-
-        <para>Specify the <olink remap="external" targetdoc="819-2256"
+        <para>Funkcję <olink remap="external" targetdoc="819-2256"
         targetptr="nochpoll-9f"> <citerefentry>
             <refentrytitle>nochpoll</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function for the <citerefentry>
+          </citerefentry> </olink> wskazuje się dla elementu struktury
+        <citerefentry>
             <refentrytitle>chpoll</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> element of the <citerefentry>
-            <refentrytitle>cb_ops</refentrytitle>
-
-            <manvolnum>9S</manvolnum>
-          </citerefentry> structure because this driver is not for a pollable
-        device. Specify <literal>NULL</literal> for the <citerefentry>
+          </citerefentry>, ponieważ sterownik nie obsługuje urządzeń, które
+        można odpytywać o dane. Dla jednostki STREAMS <citerefentry>
             <refentrytitle>streamtab</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> STREAMS entity declaration structure because this
-        driver is not a STREAMS driver.</para>
+          </citerefentry> wskazuje się <literal>NULL</literal>, ponieważ
+        sterownik ten nie jest sterownikiem STREAMS.</para>
 
-        <para>The compatibility flags are defined in the
-        <filename>conf.h</filename> header file. The <literal>D_NEW</literal>
-        flag means this driver is a new-style driver. The
-        <literal>D_MP</literal> flag means this driver safely allows multiple
-        threads of execution. All drivers must be multithreaded-safe, and must
-        specify this <literal>D_MP</literal> flag. The
-        <literal>D_64BIT</literal> flag means this driver supports 64-bit
-        offsets and block numbers. See the <filename>conf.h</filename> header
-        file for more compatibility flags.</para>
+        <para>Flagi kompatybilności zdefiniowane są w pliku nagłówkowym
+        <filename>conf.h</filename>. Flaga <literal>D_NEW</literal> oznacfza,
+        że jest to sterownik nowego typu. Flaga <literal>D_MP</literal>
+        oznacza, że sterownik bezpiecznie obsługuje wiele wątków wykonania.
+        Wszystkie sterowniki muszą bezpiecznie obsługiwać wiele wątków
+        wykonania i muszą zawierać flagę <literal>D_MP</literal>. Flaga
+        <literal>D_64BIT</literal> oznacza, że sterownik obsługuje 64bitowe
+        offsety i numery bloków. Wszystkie flagi kompatybilności można
+        sprawdzić w pliku nagłówkowym <filename>conf.h</filename>.</para>
 
-        <para>The <literal>CB_REV</literal> element of the <citerefentry>
+        <para>Element <literal>CB_REV</literal> struktury <citerefentry>
             <refentrytitle>cb_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure is the <citerefentry>
+          </citerefentry> jest numerem wersji <citerefentry>
             <refentrytitle>cb_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> revision number. <literal>CB_REV</literal> is
-        defined in the <filename>devops.h</filename> header file.</para>
+          </citerefentry> i zdefiniowany jest w pliku nagłówkowym
+        <filename>devops.h</filename>.</para>
       </sect3>
 
       <sect3 xml:id="eoyaf">
