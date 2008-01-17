@@ -1901,7 +1901,7 @@ dummy_getinfo(dev_info_t *dip, ddi_info_cmd_t cmd, void *arg,
         <literal>DDI_INFO_DEVT2INSTANCE</literal>. Kod
         <literal>DDI_INFO_DEVT2INSTANCE</literal> po prostu zwraca 0.
         Sterownik <literal>dummy</literal> obsługuje tylko jedeną instancję
-        urządzenia, której numerem jest 0.</para>
+        urządzenia, której numer równy jest 0.</para>
       </sect3>
 
       <sect3 xml:id="epmqj">
@@ -1934,82 +1934,76 @@ dummy_getinfo(dev_info_t *dip, ddi_info_cmd_t cmd, void *arg,
           <secondary><function>ddi_prop_op </function></secondary>
         </indexterm>
 
-        <para>The <olink remap="external" targetdoc="819-2255"
+        <para>Punkt wejścia <olink remap="external" targetdoc="819-2255"
         targetptr="prop-op-9e"> <citerefentry>
             <refentrytitle>prop_op</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> </olink> entry point is required for every driver.
-        If your driver does not need to customize the behavior of the
+          </citerefentry> </olink> jest wymagany w każdym sterowniku. Jeśli
+        sterownik nie musi dostosowywać zachowania punktu wejścia
         <citerefentry>
             <refentrytitle>prop_op</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point, then your driver can use the <olink
-        remap="external" targetdoc="819-2256" targetptr="ddi-prop-op-9f">
-        <citerefentry>
+          </citerefentry>, może wykorzystać funkcję <olink remap="external"
+        targetdoc="819-2256" targetptr="ddi-prop-op-9f"> <citerefentry>
             <refentrytitle>ddi_prop_op</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function for the <citerefentry>
+          </citerefentry> </olink> jako punkt wejścia <citerefentry>
             <refentrytitle>prop_op</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point. Drivers that create and manage their
-        own properties need a custom <citerefentry>
+          </citerefentry>. Sterowniki tworzące i zarządzające własnymi
+        wląściwościami muszą dostosować działanie funkcji <citerefentry>
             <refentrytitle>prop_op</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine. This <literal>dummy</literal> driver uses a
-        <citerefentry>
+          </citerefentry>. Sterownik <literal>dummy</literal> wywołuje w
+        funkcji <citerefentry>
             <refentrytitle>prop_op</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine to call <olink remap="external"
-        targetdoc="819-2256" targetptr="cmn-err-9f"> <citerefentry>
+          </citerefentry> funkcję <olink remap="external" targetdoc="819-2256"
+        targetptr="cmn-err-9f"> <citerefentry>
             <refentrytitle>cmn_err</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> before calling the <citerefentry>
+          </citerefentry> </olink> przed wywołaniem <citerefentry>
             <refentrytitle>ddi_prop_op</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function.</para>
+          </citerefentry>.</para>
 
-        <para>The <citerefentry>
+        <para>Punkt wejścia <citerefentry>
             <refentrytitle>prop_op</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point and the <citerefentry>
+          </citerefentry> oraz funkcja <citerefentry>
             <refentrytitle>ddi_prop_op</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function both require that you include the
-        <literal>types.h</literal> header file. The <citerefentry>
+          </citerefentry> wymagają włączenia pliku nagłówkowego
+        <literal>types.h</literal>. Punkt wejścia <citerefentry>
             <refentrytitle>prop_op</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point and the <citerefentry>
+          </citerefentry> oraz funkcja <citerefentry>
             <refentrytitle>ddi_prop_op</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function both take the same seven arguments. These
-        arguments are not discussed here because this <literal>dummy</literal>
-        driver does not create and manage its own properties. See the
-        <citerefentry>
+          </citerefentry> pobierają te same siedem argumentów. Argumenty te
+        nie są omawiane, ponieważ <literal>dummy</literal> nie tworzy i nie
+        zarządza swoimi właściwościami. Więcej o argumentach do tych funkcji
+        na stronie man <citerefentry>
             <refentrytitle>prop_op</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> man page to learn about the <citerefentry>
-            <refentrytitle>prop_op</refentrytitle>
+          </citerefentry>.</para>
 
-            <manvolnum>9E</manvolnum>
-          </citerefentry> arguments.</para>
-
-        <para>The following code is the <function>dummy_prop_op </function>
-        routine that you should enter into your <filename>dummy.c</filename>
-        file. You can copy the name portion of this function definition
-        directly from the declaration you entered in <olink remap="internal"
+        <para>Poniższy kod <function>dummy_prop_op </function>należy włączyć
+        do pliku <filename>dummy.c</filename>. Nazwę funkcji można skopiować
+        bezpośrednio z deklaracji wprowadzonej w <olink remap="internal"
         targetdoc="chapter-2.xml" targetptr="epmqa">Declaring the
         Autoconfiguration Entry Points</olink>.</para>
 
@@ -2021,21 +2015,21 @@ dummy_prop_op(dev_t dev, dev_info_t *dip, ddi_prop_op_t prop_op,
     return(ddi_prop_op(dev,dip,prop_op,flags,name,valuep,lengthp));
 }</programlisting>
 
-        <para>First, use <citerefentry>
+        <para>Użyto <citerefentry>
             <refentrytitle>cmn_err</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> to write a message to the system log, as you did in
-        your <citerefentry>
+          </citerefentry> do zapisania wiadomości w logu systemowym, jak w
+        punkcie wejścia <citerefentry>
             <refentrytitle>_init</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point. Then call the <citerefentry>
+          </citerefentry>, a następnie wywołano <citerefentry>
             <refentrytitle>ddi_prop_op</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function with exactly the same arguments as the
-        <function>dummy_prop_op </function> function.</para>
+          </citerefentry> z identycznymi argumentami jak funkcję
+        <function>dummy_prop_op</function>.</para>
       </sect3>
 
       <sect3 xml:id="epmqe">
@@ -2081,15 +2075,15 @@ dummy_prop_op(dev_t dev, dev_info_t *dip, ddi_prop_op_t prop_op,
         the three loadable module configuration routines you wrote in the
         previous section.</para>
 
-        <programlisting>#include &lt;sys/modctl.h&gt;  /* used by _init, _info, _fini */
-#include &lt;sys/types.h&gt;   /* used by prop_op, ddi_prop_op */
-#include &lt;sys/stat.h&gt;    /* defines S_IFCHR used by ddi_create_minor_node */
-#include &lt;sys/cmn_err.h&gt; /* used by all entry points for this driver */
-#include &lt;sys/ddi.h&gt;     /* used by all entry points for this driver */
-                         /* also used by ddi_get_instance, ddi_prop_op */
-#include &lt;sys/sunddi.h&gt;  /* used by all entry points for this driver */
-                         /* also used by ddi_create_minor_node, */
-                         /* ddi_get_instance, and ddi_prop_op */</programlisting>
+        <programlisting>#include &lt;sys/modctl.h&gt;  /* używane przez _init, _info, _fini */
+#include &lt;sys/types.h&gt;   /* używane przez prop_op, ddi_prop_op */
+#include &lt;sys/stat.h&gt;    /* definiuje S_IFCHR używane przez ddi_create_minor_node */
+#include &lt;sys/cmn_err.h&gt; /* używane przez wszystkie punkty wejścia w tym sterowniku */
+#include &lt;sys/ddi.h&gt;     /* używane przez wszystkie punkty wejścia w tym sterowniku */
+                         /* także używane przez ddi_get_instance, ddi_prop_op */
+#include &lt;sys/sunddi.h&gt;  /* używane przez wszystkie punkty wejścia w tym sterowniku */
+                         /* także używane przez ddi_create_minor_node, */
+                         /* ddi_get_instance, ddi_prop_op */</programlisting>
       </sect3>
     </sect2>
 
@@ -2152,28 +2146,30 @@ dummy_prop_op(dev_t dev, dev_info_t *dip, ddi_prop_op_t prop_op,
         <primary><function>write </function> entry point</primary>
       </indexterm>
 
-      <para>User context entry points correspond closely to system calls. When
-      a system call opens a device file, then the <citerefentry>
+      <para>Punkty wejścia kontelstu użytkownika ściśle odpowiadają wywołaniom
+      systemowym. Kiedy wywołanie systemowe otwiera plik urządzenia,
+      wywoływana jest funkcja <citerefentry>
           <refentrytitle>open</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry> routine in the driver for that device is
-      called.</para>
+        </citerefentry> w sterowniku dla tego urządzenia.</para>
 
-      <para>All character and block drivers must define the <citerefentry>
+      <para>Wszystkie sterowniki znakowe i blokowe muszą zdefiniować punkt
+      wejścia <citerefentry>
           <refentrytitle>open</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry> user context entry point. However, the <citerefentry>
+        </citerefentry> dla kontekstu użytkownika, jednakże funkcja
+      <citerefentry>
           <refentrytitle>open</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry> routine can be <olink remap="external"
-      targetdoc="819-2256" targetptr="nulldev-9f"> <citerefentry>
+        </citerefentry> może być <olink remap="external" targetdoc="819-2256"
+      targetptr="nulldev-9f"> <citerefentry>
           <refentrytitle>nulldev</refentrytitle>
 
           <manvolnum>9F</manvolnum>
-        </citerefentry> </olink>. The <citerefentry>
+        </citerefentry> </olink>. Funkcje kontekstu użytkownika <citerefentry>
           <refentrytitle>close</refentrytitle>
 
           <manvolnum>9E</manvolnum>
@@ -2181,11 +2177,11 @@ dummy_prop_op(dev_t dev, dev_info_t *dip, ddi_prop_op_t prop_op,
           <refentrytitle>read</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry>, and <citerefentry>
+        </citerefentry> i <citerefentry>
           <refentrytitle>write</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry> user context routines are optional.</para>
+        </citerefentry> są opcjonalne.</para>
 
       <itemizedlist>
         <listitem>
@@ -2240,7 +2236,7 @@ dummy_prop_op(dev_t dev, dev_info_t *dip, ddi_prop_op_t prop_op,
 
       <para>In this section, the following code is added:</para>
 
-      <programlisting>/* Use context entry points */
+      <programlisting>/* Punkty wejścia kontekstu użytkownika */
 static int
 dummy_open(dev_t *devp, int flag, int otyp, cred_t *cred)
 {
