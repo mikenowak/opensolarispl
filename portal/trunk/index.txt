@@ -1,40 +1,304 @@
-                <td id="Content">
-                    <div class="Format">
-                        
+    <style type="text/css">
+  td#rightbar {
+        margin-right: 0em;
+        width: 14em;
+        padding-top: 1em;
+  }
+  td#rightbar a {
+	color: #5382A1;
+	text-decoration:none;
+  }
+
+  div.ad {
+	border: 2px solid #ddd;
+	margin-top:1em;
+	color: #444;
+	background: #eee;
+	-moz-border-radius: 4px;
+  }
+  div.ad div.adtitle {
+	background: #C5D5A9;
+	font-weight: bold;
+	padding: 2px;
+  }
+  div.ad div.adbody {
+	border: none;
+	color: #444;
+	padding: 2px;
+	margin-left: 0.25em;
+  }
+
+  div.ad_highlight {
+	border: 2px solid #F8D583;
+	margin-top:1em;
+	color: #444;
+	background: #ffd;
+	-moz-border-radius: 4px;
+  }
+
+  div.ad_highlight div.adtitle {
+	background: #F8D583;
+	font-weight: bold;
+	padding: 2px;
+  }
+
+  div.ad_highlight div.adbody {
+	border: none;
+	color: #444;
+	padding: 2px;
+	margin-left: 0.25em;
+  }
+
+  .topannounce {
+	background-color: #ffffff;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	padding: 1em;
+	border: 2px solid #e76f00;
+  }
+</style>
+
+<script type="text/javascript" language="javascript">
+var rssReq;
+
+function loadXMLDoc(url) 
+{
+        // branch for native XMLHttpRequest object
+        if (window.XMLHttpRequest) {
+                rssReq = new XMLHttpRequest();
+                rssReq.onreadystatechange = processReqChange;
+                rssReq.open("GET", url, true);
+                rssReq.send(null);
+        // branch for IE/Windows ActiveX version
+        } else if (window.ActiveXObject) {
+                rssReq = new ActiveXObject("Microsoft.XMLHTTP");
+                if (rssReq) {
+                        rssReq.onreadystatechange = processReqChange;
+                        rssReq.open("GET", url, true);
+                        rssReq.send();
+                }
+        }
+}
+
+function processReqChange() 
+{
+    // only if req shows "complete"
+    if (rssReq.readyState == 4) {
+        // only if "OK"
+        if (rssReq.status == 200) {
+                // ...processing statements go here...
+                dispAnnouncements(rssReq.responseXML);
+        } else {
+            alert("There was a problem retrieving the XML data:\n" + rssReq.statusText);
+        }
+    }
+}
+
+function dispAnnouncements(xmlobject) {
+        var months = new Array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+                        'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+
+        // get a reference to the root-element "rss"
+        var root = xmlobject.getElementsByTagName('rss')[0];
+        // get reference to "channel" element
+        var channels = root.getElementsByTagName("channel");
+        // now get all "item" tags in the channel
+        var items = channels[0].getElementsByTagName("item");
+
+        var announcements = document.getElementById("sectionAnnouncements");
+        var tbl = document.createElement("table");
+        for (var i = 0; i < 6; i++) {
+                var descriptions = items[i].getElementsByTagName("description");
+                var dates = items[i].getElementsByTagName("creationDate");
+                var titles = items[i].getElementsByTagName("title");
+                var links = items[i].getElementsByTagName("link");
+
+                var desc = descriptions.item(0).firstChild.nodeValue;
+                var title = titles.item(0).firstChild.nodeValue;
+                var date = dates.item(0).firstChild.nodeValue;
+                var link = links.item(0).firstChild.nodeValue;
+
+                var dt = new Date();
+                dt.setTime(Date.parse(date));
+                date = dt.getDate() + " " + months[dt.getMonth()] + " " +
+                (1900 + dt.getYear());
+
+                var row = tbl.insertRow(i);
+                var cDate = row.insertCell(0);
+                var cTitle = row.insertCell(1);
+                cDate.innerHTML = date;
+                desc = desc.replace("'", "&apos;");
+                cTitle.innerHTML = "<a href='" + link + "' title='" +
+                         desc + "'>" + title + "</a>";
+                row.style["border"] = "none";
+                cDate.style["border"] = "none";
+                cTitle.style["border"] = "none";
+        }
+        tbl.style["border"] = "none";
+        announcements.appendChild(tbl);
+
+
+}
+
+loadXMLDoc("/jive/rss/rssmessages.jspa?forumID=76");
+
+
+</script>
+
                         <table class="NoBorder" style="margin: 0px;">
  <tr>
-
  <td><div>
+
  <!-- Use topannounce class to give this division a border. -->
-      <img src="open_solaris_dev_pre_oct.gif" width="500" height="175" />
+      <img src="/os/open.png" width="500" height="200" />
  </div>
 
  <!-- Leading text block. -->
-<h3>Czym jest OpenSolaris?</h3>
+ <h3>Czym jest projekt OpenSolaris?</h3>
+ <p>Projekt OpenSolaris jest miejscem współpracy i wymiany doświadczeń związanych z technologią OpenSolaris. Stanowi też społeczność skupioną wokół open source.</p>
+ <p>Określenie "Społeczność" reprezentuje różnych ludzi pochodzących z całego świata, włącznie z deweloperami dodającymi nowe właściwości do systemu lub modyfikującymi technologię na potrzeby nowych aplikacji i platform; administratorzy wykorzystujący technologię Solarisa w centrach danych; naukowcy i studenci badający systemy operacyjne na uniwersytetach; w końcu nowi użytkownicy poznający technologię i odkrywający, że OpenSolaris daje nowe możliwości.</p>
 
-<p>Projekt OpenSolaris jest otwartym procesem rozwojowym, składającym się z trzech elementów:</p>
-<blockquote>
+ <p>Kod źródłowy OpenSolaris już teraz wyznacza nowe standardy, ale innowacje pojawiają się wszędzie, dlatego zapraszamy do zaangażowania się w projekt. Nasza społeczność może zaoferować:</p>
+ <div style="margin: 0em; margin-left: 2em; margin-right: 2em; padding: 0em;">
+ <!--  Annotated link directory, with icons, as table.
+  The order of the listed areas is to contain the top navigational
+  bar's icons as a contiguous subsequence.  The current subsequence
+  is { discussions, communities, projects, download, source browser }.
+  Each row in the table is composed of two cells, one for the icon, and
+  one containing explanatory text.
+-->
+ <table style="margin: 0em; padding: 0em;">
+ <!-- About / Overview -->
+ <tr>
+ <td><a href="/os/about/"><img src="/os/info.gif" alt="About" width="34" height="34" title="Informacje o OpenSolaris" /></a> </td>
+ <td>Zacznij od zapoznania się z <a href="/os/about/">przeglądem projektu</a> i <a href="/os/about/roadmap/">mapą rozwoju (Roadmap)</a>.<br />
 
-(1) kod źródłowy OpenSolarisa,<br />
-(2) społeczność OpenSolaris,<br />
-(3) <em>a teraz</em> binarna dystrybucja OpenSolarisa.<br />
-</blockquote>
+If you need help in getting OpenSolaris installed, see the resources on our <a href="/os/newbies">Installing OpenSolaris</a> page.<br />
+Jeśli potrzebujesz pomocy przy instalacji OpenSolarisa, przejrzyj zasoby na naszej stronie dotyczącej <a href="/os/newbies">instalacji OpenSolarisa</a>.<br />
+(Jeśli poszukujesz informacji o systemie operacyjnym Solaris, <a href="http://www.sun.com/solaris">zajrzyj tutaj</a>).</td>
+ </tr>
+ <!-- Discussions -->
+ <tr>
+ <td><a href="/os/discussions/"> <img alt="Discussions" title="Rozmowy" src="/images/discussions.gif" /></a> </td>
 
-<p>OpenSolaris jest <strong>otwarty</strong> - to znaczy, że można go używać, zmieniać i rozprowadzać i naprawdę nasza społeczność oczekuje każdego chętnego do współpracy.</p>
+ <td>Dołącz do dziesiątek żywiołowych <a href="/os/discussions">forów
+ dyskusyjnych</a>, których tematyka dotyczy niemal wszystkiego. Jeśli potrzebujesz pomocy przy instalacji OpenSolarisa, możesz dołączyć do naszej listy <a href="http://www.opensolaris.org/jive/forum.jspa?forumID=31">opensolaris-help</a>. Żeby być na bieżąco z tym, co się dzieje w społeczności, możesz zasubskrybować listę <a
+ href="http://www.opensolaris.org/jive/forum.jspa?forumID=76">opensolaris-announce</a> lub włączyć się w wir dyskusji na <a href="http://www.opensolaris.org/jive/forum.jspa?forumID=13">opensolaris-discuss</a>.
+ Możesz również dołączyć się do dyskusji korzystając z <a href="chat">IRC</a> na serwerze irc.freenode.net.</td>
+ </tr>
 
-<p><strong>OpenSolaris Developer Preview</strong> jest pierwszym kamieniem milowym w <a href="http://www.opensolaris.org/os/project/indiana/">Projekcie Indiana</a>. Jest to pojedyncze LiveCD zawierające również instalator: bazę systemu operacyjnego, jądro, biblioteki systemowe, środowisko graficzne i system zarządzania pakietami oprogramowania. To nie jest ostateczne wydanie i kierowane jest do deweloperów, aby mogli testować i informować o wynikach.</p>
+ <!-- Communities -->
+ <tr>
+ <td><a href="/os/communities/#portal"> <img alt="Communities" title="Communities" src="/images/communities.gif" /></a></td>
+ <td>Odwiedź nasz <a href="/os/communities/#portal">Portal Społeczności</a> aby dowiedzieć się, jak można się przyłączyć. Zajrzyj też do <a href="/os/community/onnv/">Nevady</a>.</td>
+ </tr>
 
-<ul>
-<li><strong><a href="/os/project/indiana/resources/getit/">Pobierz OpenSolaris Developer Preview</a></strong></li>
-<li><a href="/os/project/indiana/documents/">Dokumentacja Projektu Indiana</a></li>
-<li><a href="http://www.genunix.org/wiki/index.php/Indiana_FAQ">FAQ Projektu Indiana</a></li>
-</ul>
+ <!-- Projects -->
+ <tr>
+ <td><a href="/os/projects/#portal"> <img alt="Projects" title="Projects" src="/images/projects.gif" /></a> </td>
+ <td>Zajrzyj do <a href="/os/projects/#portal">Portalu Projektów</a> i zapoznaj się z aktywnymi projektami, które utrzymujemy.</td>
+ </tr>
+ <!-- Downloads -->
 
-<div style="color: #C5D5A9; background-color: #C5D5A9; height: 3px;"><hr /></div>
+ <tr>
+ <td><a href="/os/downloads/"> <img alt="Downloads" title="Download Center" src="/images/download.gif" /></a></td>
+ <td><a href="/os/downloads/" class="buttonlabel">Pobierz</a> źródła, archiwa BFU i potrzebne narzędzia. Oferujemy możliwość pobierania poprzez HTTP i sieć torrent.</td>
+ </tr>
+ <!-- Source Browser -->
+ <tr>
 
-<p><strong><a href="/os/about/">Społeczność OpenSolarisa</a></strong> reprezentuje różnych ludzi pochodzących z całego świata, włącznie z deweloperami dodającymi nowe właściwości do systemu lub modyfikującymi technologię na potrzeby nowych aplikacji i platform; administratorzy wykorzystujący technologię Solarisa w centrach danych; naukowcy i studenci badający systemy operacyjne na uniwersytetach; w końcu nowi użytkownicy poznający technologię i odkrywający, że OpenSolaris daje nowe możliwości.</p>
+<td><a href="http://src.opensolaris.org/"><img alt="Source Browser" title="Source Browser" src="/images/srcbrowse.gif" /></a></td>
+<td><a href="http://src.opensolaris.org/" class="buttonlabel">Zapoznaj się ze źródłami</a> przy użyciu naszej niesamowicie szybkiej przeglądarki kodu, <a href="/os/project/opengrok/">OpenGrok</a>.</td>
+ </tr>
+ </table>
+ </div></td>
 
-<p><strong><a href="http://src.opensolaris.org/source/">Kod źródłowy OpenSolarisa</a></strong> reprezentuje miliony linii kodu, włączając w to takie innowacje jak DTrace, Zones, Predictive Self Healing i ZFS. Większość kodu źródłowego OpenSolarisa dostępna jest na licencji CDDL. Kod źródłowy oparty na istniejących już projektach dostępny jest na właściwych im licencjach.</p>
+<td id="rightbar">
+<!-- START HIDE (dosiu)
+<!-- Ad # 1 -->
+
+<div class="ad_highlight">
+<div class="adtitle">Community Awards Program</div>
+<div class="adbody">Sun has announced a <a href="http://www.sun.com/software/opensource/awards/index.jsp">community awards program</a> starting January 2008 to help foster innovation around OpenSolaris.
+<br /><br />Check out the <a href="/os/community/advocacy/">Advocacy Community Group</a> for more information.</div>
 </div>
+
+<!-- Ad # 2 -->
+<div class="ad">
+
+<div class="adtitle">OpenSolaris Starter Kit</div>
+<div class="adbody">The free (no shipping or handling fees) Starter Kit includes three OpenSolaris distributions and step-by-step instructions on how to install and boot.<br><a href="http://www.opensolaris.org/kits/">&nbsp;&raquo;&nbsp;Request a DVD</a><br>
+<a href="/os/project/starterkit/order_status/">&nbsp;&raquo;&nbsp;Order Status</a></div>
+</div>
+
+<!-- Ad # 3 -->
+<div class="ad">
+<div class="adtitle">CommunityOne 2008</div>
+<div class="adbody">Share your knowledge at the second annual CommunityOne conference.<br><a href="http://developers.sun.com/events/communityone">Call for participation</a> is open until Jan. 31 '08.
+
+</div>
+</div> 
+
+<!-- Ad # 4 -->
+<div class="ad">
+<div class="adtitle">OpenSolaris Tech Days</div>
+<div class="adbody">Join us for FREE education, excitement and opportunity.<br><br>
+Hyderabad, IN (Feb)<br>
+Sydney, AU (Mar)<br>
+Johannesburg, SA (Mar)<br>
+<a href="http://www.opensolaris.org/os/community/advocacy/events/current_tech_days/">Sign Up today!</a>
+</div>
+
+</div> 
+END HIDE -->
+<!-- START HIDE
+
+<!-- Ad # 5 -->
+<div class="ad">
+<div class="adtitle">User Groups</div>
+<div class="adbody">If you are new to OpenSolaris and are interested in participating in a user group, visit the <a href="/os/community/advocacy/usergroups/">User Group community</a>.
+</div>
+</div>
+
+<!-- Ad # 6 -->
+<div class="ad">
+<div class="adtitle">Squawk</div>
+<div class="adbody"><img src="/os/irc2.png" />Chat about OpenSolaris using <a
+href="http://www.irchelp.org/irchelp/irctutorial.html">IRC</a> at
+irc.freenode.net. Now featuring <b><a
+href="chat">nine</a></b> chat rooms.</div>
+</div>
+
+<!-- Ad # 7 -->
+<div class="ad">
+<div class="adtitle">Buttons and Banners</div>
+<div class="adbody"><div style="text-align: center; margin-top: 1em;"> <a href="/os/about/buttons/"><img src="about/buttons/get_os_ribbon_03.gif"  alt="OpenSolaris Fan Buttons" width="80" height="15" border="0" title="OpenSolaris Fan Buttons" /></a></div>Get cool buttons and ribbons for your blog or website!</div>
+</div>
+
+<!-- Ad # 8 --> 
+<div class="ad">
+<div class="adtitle">Country Portals</div>
+<div class="adbody">Visit our new country portals.
+<p><a href="http://jp.opensolaris.org/">Japan</a> | 
+<a href="http://cn.opensolaris.org/">China</a> | 
+<a href="http://fr.opensolaris.org/">France</a><br />
+<a href="http://pl.opensolaris.org/">Poland</a> | 
+<a href="http://br.opensolaris.org/">Brazil</a> | 
+<a href="http://in.opensolaris.org/">India</a><br />
+<a href="http://es.opensolaris.org/">Spain</a> |
+<a href="http://de.opensolaris.org/">Germany</a> | 
+<a href="http://mx.opensolaris.org/">Mexico</a><br />
+<a href="http://ru.opensolaris.org/">Russia</a>
+</p>
+<p>Interested in helping to translate? <a href="http://www.opensolaris.org/os/project/portals/">Join the project</a>.</p>
+</div>
+</div>
+
+END HIDE -->
+
+
 </td>
 
+
+ </tr>
+</table>
