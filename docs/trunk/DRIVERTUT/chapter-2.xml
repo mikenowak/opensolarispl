@@ -2796,8 +2796,8 @@ dev_info_t *dummy_dip;  /* śledzenie jednej instancji */</programlisting>
 
         <para>Podczas nazywa struktury użyto prefiksu
         <literal>dummy_</literal>, podobnie jak w przypadku punktów wejścia
-        autokonfiguracji. Deklarację należy poprzedzić modyfikatorem
-        <literal>static</literal>.</para>
+        autokonfiguracji i nazw funkcji kontekstu użytkownika. Deklarację
+        należy poprzedzić modyfikatorem <literal>static</literal>.</para>
 
         <para>Poniższy kod struktury <citerefentry>
             <refentrytitle>cb_ops</refentrytitle>
@@ -2976,64 +2976,59 @@ dev_info_t *dummy_dip;  /* śledzenie jednej instancji */</programlisting>
           <secondary><literal>dev_ops</literal></secondary>
         </indexterm>
 
-        <para>The <olink remap="external" targetdoc="819-2257"
+        <para>Struktura <olink remap="external" targetdoc="819-2257"
         targetptr="dev-ops-9s"> <citerefentry>
             <refentrytitle>dev_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> </olink> structure initializes interfaces that are
-        used for operations such as attaching and detaching the driver. See
-        the <citerefentry>
+          </citerefentry> </olink> inicjalizuje interfejsy używane podczas
+        operacji podłączania i odłączania sterownika. Szczegółowe informacje o
+        wszystkich elementach tej struktury znajdują się na stronie man
+        <citerefentry>
             <refentrytitle>dev_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> man page to learn what each element is and what the
-        value of each element should be. This <literal>dummy</literal> driver
-        does not use all of the elements in the <citerefentry>
+          </citerefentry>. Sterownik <literal>dummy</literal> nie używa
+        wszystkich elementów tej struktury. Dokładniejszy opis znajduje się
+        pod fragmentem kodu.</para>
+
+        <para>Podczas nazywa struktury użyto prefiksu
+        <literal>dummy_</literal>, podobnie jak w przypadku punktów wejścia
+        autokonfiguracji i nazw funkcji kontekstu użytkownika. Deklarację
+        należy poprzedzić modyfikatorem <literal>static</literal>.</para>
+
+        <para>Poniższy kod opisujący strukturę <citerefentry>
             <refentrytitle>dev_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure. See the description that follows the code
-        sample.</para>
-
-        <para>When you name this structure, use the same
-        <literal>dummy_</literal> prefix that you used for the names of the
-        autoconfiguration routines and the names of the user context routines.
-        Prepend the <literal>static</literal> type modifier to the
-        declaration.</para>
-
-        <para>The following code is the <citerefentry>
-            <refentrytitle>dev_ops</refentrytitle>
-
-            <manvolnum>9S</manvolnum>
-          </citerefentry> structure that you should enter into your
-        <filename>dummy.c</filename> file:</para>
+          </citerefentry> należy włączyć do pliku
+        <filename>dummy.c</filename>:</para>
 
         <programlisting>static struct dev_ops dummy_dev_ops = {
     DEVO_REV,
-    0,                  /* reference count */
+    0,                  /* licznik referencji */
     dummy_getinfo,
-    nulldev,            /* no identify - nulldev returns 0 */
-    nulldev,            /* no probe */
+    nulldev,            /* brak identify - nulldev zwraca 0 */
+    nulldev,            /* brak probe */
     dummy_attach,
     dummy_detach,
-    nodev,              /* no reset - nodev returns ENXIO */
+    nodev,              /* brak reset - nodev zwraca ENXIO */
     &amp;dummy_cb_ops,
     (struct bus_ops *)NULL,
-    nodev               /* no power */
+    nodev               /* brak power */
 };</programlisting>
 
-        <para>The <literal>DEVO_REV</literal> element of the <citerefentry>
+        <para>Element <literal>DEVO_REV</literal> struktury <citerefentry>
             <refentrytitle>dev_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure is the driver build version.
-        <literal>DEVO_REV</literal> is defined in the
-        <literal>devops.h</literal> header file. The second element in this
-        structure is the driver reference count. Initialize this value to
-        zero. The driver reference count is the number of instances of this
-        driver that are currently open. The driver cannot be unloaded if any
-        instances of the driver are still open.</para>
+          </citerefentry> to wersja zbudowanego sterownika.
+        <literal>DEVO_REV</literal> zdefiniowany jest w pliku nagłówkowym
+        <literal>devops.h</literal>. Drugim elementem struktury jest licznik
+        referencji sterownika, któremu należy nadać wartosć zero. Licznik
+        referencji sterownika to liczba aktualnie otwartych instancji
+        sterownika. Sterownika nie można wyładować, jeśli jest choć jedna
+        otwarta instancja.</para>
 
         <para><indexterm xml:id="indexterm-294">
             <primary><function>nulldev </function> kernel function</primary>
@@ -3047,11 +3042,11 @@ dev_info_t *dummy_dip;  /* śledzenie jednej instancji */</programlisting>
             <primary>kernel functions</primary>
 
             <secondary><function>nodev </function></secondary>
-          </indexterm>The next six elements of the <citerefentry>
+          </indexterm>Następne sześć elementów struktury <citerefentry>
             <refentrytitle>dev_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure are the names of the <citerefentry>
+          </citerefentry> to nazwy funkcji <citerefentry>
             <refentrytitle>getinfo</refentrytitle>
 
             <manvolnum>9E</manvolnum>
@@ -3071,89 +3066,83 @@ dev_info_t *dummy_dip;  /* śledzenie jednej instancji */</programlisting>
             <refentrytitle>detach</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry>, and <function>reset </function> functions for this
-        particular driver. The <citerefentry>
+          </citerefentry> i <function>reset </function> dla sterownika.
+        Funkcja <citerefentry>
             <refentrytitle>identify</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> function is obsolete. Initialize this structure
-        element to <olink remap="external" targetdoc="819-2256"
+          </citerefentry> jest przestarzała, a jej element w strukturze należy
+        zainicjalizować funkcją <olink remap="external" targetdoc="819-2256"
         targetptr="nulldev-9f"> <citerefentry>
             <refentrytitle>nulldev</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink>. The <citerefentry>
+          </citerefentry> </olink>. Funkcja <citerefentry>
             <refentrytitle>probe</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> function determines whether the corresponding device
-        exists and is valid. This <literal>dummy</literal> driver does not
-        define a <citerefentry>
+          </citerefentry> sprawdza, czy odpowiednie urządzenie istnieje i jest
+        poprawne. Sterownik <literal>dummy</literal> nie definiuje funkcji
+        <citerefentry>
             <refentrytitle>probe</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> function. Initialize this structure element to
-        <literal>nulldev</literal>. The <citerefentry>
+          </citerefentry>, element ten należy zainicjalizować wartością
+        <literal>nulldev</literal>. Funkcja <citerefentry>
             <refentrytitle>nulldev</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function returns success. The <function>reset
-        </function> function is obsolete. Initialize the <function>reset
-        </function> function to <olink remap="external" targetdoc="819-2256"
-        targetptr="nodev-9f"> <citerefentry>
+          </citerefentry> zwraca wartość sukcesu. Funkcja <function>reset
+        </function> jest przestarzała i należy incjalizować ją funkcją <olink
+        remap="external" targetdoc="819-2256"
+        targetptr="nodev-9f"><citerefentry>
             <refentrytitle>nodev</refentrytitle>
 
             <manvolnum>9F</manvolnum>
           </citerefentry> </olink>.</para>
 
-        <para>The next element of the <citerefentry>
-            <refentrytitle>dev_ops</refentrytitle>
-
-            <manvolnum>9S</manvolnum>
-          </citerefentry> structure is a pointer to the <citerefentry>
-            <refentrytitle>cb_ops</refentrytitle>
-
-            <manvolnum>9S</manvolnum>
-          </citerefentry> structure for this driver. You initialized the
+        <para>Następny element struktury to wskaźnik do struktury
         <citerefentry>
             <refentrytitle>cb_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure for this driver in <olink remap="internal"
-        targetdoc="chapter-2.xml" targetptr="eoyag">Defining the Character and
-        Block Operations Structure</olink>. Enter
-        <literal>&amp;dummy_cb_ops</literal> for the value of the pointer to
-        the <citerefentry>
+          </citerefentry> dla sterownika. Strukturę <citerefentry>
             <refentrytitle>cb_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure.</para>
+          </citerefentry> zainicjalizowano w <olink remap="internal"
+        targetdoc="chapter-2.xml" targetptr="eoyag">Defining the Character and
+        Block Operations Structure</olink>. Jako wartość wskaźnika do
+        struktury <citerefentry>
+            <refentrytitle>cb_ops</refentrytitle>
 
-        <para>The next element of the <citerefentry>
+            <manvolnum>9S</manvolnum>
+          </citerefentry> należy podać
+        <literal>&amp;dummy_cb_ops</literal>.</para>
+
+        <para>Następny element struktury <citerefentry>
             <refentrytitle>dev_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure is a pointer to the bus operations
-        structure. Only nexus drivers have bus operations structures. This
-        <literal>dummy</literal> driver is not a nexus driver. Set this value
-        to <literal>NULL</literal> because this driver is a leaf
-        driver.</para>
+          </citerefentry> to wskaźnik do struktury operacji szyny danych.
+        Tylko sterowniki zbiorcze (ang. nexus drivers) mają struktury operacji
+        szyny danych. Sterownik <literal>dummy</literal> nie jest takim
+        sterownikiem, dlatego wskaźnikowi przypisano wartość
+        <literal>NULL</literal>, wskazującą, że sterorownik jest
+        liściem.</para>
 
-        <para>The last element of the <citerefentry>
-            <refentrytitle>dev_ops</refentrytitle>
-
-            <manvolnum>9S</manvolnum>
-          </citerefentry> structure is the name of the <citerefentry>
+        <para>Ostatni element to nazwa funkcji <citerefentry>
             <refentrytitle>power</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine for this driver. The <citerefentry>
+          </citerefentry> sterownika. Funkcja <citerefentry>
             <refentrytitle>power</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routine operates on a hardware device. This driver
-        does not drive a hardware device. Set the value of this structure
-        element to <literal>nodev</literal>.</para>
+          </citerefentry> wykonuje operacje na urządzeniu sprzętowym,
+        natomiast opisywany sterownik nie jest zarządza urządzeniem
+        sprzętowym. Elementowi struktury należy przypisać wartość
+        <literal>nodev</literal>.</para>
       </sect3>
 
       <sect3 xml:id="epffy">
@@ -3185,14 +3174,13 @@ dev_info_t *dummy_dip;  /* śledzenie jednej instancji */</programlisting>
           <secondary><literal>modlinkage</literal></secondary>
         </indexterm>
 
-        <para>Two other module loading structures are required for every
-        driver. The <olink remap="external" targetdoc="819-2257"
-        targetptr="modlinkage-9s"> <citerefentry>
+        <para>Następne dwie struktury ładowania modułu są wymagane dla każdego
+        sterownika. Struktura łączenia modułu <olink remap="external"
+        targetdoc="819-2257" targetptr="modlinkage-9s"> <citerefentry>
             <refentrytitle>modlinkage</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> </olink> module linkage structure is used by the
-        <citerefentry>
+          </citerefentry> </olink> używana jest przez funkcje <citerefentry>
             <refentrytitle>_init</refentrytitle>
 
             <manvolnum>9E</manvolnum>
@@ -3200,35 +3188,34 @@ dev_info_t *dummy_dip;  /* śledzenie jednej instancji */</programlisting>
             <refentrytitle>_info</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry>, and <citerefentry>
+          </citerefentry> i <citerefentry>
             <refentrytitle>_fini</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> routines to install, remove, and retrieve
-        information from a module. The <olink remap="external"
-        targetdoc="819-2257" targetptr="modldrv-9s"> <citerefentry>
+          </citerefentry> do instalacji, usuwania i uzyskiwania informacji z
+        modułu. Struktura łączenia dla ładowalnych sterowników <olink
+        remap="external" targetdoc="819-2257" targetptr="modldrv-9s">
+        <citerefentry>
             <refentrytitle>modldrv</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> </olink> linkage structure for loadable drivers
-        exports driver-specific information to the kernel. See the man pages
-        for each structure to learn what each element is and what the value of
-        each element should be.</para>
+          </citerefentry> </olink> eksportuje unikalne dla sterownika
+        informacje do jądra. Więcej informacji o tych strukturach i ich
+        elementach na odpowiednich stronach man.</para>
 
-        <para>The following code defines the <citerefentry>
+        <para>Poniższy kod definiuje struktury <citerefentry>
             <refentrytitle>modldrv</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> and <citerefentry>
+          </citerefentry> i <citerefentry>
             <refentrytitle>modlinkage</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structures for the driver shown in this
-        chapter:</para>
+          </citerefentry> dla opisywanego w tym rozdziale sterownika:</para>
 
         <programlisting>static struct modldrv md = {
-    &amp;mod_driverops,     /* Type of module. This is a driver. */
-    "dummy driver",     /* Name of the module. */
+    &amp;mod_driverops,     /* Typ modułu. To jest sterownik. */
+    "dummy driver",     /* Nazwa modułu. */
     &amp;dummy_dev_ops
 };
 
@@ -3238,66 +3225,47 @@ static struct modlinkage ml = {
     NULL
 };</programlisting>
 
-        <para>The first element in the <citerefentry>
+        <para>Pierwszy element struktury <citerefentry>
             <refentrytitle>modldrv</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure is a pointer to a structure that tells the
-        kernel what kind of module this is. Set this value to the address of
-        the <literal>mod_driverops</literal> structure. The
-        <literal>mod_driverops</literal> structure tells the kernel that the
-        <filename>dummy.c</filename> module is a loadable driver module. The
-        <literal>mod_driverops</literal> structure is declared in the
-        <filename>modctl.h</filename> header file. You already included the
-        <filename>modctl.h</filename> header file in your
-        <filename>dummy.c</filename> file, so do not declare the
-        <literal>mod_driverops</literal> structure in
-        <filename>dummy.c</filename>. The <literal>mod_driverops</literal>
-        structure is defined in the <filename>modctl.c</filename> source
-        file.</para>
+          </citerefentry> to wskaźnik do struktury opisującej typ sterownika;
+        należy przypisać mu wartość wskaźnika do struktury
+        <literal>mod_driverops</literal>. Struktura
+        <literal>mod_driverops</literal> mówi jądru systemu, że moduł
+        <filename>dummy.c</filename> jest ładowalnym modułem sterownika
+        urządzenia. Struktura <literal>mod_driverops</literal> zadeklarowana
+        jest w pliku nagłówkowym <filename>modctl.h</filename>, włączonym już
+        do kodu <filename>dummy.c</filename>, stąd nie należy deklarować
+        struktury <literal>mod_driverops</literal> w pliku
+        <filename>dummy.c</filename>. Struktura
+        <literal>mod_driverops</literal> zdefiniowana jest w pliku źródłowym
+        <filename>modctl.c</filename>.</para>
 
-        <para>The second element in the <citerefentry>
-            <refentrytitle>modldrv</refentrytitle>
-
-            <manvolnum>9S</manvolnum>
-          </citerefentry> structure is a string that describes this module.
-        Usually this string contains the name of this module and the version
-        number of this module. The last element of the <citerefentry>
-            <refentrytitle>modldrv</refentrytitle>
-
-            <manvolnum>9S</manvolnum>
-          </citerefentry> structure is a pointer to the <citerefentry>
+        <para>Drugi element to łańcuch znaków opisujący moduł. Zazwyczaj
+        zawiera nazwę modułu i numer wersji. Ostatni element struktury to
+        wskaźnik do struktury <citerefentry>
             <refentrytitle>dev_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure for this driver. You initialized the
-        <citerefentry>
+          </citerefentry> dla tego sterownika. Strukturę <citerefentry>
             <refentrytitle>dev_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure for this driver in <olink remap="internal"
+          </citerefentry> zainicjalizowano w <olink remap="internal"
         targetdoc="chapter-2.xml" targetptr="eoyaf">Defining the Device
         Operations Structure</olink>.</para>
 
-        <para>The first element in the <citerefentry>
+        <para>Pierwszym elementem struktury <citerefentry>
             <refentrytitle>modlinkage</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> structure is the revision number of the loadable
-        modules system. Set this value to <literal>MODREV_1</literal>. The
-        next element of the <citerefentry>
-            <refentrytitle>modlinkage</refentrytitle>
-
-            <manvolnum>9S</manvolnum>
-          </citerefentry> structure is the address of a null-terminated array
-        of pointers to linkage structures. Driver modules have only one
-        linkage structure. Enter the address of the <literal>md</literal>
-        structure for the value of this element of the <citerefentry>
-            <refentrytitle>modlinkage</refentrytitle>
-
-            <manvolnum>9S</manvolnum>
-          </citerefentry> structure. Enter the value <literal>NULL</literal>
-        to terminate this list of linkage structures.</para>
+          </citerefentry> jest numer wersji systemu ładowalnych modułów;
+        należy nadać mu wartość <literal>MODREV_1</literal>. Następny element
+        to adres null-terminated tablicy wskaźników do struktury łączenia.
+        Moduły sterowników mają tylko strukturę łączenia. Należy zmiennej
+        nadać adres struktury <literal>md</literal>. Listę struktur kończy się
+        wartością <literal>NULL</literal>.</para>
       </sect3>
 
       <sect3 xml:id="eqbni">
