@@ -16,7 +16,7 @@
         <primary>devices</primary>
 
         <secondary>pseudo</secondary>
-      </indexterm>Sterownik przedstawiony w tym rozdizale to sterownik
+      </indexterm>Sterownik przedstawiony w tym rozdziale to sterownik
     pseudourządzenia, wypisujący zaledwie wiadomość do logów systemowych za
     każdym razem, gdy następuje wejście przez punkt wejścia. Zawiera minimalną
     strukturę wymaganą od sterownika urządzenia znakowego. Można użyć go jako
@@ -3271,56 +3271,55 @@ static struct modlinkage ml = {
       <sect3 xml:id="eqbni">
         <title>Including Data Structures Header Files</title>
 
-        <para>The <olink remap="external" targetdoc="819-2257"
+        <para>Struktury <olink remap="external" targetdoc="819-2257"
         targetptr="cb-ops-9s"> <citerefentry>
             <refentrytitle>cb_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> </olink> and <olink remap="external"
+          </citerefentry> </olink> i <olink remap="external"
         targetdoc="819-2257" targetptr="dev-ops-9s"> <citerefentry>
             <refentrytitle>dev_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> </olink> structures require you to include the
-        <filename>conf.h</filename> and <filename>devops.h</filename> header
-        files. The <olink remap="external" targetdoc="819-2257"
+          </citerefentry> </olink> wymagają włączenia plików nagłówkowych
+        <filename>conf.h</filename> i <filename>devops.h</filename>. Struktury
+        <olink remap="external" targetdoc="819-2257"
         targetptr="modlinkage-9s"> <citerefentry>
             <refentrytitle>modlinkage</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> </olink> and <olink remap="external"
+          </citerefentry> </olink> i <olink remap="external"
         targetdoc="819-2257" targetptr="modldrv-9s"> <citerefentry>
             <refentrytitle>modldrv</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> </olink> structures require you to include the
-        <literal>modctl.h</literal> header file. You already included the
-        <filename>modctl.h</filename> header file for the loadable module
-        configuration entry points.</para>
+          </citerefentry> </olink> wymagają wlączenia pliku nagłówkowego
+        <literal>modctl.h</literal>. Plik <filename>modctl.h</filename> został
+        włączony wcześniej, podczas pisania punktów wejścia konfiguracji
+        ładowalnych modułów.</para>
 
-        <para>The following code is the complete list of header files that you
-        now should have included in your <filename>dummy.c</filename>
-        file:</para>
+        <para>Poniżej zamieszono pełną listę plików nagłówkowych do włączenia
+        do pliku <filename>dummy.c</filename>:</para>
 
-        <programlisting>#include &lt;sys/devops.h&gt;  /* used by dev_ops */
-#include &lt;sys/conf.h&gt;    /* used by dev_ops and cb_ops */
-#include &lt;sys/modctl.h&gt;  /* used by modlinkage, modldrv, _init, _info, */
-                         /* and _fini */
-#include &lt;sys/types.h&gt;   /* used by open, close, read, write, prop_op, */
-                         /* and ddi_prop_op */
-#include &lt;sys/file.h&gt;    /* used by open, close */
-#include &lt;sys/errno.h&gt;   /* used by open, close, read, write */
-#include &lt;sys/open.h&gt;    /* used by open, close, read, write */
-#include &lt;sys/cred.h&gt;    /* used by open, close, read */
-#include &lt;sys/uio.h&gt;     /* used by read */
-#include &lt;sys/stat.h&gt;    /* defines S_IFCHR used by ddi_create_minor_node */
-#include &lt;sys/cmn_err.h&gt; /* used by all entry points for this driver */
-#include &lt;sys/ddi.h&gt;     /* used by all entry points for this driver */
-                         /* also used by cb_ops, ddi_get_instance, and */
-                         /* ddi_prop_op */
-#include &lt;sys/sunddi.h&gt;  /* used by all entry points for this driver */
-                         /* also used by cb_ops, ddi_create_minor_node, */
-                         /* ddi_get_instance, and ddi_prop_op */</programlisting>
+        <programlisting>#include &lt;sys/devops.h&gt;  /* używane przez dev_ops */
+#include &lt;sys/conf.h&gt;    /* używane przez dev_ops i cb_ops */
+#include &lt;sys/modctl.h&gt;  /* używane przez modlinkage, modldrv, _init, _info */
+                         /* i _fini */
+#include &lt;sys/types.h&gt;   /* używane przez open, close, read, write, prop_op */
+                         /* i ddi_prop_op */
+#include &lt;sys/file.h&gt;    /* używane przez open, close */
+#include &lt;sys/errno.h&gt;   /* używane przez open, close, read, write */
+#include &lt;sys/open.h&gt;    /* używane przez open, close, read, write */
+#include &lt;sys/cred.h&gt;    /* używane przez open, close, read */
+#include &lt;sys/uio.h&gt;     /* używane przez read */
+#include &lt;sys/stat.h&gt;    /* definiuje S_IFCHR używane przez ddi_create_minor_node */
+#include &lt;sys/cmn_err.h&gt; /* używane przez wszystkie punkty wejścia w tym sterowniku */
+#include &lt;sys/ddi.h&gt;     /* używane przez wszystkie punkty wejścia w tym sterowniku */
+                         /* również używane przez cb_ops, ddi_get_instance */
+                         /* i ddi_prop_op */
+#include &lt;sys/sunddi.h&gt;  /* używane przez wszystkie punkty wejścia w tym sterowniku */
+                         /* także używane przez cb_ops, ddi_create_minor_node, */
+                         /* ddi_get_instance i ddi_prop_op */</programlisting>
       </sect3>
     </sect2>
   </sect1>
@@ -3338,13 +3337,12 @@ static struct modlinkage ml = {
       <secondary>configuration files</secondary>
     </indexterm>
 
-    <para>This driver requires a configuration file. The minimum information
-    that a configuration file must contain is the name of the device node and
-    the name or type of the device's parent. In this simple example, the node
-    name of the device is the same as the file name of the driver. Create a
-    file named <filename>dummy.conf</filename> in your working directory. Put
-    the following single line of information into
-    <filename>dummy.conf</filename>:</para>
+    <para>Opisywany sterownik wymaga pliku konfiguracyjnego. Minimalna ilość
+    informacji zawartych pliku konfiguracyjnym to nazwa node'u urządzenia i
+    nazwa lub typ rodzica urządzenia. W tym prostym przykładzie nazwa node'u
+    urządzenia jest taka sama jak nazwa urządzenia. W pliku
+    <filename>dummy.conf</filename> w katalogu roboczym należy umieścić
+    poniższą linijkę:</para>
 
     <programlisting>name="dummy" parent="pseudo";</programlisting>
   </sect1>
@@ -3352,43 +3350,45 @@ static struct modlinkage ml = {
   <sect1 xml:id="eoxzr">
     <title>Building and Installing the Template Driver</title>
 
-    <para>This section shows you how to build and install the driver for a
-    32-bit platform. See <olink remap="external" targetdoc="chapter-1.xml"
-    targetptr="fgouv">Building a Driver</olink> and <olink remap="external"
-    targetdoc="chapter-1.xml" targetptr="fsfqv">Installing a Driver</olink>
-    for build and install instructions for SPARC architectures and for 64-bit
-    x86 architectures.</para>
+    <para>W tym podrozdziale zademonstrowano kompilację i instalację
+    sterownika na platformie 32bitowej. Instrukcje dla architektur SPARC i
+    64bitowej x86 znajdują się w <olink remap="external"
+    targetdoc="chapter-1.xml" targetptr="fgouv">Building a Driver</olink> i
+    <olink remap="external" targetdoc="chapter-1.xml"
+    targetptr="fsfqv">Installing a Driver</olink>.</para>
 
-    <para>Compile and link the driver. Use the <option> D_KERNEL</option>
-    option to indicate that this code defines a kernel module. The following
-    example shows compiling and linking for a 32-bit architecture using the
-    Sun Studio C compiler:</para>
+    <para>Należy skompilować i skonsolidować sterownik z opcją
+    <option>D_KERNEL</option> wskazującą, że jest to moduł jądra. Poniższy
+    przykład pokazuje kompilację i konsolidację dla architektury 32bitowej za
+    pomocą kompilatora Sun Studio C:</para>
 
     <screen>% <userinput>cc -D_KERNEL -c dummy.c</userinput>
 % <userinput>ld -r -o dummy dummy.o</userinput>
 </screen>
 
-    <para>Make sure you are user <literal>root</literal> when you install the
-    driver.</para>
+    <para>Podczas instalacji sterownika należy być zalogowanym jako użytkownik
+    <literal>root</literal>.</para>
 
-    <para>Install drivers in the <filename>/tmp</filename> directory until you
-    are finished modifying and testing the <function>_info </function>,
-    <function>_init </function>, and <function>attach </function> routines.
-    Copy the driver binary to the <filename>/tmp</filename> directory. Link to
-    the driver from the kernel driver directory. See <olink remap="external"
-    targetdoc="chapter-4.xml" targetptr="fdlbq">Device Driver Testing
-    Tips</olink> for more information.</para>
+    <para>Aż do momentu zakończenia testów i wprowadzania zmian w funkcjach
+    <function>_info</function>, <function>_init</function> i
+    <function>attach</function> sterownika należy instalować go w katalogu
+    <filename>/tmp</filename>. Wykonuje się to przez skopiowanie pliku
+    binarnego do katalogu <filename>/tmp</filename> i stworzenie do niego
+    dowiązania z katalogu sterowników jądra. Więcej informacji w <olink
+    remap="external" targetdoc="chapter-4.xml" targetptr="fdlbq">Device Driver
+    Testing Tips</olink>.</para>
 
     <screen># <userinput>cp dummy /tmp</userinput>
 </screen>
 
-    <para>Link to the following directory for a 32-bit architecture:</para>
+    <para>Dla architektury 32bitowej dowiązanie powinno wyglądać
+    następująco:</para>
 
     <screen># <userinput>ln -s /tmp/dummy /usr/kernel/drv/dummy</userinput>
 </screen>
 
-    <para>Copy the configuration file to the kernel driver area of the
-    system.</para>
+    <para>Plik konfiguracyjny należy skopiować do katalogu sterowników
+    jądra.</para>
 
     <screen># <userinput>cp dummy.conf /usr/kernel/drv</userinput>
 </screen>
@@ -3427,30 +3427,28 @@ static struct modlinkage ml = {
       <secondary><function>cmn_err </function></secondary>
     </indexterm>
 
-    <para>This <literal>dummy</literal> driver merely writes a message to a
-    system log each time an entry point routine is entered. To test this
-    driver, watch for these messages to confirm that each entry point routine
-    is successfully entered.</para>
+    <para>Sterownik <literal>dummy</literal> zapisuje wiadomość do dziennika
+    systemowego za każdym razem, kiedy uaktywniony jest punkt wejścia.
+    Testowanie sterownika polega na szukaniu tych wiadomości w dzienniku
+    systemowym, aby potwierdzić, że każdy punkt wejścia został wywołany.
+    </para>
 
-    <para>The <olink remap="external" targetdoc="819-2256"
+    <para>Funkcja <olink remap="external" targetdoc="819-2256"
     targetptr="cmn-err-9f"> <citerefentry>
         <refentrytitle>cmn_err</refentrytitle>
 
         <manvolnum>9F</manvolnum>
-      </citerefentry> </olink> function writes low priority messages such as
-    the messages defined in this <literal>dummy</literal> driver to
-    <filename>/dev/log</filename>. The <olink remap="external"
+      </citerefentry> </olink> zapisuje wiadomości o niskim priorytecie do
+    <filename>/dev/log</filename>. Daemon <olink remap="external"
     targetdoc="819-2240" targetptr="syslogd-1m"> <citerefentry>
         <refentrytitle>syslogd</refentrytitle>
 
         <manvolnum>1M</manvolnum>
-      </citerefentry> </olink> daemon reads messages from
-    <filename>/dev/log</filename> and writes low priority messages to
-    <filename>/var/adm/messages</filename>.</para>
+      </citerefentry> </olink> odczytuje wiadomości z
+    <filename>/dev/log</filename> i zapisuje wiadomości o niskim priorytecie
+    do <filename>/var/adm/messages</filename>.</para>
 
-    <para>In a separate window, enter the following command and monitor the
-    output as you perform the tests described in the remainder of this
-    section:</para>
+    <para>W osobnym oknie należy wykonać poniższą komendę: </para>
 
     <screen>% <userinput>tail -f /var/adm/messages</userinput>
 </screen>
@@ -3474,26 +3472,28 @@ static struct modlinkage ml = {
         <primary><command>add_drv</command> command</primary>
       </indexterm>
 
-      <para>Make sure you are user <literal>root</literal> when you add the
-      driver. Use the <olink remap="external" targetdoc="819-2240"
-      targetptr="add-drv-1m"> <citerefentry>
+      <para>Podczas dodawania sterownika należy być zalogowany jako użytkownik
+      <literal>root</literal>. Sterownik dodaje się komendą <olink
+      remap="external" targetdoc="819-2240" targetptr="add-drv-1m">
+      <citerefentry>
           <refentrytitle>add_drv</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> command to add the driver:</para>
+        </citerefentry> </olink>:</para>
 
       <screen># <userinput>add_drv dummy</userinput>
 </screen>
 
-      <para>You should see the following messages in the window where you are
-      viewing <filename>/var/adm/messages</filename>:</para>
+      <para>W wiadomościach zapisywanych do
+      <filename>/var/adm/messages</filename> powinny pojawić się następujące
+      komunikaty:</para>
 
       <screen>
 <replaceable>date</replaceable> <replaceable>time</replaceable> <replaceable>machine</replaceable> dummy: [ID 513080 kern.notice] NOTICE: Inside _info
 <replaceable>date</replaceable> <replaceable>time</replaceable> <replaceable>machine</replaceable> dummy: [ID 874762 kern.notice] NOTICE: Inside _init
 <replaceable>date</replaceable> <replaceable>time</replaceable> <replaceable>machine</replaceable> dummy: [ID 678704 kern.notice] NOTICE: Inside dummy_attach</screen>
 
-      <para>The <citerefentry>
+      <para>Punkty wejścia <citerefentry>
           <refentrytitle>_info</refentrytitle>
 
           <manvolnum>9E</manvolnum>
@@ -3501,17 +3501,16 @@ static struct modlinkage ml = {
           <refentrytitle>_init</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry>, and <citerefentry>
+        </citerefentry> i <citerefentry>
           <refentrytitle>attach</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry> entry points are called in that order when you add a
-      driver.</para>
+        </citerefentry> są wywoływane podczas dodawania sterownika.</para>
 
       <para><indexterm xml:id="indexterm-314">
           <primary><literal>/devices/pseudo</literal> directory</primary>
-        </indexterm>The <literal>dummy</literal> driver has been added to the
-      <filename>/devices</filename> directory:</para>
+        </indexterm>Sterownik <literal>dummy</literal> został dodany do
+      katalogu <filename>/devices</filename>:</para>
 
       <screen>% <userinput>ls -l /devices/pseudo | grep dummy</userinput>
 drwxr-xr-x   2 root     sys          512 <replaceable>date</replaceable> <replaceable>time</replaceable> dummy@0
@@ -3523,8 +3522,8 @@ crw-------   1 root     sys       92,  0 <replaceable>date</replaceable> <replac
           <secondary><command>modinfo</command></secondary>
         </indexterm> <indexterm xml:id="indexterm-316">
           <primary><command>modinfo</command> command</primary>
-        </indexterm>The <literal>dummy</literal> driver also is the most
-      recent module listed by <olink remap="external" targetdoc="819-2240"
+        </indexterm>Sterownik <literal>dummy</literal> jest także najświeższym
+      modułem drukowanym przez <olink remap="external" targetdoc="819-2240"
       targetptr="modinfo-1m"> <citerefentry>
           <refentrytitle>modinfo</refentrytitle>
 
@@ -3541,21 +3540,21 @@ crw-------   1 root     sys       92,  0 <replaceable>date</replaceable> <replac
           <secondary><filename>/etc/name_to_major</filename></secondary>
         </indexterm> <indexterm xml:id="indexterm-318">
           <primary><filename>/etc/name_to_major</filename> file</primary>
-        </indexterm>The module name, <literal>dummy driver</literal>, is the
-      value you entered for the second member of the <citerefentry>
+        </indexterm>Nazwa modułu <literal>dummy driver</literal> jest
+      wartością podaną jako drugi element struktury <citerefentry>
           <refentrytitle>modldrv</refentrytitle>
 
           <manvolnum>9S</manvolnum>
-        </citerefentry> structure. The value <literal>92</literal> is the
-      major number of this module.</para>
+        </citerefentry>. Wartość <literal>92</literal> to starszy numer
+      modułu.</para>
 
       <screen>% <userinput>grep dummy /etc/name_to_major</userinput>
 dummy 92</screen>
 
-      <para>The <literal>Loadaddr</literal> address of
-      <literal>ed192b70</literal> is the address of the first instruction in
-      the <literal>dummy</literal> driver. This address might be useful, for
-      example, in debugging.</para>
+      <para>Adres <literal>Loadaddr</literal> o wartości
+      <literal>ed192b70</literal> jest adresem pierwszej instrukcji w
+      sterowniku <literal>dummy</literal>. Adres ten może być przydatny na
+      przykład przy usuwaniu błędów.</para>
 
       <screen>% <userinput>mdb -k</userinput>
 &gt; dummy`_init $m
@@ -3570,30 +3569,31 @@ ed192b70 ed192ff0      480 dummy
           <secondary><command>prtconf</command></secondary>
         </indexterm> <indexterm xml:id="indexterm-320">
           <primary><command>prtconf</command> command</primary>
-        </indexterm>The <literal>dummy</literal> driver also is the most
-      recent module listed by <olink remap="external" targetdoc="819-2240"
-      targetptr="prtconf-1m"> <citerefentry>
+        </indexterm>Sterownik <literal>dummy</literal> jest także najświeższym
+      modułem drukowanym przez komendę <olink remap="external"
+      targetdoc="819-2240" targetptr="prtconf-1m"><citerefentry>
           <refentrytitle>prtconf</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> in the pseudo device section:</para>
+        </citerefentry> </olink> w dziale z pseudourządzeniami:</para>
 
       <screen>% <userinput>prtconf -P</userinput>
     pseudo, instance #0
         dummy, instance #0 (driver not attached)</screen>
 
-      <para>A driver is automatically loaded when a device that the driver
-      manages is accessed. A driver might be automatically unloaded when the
-      driver is not in use.</para>
+      <para>Sterownik jest automatycznie ładowany kiedy do urządzenia
+      urządzenia, którym sterownik zarządza, wysyłane jest żądanie dostępu.
+      Sterownik może być automatycznie wyładowany, kiedy urządzenie przestaje
+      być używane. </para>
 
       <itemizedlist>
-        <para>If your driver is in the <filename>/devices</filename> directory
-        but <citerefentry>
+        <para>Jeśli sterownik znajduje się w katalogu
+        <filename>/devices</filename>, ale komenda <citerefentry>
             <refentrytitle>modinfo</refentrytitle>
 
             <manvolnum>1M</manvolnum>
-          </citerefentry> does not list your driver, you can use either of the
-        following methods to load your driver:</para>
+          </citerefentry> nie pokazuje go, jedna z poniższych metod może
+        okazać się przydatna:</para>
 
         <listitem>
           <para><indexterm xml:id="indexterm-321">
@@ -3602,18 +3602,19 @@ ed192b70 ed192ff0      480 dummy
               <secondary><command>modload</command></secondary>
             </indexterm> <indexterm xml:id="indexterm-322">
               <primary><command>modload</command> command</primary>
-            </indexterm>Use the <olink remap="external" targetdoc="819-2240"
-          targetptr="modload-1m"> <citerefentry>
+            </indexterm>Należy użyć komendy <olink remap="external"
+          targetdoc="819-2240" targetptr="modload-1m"> <citerefentry>
               <refentrytitle>modload</refentrytitle>
 
               <manvolnum>1M</manvolnum>
-            </citerefentry> </olink> command.</para>
+            </citerefentry> </olink>.</para>
         </listitem>
 
         <listitem>
-          <para>Access the device. The driver is loaded automatically when a
-          device that the driver manages is accessed. The following section
-          describes how to access the <literal>dummy</literal> device.</para>
+          <para>Należy próbować uzyskać dostęp do urządzenia. Sterownik jest
+          automatycznie ładowany podczas żądania dostępu do urządzenia, którym
+          sterownik zarządza. Poniższy podrozdział opisuje metodę dostępu do
+          urządzenia <literal>dummy</literal>.</para>
         </listitem>
       </itemizedlist>
     </sect2>
@@ -3627,15 +3628,13 @@ ed192b70 ed192ff0      480 dummy
         <secondary>reading</secondary>
       </indexterm>
 
-      <para>Make sure you are user <literal>root</literal> when you perform
-      the tests described in this section. If you are not user
-      <literal>root</literal>, you will receive “Permission denied” error
-      messages when you try to access the
-      <filename>/devices/pseudo/dummy@0:0</filename> special file. Notice the
-      permissions that are shown for
-      <filename>/devices/pseudo/dummy@0:0</filename> in <olink
-      remap="internal" targetdoc="chapter-2.xml" targetptr="eqbqx">Adding the
-      Template Driver</olink>.</para>
+      <para>Poniższe testy należy wykonywać jako użytkownik
+      <literal>root</literal>, w innym przypadku podczas próby dostępu do
+      pliku specjalnego <filename>/devices/pseudo/dummy@0:0</filename> pojawi
+      się komunikat błędu “Permission denied”. Należy zwrócić uwagę na
+      uprawnienia drukowane dla <filename>/devices/pseudo/dummy@0:0</filename>
+      w <olink remap="internal" targetdoc="chapter-2.xml"
+      targetptr="eqbqx">Adding the Template Driver</olink>.</para>
 
       <para><indexterm xml:id="indexterm-324">
           <primary>commands</primary>
@@ -3643,17 +3642,18 @@ ed192b70 ed192ff0      480 dummy
           <secondary><command>cat</command></secondary>
         </indexterm> <indexterm xml:id="indexterm-325">
           <primary><command>cat</command> command</primary>
-        </indexterm>Test reading from the device. Your
-      <literal>dummy</literal> device probably is named
-      <filename>/devices/pseudo/dummy@0:0</filename>. The following command
-      reads from your <literal>dummy</literal> device even if it has a
-      slightly different name:</para>
+        </indexterm>Test odczytu z urządzenia. Urządzenie
+      <literal>dummy</literal> prawdopodobnie nazywa się
+      <filename>/devices/pseudo/dummy@0:0</filename>. Poniższa komenda wykona
+      odczyt z urządzenia <literal>dummy</literal> nawet jeśli nazywa się
+      nieco inaczej:</para>
 
       <screen># <userinput>cat /devices/pseudo/dummy*</userinput>
 </screen>
 
-      <para>You should see the following messages in the window where you are
-      viewing <filename>/var/adm/messages</filename>:</para>
+      <para>W oknie, w którym obserwowany jest plik
+      <filename>/var/adm/messages</filename> powinny pojawić się następujące
+      komunikaty:</para>
 
       <screen>
 <replaceable>date</replaceable> <replaceable>time</replaceable> <replaceable>machine</replaceable> dummy: [ID 136952 kern.notice] NOTICE: Inside dummy_open
@@ -3675,13 +3675,14 @@ ed192b70 ed192ff0      480 dummy
           <secondary><command>echo</command></secondary>
         </indexterm> <indexterm xml:id="indexterm-328">
           <primary><command>echo</command> command</primary>
-        </indexterm>Test writing to the device:</para>
+        </indexterm>Test zapisu do urządzenia:</para>
 
       <screen># <userinput>echo hello &gt; `ls /devices/pseudo/dummy*`</userinput>
 </screen>
 
-      <para>You should see the following messages in the window where you are
-      viewing <filename>/var/adm/messages</filename>:</para>
+      <para>W oknie, w którym obserwowany jest plik
+      <filename>/var/adm/messages</filename> powinny pojawić się następujące
+      komunikaty:</para>
 
       <screen>
 <replaceable>date</replaceable> <replaceable>time</replaceable> <replaceable>machine</replaceable> dummy: [ID 136952 kern.notice] NOTICE: Inside dummy_open
@@ -3693,38 +3694,38 @@ ed192b70 ed192ff0      480 dummy
 <replaceable>date</replaceable> <replaceable>time</replaceable> <replaceable>machine</replaceable> dummy: [ID 672780 kern.notice] NOTICE: Inside dummy_write
 <replaceable>date</replaceable> <replaceable>time</replaceable> <replaceable>machine</replaceable> dummy: [ID 550206 kern.notice] NOTICE: Inside dummy_close</screen>
 
-      <para>As you can see, this output from the write test is almost
-      identical to the output you saw from the read test. The only difference
-      is in the seventh line of the output. Using the <olink remap="external"
-      targetdoc="819-2239" targetptr="cat-1"> <citerefentry>
+      <para>Jak widać wynik jest niemal identyczny jak podczas testu odczytu.
+      Jedyna różnica pojawia się w siódmej linijce. Użycie komendy <olink
+      remap="external" targetdoc="819-2239" targetptr="cat-1"> <citerefentry>
           <refentrytitle>cat</refentrytitle>
 
           <manvolnum>1</manvolnum>
-        </citerefentry> </olink> command causes the kernel to access the
-      <olink remap="external" targetdoc="819-2255" targetptr="read-9e">
-      <citerefentry>
+        </citerefentry> </olink> powoduje, że jądro wywołuje punkt wejścia
+      <olink remap="external" targetdoc="819-2255"
+      targetptr="read-9e"><citerefentry>
           <refentrytitle>read</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry> </olink> entry point of the driver. Using the <olink
-      remap="external" targetdoc="819-2239" targetptr="echo-1"> <citerefentry>
+        </citerefentry> </olink> dla danego sterownika. Używanie komendy
+      <olink remap="external" targetdoc="819-2239" targetptr="echo-1">
+      <citerefentry>
           <refentrytitle>echo</refentrytitle>
 
           <manvolnum>1</manvolnum>
-        </citerefentry> </olink> command causes the kernel to access the
+        </citerefentry> </olink> powoduje, że jądro wywołuje punkt wejścia
       <olink remap="external" targetdoc="819-2255" targetptr="write-9e">
       <citerefentry>
           <refentrytitle>write</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry> </olink> entry point of the driver. The text argument
-      that you give to <olink remap="external" targetdoc="819-2239"
-      targetptr="echo-1"> <citerefentry>
+        </citerefentry> </olink> dla danego sterownika. Argument komendy
+      <olink remap="external" targetdoc="819-2239"
+      targetptr="echo-1"><citerefentry>
           <refentrytitle>echo</refentrytitle>
 
           <manvolnum>1</manvolnum>
-        </citerefentry> </olink> is ignored because this driver does not do
-      anything with that data.</para>
+        </citerefentry> </olink> jest ignorowany, ponieważ sterownik nie
+      wykonuje na danych żadnych operacji.</para>
     </sect2>
 
     <sect2 xml:id="eqbqw">
@@ -3746,34 +3747,36 @@ ed192b70 ed192ff0      480 dummy
         <primary><command>rem_drv</command> command</primary>
       </indexterm>
 
-      <para>Make sure you are user <literal>root</literal> when you unload the
-      driver. Use the <olink remap="external" targetdoc="819-2240"
+      <para>Podczas wyładowywania sterownika należy być zalogowanym jako
+      użytkownik <literal>root</literal>. Do wyładowania sterownika służy
+      komenda <olink remap="external" targetdoc="819-2240"
       targetptr="rem-drv-1m"> <citerefentry>
           <refentrytitle>rem_drv</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> command to unload the driver and remove the
-      device from the <filename>/devices</filename> directory:</para>
+        </citerefentry> </olink>, a po jej wykonaniu należy usunąć dowiązanie
+      do katalogu <filename>/devices</filename>:</para>
 
       <screen># <userinput>rem_drv dummy</userinput>
 </screen>
 
-      <para>You should see the following messages in the window where you are
-      viewing <filename>/var/adm/messages</filename>:</para>
+      <para>W oknie, w którym obserwowany jest plik
+      <filename>/var/adm/messages</filename> powinny pojawić się następujące
+      komunikaty:</para>
 
       <screen>
 <replaceable>date</replaceable> <replaceable>time</replaceable> <replaceable>machine</replaceable> dummy: [ID 513080 kern.notice] NOTICE: Inside _info
 <replaceable>date</replaceable> <replaceable>time</replaceable> <replaceable>machine</replaceable> dummy: [ID 617648 kern.notice] NOTICE: Inside dummy_detach
 <replaceable>date</replaceable> <replaceable>time</replaceable> <replaceable>machine</replaceable> dummy: [ID 812373 kern.notice] NOTICE: Inside _fini</screen>
 
-      <para>The <literal>dummy</literal> device is no longer in the
-      <filename>/devices</filename> directory:</para>
+      <para>Urządzenie <literal>dummy</literal> zostało usunięte z katalogu
+      <filename>/devices</filename>:</para>
 
       <screen># <userinput>ls /devices/pseudo/dummy*</userinput>
 /devices/pseudo/dummy*: No such file or directory</screen>
 
-      <para>The next time you want to read from or write to the
-      <literal>dummy</literal> device, you must load the driver again using
+      <para>Przy następnych próbach zapisu lub odczytu z urządzenia
+      <literal>dummy</literal> należy załadować ponownie sterownik komendą
       <citerefentry>
           <refentrytitle>add_drv</refentrytitle>
 
@@ -3790,18 +3793,20 @@ ed192b70 ed192ff0      480 dummy
           <secondary><command>modunload</command></secondary>
         </indexterm> <indexterm xml:id="indexterm-334">
           <primary><command>modunload</command> command</primary>
-        </indexterm>You can use the <olink remap="external"
-      targetdoc="819-2240" targetptr="modunload-1m"> <citerefentry>
+        </indexterm>Do wyładowania sterownika bez usuwania go z
+      katalogu<filename> /devices</filename> można użyć komendy <olink
+      remap="external" targetdoc="819-2240" targetptr="modunload-1m">
+      <citerefentry>
           <refentrytitle>modunload</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> command to unload the driver but not remove
-      the device from <filename>/devices</filename>. Then the next time you
-      read from or write to the <literal>dummy</literal> device, the driver is
-      automatically loaded.</para>
+        </citerefentry> </olink>. W ten sposób sterownik zostanie załadowany
+      automatycznie podczas próby dostępu do urządzenia
+      <literal>dummy</literal>.</para>
 
-      <para>Press Control-C to stop tailing the
-      <filename>/var/adm/messages</filename> messages.</para>
+      <para>Aby przestać śledzić komunikaty z
+      <filename>/var/adm/messages</filename> należy nacisnąć kombinację
+      klawiszy CTRL+C.</para>
     </sect2>
   </sect1>
 
