@@ -1616,7 +1616,7 @@ qotd_read(dev_t dev, struct uio *uiop, cred_t *credp)
 </screen>
 
       <para>Do załadowania sterownika wymagany jest użytkownik
-      <literal>root</literal>. Do załadawania sterownika służy komenda <olink
+      <literal>root</literal>. Do załadowania sterownika służy komenda <olink
       remap="external" targetdoc="819-2240" targetptr="add-drv-1m">
       <citerefentry>
           <refentrytitle>add_drv</refentrytitle>
@@ -1640,7 +1640,7 @@ qotd_read(dev_t dev, struct uio *uiop, cred_t *credp)
       <para>Obecna wersja sterownika nie drukuje cytatu po załadowaniu.
       Sterownik <literal>qotd_1</literal> zapisywał wiadomość do dziennika
       systemowego w punkcie wejścia<citerefentry>
-          <refentrytitle> _init</refentrytitle>
+          <refentrytitle>_init</refentrytitle>
 
           <manvolnum>9E</manvolnum>
         </citerefentry>. Sterownik <literal>qotd_2</literal> przechowuje dane
@@ -1747,72 +1747,68 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
         <primary>devices</primary>
 
         <secondary>ramdisk</secondary>
-      </indexterm>In this third version of the Quote Of The Day driver, the
-    user can write to the data that is stored in kernel memory. The pseudo
-    device that is created in this section is a pseudo-disk device or ramdisk
-    device. A ramdisk device simulates a disk device by allocating kernel
-    memory that is subsequently used as data storage. See <olink
-    remap="external" targetdoc="819-2254" targetptr="ramdisk-7d">
-    <citerefentry>
+      </indexterm>W trzeciej wersji sterownika Cytat Dnia użytkownik będzie
+    mógł zapisać dane do pamięci jądra. Pseudourządzenie stworzone przez ten
+    sterownik jest urządzenie pseudodyskowym lub ramdyskiem. Ramdysk symuluje
+    urządzenie dyskowe alokując pamięć w przestrzeni jądra i używając jej do
+    przechowywania danych. Więcej informacji w <olink remap="external"
+    targetdoc="819-2254" targetptr="ramdisk-7d"> <citerefentry>
         <refentrytitle>ramdisk</refentrytitle>
 
         <manvolnum>7D</manvolnum>
-      </citerefentry> </olink> for more information about ramdisk
-    devices.</para>
+      </citerefentry> </olink>.</para>
 
-    <para>As in Version 2 of the Quote Of The Day driver, this Version 3
-    driver stores its data and makes the data available through its
-    <citerefentry>
+    <para>Tak jak w wersji 2. sterownik przechowuje dane i udostępnia je za
+    pomocą punktu wejścia <citerefentry>
         <refentrytitle>read</refentrytitle>
 
         <manvolnum>9E</manvolnum>
-      </citerefentry> entry point. This Version 3 driver overwrites characters
-    from the beginning of the data when the user writes to the device.</para>
+      </citerefentry>. Wersja 3. nadpisuje dane zaczynając od pierwszego znaku
+    w momencie, gdy użytkownik zaczyna zapisywać do urządzenia.</para>
 
-    <para>This section first discusses the important code differences between
-    this version and the previous version of the Quote Of The Day driver. This
-    section then shows you how you can modify and display the
-    quotation.</para>
+    <para>Najpierw przedstawione zostaną ważne różnice w kodzie między obecną
+    i poprzednią wersją sterownika Cytat Dnia. Później zaprezentowany zostanie
+    sposób modyfikacji i drukowania cytatu.</para>
 
-    <para>In addition to changes in the driver, Quote Of The Day Version 3
-    introduces a header file and an auxiliary program. The header file is
-    discussed in the following section. The utility program is discussed in
-    <olink remap="internal" targetdoc="chapter-3.xml" targetptr="ffzsc">Using
-    Quote Of The Day Version 3</olink>.</para>
+    <para>Oprócz zmian w sterowniku, w wersji trzeciej wprowadzony zostaje
+    plik nagłówkowy oraz program pomocniczy. Plik nagłówkowy jest omawiany w
+    następnym podrozdziale. Program pomocniczy omawiany jtes w <olink
+    remap="internal" targetdoc="chapter-3.xml" targetptr="ffzsc">Using Quote
+    Of The Day Version 3</olink>.</para>
 
     <sect2 xml:id="ffdqv">
       <title>Writing Quote Of The Day Version 3</title>
 
-      <para>This third version of the Quote Of The Day driver is more complex
-      than the second version because this third version enables a user to
-      change the text that is stored in the device.</para>
+      <para>Trzecia wersja sterownika Cytat Dnia jest bardziej skomplikowana,
+      ponieważ umożliwia użytkownikowi zmianę tekstu zapisanego w
+      urządzeniu.</para>
 
-      <para>This section first explains some important features of this
-      version of the driver. This section then shows all the source for this
-      driver, including the header file and the configuration file.</para>
+      <para>Najperw omówione zostaną niektóre ważne elementy nowej wersji
+      sterownika, później zaś zaprezentowany zostanie kompletny kod źródłowy,
+      włącznie z plikiem nagłówkowym i plikiem konfiguracyjnym.</para>
 
       <itemizedlist>
-        <para>The following list summarizes the new features in Version 3 of
-        the Quote Of The Day driver:</para>
+        <para>Poniższej podsumowano nowe elementy trzeciej wersji sterownika
+        Cytat Dnia:</para>
 
         <listitem>
-          <para>Version 3 of the driver allocates and frees kernel
-          memory.</para>
+          <para>Wersja 3. alokuje i uwalnia pamięć w przestrzeni jądra.</para>
         </listitem>
 
         <listitem>
-          <para>Version 3 uses condition variables and mutexes to manage
-          thread synchronization.</para>
+          <para>Wersja 3. używa zmiennych warunkowych i muteksów do
+          zarządzania synchronizacją wątków.</para>
         </listitem>
 
         <listitem>
-          <para>Version 3 copies data from user space to kernel space to
-          enable the user to change the quotation.</para>
+          <para>Wersja 3. kopiuje dane z przestrzeni użytkownika do
+          przestrzeni jądra umożliwiając mianę cytatu.</para>
         </listitem>
 
         <listitem>
-          <para>Version 3 adds two new entry points: <olink remap="external"
-          targetdoc="819-2255" targetptr="write-9e"> <citerefentry>
+          <para>Wersja 3. dodaje dwa nowe punkty wejścia: <olink
+          remap="external" targetdoc="819-2255" targetptr="write-9e">
+          <citerefentry>
               <refentrytitle>write</refentrytitle>
 
               <manvolnum>9E</manvolnum>
@@ -1825,16 +1821,17 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
         </listitem>
 
         <listitem>
-          <para>Version 3 adds a third new routine. The <function>qotd_rw
-          </function> routine is called by both the <citerefentry>
+          <para>Wersja 3. dodaje trzecią nową funkcję. Funkcja
+          <function>qotd_rw</function> wywoływana jest przez punkty wejścia
+          <citerefentry>
               <refentrytitle>read</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> entry point and the <citerefentry>
+            </citerefentry> i <citerefentry>
               <refentrytitle>write</refentrytitle>
 
               <manvolnum>9E</manvolnum>
-            </citerefentry> entry point.</para>
+            </citerefentry>.</para>
         </listitem>
 
         <listitem>
@@ -1858,26 +1855,26 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
               <primary>kernel functions</primary>
 
               <secondary><function>ddi_copyout </function></secondary>
-            </indexterm>As in Version 2, Version 3 of the driver uses the
+            </indexterm>Podobnie do wersji 2. wersja 3. używa używa funkcji
           <citerefentry>
               <refentrytitle>uiomove</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> function to make the quotation available to the
-          user. Version 3 uses the <olink remap="external"
-          targetdoc="819-2256" targetptr="ddi-copyin-9f"> <citerefentry>
+            </citerefentry> do udostępniania cytatu użytkownikowi. Wersja 3.
+          używa funkcji <olink remap="external" targetdoc="819-2256"
+          targetptr="ddi-copyin-9f"> <citerefentry>
               <refentrytitle>ddi_copyin</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> </olink> function to copy the new quotation and
-          the new device size from user space to kernel space. Version 3 uses
-          the <olink remap="external" targetdoc="819-2256"
+            </citerefentry> </olink> do kopiowania nowego cytatu i nowego
+          rozmiaru urządzenia z przestrzeni użytkownika do przestrzeni jądra.
+          Wersja 3. używa funkcji <olink remap="external" targetdoc="819-2256"
           targetptr="ddi-copyout-9f"> <citerefentry>
               <refentrytitle>ddi_copyout</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> </olink> function to report the current device
-          size back to the user.</para>
+            </citerefentry> </olink> do informowania użytkownika o aktualnej
+          wielkości urządzenia.</para>
         </listitem>
 
         <listitem>
@@ -1893,47 +1890,47 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
 
               <secondary><function>ddi_model_convert_from
               </function></secondary>
-            </indexterm>Because the driver copies data between kernel space
-          and user space, Version 3 of the driver uses the <olink
+            </indexterm>Sterownik kopiuje dane między przestrzenią jądra i
+          przestrzenią użytkownika, dlatego wersja 3. używa funkcji <olink
           remap="external" targetdoc="819-2256"
           targetptr="ddi-model-convert-from-9f"> <citerefentry>
               <refentrytitle>ddi_model_convert_from</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> </olink> function to determine whether the data
-          must be converted between 32-bit and 64-bit models. The 64-bit
-          kernel supports both 64-bit and 32-bit user data.</para>
+            </citerefentry> </olink> do sprawdzenia, czy trzeba dokonać
+          konwersji danych między modelami 32bitowym i 64bitowym. Jądro
+          obsługuje dane użytkownika w obydwóch modelach.</para>
         </listitem>
 
         <listitem>
-          <para>Version 3 defines one new constant to tell the driver whether
-          the device is busy. Another new constant tells the driver whether
-          the quotation has been modified. Version 3 defines four new
-          constants to help the driver undo everything it has done.</para>
+          <para>Wersja 3. definiuje następną zmienną informującą sterownik,
+          czy urządzenie jest zajęte. Inna nowa zmienna informuje sterownik,
+          czy cytat został zmieniony. Dodatkowo wersja 3. definiuje cztery
+          nowe zmienne pomagające cofnąć wykonane operacje.</para>
         </listitem>
 
         <listitem>
-          <para>Version 3 includes a separate utility program to test the
-          driver's I/O controls.</para>
+          <para>Wersja 3. zawiera osobne narzędzie do testowania kontroli I/O
+          urządzenia.</para>
         </listitem>
       </itemizedlist>
 
-      <para>The following sections provide more detail about the additions and
-      changes in Version 3 of the Quote Of The Day driver. The <citerefentry>
+      <para>Poniżej podano więcej szczegółowych informacji o zmianach i nowych
+      elementach wertsji 3. Cytatu Dnia. Struktury <citerefentry>
           <refentrytitle>dev_ops</refentrytitle>
 
           <manvolnum>9S</manvolnum>
-        </citerefentry> structure and the <citerefentry>
+        </citerefentry> i <citerefentry>
           <refentrytitle>modlinkage</refentrytitle>
 
           <manvolnum>9S</manvolnum>
-        </citerefentry> structure are the same as they were in Version 2 of
-      the driver. The <citerefentry>
+        </citerefentry> są takie same jak w wersji 2. W strukturze
+      <citerefentry>
           <refentrytitle>modldrv</refentrytitle>
 
           <manvolnum>9S</manvolnum>
-        </citerefentry> structure has not changed except for the version
-      number of the driver. The <citerefentry>
+        </citerefentry> zmienił się tylko numer wersji sterownika. W stosunku
+      do wersji 2. nie zmieniły się też funkcje <citerefentry>
           <refentrytitle>_init</refentrytitle>
 
           <manvolnum>9E</manvolnum>
@@ -1953,12 +1950,11 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
           <refentrytitle>open</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry>, and <citerefentry>
+        </citerefentry> i <citerefentry>
           <refentrytitle>close</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry> functions are the same as in Version 2 of the
-      driver.</para>
+        </citerefentry>.</para>
 
       <sect3 xml:id="fggxn">
         <title>Attaching, Allocating Memory, and Initializing a Mutex and a
@@ -1975,45 +1971,42 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
           <secondary><function>ddi_create_minor_node </function></secondary>
         </indexterm>
 
-        <para>The <function>qotd_attach </function> entry point first
-        allocates and gets the device soft state. The <function>qotd_attach
-        </function> routine then creates a minor node. All of this code is the
-        same as in Version 2 of the Quote Of The Day driver. If the call to
-        <olink remap="external" targetdoc="819-2256"
+        <para>Punkt wejścia <function>qotd_attach</function> najpierw alokuje
+        i uzyskuje miękki stan urządzenia. Kod jest taki sam jak w wersji 2.
+        Jeśli wywołanie <olink remap="external" targetdoc="819-2256"
         targetptr="ddi-create-minor-node-9f"> <citerefentry>
             <refentrytitle>ddi_create_minor_node</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> is successful, the <function>qotd_attach
-        </function> routine sets the <literal>QOTD_DIDMINOR</literal> flag in
-        the new <literal>flags</literal> member of the
-        <literal>qotd_state</literal> state structure.</para>
+          </citerefentry> </olink> powiedzie się, funkcja
+        <function>qotd_attach</function> ustawia flagię
+        <literal>QOTD_DIDMINOR</literal> w nowego elementu struktury stanu
+        <literal>qotd_state</literal> - <literal>flags</literal>
+        member.</para>
 
-        <para>Version 3 of the Quote Of The Day driver defines four new
-        constants that keep track of four different events. A routine can test
-        these flags to determine whether to deallocate, close, or remove
-        resources. All four of these flags are set in the
-        <function>qotd_attach </function> entry point. All four of these
-        conditions are checked in the <function>qotd_detach </function> entry
-        point, and the appropriate action is taken for each condition.</para>
+        <para>Wersja 3. sterownika definiuje nowe cztery stałe służące do
+        śledzenia czterech różnych zdarzeń. Funkcja może za pomocą tych flag
+        ustalić, czy powinna uwolnić, zamknąć czy usunąć zasoby. Wszystkie
+        cztery flagi ustawiane są w punkcie wejścia <function>qotd_attach
+        </function>i dla każdego warunku podejmowane są odpowiednie
+        działania.</para>
 
-        <para>Note that operations are undone in the <function>qotd_detach
-        </function> entry point in the opposite order in which they were done
-        in the <function>qotd_attach </function> entry point. The
-        <function>qotd_attach </function> routine creates a minor node,
-        allocates memory for the quotation, initializes a mutex, and
-        initializes a condition variable. The <function>qotd_detach
-        </function> routine destroys the condition variable, destroys the
-        mutex, frees the memory, and removes the minor node.</para>
+        <para>W punkcie wejścia <function>qotd_detach</function> działania
+        sterownika są odwoływane w kolejności odwrotnej do ich występowania w
+        punkcie wejścia <function>qotd_attach</function>. Funkcja
+        <function>qotd_attach</function> tworzy młodszy węzeł, alokuje pamięć
+        dla cytatu inicjalizuje mutex i inicjalizuje zmienną warunkową.
+        Funkcja <function>qotd_detach</function> niszczy zmienną warunkową,
+        niszczy mutex, uwalnia pamięć i usuwa młodszy węzeł.</para>
 
-        <para>After the minor node is created, the <function>qotd_attach
-        </function> routine allocates memory for the quotation. For
-        information on allocating and freeing memory in this driver, see
-        <olink remap="internal" targetdoc="chapter-3.xml"
-        targetptr="ffdqy">Allocating and Freeing Kernel Memory</olink>. If
-        memory is allocated, the <function>qotd_attach </function> routine
-        sets the <literal>QOTD_DIDALLOC</literal> flag in the
-        <literal>flags</literal> member of the state structure.</para>
+        <para>Po utworzeniu młodszego węzła funkcja
+        <function>qotd_attach</function> alokuje pamięć na cytat. Więcej
+        informacji o alokowaniu pamięci w <olink remap="internal"
+        targetdoc="chapter-3.xml" targetptr="ffdqy">Allocating and Freeing
+        Kernel Memory</olink>. Jeśli pamięć jest zaalokowana, funkcja
+        <function>qotd_attach</function> ustawia flagę
+        <literal>QOTD_DIDALLOC</literal> w elemencie <literal>flags</literal>
+        struktury stanu.</para>
 
         <para><indexterm xml:id="indexterm-436">
             <primary><function>mutex_init </function> kernel
@@ -2040,61 +2033,59 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
             <primary>kernel functions</primary>
 
             <secondary><function>strncpy </function></secondary>
-          </indexterm>The <function>qotd_attach </function> routine then calls
-        the <olink remap="external" targetdoc="819-2256"
+          </indexterm>Później funkcja <function>qotd_attach</function>
+        wywołuje funkcję <olink remap="external" targetdoc="819-2256"
         targetptr="mutex-init-9f"> <citerefentry>
             <refentrytitle>mutex_init</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function to initialize a mutex. If this
-        operation is successful, the <function>qotd_attach </function> routine
-        sets the <literal>QOTD_DIDMUTEX</literal> flag. The
-        <function>qotd_attach </function> routine then calls the <olink
+          </citerefentry> </olink> w celu inicjalizacji muteksu. Jeśli
+        operacja się powiedzie, funkcja <function>qotd_attach</function>
+        ustawia flagę <literal>QOTD_DIDMUTEX</literal>. Następnie funkcja
+        <function>qotd_attach</function> wywołuje funkcję <olink
         remap="external" targetdoc="819-2256" targetptr="cv-init-9f">
         <citerefentry>
             <refentrytitle>cv_init</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function to initialize a condition
-        variable. If this operation is successful, the <function>qotd_attach
-        </function> routine sets the <literal>QOTD_DIDCV</literal>
-        flag.</para>
+          </citerefentry> </olink> w celu inicjalizacji zmiennej warunkowej.
+        Jeśli ta operacja powiedzie się, funkcja
+        <function>qotd_attach</function> ustawia flagę
+        <literal>QOTD_DIDCV</literal>.</para>
 
-        <para>The <function>qotd_attach </function> routine then calls the
-        <olink remap="external" targetdoc="819-2256" targetptr="strlcpy-9f">
-        <citerefentry>
+        <para>Następnie funkcja <function>qotd_attach</function> wywołuje
+        funkcję <olink remap="external" targetdoc="819-2256"
+        targetptr="strlcpy-9f"> <citerefentry>
             <refentrytitle>strlcpy</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function to copy the initial quotation
-        string to the new quotation member of the device state structure. Note
-        that the <citerefentry>
+          </citerefentry> </olink> w celu skopiowania pierwszego łańcucha z
+        cytatem do nowego elementu cytatu struktury stanu urządzenia. Należy
+        zauważyć, że użyto funkcji <citerefentry>
             <refentrytitle>strlcpy</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function is used instead of the <olink
-        remap="external" targetdoc="819-2256" targetptr="strncpy-9f">
-        <citerefentry>
+          </citerefentry> zamiast <olink remap="external" targetdoc="819-2256"
+        targetptr="strncpy-9f"> <citerefentry>
             <refentrytitle>strncpy</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function. The <citerefentry>
+          </citerefentry> </olink>. Funkcja <citerefentry>
             <refentrytitle>strncpy</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function can be wasteful because it always copies
-        <replaceable>n</replaceable> characters, even if the destination is
-        smaller than <replaceable>n</replaceable> characters. Try using
-        <citerefentry>
+          </citerefentry> może prowadzić do marnotrawstwa, ponieważ zawsze
+        kopiuje <replaceable>n</replaceable> znaków, nawet jeśli cel jest
+        mniejszy niż <replaceable>n</replaceable> znaków. Można podstawić
+        funkcję <citerefentry>
             <refentrytitle>strncpy</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> instead of <citerefentry>
+          </citerefentry> zamiast <citerefentry>
             <refentrytitle>strlcpy</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> and note the difference in the behavior of the
-        driver.</para>
+          </citerefentry> i sprawdzić różnicę w zachowaniu sterownika.</para>
 
         <para>Finally, the initial quotation length is copied to the new
         quotation length member of the state structure. The remainder of the
