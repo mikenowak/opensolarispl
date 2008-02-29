@@ -2087,47 +2087,44 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
             <manvolnum>9F</manvolnum>
           </citerefentry> i sprawdzić różnicę w zachowaniu sterownika.</para>
 
-        <para>Finally, the initial quotation length is copied to the new
-        quotation length member of the state structure. The remainder of the
-        <function>qotd_attach </function> routine is the same as in
-        Version 2.</para>
+        <para>Na końcu wstępny cytat kopiowany jest do nowego elementu
+        struktury stanu. Reszta funkcji <function>qotd_attach</function> jest
+        taka sama jak w wersji 2.</para>
       </sect3>
 
       <sect3 xml:id="fgvsj">
         <title>Checking for Changes, Cleaning Up, and Detaching</title>
 
-        <para>The <function>qotd_detach </function> routine is almost all new.
-        The <function>qotd_detach </function> routine must first get the soft
-        state because the <function>qotd_detach </function> routine needs to
-        check the <literal>flags</literal> member of the state
-        structure.</para>
+        <para>Niemal cała funkcja <function>qotd_detach</function> napisana
+        jest od nowa. Najpierw sprawdza stan miękki, ponieważ musi sprawdzić
+        element <literal>flags</literal> struktury stanu.</para>
 
-        <para>The first flag the <function>qotd_detach </function> routine
-        checks is the <literal>QOTD_CHANGED</literal> flag. The
-        <literal>QOTD_CHANGED</literal> flag indicates whether the device is
-        in the initial state. The <literal>QOTD_CHANGED</literal> flag is set
-        in the <function>qotd_rw </function> routine and in the
-        <function>qotd_ioctl </function> entry point. The
-        <literal>QOTD_CHANGED</literal> flag is set any time the user does
-        anything to the device other than simply inspect the device. If the
-        <literal>QOTD_CHANGED</literal> flag is set, the size or content of
-        the storage buffer has been modified. See <olink remap="internal"
-        targetdoc="chapter-3.xml" targetptr="ffdra">Writing New Data</olink>
-        for more information on the <literal>QOTD_CHANGED</literal> flag. When
-        the <literal>QOTD_CHANGED</literal> flag is set, the detach operation
-        fails because the device might contain data that is valuable to the
-        user and the device should not be removed. If the
-        <literal>QOTD_CHANGED</literal> flag is set, the <function>qotd_detach
-        </function> routine returns an error that the device is busy.</para>
+        <para>Pierwsza flaga sprawdzana przez <function>qotd_detach</function>
+        to <literal>QOTD_CHANGED</literal>. Flaga
+        <literal>QOTD_CHANGED</literal> wskazuje, czy urządzenie jest w stanie
+        początkowym i ustawiana jest przez funkcję
+        <function>qotd_rw</function> oraz punkt wejścia
+        <function>qotd_ioctl</function>. Flaga <literal>QOTD_CHANGED</literal>
+        jest ustawiana, gdy użytkowik wykona na urządzeniu dowolną operację
+        inną niż sprawdzenie stanu. Jeśli flaga
+        <literal>QOTD_CHANGED</literal> została ustawiona, zmianie uległa
+        wielkość lub zawartość buforu. Więcej informacji o fladze
+        <literal>QOTD_CHANGED</literal> w <olink remap="internal"
+        targetdoc="chapter-3.xml" targetptr="ffdra">Writing New Data</olink>.
+        Odłączenie nie powiedzie się przy ustawionej fladze
+        <literal>QOTD_CHANGED</literal>, ponieważ urządzenie może zawierać
+        ważne dla użytkownika dane i dlatego urządzenie nie powinno być
+        odłączane. Jeśli flaga <literal>QOTD_CHANGED</literal> jest ustawiona,
+        funkcja <function>qotd_detach</function> zwraca błąd "urządzenie jest
+        zajęte (ang. device is busy)".</para>
 
-        <para>Once the quotation has been modified, the device cannot be
-        detached until the user runs the <command>qotdctl</command> command
-        with the <option> r</option> option. The <option> r</option> option
-        reinitializes the quotation and indicates that the user is no longer
-        interested in the contents of the device. See <olink remap="internal"
-        targetdoc="chapter-3.xml" targetptr="fgvsf">Exercising the Driver's
-        I/O Controls</olink> for more information about the
-        <command>qotdctl</command> command.</para>
+        <para>Po zmianie cytatu urządzenie może być odłączone tylko po
+        wykonaniu komendy <command>qotdctl</command> z opcją<option>
+        r</option>. Opcja<option> r</option> ponownie inicjalizuje cytat i
+        wskazuje, że użytkonik nie jest już zainteresowany zawartością
+        urządzenia. Więcej o komendzie <command>qotdctl</command> w <olink
+        remap="internal" targetdoc="chapter-3.xml"
+        targetptr="fgvsf">Exercising the Driver's I/O Controls</olink>.</para>
 
         <para><indexterm xml:id="indexterm-444">
             <primary><function>mutex_destroy </function> kernel
@@ -2157,40 +2154,37 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
             <primary>kernel functions</primary>
 
             <secondary><function>ddi_remove_minor_node </function></secondary>
-          </indexterm>The <function>qotd_detach </function> routine then
-        checks the four flags that were set in the <function>qotd_attach
-        </function> routine. If the <literal>QOTD_DIDCV</literal> flag is set,
-        the <function>qotd_detach </function> routine calls the <olink
-        remap="external" targetdoc="819-2256" targetptr="cv-destroy-9f">
-        <citerefentry>
+          </indexterm>Funkcja <function>qotd_detach</function> sprawdza cztery
+        flagi ustawiane w funkcji <function>qotd_attach</function>. Jeśłi
+        ustawiona jest flaga <literal>QOTD_DIDCV</literal>, funkcja
+        <function>qotd_detach</function> wywołuje <olink remap="external"
+        targetdoc="819-2256" targetptr="cv-destroy-9f"> <citerefentry>
             <refentrytitle>cv_destroy</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function. If the
-        <literal>QOTD_DIDMUTEX</literal> flag is set, the
-        <function>qotd_detach </function> routine calls the <olink
-        remap="external" targetdoc="819-2256" targetptr="mutex-destroy-9f">
-        <citerefentry>
+          </citerefentry> </olink>. Jeśli ustawiona jest flaga
+        <literal>QOTD_DIDMUTEX</literal>, funkcja
+        <function>qotd_detach</function> wywołuje <olink remap="external"
+        targetdoc="819-2256" targetptr="mutex-destroy-9f"> <citerefentry>
             <refentrytitle>mutex_destroy</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function. If the
-        <literal>QOTD_DIDALLOC</literal> flag is set, the
-        <function>qotd_detach </function> routine calls the <olink
-        remap="external" targetdoc="819-2256" targetptr="ddi-umem-free-9f">
-        <citerefentry>
+          </citerefentry> </olink>. Jeśli ustawiona jest flaga
+        <literal>QOTD_DIDALLOC</literal>, funkcja
+        <function>qotd_detach</function> wywołuje <olink remap="external"
+        targetdoc="819-2256" targetptr="ddi-umem-free-9f"> <citerefentry>
             <refentrytitle>ddi_umem_free</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function. Finally, if the
-        <literal>QOTD_DIDMINOR</literal> flag is set, the
-        <function>qotd_detach </function> routine calls the <olink
-        remap="external" targetdoc="819-2256"
-        targetptr="ddi-remove-minor-node-9f"> <citerefentry>
+          </citerefentry> </olink>. Na końcu, jeśli ustawiona jest flaga
+        <literal>QOTD_DIDMINOR</literal>, funkcja
+        <function>qotd_detach</function> wywołuje <olink remap="external"
+        targetdoc="819-2256" targetptr="ddi-remove-minor-node-9f">
+        <citerefentry>
             <refentrytitle>ddi_remove_minor_node</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function.</para>
+          </citerefentry> </olink>.</para>
       </sect3>
 
       <sect3 xml:id="ffdqy">
@@ -2218,91 +2212,91 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
           <secondary><function>ddi_umem_free </function></secondary>
         </indexterm>
 
-        <para>One of the new members of the device state structure supports
-        memory allocation and deallocation. The <literal>qotd_cookie</literal>
-        member receives a value from the <olink remap="external"
-        targetdoc="819-2256" targetptr="ddi-umem-alloc-9f"> <citerefentry>
-            <refentrytitle>ddi_umem_alloc</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function. The
-        <literal>qotd_cookie</literal> value is then used by the <olink
-        remap="external" targetdoc="819-2256" targetptr="ddi-umem-free-9f">
-        <citerefentry>
-            <refentrytitle>ddi_umem_free</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function to free the memory.</para>
-
-        <itemizedlist>
-          <para>Version 3 of the Quote Of The Day driver allocates kernel
-          memory in three places:</para>
-
-          <listitem>
-            <para>After the minor node is created</para>
-          </listitem>
-
-          <listitem>
-            <para>In the <literal>QOTDIOCSSZ</literal> case of the
-            <function>qotd_ioctl </function> entry point</para>
-          </listitem>
-
-          <listitem>
-            <para>In the <literal>QOTDIOCDISCARD</literal> case of the
-            <function>qotd_ioctl </function> entry point</para>
-          </listitem>
-        </itemizedlist>
-
-        <para>The <function>qotd_attach </function> routine allocates memory
-        after the minor node is created. Memory must be allocated to enable
-        the user to modify the quotation. The <function>qotd_attach
-        </function> routine calls the <citerefentry>
-            <refentrytitle>ddi_umem_alloc</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> function with the
-        <literal>DDI_UMEM_NOSLEEP</literal> flag so that the <citerefentry>
-            <refentrytitle>ddi_umem_alloc</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> function will return immediately. If the requested
-        amount of memory is not available, <citerefentry>
-            <refentrytitle>ddi_umem_alloc</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> returns <literal>NULL</literal> immediately and does
-        not wait for memory to become available. If no memory is allocated,
-        <function>qotd_attach </function> calls <function>qotd_detach
-        </function> and returns an error. If memory is allocated,
-        <function>qotd_attach </function> sets the
-        <literal>QOTD_DIDALLOC</literal> flag so that this memory will be
-        freed by <function>qotd_detach </function> later.</para>
-
-        <para>The second place the driver allocates memory is in the
-        <literal>QOTDIOCSSZ</literal> case of the <function>qotd_ioctl
-        </function> entry point. The <literal>QOTDIOCSSZ</literal> case sets a
-        new size for the device. A new size is set when the user runs the
-        <command>qotdctl</command> command with the <option> s</option>
-        option. See <olink remap="internal" targetdoc="chapter-3.xml"
-        targetptr="fgvsf">Exercising the Driver's I/O Controls</olink> for
-        more information about the <command>qotdctl</command> command. This
-        time, the <olink remap="external" targetdoc="819-2256"
+        <para>Jeden z nowych elementów struktury stanu obsługuje zajmowanie i
+        uwalnianie pamięci. Element <literal>qotd_cookie</literal> otrzymuje
+        wartość z funkcji <olink remap="external" targetdoc="819-2256"
         targetptr="ddi-umem-alloc-9f"> <citerefentry>
             <refentrytitle>ddi_umem_alloc</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function is called with the
-        <literal>DDI_UMEM_SLEEP</literal> flag so that <citerefentry>
+          </citerefentry> </olink>. Wartość ta jest później używana do
+        uwolnienia pamięci przez funkcję <olink remap="external"
+        targetdoc="819-2256" targetptr="ddi-umem-free-9f"> <citerefentry>
+            <refentrytitle>ddi_umem_free</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> </olink>.</para>
+
+        <itemizedlist>
+          <para>Wersja 3. sterownika Cytat Dnia alokuje pamięć jądra w trzech
+          miejscach:</para>
+
+          <listitem>
+            <para>Po utworzneiu młodszego węzła</para>
+          </listitem>
+
+          <listitem>
+            <para>W przypadku <literal>QOTDIOCSSZ</literal> w punkcie wejścia
+            <function>qotd_ioctl</function></para>
+          </listitem>
+
+          <listitem>
+            <para>W przypadku <literal>QOTDIOCDISCARD</literal> w punkcie
+            wejścia <function>qotd_ioctl</function></para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Funkcja <function>qotd_attach</function> alokuje pamięć po
+        utworzeniu młodszego węzła. alokacja pmięci jest konieczna, aby
+        użytkownik mógł zmienić cytat. Funkcja <function>qotd_attach
+        </function>wywołuje <citerefentry>
             <refentrytitle>ddi_umem_alloc</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> will wait for the requested amount of memory to be
-        available. When the <citerefentry>
+          </citerefentry> z flagą <literal>DDI_UMEM_NOSLEEP, przez co funkcja
+        </literal><citerefentry>
             <refentrytitle>ddi_umem_alloc</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function returns, the requested memory has been
-        allocated.</para>
+          </citerefentry> natychmiast wróci. Jeśli żądana ilość pamięci jest
+        niedostępna, funkcja <citerefentry>
+            <refentrytitle>ddi_umem_alloc</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> zwraca natyhcmiast <literal>NULL</literal> i nie
+        czeka na zwolnienie niezbędnej ilości pamięci. Jeśli nie uda się
+        zalokować pamięci, funkcja <function>qotd_attach</function> wywołuje
+        funkcję <function>qotd_detach</function> i zwraca błąd. Jeśli uda się
+        zalokować pamięć, funkcja <function>qotd_attach</function> ustawia
+        flagę <literal>QOTD_DIDALLOC</literal>, dzięki czemu później pamięć ta
+        zostanie uwolniona przez funkcję
+        <function>qotd_detach</function>.</para>
+
+        <para>Drugie miejsce alokacji pamięci przez sterownik znajduje się w
+        przypadku <literal>QOTDIOCSSZ</literal> punktu wejścia
+        <function>qotd_ioctl</function>. Przypadek
+        <literal>QOTDIOCSSZ</literal> ustawia nową wielkość urządzenia. Nowa
+        wielkość jest ustawiana gdy użytkownik uruchomi komendę
+        <command>qotdctl</command> z opcją <option>s</option>. Więcej o
+        komendzie <command>qotdctl</command> w <olink remap="internal"
+        targetdoc="chapter-3.xml" targetptr="fgvsf">Exercising the Driver's
+        I/O Controls</olink>. Tym razem funkcja <olink remap="external"
+        targetdoc="819-2256" targetptr="ddi-umem-alloc-9f"> <citerefentry>
+            <refentrytitle>ddi_umem_alloc</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> </olink> wywoływana jest z flagą
+        <literal>DDI_UMEM_SLEEP</literal>, przez co <citerefentry>
+            <refentrytitle>ddi_umem_alloc</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> będzie czekać na zwolnienie wymaganej ilości
+        pamięci. Powrót funkcji <citerefentry>
+            <refentrytitle>ddi_umem_alloc</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> oznacza zaalokowanie wymaganej ilości
+        pamięci.</para>
 
         <para><indexterm xml:id="indexterm-456">
             <primary><function>kmem_alloc </function> kernel
@@ -2318,10 +2312,10 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
             <primary>kernel functions</primary>
 
             <secondary><function>kmem_zalloc </function></secondary>
-          </indexterm>Note that you cannot always use the
-        <literal>DDI_UMEM_SLEEP</literal> flag. See the
-        <literal>CONTEXT</literal> sections of the <citerefentry>
-            <refentrytitle>ddi_umem_alloc</refentrytitle>
+          </indexterm>Flagi <literal>DDI_UMEM_SLEEP</literal> nie można użyć w
+        każdej sytuacji. W sekcjach <literal>CONTEXT</literal> stron man
+        <citerefentry>
+            <refentrytitle>i_umem_alloc</refentrytitle>
 
             <manvolnum>9F</manvolnum>
           </citerefentry>, <olink remap="external" targetdoc="819-2256"
@@ -2329,77 +2323,73 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
             <refentrytitle>kmem_alloc</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink>, and <olink remap="external"
+          </citerefentry> </olink> i <olink remap="external"
         targetdoc="819-2256" targetptr="kmem-zalloc-9f"> <citerefentry>
             <refentrytitle>kmem_zalloc</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> man pages. Also note the behavioral
-        differences among these three functions. The <citerefentry>
+          </citerefentry> </olink> podane są szczegółowe informacje. Należy
+        także zwrócić uwagę na różnice w zachowaniu między tymi funkcjami.
+        Funkcja <citerefentry>
             <refentrytitle>kmem_zalloc</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function is more efficient for small amounts of
-        memory. The <citerefentry>
+          </citerefentry> jest najwydajniejsza przy alokacji małych ilości
+        pamięci. Przy większych alokacjach lepsza i szybsza jest funkcja
+        <citerefentry>
             <refentrytitle>ddi_umem_alloc</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function is faster and better for large allocations.
-        The <citerefentry>
+          </citerefentry>. Funkcja <citerefentry>
             <refentrytitle>ddi_umem_alloc</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function is used in this <literal>qotd_3</literal>
-        driver because <citerefentry>
-            <refentrytitle>ddi_umem_alloc</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> allocates whole pages of memory. The <citerefentry>
+          </citerefentry> używana jest w sterowniku <literal>qotd_3</literal>
+        ponieważ alokuje od razu całe strony pamięci. Funkcja <citerefentry>
             <refentrytitle>kmem_zalloc</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function might save memory because it might allocate
-        smaller chunks of memory. This <literal>qotd_3</literal> driver
-        demonstrates a ramdisk device. In a production ramdisk device, you
-        would use <citerefentry>
+          </citerefentry> może oszczędzić pamięć, ponieważ alokuje mniejsze
+        obszary. Sterownik <literal>qotd_3</literal> przedstawia zachowanie
+        urządzenia pracującego jako dysk w pamięci (ang. ramdisk). W przypadku
+        produkcyjnego ramdysku należy używać <citerefentry>
             <refentrytitle>ddi_umem_alloc</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> to allocate page-aligned memory.</para>
+          </citerefentry> do alokowania pamięci w stronach.</para>
 
-        <para>After the current quotation is copied to the new space, the
-        <function>qotd_ioctl </function> routine calls the <olink
+        <para>Po skopiowaniu aktualnego cytatu do nowej przestrzeni funkcja
+        <function>qotd_ioctl</function> wywołuje <olink remap="external"
+        targetdoc="819-2256" targetptr="ddi-umem-free-9f"> <citerefentry>
+            <refentrytitle>ddi_umem_free</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> </olink> w celu uwolnienia wcześniej zaalokowanej
+        pamięci.</para>
+
+        <para>Trzecie miescje, w którym alokowana jest pamięć to przypadek
+        <literal>QOTDIOCDISCARD</literal> w punkcie wejścia
+        <function>qotd_ioctl</function>. Przypadek
+        <literal>QOTDIOCDISCARD</literal> wywoływany jest z komendy
+        <command>qotdctl</command>. Komenda <command>qotdctl</command> z
+        opcją<option> r</option> resetuje cytat. Jeśli ilość zaalokowanych
+        bajtów różna jest od początkowej ilości zaalokowanych bajtów,
+        alokowany jest nowy obszar pamięci w celu zresetowania cytatu.
+        Ponownie użyta jest flaga <literal>DDI_UMEM_SLEEP</literal> aby
+        zapewnić, że po powrocie funkcji <olink remap="external"
+        targetdoc="819-2256" targetptr="ddi-umem-alloc-9f"> <citerefentry>
+            <refentrytitle>ddi_umem_alloc</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> </olink> zaalokowana jest żądana ilość pamięci.
+        Funkcja <function>qotd_ioctl </function> wywołuje wtedy funkcję <olink
         remap="external" targetdoc="819-2256" targetptr="ddi-umem-free-9f">
         <citerefentry>
             <refentrytitle>ddi_umem_free</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function to free the memory that was
-        previously allocated.</para>
-
-        <para>The third place the driver allocates memory is in the
-        <literal>QOTDIOCDISCARD</literal> case of the <function>qotd_ioctl
-        </function> entry point. The <literal>QOTDIOCDISCARD</literal> case is
-        called from the <command>qotdctl</command> command. The
-        <command>qotdctl</command> command with the <option> r</option> option
-        sets the quotation back to its initial value. If the number of bytes
-        allocated for the current quotation is different from the initial
-        number of bytes, then new memory is allocated to reinitialize the
-        quotation. Again, the <literal>DDI_UMEM_SLEEP</literal> flag is used
-        so that when the <olink remap="external" targetdoc="819-2256"
-        targetptr="ddi-umem-alloc-9f"> <citerefentry>
-            <refentrytitle>ddi_umem_alloc</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function returns, the requested memory has
-        been allocated. The <function>qotd_ioctl </function> routine then
-        calls the <olink remap="external" targetdoc="819-2256"
-        targetptr="ddi-umem-free-9f"> <citerefentry>
-            <refentrytitle>ddi_umem_free</refentrytitle>
-
-            <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function to free the memory that was
-        previously allocated.</para>
+          </citerefentry> </olink> do uwolnienia wcześniej zaalokowanej
+        pamięci.</para>
       </sect3>
 
       <sect3 xml:id="ffzre">
@@ -2435,19 +2425,19 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
           <secondary>condition variables</secondary>
         </indexterm>
 
-        <para>The Quote Of The Day Version 3 driver uses condition variables
-        and mutual exclusion locks (mutexes) together to manage thread
-        synchronization. See the <olink remap="external" targetdoc="816-5137">
-        <citetitle remap="book">Multithreaded Programming Guide</citetitle>
-        </olink> for more information about mutexes, condition variables, and
-        thread synchronization.</para>
+        <para>Wersja 3. sterownika Cytat Dnia korzysta ze zmiennych
+        warunkowych oraz wzajemnie wykluczające się zamki (ang. mutual
+        exclusion locks = mutex) do synchronizacji wątków. Więcej informacji o
+        muteksach, zmiennych warunkowych i synchronizacji wątków w <olink
+        remap="external" targetdoc="816-5137"> <citetitle
+        remap="book">Multithreaded Programming Guide</citetitle>
+        </olink>.</para>
 
-        <para>In this driver, the mutex and condition variable both are
-        initialized in the <function>qotd_attach </function> entry point and
-        destroyed in the <function>qotd_detach </function> entry point. The
-        condition variable is tested in the <function>qotd_rw </function>
-        routine and in the <function>qotd_ioctl </function> entry
-        point.</para>
+        <para>W sterowniku mutex i zmienna warunkowa inicjalizowane są w
+        punkcie wejścia <function>qotd_attach</function> i niszczone w punkcie
+        wejścia <function>qotd_detach</function>. Test zmiennej warunkowej
+        wykonywany jest w funkcji <function>qotd_rw</function> i w punkcie
+        wejścia <function>qotd_ioctl</function>.</para>
 
         <para><indexterm xml:id="indexterm-466">
             <primary><literal>QOTD_BUSY</literal> condition</primary>
