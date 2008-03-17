@@ -2450,13 +2450,12 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
         zakładać blokadę, sterownik czeka w warunku
         <literal>QOTD_BUSY</literal>.</para>
 
-        <para>The driver acquires a mutex when the driver tests the condition
-        variable and when the driver accesses the storage buffer. The mutex
-        protects the storage buffer. Failure to use a mutual exclusion when
-        accessing the storage buffer could allow one user process to resize
-        the buffer while another user process tries to read the buffer, for
-        example. The result of unprotected buffer access could be data
-        corruption or a panic.</para>
+        <para>Sterownik zakłada mutex podczas sprawdzania zmiennej warunkowej
+        i dostępu do buforu. Mutex chroni bufor. Gdyby nie użyto wzajemnie
+        wyłączającej blokady na buforze jeden z proces użytkownika mógłby
+        zmienić rozmiar buforuy w tym samym momencie, gdy drugi proces
+        próbowałby go odczytać. Wynikiem niechronionoego dostępu do buforu
+        mogłoby być uszkodzenie danych lub panika jądra.</para>
 
         <para><indexterm xml:id="indexterm-467">
             <primary><function>uiomove </function> kernel function</primary>
@@ -2471,9 +2470,10 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
             <primary>kernel functions</primary>
 
             <secondary><function>ddi_copyin </function></secondary>
-          </indexterm>The condition variable is used when functions are called
-        that might need to sleep. The <olink remap="external"
-        targetdoc="819-2256" targetptr="ddi-copyin-9f"> <citerefentry>
+          </indexterm>Zmienna warunkowa używana jest w połączeniu z funkcjami,
+        które mogą przechodzić w stan uśpienia. Takie funkcje to <olink
+        remap="external" targetdoc="819-2256" targetptr="ddi-copyin-9f">
+        <citerefentry>
             <refentrytitle>ddi_copyin</refentrytitle>
 
             <manvolnum>9F</manvolnum>
@@ -2482,22 +2482,23 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
             <refentrytitle>ddi_copyout</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink>, and <olink remap="external"
+          </citerefentry> </olink> i <olink remap="external"
         targetdoc="819-2256" targetptr="uiomove-9f"> <citerefentry>
             <refentrytitle>uiomove</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> functions can sleep. Memory allocation can
-        sleep if you use the <literal>SLEEP</literal> flag. Functions must not
-        hold a mutex while they are sleeping. Sleeping while holding a mutex
-        can cause deadlock. When a function might sleep, set the
-        <literal>QOTD_BUSY</literal> flag and take the condition variable,
-        which drops the mutex. To avoid race conditions, the
-        <literal>QOTD_BUSY</literal> flag can be set or cleared only when
-        holding the mutex. For more information on deadlock, see <olink
-        remap="external" targetdoc="816-5137" targetptr="sync-110"> <citetitle
+          </citerefentry> </olink>. Funkcja alokująca pamięć może przchodzić w
+        stan uśpienia, jeśli użyto flagi <literal>SLEEP</literal>. Podczas
+        uśpienia funkcjom nie wolno utrzymywać muteksu, może to bowiem
+        doprowadzić do zakleszczenia. Jeśli funkcja może przechodzić w stan
+        uśpienia, należy ustawić flagę <literal>QOTD_BUSY</literal> i zająć
+        zmienną warunkową, co spowoduje zdjęcie muteksu. Wyścigu unika się
+        przez zezwolenie na ustawienie i zdjęcie flagi
+        <literal>QOTD_BUSY</literal> tylko wtedy, gdy utrzymuje się mutex.
+        Więcej informacji o zakleszczeniach w <olink remap="external"
+        targetdoc="816-5137" targetptr="sync-110"> <citetitle
         remap="section">Using Mutual Exclusion Locks</citetitle> in <citetitle
-        remap="book">Multithreaded Programming Guide</citetitle> </olink> and
+        remap="book">Multithreaded Programming Guide</citetitle> </olink> i
         <olink remap="external" targetdoc="816-5137" targetptr="guide-35930">
         <citetitle remap="section">Avoiding Deadlock</citetitle> in <citetitle
         remap="book">Multithreaded Programming Guide</citetitle>
@@ -2513,64 +2514,66 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
                 <secondary>exclusive access</secondary>
               </indexterm> <indexterm xml:id="indexterm-472">
                 <primary><literal>QOTD_BUSY</literal> condition</primary>
-              </indexterm>The locking rules for this <literal>qotd_3</literal>
-            driver are as follows:</para>
+              </indexterm>Reguły blokowania dla sterownika
+            <literal>qotd_3</literal>:</para>
 
             <listitem>
-              <para>You must have exclusive access to do any of the following
-              operations. To have exclusive access, you must own the mutex or
-              you must set <literal>QOTD_BUSY</literal>. Threads must wait on
-              <literal>QOTD_BUSY</literal>.</para>
+              <para>Do wykonania poniższych operacji wymagany jest wyłączny
+              dostęp. Wyłączny dostęp uzyskuje się przez założeneue muteksu
+              albo ustawianie flagi <literal>QOTD_BUSY</literal>. Kiedy
+              ustawiona jest flaga <literal>QOTD_BUSY</literal> wątki muszą
+              czekać.</para>
 
               <itemizedlist>
                 <listitem>
-                  <para>Test the contents of the storage buffer.</para>
+                  <para>Sprawdzenie zawartości buforu.</para>
                 </listitem>
 
                 <listitem>
-                  <para>Modify the contents of the storage buffer.</para>
+                  <para>Zmiana zawartości buforu.</para>
                 </listitem>
 
                 <listitem>
-                  <para>Modify the size of the storage buffer.</para>
+                  <para>Zmiana wielkości buforu.</para>
                 </listitem>
 
                 <listitem>
-                  <para>Modify variables that refer to the address of the
-                  storage buffer.</para>
+                  <para>Zmiana wartośći zmiennych wskazujących adres
+                  buforu.</para>
                 </listitem>
               </itemizedlist>
             </listitem>
 
             <listitem>
               <orderedlist>
-                <para>If your operation does not need to sleep, do the
-                following actions:</para>
+                <para>Jeśli działanie nie wymaga uśpienia, można wykonać
+                następujące kroki:</para>
 
                 <listitem>
-                  <para>Acquire the mutex.</para>
+                  <para>Założenie muteksu.</para>
                 </listitem>
 
                 <listitem>
-                  <para>Wait until <literal>QOTD_BUSY</literal> is cleared.
-                  When the thread that set <literal>QOTD_BUSY</literal> clears
-                  <literal>QOTD_BUSY</literal>, that thread also should signal
-                  threads waiting on the condition variable and then drop the
-                  mutex.</para>
+                  <para>Oczekiwanie na zdjęcie flagi
+                  <literal>QOTD_BUSY</literal>. Jeśli wątek ustawiający
+                  <literal>QOTD_BUSY</literal> zdejmuje flagę
+                  <literal>QOTD_BUSY</literal>, wątek ten powinien wysłać
+                  sygnał do pozostałych wątków czekających na zdjęcie flagi i
+                  zdjąć mutex. </para>
                 </listitem>
 
                 <listitem>
-                  <para>Perform your operation. You do not need to set
-                  <literal>QOTD_BUSY</literal> before you perform your
-                  operation.</para>
+                  <para>Wykonanie działania. Ustawienie flagi
+                  <literal>QOTD_BUSY</literal> nie jest konieczne przed
+                  wykonaniem działania.</para>
                 </listitem>
 
                 <listitem>
-                  <para>Drop the mutex.</para>
+                  <para>Zdjęcie muteksu.</para>
                 </listitem>
               </orderedlist>
 
-              <para>The following code sample illustrates this rule:</para>
+              <para>Poniższy przykładowy kod ilustruje tę regułę:</para>
 
               <programlisting>mutex_enter(&amp;qsp-&gt;lock);
 while (qsp-&gt;flags &amp; QOTD_BUSY) {
@@ -2591,47 +2594,47 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
 
             <listitem>
               <orderedlist>
-                <para>If your operation must sleep, do the following
-                actions:</para>
+                <para>Jeśli operacja musi spać, należy wykonać następujące
+                kroki:</para>
 
                 <listitem>
-                  <para>Acquire the mutex.</para>
+                  <para>Założenie muteksu.</para>
                 </listitem>
 
                 <listitem>
-                  <para>Set <literal>QOTD_BUSY</literal>.</para>
+                  <para>Ustawienie <literal>QOTD_BUSY</literal>.</para>
                 </listitem>
 
                 <listitem>
-                  <para>Drop the mutex.</para>
+                  <para>Zdjęcie muteksu.</para>
                 </listitem>
 
                 <listitem>
-                  <para>Perform your operation.</para>
+                  <para>Wykonanie działania.</para>
                 </listitem>
 
                 <listitem>
-                  <para>Reacquire the mutex.</para>
+                  <para>Ponowne założenie muteksu.</para>
                 </listitem>
 
                 <listitem>
-                  <para>Signal any threads waiting on the condition
-                  variable.</para>
+                  <para>Wysłanie sygnału do wątków czekających na
+                  wyczyszczenie zmiennej warunkowej.</para>
                 </listitem>
 
                 <listitem>
-                  <para>Drop the mutex.</para>
+                  <para>Zdjęcie muteksu.</para>
                 </listitem>
               </orderedlist>
             </listitem>
           </orderedlist>
 
-          <para>These locking rules are very simple. These three rules ensure
-          consistent access to the buffer and its metadata. Realistic drivers
-          probably have more complex locking requirements. For example,
-          drivers that use ring buffers or drivers that manage multiple
-          register sets or multiple devices have more complex locking
-          requirements.</para>
+          <para>Reguły te są dość proste i zapewniają spójny dostęp do buforu
+          i jego metadanych. Prawdziwe sterowniki mają prawdopodobnie bardziej
+          skomplikowane wymagania odnośnie blokowania. Na przykład sterowniki
+          używające ring buffers lub zarządzają wieloma zestawami rejestrów
+          albo wieloma urządzeniami mają bardziej skomplikowane reguły
+          blokowania.</para>
         </sect4>
 
         <sect4 xml:id="fgvsa">
@@ -2670,23 +2673,21 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
           </indexterm>
 
           <itemizedlist>
-            <para>The device state structure for Version 3 of the Quote Of The
-            Day driver contains two new members to help manage thread
-            synchronization:</para>
+            <para>Struktura stanu wersji 3. sterownika Cytat Dania ma dwa nowe
+            elementy wspomagające synchronizację wątków:</para>
 
             <listitem>
-              <para>The <literal>lock</literal> member is used to acquire and
-              exit mutexes for the current instance of the device. The
-              <literal>lock</literal> member is an argument to each <olink
-              remap="external" targetdoc="819-2256" targetptr="mutex-9f">
-              <citerefentry>
+              <para>Element <literal>lock</literal> używany jest do zakładania
+              i zdejmowania miteksów dla aktualnej instancji sterownika.
+              Elemente <literal>lock</literal> jest argumentem dla każdego
+              wywołania funkcji <olink remap="external" targetdoc="819-2256"
+              targetptr="mutex-9f"> <citerefentry>
                   <refentrytitle>mutex</refentrytitle>
 
                   <manvolnum>9F</manvolnum>
-                </citerefentry> </olink> function call. The
-              <literal>lock</literal> member also is an argument to the <olink
-              remap="external" targetdoc="819-2256"
-              targetptr="cv-wait-sig-9f"> <citerefentry>
+                </citerefentry> </olink>. The <literal>lock</literal> member
+              also is an argument to the <olink remap="external"
+              targetdoc="819-2256" targetptr="cv-wait-sig-9f"> <citerefentry>
                   <refentrytitle>cv_wait_sig</refentrytitle>
 
                   <manvolnum>9F</manvolnum>
