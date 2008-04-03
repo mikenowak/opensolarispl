@@ -2559,7 +2559,7 @@ You can't have everything. Where would you put it? - Steven Wright</screen>
                   <literal>QOTD_BUSY</literal> zdejmuje flagę
                   <literal>QOTD_BUSY</literal>, wątek ten powinien wysłać
                   sygnał do pozostałych wątków czekających na zdjęcie flagi i
-                  zdjąć mutex. </para>
+                  zdjąć mutex.</para>
                 </listitem>
 
                 <listitem>
@@ -2679,41 +2679,39 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
             <listitem>
               <para>Element <literal>lock</literal> używany jest do zakładania
               i zdejmowania miteksów dla aktualnej instancji sterownika.
-              Elemente <literal>lock</literal> jest argumentem dla każdego
+              Element <literal>lock</literal> jest argumentem dla każdego
               wywołania funkcji <olink remap="external" targetdoc="819-2256"
               targetptr="mutex-9f"> <citerefentry>
                   <refentrytitle>mutex</refentrytitle>
 
                   <manvolnum>9F</manvolnum>
-                </citerefentry> </olink>. The <literal>lock</literal> member
-              also is an argument to the <olink remap="external"
+                </citerefentry> </olink>. <literal>lock</literal> jest także
+              używany jako argument wywołania funkcji <olink remap="external"
               targetdoc="819-2256" targetptr="cv-wait-sig-9f"> <citerefentry>
                   <refentrytitle>cv_wait_sig</refentrytitle>
 
                   <manvolnum>9F</manvolnum>
-                </citerefentry> </olink> function call. In the <citerefentry>
+                </citerefentry> </olink>. W wywołaniu funkcji <citerefentry>
                   <refentrytitle>cv_wait_sig</refentrytitle>
 
                   <manvolnum>9F</manvolnum>
-                </citerefentry> function call, the <literal>lock</literal>
-              value ensures that the condition will not be changed before the
-              <citerefentry>
+                </citerefentry> wartość <literal>lock</literal> gwarantuje, że
+              warunek nie zmieni się przed powrotem z funkcji <citerefentry>
                   <refentrytitle>cv_wait_sig</refentrytitle>
 
                   <manvolnum>9F</manvolnum>
-                </citerefentry> function returns.</para>
+                </citerefentry>.</para>
             </listitem>
 
             <listitem>
-              <para>The <literal>cv</literal> member is a condition variable.
-              The <literal>cv</literal> member is an argument to each <olink
+              <para>Element <literal>cv</literal> jest zmienną warunkową i
+              jest argumentem każdego wywołania funkcji <olink
               remap="external" targetdoc="819-2256" targetptr="condvar-9f">
               <citerefentry>
                   <refentrytitle>condvar</refentrytitle>
 
                   <manvolnum>9F</manvolnum>
-                </citerefentry> </olink> (<literal>cv_</literal>) function
-              call.</para>
+                </citerefentry> </olink> (<literal>cv_</literal>).</para>
             </listitem>
           </itemizedlist>
         </sect4>
@@ -2721,11 +2719,11 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
         <sect4 xml:id="fgvsd">
           <title>Creating and Destroying Locks and Condition Variables</title>
 
-          <para>Version 3 of the Quote Of The Day driver defines two constants
-          to make sure the mutex and condition variable are destroyed when the
-          driver is finished with them. The driver uses these constants to set
-          and reset the new <literal>flags</literal> member of the device
-          state structure.</para>
+          <para>Wersja 3. sterownika Cytat Dnia definiuje dwie stałe
+          zapewniające zniszczenie muteksu i zmiennej warunkowej, kiedy
+          sterownik przestanie ich używać. Sterownik używa tych stałych do
+          ustawiania i zdejmowania nowego elementu struktury stanu:
+          <literal>flags</literal>.</para>
 
           <itemizedlist>
             <listitem>
@@ -2757,42 +2755,43 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
                   <primary>kernel functions</primary>
 
                   <secondary><function>cv_destroy </function></secondary>
-                </indexterm>The <literal>QOTD_DIDMUTEX</literal> flag is set
-              in the <function>qotd_attach </function> entry point immediately
-              after a successful call to <olink remap="external"
+                </indexterm>Flaga <literal>QOTD_DIDMUTEX</literal> ustawiana
+              jest w punkcie wejśćia <function>qotd_attach</function>
+              natychmiast po udanym wywołaniu <olink remap="external"
               targetdoc="819-2256" targetptr="mutex-init-9f"> <citerefentry>
                   <refentrytitle>mutex_init</refentrytitle>
 
                   <manvolnum>9F</manvolnum>
-                </citerefentry> </olink>. If the
-              <literal>QOTD_DIDMUTEX</literal> flag is set when the
-              <function>qotd_detach </function> entry point is called, the
-              <function>qotd_detach </function> entry point calls the <olink
+                </citerefentry> </olink>. Jeśli flaga
+              <literal>QOTD_DIDMUTEX</literal> będzie ustawiona w punkcie
+              wejścia <function>qotd_detach</function>, wtedy punkt wejścia
+              <function>qotd_detach</function> wywołuje funkcję <olink
               remap="external" targetdoc="819-2256"
               targetptr="mutex-destroy-9f"> <citerefentry>
                   <refentrytitle>mutex_destroy</refentrytitle>
 
                   <manvolnum>9F</manvolnum>
-                </citerefentry> </olink> function.</para>
+                </citerefentry> </olink>.</para>
             </listitem>
 
             <listitem>
-              <para>The <literal>QOTD_DIDCV</literal> flag is set in the
-              <function>qotd_attach </function> entry point immediately after
-              a successful call to <olink remap="external"
-              targetdoc="819-2256" targetptr="cv-init-9f"> <citerefentry>
+              <para>Flaga <literal>QOTD_DIDCV</literal> ustawiana jest w
+              punkcie wejścia <function>qotd_attach </function>natyc hmiast po
+              udanym wywołaniu <olink remap="external" targetdoc="819-2256"
+              targetptr="cv-init-9f"> <citerefentry>
                   <refentrytitle>cv_init</refentrytitle>
 
                   <manvolnum>9F</manvolnum>
-                </citerefentry> </olink>. If the <literal>QOTD_DIDCV</literal>
-              flag is set when the <function>qotd_detach </function> entry
-              point is called, the <function>qotd_detach </function> entry
-              point calls the <olink remap="external" targetdoc="819-2256"
-              targetptr="cv-destroy-9f"> <citerefentry>
+                </citerefentry> </olink>. Jeśli flaga
+              <literal>QOTD_DIDCV</literal> jest ustawiona w punkcie wejścia
+              <function>qotd_detach</function>, punkt wejścia
+              <function>qotd_detach</function> wywołuje funkcję <olink
+              remap="external" targetdoc="819-2256" targetptr="cv-destroy-9f">
+              <citerefentry>
                   <refentrytitle>cv_destroy</refentrytitle>
 
                   <manvolnum>9F</manvolnum>
-                </citerefentry> </olink> function.</para>
+                </citerefentry> </olink>.</para>
             </listitem>
           </itemizedlist>
         </sect4>
@@ -2852,31 +2851,31 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
             <secondary><function>cv_wait </function></secondary>
           </indexterm>
 
-          <para>In the <function>qotd_rw </function> and <function>qotd_ioctl
-          </function> routines, the <olink remap="external"
-          targetdoc="819-2256" targetptr="cv-wait-sig-9f"> <citerefentry>
+          <para>Wywołania <olink remap="external" targetdoc="819-2256"
+          targetptr="cv-wait-sig-9f"><citerefentry>
               <refentrytitle>cv_wait_sig</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> </olink> calls wait until the condition variable
-          is signaled to proceed or until a <olink remap="external"
-          targetdoc="819-2243" targetptr="signal-3c"> <citerefentry>
+            </citerefentry></olink> w funkcjach <function>qotd_rw</function> i
+          <function>qotd_ioctl</function> oczekują na sygnał dla zmiennej
+          warunkowej, że można kontynuować, albo na odebranie <olink
+          remap="external" targetdoc="819-2243" targetptr="signal-3c">
+          <citerefentry>
               <refentrytitle>signal</refentrytitle>
 
               <manvolnum>3C</manvolnum>
-            </citerefentry> </olink> is received. Either the <olink
-          remap="external" targetdoc="819-2256" targetptr="cv-signal-9f">
-          <citerefentry>
+            </citerefentry> </olink>. Jedna z funkcji <olink remap="external"
+          targetdoc="819-2256" targetptr="cv-signal-9f"> <citerefentry>
               <refentrytitle>cv_signal</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> </olink> function or the <olink remap="external"
+            </citerefentry> </olink> i <olink remap="external"
           targetdoc="819-2256" targetptr="cv-broadcast-9f"> <citerefentry>
               <refentrytitle>cv_broadcast</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> </olink> function signals the
-          <literal>cv</literal> condition variable to proceed.</para>
+            </citerefentry> </olink> wysyła sygnał do zmiennej warunkowej o
+          możliwości kontynuowania.</para>
 
           <para>A thread can wait on a condition variable until either the
           condition variable is signaled or a <olink remap="external"
