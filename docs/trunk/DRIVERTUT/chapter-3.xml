@@ -3287,40 +3287,39 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
             <primary>kernel functions</primary>
 
             <secondary><function>memcpy </function></secondary>
-          </indexterm>When the device is not busy, the <function>qotd_ioctl
-        </function> routine uses <olink remap="external" targetdoc="819-2256"
-        targetptr="memcpy-9f"> <citerefentry>
+          </indexterm>Jeśli urządzenie nie jest zajęte, funkcja
+        <function>qotd_ioctl </function> używa <olink remap="external"
+        targetdoc="819-2256" targetptr="memcpy-9f"> <citerefentry>
             <refentrytitle>memcpy</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> to copy the quotation from the driver's
-        state structure to the new space. The <function>qotd_ioctl </function>
-        routine then frees the memory currently pointed to by the state
-        structure, and updates the state structure members to the new values.
-        The <function>qotd_ioctl </function> routine then sets the
-        <literal>QOTD_CHANGED</literal> flag, exits the mutex, and
-        returns.</para>
+          </citerefentry> </olink> do skopiowania cytatu ze struktury stanu
+        urządzenia do nowej przestrzeni. Funkcja
+        <function>qotd_ioctl</function> uwalnia wtedy aktualnie wskazywaną
+        pamięć przez strukturę stanu i uaktualnia wartości elementów struktury
+        stanu nowymi wartościami. Następnie <function>qotd_ioctl</function>
+        ustawia flagę <literal>QOTD_CHANGED</literal>, wychodzi z muteksu i
+        kończy działanie.</para>
 
-        <para>If the request is to discard the current quotation and reset to
-        the initial quotation, then the <function>qotd_ioctl </function>
-        routine first sets local variables for the new quotation and a new
-        memory allocation cookie. If the device was not opened for writing,
-        the <function>qotd_ioctl </function> routine returns an error. If the
-        space allocated for the current quotation is different from the space
-        allocated for the initial quotation, then the <function>qotd_ioctl
-        </function> routine allocates new memory that is the size of the
-        initial space and enters a mutex.</para>
+        <para>Jeżeli żądanie dotyczy przywrócenia oryginalnego cytatu, funkcja
+        <function>qotd_ioctl</function> najpierw ustawia wartości zmiennych
+        lokalnych na wartości nowego cytatu i nowego ciasteczka alokacji
+        pamięci. Jeśli urządzenie nie było otwarte w trybie do zapisu,
+        <function>qotd_ioctl</function> zwraca błąd. Jeśli wielkość
+        przestrzeni aktualnie zaalokowanej dla cytatu różni się od przestrzeni
+        pierwotnego cytatu, <function>qotd_ioctl</function> alokuje nową
+        pamięć równą wielkości pierwotnego cytatu i wchodzi do muteksu.</para>
 
-        <para>While the device is busy, the <function>qotd_ioctl </function>
-        routine checks whether the condition variable has been signaled or a
-        <olink remap="external" targetdoc="819-2243" targetptr="signal-3c">
-        <citerefentry>
+        <para>Kiedy urządzenie jest zajęte, funkcja
+        <function>qotd_ioctl</function> sprawdza czy zmienna warunkowa
+        otrzymała sygnał lub czy istnieje zawieszony <olink remap="external"
+        targetdoc="819-2243" targetptr="signal-3c"> <citerefentry>
             <refentrytitle>signal</refentrytitle>
 
             <manvolnum>3C</manvolnum>
-          </citerefentry> </olink> is pending. If either of these conditions
-        is true, the <function>qotd_ioctl </function> routine exits the mutex,
-        frees the new memory it allocated, and returns an error.</para>
+          </citerefentry> </olink>. Jeśli któryś z tych warunków jest
+        prawdziwy, funkcja wychodzi z muteksu, uwalnia nowozaalokowaną pamięć
+        i zwraca błąd.</para>
 
         <para><indexterm xml:id="indexterm-526">
             <primary><function>bzero </function> kernel function</primary>
@@ -3334,43 +3333,41 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
             <primary>kernel functions</primary>
 
             <secondary><function>strlcpy </function></secondary>
-          </indexterm>When the device is not busy, the <function>qotd_ioctl
-        </function> routine frees the memory currently pointed to by the state
-        structure, updates the memory state structure members to the new
-        values, and resets the length to its initial value. If the size of the
-        current quotation space was the same as the initial size and no new
-        memory was allocated, then <function>qotd_ioctl </function> calls
-        <olink remap="external" targetdoc="819-2256" targetptr="bzero-9f">
-        <citerefentry>
+          </indexterm>Kiedy urządzenie nie jest zajęte, funkcja
+        <function>qotd_ioctl</function> zwraca aktualnie wskazywaną w
+        strukturze stanu pamięć, uaktualnia wartości elementów struktury stanu
+        odnoszących się do pamięci i resetuje długość do pierwotnej wartości.
+        Jeśli wielkość pamięci dla aktualnego cytatu jest taka sama jak
+        pierwotna i nie alokowano pamięci, funkcja
+        <function>qotd_ioctl</function> wywołuje <olink remap="external"
+        targetdoc="819-2256" targetptr="bzero-9f"> <citerefentry>
             <refentrytitle>bzero</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> to clear the current quotation. The
-        <function>qotd_ioctl </function> routine then calls the <olink
-        remap="external" targetdoc="819-2256" targetptr="strlcpy-9f">
-        <citerefentry>
+          </citerefentry> </olink> w celu wyczyszczenia aktualnego cytatu.
+        Następnie wywołuje funkcję <olink remap="external"
+        targetdoc="819-2256" targetptr="strlcpy-9f"> <citerefentry>
             <refentrytitle>strlcpy</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function to copy the initial quotation
-        string to the quotation member of the state structure. The
-        <function>qotd_ioctl </function> routine then unsets the
-        <literal>QOTD_CHANGED</literal> flag, exits the mutex, and
-        returns.</para>
+          </citerefentry> </olink> w celu skopiowania pierwotnego cytatu do
+        struktury stanu. Później <function>qotd_ioctl</function> zdejmuje
+        flagę <literal>QOTD_CHANGED</literal>, wychodzi z muteksu i kończy
+        działanie.</para>
 
-        <para>Once the <literal>QOTD_CHANGED</literal> flag has been set, the
-        only way to unset it is to run the <command>qotdctl</command> command
-        with the <option> r</option> option. See <olink remap="internal"
+        <para>Po ustawieniu flagi <literal>QOTD_CHANGED</literal> jedynym
+        sposobem zdjęcia jej jest wywołanie komendy <command>qotdctl</command>
+        z opcją <option>r</option>. Więcej o komendzie
+        <command>qotdctl</command> w <olink remap="internal"
         targetdoc="chapter-3.xml" targetptr="fgvsf">Exercising the Driver's
-        I/O Controls</olink> for more information about the
-        <command>qotdctl</command> command.</para>
+        I/O Controls</olink>.</para>
       </sect3>
 
       <sect3 xml:id="ffdqw">
         <title>Quote Of The Day Version 3 Source</title>
 
-        <para>Enter the source code shown in the following example into a text
-        file named <filename>qotd_3.c</filename>.</para>
+        <para>Poniższy kod źródłowy należy wprowadzić do pliku
+        <filename>qotd_3.c</filename>.</para>
 
         <example xml:id="ffdqz">
           <title>Quote Of The Day Version 3 Source File</title>
@@ -3399,13 +3396,13 @@ static const char init_qotd[]
         = "On the whole, I'd rather be in Philadelphia. - W. C. Fields\n";
 static const size_t init_qotd_len = 128;
 
-#define QOTD_MAX_LEN    65536           /* Maximum quote in bytes */
-#define QOTD_CHANGED    0x1             /* User has made modifications */
-#define QOTD_DIDMINOR   0x2             /* Created minors */
-#define QOTD_DIDALLOC   0x4             /* Allocated storage space */
-#define QOTD_DIDMUTEX   0x8             /* Created mutex */
-#define QOTD_DIDCV      0x10            /* Created cv */
-#define QOTD_BUSY       0x20            /* Device is busy */
+#define QOTD_MAX_LEN    65536           /* Maksymalna długosc cytatu w bajtach */
+#define QOTD_CHANGED    0x1             /* Uzytkownik modyfikowal cytat */
+#define QOTD_DIDMINOR   0x2             /* Stworzono mlodsze wezly */
+#define QOTD_DIDALLOC   0x4             /* Zaalokowano pamiec */
+#define QOTD_DIDMUTEX   0x8             /* Stworzono mutex */
+#define QOTD_DIDCV      0x10            /* Stworzono cv */
+#define QOTD_BUSY       0x20            /* Urzadzenie jest zajete */
 
 static void *qotd_state_head;
 
@@ -3467,7 +3464,7 @@ static struct dev_ops qotd_dev_ops = {
 
 static struct modldrv modldrv = {
         &amp;mod_driverops,
-        "Quote of the day 3.0",
+        "Cytat dnia, wersja 3.0",
         &amp;qotd_dev_ops};
 
 static struct modlinkage modlinkage = {
@@ -3746,9 +3743,10 @@ qotd_ioctl(dev_t dev, int cmd, intptr_t arg, int mode, cred_t *credp,
 
         switch (cmd) {
         case QOTDIOCGSZ: {
-                /* We are not guaranteed that ddi_copyout(9F) will read
-                 * automatically anything larger than a byte.  Therefore we
-                 * must duplicate the size before copying it out to the user.
+                /* Nie ma zadnej gwarancji, ze ddi_copyout(9F) automatycznie 
+                 * przeczyta cokolwiek wiekszego niz bajt. Dlatego tez 
+                 * wartosc wielkosci nalezy zarchiwizowac przed skopiowaniem jej
+                 * do uzytkownika.
                  */
                 size_t sz = qsp-&gt;qotd_len;
 
@@ -3881,8 +3879,8 @@ qotd_ioctl(dev_t dev, int cmd, intptr_t arg, int mode, cred_t *credp,
 }</programlisting>
         </example>
 
-        <para>Enter the definitions shown in the following example into a text
-        file named <filename>qotd.h</filename>.</para>
+        <para>Poniższe definicje należy umieścić w pliku
+        <filename>qotd.h</filename>.</para>
 
         <example xml:id="ffzrj">
           <title>Quote Of The Day Version 3 Header File</title>
@@ -3892,16 +3890,15 @@ qotd_ioctl(dev_t dev, int cmd, intptr_t arg, int mode, cred_t *credp,
 
 #define QOTDIOC         ('q' &lt;&lt; 24 | 't' &lt;&lt; 16 | 'd' &lt;&lt; 8)
 
-#define QOTDIOCGSZ      (QOTDIOC | 1)   /* Get quote buffer size */
-#define QOTDIOCSSZ      (QOTDIOC | 2)   /* Set new quote buffer size */
-#define QOTDIOCDISCARD  (QOTDIOC | 3)   /* Discard quotes and reset */
+#define QOTDIOCGSZ      (QOTDIOC | 1)   /* Pobierz wielkosc buforu dla cytatu */
+#define QOTDIOCSSZ      (QOTDIOC | 2)   /* Ustaw nowa wielkosc buforu dla cytatu */
+#define QOTDIOCDISCARD  (QOTDIOC | 3)   /* Usun cytaty i zresetuj */
 
 #endif /* _SYS_QOTD_H */</programlisting>
         </example>
 
-        <para>Enter the configuration information shown in the following
-        example into a text file named
-        <filename>qotd_3.conf</filename>.</para>
+        <para>Poniższe dane konfiguracyjne należy wprowadzić do pliku
+        tesktowego nazwanego <filename>qotd_3.conf</filename>.</para>
 
         <example xml:id="ffdqx">
           <title>Quote Of The Day Version 3 Configuration File</title>
@@ -3914,32 +3911,32 @@ qotd_ioctl(dev_t dev, int cmd, intptr_t arg, int mode, cred_t *credp,
     <sect2 xml:id="ffdrd">
       <title>Building and Installing Quote Of The Day Version 3</title>
 
-      <para>Compile and link the driver. The following example shows compiling
-      and linking for a 32-bit architecture:</para>
+      <para>Poniższy przykład pokazuje kompilację i linkowanie dla
+      architektury 32bitowej:</para>
 
       <screen>% <userinput>cc -D_KERNEL -c qotd_3.c</userinput>
 % <userinput>ld -r -o qotd_3 qotd_3.o</userinput>
 </screen>
 
-      <para>Make sure you are user <literal>root</literal> when you install
-      the driver.</para>
+      <para>Do instalacji wymagane są uprawnienia użytkownika
+      <literal>root</literal>.</para>
 
-      <para>Copy the driver binary to the <filename>/tmp</filename> directory
-      as discussed in <olink remap="external" targetdoc="chapter-2.xml"
-      targetptr="eoxzr">Building and Installing the Template
-      Driver</olink>.</para>
+      <para>Skompilowany sterownik należy skopiować do katalogu
+      <filename>/tmp</filename>, jak opisano w <olink remap="external"
+      targetdoc="chapter-2.xml" targetptr="eoxzr">Building and Installing the
+      Template Driver</olink>.</para>
 
       <screen># <userinput>cp qotd_3 /tmp</userinput>
 # <userinput>ln -s /tmp/qotd_3 /usr/kernel/drv/qotd_3</userinput>
 </screen>
 
-      <para>Copy the configuration file to the kernel driver area of the
-      system.</para>
+      <para>Plik konfiguracyjny należy skopiować do katalogu jądra ze
+      sterownikami.</para>
 
       <screen># <userinput>cp qotd_3.conf /usr/kernel/drv</userinput>
 </screen>
 
-      <para>In a separate window, enter the following command:</para>
+      <para>W osobnym oknie należy wykonać komendę:</para>
 
       <screen>% <userinput>tail -f /var/adm/messages</userinput>
 </screen>
