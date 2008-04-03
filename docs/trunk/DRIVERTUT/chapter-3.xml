@@ -2930,26 +2930,26 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
               <manvolnum>3C</manvolnum>
             </citerefentry>.</para>
 
-          <para>In some cases, you cannot use the <citerefentry>
+          <para>W niektórych przypadkach użycie funkcji <citerefentry>
               <refentrytitle>cv_wait_sig</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> function because your driver cannot be interrupted
-          by a <citerefentry>
+            </citerefentry> jest niemożliwe, ponieważ sterownik nie powinien
+          akceptować przerwań od <citerefentry>
               <refentrytitle>signal</refentrytitle>
 
               <manvolnum>3C</manvolnum>
-            </citerefentry>. For example, you cannot use the <citerefentry>
+            </citerefentry>. Nie można na przykład użyć funkcji <citerefentry>
               <refentrytitle>cv_wait_sig</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> function during a DMA transfer that will result in
-          an interrupt later. In this case, if you abandon the <citerefentry>
+            </citerefentry> podczas transferu DMA, który sam spowoduje później
+          przerwanie. W tym przypadku, jeśli wywołanie <citerefentry>
               <refentrytitle>cv_wait_sig</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> call, you have nowhere to put the data when the
-          DMA transfer is finished, and your driver will panic.</para>
+            </citerefentry> zostanie przerwane, dane z zakończonego transferu
+          DMA nie mają się gdzie podziać i sterownik spanikuje.</para>
         </sect4>
       </sect3>
 
@@ -2992,41 +2992,41 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
           <primary><function>ioctl </function> entry point</primary>
         </indexterm>
 
-        <para>The <olink remap="external" targetdoc="819-2257"
+        <para>Struktura <olink remap="external" targetdoc="819-2257"
         targetptr="cb-ops-9s"> <citerefentry>
             <refentrytitle>cb_ops</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> </olink> structure for Version 3 of the Quote Of The
-        Day driver declares two new entry points that support modifying the
-        quotation. The two new entry points are <olink remap="external"
-        targetdoc="819-2255" targetptr="write-9e"> <citerefentry>
+          </citerefentry> </olink> w wersji 3. sterownika Cytat Dnia deklaruje
+        dwa nowe punkty wejścia obsługujące zmianę cytatu. Są to: <olink
+        remap="external" targetdoc="819-2255" targetptr="write-9e">
+        <citerefentry>
             <refentrytitle>write</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> </olink> and <olink remap="external"
+          </citerefentry> </olink> i <olink remap="external"
         targetdoc="819-2255" targetptr="ioctl-9e"> <citerefentry>
             <refentrytitle>ioctl</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> </olink>. The <function>qotd_rw </function> routine
-        is a third new routine in Version 3 of the driver. The
-        <function>qotd_rw </function> routine is called by both the
+          </citerefentry> </olink>. Funkcja <function>qotd_rw </function> to
+        trzecia nowa funkcja w wersji 3. sterownika. Funkcja
+        <function>qotd_rw</function> wywoływana jest przez punkty wejścia
         <citerefentry>
             <refentrytitle>read</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point and the <citerefentry>
+          </citerefentry> oraz <citerefentry>
             <refentrytitle>write</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> entry point.</para>
+          </citerefentry>.</para>
 
-        <para>The device state structure for Version 3 of the Quote Of The Day
-        driver contains two new members that are used to modify the quotation.
-        The <literal>qotd</literal> string holds the quotation for the current
-        instance of the device. The <literal>qotd_len</literal> member holds
-        the length in bytes of the current quotation.</para>
+        <para>Struktura stanu zawiera w tej wersji dwa nowe elementy używane
+        do modyfikowania cytatu. Zmienna łańcuchowa <literal>qotd</literal>
+        przechowuje treść aktualnej instancji urządzenia. Element
+        <literal>qotd_len</literal> przechowuje długość aktualnego cytatu
+        liczoną w bajtach.</para>
 
         <para>Version 3 of the driver also defines two new constants that
         support modifying the quotation. In place of
