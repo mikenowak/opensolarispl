@@ -2877,60 +2877,58 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
             </citerefentry> </olink> wysyła sygnał do zmiennej warunkowej o
           możliwości kontynuowania.</para>
 
-          <para>A thread can wait on a condition variable until either the
-          condition variable is signaled or a <olink remap="external"
-          targetdoc="819-2243" targetptr="signal-3c"> <citerefentry>
+          <para>Wątek może oczekiwać na zmienną warunkową dopóki zmienna nie
+          otrzyma sygnału, bądź do procesu wysłany zostanie <olink
+          remap="external" targetdoc="819-2243" targetptr="signal-3c">
+          <citerefentry>
               <refentrytitle>signal</refentrytitle>
 
               <manvolnum>3C</manvolnum>
-            </citerefentry> </olink> is received by the process. The <olink
-          remap="external" targetdoc="819-2256" targetptr="cv-wait-9f">
-          <citerefentry>
+            </citerefentry> </olink>. Funkcja <olink remap="external"
+          targetdoc="819-2256" targetptr="cv-wait-9f"> <citerefentry>
               <refentrytitle>cv_wait</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> </olink> function waits until the condition
-          variable is signaled but ignores <citerefentry>
+            </citerefentry> </olink> oczekuje na sygnał dla zmiennej
+          warunkowej, ale sama ignoruje sygnały <citerefentry>
               <refentrytitle>signal</refentrytitle>
 
               <manvolnum>3C</manvolnum>
-            </citerefentry> signals. This driver uses the <olink
+            </citerefentry>. Opisywany sterownik korzysta z funkcji <olink
           remap="external" targetdoc="819-2256" targetptr="cv-wait-sig-9f">
           <citerefentry>
               <refentrytitle>cv_wait_sig</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> </olink> function instead of the <citerefentry>
+            </citerefentry> </olink> zamiast <citerefentry>
               <refentrytitle>cv_wait</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> function because this driver responds if a signal
-          is received by the process performing the operation. If a
-          <citerefentry>
+            </citerefentry>, ponieważ musi zareagować na sygnał otrzymany
+          przez proces wykonujący operację. Jeśli proces otrzyma <citerefentry>
               <refentrytitle>signal</refentrytitle>
 
               <manvolnum>3C</manvolnum>
-            </citerefentry> is taken by the process, this driver returns an
-          interrupt error and does not complete the operation. The
-          <citerefentry>
+            </citerefentry>, musi zwrócić błąd przerwania i nie kończy
+          operacji. Zazwyczaj preferowana jest funkcja <citerefentry>
               <refentrytitle>cv_wait_sig</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> function usually is preferred to the <citerefentry>
+            </citerefentry> zamiast <citerefentry>
               <refentrytitle>cv_wait</refentrytitle>
 
               <manvolnum>9F</manvolnum>
-            </citerefentry> function because this implementation offers the
-          user program more precise response. The <citerefentry>
+            </citerefentry>, ponieważ jej implementacja pozwala na
+          precyzyjnieszą reakcję programu. Funkcja <citerefentry>
               <refentrytitle>signal</refentrytitle>
 
               <manvolnum>3C</manvolnum>
-            </citerefentry> causes an effect closer to the point at which the
-          process was executing when the <citerefentry>
+            </citerefentry> wywołuje efekt podobny do do momentu wykonania, w
+          którym proces znajdował się w momencie uzyskania <citerefentry>
               <refentrytitle>signal</refentrytitle>
 
               <manvolnum>3C</manvolnum>
-            </citerefentry> was received.</para>
+            </citerefentry>.</para>
 
           <para>In some cases, you cannot use the <citerefentry>
               <refentrytitle>cv_wait_sig</refentrytitle>
