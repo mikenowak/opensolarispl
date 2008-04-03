@@ -3227,11 +3227,11 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
           </citerefentry> równa jest <literal>DDI_MODEL_NONE</literal>, nie
         jest konieczna żadna konwersja danych.</para>
 
-        <para>If the request is to set a new size for the space allocated for
-        the quotation, then the <function>qotd_ioctl </function> routine first
-        sets local variables for the new size, the new quotation, and a new
-        memory allocation cookie. If the device was not opened for writing,
-        the <function>qotd_ioctl </function> routine returns an error.</para>
+        <para>Jeśli żądanie dotyczy ustalenia nowej wielkości przestrzeni do
+        zaalokowania dla cytatu, funkcja <function>qotd_ioctl</function>
+        najpierw ustawia lokalne zmienne dla nowej wielkości, nowego cytatu i
+        nowego ciasteczka alokacji pamięci. Jeżeli urządzenie nie zostało
+        otwarte w trybie do zapisu, funkcja zwraca błąd.</para>
 
         <para><indexterm xml:id="indexterm-520">
             <primary><function>ddi_copyin </function> kernel
@@ -3240,28 +3240,29 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
             <primary>kernel functions</primary>
 
             <secondary><function>ddi_copyin </function></secondary>
-          </indexterm>The <function>qotd_ioctl </function> routine then checks
-        again for data model mismatch. If the return value of the <olink
+          </indexterm>Funkcja <function>qotd_ioctl</function> sprawdza
+        nastęĻnie model danych. Jeśli wartość zwrócona przez <olink
         remap="external" targetdoc="819-2256"
         targetptr="ddi-model-convert-from-9f"> <citerefentry>
             <refentrytitle>ddi_model_convert_from</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function is
-        <literal>DDI_MODEL_ILP32</literal>, then the driver declares a 32-bit
-        size variable to receive the new size from <olink remap="external"
-        targetdoc="819-2256" targetptr="ddi-copyin-9f"> <citerefentry>
+          </citerefentry> </olink> równa jest
+        <literal>DDI_MODEL_ILP32</literal>, strerownik deklaruje 32bitową
+        zmienną wielkości, do której zapisze wartość uzyskaną od <olink
+        remap="external" targetdoc="819-2256" targetptr="ddi-copyin-9f">
+        <citerefentry>
             <refentrytitle>ddi_copyin</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink>. When the new size is received, the size is
-        converted to the data type of the kernel space.</para>
+          </citerefentry> </olink>. Po uzyskaniu nowej wielkości konwertowana
+        jest do modelu danych przestrzeni jądra.</para>
 
-        <para>If the new size is zero or is greater than
-        <literal>QOTD_MAX_LEN</literal>, the <function>qotd_ioctl </function>
-        routine returns an error. If the new size is valid, then the
-        <function>qotd_ioctl </function> routine allocates new memory for the
-        quotation and enters a mutex.</para>
+        <para>Jeśli nowa wielkość jest równa zero lub jest większa niż
+        <literal>QOTD_MAX_LEN</literal>, <function>qotd_ioctl</function>
+        zwraca błąd. Jeśli nowa wielkość jest prawidłowa,
+        <function>qotd_ioctl</function> alokuje nową pamięć dla cytatu i
+        wchodzi do muteksu.</para>
 
         <para><indexterm xml:id="indexterm-522">
             <primary><function>signal </function> function</primary>
@@ -3269,16 +3270,16 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
             <primary>functions</primary>
 
             <secondary><function>signal </function></secondary>
-          </indexterm>While the device is busy, the <function>qotd_ioctl
-        </function> routine checks whether the condition variable has been
-        signaled or a <olink remap="external" targetdoc="819-2243"
-        targetptr="signal-3c"> <citerefentry>
+          </indexterm>Kiedy urządzenie jest zajęte,
+        <function>qotd_ioctl</function> sprawdza, czy zmienna warunkowa
+        otrzymała sygnał lub czy istnieje zawieszony <olink remap="external"
+        targetdoc="819-2243" targetptr="signal-3c"> <citerefentry>
             <refentrytitle>signal</refentrytitle>
 
             <manvolnum>3C</manvolnum>
-          </citerefentry> </olink> is pending. If either of these conditions
-        is true, the <function>qotd_ioctl </function> routine exits the mutex,
-        frees the new memory it allocated, and returns an error.</para>
+          </citerefentry> </olink>. Jeśli któryś z warunków jest prawdziwy,
+        funkcja wychodzi z muteksu, uwalnia nowozaalokowaną pamięć i zwraca
+        błąd.</para>
 
         <para><indexterm xml:id="indexterm-524">
             <primary><function>memcpy </function> kernel function</primary>
