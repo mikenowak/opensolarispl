@@ -3028,28 +3028,29 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
         <literal>qotd_len</literal> przechowuje długość aktualnego cytatu
         liczoną w bajtach.</para>
 
-        <para>Version 3 of the driver also defines two new constants that
-        support modifying the quotation. In place of
-        <literal>QOTD_MAXLEN</literal>, Version 3 of the driver defines
-        <literal>QOTD_MAX_LEN</literal>. <literal>QOTD_MAX_LEN</literal> is
-        used in the <function>qotd_ioctl </function> entry point to test
-        whether the user has entered a string that is too long. Version 3 of
-        the driver also defines <literal>QOTD_CHANGED</literal>. The
-        <literal>QOTD_CHANGED</literal> flag is set in the <function>qotd_rw
-        </function> routine and in the <function>qotd_ioctl </function> entry
-        point when a new quotation is copied from the user.</para>
+        <para>W wersji 3. pojawiły się także dwie nowe stałe wykorzystywane
+        przy modyfikacji cytatu. Zamiast <literal>QOTD_MAXLEN</literal>
+        wersja 3. sterownika definiuje <literal>QOTD_MAX_LEN</literal>.
+        <literal>QOTD_MAX_LEN</literal> wykorzystywana jest w punkcie wejścia
+        <function>qotd_ioctl</function> do sprawdzenia, czy wprowadzony przez
+        użytkownika cytat nie jest za długi. Natomias nowa flaga
+        <literal>QOTD_CHANGED</literal> ustawiana jest w funkcji
+        <function>qotd_rw</function> i w punkcie wejścia
+        <function>qotd_ioctl</function> w czasie kopiowania nowego cytatu od
+        użytkownika.</para>
 
-        <para>When the <literal>qotd_3</literal> device is opened for writing,
-        the kernel calls the <function>qotd_write </function> entry point. The
-        <function>qotd_write </function> entry point then calls the
-        <function>qotd_rw </function> routine and passes a
-        <literal>UIO_WRITE</literal> flag. The new <function>qotd_read
-        </function> entry point is exactly the same as the
-        <function>qotd_write </function> entry point, except that the
-        <function>qotd_read </function> entry point passes a
-        <literal>UIO_READ</literal> flag. The <function>qotd_rw </function>
-        routine supports both reading and writing the device and thereby
-        eliminates much duplicate code.</para>
+        <para>Kiedy urządzenie <literal>qotd_3</literal> otwarte zostaje w
+        trybie do zapisu, jądro wywołuje punkt wejścia
+        <function>qotd_write</function>. Punkt wejścia
+        <function>qotd_write</function> wywołuje wtedy funkcję
+        <function>qotd_rw</function> i przekazuje flagę
+        <literal>UIO_WRITE</literal>. Nowy punkt wejścia
+        <function>qotd_read</function> jest podobny do punktu wejścia
+        <function>qotd_write</function> z taką różnicą, że punkt wejścia
+        <function>qotd_read</function> przekazuje flagę
+        <literal>UIO_READ</literal>. Funkcja <function>qotd_rw</function>
+        obsłüguje zarówno odczyt jak i zapis do urządzenia, w związku z czym
+        eliminuje sporo zduplikowane kodu.</para>
 
         <para><indexterm xml:id="indexterm-504">
             <primary><literal>uio</literal> kernel structure</primary>
@@ -3057,17 +3058,16 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
             <primary>kernel structures</primary>
 
             <secondary><literal>uio</literal></secondary>
-          </indexterm>The <function>qotd_rw </function> routine first gets the
-        device soft state. Then the <function>qotd_rw </function> routine
-        checks the length of the I/O request in the <olink remap="external"
-        targetdoc="819-2257" targetptr="uio-9s"> <citerefentry>
+          </indexterm>Funkcja <function>qotd_rw</function> sprawdza najpierw
+        miękki stan urządzenia. Później sprawdza długość żądania I/O w
+        strukturze żądania I/O <olink remap="external" targetdoc="819-2257"
+        targetptr="uio-9s"> <citerefentry>
             <refentrytitle>uio</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> </olink> I/O request structure. If this length is
-        zero, the <function>qotd_rw </function> routine returns zero. If this
-        length is not zero, the <function>qotd_rw </function> routine enters a
-        mutex.</para>
+          </citerefentry> </olink>. Jeśli długość równa jest zero, funkcja
+        <function>qotd_rw</function> zwraca zero. Jeśli długość jest różna od
+        zera, funkcja <function>qotd_rw</function> wchodzi w mutex.</para>
 
         <para><indexterm xml:id="indexterm-506">
             <primary><function>signal </function> function</primary>
@@ -3075,33 +3075,32 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
             <primary>functions</primary>
 
             <secondary><function>signal </function></secondary>
-          </indexterm>While the device is busy, the <function>qotd_rw
-        </function> routine checks whether the condition variable has been
-        signaled or a <olink remap="external" targetdoc="819-2243"
-        targetptr="signal-3c"> <citerefentry>
+          </indexterm>Podczas gdy urządzenie jest zajęte, funkcja
+        <function>qotd_rw</function> sprawdza, czy zmienna warunkowa otrzymała
+        sygnał lub czy istnieje zawieszony <olink remap="external"
+        targetdoc="819-2243" targetptr="signal-3c"> <citerefentry>
             <refentrytitle>signal</refentrytitle>
 
             <manvolnum>3C</manvolnum>
-          </citerefentry> </olink> is pending. If either of these conditions
-        is true, the <function>qotd_rw </function> routine exits the mutex and
-        returns an error.</para>
+          </citerefentry> </olink>. Jeśli któryś z tych warunków jest
+        prawdziwy, funkcja <function>qotd_rw </function>wychodzi z muteksu i
+        zwraca błąd.</para>
 
-        <para>When the device is not busy, the <function>qotd_rw </function>
-        routine checks whether the data offset in the <olink remap="external"
-        targetdoc="819-2257" targetptr="uio-9s"> <citerefentry>
+        <para>Jeśli urządzenie nie jest zajęte, funkcja
+        <function>qotd_rw</function> sprawdza czy offset danych w strukturze
+        żądania I/O <olink remap="external" targetdoc="819-2257"
+        targetptr="uio-9s"> <citerefentry>
             <refentrytitle>uio</refentrytitle>
 
             <manvolnum>9S</manvolnum>
-          </citerefentry> </olink> I/O request structure is valid. If the
-        offset is not valid, the <function>qotd_rw </function> routine exits
-        the mutex and returns an error. If the offset is valid, the local
-        length variable is set to the difference between the offset in the I/O
-        request structure and the length in the device state structure. If
-        this difference is zero, the <function>qotd_rw </function> routine
-        exits the mutex and returns. If the device was opened for writing, the
-        <function>qotd_rw </function> routine returns a space error.
-        Otherwise, the <function>qotd_rw </function> routine returns
-        zero.</para>
+          </citerefentry> </olink> jest poprawny. Jesłi offset jest
+        niepoprawny, funkcja wychodzi z muteksu i zwraca błąd. Jeśli offset
+        jest poprawny, wartość lokalnej zmiennej długości ustawiana jest na
+        różnicę między offsetem w strukturze żądania I/O a długością w
+        strukturze stanu urządzenia. Jeśli różnica równa jest zero, funkcja
+        <function>qotd_rw</function> wychodzi z muteksu i kończy działanie.
+        Jeśli urządzenie było otwarte w do zapisu, funkcja zwróci błąd
+        przestrzeni. W innym przypadku zwróci zero.</para>
 
         <para><indexterm xml:id="indexterm-508">
             <primary><function>uiomove </function> kernel function</primary>
@@ -3109,21 +3108,20 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
             <primary>kernel functions</primary>
 
             <secondary><function>uiomove </function></secondary>
-          </indexterm>The <function>qotd_rw </function> routine then sets the
-        <literal>QOTD_BUSY</literal> flag in the <literal>flags</literal>
-        member of the device state structure and exits the mutex. The
-        <function>qotd_rw </function> routine then calls the <olink
-        remap="external" targetdoc="819-2256" targetptr="uiomove-9f">
+          </indexterm>Funkcja <function>qotd_rw</function> ustawia wtedy flagę
+        <literal>QOTD_BUSY</literal> W elemencie <literal>flags</literal>
+        struktury stanu urządzenia i wychodzi z muteksu. Później wywołuje
+        <olink remap="external" targetdoc="819-2256" targetptr="uiomove-9f">
         <citerefentry>
             <refentrytitle>uiomove</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function to copy the quotation. If the
-        <literal>rw</literal> argument is <literal>UIO_READ</literal>, then
-        the quotation is transferred from the state structure to the I/O
-        request structure. If the <literal>rw</literal> argument is
-        <literal>UIO_WRITE</literal>, then the quotation is transferred from
-        the I/O request structure to the state structure.</para>
+          </citerefentry> </olink> w celu skopiowania cytatu. Jeśli argument
+        <literal>rw</literal> to <literal>UIO_READ</literal>, cytat
+        przekazywany jest ze struktury stanu do struktury żądania I/O. Jeżeli
+        argument <literal>rw</literal> to <literal>UIO_WRITE</literal>, cytat
+        przekazywany jest ze struktury żądania I/O do struktury stanu
+        urządzenia.</para>
 
         <para><indexterm xml:id="indexterm-510">
             <primary><function>cv_broadcast </function> kernel
@@ -3132,21 +3130,19 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
             <primary>kernel functions</primary>
 
             <secondary><function>cv_broadcast </function></secondary>
-          </indexterm>The <function>qotd_rw </function> routine then enters a
-        mutex again. If the device was opened for writing, the
-        <function>qotd_rw </function> routine sets the
-        <literal>QOTD_CHANGED</literal> flag. The <function>qotd_rw
-        </function> routine then sets the device to not busy, calls <olink
-        remap="external" targetdoc="819-2256" targetptr="cv-broadcast-9f">
-        <citerefentry>
+          </indexterm>Następnie funkcja <function>qotd_rw</function> wchodzi w
+        mutex. Jeśli urządzenie było otwarte do zapisu, funkcja ustawia flagę
+        <literal>QOTD_CHANGED</literal>. Później zmienia stan urządzenia na
+        wolne, wywołuje <olink remap="external" targetdoc="819-2256"
+        targetptr="cv-broadcast-9f"> <citerefentry>
             <refentrytitle>cv_broadcast</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> to unblock any threads that were blocked on
-        this condition variable, and exits the mutex.</para>
+          </citerefentry> </olink> w celu odblokowania wszystkich wątków
+        oczekujących na tej zmiennej i wychodzi z muteksu.</para>
 
-        <para>Finally, the <function>qotd_rw </function> routine returns the
-        quotation. The quotation is written to the device node.</para>
+        <para>Ostatecznie, funkcja <function>qotd_rw</function> zwraca cytat
+        zapisywany jest do węzła urządzenia.</para>
       </sect3>
 
       <sect3 xml:id="fgham">
@@ -3173,23 +3169,24 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
           <primary><function>ioctl </function> entry point</primary>
         </indexterm>
 
-        <para>The behavior of the <olink remap="external" targetdoc="819-2255"
-        targetptr="ioctl-9e"> <citerefentry>
+        <para>Zachowanie punktu wejścia <olink remap="external"
+        targetdoc="819-2255" targetptr="ioctl-9e"> <citerefentry>
             <refentrytitle>ioctl</refentrytitle>
 
             <manvolnum>9E</manvolnum>
-          </citerefentry> </olink> entry point depends on the command value
-        passed in to the entry point. These constants are defined in the new
-        <filename>qotd.h</filename> header file. The <function>qotd_ioctl
-        </function> routine reports the size of the space allocated for the
-        quotation, sets a new amount of space to allocate for the quotation,
-        or resets the quotation back to its initial value.</para>
+          </citerefentry> </olink> zależy od wartości komendy przekazanej
+        punktowi wejścia. Stałe te są zdefiniowane w nowym pliku nagłówkowym
+        <filename>qotd.h</filename>. Funkcja <function>qotd_ioctl</function>
+        zwraca wielkość przestrzeni zajętej na potrzeby cytatu, zajmuje nową
+        wielkość tej przestrzeni lub przywraca peirwotną wartość
+        cytatu.</para>
 
-        <para>If the request is to report the size of the space allocated for
-        the quotation, then the <function>qotd_ioctl </function> routine first
-        sets a local size variable to the value of the quotation length in the
-        state structure. If the device was not opened for reading, the
-        <function>qotd_ioctl </function> routine returns an error.</para>
+        <para>Jeśli żądanie dotyczy informacji o wielkości przestrzeni
+        zaalokowanej na potrzeby cytatu, funkcja
+        <function>qotd_ioctl</function> najpierw ustawia lokalną zmienną
+        wielkości na wartość długości aktualnejgo cytatu w strukturze stanu.
+        Jeśli urządzenie nie było otwarte do odczytu, funkcja zwraca
+        błąd.</para>
 
         <para><indexterm xml:id="indexterm-516">
             <primary><function>ddi_model_convert_from </function> kernel
@@ -3206,29 +3203,29 @@ mutex_exit(&amp;qsp-&gt;lock);</programlisting>
             <primary>kernel functions</primary>
 
             <secondary><function>ddi_copyout </function></secondary>
-          </indexterm>Because the <function>qotd_ioctl </function> routine
-        transfers data between kernel space and user space, the
-        <function>qotd_ioctl </function> routine must check whether both
-        spaces are using the same data model. If the return value of the
-        <olink remap="external" targetdoc="819-2256"
+          </indexterm>Funkcja <function>qotd_ioctl</function> przekazuje dane
+        między przestrzenią użytkownika i przestrzenią jądra, dlatego
+        <function>qotd_ioctl</function> musi sprawdzić, czy obie przestrzenie
+        używają tego samego modelu danych. Jeśli wartość zwracana przez <olink
+        remap="external" targetdoc="819-2256"
         targetptr="ddi-model-convert-from-9f"> <citerefentry>
             <refentrytitle>ddi_model_convert_from</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> function is
-        <literal>DDI_MODEL_ILP32</literal>, then the driver must convert to
-        32-bit data before calling <olink remap="external"
+          </citerefentry> </olink> równa jest
+        <literal>DDI_MODEL_ILP32</literal>, sterownik musi przekonwertować
+        dane do modelu 32bitowego przed wywołaniem <olink remap="external"
         targetdoc="819-2256" targetptr="ddi-copyout-9f"> <citerefentry>
             <refentrytitle>ddi_copyout</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> </olink> to transfer the current size of the
-        quotation space. If the return value of the <citerefentry>
+          </citerefentry> </olink> w celu przekazania aktualnej wielkości
+        cytatu. Jeżeli wartość zwrócona przez <citerefentry>
             <refentrytitle>ddi_model_convert_from</refentrytitle>
 
             <manvolnum>9F</manvolnum>
-          </citerefentry> function is <literal>DDI_MODEL_NONE</literal>, then
-        no data type conversion is necessary.</para>
+          </citerefentry> równa jest <literal>DDI_MODEL_NONE</literal>, nie
+        jest konieczna żadna konwersja danych.</para>
 
         <para>If the request is to set a new size for the space allocated for
         the quotation, then the <function>qotd_ioctl </function> routine first
