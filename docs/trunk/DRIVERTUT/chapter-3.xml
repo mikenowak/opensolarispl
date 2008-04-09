@@ -4009,8 +4009,8 @@ On the whole, I'd rather be in Philadelphia. - W. C. Fields</screen>
           <secondary>writing</secondary>
         </indexterm>
 
-        <para>To write to the <literal>qotd_3</literal> device, you can
-        redirect command-line input:</para>
+        <para>Zapisu do urządzenia <literal>qotd_3</literal> można dokonać
+        przekierowując standardowe wyjście linii poleceń:</para>
 
         <screen># <userinput>echo "A life is not important except in the impact it has on others. 
 - Jackie Robinson" &gt;&gt; /devices/pseudo/qotd_3@0:qotd_3</userinput>
@@ -4042,35 +4042,36 @@ Robinson</screen>
           <primary><function>ioctl </function> entry point</primary>
         </indexterm>
 
-        <para>In addition to changes in the driver, Quote Of The Day Version 3
-        introduces a new utility program. The <command>qotdctl</command>
-        command enables you to test the driver's I/O controls.</para>
+        <para>Oprócz zmian w samym sterowniku, Cytat Dnia wersja 3. wprowadza
+        dodatkowy program narzędziowy. Komenda <command>qotdctl</command>
+        pozwala na testowanie zarządzania I/O sterownika.</para>
 
-        <para>The source for this command is shown in <olink remap="internal"
+        <para>Źródło komendy zaprezentowane w <olink remap="internal"
         targetdoc="chapter-3.xml" targetptr="ffzrf">Example 3–8</olink>.
-        Compile the <literal>qotdctl</literal> utility as follows:</para>
+        Program <literal>qotdctl</literal> należy skompilować jak
+        poniżej:</para>
 
         <screen>% <userinput>cc -o qotdctl qotdctl.c</userinput>
 </screen>
 
-        <para>The <command>qotdctl</command> command has the following
-        options:</para>
+        <para>Komenda <command>qotdctl</command> przyjmuje następujące
+        opcje:</para>
 
         <variablelist>
           <varlistentry>
             <term><option> g</option></term>
 
             <listitem>
-              <para>Get the size that is currently allocated. Call the <olink
-              remap="external" targetdoc="819-2255" targetptr="ioctl-9e">
-              <citerefentry>
+              <para>Pobranie rozmiaru aktualnie zaalokowanego buforu.
+              Wywołanie punktu wejścia <olink remap="external"
+              targetdoc="819-2255" targetptr="ioctl-9e"> <citerefentry>
                   <refentrytitle>ioctl</refentrytitle>
 
                   <manvolnum>9E</manvolnum>
-                </citerefentry> </olink> entry point of the driver with the
-              <literal>QOTDIOCGSZ</literal> request. The
-              <literal>QOTDIOCGSZ</literal> request reports the current size
-              of the space allocated for the quotation.</para>
+                </citerefentry> </olink> dla sterownika z żądaniem
+              <literal>QOTDIOCGSZ</literal>. Żądanie
+              <literal>QOTDIOCGSZ</literal> informuje o rozmiarze aktualnie
+              zaalokowanego buforu.</para>
             </listitem>
           </varlistentry>
 
@@ -4078,16 +4079,16 @@ Robinson</screen>
             <term><option> s</option> <replaceable>size</replaceable></term>
 
             <listitem>
-              <para>Set the new size to be allocated. Call the <olink
-              remap="external" targetdoc="819-2255" targetptr="ioctl-9e">
-              <citerefentry>
+              <para>Ustawienie nowego rozmiaru buforu do zaalokowania.
+              Wywołanie punktu wejścia <olink remap="external"
+              targetdoc="819-2255" targetptr="ioctl-9e"> <citerefentry>
                   <refentrytitle>ioctl</refentrytitle>
 
                   <manvolnum>9E</manvolnum>
-                </citerefentry> </olink> entry point of the driver with the
-              <literal>QOTDIOCSSZ</literal> request. The
-              <literal>QOTDIOCSSZ</literal> request sets a new size for the
-              quotation space.</para>
+                </citerefentry> </olink> z żądaniem
+              <literal>QOTDIOCSSZ</literal>. Żądanie
+              <literal>QOTDIOCSSZ</literal> ustala nową wielkość buforu dla
+              danych.</para>
             </listitem>
           </varlistentry>
 
@@ -4095,28 +4096,28 @@ Robinson</screen>
             <term><option> r</option></term>
 
             <listitem>
-              <para>Discard the contents and reset the device. Call the <olink
-              remap="external" targetdoc="819-2255" targetptr="ioctl-9e">
-              <citerefentry>
+              <para>Porzucenie danych i przywrócenie stanu początkowego
+              urządzenia. Wywołanie punktu wejścia <olink remap="external"
+              targetdoc="819-2255" targetptr="ioctl-9e"> <citerefentry>
                   <refentrytitle>ioctl</refentrytitle>
 
                   <manvolnum>9E</manvolnum>
-                </citerefentry> </olink> entry point of the driver with the
-              <literal>QOTDIOCDISCARD</literal> request.</para>
+                </citerefentry> </olink> z żądaniem
+              <literal>QOTDIOCDISCARD</literal>.</para>
 
-              <para>Invoking <command>qotdctl</command> with the <option>
-              r</option> option is the only way to unset the
-              <literal>QOTD_CHANGED</literal> flag in the device. The device
-              cannot be detached while the <literal>QOTD_CHANGED</literal>
-              flag is set. This protects the contents of the ramdisk device
-              from being unintentionally or automatically removed. For
-              example, a device might be automatically removed by the
-              automatic device unconfiguration thread.</para>
+              <para>Wywołanie komendy <command>qotdctl</command> z
+              opcją<option> r</option> jest jedynym sposobem na zdjęcie flagi
+              <literal>QOTD_CHANGED</literal> w urządzeniu. Urządzenia nie
+              można odłączyć dopóki flaga <literal>QOTD_CHANGED</literal> jest
+              ustawiona. Chroni ona zawartość ramdysku przed przypadkowym lub
+              automatycznym usunięciem danych. Urządzenie może na przykład
+              zostać automatycznie odłączone przez wątek automatycznej
+              dekonfiguracji urządzenia.</para>
 
-              <para>When you are no longer interested in the contents of the
-              device, run the <command>qotdctl</command> command with the
-              <option> r</option> option. Then you can remove the
-              device.</para>
+              <para>Kiedy zawartość urządzenia nie jest już ważna, należy
+              wykonać komendę <command>qotdctl</command> z opcją
+              <option>r</option>. Dopiero wtedy można odłączyć
+              urządzenie.</para>
             </listitem>
           </varlistentry>
 
@@ -4124,7 +4125,7 @@ Robinson</screen>
             <term><option> h</option></term>
 
             <listitem>
-              <para>Display help text.</para>
+              <para>Wydrukowanie tekstu pomocy.</para>
             </listitem>
           </varlistentry>
 
@@ -4132,8 +4133,8 @@ Robinson</screen>
             <term><option> V</option></term>
 
             <listitem>
-              <para>Display the version number of the
-              <command>qotdctl</command> command.</para>
+              <para>Wydrukowanie numeru wersji komendy
+              <command>qotdctl</command>.</para>
             </listitem>
           </varlistentry>
 
@@ -4141,14 +4142,14 @@ Robinson</screen>
             <term><option> d</option> <replaceable>device</replaceable></term>
 
             <listitem>
-              <para>Specify the device node to use. The default value is
+              <para>Podaj węzeł urządzenia do użycia. The default value is
               <filename>/dev/qotd0</filename>.</para>
             </listitem>
           </varlistentry>
         </variablelist>
 
-        <para>Use the <command>qotdctl</command> command to test the driver's
-        I/O controls:</para>
+        <para>Do testowania zarządzania I/O używa się komendy
+        <command>qotdctl</command>:</para>
 
         <screen># <userinput>./qotdctl -V</userinput>
 qotdctl 1.0
@@ -4157,13 +4158,13 @@ Usage: ./qotdctl [-d device] {-g | -h | -r | -s size | -V}
 # <userinput>./qotdctl -g</userinput>
 open: No such file or directory</screen>
 
-        <para>By default, the <command>qotdctl</command> command accesses the
-        <filename>/dev/qotd0</filename> device. The <literal>qotd_3</literal>
-        device in this example is
-        <filename>/devices/pseudo/qotd_3@0:qotd_3</filename>. Either define a
-        link from <filename>/dev/qotd0</filename> to
-        <filename>/devices/pseudo/qotd_3@0:qotd_3</filename> or use the
-        <option> d</option> option to specify the correct device:</para>
+        <para>Domyślnie komenda <command>qotdctl</command> otwiera urządzenie
+        <filename>/dev/qotd0</filename>. W tym przykładzie urządzenie
+        <literal>qotd_3</literal> to
+        <filename>/devices/pseudo/qotd_3@0:qotd_3</filename>. Należy albo
+        stworzyć dowiązanie <filename>/dev/qotd0</filename> do
+        <filename>/devices/pseudo/qotd_3@0:qotd_3</filename> lub użyć
+        opcji<option> d</option> do wskazania poprawnego urządzenia:</para>
 
         <screen># <userinput>./qotdctl -d /devices/pseudo/qotd_3@0:qotd_3 -g</userinput>
 128
@@ -4174,25 +4175,25 @@ open: No such file or directory</screen>
 # <userinput>cat /devices/pseudo/qotd_3@0:qotd_3</userinput>
 On the whole, I'd rather be in Philadelphia. - W. C. Fields</screen>
 
-        <para>If you try to remove the device now, you will receive an error
-        message:</para>
+        <para>Przy próbie usunięcia urządzenia wydrukowanie zostanie wiadomość
+        o błędzie:</para>
 
         <screen># <userinput>rem_drv qotd_3</userinput>
 Device busy
 Cannot unload module: qotd_3
 Will be unloaded upon reboot.</screen>
 
-        <para>The device is still marked busy because you have not told the
-        driver that you are no longer interested in this device. Run the
-        <command>qotdctl</command> command with the <option> r</option> option
-        to unset the <literal>QOTD_CHANGED</literal> flag in the driver and
-        mark the device not busy:</para>
+        <para>Urządzenie oznaczone jest jako używane, ponieważ sterownik nie
+        został poinformowany, że urządzenie nie jest już potrzebne. Należy
+        wykonać komendę <command>qotdctl</command> z opcją<option> r</option>
+        aby wyczyścić flagę <literal>QOTD_CHANGED</literal> urządzenia i
+        oznaczyć je jako nieużywane:</para>
 
         <screen># <userinput>./qotdctl -r</userinput>
 </screen>
 
-        <para>Enter the source code shown in the following example into a text
-        file named <filename>qotdctl.c</filename>.</para>
+        <para>Poniższy kod źródłowy należy umieścić w pliku o nazwie
+        <filename>qotdctl.c</filename>.</para>
 
         <example xml:id="ffzrf">
           <title>Quote Of The Day I/O Control Command Source File</title>

@@ -1,740 +1,761 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
-	<!ENTITY % xinclude SYSTEM "xinclude.mod">
-	%xinclude;
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN"
+"docbook.dtd" [
+<!ENTITY % xinclude SYSTEM "xinclude.mod">
+%xinclude;
 ]>
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook" xml:id="eoqrv">
+  <title>Tips for Developing Device Drivers</title>
 
-<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="eoqrv">
+  <toc>
+    <para><indexterm xml:id="indexterm-536">
+        <primary>device drivers</primary>
 
+        <secondary>development guidelines</secondary>
+      </indexterm>W tym rozdziale przedstawiono pewne ogólne wskazówki
+    dotyczące pisania sterowników urządzeń.</para>
 
+    <itemizedlist>
+      <para>Wskazówki poszeregowane są w cztery kategorie:</para>
 
-<title>Tips for Developing Device Drivers</title>
-<toc>
-<para>
-<indexterm xml:id="indexterm-536">
-<primary>device drivers</primary>
-<secondary>development guidelines</secondary>
-</indexterm>This chapter provides some general guidelines for writing device
-drivers.</para>
-<itemizedlist>
-<para>The guidelines are organized into the following categories:</para>
-<listitem>
-<para>
-<olink remap="internal" targetdoc="chapter-4.xml" targetptr="fdlbn">Device Driver Coding Tips</olink>
-</para>
-</listitem>
-<listitem>
-<para>
-<olink remap="internal" targetdoc="chapter-4.xml" targetptr="fdlbq">Device Driver Testing Tips</olink>
-</para>
-</listitem>
-<listitem>
-<para>
-<olink remap="internal" targetdoc="chapter-4.xml" targetptr="fdlbo">Device Driver Debugging and Tuning Tips</olink>
-</para>
-</listitem>
-</itemizedlist>
-</toc>
-<sect1 xml:id="fdlbn">
-<title>Device Driver Coding Tips</title>
-<indexterm xml:id="indexterm-537">
-<primary>device drivers</primary>
-<secondary>coding tips</secondary>
-</indexterm>
-<itemizedlist>
-<para>Use these guidelines when you write the code for your driver:</para>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-538">
-<primary>naming conventions</primary>
-</indexterm>
-<indexterm xml:id="indexterm-539">
-<primary>device drivers</primary>
-<secondary>naming conventions</secondary>
-</indexterm>Use a prefix based on the name of your driver to give global variables
-and functions unique names.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-540">
-<primary>commands</primary>
-<secondary>
-<command>add_drv</command>
-</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-541">
-<primary>
-<command>add_drv</command> command</primary>
-<secondary>use in modifying existing drivers</secondary>
-</indexterm>If you are basing your design on an existing driver, modify the
-configuration file before adding the driver.</para>
-<para>The <option>
-n</option> option
-in the <olink remap="external" targetdoc="819-2240" targetptr="add-drv-1m">
-<citerefentry>
-<refentrytitle>add_drv</refentrytitle>
-<manvolnum>
-1M
-</manvolnum>
-</citerefentry>
-</olink> command
-enables you to update the system configuration files for a driver without
-loading or attaching the driver.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-542">
-<primary>
-<function>cmn_err
-</function> kernel function</primary>
-</indexterm>
-<indexterm xml:id="indexterm-543">
-<primary>kernel functions</primary>
-<secondary>
-<function>cmn_err
-</function>
-</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-544">
-<primary>
-<function>printf
-</function> function</primary>
-</indexterm>
-<indexterm xml:id="indexterm-545">
-<primary>functions</primary>
-<secondary>
-<function>printf
-</function>
-</secondary>
-</indexterm>Use the <function>cmn_err
-</function> function to log driver activity.</para>
-<para>You can use the <olink remap="external" targetdoc="819-2256" targetptr="cmn-err-9f">
-<citerefentry>
-<refentrytitle>cmn_err</refentrytitle>
-<manvolnum>
-9F
-</manvolnum>
-</citerefentry>
-</olink> function
-to display information from your driver similar to the way you might use print
-statements to display information from a user program. The <citerefentry>
-<refentrytitle>cmn_err</refentrytitle>
-<manvolnum>
-9F
-</manvolnum>
-</citerefentry> function
-writes low priority messages to <filename>/dev/log</filename>. The <olink remap="external" targetdoc="819-2240" targetptr="syslogd-1m">
-<citerefentry>
-<refentrytitle>syslogd</refentrytitle>
-<manvolnum>
-1M
-</manvolnum>
-</citerefentry>
-</olink> daemon reads messages from <filename>/dev/log</filename> and writes low priority messages to <filename>/var/adm/messages</filename>. Use the following command to monitor the output from your <citerefentry>
-<refentrytitle>cmn_err</refentrytitle>
-<manvolnum>
-9F
-</manvolnum>
-</citerefentry> messages:</para>
-<screen>% <userinput>tail -f /var/adm/messages</userinput>
+      <listitem>
+        <para><olink remap="internal" targetdoc="chapter-4.xml"
+        targetptr="fdlbn">Device Driver Coding Tips</olink></para>
+      </listitem>
+
+      <listitem>
+        <para><olink remap="internal" targetdoc="chapter-4.xml"
+        targetptr="fdlbq">Device Driver Testing Tips</olink></para>
+      </listitem>
+
+      <listitem>
+        <para><olink remap="internal" targetdoc="chapter-4.xml"
+        targetptr="fdlbo">Device Driver Debugging and Tuning
+        Tips</olink></para>
+      </listitem>
+    </itemizedlist>
+  </toc>
+
+  <sect1 xml:id="fdlbn">
+    <title>Device Driver Coding Tips</title>
+
+    <indexterm xml:id="indexterm-537">
+      <primary>device drivers</primary>
+
+      <secondary>coding tips</secondary>
+    </indexterm>
+
+    <itemizedlist>
+      <para>Podczas pisania sterownika dla urządzenia należy postępować
+      zgodnie z poniższymi wytycznymi:</para>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-538">
+            <primary>naming conventions</primary>
+          </indexterm> <indexterm xml:id="indexterm-539">
+            <primary>device drivers</primary>
+
+            <secondary>naming conventions</secondary>
+          </indexterm>Funkcje i zmienne globalne należy nazywać unikalnie przy
+        użyciu prefiksu opartego na nazwie urządzenia.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-540">
+            <primary>commands</primary>
+
+            <secondary><command>add_drv</command></secondary>
+          </indexterm> <indexterm xml:id="indexterm-541">
+            <primary><command>add_drv</command> command</primary>
+
+            <secondary>use in modifying existing drivers</secondary>
+          </indexterm>Jeśli korzysta się ze źródeł istniejącego sterownika,
+        należy pamiętać o zmodyfikowaniu pliku konfiguracyjnego przed dodaniem
+        sterownika.</para>
+
+        <para>Opcja <option>n</option> komendy <olink remap="external"
+        targetdoc="819-2240" targetptr="add-drv-1m"> <citerefentry>
+            <refentrytitle>add_drv</refentrytitle>
+
+            <manvolnum>1M</manvolnum>
+          </citerefentry> </olink> pozwala na uaktualnienie kofiguracji
+        systemowej bez ładowania lub podłączania sterownika.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-542">
+            <primary><function>cmn_err </function> kernel function</primary>
+          </indexterm> <indexterm xml:id="indexterm-543">
+            <primary>kernel functions</primary>
+
+            <secondary><function>cmn_err </function></secondary>
+          </indexterm> <indexterm xml:id="indexterm-544">
+            <primary><function>printf </function> function</primary>
+          </indexterm> <indexterm xml:id="indexterm-545">
+            <primary>functions</primary>
+
+            <secondary><function>printf </function></secondary>
+          </indexterm>Do zapisywania danych w dzienniku systemowym należy
+        używać funkcji <function>cmn_err</function>.</para>
+
+        <para>Funkcji <olink remap="external" targetdoc="819-2256"
+        targetptr="cmn-err-9f"> <citerefentry>
+            <refentrytitle>cmn_err</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> </olink> można użyć do drukowania informacji ze
+        sterownika podobnie do drukowania informacji z programu użytkownika.
+        Funkcja <citerefentry>
+            <refentrytitle>cmn_err</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> zapisuje komunikaty o niskim priorytecie do
+        <filename>/dev/log</filename>. Daemon <olink remap="external"
+        targetdoc="819-2240" targetptr="syslogd-1m"> <citerefentry>
+            <refentrytitle>syslogd</refentrytitle>
+
+            <manvolnum>1M</manvolnum>
+          </citerefentry> </olink> odczytuje komunikaty z
+        <filename>/dev/log</filename> zapisuje te o niksim priorytecie do
+        pliku <filename>/var/adm/messages</filename>. Poniższa komenda pozwala
+        obserwować wyjście z komendy <citerefentry>
+            <refentrytitle>cmn_err</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry>:</para>
+
+        <screen>% <userinput>tail -f /var/adm/messages</userinput>
 </screen>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-546">
-<primary>device drivers</primary>
-<secondary>recommended housekeeping</secondary>
-</indexterm>Clean up allocations and other initialization activities when
-the driver exits.</para>
-<para>When the driver exits, whether intentionally
-or prematurely, you need to perform such tasks as closing opened files, freeing
-allocated memory, releasing mutex locks, and destroying any mutexes that have
-been created. In addition, the system must be able to close all minor devices
-and detach driver instances even after the hardware fails. An orderly approach
-is to reverse <function>_init
-</function> actions in the <function>_fini
-</function> routine,
-reverse <function>open
-</function> operations in the <function>close
-</function> routine,
-and reverse <function>attach
-</function> operations in the <function>detach
-</function> routine.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-547">
-<primary>
-<function>ASSERT
-</function> kernel function</primary>
-</indexterm>
-<indexterm xml:id="indexterm-548">
-<primary>kernel functions</primary>
-<secondary>
-<function>ASSERT
-</function>
-</secondary>
-</indexterm>Use <olink remap="external" targetdoc="819-2256" targetptr="uc-assert-9f">
-<citerefentry>
-<refentrytitle>ASSERT</refentrytitle>
-<manvolnum>
-9F
-</manvolnum>
-</citerefentry>
-</olink> to
-catch unexpected error returns.</para>
-<para>
-<function>ASSERT
-</function> is
-a macro that halts the kernel execution if a condition that was expected to
-be true turns out to be false. To activate <function>ASSERT
-</function>, you
-need to include the <literal>sys/debug.h</literal> header file and specify
-the <literal>DEBUG</literal> preprocessor symbol during compilation.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-549">
-<primary>
-<function>mutex_owned
-</function> kernel function</primary>
-</indexterm>
-<indexterm xml:id="indexterm-550">
-<primary>kernel functions</primary>
-<secondary>
-<function>mutex_owned
-</function>
-</secondary>
-</indexterm>Use <function>mutex_owned
-</function> to validate and document
-locking requirements.</para>
-<para>The <olink remap="external" targetdoc="819-2256" targetptr="mutex-owned-9f">
-<citerefentry>
-<refentrytitle>mutex_owned</refentrytitle>
-<manvolnum>
-9F
-</manvolnum>
-</citerefentry>
-</olink> function helps determine
-whether the current thread owns a specified mutex. To determine whether a
-mutex is held by a thread, use <function>mutex_owned
-</function> within <function>ASSERT
-</function>.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-551">
-<primary>conditional compilation</primary>
-</indexterm>
-<indexterm xml:id="indexterm-552">
-<primary>device drivers</primary>
-<secondary>conditional compilation</secondary>
-</indexterm>Use conditional compilation to toggle “costly” debugging
-features.</para>
-<para>The Solaris OS provides various debugging functions,
-such as <function>assert
-</function> and <function>mutex-owned
-</function>,
-that can be turned on by specifying the <literal>DEBUG</literal> preprocessor
-symbol when the driver is compiled. With conditional compilation, unnecessary
-code can be removed from the production driver. This approach can also be
-accomplished by using a global variable.</para>
-</listitem>
-<listitem>
-<para>Use a separate instance of the driver for each device to be
-controlled.</para>
-</listitem>
-<listitem>
-<para>Use DDI functions as much as possible in your device drivers.</para>
-<para>These interfaces shield the driver from platform-specific dependencies
-such as mismatches between processor and device endianness and any other data
-order dependencies.  With these interfaces, a single-source driver can run
-on the SPARC platform, x86 platform, and related processor architectures.</para>
-</listitem>
-<listitem>
-<para>Anticipate corrupted data.</para>
-<para>Always check that the
-integrity of data before that data is used. The driver must avoid releasing
-bad data to the rest of the system.</para>
-</listitem>
-<listitem>
-<para>A device should only write to DMA buffers that are controlled
-solely by the driver.</para>
-<para>This technique prevents a DMA fault from
-corrupting an arbitrary part of the system's main memory.</para>
-</listitem>
-<listitem>
-<para>Use the <olink remap="external" targetdoc="819-2256" targetptr="ddi-umem-alloc-9f">
-<citerefentry>
-<refentrytitle>ddi_umem_alloc</refentrytitle>
-<manvolnum>
-9F
-</manvolnum>
-</citerefentry>
-</olink> function when you need to make DMA transfers.</para>
-<para>This function guarantees that only whole, aligned pages are transferred.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-553">
-<primary>interrupts</primary>
-<secondary>avoiding problems</secondary>
-</indexterm>Set a fixed number of attempts before taking alternate action
-to deal with a stuck interrupt.</para>
-<para>The device driver must not be
-an unlimited drain on system resources if the device locks up. The driver
-should time out if a device claims to be continuously busy. The driver should
-also detect a pathological (stuck) interrupt request and take appropriate
-action.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-554">
-<primary>mutexes</primary>
-<secondary>avoiding problems</secondary>
-</indexterm>Use care when setting the sequence for mutex acquisitions and
-releases so as to avoid unwanted thread interactions if a device fails.</para>
-<para>See <olink remap="external" targetdoc="819-3196" targetptr="thread-interaction">
-<citetitle remap="section">Thread Interaction</citetitle> in <citetitle remap="book">Writing Device Drivers</citetitle>
-</olink> for more information.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-555">
-<primary>
-<function>ioctl
-</function> requests</primary>
-<secondary>avoiding problems</secondary>
-</indexterm>Check for malformed <function>ioctl
-</function> requests from user
-applications.</para>
-<para>User requests can be potentially and intentionally
-destructive. The design of the driver should take into consideration the construction
-of each type of potential <function>ioctl
-</function> request.</para>
-</listitem>
-<listitem>
-<para>Try to avoid situations where a driver continues to function
-without detecting a device failure.</para>
-<para>A driver should switch to
-an alternative device rather than try to work around a device failure.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-556">
-<primary>hotplugging</primary>
-</indexterm>All device drivers in the Solaris OS must support hotplugging.</para>
-<para>All devices need to be able to be installed or removed without requiring
-a reboot of the system.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-557">
-<primary>power management</primary>
-</indexterm>All device drivers should support power management.</para>
-<para>Power
-management provides the ability to control and manage the electrical power
-usage of a computer system or device. Power management enables systems to
-conserve energy by using less power when idle and by shutting down completely
-when not in use.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-558">
-<primary>
-<literal>volatile</literal> keyword</primary>
-</indexterm>Apply the <literal>volatile</literal> keyword to any variable
-that references a device register.</para>
-<para>Without the <literal>volatile</literal> keyword,
-the compile-time optimizer can delete important accesses to a register.</para>
-</listitem>
-<listitem>
-<para>Perform periodic health checks to detect and report faulty
-devices.</para>
-<itemizedlist>
-<para>A periodic health check should include the following
-activities:</para>
-<listitem>
-<para>Check any register or memory location on the device whose
-value might have been altered since the last poll.</para>
-</listitem>
-<listitem>
-<para>Timestamp outgoing requests such as transmit blocks or commands
-that are issued by the driver.</para>
-</listitem>
-<listitem>
-<para>Initiate a test action on the device that should be completed
-before the next scheduled check.</para>
-</listitem>
-</itemizedlist>
-</listitem>
-</itemizedlist>
-</sect1>
-<sect1 xml:id="fdlbq">
-<title>Device Driver Testing Tips</title>
-<indexterm xml:id="indexterm-559">
-<primary>device drivers</primary>
-<secondary>testing</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-560">
-<primary>testing device drivers</primary>
-</indexterm>
-<para>Testing a device driver can cause the system to panic and can harm the
-kernel.</para>
-<itemizedlist>
-<para>The following tips can help you avoid problems when testing your driver:</para>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-561">
-<primary>device drivers</primary>
-<secondary>installing</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-562">
-<primary>entry points</primary>
-<secondary>
-<function>_info
-</function>
-</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-563">
-<primary>
-<function>_info
-</function> entry point</primary>
-</indexterm>
-<indexterm xml:id="indexterm-564">
-<primary>entry points</primary>
-<secondary>
-<function>_init
-</function>
-</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-565">
-<primary>
-<function>_init
-</function> entry point</primary>
-</indexterm>
-<indexterm xml:id="indexterm-566">
-<primary>entry points</primary>
-<secondary>
-<function>attach
-</function>
-</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-567">
-<primary>
-<function>attach
-</function> entry point</primary>
-</indexterm>Install the driver in a temporary location.</para>
-<para>Install
-drivers in the <filename>/tmp</filename> directory until you are finished
-modifying and testing the <function>_info
-</function>, <function>_init
-</function>,
-and <function>attach
-</function> routines. Copy the driver binary to the <filename>/tmp</filename> directory. Link to the driver from the kernel driver directory.</para>
-<para>If a driver has an error in its <function>_info
-</function>, <function>_init
-</function>, or <function>attach
-</function> function, your machine could get
-into a state of infinite panic. The Solaris OS automatically reboots itself
-after a panic. The Solaris OS loads any drivers it can during boot. If you
-have an error in your <function>attach
-</function> function that panics the
-system when you load the driver, then the system will panic again when it
-tries to reboot after the panic. The system will continue the cycle of panic,
-reboot, panic as it attempts to reload the faulty driver every time it reboots
-after panic.</para>
-<para>To avoid an infinite panic, keep the driver in the <filename>/tmp</filename> area until it is well tested. Link to the driver in the <filename>/tmp</filename> area from the kernel driver area. The Solaris OS removes all
-files from the <filename>/tmp</filename> area every time the system reboots.
-If your driver causes a panic, the Solaris OS reboots successfully because
-the driver has been removed automatically from the <filename>/tmp</filename> area.
-The link in the kernel driver area points to nothing. The faulty driver did
-not get loaded, so the system does not go back into a panic. You can modify
-the driver, copy it again to the <filename>/tmp</filename> area, and continue
-testing and developing. When the driver is well tested, copy it to the <filename>/usr/kernel/drv</filename> area so that it will remain available after a reboot.</para>
-<para>The following example shows you where to link the driver for a 32-bit
-platform. For other architectures, see the instructions in <olink remap="external" targetdoc="chapter-1.xml" targetptr="fsfqv">Installing a Driver</olink>.</para>
-<screen># <userinput>cp mydriver /tmp</userinput>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-546">
+            <primary>device drivers</primary>
+
+            <secondary>recommended housekeeping</secondary>
+          </indexterm>Kiedy sterownik kończy działanie musi uwolnić
+        zaalokowane obszary i usunąć zainicjalizowane dane.</para>
+
+        <para>Kiedy sterownik kończy działanie, czy to planowo czy
+        przedwcześnie, musi wykonać takie czynności jak zamknięcie otwartych
+        plików, uwolnić zaalokowaną pamięć, uwolnić muteksy i zniszczyć
+        stworzone przez siebie muteksy. Dodatkowo system musi mieć możliwość
+        zamknąć wszystkie młodsze węzły urządzenia i odłączyć instancję
+        sterownika nawet po awarii sprzętu. Uporządkowane podejście to
+        postępowanie odwrotne w <function>_fini</function> do działań
+        podejmowanych w <function>_init</function> oraz odwrócenie działań z
+        <function>open</function> w funkcji <function>close</function> a także
+        odwrócenie działań z funkcji <function>attach</function> w funkcji
+        <function>detach</function>.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-547">
+            <primary><function>ASSERT </function> kernel function</primary>
+          </indexterm> <indexterm xml:id="indexterm-548">
+            <primary>kernel functions</primary>
+
+            <secondary><function>ASSERT </function></secondary>
+          </indexterm>Nieoczekiwane zwroty błędów należy wyłapywać za pomocą
+        <olink remap="external" targetdoc="819-2256" targetptr="uc-assert-9f">
+        <citerefentry>
+            <refentrytitle>ASSERT</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> </olink>.</para>
+
+        <para><function>ASSERT</function> to jest makro zatrzymujące pracę
+        jądra w przypadku, gdy wyrażenie, którego oczekiwana zwracana wartość
+        wynosi "prawda" zwróci "fałsz". Aby uaktywnić <function>ASSERT
+        </function>należy włączyć plik nagłówkowy
+        <literal>sys/debug.h</literal> i zdefiniować symbol preprocesora
+        <literal>DEBUG</literal> preprocessor podczas kompilacji.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-549">
+            <primary><function>mutex_owned </function> kernel
+            function</primary>
+          </indexterm> <indexterm xml:id="indexterm-550">
+            <primary>kernel functions</primary>
+
+            <secondary><function>mutex_owned </function></secondary>
+          </indexterm>Do sprawdzania poprawnośći i dokumentowania wymagań
+        blokowania należy używać <function>mutex_owned</function>.</para>
+
+        <para>Funkcja <olink remap="external" targetdoc="819-2256"
+        targetptr="mutex-owned-9f"> <citerefentry>
+            <refentrytitle>mutex_owned</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> </olink> pomaga ustalić, czy aktualny wątek jest
+        właścicielem konkretnego muteksu. Sprawdzenia czy mutex jest
+        przetrzymywany przez wątek dokonuje się za pomocą
+        <function>mutex_owned</function> wywoływanej wewnątrz
+        <function>ASSERT</function>.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-551">
+            <primary>conditional compilation</primary>
+          </indexterm> <indexterm xml:id="indexterm-552">
+            <primary>device drivers</primary>
+
+            <secondary>conditional compilation</secondary>
+          </indexterm>Do włączania i wyłączania "kosztownych" opcji
+        debugowania należy używaż kompilacji warunkowych.</para>
+
+        <para>System operacyjny Solaris zawiera wiele funkcji debugujących,
+        takie jak <function>assert</function> i
+        <function>mutex-owned</function>, które można włączyć przez
+        zdefiniowanie symbolu preprocesora <literal>DEBUG</literal> podczas
+        kompilacji sterownika. Przy użyciu kompilacji warunkowej można pozbyć
+        się niepotrzebnego kodu ze sterownika produkcyjnego. Można tego
+        dokonać też przy użyciu zmiennej globalnej.</para>
+      </listitem>
+
+      <listitem>
+        <para>Do każdego urządzenia należy używać osobnej instancji
+        sterownika.</para>
+      </listitem>
+
+      <listitem>
+        <para>Należy używać funkcji DDI wszędzie, gdzie to tylko możliwe w
+        sterowniku.</para>
+
+        <para>Wspomniane interfejsy osłaniają sterowniki przed szczegółami
+        zależnymi od platformy, takimi jak niezgodność procesora i
+        endianowością urządzenia oraz innymi zależnościami od porządku danych.
+        Dzięki tym interfejsom jedno źródło daje się używać na platformach
+        SPARC, x86 i innych powiązanych architekturach procesora.</para>
+      </listitem>
+
+      <listitem>
+        <para>Należy spodziewać się uszkodzonych danych.</para>
+
+        <para>Zawsze przed użyciem danych należy sprawdzić ich poprawność.
+        Sterownik musi unikać przekazywania uszkodzonych danych do
+        systemu.</para>
+      </listitem>
+
+      <listitem>
+        <para>Urządzenia powinny pisać tylko do kanałów DMA kontrolowanych
+        wyłącznie przez sterownik.</para>
+
+        <para>Pozwala to na zapobieganie uszkodzeniom danych w pamięci systemu
+        przez uszkodzenie DMA.</para>
+      </listitem>
+
+      <listitem>
+        <para>Do wykonywania transferów DMA należy zawsze używać funkcji
+        <olink remap="external" targetdoc="819-2256"
+        targetptr="ddi-umem-alloc-9f"> <citerefentry>
+            <refentrytitle>ddi_umem_alloc</refentrytitle>
+
+            <manvolnum>9F</manvolnum>
+          </citerefentry> </olink>.</para>
+
+        <para>Funkcja gwarantuje, że przesyłane są tylko kompletne i wyrównane
+        strony.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-553">
+            <primary>interrupts</primary>
+
+            <secondary>avoiding problems</secondary>
+          </indexterm>Należy ustalić skończoną liczbę prób przed zmianą
+        sposobu wyjścia z zablokowanego przerwania.</para>
+
+        <para>Sterownik urządzenia nie może w nieskończoność zajmować zasobów
+        systemu, jeśli urządzenie się zablokuje. Sterownik powinien przerwać
+        oczekiwanie, jeśli urządzenie ciągle twierdzi, że jest zajęte.
+        Sterownik powienien również wykrywać patologiczne (zablokowane)
+        żądania przerwań i podjąć odpowiednie działania.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-554">
+            <primary>mutexes</primary>
+
+            <secondary>avoiding problems</secondary>
+          </indexterm>Kolejność zajmowania i zwalniania muteksów musi być
+        ustalona z uwagą, aby uniknąć niepotrzebnej interakcji między wątkami,
+        jeśli urządzenie zawiedzie.</para>
+
+        <para>Więcej informacji w <olink remap="external" targetdoc="819-3196"
+        targetptr="thread-interaction"> <citetitle remap="section">Thread
+        Interaction</citetitle> in <citetitle remap="book">Writing Device
+        Drivers</citetitle> </olink>.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-555">
+            <primary><function>ioctl </function> requests</primary>
+
+            <secondary>avoiding problems</secondary>
+          </indexterm>Należy sprawdzać poprawność żądań
+        <function>ioctl</function> z programów przestrzeni użytkownika.</para>
+
+        <para>Żądania z przestrzeni użytkownika mogą być potencjalnie i z
+        zamysłem niszczycielskie. Projekt sterownika powinna brać pod uwagę
+        konstrukcję każdego potencjalnego żądania
+        <function>ioctl</function>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Należy unikać możliwości pracy sterownika bez wykrycia
+        uszkodzenia urządzenia.</para>
+
+        <para>Sterownik powinien przełączyć się na inne urządzenie zamiast
+        próbować obejść uszkodzenie aktualnego urządzenia.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-556">
+            <primary>hotplugging</primary>
+          </indexterm>Wszystkie sterowniki urządzeń w systemie operacyjnym
+        Solaris muszą obsługiwać hotplugging.</para>
+
+        <para>Sterowniki muszą zezwalać na włączenie i odłączenie ich bez
+        restartu systemu.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-557">
+            <primary>power management</primary>
+          </indexterm>Wszystkie sterowniki urządzeń muszą obsługiwać
+        zarządzanie zasilaniem.</para>
+
+        <para>Zarządzanie zasilaniem umożliwia kontrolowanie i zarządzanie
+        zużyciem energii elektrycznej systemu komputerowego lub urządzenia.
+        Pozwala na oszczędzanie energii przez mniejsze zużycie, kiedy system
+        jest nisko obciążony oraz wyłączenie go kiedy jest nieużywany.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-558">
+            <primary><literal>volatile</literal> keyword</primary>
+          </indexterm>Każdą zmienną wskazującą na sterownik urządzenia należy
+        zadeklarować jako <literal>volatile</literal>.</para>
+
+        <para>Bez słowa kluczowego <literal>volatile</literal> optimyzator
+        kompilowanego kodu może usunąć ważne dostępy do rejestru.</para>
+      </listitem>
+
+      <listitem>
+        <para>Należy wykonywać czasowe testy zdrowia aby wykryć uszkodzone
+        urządzenia.</para>
+
+        <itemizedlist>
+          <para>Czasowe testy zdrowia powinny zawierać poniższe kroki:</para>
+
+          <listitem>
+            <para>Sprawdzenie każdego rejestru i miejsca w pamięci, których
+            zawartość mogła ulec zmianie od ostatniego testu.</para>
+          </listitem>
+
+          <listitem>
+            <para>Nakładanie oznaczeń czasu na wychodzące żądania, takie jak
+            przesyłanie bloków lub komendy wydawane przez sterownik.</para>
+          </listitem>
+
+          <listitem>
+            <para>Rozpoczęcie testu, który koniecznie musi zostać ukończony
+            przez następnym przewidzianym testem.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 xml:id="fdlbq">
+    <title>Device Driver Testing Tips</title>
+
+    <indexterm xml:id="indexterm-559">
+      <primary>device drivers</primary>
+
+      <secondary>testing</secondary>
+    </indexterm>
+
+    <indexterm xml:id="indexterm-560">
+      <primary>testing device drivers</primary>
+    </indexterm>
+
+    <para>Testowanie urządzenia może spowodować, że system spanikuje lub może
+    uszkodzić jądro.</para>
+
+    <itemizedlist>
+      <para>Poniższe podpowiedzi mogą pomóc uniknąć problemów podczas
+      testowania sterownika:</para>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-561">
+            <primary>device drivers</primary>
+
+            <secondary>installing</secondary>
+          </indexterm> <indexterm xml:id="indexterm-562">
+            <primary>entry points</primary>
+
+            <secondary><function>_info </function></secondary>
+          </indexterm> <indexterm xml:id="indexterm-563">
+            <primary><function>_info </function> entry point</primary>
+          </indexterm> <indexterm xml:id="indexterm-564">
+            <primary>entry points</primary>
+
+            <secondary><function>_init </function></secondary>
+          </indexterm> <indexterm xml:id="indexterm-565">
+            <primary><function>_init </function> entry point</primary>
+          </indexterm> <indexterm xml:id="indexterm-566">
+            <primary>entry points</primary>
+
+            <secondary><function>attach </function></secondary>
+          </indexterm> <indexterm xml:id="indexterm-567">
+            <primary><function>attach </function> entry point</primary>
+          </indexterm>Instalowanie sterownika w tymczasowym miejscu.</para>
+
+        <para>Sterownik należy instalować w katalogu <filename>/tmp</filename>
+        dopóki nie ukończono testów i modyfikacji funkcji
+        <function>_info</function>, <function>_init</function> i
+        <function>attach</function>. Wykonuje się to przez skopiowanie pliku
+        wykonywalnego sterownika do katalogu <filename>/tmp</filename> i
+        stworzenie dowiązania w katalogu sterowników jądra.</para>
+
+        <para>If a driver has an error in its <function>_info </function>,
+        <function>_init </function>, or <function>attach </function> function,
+        your machine could get into a state of infinite panic. The Solaris OS
+        automatically reboots itself after a panic. The Solaris OS loads any
+        drivers it can during boot. If you have an error in your
+        <function>attach </function> function that panics the system when you
+        load the driver, then the system will panic again when it tries to
+        reboot after the panic. The system will continue the cycle of panic,
+        reboot, panic as it attempts to reload the faulty driver every time it
+        reboots after panic.</para>
+
+        <para>To avoid an infinite panic, keep the driver in the
+        <filename>/tmp</filename> area until it is well tested. Link to the
+        driver in the <filename>/tmp</filename> area from the kernel driver
+        area. The Solaris OS removes all files from the
+        <filename>/tmp</filename> area every time the system reboots. If your
+        driver causes a panic, the Solaris OS reboots successfully because the
+        driver has been removed automatically from the
+        <filename>/tmp</filename> area. The link in the kernel driver area
+        points to nothing. The faulty driver did not get loaded, so the system
+        does not go back into a panic. You can modify the driver, copy it
+        again to the <filename>/tmp</filename> area, and continue testing and
+        developing. When the driver is well tested, copy it to the
+        <filename>/usr/kernel/drv</filename> area so that it will remain
+        available after a reboot.</para>
+
+        <para>The following example shows you where to link the driver for a
+        32-bit platform. For other architectures, see the instructions in
+        <olink remap="external" targetdoc="chapter-1.xml"
+        targetptr="fsfqv">Installing a Driver</olink>.</para>
+
+        <screen># <userinput>cp mydriver /tmp</userinput>
 # <userinput>ln -s /tmp/mydriver /usr/kernel/drv/mydriver</userinput>
 </screen>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-568">
-<primary>serial connections</primary>
-<secondary>use in testing</secondary>
-</indexterm>Use a serial connection to control your test machine from a separate
-host system.</para>
-<para>This technique is explained in <olink remap="external" targetdoc="819-3196" targetptr="debug-62">
-<citetitle remap="section">Testing With a Serial Connection</citetitle> in <citetitle remap="book">Writing Device Drivers</citetitle>
-</olink>.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-569">
-<primary>alternate kernels</primary>
-<secondary>use in testing</secondary>
-</indexterm>Use an alternate kernel.</para>
-<para>Booting from a copy of the
-kernel and the associated binaries rather than from the default kernel avoids
-inadvertently rendering the system inoperable.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-570">
-<primary>kernel modules</primary>
-<secondary>use in testing</secondary>
-</indexterm>Use an additional kernel module to experiment with different kernel
-variable settings.</para>
-<para>This approach isolates experiments with the
-kernel variable settings. See <olink remap="external" targetdoc="819-3196" targetptr="eupvl">
-<citetitle remap="section">Setting Up Test Modules</citetitle> in <citetitle remap="book">Writing Device Drivers</citetitle>
-</olink>.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-571">
-<primary>data loss</primary>
-<secondary>avoiding while testing</secondary>
-</indexterm>Make contingency plans for potential data loss on a test system.</para>
-<para>If your test system is set up as a client of a server, then you can
-boot from the network if problems occur. You could also create a special partition
-to hold a copy of a bootable root file system. See <olink remap="external" targetdoc="819-3196" targetptr="debug-70">
-<citetitle remap="section">Avoiding Data Loss on a Test System</citetitle> in <citetitle remap="book">Writing Device Drivers</citetitle>
-</olink>.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-572">
-<primary>crash dumps</primary>
-<secondary>use in testing</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-573">
-<primary>system crash dumps</primary>
-<secondary>use in testing</secondary>
-</indexterm>Capture system crash dumps if your test system panics.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-574">
-<primary>
-<command>fsck</command> command</primary>
-</indexterm>
-<indexterm xml:id="indexterm-575">
-<primary>commands</primary>
-<secondary>
-<command>fsck</command>
-</secondary>
-</indexterm>Use <olink remap="external" targetdoc="819-2240" targetptr="fsck-1m">
-<citerefentry>
-<refentrytitle>fsck</refentrytitle>
-<manvolnum>
-1M
-</manvolnum>
-</citerefentry>
-</olink> to
-repair the damaged root file system temporarily if your system crashes during
-the <olink remap="external" targetdoc="819-2255" targetptr="attach-9e">
-<citerefentry>
-<refentrytitle>attach</refentrytitle>
-<manvolnum>
-9E
-</manvolnum>
-</citerefentry>
-</olink> process
-so that any crash dumps can be salvaged. See <olink remap="external" targetdoc="819-3196" targetptr="debug-74">
-<citetitle remap="section">Recovering the Device Directory</citetitle> in <citetitle remap="book">Writing Device Drivers</citetitle>
-</olink>.</para>
-</listitem>
-<listitem>
-<para>Install drivers in the <filename>/tmp</filename> directory
-until you are finished modifying and testing the <function>_info
-</function>, <function>_init
-</function>, and <function>attach
-</function> routines.</para>
-<para>Keep
-a driver in the <filename>/tmp</filename> directory until the driver has been
-well tested. If a panic occurs, the driver will be removed from <filename>/tmp</filename> directory
-and the system will reboot successfully.</para>
-</listitem>
-</itemizedlist>
-</sect1>
-<sect1 xml:id="fdlbo">
-<title>Device Driver Debugging and Tuning Tips</title>
-<indexterm xml:id="indexterm-576">
-<primary>device drivers</primary>
-<secondary>debugging tips</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-577">
-<primary>debugging device drivers</primary>
-<secondary>tips</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-578">
-<primary>device drivers</primary>
-<secondary>tuning</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-579">
-<primary>tuning device drivers</primary>
-<secondary>tips</secondary>
-</indexterm>
-<itemizedlist>
-<para>The Solaris OS provides various tools for debugging and tuning your
-device driver:</para>
-<listitem>
-<para>You might receive the following warning message from the <citerefentry>
-<refentrytitle>add_drv</refentrytitle>
-<manvolnum>
-1M
-</manvolnum>
-</citerefentry> command:</para>
-<programlisting>Warning: Driver (<replaceable>driver_name</replaceable>) successfully added to system but failed to attach</programlisting>
-<itemizedlist>
-<para>This message might have one of the following causes:</para>
-<listitem>
-<para>The hardware has not been detected properly. The system cannot
-find the device.</para>
-</listitem>
-<listitem>
-<para>The configuration file is missing. See <olink remap="external" targetdoc="chapter-1.xml" targetptr="ganar">Writing a Configuration File</olink> for information on when you need a configuration
-file and what information goes into a configuration file. Be sure to put the
-configuration file in <filename>/kernel/drv</filename> or <filename>/usr/kernel/drv</filename> and <emphasis>not</emphasis> in the driver directory.</para>
-</listitem>
-</itemizedlist>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-580">
-<primary>
-<command>kmdb</command> kernel debugger</primary>
-</indexterm>Use the <olink remap="external" targetdoc="819-2239" targetptr="kmdb-1">
-<citerefentry>
-<refentrytitle>kmdb</refentrytitle>
-<manvolnum>
-1
-</manvolnum>
-</citerefentry>
-</olink> kernel
-debugger for runtime debugging.</para>
-<para>The <command>kmdb</command> debugger
-provides typical runtime debugger facilities, such as breakpoints, watch points,
-and single-stepping. For more information, see <olink remap="external" targetdoc="816-5041">
-<citetitle remap="book">Solaris Modular Debugger Guide</citetitle>
-</olink>.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-581">
-<primary>
-<command>mdb</command> modular debugger</primary>
-</indexterm>Use the <olink remap="external" targetdoc="819-2239" targetptr="mdb-1">
-<citerefentry>
-<refentrytitle>mdb</refentrytitle>
-<manvolnum>
-1
-</manvolnum>
-</citerefentry>
-</olink> modular
-debugger for postmortem debugging.</para>
-<para>Postmortem debugging is performed
-on a system crash dump rather than on a live system. With postmortem debugging,
-the same crash dump can be analyzed by different people or processes simultaneously.
-In addition, <command>mdb</command> enables you to create special macros called <emphasis>dmods</emphasis> to perform rigorous analysis on the dump. For more information,
-see <olink remap="external" targetdoc="816-5041">
-<citetitle remap="book">Solaris Modular Debugger Guide</citetitle>
-</olink>.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-582">
-<primary>
-<function>kstat
-</function> function</primary>
-</indexterm>
-<indexterm xml:id="indexterm-583">
-<primary>functions</primary>
-<secondary>
-<function>kstat
-</function>
-</secondary>
-</indexterm>
-<indexterm xml:id="indexterm-584">
-<primary>kernel statistics</primary>
-</indexterm>Use the <olink remap="external" targetdoc="819-2246" targetptr="kstat-3kstat">
-<citerefentry>
-<refentrytitle>kstat</refentrytitle>
-<manvolnum>
-3KSTAT
-</manvolnum>
-</citerefentry>
-</olink> facility
-to export module-specific kernel statistics for your device driver.</para>
-</listitem>
-<listitem>
-<para>
-<indexterm xml:id="indexterm-585">
-<primary>DTrace analyzer</primary>
-</indexterm>Use the DTrace facility to add instrumentation to your driver
-dynamically so that you can perform tasks such as analyzing the system and
-measuring performance. For information on DTrace, see the <olink remap="external" targetdoc="817-6223">
-<citetitle remap="book">Solaris Dynamic Tracing Guide</citetitle>
-</olink>.</para>
-</listitem>
-<listitem>
-<para>If your driver does not behave as expected on a 64-bit platform,
-make sure you are using a 64-bit driver. By default, compilation on the Solaris
-OS yields a 32-bit result on every architecture. To obtain a 64-bit result,
-follow the instructions in <olink remap="external" targetdoc="chapter-1.xml" targetptr="fgouv">Building a Driver</olink>.</para>
-<para>Use the <olink remap="external" targetdoc="819-2239" targetptr="file-1">
-<citerefentry>
-<refentrytitle>file</refentrytitle>
-<manvolnum>
-1
-</manvolnum>
-</citerefentry>
-</olink> command
-to determine whether you have a 64-bit driver.</para>
-<screen>% <userinput>file qotd_3</userinput>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-568">
+            <primary>serial connections</primary>
+
+            <secondary>use in testing</secondary>
+          </indexterm>Use a serial connection to control your test machine
+        from a separate host system.</para>
+
+        <para>This technique is explained in <olink remap="external"
+        targetdoc="819-3196" targetptr="debug-62"> <citetitle
+        remap="section">Testing With a Serial Connection</citetitle> in
+        <citetitle remap="book">Writing Device Drivers</citetitle>
+        </olink>.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-569">
+            <primary>alternate kernels</primary>
+
+            <secondary>use in testing</secondary>
+          </indexterm>Use an alternate kernel.</para>
+
+        <para>Booting from a copy of the kernel and the associated binaries
+        rather than from the default kernel avoids inadvertently rendering the
+        system inoperable.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-570">
+            <primary>kernel modules</primary>
+
+            <secondary>use in testing</secondary>
+          </indexterm>Use an additional kernel module to experiment with
+        different kernel variable settings.</para>
+
+        <para>This approach isolates experiments with the kernel variable
+        settings. See <olink remap="external" targetdoc="819-3196"
+        targetptr="eupvl"> <citetitle remap="section">Setting Up Test
+        Modules</citetitle> in <citetitle remap="book">Writing Device
+        Drivers</citetitle> </olink>.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-571">
+            <primary>data loss</primary>
+
+            <secondary>avoiding while testing</secondary>
+          </indexterm>Make contingency plans for potential data loss on a test
+        system.</para>
+
+        <para>If your test system is set up as a client of a server, then you
+        can boot from the network if problems occur. You could also create a
+        special partition to hold a copy of a bootable root file system. See
+        <olink remap="external" targetdoc="819-3196" targetptr="debug-70">
+        <citetitle remap="section">Avoiding Data Loss on a Test
+        System</citetitle> in <citetitle remap="book">Writing Device
+        Drivers</citetitle> </olink>.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-572">
+            <primary>crash dumps</primary>
+
+            <secondary>use in testing</secondary>
+          </indexterm> <indexterm xml:id="indexterm-573">
+            <primary>system crash dumps</primary>
+
+            <secondary>use in testing</secondary>
+          </indexterm>Capture system crash dumps if your test system
+        panics.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-574">
+            <primary><command>fsck</command> command</primary>
+          </indexterm> <indexterm xml:id="indexterm-575">
+            <primary>commands</primary>
+
+            <secondary><command>fsck</command></secondary>
+          </indexterm>Use <olink remap="external" targetdoc="819-2240"
+        targetptr="fsck-1m"> <citerefentry>
+            <refentrytitle>fsck</refentrytitle>
+
+            <manvolnum>1M</manvolnum>
+          </citerefentry> </olink> to repair the damaged root file system
+        temporarily if your system crashes during the <olink remap="external"
+        targetdoc="819-2255" targetptr="attach-9e"> <citerefentry>
+            <refentrytitle>attach</refentrytitle>
+
+            <manvolnum>9E</manvolnum>
+          </citerefentry> </olink> process so that any crash dumps can be
+        salvaged. See <olink remap="external" targetdoc="819-3196"
+        targetptr="debug-74"> <citetitle remap="section">Recovering the Device
+        Directory</citetitle> in <citetitle remap="book">Writing Device
+        Drivers</citetitle> </olink>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Install drivers in the <filename>/tmp</filename> directory until
+        you are finished modifying and testing the <function>_info
+        </function>, <function>_init </function>, and <function>attach
+        </function> routines.</para>
+
+        <para>Keep a driver in the <filename>/tmp</filename> directory until
+        the driver has been well tested. If a panic occurs, the driver will be
+        removed from <filename>/tmp</filename> directory and the system will
+        reboot successfully.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 xml:id="fdlbo">
+    <title>Device Driver Debugging and Tuning Tips</title>
+
+    <indexterm xml:id="indexterm-576">
+      <primary>device drivers</primary>
+
+      <secondary>debugging tips</secondary>
+    </indexterm>
+
+    <indexterm xml:id="indexterm-577">
+      <primary>debugging device drivers</primary>
+
+      <secondary>tips</secondary>
+    </indexterm>
+
+    <indexterm xml:id="indexterm-578">
+      <primary>device drivers</primary>
+
+      <secondary>tuning</secondary>
+    </indexterm>
+
+    <indexterm xml:id="indexterm-579">
+      <primary>tuning device drivers</primary>
+
+      <secondary>tips</secondary>
+    </indexterm>
+
+    <itemizedlist>
+      <para>The Solaris OS provides various tools for debugging and tuning
+      your device driver:</para>
+
+      <listitem>
+        <para>You might receive the following warning message from the
+        <citerefentry>
+            <refentrytitle>add_drv</refentrytitle>
+
+            <manvolnum>1M</manvolnum>
+          </citerefentry> command:</para>
+
+        <programlisting>Warning: Driver (<replaceable>driver_name</replaceable>) successfully added to system but failed to attach</programlisting>
+
+        <itemizedlist>
+          <para>This message might have one of the following causes:</para>
+
+          <listitem>
+            <para>The hardware has not been detected properly. The system
+            cannot find the device.</para>
+          </listitem>
+
+          <listitem>
+            <para>The configuration file is missing. See <olink
+            remap="external" targetdoc="chapter-1.xml"
+            targetptr="ganar">Writing a Configuration File</olink> for
+            information on when you need a configuration file and what
+            information goes into a configuration file. Be sure to put the
+            configuration file in <filename>/kernel/drv</filename> or
+            <filename>/usr/kernel/drv</filename> and <emphasis>not</emphasis>
+            in the driver directory.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-580">
+            <primary><command>kmdb</command> kernel debugger</primary>
+          </indexterm>Use the <olink remap="external" targetdoc="819-2239"
+        targetptr="kmdb-1"> <citerefentry>
+            <refentrytitle>kmdb</refentrytitle>
+
+            <manvolnum>1</manvolnum>
+          </citerefentry> </olink> kernel debugger for runtime
+        debugging.</para>
+
+        <para>The <command>kmdb</command> debugger provides typical runtime
+        debugger facilities, such as breakpoints, watch points, and
+        single-stepping. For more information, see <olink remap="external"
+        targetdoc="816-5041"> <citetitle remap="book">Solaris Modular Debugger
+        Guide</citetitle> </olink>.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-581">
+            <primary><command>mdb</command> modular debugger</primary>
+          </indexterm>Use the <olink remap="external" targetdoc="819-2239"
+        targetptr="mdb-1"> <citerefentry>
+            <refentrytitle>mdb</refentrytitle>
+
+            <manvolnum>1</manvolnum>
+          </citerefentry> </olink> modular debugger for postmortem
+        debugging.</para>
+
+        <para>Postmortem debugging is performed on a system crash dump rather
+        than on a live system. With postmortem debugging, the same crash dump
+        can be analyzed by different people or processes simultaneously. In
+        addition, <command>mdb</command> enables you to create special macros
+        called <emphasis>dmods</emphasis> to perform rigorous analysis on the
+        dump. For more information, see <olink remap="external"
+        targetdoc="816-5041"> <citetitle remap="book">Solaris Modular Debugger
+        Guide</citetitle> </olink>.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-582">
+            <primary><function>kstat </function> function</primary>
+          </indexterm> <indexterm xml:id="indexterm-583">
+            <primary>functions</primary>
+
+            <secondary><function>kstat </function></secondary>
+          </indexterm> <indexterm xml:id="indexterm-584">
+            <primary>kernel statistics</primary>
+          </indexterm>Use the <olink remap="external" targetdoc="819-2246"
+        targetptr="kstat-3kstat"> <citerefentry>
+            <refentrytitle>kstat</refentrytitle>
+
+            <manvolnum>3KSTAT</manvolnum>
+          </citerefentry> </olink> facility to export module-specific kernel
+        statistics for your device driver.</para>
+      </listitem>
+
+      <listitem>
+        <para><indexterm xml:id="indexterm-585">
+            <primary>DTrace analyzer</primary>
+          </indexterm>Use the DTrace facility to add instrumentation to your
+        driver dynamically so that you can perform tasks such as analyzing the
+        system and measuring performance. For information on DTrace, see the
+        <olink remap="external" targetdoc="817-6223"> <citetitle
+        remap="book">Solaris Dynamic Tracing Guide</citetitle>
+        </olink>.</para>
+      </listitem>
+
+      <listitem>
+        <para>If your driver does not behave as expected on a 64-bit platform,
+        make sure you are using a 64-bit driver. By default, compilation on
+        the Solaris OS yields a 32-bit result on every architecture. To obtain
+        a 64-bit result, follow the instructions in <olink remap="external"
+        targetdoc="chapter-1.xml" targetptr="fgouv">Building a
+        Driver</olink>.</para>
+
+        <para>Use the <olink remap="external" targetdoc="819-2239"
+        targetptr="file-1"> <citerefentry>
+            <refentrytitle>file</refentrytitle>
+
+            <manvolnum>1</manvolnum>
+          </citerefentry> </olink> command to determine whether you have a
+        64-bit driver.</para>
+
+        <screen>% <userinput>file qotd_3</userinput>
 qotd_3:         ELF 32-bit LSB relocatable 80386 Version 1</screen>
-</listitem>
-<listitem>
-<para>If you are using a 64-bit system and you are not certain whether
-you are currently running the 64-bit kernel or the 32-bit kernel, use the <option>
-k</option> option of the <olink remap="external" targetdoc="819-2239" targetptr="isainfo-1">
-<citerefentry>
-<refentrytitle>isainfo</refentrytitle>
-<manvolnum>
-1
-</manvolnum>
-</citerefentry>
-</olink> command. The <option>
-v</option> option reports
-all instruction set architectures of the system. The <option>
-k</option> option
-reports the instruction set architecture that is currently in use.</para>
-<screen>% <userinput>isainfo -v</userinput>
+      </listitem>
+
+      <listitem>
+        <para>If you are using a 64-bit system and you are not certain whether
+        you are currently running the 64-bit kernel or the 32-bit kernel, use
+        the <option> k</option> option of the <olink remap="external"
+        targetdoc="819-2239" targetptr="isainfo-1"> <citerefentry>
+            <refentrytitle>isainfo</refentrytitle>
+
+            <manvolnum>1</manvolnum>
+          </citerefentry> </olink> command. The <option> v</option> option
+        reports all instruction set architectures of the system. The <option>
+        k</option> option reports the instruction set architecture that is
+        currently in use.</para>
+
+        <screen>% <userinput>isainfo -v</userinput>
 64-bit sparcv9 applications
         vis2 vis 
 32-bit sparc applications
         vis2 vis v8plus div32 mul32 
 % <userinput>isainfo -kv</userinput>
 64-bit sparcv9 kernel modules</screen>
-</listitem>
-<listitem>
-<para>If your driver seems to have an error in a function that you
-did not write, make sure you have called that function with the correct arguments
-and specified the correct include files. Many kernel functions have the same
-names as system calls and user functions. For example, <function>read
-</function> and <function>write
-</function> can be system calls, user library functions, or kernel functions.
-Similarly, <function>ioctl
-</function> and <function>mmap
-</function> can be
-system calls or kernel functions. The <command>man mmap</command> command
-displays the <command>mmap</command>(2) man page. To see the arguments, description,
-and include files for the kernel function, use the <command>man mmap.9e</command> command.
-If you do not know whether the function you want is in section 9E or section
-9F, use the <command>man -l mmap</command> command, for example.</para>
-</listitem>
-</itemizedlist>
-</sect1>
+      </listitem>
+
+      <listitem>
+        <para>If your driver seems to have an error in a function that you did
+        not write, make sure you have called that function with the correct
+        arguments and specified the correct include files. Many kernel
+        functions have the same names as system calls and user functions. For
+        example, <function>read </function> and <function>write </function>
+        can be system calls, user library functions, or kernel functions.
+        Similarly, <function>ioctl </function> and <function>mmap </function>
+        can be system calls or kernel functions. The
+        <command>man mmap</command> command displays the
+        <command>mmap</command>(2) man page. To see the arguments,
+        description, and include files for the kernel function, use the
+        <command>man mmap.9e</command> command. If you do not know whether the
+        function you want is in section 9E or section 9F, use the
+        <command>man -l mmap</command> command, for example.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
 </chapter>
