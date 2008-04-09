@@ -421,35 +421,34 @@
         wykonywalnego sterownika do katalogu <filename>/tmp</filename> i
         stworzenie dowiązania w katalogu sterowników jądra.</para>
 
-        <para>If a driver has an error in its <function>_info </function>,
-        <function>_init </function>, or <function>attach </function> function,
-        your machine could get into a state of infinite panic. The Solaris OS
-        automatically reboots itself after a panic. The Solaris OS loads any
-        drivers it can during boot. If you have an error in your
-        <function>attach </function> function that panics the system when you
-        load the driver, then the system will panic again when it tries to
-        reboot after the panic. The system will continue the cycle of panic,
-        reboot, panic as it attempts to reload the faulty driver every time it
-        reboots after panic.</para>
+        <para>Jeśli w funkcjach <function>_info</function>,
+        <function>_init</function> lub <function>attach</function> sterownika
+        są błędy, system może w nieskończoność panikować. System operacyjny
+        Solaris automatycznie restartuje się po spanikowaniu. Również podczas
+        startu systemu ładuje wszystkie sterowniki, które mu się uda. Jeśli w
+        funkcji <function>attach</function> jest błąd powodujący panikę
+        systemu podczas ładowania sterownika, system spanikuje ponownie
+        podczas próby uruchomienia systemu po pierwszej panice. System wpadnie
+        w pętlę panika, restart, panika próbując ładować zepsuty sterownik
+        przy każdym uruchomieniu systemu.</para>
 
-        <para>To avoid an infinite panic, keep the driver in the
-        <filename>/tmp</filename> area until it is well tested. Link to the
-        driver in the <filename>/tmp</filename> area from the kernel driver
-        area. The Solaris OS removes all files from the
-        <filename>/tmp</filename> area every time the system reboots. If your
-        driver causes a panic, the Solaris OS reboots successfully because the
-        driver has been removed automatically from the
-        <filename>/tmp</filename> area. The link in the kernel driver area
-        points to nothing. The faulty driver did not get loaded, so the system
-        does not go back into a panic. You can modify the driver, copy it
-        again to the <filename>/tmp</filename> area, and continue testing and
-        developing. When the driver is well tested, copy it to the
-        <filename>/usr/kernel/drv</filename> area so that it will remain
-        available after a reboot.</para>
+        <para>Pętli tej można uniknąć kopiując plik sterownika do katalogu
+        <filename>/tmp</filename> aż do ukończenia testów. System operacyjny
+        Solaris usuwa wszystkie pliki z katalogu <filename>/tmp</filename>
+        przy każdym restarcie. Jeśli sterownik spowoduje panikę, system
+        zrestartuje się poprawnie, ponieważ plik sterownika zostanie
+        automatycznie usunięty z katalogu <filename>/tmp</filename>.
+        Dowiązanie w katalogu sterowników jądra będzie wtedy wskazywało puste
+        miejsce, system nie załaduje sterownika i nie spanikuje. Można wtedy
+        zmienić sterownik, znowu umieścić jego wersję skompilowaną w katalogu
+        <filename>/tmp</filename> i kontynuować testy. Kiedy sterownik jest
+        ukończony i przetestowany, należy przenieść go do katalogu
+        <filename>/usr/kernel/drv</filename> dzięki czemu będzie ładowany przy
+        każdym restarcie systemu.</para>
 
-        <para>The following example shows you where to link the driver for a
-        32-bit platform. For other architectures, see the instructions in
-        <olink remap="external" targetdoc="chapter-1.xml"
+        <para>Poniżej przestawiono przykładowe dowiązanie dla platformy
+        32bitowej. Więcej informacji o innych architekturach w <olink
+        remap="external" targetdoc="chapter-1.xml"
         targetptr="fsfqv">Installing a Driver</olink>.</para>
 
         <screen># <userinput>cp mydriver /tmp</userinput>
@@ -462,10 +461,10 @@
             <primary>serial connections</primary>
 
             <secondary>use in testing</secondary>
-          </indexterm>Use a serial connection to control your test machine
-        from a separate host system.</para>
+          </indexterm>Maszynę testową należy kontrolować z innego okmputera
+        przez konsolę szeregową.</para>
 
-        <para>This technique is explained in <olink remap="external"
+        <para>Technikę tę wyjaśniono w <olink remap="external"
         targetdoc="819-3196" targetptr="debug-62"> <citetitle
         remap="section">Testing With a Serial Connection</citetitle> in
         <citetitle remap="book">Writing Device Drivers</citetitle>
@@ -477,11 +476,11 @@
             <primary>alternate kernels</primary>
 
             <secondary>use in testing</secondary>
-          </indexterm>Use an alternate kernel.</para>
+          </indexterm>Użycie alternatywnego jądra.</para>
 
-        <para>Booting from a copy of the kernel and the associated binaries
-        rather than from the default kernel avoids inadvertently rendering the
-        system inoperable.</para>
+        <para>Startowanie systemu z kopii jądra i powiązanych plików zamiast z
+        oryginalnego jądra pozwala uniknąć nieodwracalnego unieruchomienia
+        systemu.</para>
       </listitem>
 
       <listitem>
@@ -489,14 +488,13 @@
             <primary>kernel modules</primary>
 
             <secondary>use in testing</secondary>
-          </indexterm>Use an additional kernel module to experiment with
-        different kernel variable settings.</para>
+          </indexterm>Do eksperymentowania ze zmiennymi jądra należy używać
+        odrębnego modułu.</para>
 
-        <para>This approach isolates experiments with the kernel variable
-        settings. See <olink remap="external" targetdoc="819-3196"
-        targetptr="eupvl"> <citetitle remap="section">Setting Up Test
-        Modules</citetitle> in <citetitle remap="book">Writing Device
-        Drivers</citetitle> </olink>.</para>
+        <para>Podejście to izoluje testowanie zmiennych jądra. Więcej w <olink
+        remap="external" targetdoc="819-3196" targetptr="eupvl"> <citetitle
+        remap="section">Setting Up Test Modules</citetitle> in <citetitle
+        remap="book">Writing Device Drivers</citetitle> </olink>.</para>
       </listitem>
 
       <listitem>
@@ -504,15 +502,15 @@
             <primary>data loss</primary>
 
             <secondary>avoiding while testing</secondary>
-          </indexterm>Make contingency plans for potential data loss on a test
-        system.</para>
+          </indexterm>Należy zaplanować postępowanie w przypadku utraty danych
+        na systemie testowym.</para>
 
-        <para>If your test system is set up as a client of a server, then you
-        can boot from the network if problems occur. You could also create a
-        special partition to hold a copy of a bootable root file system. See
-        <olink remap="external" targetdoc="819-3196" targetptr="debug-70">
-        <citetitle remap="section">Avoiding Data Loss on a Test
-        System</citetitle> in <citetitle remap="book">Writing Device
+        <para>Jeśli system testowy jest klientem serwera, w razie problemów
+        może wystartować z sieci. Można też utworzyć specjalną partycję do
+        przetrzymywania kopii poprawnego głównego systemu plików. Więcej
+        informacji w <olink remap="external" targetdoc="819-3196"
+        targetptr="debug-70"> <citetitle remap="section">Avoiding Data Loss on
+        a Test System</citetitle> in <citetitle remap="book">Writing Device
         Drivers</citetitle> </olink>.</para>
       </listitem>
 
@@ -525,8 +523,7 @@
             <primary>system crash dumps</primary>
 
             <secondary>use in testing</secondary>
-          </indexterm>Capture system crash dumps if your test system
-        panics.</para>
+          </indexterm>Zrzuty systemu po panice należy przechwytywać.</para>
       </listitem>
 
       <listitem>
@@ -536,34 +533,28 @@
             <primary>commands</primary>
 
             <secondary><command>fsck</command></secondary>
-          </indexterm>Use <olink remap="external" targetdoc="819-2240"
+          </indexterm>Do naprawienia głównego systemu plików po panice służy
+        narzędzie <olink remap="external" targetdoc="819-2240"
         targetptr="fsck-1m"> <citerefentry>
             <refentrytitle>fsck</refentrytitle>
 
             <manvolnum>1M</manvolnum>
-          </citerefentry> </olink> to repair the damaged root file system
-        temporarily if your system crashes during the <olink remap="external"
-        targetdoc="819-2255" targetptr="attach-9e"> <citerefentry>
-            <refentrytitle>attach</refentrytitle>
-
-            <manvolnum>9E</manvolnum>
-          </citerefentry> </olink> process so that any crash dumps can be
-        salvaged. See <olink remap="external" targetdoc="819-3196"
+          </citerefentry> </olink>. Można dzięki temu odzyskać zrzuty systemu.
+        Więcej informacji w <olink remap="external" targetdoc="819-3196"
         targetptr="debug-74"> <citetitle remap="section">Recovering the Device
         Directory</citetitle> in <citetitle remap="book">Writing Device
         Drivers</citetitle> </olink>.</para>
       </listitem>
 
       <listitem>
-        <para>Install drivers in the <filename>/tmp</filename> directory until
-        you are finished modifying and testing the <function>_info
-        </function>, <function>_init </function>, and <function>attach
-        </function> routines.</para>
+        <para>Aż do momentu zakończenia testów funkcji
+        <function>_info</function>, <function>_init</function> i
+        <function>attach</function> sterownik należy instalować w katalogu
+        <filename>/tmp</filename>.</para>
 
-        <para>Keep a driver in the <filename>/tmp</filename> directory until
-        the driver has been well tested. If a panic occurs, the driver will be
-        removed from <filename>/tmp</filename> directory and the system will
-        reboot successfully.</para>
+        <para>Aż do ukończenia testów sterownika powinien być instalowany w
+        katalogu <filename>/tmp</filename>. W przypadku paniki zostanie
+        usunięty i system wystartuje poprawnie.</para>
       </listitem>
     </itemizedlist>
   </sect1>
@@ -596,36 +587,35 @@
     </indexterm>
 
     <itemizedlist>
-      <para>The Solaris OS provides various tools for debugging and tuning
-      your device driver:</para>
+      <para>System operacyjny Solaris zawiera kilka narzędzi do debugowania i
+      optymalizowania sterownika:</para>
 
       <listitem>
-        <para>You might receive the following warning message from the
-        <citerefentry>
+        <para>Podczas wykonywania komendy <citerefentry>
             <refentrytitle>add_drv</refentrytitle>
 
             <manvolnum>1M</manvolnum>
-          </citerefentry> command:</para>
+          </citerefentry> system może wydrukować następujący komukiat:</para>
 
         <programlisting>Warning: Driver (<replaceable>driver_name</replaceable>) successfully added to system but failed to attach</programlisting>
 
         <itemizedlist>
-          <para>This message might have one of the following causes:</para>
+          <para>Może to być spowodowane jednym z poniższych:</para>
 
           <listitem>
-            <para>The hardware has not been detected properly. The system
-            cannot find the device.</para>
+            <para>Urządzenie nie zostało prawidłowo wykryte i system go nie
+            znalazł.</para>
           </listitem>
 
           <listitem>
-            <para>The configuration file is missing. See <olink
-            remap="external" targetdoc="chapter-1.xml"
-            targetptr="ganar">Writing a Configuration File</olink> for
-            information on when you need a configuration file and what
-            information goes into a configuration file. Be sure to put the
-            configuration file in <filename>/kernel/drv</filename> or
-            <filename>/usr/kernel/drv</filename> and <emphasis>not</emphasis>
-            in the driver directory.</para>
+            <para>Brakuje pliku konfiguracyjnego. Więcej o plikach
+            konfiguracyjnych sterownikow oraz o tym, co się powinno w nich
+            znaleźć w <olink remap="external" targetdoc="chapter-1.xml"
+            targetptr="ganar">Writing a Configuration File</olink>. Należy
+            upewnić się, że plik konfiguracyjny znajduje się w katalogu
+            <filename>/kernel/drv</filename> lub
+            <filename>/usr/kernel/drv</filename> i <emphasis>nie</emphasis>
+            znajduje się w katalogu sterownika.</para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -633,38 +623,39 @@
       <listitem>
         <para><indexterm xml:id="indexterm-580">
             <primary><command>kmdb</command> kernel debugger</primary>
-          </indexterm>Use the <olink remap="external" targetdoc="819-2239"
+          </indexterm>Debugowanie w trakcie wykonywania systemu można
+        wykonywać narzędziem <olink remap="external" targetdoc="819-2239"
         targetptr="kmdb-1"> <citerefentry>
             <refentrytitle>kmdb</refentrytitle>
 
             <manvolnum>1</manvolnum>
-          </citerefentry> </olink> kernel debugger for runtime
-        debugging.</para>
+          </citerefentry> </olink>.</para>
 
-        <para>The <command>kmdb</command> debugger provides typical runtime
-        debugger facilities, such as breakpoints, watch points, and
-        single-stepping. For more information, see <olink remap="external"
-        targetdoc="816-5041"> <citetitle remap="book">Solaris Modular Debugger
-        Guide</citetitle> </olink>.</para>
+        <para>Debuger jądra <command>kmdb</command> zawiera typowe narzędzia
+        do debugowanie w czasie wykonywania, takie jak punkty przerwania (ang.
+        breakpoints), punkty obserwacyjne (ang. watchpoints) i wykonywanie
+        krok po kroku (ang. single-stepping). Więcej informacji w <olink
+        remap="external" targetdoc="816-5041"> <citetitle remap="book">Solaris
+        Modular Debugger Guide</citetitle> </olink>.</para>
       </listitem>
 
       <listitem>
         <para><indexterm xml:id="indexterm-581">
             <primary><command>mdb</command> modular debugger</primary>
-          </indexterm>Use the <olink remap="external" targetdoc="819-2239"
+          </indexterm>Do debugowania pośmiertnego (łac. postmortem) używa się
+        debugera modułowego <olink remap="external" targetdoc="819-2239"
         targetptr="mdb-1"> <citerefentry>
             <refentrytitle>mdb</refentrytitle>
 
             <manvolnum>1</manvolnum>
-          </citerefentry> </olink> modular debugger for postmortem
-        debugging.</para>
+          </citerefentry> </olink>.</para>
 
-        <para>Postmortem debugging is performed on a system crash dump rather
-        than on a live system. With postmortem debugging, the same crash dump
-        can be analyzed by different people or processes simultaneously. In
-        addition, <command>mdb</command> enables you to create special macros
-        called <emphasis>dmods</emphasis> to perform rigorous analysis on the
-        dump. For more information, see <olink remap="external"
+        <para>Debugowanie pośmiertne wykonywane jest na zrzucie systemu (ang.
+        crash dump). Ten sam zrzut może być analizowany równocześnie przez
+        kilku ludzi. Dodatkowo <command>mdb</command> umożliwia tworzenie
+        specjalnych makr nazywanych <emphasis>dmodami (ang. dmods)</emphasis>
+        służących wykonywaniu bardzo szczegółowej i uporządkowej analizie
+        zrzutu. Więcej informacji w <olink remap="external"
         targetdoc="816-5041"> <citetitle remap="book">Solaris Modular Debugger
         Guide</citetitle> </olink>.</para>
       </listitem>
@@ -678,58 +669,58 @@
             <secondary><function>kstat </function></secondary>
           </indexterm> <indexterm xml:id="indexterm-584">
             <primary>kernel statistics</primary>
-          </indexterm>Use the <olink remap="external" targetdoc="819-2246"
-        targetptr="kstat-3kstat"> <citerefentry>
+          </indexterm>Do eksportowania statystyk jądra modułu służy narzędzie
+        <olink remap="external" targetdoc="819-2246" targetptr="kstat-3kstat">
+        <citerefentry>
             <refentrytitle>kstat</refentrytitle>
 
             <manvolnum>3KSTAT</manvolnum>
-          </citerefentry> </olink> facility to export module-specific kernel
-        statistics for your device driver.</para>
+          </citerefentry> </olink>.</para>
       </listitem>
 
       <listitem>
         <para><indexterm xml:id="indexterm-585">
             <primary>DTrace analyzer</primary>
-          </indexterm>Use the DTrace facility to add instrumentation to your
-        driver dynamically so that you can perform tasks such as analyzing the
-        system and measuring performance. For information on DTrace, see the
-        <olink remap="external" targetdoc="817-6223"> <citetitle
-        remap="book">Solaris Dynamic Tracing Guide</citetitle>
-        </olink>.</para>
+          </indexterm>System analizy DTrace służy do dynamicznej
+        instrumentacji modułu, dzięki czemu można analizować zachowanie
+        systemi i jego wydajność. Więcej informacji w <olink remap="external"
+        targetdoc="817-6223"> <citetitle remap="book">Solaris Dynamic Tracing
+        Guide</citetitle> </olink>.</para>
       </listitem>
 
       <listitem>
-        <para>If your driver does not behave as expected on a 64-bit platform,
-        make sure you are using a 64-bit driver. By default, compilation on
-        the Solaris OS yields a 32-bit result on every architecture. To obtain
-        a 64-bit result, follow the instructions in <olink remap="external"
+        <para>Jeśli sterownik nie działa w systemi 64bitowym zgodnie z
+        oczekiwaniami, należy upewnić się, że wykorzystywana jest 64bitowa
+        wersja sterownika. Domyślnie w systemie operacyjnym Solaris kompilacja
+        produkuje 32bitowe pliki na każdej architekturze. Plik 64bitowy można
+        uzyskać postępując zgodnie z instrukcjami w <olink remap="external"
         targetdoc="chapter-1.xml" targetptr="fgouv">Building a
         Driver</olink>.</para>
 
-        <para>Use the <olink remap="external" targetdoc="819-2239"
-        targetptr="file-1"> <citerefentry>
+        <para>Model danych sterownika można sprawdzić narzędziem <olink
+        remap="external" targetdoc="819-2239" targetptr="file-1">
+        <citerefentry>
             <refentrytitle>file</refentrytitle>
 
             <manvolnum>1</manvolnum>
-          </citerefentry> </olink> command to determine whether you have a
-        64-bit driver.</para>
+          </citerefentry> </olink>.</para>
 
         <screen>% <userinput>file qotd_3</userinput>
 qotd_3:         ELF 32-bit LSB relocatable 80386 Version 1</screen>
       </listitem>
 
       <listitem>
-        <para>If you are using a 64-bit system and you are not certain whether
-        you are currently running the 64-bit kernel or the 32-bit kernel, use
-        the <option> k</option> option of the <olink remap="external"
-        targetdoc="819-2239" targetptr="isainfo-1"> <citerefentry>
+        <para>Jeśli używany jest system 64bitowy, ale nie ma pewności, że
+        jądro jest 64bitowe, informację można uzyskać komendą <olink
+        remap="external" targetdoc="819-2239"
+        targetptr="isainfo-1"><citerefentry>
             <refentrytitle>isainfo</refentrytitle>
 
             <manvolnum>1</manvolnum>
-          </citerefentry> </olink> command. The <option> v</option> option
-        reports all instruction set architectures of the system. The <option>
-        k</option> option reports the instruction set architecture that is
-        currently in use.</para>
+          </citerefentry></olink> wywołaną z opcją <option>k</option>.
+        Opcja<option> v</option> drukuje wszystkie zezstawy instrukcji dla
+        danej architektury. Opcja <option>k</option> drukuje aktualnie używany
+        zestaw instrukcji.</para>
 
         <screen>% <userinput>isainfo -v</userinput>
 64-bit sparcv9 applications
@@ -741,20 +732,21 @@ qotd_3:         ELF 32-bit LSB relocatable 80386 Version 1</screen>
       </listitem>
 
       <listitem>
-        <para>If your driver seems to have an error in a function that you did
-        not write, make sure you have called that function with the correct
-        arguments and specified the correct include files. Many kernel
-        functions have the same names as system calls and user functions. For
-        example, <function>read </function> and <function>write </function>
-        can be system calls, user library functions, or kernel functions.
-        Similarly, <function>ioctl </function> and <function>mmap </function>
-        can be system calls or kernel functions. The
-        <command>man mmap</command> command displays the
-        <command>mmap</command>(2) man page. To see the arguments,
-        description, and include files for the kernel function, use the
-        <command>man mmap.9e</command> command. If you do not know whether the
-        function you want is in section 9E or section 9F, use the
-        <command>man -l mmap</command> command, for example.</para>
+        <para>Jeśli sterownik wydaje się mieć błąd w funkcji, którą napisał
+        ktoś inny, należy upewnić się, że wywołanie tej funkcji jest
+        prawidłowe oraz włączono prawidłowe pliki nagłówkowe. Wiele funkcji
+        jądra nazywa się tak samo jak wywołania systemowe lub funkcje
+        przestrzeni użytkownika. Na przykład <function>read</function> i
+        <function>write</function> mogą być wywołaniami systemowymi, funkcjami
+        biblioteki narzędziowej przestrzeni użytkownika lub funkcjami jądra.
+        Podobnie <function>ioctl</function> i <function>mmap</function> mogą
+        być wywołaniami systemowymi lub funkcjami jądra. Komenda
+        <command>man mmap</command> drukuje stronę podręcznika man
+        <command>mmap</command>(2). Aby wydrukować argumenty, opic i plik
+        nagłówkowy funkcji jądra należy wykonać komendę
+        <command>man mmap.9e</command>. Jeśli nie wiadomo z góry, o którą
+        stronę podręcznika chodzi - 9E czy 9F
+        -<command>man -l mmap</command>.</para>
       </listitem>
     </itemizedlist>
   </sect1>
