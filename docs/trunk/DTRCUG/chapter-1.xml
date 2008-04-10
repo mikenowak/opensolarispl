@@ -1,142 +1,238 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN" "docbook.dtd"[
-	<!ENTITY % xinclude SYSTEM "xinclude.mod">
-	%xinclude;
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML//EN"
+"docbook.dtd" [
+<!ENTITY % xinclude SYSTEM "xinclude.mod">
+%xinclude;
 ]>
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook" xml:id="gbwaz">
+  <title>Wprowadzenie</title>
 
-<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="gbwaz">
+  <toc>
+    <para>DTrace jest kompletnym narzędziem do dynamicznego śledzenia
+    wykonania wbudowanym w Solarisa. W bezpieczny sposób używać go mogą
+    administratorzy i deweloperzy na systemach produkcyjnych. Umożliwia ocenę
+    zachowania programów użytkownika oraz systemu operacyjnego. Pozwala na
+    pisanie własnych skryptów w języku skryptowym D. Samodzielnie napisane
+    skrypty umożliwiają dynamiczne śledzenie systemu. Pozwalają na uzyskanie
+    natychmiastowych i szczegółowych odpowiedzi na konkretne pytania dotyczące
+    zachowania konkretnych aplikacji.</para>
+  </toc>
 
+  <sect1 xml:id="gbxxq">
+    <title>Możliwości DTrace</title>
 
+    <para>Framework DTrace dostarcza punktów instrumentacji nazywanych
+    <emphasis>sondami (ang. probes)</emphasis>. Użytkownik DTrace´a może użyć
+    sondy do zapisu i wydruku ważnych informacji o jądrze lub procesie
+    użytkownika. Każda sonda DTrace uruchamiana jest przy wystąpieniu
+    konkretnego zachowania. Uruchomienie sondy nazywane jest
+    <emphasis>odpaleniem (ang. firing)</emphasis>. Można na przykład rozważyć
+    sondę odpalaną przy wejściu do wybranej funkcji jądra systemu. Przykładowa
+    sonda może wydrukować następujące wiadomości:</para>
 
-<title>Wprowadzenie</title>
-<toc>
-<para>DTrace jest kompletnym narzędziem do dynamicznego śledzenia wykonania wbudowanym w Solarisa. W bezpieczny sposób używać go mogą administratorzy i deweloperzy na systemach produkcyjnych. Umożliwia ocenę zachowania programów użytkownika oraz systemu operacyjnego. Pozwala na pisanie własnych skryptów w języku skryptowym D. Samodzielnie napisane skrypty umożliwiają dynamiczne śledzenie systemu. Pozwalają na uzyskanie natychmiastowych i szczegółowych odpowiedzi na konkretne pytania dotyczące zachowania konkretnych aplikacji.</para>
-</toc>
-<sect1 xml:id="gbxxq">
-<title>Możliwości DTrace</title>
-<para>Framework DTrace dostarcza punktów instrumentacji nazywanych <emphasis>sondami (ang. probes)</emphasis>. Użytkownik DTrace´a może użyć sondy do zapisu i wydruku ważnych informacji o jądrze lub procesie użytkownika. Każda sonda DTrace uruchamiana jest przy wystąpieniu konkretnego zachowania. Uruchomienie sondy nazywane jest <emphasis>odpaleniem (ang. firing)</emphasis>.
-Można na przykład rozważyć sondę odpalaną przy wejściu do wybranej funkcji jądra systemu. Przykładowa sonda może wydrukować następujące wiadomości:</para>
-<itemizedlist>
-<listitem>
-<para>Dowolny argument przekazany funkcji</para>
-</listitem>
-<listitem>
-<para>Dowolną globalną zmienną w jądrze</para>
-</listitem>
-<listitem>
-<para>Znacznik czasu wskazujący kiedy wywołano funkcję</para>
-</listitem>
-<listitem>
-<para>Ślad stosu wskazujący fragment kodu, który wywołał funkcję</para>
-</listitem>
-<listitem>
-<para>Proces działający w momencie wywołania funkcji</para>
-</listitem>
-<listitem>
-<para>Wątek, który wywołał funkcję</para>
-</listitem>
-</itemizedlist>
-<para>Przy odpaleniu sondy można wskazać dowolną <emphasis>akcję</emphasis>, którą powinien podjąć DTrace. Zazwyczaj akcja DTrace´a zapisuje interesujące aspekty zachowania systemu, takie jak znacznik czasu albo argument funkcji.</para>
-<para>Sondy są implementowane przez <emphasis>dostawców (ang. providers)</emphasis>. Dostawca sondy jest modułem jądra umożliwiającym odpalenie danej sondy. Na przykład dostawca śledzenia granic wykonania funkcji (ang. function boundary) <literal>fbt</literal> dostarcza sondy wejścia i wyjścia dla niemalże każdej funkcji w każdym module jądra.</para>
-<para>DTrace ma rozbudowaną obsługę typów danych. Obsługa ta pozwala użytkownikom DTrace´a na przeczesywanie danych zwracanych przez sondy i ograniczenie konieczności wykorzystania zewnętrznych narzędzi do obrabiania danych. DTrace pozwala także na śledzenie podczas uruchamiania systemu oraz obróbki danych z crash dump jądra. Cała instrumentacja w DTrace jest dynamiczna. Sondy są uruchamiane dyskretnie wtedy, kiedy są używane, natomiast nieaktywnych sond nie ma w kodzie działającego systemu.</para>
-<para><emphasis>Konsumentem (ang. consumer)</emphasis> jest dowolny proces komunikujący się z frameworkiem DTrace. O ile <olink remap="external" targetdoc="816-5166" targetptr="dtrace-1m">
-<citerefentry>
-<refentrytitle>dtrace</refentrytitle>
-<manvolnum>
-1M
-</manvolnum>
-</citerefentry>
-</olink> jest głównym konsumentem DTrace, istnieją także inni. Są to przeważnie nowe wersje istniejących narzędzi, na przykład <olink remap="external" targetdoc="816-5166" targetptr="lockstat-1m">
-<citerefentry>
-<refentrytitle>lockstat</refentrytitle>
-<manvolnum>
-1M
-</manvolnum>
-</citerefentry>
-</olink>.
-DTrace nie limituje ilości równoczesnych konsumentów.</para>
-<para>Zachowanie DTrace´a można modyfikować przy użyciu języka skryptowego D, skonstruowanego podobnie do C. Język D umożliwia dostęp do typów C w jądrze i zmiennych globalnych w jądrze. D obsługuje operatory ANSI C.</para>
-</sect1>
-<sect1 xml:id="gcfpv">
-<title>Opis architektury</title>
-<para>DTrace składa się z następujących elementów:</para>
-<itemizedlist>
-<listitem>
-<para>Konsumenci w przestrzeni użytkownika, na przykład <command>dtrace</command>
-</para>
-</listitem>
-<listitem>
-<para>Dostawcy, pakowani jaki moduły jądra, dostarczający sond do zbierania danych</para>
-</listitem>
-<listitem>
-<para>Biblioteka interfejsu używana przez programy-konsumenty do kontaktowania się z DTracem za pomocą <olink remap="external" targetdoc="816-5177" targetptr="dtrace-7d">
-<citerefentry>
-<refentrytitle>dtrace</refentrytitle>
-<manvolnum>
-7D
-</manvolnum>
-</citerefentry>
-</olink> sterownika jądra</para>
-</listitem>
-</itemizedlist>
-<sect2 xml:id="gcbxv">
-<title>Dostawcy DTrace</title>
-<para>Dostawca reprezentuje metodologię instrumentacji systemu. Dostawcy dostarczają sond frameworkowi DTrace. DTrace wysyła dostawcy informację, kiedy należy uruchomić sondę. Kiedy włączona sonda odpali, dostawca przekazuję kontrolę DTrace´owi.</para>
-<para>Dostawcy pakowani są jako zestaw modułów jądra. Każdy moduł wykonuje pewien wycinek instrumentacji do tworzenia sond. Podczas używania Dtrace´a przez użytkownika każdy provider ma możliwości przedstawienia sond DTrace´owi. Użytkownik może włączyć i podpiąć akcję śledzącą do dowolnej przedstawionej sondy.</para>
-<para>Niektórzy dostawcy mogą tworzyć nowe sondy na podstawie wskazań użytkownika.</para>
-</sect2>
-<sect2 xml:id="gcbzc">
-<title>Sondy DTrace</title>
-<para>Sonda ma następujące właściwości:</para>
-<itemizedlist>
-<listitem>
-<para>Dostarczana jest przez <emphasis>dostawcę</emphasis>
-</para>
-</listitem>
-<listitem>
-<para>Identyfikuje <emphasis>moduł</emphasis> i <emphasis>funkcję</emphasis> przez siebie instrumentowaną</para>
-</listitem>
-<listitem>
-<para>Ma <emphasis>nazwę</emphasis>
-</para>
-</listitem>
-</itemizedlist>
-<para>Atrybuty te definiują czwórkę stanowiąca unikalny identyfikator sondy w postaci <emphasis>dostawca:moduł:funkcja:nazwa (ang. provider:module:function:name)</emphasis>.
-Każda sonda ma także unikalny identyfikator liczbowy.</para>
-</sect2>
-<sect2 xml:id="gcgkn">
-<title>Predykaty DTrace</title>
-<para>
-<indexterm xml:id="indexterm-1">
-<primary>predykaty</primary>
-</indexterm>Predykaty to wyrażenia zamknięta między slashami <literal>/
-/</literal>. Ocenia się je podczas odpalania sondy, aby zdecydować, czy powiązana z sondą akcja powinna zostać wykonana. Są to podstawowe konstrukcje warunkowe używane do bardziej skomplikowanej kontroli wykonania w programach D. Predykatywy są nieobowiązkowe dla wszystkich sond. Jeśli nie zostaną użyte, akcja będzie wykonywana zawsze, gdy sonda odpali.</para>
-<para>Predykaty mogą używać dowolnych wcześniej opisanych operatorów D. Mogą odwoływać się do obiektów D, takich jak zmienne i stałe. Wynikiem oceny predykatu musi być liczba całkowita lub wskaźnik. Jak we wszystkich wyrażeniach w D, zero oznacza fałsz, a każda liczba różna od zera oznacza prawdę.</para>
-</sect2>
-<sect2 xml:id="gcdxn">
-<title>Akcje DTrace</title>
-<para>Akcje to wyrażenia programowane przez użytkownika wykonywane przez wirtualną maszynę DTrace w jądrze. Akcje mają następujące właściwości:</para>
-<itemizedlist>
-<listitem>
-<para>Akcje wykonywane są w momencie odpalenia sondy</para>
-</listitem>
-<listitem>
-<para>Są całkowicie programowalne w języku D</para>
-</listitem>
-<listitem>
-<para>Większość akcji zapisują konkretne stany systemu</para>
-</listitem>
-<listitem>
-<para>Akcja może zmienić stan systemu w szczegółowo opisany sposób. Takie akcje nazywane są <emphasis>niszczycielskimi akcjami (ang. destructive actions)</emphasis>. Domyślnie są niedozwolone.</para>
-</listitem>
-<listitem>
-<para>Wiele akcji używa wyrażeń w języku D</para>
-</listitem>
-</itemizedlist>
-</sect2>
-<sect2 xml:id="gcbzh">
-<title>Język skryptowy D</title>
-<para>DTrace´a można używać bezpośrednio z linii poleceń za pośrednictwem komendy <command>dtrace</command>. Bardziej skomplikowane zadania wykonują skrypty D. Do załadowania wybranego skryptu należy użyć opcji <literal>-s</literal>. Więcej informacji o języku skryptowy D w <olink remap="external" targetdoc="chapter-3.xml" targetptr="gbxwl">Chapter 3, Scripting With the D Language</olink>.</para>
-</sect2>
-</sect1>
+    <itemizedlist>
+      <listitem>
+        <para>Dowolny argument przekazany funkcji</para>
+      </listitem>
+
+      <listitem>
+        <para>Dowolną globalną zmienną w jądrze</para>
+      </listitem>
+
+      <listitem>
+        <para>Znacznik czasu wskazujący kiedy wywołano funkcję</para>
+      </listitem>
+
+      <listitem>
+        <para>Ślad stosu wskazujący fragment kodu, który wywołał
+        funkcję</para>
+      </listitem>
+
+      <listitem>
+        <para>Proces działający w momencie wywołania funkcji</para>
+      </listitem>
+
+      <listitem>
+        <para>Wątek, który wywołał funkcję</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Przy odpaleniu sondy można wskazać dowolną
+    <emphasis>akcję</emphasis>, którą powinien podjąć DTrace. Zazwyczaj akcja
+    DTrace´a zapisuje interesujące aspekty zachowania systemu, takie jak
+    znacznik czasu albo argument funkcji.</para>
+
+    <para>Sondy są implementowane przez <emphasis>dostawców (ang.
+    providers)</emphasis>. Dostawca sondy jest modułem jądra umożliwiającym
+    odpalenie danej sondy. Na przykład dostawca śledzenia granic wykonania
+    funkcji (ang. function boundary) <literal>fbt</literal> dostarcza sondy
+    wejścia i wyjścia dla niemalże każdej funkcji w każdym module
+    jądra.</para>
+
+    <para>DTrace ma rozbudowaną obsługę typów danych. Obsługa ta pozwala
+    użytkownikom DTrace´a na przeczesywanie danych zwracanych przez sondy i
+    ograniczenie konieczności wykorzystania zewnętrznych narzędzi do
+    obrabiania danych. DTrace pozwala także na śledzenie podczas uruchamiania
+    systemu oraz obróbki danych z crash dump jądra. Cała instrumentacja w
+    DTrace jest dynamiczna. Sondy są uruchamiane dyskretnie wtedy, kiedy są
+    używane, natomiast nieaktywnych sond nie ma w kodzie działającego
+    systemu.</para>
+
+    <para><emphasis>Konsumentem (ang. consumer)</emphasis> jest dowolny proces
+    komunikujący się z frameworkiem DTrace. O ile <olink remap="external"
+    targetdoc="816-5166" targetptr="dtrace-1m"> <citerefentry>
+        <refentrytitle>dtrace</refentrytitle>
+
+        <manvolnum>1M</manvolnum>
+      </citerefentry> </olink> jest głównym konsumentem DTrace, istnieją także
+    inni. Są to przeważnie nowe wersje istniejących narzędzi, na przykład
+    <olink remap="external" targetdoc="816-5166" targetptr="lockstat-1m">
+    <citerefentry>
+        <refentrytitle>lockstat</refentrytitle>
+
+        <manvolnum>1M</manvolnum>
+      </citerefentry> </olink>. DTrace nie limituje ilości równoczesnych
+    konsumentów.</para>
+
+    <para>Zachowanie DTrace´a można modyfikować przy użyciu języka skryptowego
+    D, skonstruowanego podobnie do C. Język D umożliwia dostęp do typów C w
+    jądrze i zmiennych globalnych w jądrze. D obsługuje operatory ANSI
+    C.</para>
+  </sect1>
+
+  <sect1 xml:id="gcfpv">
+    <title>Opis architektury</title>
+
+    <para>DTrace składa się z następujących elementów:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Konsumenci w przestrzeni użytkownika, na przykład
+        <command>dtrace</command></para>
+      </listitem>
+
+      <listitem>
+        <para>Dostawcy, pakowani jaki moduły jądra, dostarczający sond do
+        zbierania danych</para>
+      </listitem>
+
+      <listitem>
+        <para>Biblioteka interfejsu używana przez programy-konsumenty do
+        kontaktowania się z DTracem za pomocą <olink remap="external"
+        targetdoc="816-5177" targetptr="dtrace-7d"> <citerefentry>
+            <refentrytitle>dtrace</refentrytitle>
+
+            <manvolnum>7D</manvolnum>
+          </citerefentry> </olink> sterownika jądra</para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2 xml:id="gcbxv">
+      <title>Dostawcy DTrace</title>
+
+      <para>Dostawca reprezentuje metodologię instrumentacji systemu. Dostawcy
+      dostarczają sond frameworkowi DTrace. DTrace wysyła dostawcy informację,
+      kiedy należy uruchomić sondę. Kiedy włączona sonda odpali, dostawca
+      przekazuję kontrolę DTrace´owi.</para>
+
+      <para>Dostawcy pakowani są jako zestaw modułów jądra. Każdy moduł
+      wykonuje pewien wycinek instrumentacji do tworzenia sond. Podczas
+      używania Dtrace´a przez użytkownika każdy dostawca ma możliwości
+      przedstawienia sond DTrace´owi. Użytkownik może włączyć i podpiąć akcję
+      śledzącą do dowolnej przedstawionej sondy.</para>
+
+      <para>Niektórzy dostawcy mogą tworzyć nowe sondy na podstawie wskazań
+      użytkownika.</para>
+    </sect2>
+
+    <sect2 xml:id="gcbzc">
+      <title>Sondy DTrace</title>
+
+      <para>Sonda ma następujące właściwości:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Dostarczana jest przez <emphasis>dostawcę</emphasis></para>
+        </listitem>
+
+        <listitem>
+          <para>Identyfikuje <emphasis>moduł</emphasis> i
+          <emphasis>funkcję</emphasis> przez siebie instrumentowaną</para>
+        </listitem>
+
+        <listitem>
+          <para>Ma <emphasis>nazwę</emphasis></para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Atrybuty te definiują czwórkę stanowiąca unikalny identyfikator
+      sondy w postaci <emphasis>dostawca:moduł:funkcja:nazwa (ang.
+      provider:module:function:name)</emphasis>. Każda sonda ma także unikalny
+      identyfikator liczbowy.</para>
+    </sect2>
+
+    <sect2 xml:id="gcgkn">
+      <title>Predykaty DTrace</title>
+
+      <para><indexterm xml:id="indexterm-1">
+          <primary>predykaty</primary>
+        </indexterm>Predykaty to wyrażenia zamknięta między slashami
+      <literal>/ /</literal>. Ocenia się je podczas odpalania sondy, aby
+      zdecydować, czy powiązana z sondą akcja powinna zostać wykonana. Są to
+      podstawowe konstrukcje warunkowe używane do bardziej skomplikowanej
+      kontroli wykonania w programach D. Predykatywy są nieobowiązkowe dla
+      wszystkich sond. Jeśli nie zostaną użyte, akcja będzie wykonywana
+      zawsze, gdy sonda odpali.</para>
+
+      <para>Predykaty mogą używać dowolnych wcześniej opisanych operatorów D.
+      Mogą odwoływać się do obiektów D, takich jak zmienne i stałe. Wynikiem
+      oceny predykatu musi być liczba całkowita lub wskaźnik. Jak we
+      wszystkich wyrażeniach w D, zero oznacza fałsz, a każda liczba różna od
+      zera oznacza prawdę.</para>
+    </sect2>
+
+    <sect2 xml:id="gcdxn">
+      <title>Akcje DTrace</title>
+
+      <para>Akcje to wyrażenia programowane przez użytkownika wykonywane przez
+      wirtualną maszynę DTrace w jądrze. Akcje mają następujące
+      właściwości:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Akcje wykonywane są w momencie odpalenia sondy</para>
+        </listitem>
+
+        <listitem>
+          <para>Są całkowicie programowalne w języku D</para>
+        </listitem>
+
+        <listitem>
+          <para>Większość akcji zapisują konkretne stany systemu</para>
+        </listitem>
+
+        <listitem>
+          <para>Akcja może zmienić stan systemu w szczegółowo opisany sposób.
+          Takie akcje nazywane są <emphasis>niszczycielskimi akcjami (ang.
+          destructive actions)</emphasis>. Domyślnie są niedozwolone.</para>
+        </listitem>
+
+        <listitem>
+          <para>Wiele akcji używa wyrażeń w języku D</para>
+        </listitem>
+      </itemizedlist>
+    </sect2>
+
+    <sect2 xml:id="gcbzh">
+      <title>Język skryptowy D</title>
+
+      <para>DTrace´a można używać bezpośrednio z linii poleceń za
+      pośrednictwem komendy <command>dtrace</command>. Bardziej skomplikowane
+      zadania wykonują skrypty D. Do załadowania wybranego skryptu należy użyć
+      opcji <literal>-s</literal>. Więcej informacji o języku skryptowy D w
+      <olink remap="external" targetdoc="chapter-3.xml"
+      targetptr="gbxwl">Chapter 3, Scripting With the D
+      Language</olink>.</para>
+    </sect2>
+  </sect1>
 </chapter>

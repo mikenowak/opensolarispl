@@ -32,12 +32,12 @@
     nazywa się też <emphasis>jądrem</emphasis>. Jądro zawiera wszystkie
     funkcje i procedury wymagane do tego, aby system mógł działać. Ze względu
     na fundamentalne znaczenie jądra dla pracy komputera, pracuje ono w
-    specjalnym chornionym trybie zwanym <emphasis>trybem jądra (ang. kernel
+    specjalnym chronionym trybie zwanym <emphasis>trybem jądra (ang. kernel
     mode)</emphasis>. Aplikacje przestrzeni użytkownika pracują w trybie
-    ograniczonym (ang. restricted mode) zwanym <emphasis>trybem użytkownika
-    (ang. user mode</emphasis>), który nie ma dostępu do instrukcji ani
+    ograniczonym (ang. restricted mode) zwanym <emphasis>trybem użytkownika
+    (ang. user mode</emphasis>), który nie ma dostępu do instrukcji ani
     przestrzeni adresowej jądra. Sterowniki urządzeń pracują w trybie jądra i
-    nie mają bezpośredniego dostępu do precesów trybu użytkownika.</para>
+    nie mają bezpośredniego dostępu do procesów trybu użytkownika.</para>
   </sect1>
 
   <sect1 xml:id="emjjp">
@@ -48,8 +48,8 @@
     systemowe, takie jak zarządzanie I/O, pamięć wirtualna i planowanie. Jądro
     koordynuje współpracę wszystkich procesów użytkownika i zasobów
     systemowych. Przypisuje priorytety, obsługuje żądania dostępu do zasobów
-    systemowych oraz sprzętowe przrwania i wyjątki. Planuje i przełącza wątki,
-    strony pamięci i zamienia procesy.</para>
+    systemowych oraz sprzętowe przerwania i wyjątki. Planuje i przełącza
+    wątki, strony pamięci i zamienia procesy.</para>
 
     <sect2 xml:id="emjjr">
       <title>Różnice między modułami jądra a programami przestrzeni
@@ -76,7 +76,7 @@
             <emphasis>przestrzeni jądra</emphasis>. Program działa w
             <emphasis>przestrzeni użytkownika</emphasis>. Oprogramowanie
             systemowe jest chronione przed programami użytkownika. Przestrzeń
-            jądra i prrzestrzeń użytkownika mają własne, odrębne przestrzenie
+            jądra i przestrzeń użytkownika mają własne, odrębne przestrzenie
             adresowe. Więcej informacji o przestrzeniach adresowych w <olink
             remap="internal" targetdoc="chapter-1.xml" targetptr="eoqob">User
             and Kernel Address Spaces on x86 and SPARC
@@ -92,13 +92,12 @@
                 <seealso>kernel mode</seealso>
               </indexterm> <emphasis role="strong">Moduły jądra mają wyższy
             przywilej.</emphasis> Kod działający w przestrzeni jądra ma wyższy
-            przywilej, niż kod działający w przestrzeni użytkownika.
-            Sterowniki urządzeń mają możliwość większego oddziaływania na
-            system, niż programy użytkowników. Kod sterowników musi być
-            dokładnie przetestowany, aby uniknąć niegatywnego wpłuwy na
-            system. Więcej informacji w <olink remap="external"
-            targetdoc="chapter-4.xml" targetptr="fdlbq">Device Driver Testing
-            Tips</olink>.</para>
+            przywilej niż kod działający w przestrzeni użytkownika. Sterowniki
+            urządzeń mają możliwość większego oddziaływania na system niż
+            programy użytkowników. Kod sterowników musi być dokładnie
+            przetestowany, aby uniknąć negatywnego wpływu na system. Więcej
+            informacji w <olink remap="external" targetdoc="chapter-4.xml"
+            targetptr="fdlbq">Device Driver Testing Tips</olink>.</para>
           </listitem>
 
           <listitem>
@@ -112,8 +111,8 @@
           <listitem>
             <para><emphasis role="strong">Działanie modułu jądra podlega
             przerwaniom.</emphasis> Więcej niż jeden proces może żądać
-            działania od sterownika urządzenia. Obsługa przerwań może zarządać
-            działania od sterownika w tym samym momencie, gdy obsługue on już
+            działania od sterownika urządzenia. Obsługa przerwań może zażądać
+            działania od sterownika w tym samym momencie, gdy obsługuje on już
             jakieś żądanie. W środowisku równoczesnego wykonywania
             wieloprocesorowego (SMP) sterownik może być wykonywany
             równocześnie na wielu procesorach.</para>
@@ -129,7 +128,7 @@
           <listitem>
             <para><emphasis role="strong">Moduły jądra mogą współdzielić
             dane.</emphasis> Odrębne wątki wykonywanego programu zazwyczaj nie
-            daje współdzielą danych. Natomiast struktury danych i podprogramy,
+            współdzielą danych. Natomiast struktury danych i podprogramy,
             które składają się na sterownik urządzenia są współdzielone przez
             wszystkie wątki, które użytkują sterownik. Sterownik musi więc
             obsłużyć problemy ze spójnością wynikłe z wielu równoczesnych
@@ -153,7 +152,7 @@
 
         <itemizedlist>
           <para>Poniższa charakterystyka modułów jądra podkreśla ważne różnice
-          w strukturze modułów jądra a programów użytkownika:</para>
+          w strukturze modułów jądra i programów użytkownika:</para>
 
           <listitem>
             <para><indexterm xml:id="indexterm-8">
@@ -167,15 +166,15 @@
             urządzeń, nie mają funkcji <function>main</function>. Moduł jest
             zbiorem funkcji i struktur danych. Sterownik jest modułem jądra,
             który zapewnia programowy interfejs I/O urządzenia. Funkcje
-            sterownika zapewaniają <emphasis>punkty wejścia</emphasis> do
-            urządzenia. Jądro używa numeru urządzenia do zlokalizowania
-            funkcji <function>open</function> oraz innych funkcji właściwych
-            dla sterownika urządzenia. Więcej informacji o punktach wejścia w
-            <olink remap="internal" targetdoc="chapter-1.xml"
-            targetptr="emjjs">Device Drivers</olink>. Więcej informacji o
-            numerach urządzeń w <olink remap="internal"
-            targetdoc="chapter-1.xml" targetptr="fgove">Device
-            Numbers</olink>.</para>
+            sterownika zapewniają <emphasis>punkty wejścia (ang. entry
+            points)</emphasis> do urządzenia. Jądro używa numeru urządzenia do
+            zlokalizowania funkcji <function>open</function> oraz innych
+            funkcji właściwych dla sterownika urządzenia. Więcej informacji o
+            punktach wejścia w <olink remap="internal"
+            targetdoc="chapter-1.xml" targetptr="emjjs">Device
+            Drivers</olink>. Więcej informacji o numerach urządzeń w <olink
+            remap="internal" targetdoc="chapter-1.xml"
+            targetptr="fgove">Device Numbers</olink>.</para>
           </listitem>
 
           <listitem>
@@ -188,9 +187,9 @@
               </indexterm> <indexterm xml:id="indexterm-11">
                 <primary><command>ld</command> command</primary>
               </indexterm> <emphasis role="strong">Moduły jądra są
-            konsolidowane (ang. linked) tylko z jądrem.</emphasis> Moduły
+            konsolidowane (ang. linked) tylko z jądrem.</emphasis> Moduły
             jądra nie są konsolidowane z tymi samymi bibliotekami, z którymi
-            konsolidowane są programy użytkownika. JEdynymi funkcjami, które
+            konsolidowane są programy użytkownika. Jedynymi funkcjami, które
             może wywołać moduł jądra są funkcje eksportowane przez jądro.
             Jeśli sterownik odwołuje się do funkcji niezdefiniowanych w
             jądrze, skompiluje się, ale nie da się załadować. Sterowniki
@@ -214,10 +213,10 @@
 
           <listitem>
             <para><emphasis role="strong">Moduły jądra używają innych plików
-            nagłówkowych.</emphasis> Moduły jądra wymagają innych plików
+            nagłówkowych.</emphasis> Moduły jądra wymagają innych plików
             nagłówkowych niż programy użytkownika. Wymagane pliki nagłówkowe
             wydrukowane są na stronach man odpowiednich funkcji. Więcej
-            informacji o funckjach DDI/DKI w <olink remap="external"
+            informacji o funkcjach DDI/DKI w <olink remap="external"
             targetdoc="819-2256"> <citetitle remap="book">man pages section 9:
             DDI and DKI Kernel Functions</citetitle> </olink>, o punktach
             wejścia <olink remap="external" targetdoc="819-2255"> <citetitle
@@ -227,8 +226,8 @@
             pages section 9: DDI and DKI Properties and Data
             Structures</citetitle> </olink>. Moduły jądra mogą włączać pliki
             nagłówkowe współdzielone z programami użytkownika, jeśli
-            interfejscy jądra i użytkownika w tych plikach są definiowane
-            conditional za pomocą makra <literal>_KERNEL</literal>.</para>
+            interfejsy jądra i użytkownika w tych plikach są definiowane jako
+            warunkowe za pomocą makra <literal>_KERNEL</literal>.</para>
           </listitem>
 
           <listitem>
@@ -252,7 +251,7 @@
           <listitem>
             <para><emphasis role="strong">Moduły jądra mogą być ładowane
             dynamicznie.</emphasis> Zespół funkcji i struktur danych tworzący
-            sterownik urządzdenia może być skompilowany w jeden plik obiektowy
+            sterownik urządzenia może być skompilowany w jeden plik obiektowy
             ładowany przez jądro. Moduł może być wtedy statycznie lub
             dynamicznie łączony z jądrem i odłączany od niego. Dzięki temu
             można dodawać do jądra nowe opcje i testować nowe wersje modułu
@@ -267,7 +266,7 @@
 
         <para>Przesył danych między urządzeniem a systemem jest zazwyczaj
         wolniejszy od przesyłu danych wewnątrz CPU. W związku z tym sterownik
-        zazwyczaj zawiesza wykonanie wywołującego wątku aź do zakończenia
+        zazwyczaj zawiesza wykonanie wywołującego wątku aż do zakończenia
         przesyłania danych. Dopóki wątek wywołujący sterownik jest zawieszony,
         CPU może wykonywać inne wątki. Kiedy przesył danych się zakończy,
         sterownik dostaje przerwanie od urządzenia i obsługuje je, a później
@@ -280,7 +279,7 @@
         <para>Sterowniki muszą pracować z adresami (wirtualnymi) procesów
         użytkownika, adresami (jądra) systemowymi i adresami szyny I/O.
         Sterowniki czasami kopiują dane między przestrzeniami adresowymi, a
-        czasami manipulują tablicami mapującymi adresy. Węcej informacji w
+        czasami manipulują tablicami mapującymi adresy. Więcej informacji w
         <olink remap="external" targetdoc="819-3196" targetptr="hwovr-18">
         <citetitle remap="section">Bus Architectures</citetitle> in <citetitle
         remap="book">Writing Device Drivers</citetitle> </olink>.</para>
@@ -355,7 +354,7 @@
       adresowej użytkownika.</para>
 
       <para>Na komputerach z rodziny x86 podczas próby bezpośredniego
-      sięgnięcia do przestrzeni adresowej użytkownika nie pjawia się żaden
+      sięgnięcia do przestrzeni adresowej użytkownika nie pojawia się żaden
       błąd sprzętowy. Nadal jednak należy upewnić się, że sterownik nie sięga
       bezpośrednio do przestrzeni adresowej użytkownika. Sterowniki powinny
       być tak przenośne, jak to tylko możliwe. Każdy sterownik sięgający
@@ -385,26 +384,25 @@
       funkcji w sterowniku: <olink remap="external" targetdoc="chapter-3.xml"
       targetptr="ffdqq">Modifying Data Stored in Kernel Memory</olink>.</para>
 
-      <para>The <olink remap="external" targetdoc="819-2241"
+      <para>Wywołanie systemowe <olink remap="external" targetdoc="819-2241"
       targetptr="mmap-2"> <citerefentry>
           <refentrytitle>mmap</refentrytitle>
 
           <manvolnum>2</manvolnum>
-        </citerefentry> </olink> system call maps pages of memory between a
-      process's address space and a file or shared memory object. In response
-      to an <citerefentry>
+        </citerefentry> </olink> mapuje strony pamięci między przestrzenią
+      adresową procesu a plikiem lub współdzielonym obiektem pamięci. W
+      odpowiedzi na wywołanie systemowe <citerefentry>
           <refentrytitle>mmap</refentrytitle>
 
           <manvolnum>2</manvolnum>
-        </citerefentry> system call, the system calls the <olink
-      remap="external" targetdoc="819-2255" targetptr="devmap-9e">
-      <citerefentry>
+        </citerefentry> system wywołuje punkt wejścia <olink remap="external"
+      targetdoc="819-2255" targetptr="devmap-9e"> <citerefentry>
           <refentrytitle>devmap</refentrytitle>
 
           <manvolnum>9E</manvolnum>
-        </citerefentry> </olink> entry point to map device memory into user
-      space. This information is then available for direct access by user
-      applications.</para>
+        </citerefentry> </olink> i mapuje pamięć urządzenia w przestrzeni
+      użytkownika. Takie dane są dostępne bezpośrednio programom
+      użytkownika.</para>
     </sect2>
 
     <sect2 xml:id="emjjs">
@@ -462,8 +460,8 @@
       usuwane z jądra na żądanie. Sterownik jest zbiorem funkcji i struktur
       danych w języku C osiągalnych dla innych modułów jądra. Funkcje te muszą
       używać standardowych interfejsów nazywanych <emphasis>punktami wejścia
-      (ang. entry points)</emphasis>. Dzięki użyciu punktów wejścia moduły
-      wywołujące są oddzielone od wewnzetrznych mechanizmów sterownia. Więcej
+      (ang. entry points)</emphasis>. Dzięki użyciu punktów wejścia moduły
+      wywołujące są oddzielone od wewnętrznych mechanizmów sterownika. Więcej
       o punktach wejścia w <olink remap="external" targetdoc="819-3196"
       targetptr="eqbqy"> <citetitle remap="section">Device Driver Entry
       Points</citetitle> in <citetitle remap="book">Writing Device
@@ -504,7 +502,7 @@
           <primary>device drivers</primary>
 
           <secondary>entry points</secondary>
-        </indexterm>System operacyjny Solaris ma dużo puntów wejścia
+        </indexterm>System operacyjny Solaris ma dużo punktów wejścia
       sterowników. Różne typy urządzeń wymagają różnych punktów wejścia w
       sterowniku. Poniższy diagram pokazuje niektóre dostępne punkty wejścia
       pogrupowanych według typu sterownika. Żaden pojedynczy sterownik nie
@@ -557,7 +555,7 @@
         <listitem>
           <para><emphasis role="strong">Inicjalizacja systemu.</emphasis>
           Jądro wywołuje sterowniki urządzeń podczas uruchamiania systemu, aby
-          znależć i przygotować do pracy dostępne urządzenia.</para>
+          znaleźć i przygotować do pracy dostępne urządzenia.</para>
         </listitem>
 
         <listitem>
@@ -652,8 +650,8 @@
       </indexterm>
 
       <para>Sterowniki urządzeń i inne moduły jądra są uporządkowane w
-      następujacej hierarchii katalogów w systemie operacyjnyjm Solaris.
-      Więcej informacji o organizacji jądra i dodawaniu katalogów do ścieżki
+      następującej hierarchii katalogów w systemie operacyjnym Solaris. Więcej
+      informacji o organizacji jądra i dodawaniu katalogów do ścieżki
       wyszukiwania w jądrze w <olink remap="external" targetdoc="819-2240"
       targetptr="kernel-1m"> <citerefentry>
           <refentrytitle>kernel</refentrytitle>
@@ -672,7 +670,7 @@
 
           <listitem>
             <para>Moduły wspólne dla większości platform. Moduły wymagane do
-            startu startu i inicjalizacji systemu muszą znależć się w tym
+            startu i inicjalizacji systemu muszą znaleźć się w tym
             katalogu.</para>
           </listitem>
         </varlistentry>
@@ -771,8 +769,8 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
           <refentrytitle>system</refentrytitle>
 
           <manvolnum>4</manvolnum>
-        </citerefentry>. Inna metoda pracy ze sterownikami, ktorę mogą
-      powodwać problemy podczas startu systemu opisana jest w <olink
+        </citerefentry>. Inna metoda pracy ze sterownikami, które mogą
+      powodować problemy podczas startu systemu opisana jest w <olink
       remap="external" targetdoc="chapter-4.xml" targetptr="fdlbq">Device
       Driver Testing Tips</olink>.</para>
     </sect2>
@@ -806,7 +804,7 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
     <para>W systemach UNIX niemal wszystko można traktować jak plik. Programy
     użytkownika odwołują się do urządzeń tak, jakby były one plikami. Pliki
     reprezentujące urządzenia nazywane są <emphasis>plikami
-    specjalnymi</emphasis> lub <emphasis>node'ami urządzeń (ang. device
+    specjalnymi</emphasis> lub <emphasis>węzłami urządzeń (ang. device
     nodes)</emphasis>. Pliki specjalne urządzeń podzielone są na dwie klasy:
     <emphasis>urządzenia blokowe (ang. block</emphasis> devices) i
     <emphasis>urządzenia znakowe (ang. character devices)</emphasis>. Więcej w
@@ -914,7 +912,7 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
         </indexterm> <indexterm xml:id="indexterm-67">
           <primary>minor number</primary>
         </indexterm>Pozycje w <literal>/dev</literal> niebędące odnośnikami do
-      katalogu <literal>/devices</literal> są node'ami urządzeń lub plikami
+      katalogu <literal>/devices</literal> są węzłami urządzeń lub plikami
       specjalnymi stworzonymi przez <olink remap="external"
       targetdoc="819-2240" targetptr="mknod-1m"> <citerefentry>
           <refentrytitle>mknod</refentrytitle>
@@ -936,7 +934,7 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
 
       <para><indexterm xml:id="indexterm-68">
           <primary><literal>/devices</literal> directory</primary>
-        </indexterm>W wersjach Soalris OS wcześniejszych niż 10
+        </indexterm>W wersjach Solaris OS wcześniejszych niż 10
       <literal>/devices</literal> był systemem plików na dysku składającym się
       z katalogów i plików. Począwszy od wersji 10 <literal>/devices</literal>
       jest wirtualnym systemem plików tworzącym katalogi i pliki na
@@ -950,7 +948,7 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
           <secondary>file system</secondary>
 
           <tertiary><literal>devfs</literal></tertiary>
-        </indexterm>Więcej infrormacji o sysmie plików urządzeń w <olink
+        </indexterm>Więcej informacji o systemie plików urządzeń w <olink
       remap="external" targetdoc="819-2254" targetptr="devfs-7fs">
       <citerefentry>
           <refentrytitle>devfs</refentrytitle>
@@ -981,7 +979,7 @@ Enter default directory for modules [/platform/i86pc/kernel /kernel
           <primary>devices</primary>
 
           <secondary>nexus</secondary>
-        </indexterm>Drzewo urządzeń obrazuje związki między urządzedniami. W
+        </indexterm>Drzewo urządzeń obrazuje związki między urządzeniami. W
       drzewie urządzeń katalog reprezentuje <emphasis>splot (ang.
       nexus)</emphasis> urządzeń. Splot jest urządzeniem, które może być
       rodzicem innych urządzeń. W poniższym przykładzie
@@ -1169,7 +1167,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <term><literal>d0</literal></term>
 
           <listitem>
-            <para>SCSI LUN. Wskazuje wirtualne partycje na fizyczneym
+            <para>SCSI LUN. Wskazuje wirtualne partycje na fizycznym
             celu.</para>
           </listitem>
         </varlistentry>
@@ -1228,7 +1226,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <term><literal>sd@0,0:h</literal></term>
 
           <listitem>
-            <para>Młodszy node <literal>h</literal> na dysku SCSI o adresie
+            <para>Młodszy węzeł <literal>h</literal> na dysku SCSI o adresie
             <literal>0,0</literal>. Jest to część równoważna fragmentowi
             <literal>s7</literal> z zapisu
             <filename>/dev/dsk/c0t0d0s7</filename>.</para>
@@ -1251,7 +1249,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
       </indexterm>
 
       <para><emphasis>Numer urządzenia (ang. device number)</emphasis>
-      identyfikuje dane urządzenie i młodszy node w drzewie urządzeń.
+      identyfikuje dane urządzenie i młodszy węzeł w drzewie urządzeń.
       Parametr<literal> dev_t</literal> wymagany w wielu funkcjach DDI/DKI to
       jest właśnie ten numer urządzenia.</para>
 
@@ -1259,7 +1257,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <primary>major number</primary>
         </indexterm> <indexterm xml:id="indexterm-99">
           <primary>minor number</primary>
-        </indexterm>Każde urządznie ma starszy numer (ang. major number) i
+        </indexterm>Każde urządzenie ma starszy numer (ang. major number) i
       młodszy numer (ang. minor number). Numer urządzenia to para
       <replaceable>starszy</replaceable>,<replaceable>młodszy</replaceable>. W
       liście z długimi nazwami para ta drukowana jest w kolumnie, w której
@@ -1304,8 +1302,8 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
 
       <para>W nazwie <filename>sd@0,0:h,</filename>młodszy numer
       reprezentowany jest przez <literal>h</literal>. Kiedy sterownik
-      otrzymuje żądanie dla młodszego node'u <literal>h</literal>, tak
-      naprawdę otrzymuje odpowiedni młodszy numer. Sterownik node'u
+      otrzymuje żądanie dla młodszego węzła <literal>h</literal>, tak naprawdę
+      otrzymuje odpowiedni młodszy numer. Sterownik węzła
       <literal>sd</literal> tłumaczy ten numer na odpowiedni wycinek partycji,
       czyli na przykład 7. zamontowany na <filename>/export</filename>.</para>
 
@@ -1338,8 +1336,8 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
     Drivers</citetitle> </olink>.</para>
 
     <para>Sun oferuje szkolenia związane z wnętrznościami systemu Solaris,
-    analizą crash dumpów, pisaniem sterowników, DTrace, Sun Studio i innymi
-    tematami przydatnymi deweloperom Solarisów.</para>
+    analizą zrzutów (ang. crash dumpów), pisaniem sterowników, DTrace, Sun
+    Studio i innymi tematami przydatnymi deweloperom Solarisów.</para>
 
     <orderedlist>
       <para>Uogólniony proces pisania sterowników wygląda tak:</para>
@@ -1391,7 +1389,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
     <sect2 xml:id="fsujc">
       <title>Pisanie sterownika</title>
 
-      <para>Sterownik składa się z pliku żródłowego napisane w języku C i
+      <para>Sterownik składa się z pliku źródłowego napisane w języku C i
       pliku konfiguracji sprzętu.</para>
 
       <sect3 xml:id="ganag">
@@ -1402,12 +1400,12 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         remap="internal" targetdoc="chapter-1.xml" targetptr="emqqh">Różnice
         strukturalne między modułami jądra a programami użytkownika</olink>,
         sterownik nie ma funkcji <function>main</function>. Wiele z funkcji
-        sterownika to specjalne funkcje zwane punktami weścia. Więcej
+        sterownika to specjalne funkcje zwane punktami wejścia. Więcej
         informacji w <olink remap="internal" targetdoc="chapter-1.xml"
         targetptr="emjjs">Device Drivers</olink>.</para>
 
         <para>Strony man funkcji zwierają zarówno deklaracje funkcji
-        potrzebnych w terowniku oraz listę plików nagłówkowych, które trzeba
+        potrzebnych w sterowniku oraz listę plików nagłówkowych, które trzeba
         włączyć do kodu. Uwaga: podczas czytania stron man należy sprawdzić,
         czy wyświetlana jest właściwa strona. Na przykład poniższa komenda
         wyświetli stronę <command>ioctl</command>(2), ale wywołanie systemowe
@@ -1453,10 +1451,10 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
 
             <secondary><function>ddi_model_convert_from
             </function></secondary>
-          </indexterm>64bitowy system może wykonywać programy użytkownia
+          </indexterm>64bitowy system może wykonywać programy użytkownika
         64bitowe i 32bitowe. System 64bitowy wykonuje 32bitowe programy
         konwertując dane między tymi dwoma modelami danych. Jądro 64bitowe
-        obsługuje dane użytkownia w obydwóch modelach: 64bitowym i 32bitowym.
+        obsługuje dane użytkownika w obydwóch modelach: 64bitowym i 32bitowym.
         Gdy 64bitowy sterownik kopiuje dane między przestrzenią jądra a
         przestrzenią użytkownika, używa funkcji <olink remap="external"
         targetdoc="819-2256" targetptr="ddi-model-convert-from-9f">
@@ -1495,17 +1493,15 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           </listitem>
 
           <listitem>
-            <para>Źródła produkcyjnych sterowników są w <link
-            xlink:href="http://www.opensolaris.org/" xlink:type="url"
-            xmlns:xlink="http://www.w3.org/1999/xlink">[ FIXME]</link> w
-            zakładce “Source Browser.”</para>
+            <para>Źródła produkcyjnych sterowników są w zakładce “Source
+            Browser”.</para>
           </listitem>
 
           <listitem>
             <para>Więcej źródeł i dokumentacji można znaleźć na stronach
-            społeczności sterowników urządzeńOpenSolarisa pod adresem [FIXME]
-            oraz stronie deweloperów sterowników Solarisa na stronie Sun
-            Developer Network (SDN) pod adresem [FIXME].</para>
+            społeczności sterowników urządzeńOpenSolarisa oraz stronie
+            deweloperów sterowników Solarisa na stronie Sun Developer Network
+            (SDN).</para>
           </listitem>
 
           <listitem>
@@ -1519,8 +1515,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
 
           <listitem>
             <para>Więcej pomocy na forum Driver Development Solaris lub forum
-            Kernel [FIXME] adresy www [/FIXME]. Wszystkie tematy można
-            przejrzeć pod adresem [FIXME].</para>
+            Kernel.</para>
           </listitem>
         </itemizedlist>
       </sect3>
@@ -1575,7 +1570,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
 
             <manvolnum>9F</manvolnum>
           </citerefentry> </olink>. Minimalna ilość informacji w pliku
-        konfiguracyjnym to nazwa node'u urządzenia oraz nazwa lub typ rodzica
+        konfiguracyjnym to nazwa węzła urządzenia oraz nazwa lub typ rodzica
         urządzenia.</para>
 
         <para>Więcej informacji o plikach konfiguracyjnych sterowników
@@ -1618,7 +1613,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         </indexterm>W tym podrozdziale napisane jest jak skompilować i
       skonsolidować sterownik dla różnych architektur.</para>
 
-      <para>System operacyjny Solaris OS musi być zainstalowany conajmniej na
+      <para>System operacyjny Solaris OS musi być zainstalowany co najmniej na
       poziomie Developer wg instrukcji z <olink remap="external"
       targetdoc="819-2393" targetptr="webstart-91">Rozdział 2, <citetitle
       remap="chapter">Instalacja za pomocą programu instalacyjnego Solaris
@@ -1630,14 +1625,14 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
       <filename>/usr/ccs/bin</filename>.</para>
 
       <para>Kernel 64bitowy nie może używać 32bitowego sterownika, może używać
-      tylko 64bitowych strowników. Wszystkie części pojedynczego programu
+      tylko 64bitowych sterowników. Wszystkie części pojedynczego programu
       muszą używać tego samego modelu danych. Sterownik urządzenia nie jest
       samodzielnym programem, ale jest częścią programu jądra. Jeśli
       urządzenie ma współpracować z systemem operacyjnym Solaris w trybie
       64bitowym i 32bitowym, należy zapewnić dwa sterowniki: 32bitowy i
       64bitowy.</para>
 
-      <para>Domyślnie kompilacja pod Soalrisem produkuje 32bitowy plik na
+      <para>Domyślnie kompilacja pod Solarisem produkuje 32bitowy plik na
       każdej architekturze. Aby skompilować do postaci 64bitowej należy użyć
       opcji kompilacji dla architektur 64bitowych wymienionej w tym
       podrozdziale.</para>
@@ -1738,13 +1733,11 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         tej strony jest odnośnik <citetitle>Sun Studio 11
         Collection</citetitle> prowadzący do zbioru książek o
         <command>dbx</command>, <command>dmake</command>, Performance Analyzer
-        i innych tematach związanych z oprogramowaniem deweloperskim. Artykuły
-        techniczne o Sun Studio oraz Sun Studio do pobrania pod adresem
-        [FIXME].</para>
+        i innych tematach związanych z oprogramowaniem deweloperskim.</para>
 
         <note>
           <para>Sun Studio 9 obsługuje 64bitowych architektur x86. Kompilację
-          i debagowanie 64bitowych sterowników dla architektur x86 można
+          i debugowanie 64bitowych sterowników dla architektur x86 można
           wykonać Sun Studio 10 lub Sun Studio 11.</para>
         </note>
       </sect3>
@@ -1782,7 +1775,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           kompilacji.</para>
 
           <listitem>
-            <para>Kompilacja dla 64bitowej architektury SPARC: </para>
+            <para>Kompilacja dla 64bitowej architektury SPARC:</para>
 
             <screen>% <userinput>gcc -D_KERNEL -m64 -mcpu=v9 -mcmodel=medlow -fno-pic -mno-fpu
 -ffreestanding -nodefaultlibs -c mydriver.c</userinput>
@@ -1815,17 +1808,14 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         </itemizedlist>
 
         <para>Więcej informacji o tych opcjach na stronie man
-        <command>gcc</command>(1) oraz na stronie GCC [FIXME]. Więcej
-        informacji o używaniu kompilatora <command>gcc</command> z systemem
-        operacyjnym Solaris na stronie OpenSolaris [FIXME]. <link
-        xlink:href="http://opensolaris.org/os/community/tools/gcc/"
-        xlink:type="url" xmlns:xlink="http://www.w3.org/1999/xlink">
-        </link>.</para>
+        <command>gcc</command>(1) oraz na stronie GCC. Więcej informacji o
+        używaniu kompilatora <command>gcc</command> z systemem operacyjnym
+        Solaris na stronie OpenSolaris.</para>
       </sect3>
     </sect2>
 
     <sect2 xml:id="fsfqv">
-      <title>Instalcja sterownika</title>
+      <title>Instalacja sterownika</title>
 
       <indexterm xml:id="indexterm-135">
         <primary>device drivers</primary>
@@ -1969,7 +1959,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <refentrytitle>add_drv</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink>. Do użycia tej okmendy wymagany jest
+        </citerefentry> </olink>. Do użycia tej komendy wymagany jest
       użytkownik <literal>root</literal>.</para>
 
       <screen># <userinput>add_drv mydriver</userinput>
@@ -1998,7 +1988,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         <listitem>
           <para><indexterm xml:id="indexterm-145">
               <primary><literal>/devices</literal> directory</primary>
-            </indexterm>TSterownik jest dodawany do katalogu
+            </indexterm>Sterownik jest dodawany do katalogu
           <filename>/devices</filename>.</para>
         </listitem>
 
@@ -2038,7 +2028,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
       <filename>/etc/driver_aliases</filename>, znaczy to, że system
       operacyjny Solaris nie ładuje tego sterownika lub nie podłącza do tego
       sterownika. Każda linia w pliku pokazuje nazwę sterownika oraz nazwę
-      urządzenia. Można w nim znależć, który sterownik obsługuje które
+      urządzenia. Można w nim znaleźć, który sterownik obsługuje które
       urządzenie.</para>
 
       <note>
@@ -2117,10 +2107,10 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
           <refentrytitle>update_drv</refentrytitle>
 
           <manvolnum>1M</manvolnum>
-        </citerefentry> </olink> służy do informowania dystemu o zmianach
+        </citerefentry> </olink> służy do informowania systemu o zmianach
       atrybutów zainstalowanych sterowników. Domyślnie komenda odczytuje
       ponownie plik konfiguracyjny sprzętu dla sterownika. Aktualną
-      kondifurację sterownika można wydrukować komendą <olink remap="external"
+      konfigurację sterownika można wydrukować komendą <olink remap="external"
       targetdoc="819-2240" targetptr="prtconf-1m"> <citerefentry>
           <refentrytitle>prtconf</refentrytitle>
 
@@ -2228,7 +2218,7 @@ crw-r-----   1 root     sys       85,  2 Nov  3 09:43 md@0:0,2,raw</programlisti
         <listitem>
           <para>Ładowanie, wyładowywanie i usuwanie</para>
 
-          <para>Prędzej czy póżniej każdy sterownik będzie musiał być
+          <para>Prędzej czy później każdy sterownik będzie musiał być
           usunięty. Należy upewnić się, że można go czysto usunąć.</para>
         </listitem>
 
