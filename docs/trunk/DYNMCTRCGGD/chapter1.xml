@@ -13,13 +13,13 @@
     jego działania, szukanie problemów wydajnościowych w poprzek różnych
     warstw oprogramowania i szukanie przyczyn nieprawidłowego zachowania. Jak
     się okaże, DTrace umożliwia tworzenie własnych programów do dynamicznej
-    instrumentacji systemu i udzielenie natychmiastowej, dokładnej odpowiedzi
-    na konkretne pytania, które możńa zadać za pomocą języka skryptowego D.
-    Pierwszy podrozdział jest szybkim wprowadzeniem do DTrace'a i pokazuje jak
-    napisać pierwszy d-program. Reszta rozdziału przedstawia kompletny zestaw
-    reguł programowania w języku D oraz wskazówki i techniki wykonywania
-    dogłebnej analizy systemu. Swoimi doświadczeniami z DTrace można podzielić
-    się na stronie społeczności DTrace <ulink type="text"
+    instrumentalizacji systemu i udzielenie natychmiastowej, dokładnej
+    odpowiedzi na konkretne pytania, które możńa zadać za pomocą języka
+    skryptowego D. Pierwszy podrozdział jest szybkim wprowadzeniem do DTrace'a
+    i pokazuje jak napisać pierwszy d-program. Reszta rozdziału przedstawia
+    kompletny zestaw reguł programowania w języku D oraz wskazówki i techniki
+    wykonywania dogłebnej analizy systemu. Swoimi doświadczeniami z DTrace
+    można podzielić się na stronie społeczności DTrace <ulink type="text"
     url="http://www.sun.com/bigadmin/content/dtrace/">http://www.sun.com/bigadmin/content/dtrace/</ulink>.
     Wszystkie prezentowane w podręczniku skrypty można znaleźć w katalogu
     <filename>/usr/demo/dtrace</filename>.</para>
@@ -167,15 +167,14 @@ CPU     ID		      FUNCTION:NAME
   <sect1 id="chp-intro-2">
     <title>Providers and Probes</title>
 
-    <para>In the preceding examples, you learned to use two simple probes
-    named <literal>BEGIN</literal> and <literal>END</literal>. But where did
-    these probes come from? DTrace probes come from a set of kernel modules
-    called <firstterm>providers</firstterm>, each of which performs a
-    particular kind of instrumentation to create probes. When you use DTrace,
-    each provider is given an opportunity to publish the probes it can provide
-    to the DTrace framework. You can then enable and bind your tracing actions
-    to any of the probes that have been published. To list all of the
-    available probes on your system, type the command:</para>
+    <para>W poprzednich przykładach przedstawiono użycie sond
+    <literal>BEGIN</literal> i <literal>END</literal>. Skąd pochodzą te sondy?
+    Sondy DTrace'a pochodzą z zestawu modułów jądra nazywanych
+    <firstterm>dostawcami (ang. providers)</firstterm>, każdy z nich wykonuje
+    pewną instrumentalizację w celu stworzenia sond. Podczas używania DTrace'a
+    każdy dostawca ma okazję opublikować sondy dla DTrace'a. Użytkownik może
+    wtedy wiązać akcje śledzące do dowolnej opublikowanej sondy. Kompletną
+    listę sond dostępnych w systemie można uzyskać komendą:</para>
 
     <screen><userinput># dtrace -l</userinput>
   ID   PROVIDER            MODULE          FUNCTION NAME
@@ -191,27 +190,26 @@ CPU     ID		      FUNCTION:NAME
 
 #</screen>
 
-    <para>It might take some time to display all of the output. To count up
-    all your probes, you can type the command:</para>
+    <para>Wydrukowanie pełnej listy może zająć trochę czasu. Podliczenie
+    wszystkich sond można wykonać komendą:</para>
 
     <screen><userinput># dtrace -l | wc -l</userinput>
         30122</screen>
 
-    <para>You might observe a different total on your machine, as the number
-    of probes varies depending on your operating platform and the software you
-    have installed. As you can see, there are a very large number of probes
-    available to you so you can peer into every previously dark corner of the
-    system. In fact, even this output isn't the complete list because, as
-    you'll see later, some providers offer the ability to create new probes
-    on-the-fly based on your tracing requests, making the actual number of
-    DTrace probes virtually unlimited.</para>
+    <para>Liczba ta może różnić się, ponieważ zależy od platformy sprzętowej i
+    zainstalowanego oprogramowania. Widać jednak z powyższego, że dostępna
+    jest spora liczba sond, dzięki którym można zajrzeć we wszystkie,
+    wcześniej niedostępne, zakamarki systemu. Nawet ta lista nie jest
+    kompletna, ponieważ, jak się okaże później, niekórzy dostawcy umożliwiają
+    tworzenie własnych sond w trakcie wykonywania programu, opartych o wyniki
+    śledzenia, co sprawia, że liczba sond jest praktycznie
+    nieograniczona.</para>
 
-    <para>Now look back at the output from <userinput>dtrace -l</userinput> in
-    your terminal window. Notice that each probe has the two names we
-    mentioned earlier, an integer ID and a human-readable name. The human
-    readable name is composed of four parts, shown as separate columns in the
-    <command>dtrace</command> output. The four parts of a probe name
-    are:</para>
+    <para>Przyjrzyjmy się wydrukowai komendy <userinput>dtrace -l</userinput>.
+    Każda sonda ma dwie nazwy, o czym wcześniej wspominano, identyfikator
+    liczbowy oraz łatwą do zapamiętania nazwę. Ta druga nazwa składa się z
+    czterech elementów pokazanych jako cztery kolumny w wydruku
+    <command>dtrace</command>. Ta czwórka to:</para>
 
     <informaltable frame="none">
       <tgroup cols="2" colsep="0" rowsep="0">
@@ -221,56 +219,54 @@ CPU     ID		      FUNCTION:NAME
 
         <tbody>
           <row>
-            <entry><para>Provider</para></entry>
+            <entry><para>Dostawca (ang. provider)</para></entry>
 
-            <entry><para>The name of the DTrace provider that is publishing
-            this probe. The provider name typically corresponds to the name of
-            the DTrace kernel module that performs the instrumentation to
-            enable the probe.</para></entry>
+            <entry><para>Nazwa dostawcy DTrace publikującego sondę. Zazwyczaj
+            nazwa dostawcy odnosi się do nazwy modułu jądra wykonującego
+            instrumentalizację na rzecz sondy.</para></entry>
           </row>
 
           <row>
-            <entry><para>Module</para></entry>
+            <entry><para>Moduł (ang. module)</para></entry>
 
-            <entry><para>If this probe corresponds to a specific program
-            location, the name of the module in which the probe is located.
-            This name is either the name of a kernel module or the name of a
-            user library.</para></entry>
+            <entry><para>Jeśli sonda odpowiada konkretnemu miejscu w
+            programie, jest to nazwa modułu, w którym znajduje się sonda. Jest
+            to albo nazwa modułu jądra, albo nazwa biblioteki
+            użytkowej.</para></entry>
           </row>
 
           <row>
-            <entry><para>Function</para></entry>
+            <entry><para>Funkcja (ang. function)</para></entry>
 
-            <entry><para>If this probe corresponds to a specific program
-            location, the name of the program function in which the probe is
-            located.</para></entry>
+            <entry><para>Jeśli sonda odpowiada konkretnemu miejscu w
+            programie, jest to nazwa funkcji, w której znajduje się
+            sonda.</para></entry>
           </row>
 
           <row>
-            <entry><para>Name</para></entry>
+            <entry><para>Nazwa (ang. name)</para></entry>
 
-            <entry><para>The final component of the probe name is a name that
-            gives you some idea of the probe's semantic meaning, such as
-            <literal>BEGIN</literal> or <literal>END</literal>.</para></entry>
+            <entry><para>Ostatnim elementem nazwy jest nazwa sondy wsjazująca
+            na jej zastosowanie, na przykład <literal>BEGIN</literal> albo
+            <literal>END</literal>.</para></entry>
           </row>
         </tbody>
       </tgroup>
     </informaltable>
 
-    <para>When writing out the full human-readable name of a probe, write all
-    four parts of the name separated by colons like this:</para>
+    <para>Łatwą do zapamiętania nazwę zapisuje się podając całą
+    czwórkę:</para>
 
-    <para><replaceable>provider</replaceable>:<replaceable>module</replaceable>:<replaceable>function</replaceable>:<replaceable>name</replaceable></para>
+    <para><replaceable>dostawca</replaceable>:<replaceable>moduł</replaceable>:<replaceable>funkcja</replaceable>:<replaceable>nazwa</replaceable></para>
 
-    <para>Notice that some of the probes in the list do not have a module and
-    function, such as the <literal>BEGIN</literal> and <literal>END</literal>
-    probes used earlier. Some probes leave these two fields blank because
-    these probes do not correspond to any specific instrumented program
-    function or location. Instead, these probes refer to a more abstract
-    concept like the idea of the end of your tracing request. A probe that has
-    a module and function as part of its name is known as an
-    <firstterm>anchored probe</firstterm>, and one that does not is known as
-    <firstterm>unanchored</firstterm>.</para>
+    <para>Niektóre nazwy sond na liście nie mają części modułu i funkcji, na
+    przykład <literal>BEGIN</literal> i <literal>END</literal>. Dla niektórych
+    sond te dwa pola są puste, ponieważ sondy te nie odpowiadają żadnemu
+    konkretnemu modułowi ani funkcji. Odpowiadają natomiast bardziej
+    abstrakcyjnym pojęciom, jak koniec żądania śledzenia. Sonda z pełną nazwą
+    określana jest jako <firstterm>sonda osadzona (ang. anchored
+    probe)</firstterm> a sonda bez tych elementów nazwy określana jest
+    jako<firstterm> sonda nieosadzona (ang. unanchored)</firstterm>.</para>
 
     <para>By convention, if you do not specify all of the fields of a probe
     name, then DTrace matches your request to <emphasis>all</emphasis> of the
