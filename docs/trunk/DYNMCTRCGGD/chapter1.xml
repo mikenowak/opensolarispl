@@ -368,22 +368,22 @@ CPU     ID		      FUNCTION:NAME
       </mediaobject>
     </figure>
 
-    <para>Now that you understand how DTrace works, let's return to the tour
-    of the D programming language and start writing some more interesting
-    programs.</para>
+    <para>Po wyjaśnieniach dotyczących działania DTrace nadszedł czas na
+    dalszy ciąg nauki języka D i pisanie ciekawszych niż poprzednio
+    programów.</para>
   </sect1>
 
   <sect1 id="chp-intro-4">
     <title>Variables and Arithmetic Expressions</title>
 
-    <para>Our next example program makes use of the DTrace
-    <literal>profile</literal> provider to implement a simple time-based
-    counter. The profile provider is able to create new probes based on the
-    descriptions found in your D program. If you create a probe named
+    <para>Następny przykład skorzysta z dostawcy DTrace
+    <literal>profile</literal> do implementacji prostego licznika opartego o
+    czas. Dostawca profile umie tworzyć nowe sondy z opisu zawartego w
+    d-skrypcie. Jeśli stworzona zostanie sonda
     <literal>profile:::tick-</literal><replaceable>n</replaceable><literal>sec</literal>
-    for some integer <replaceable>n</replaceable>, the profile provider will
-    create a probe that fires every <replaceable>n</replaceable> seconds. Type
-    the following source code and save it in a file named
+    dla jakiejś liczby całkowitej <replaceable>n</replaceable>, deostawca
+    profile stworzy sondę, która będzie odpalana co
+    <replaceable>n</replaceable> sekund. Poniższy kod pochodzi z pliku
     <filename>counter.d</filename>:</para>
 
     <programlisting>/*
@@ -405,8 +405,9 @@ dtrace:::END
 	trace(i);
 }</programlisting>
 
-    <para>When executed, the program counts off the number of elapsed seconds
-    until you press Control-C, and then prints the total at the end:</para>
+    <para>Podczas wykonywania program odlicza mijające sekundy aż do
+    naciśnięcia Control-C, wtedy zaś kończy działanie i drukuje końcową
+    wartość licznika:</para>
 
     <screen><userinput># dtrace -s counter.d</userinput>
 dtrace: script 'counter.d' matched 3 probes
@@ -421,28 +422,28 @@ CPU     ID                    FUNCTION:NAME
   0      2                             :END         6
 #</screen>
 
-    <para>The first three lines of the program are a comment to explain what
-    the program does. Similar to C, C++, and the Java programming language,
-    the D compiler ignores any characters between the <literal>/*</literal>
-    and <literal>*/</literal> symbols. Comments can be used anywhere in a D
-    program, including both inside and outside your probe clauses.</para>
+    <para>Pierwsze trzy linijki programu to komentarz wyjaśniający
+    przeznaczenie programu. Podobnie jak w językach C, C++ i Java kompilator D
+    ignoruje znaki między symbolami <literal>/*</literal> i
+    <literal>*/</literal>. Komentarzy można używać w dowolnym miejscu w
+    programie D, zarówno wewnątrz i na zewnątrz klauzul z sondami. </para>
 
-    <para>The <literal>BEGIN</literal> probe clause defines a new variable
-    named <literal>i</literal> and assigns it the integer value zero using the
-    statement:</para>
+    <para>Sonda <literal>BEGIN</literal> definiuje zmienną nazwaną
+    <literal>i</literal> i przypisuje jej wartość całkowitą zero w poniższym
+    wyrażeniu:</para>
 
     <programlisting>i = 0;</programlisting>
 
-    <para>Unlike C, C++, and the Java programming language, D variables can be
-    created by simply using them in a program statement; explicit variable
-    declarations are not required. When a variable is used for the first time
-    in a program, the type of the variable is set based on the type of its
-    first assignment. Each variable has only one type over the lifetime of the
-    program, so subsequent references must conform to the same type as the
-    initial assignment. In <filename>counter.d</filename>, the variable
-    <literal>i</literal> is first assigned the integer constant zero, so its
-    type is set to <literal>int</literal>. D provides the same basic integer
-    data types as C, including:</para>
+    <para>Inaczej niż w językach C, C++ i Java zmienne D można tworzyć po
+    prostu przez użycie ich w wyrażeniu w programie; nie są wymagane wyrażenia
+    służące bezpośrednio deklaracji zmiennych. Kiedy zmienna zostaje po raz
+    pierwszy użyta w programie, jej typ jest określany na podstawie pierwszego
+    przypisania wartości. Każda zmienna może mieć tylko jeden typ przez cały
+    czas trwania programu, dlatego następne wykorzystania muszą być zgodne z
+    typem pierwszego przypisania. W <filename>counter.d</filename> zmienna
+    <literal>i</literal> jest inicjowana wartością zero, zatem jej typ
+    ustalony jest na <literal>int</literal>. Język D ma te same typy
+    podstawowe, co język C, włącznie z:</para>
 
     <informaltable frame="none">
       <tgroup cols="2" colsep="0" rowsep="0">
@@ -485,15 +486,14 @@ CPU     ID                    FUNCTION:NAME
       </tgroup>
     </informaltable>
 
-    <para>The sizes of these types are dependent on the operating system
-    kernel's data model, described in <olink remap="internal"
-    targetptr="chp-typeopexpr">Chapter 2, Types, Operators, and
-    Expressions</olink>. D also provides built-in friendly names for signed
-    and unsigned integer types of various fixed sizes, as well as thousands of
-    other types that are defined by the operating system.</para>
+    <para>Wielkości tych typów zależą od modelu danych w jądrze, co opisano w
+    <olink remap="internal" targetptr="chp-typeopexpr">Chapter 2, Types,
+    Operators, and Expressions</olink>. D obsługuje też wbudowane przyjazne
+    nazwy dla różnych wielokości typów całkowitych ze znakiem i bez znaku oraz
+    tysiące innych typów definiowanych przez system oepracyjny.</para>
 
-    <para>The central part of <filename>counter.d</filename> is the probe
-    clause that increments the counter <literal>i</literal>:</para>
+    <para>Centralnym elementem skryptu <filename>counter.d</filename> jest
+    klauzla sondy zwiększająca wartość <literal>i</literal>:</para>
 
     <programlisting>profile:::tick-1sec
 {
@@ -501,64 +501,65 @@ CPU     ID                    FUNCTION:NAME
 	trace(i);
 }</programlisting>
 
-    <para>This clause names the probe <literal>profile:::tick-1sec</literal>,
-    which tells the <literal>profile</literal> provider to create a new probe
-    which fires once per second on an available processor. The clause contains
-    two statements, the first assigning <literal>i</literal> to the previous
-    value plus one, and the second tracing the new value of
-    <literal>i</literal>. All the usual C arithmetic operators are available
-    in D; the complete list is found in <olink remap="internal"
+    <para>Klauzula nazywa sondę <literal>profile:::tick-1sec</literal>, dzięki
+    czemu dostawca <literal>profile</literal> wie, że ma stworzyć nową sondę
+    odpalającą raz na sekundę na dostęonym procesorze. Klauza zawiera dwa
+    wyrażenia, pierwsze przypisujące zmiennej <literal>i</literal> jej
+    poprzednią wartość zwiększoną o jeden, a drugie rozpoczynające śledzenie
+    nowej wartości zmiennej <literal>i</literal>. Wszystkie typowe operatory
+    arytmetyczne z języka C dostępne są w języku D; kompletna lista
+    przedstawiona jest w <olink remap="internal"
     targetptr="chp-typeopexpr">Chapter 2, Types, Operators, and
-    Expressions</olink>. Also as in C, the <literal>++</literal> operator can
-    be used as shorthand for incrementing the corresponding variable by one.
-    The <function>trace</function> function takes any D expression as its
-    argument, so you could write <filename>counter.d</filename> more concisely
-    as follows:</para>
+    Expressions</olink>. Tak samo jak w C do zwiększenia wartości zmiennej o
+    jeden można użyć operatora <literal>++</literal>. Funkcja
+    <function>trace</function> przyjmuje jako argument dowolne wyrażenie D,
+    można więc zwięźlej zapisać <filename>counter.d</filename> jak
+    poniżej:</para>
 
     <programlisting>profile:::tick-1sec
 {
 	trace(++i);
 }</programlisting>
 
-    <para>If you want to explicitly control the type of the variable
-    <literal>i</literal>, you can surround the desired type in parentheses
-    when you assign it in order to <firstterm>cast</firstterm> the integer
-    zero to a specific type. For example, if you wanted to determine the
-    maximum size of a <literal>char</literal> in D, you could change the
-    <literal>BEGIN</literal> clause as follows:</para>
+    <para>Jeśłi wymagana jest ścisła kontrola typu zmiennej
+    <literal>i</literal>, jej pożądany typ można ująć w nawias okrągły i w ten
+    spoób <firstterm>rzutować (ang. cast)</firstterm> na typ całkowity zero
+    inny typ danych. Na przykład, gdyby chcieć określic maksymalny rozmiar
+    typu <literal>char</literal> w języku D, można zmienić klauzulę
+    <literal>BEGIN</literal> w następujący sposób:</para>
 
     <programlisting>dtrace:::BEGIN
 {
 	i = (char)0;
 }</programlisting>
 
-    <para>After running <filename>counter.d</filename> for a while, you should
-    see the traced value grow and then wrap around back to zero. If you grow
-    impatient waiting for the value to wrap, try changing the
-    <literal>profile</literal> probe name to
-    <literal>profile:::tick-100msec</literal> to make a counter that
-    increments once every 100 milliseconds, or 10 times per second.</para>
+    <para>Po jakimś czasie wykonywania programu <filename>counter.d</filename>
+    śledzona zmienna powinna osiągnąć maksymalną wartość i zostać przekręcona
+    do zera. Jeśli zwiększanie wartości zmiennej trwa za długo, można nazwać
+    sondę dostawcy <literal>profile</literal> na
+    <literal>profile:::tick-100msec</literal>, co spowoduje zwiększanie
+    wartości o jeden co 100 milisekund, czyli 10 razy na sekundę.</para>
   </sect1>
 
   <sect1 id="chp-intro-5">
     <title>Predicates</title>
 
-    <para>One major difference between D and other programming languages such
-    as C, C++, and the Java programming language is the absence of
-    control-flow constructs such as if-statements and loops. D program clauses
-    are written as single straight-line statement lists that trace an
-    optional, fixed amount of data. D does provide the ability to
-    conditionally trace data and modify control flow using logical expressions
-    called <firstterm>predicates</firstterm> that can be used to prefix
-    program clauses. A predicate expression is evaluated at probe firing time
-    prior to executing any of the statements associated with the corresponding
-    clause. If the predicate evaluates to true, represented by any non-zero
-    value, the statement list is executed. If the predicate is false,
-    represented by a zero value, none of the statements are executed and the
-    probe firing is ignored.</para>
+    <para>Jedną sporą różnicą między językami C, C++ i Java a językiem D jest
+    brak instrukcji kontroli przepływu, takich jak if i pętle. D-programy są
+    liniowym zapisem wyrażeń, które śledzą ewentualne opcjonalne i określone
+    ilości danych. Język D pozwala na warunkowe śledzenie danych i kontrolę
+    przepływu danych przy użyciu wyrażeń logicznych nazwanych
+    <firstterm>predykatami (ang. predicates)</firstterm>, którymi można
+    poprzedzać kaluzule programu. Wynik wyrażenia predykatywnego jest
+    sprawdzany w momencie odpalania sondy przed wykonaniem jakichkolwiek
+    wyrażeń związanych z odpowiednią sondą. Jeśli wyrażenie jest prawdziwe (w
+    reprezentacji liczbowej wartość niezerowa), to lista wyrażeń związanych z
+    sondą jest wykonywana. Jeśli wynik predykatu jest nieprawdą (w
+    reprezentacji liczbowej wartość zerowa), to odpalenie sondy jest
+    ignorowane i żadne z jej wyrażeń nie jest wykonywane.</para>
 
-    <para>Type the following source code for the next example and save it in a
-    file named <filename>countdown.d</filename>:</para>
+    <para>Poniższy kod źródłowy pochodzi z pliku
+    <filename>countdown.d</filename>:</para>
 
     <programlisting>dtrace:::BEGIN
 {
@@ -578,9 +579,9 @@ profile:::tick-1sec
 	exit(0);
 }</programlisting>
 
-    <para>This D program implements a 10-second countdown timer using
-    predicates. When executed, <filename>countdown.d</filename> counts down
-    from 10 and then prints a message and exits:</para>
+    <para>Ten d-program implementuje licznik dziesięciosekundowy za pomocą
+    predykatów. Podczas wykonania skrypt <filename>countdown.d</filename>
+    zlicza sekundy aż do 10, drukuje wiadmość i kończy działanie:</para>
 
     <programlisting># dtrace -s countdown.d
 dtrace: script 'countdown.d' matched 3 probes
