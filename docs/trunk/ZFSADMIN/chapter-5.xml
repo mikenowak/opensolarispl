@@ -13,7 +13,7 @@
 <para>Ten rozdział dostarcza szczegółowych informacji o zarządzaniu systemami plików ZFS. Omawia także takie koncepcje,
 jak hierarchiczny układ systemów plików, dziedziczenie właściwości, automatyczne zarządzanie punktami montowania oraz
 udostępnianie systemów plików.</para>
-<para>ZFS jest lekkim systemem plików zgodnym z POSIX, który jest budowany na
+<para>ZFS jest lekkim systemem plików zgodnym z POSIX, który jest tworzony na
 samym szczycie puli nośników danych. Systemy plików mogą być dynamicznie tworzone
 i usuwane bez potrzeby uprzedniego przydzielania lub formatowania jakiejkolwiek
 przestrzeni. Ponieważ są one tak lekkie i zarządzalne z jednego
@@ -59,7 +59,7 @@ obrazu (snapshotu), klonu lub woluminu.<indexterm xml:id="indexterm-203">
 </listitem>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gayns">Zarządzanie parametrami dla ZFS-a</olink>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gayns">Zarządzanie parametrami ZFS</olink>
 </para>
 </listitem>
 <listitem>
@@ -69,7 +69,7 @@ obrazu (snapshotu), klonu lub woluminu.<indexterm xml:id="indexterm-203">
 </listitem>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazvb">Limity i rezerwacje</olink>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazvb">Limity i rezerwacje ZFS</olink>
 </para>
 </listitem>
 <listitem>
@@ -86,7 +86,7 @@ create</command> oraz <command>zfs destroy</command>.</para>
 <itemizedlist>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazsf">Tworzenie systemów plików ZFS</olink>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazsf">Tworzenie systemu plików ZFS</olink>
 </para>
 </listitem>
 <listitem>
@@ -101,9 +101,9 @@ create</command> oraz <command>zfs destroy</command>.</para>
 </listitem>
 </itemizedlist>
 <sect2 xml:id="gazsf">
-<title>Tworzenie systemów plików ZFS</title>
+<title>Tworzenie systemu plików ZFS</title>
 <para>Systemy plików ZFS tworzy się przy użyciu polecenia <command>zfs create</command>.
-Komenda <command>create</command> pobiera jeden argument: nazwę systemu plików
+Polecenie <command>create</command> pobiera jeden argument: nazwę systemu plików
 do stworzenia. Nazwa systemu plików określa ścieżkę dostępu począwszy od nazwy puli:
 <indexterm xml:id="indexterm-204">
 <primary>tworzenie</primary>
@@ -162,7 +162,7 @@ zarządzania punktami montowania:
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>Więcej informacji na temat polecenia <command>zfs create</command> znajduje się pod
+<para>Więcej informacji na temat polecenia <command>zfs create</command>: 
 <olink remap="external" targetdoc="819-2240" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
@@ -171,8 +171,7 @@ zarządzania punktami montowania:
 </manvolnum>
 </citerefentry>
 </olink>.</para>
-<para>Dostępna jest nowa funkcja, która umożliwia ustawienie parametrów systemu plików,
-kiedy jest on tworzony.</para>
+<para>Dostępna jest nowa funkcja, która umożliwia ustawienie parametrów systemu plików w momencie jego tworzenia.</para>
 <para>W poniższym przykładzie punkt montowania zostanie ustawiony na
 <filename>/export/zfs</filename> w czasie tworzenia systemu plików <literal>tank/home</literal>.</para>
 <screen># <userinput>zfs create -o mountpoint=/export/zfs tank/home</userinput>
@@ -182,10 +181,9 @@ kiedy jest on tworzony.</para>
 <sect2 xml:id="gammq">
 <title>Niszczenie systemu plików ZFS</title>
 <para>W celu zniszczenia systemu plików ZFS należy użyć polecenia <command>zfs destroy</command>.
-Zniszczony system plików zostaje automatycznie odmontowany i wyłączony z udostępniania.
-Więcej informacji na temat automatycznie zarządzanym montowaniem lub udostępnianiem systemów
-plików znajduje się pod
-<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gbala">Automatic Mount Points</olink>.<indexterm xml:id="indexterm-211">
+Zniszczony system plików zostanie automatycznie odmontowany i wyłączony z udostępniania.
+Więcej informacji na temat automatycznie zarządzanym montowaniem lub udostępnianiem systemów: 
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gbala">Automatyczne zarządzanie punktami montowania</olink>.<indexterm xml:id="indexterm-211">
 <primary>niszczenie</primary>
 <secondary>system plików ZFS</secondary>
 <tertiary>(przykład)</tertiary>
@@ -207,12 +205,12 @@ zostanie zniszczony.</para>
 <screen># <userinput>zfs destroy tank/home/tabriz</userinput>
 </screen>
 <caution>
-<para>Przy użyciu komendy <command>destroy</command> nie ma żadnej prośby o potwierdzenie operacji.
+<para>Przy użyciu polecenia <command>destroy</command> nie ma żadnej prośby o potwierdzenie operacji.
 Proszę używać ze wzmożoną ostrożnością.</para>
 </caution>
 <para>Jeśli system plików przeznaczony do zniszczenia jest zajęty i w związku z tym
 nie może zostać odmontowany, wykonanie polecenia <command>zfs destroy</command>
-nie powiedzie się. W celu zniszczenia aktywnego systemu plików, proszę użyć
+nie powiedzie się. W celu zniszczenia aktywnego systemu plików należy użyć
 opcji <option>f</option>. Proszę używać tej opcji ostrożnie, ponieważ
 może ona odmontować, wyłączyć ze współdzielenia i zniszczyć aktywne systemy plików,
 co może spowodować nieoczekiwane zachowanie się aplikacji.</para>
@@ -223,7 +221,7 @@ cannot unmount 'tank/home/ahrens': Device busy
 </screen>
 <para>Wykonanie polecenia <command>zfs destroy</command> również nie powiedzie się,
 jeśli system plików ma potomne datasety. W celu rekursywnego zniszczenia systemu plików
-i wszystkich potomnych dla niego, proszę użyć opcji <option>r</option>. Proszę zauważyć,
+i wszystkich potomnych dla niego należy użyć opcji <option>r</option>. Warto zauważyć,
 że rekursywne niszczenie systemów plików zniszczy również obrazy (snapshoty), więc
 należy używać tej opcji ostrożnie.</para>
 <screen># <userinput>zfs destroy tank/ws</userinput>
@@ -274,7 +272,7 @@ opcji ostrożnie.</para>
 <sect2 xml:id="gamnn">
 <title>Zmiana nazwy systemu plików ZFS</title>
 <para>Systemy plików mogą mieć zmienianą nazwę przy użyciu polecenia <command>zfs rename</command>.
-Używając komendy <command>rename</command> można przeprowadzić następujące operacje:<indexterm xml:id="indexterm-217">
+Używając polecenia <command>rename</command> można przeprowadzić następujące operacje:<indexterm xml:id="indexterm-217">
 <primary>zmiana nazwy</primary>
 <secondary>system plików ZFS</secondary>
 <tertiary>(przykład)</tertiary>
@@ -304,7 +302,7 @@ plików ZFS</para>
 plików ZFS</para>
 </listitem>
 </itemizedlist>
-<para>Poniższy przykład używa komendy <command>rename</command> w celu
+<para>Poniższy przykład używa polecenia <command>rename</command> w celu
 prostej zmiany nazwy systemu plików:</para>
 <screen># <userinput>zfs rename tank/home/kustarz tank/home/kustarz_old</userinput>
 </screen>
@@ -319,15 +317,15 @@ następuje próba zmiany lokalizacji systemu plików przy użyciu polecenia
 <command>rename</command>, nowa lokalizacja musi zawierać się w obrębie
 tej samej puli i mieć wystarczającą ilość wolnego miejsca, żeby
 zmieścić nowy system plików. Jeśli nowa lokalizacja nie zapewnia wystarczającej
-ilości miejsca, przypuszczalnie z powodu osiągnięcia limitu (quoty), przeniesienie
+ilości miejsca, przypuszczalnie z powodu osiągnięcia limitu (ang. quota), przeniesienie
 systemu plików nie powiedzie się.</para>
-<para>Więcej informacji na temat limitów znajduje się pod <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazvb">ZFS Quotas and Reservations</olink>.</para>
+<para>Więcej informacji na temat limitów ZFS: <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazvb">Limity i rezerwacje ZFS</olink>.</para>
 <para>Operacja zmiany nazwy próbuje wykonać sekwencję odmontowania i przemontowania wskazanego oraz
 potomnych systemów plików. Operacja zmiany nazwy nie powiedzie się, jeśli nie będzie
 w stanie odmontować aktywnego systemu plików. Jeśli wystąpi taki problem,
 potrzebne będzie wymuszenie odmontowania systemu plików.</para>
-<para>Więcej informacji o zmianie nazwy obrazów (snapshotów) znajduje się pod
-<olink remap="external" targetdoc="chapter-6.xml" targetptr="gbion">Renaming ZFS Snapshots</olink>.</para>
+<para>Więcej informacji o zmianie nazwy obrazów (ang. snapshot): 
+<olink remap="external" targetdoc="chapter-6.xml" targetptr="gbion">Zmiana nazwy obrazu ZFS</olink>.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gazss">
@@ -343,7 +341,7 @@ opisane w tym podrozdziale odnoszą się do wszystkich typów datasetu.<indexter
 <secondary>opis</secondary>
 </indexterm>
 </para>
-<para>Parametry dzielą się na tylko do odczytu (statystyki) oraz te z możliwością zdefiniowania. Większość
+<para>Parametry dzielą się na tylko do odczytu (statystyki) oraz te z możliwością ustawiania. Większość
 parametrów przeznaczonych do ustawiania jest także dziedziczona. Dziedziczony parametr jest takim,
 którego ustawiona wartość na "rodzicu" jest dziedziczona na wszystkie potomne datasety.</para>
 <itemizedlist>
@@ -359,7 +357,7 @@ którego ustawiona wartość na "rodzicu" jest dziedziczona na wszystkie potomne
 </listitem>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gdrcw">Parametry użytkownika ZFS</olink>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gdrcw">Parametry ZFS użytkownika</olink>
 </para>
 </listitem>
 </itemizedlist>
@@ -368,10 +366,10 @@ Główne parametry udostępniają wewnętrzne statystyki lub kontrolują zachowa
 plików ZFS. Dodatkowo główne parametry są albo ustawialne lub tylko do odczytu.
 Parametry użytkownika nie mają wpływu na zachowanie się systemu plików ZFS, ale można
 ich użyć w celu opatrywania komentarzami datasetów w sposób bardziej jasny dla środowiska.
-Więcej informacji: <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gdrcw">Parametry użytkownika ZFS</olink>.</para>
-<para>Większość ustawialnych parametrów jest także dziedziczona. Parametr dziedziczony jest takim,
-że kiedy jego wartość zostanie ustawiona dla rodzica, jest propagowany w dół dla wszystkich potomków.</para>
-<para>Wszystkie dziedziczone parametry mają przypisane źródło (source). Źródło określa, w jaki sposób
+Więcej informacji: <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gdrcw">Parametry ZFS użytkownika</olink>.</para>
+<para>Większość ustawialnych parametrów jest także dziedziczona. Parametr dziedziczony to taki,
+którego wartość ustawiona dla rodzica jest propagowana w dół dla wszystkich potomnych datasetów.</para>
+<para>Wszystkie dziedziczone parametry mają przypisane źródło (ang. source). Źródło określa, w jaki sposób
 parametr został przypisany. Źródło parametru może przyjmować następujące parametry:<indexterm xml:id="indexterm-222">
 <primary>ZFS properties</primary>
 <secondary>inheritable, description of</secondary>
@@ -394,7 +392,7 @@ dokładnie określony na tym datasecie przy użyciu polecenia
 </varlistentry>
 <varlistentry>
 <term>
-<literal>inherited from</literal> <replaceable>dataset-name</replaceable>
+<literal>inherited from</literal> <replaceable>nazwa-datasetu</replaceable>
 </term>
 <listitem>
 <para>Wartość <literal>inherited from</literal> <replaceable>nazwa-datasetu</replaceable> oznacza, że parametr został odziedziczony
@@ -415,8 +413,8 @@ jakiegokolwiek przodka mającego ustawionego parametr ze źródłem zdefiniowany
 </variablelist>
 <para>Poniższa tabela zestawia wszystkie główne parametry (tylko do odczytu i ustawialne)
 systemu plików ZFS. Główne parametry tylko do odczytu są oznaczone. Wszystkie pozostałe
-wymienione są ustawialne. Więcej informacji:
-<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gdrcw">Parametry użytkownika ZFS</olink>.</para>
+wymienione są ustawialne. Więcej informacji o parametrach użytkownika:
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gdrcw">Parametry ZFS użytkownika</olink>.</para>
 <table frame="topbot" xml:id="gcfgr">
 
 <title>Opisy głównych parametrów ZFS</title>
@@ -1605,15 +1603,15 @@ przestrzeni zostaną zaktualizowane natychmiast.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gazsd">
-<title>Główne ustawialne parametry systemu plików ZFS</title>
+<title>Główne ustawialne parametry ZFS</title>
 <para>Główne ustawialne parametry to są takie, których wartości mogą
 być jednocześnie odczytywane, jak i ustawiane. Są one ustawiane przy użyciu
 polecenia <command>zfs set</command>, jak opisuje to podrozdział
 <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazsp">Ustawianie parametrów ZFS</olink> lub
-poprzez użycie polecenia <command>zfs create</command> (podrozdział <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazsf">Tworzenie systemów plików ZFS</olink>).
+poprzez użycie polecenia <command>zfs create</command> (podrozdział <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazsf">Tworzenie systemu plików ZFS</olink>).
 Z wyjątkiem limitu i rezerwacji, główne ustawialne parametry są dziedziczone.
-Więcej informacji o limitach i rezerwacjach znajduje się pod
-<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazvb">ZFS Quotas and Reservations</olink>.<indexterm xml:id="indexterm-310">
+Więcej informacji o limitach i rezerwacjach: 
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazvb">Limity i rezerwacje ZFS</olink>.<indexterm xml:id="indexterm-310">
 <primary>ZFS properties</primary>
 <secondary>settable</secondary>
 </indexterm>
@@ -1877,7 +1875,7 @@ parametru <property>volsize</property> nie są przenoszone na zmianę rezerwacji
 </sect2>
 
 <sect2 xml:id="gdrcw">
-<title>Parametry użytkownika ZFS</title>
+<title>Parametry ZFS użytkownika</title>
 <para>Dodatkowo ZFS wspiera dowolne parametry użytkownika. Nie mają one
 wpływu na zachowanie ZFS-a, ale można je wykorzystać do opisywania
 datasetów informacjami, które mogę być przydatne w środowisku użytkownika.</para>
@@ -2203,8 +2201,8 @@ pool/test</screen>
 <title>Ustawianie parametrów ZFS</title>
 <para>Polecenie <command>zfs set</command> służy do modyfikacji jakiegokolwiek
 zdefiniowanego wcześniej parametru datasetu. Można także użyć polecenia <command>zfs create</command>
-w celu ustawienia parametrów podczas tworzenia datasetu. Lista określonych parametrów datasetu znajduje
-się pod <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazsd">Settable ZFS Native Properties</olink>.
+w celu ustawienia parametrów podczas tworzenia datasetu. Listę określonych parametrów datasetu zawiera podrozdział
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gazsd">Główne ustawialne parametry ZFS</olink>.
 Polecenie <command>zfs set</command> przyjmuje sekwencję parametr/wartość w formacie
 <replaceable>parametr</replaceable>=<replaceable>wartość</replaceable> oraz nazwę datasetu.<indexterm xml:id="indexterm-338">
 <primary>setting</primary>
@@ -3098,7 +3096,7 @@ udostępniania systemu plików poprzez tradycyjny, znajomy sposób.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gazvb">
-<title>Limity (quoty) i rezerwacje ZFS</title>
+<title>Limity i rezerwacje ZFS</title>
 <para>ZFS wspiera limity i rezeracje na poziomie systemu plików. Ustawienie
 parametru <property>quota</property> narzuca limit wielkości miejsca, jaki
 system plików może użyć. Dodatkowo można ustawić parametr <property>reservation</property>
