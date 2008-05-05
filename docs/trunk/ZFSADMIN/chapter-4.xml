@@ -1003,7 +1003,7 @@ akcji służących zarządzaniu fizycznym urządzeniami w puli.</para>
 <para>Poprzez dodanie do puli nowego wirtualnego urządzenia najwyższego poziomu,
  możliwe jest dynamiczne powiększenie przestrzeni dostępnej w puli. Przestrzeń 
 ta jest automatycznie dostępna dla wszystkich datasetów w puli. Nowe urządzenie 
-wirtualne dodaje się do puli za pomocą komendy <command>zpool add</command>.
+wirtualne dodaje się do puli za pomocą polecenia <command>zpool add</command>.
 Na przykład:<indexterm xml:id="indexterm-132">
 <primary>dodawanie</primary>
 <secondary>urządzeń do puli nośników danych ZFS (<command>zpool add</command>)
@@ -1024,10 +1024,10 @@ Na przykład:<indexterm xml:id="indexterm-132">
 </para>
 <screen># <userinput>zpool add zeepool mirror c2t1d0 c2t2d0</userinput>
 </screen>
-<para>Format urządzeń wirtualnych jest taki sam jak w przypadku komendy 
+<para>Format urządzeń wirtualnych jest taki sam jak w przypadku polecenia 
 <command>zpool create</command> i dotyczą go te same zasady. Wykonywane są 
 testy, czy urządzenia są używane i nie można zmienić poziomu redundancji 
-bez użycia opcji <option>f</option>. Komenda umożliwia skorzystanie z opcji 
+bez użycia opcji <option>f</option>. Polecenie umożliwia skorzystanie z opcji 
 <option>n</option> umożliwiającej suchy przebieg. Na przykład:</para>
 <screen># <userinput>zpool add -n zeepool mirror c3t1d0 c3t2d0</userinput>
 would update 'zeepool' to the following configuration:
@@ -1041,7 +1041,7 @@ would update 'zeepool' to the following configuration:
         mirror
             c3t1d0
             c3t2d0</screen>
-<para>Komenda ta dodałaby dwa mirrorowane urządzenia <literal>c3t1d0</literal> 
+<para>Polecenie te dodałoby dwa mirrorowane urządzenia <literal>c3t1d0</literal> 
 i <literal>c3t2d0</literal> do istniejącej konfiguracji <filename>zeepool
 </filename>.</para>
 <para>Więcej informacji o sprawdzaniu używanych urządzeń: 
@@ -1089,7 +1089,7 @@ errors: No known data errors</screen>
 </sect2>
 <sect2 xml:id="gcfhe">
 <title>Dołączanie i odłączanie urządzeń w puli nośników danych</title>
-<para>Dodatkowo, oprócz komendy <command>zpool add</command>, istnieje komenda 
+<para>Dodatkowo, oprócz polecenia <command>zpool add</command>, istnieje polecenie 
 <command>zpool attach</command>, pozwalająca na dołączenie urządzenia do 
 istniejącego mirrorowanego bądź niemirrorwanego urządzenia.<indexterm xml:id="indexterm-135">
 <primary>dołączanie</primary>
@@ -1141,7 +1141,7 @@ config:
             c2t1d0  ONLINE       0     0     0</screen>
 <para>Jeśli istniejące urządzenie jest podwójnym mirrorem, przyłączenie nowego 
 urządzenia spowoduje przekształcenie w potrójny mirror i tak dalej. W każdym 
-razie nowe urządzenie natychmiast zaczyna resilverować.</para>
+razie nowe urządzenie natychmiast zaczyna proces odbudowy (ang. resilver).</para>
 </example>
 <example xml:id="gevpf">
 
@@ -1219,9 +1219,9 @@ do wyłączonego urządzenia.<indexterm xml:id="indexterm-141">
 <para>Nie trzeba wyłączać urządzeń, aby je wymienić.</para>
 </note>
 <para>Jeśli zachodzi konieczność tymczasowego odłączenia nośników, można 
-użyć komendy <command>offline</command>. Na przykład, jeśli zachodzi konieczność
- odłączenia macierzy od układu przełączników Fibre Channel i podłączenia jej 
-do innego układu przełączników, można wyłączyć LUN-y z macierzy używanej 
+użyć polecenia <command>offline</command>. Na przykład, jeśli zachodzi konieczność
+ odłączenia macierzy od jednego zestawu przełączników Fibre Channel i podłączenia jej 
+do innego zestawu przełączników, można wyłączyć LUN-y z macierzy używanej 
 w pulach ZFS. Podłączoną i działającą już na nowych przełącznikach macierz można 
 aktywować włączając te same LUN-y. Dane, które pojawiły się w puli w czasie, 
 kiedy LUN-y były wyłączone, automatycznie zaczną się resilverować, kiedy tylko 
@@ -1232,7 +1232,7 @@ inne niż poprzednio kontrolery, oraz że pule są skonfigurowane jako RAID-Z
 lub mirror.</para>
 <sect3 xml:id="gazfy">
 <title>Wyłączanie urządzenia</title>
-<para>Urządzenie można wyłączyć używając komendy <command>zpool offline
+<para>Urządzenie można wyłączyć używając polecenia <command>zpool offline
 </command>.
 Urządzenie można wskazać przez ścieżkę lub skrót, jeśli jest dyskiem. Na 
 przykład:</para>
@@ -1241,7 +1241,7 @@ bringing device c1t0d0 offline</screen>
 <para>Należy mieć na uwadze następujące punkty przy wyłączaniu urządzenia:</para>
 <itemizedlist>
 <listitem>
-<para>Niemożliwe jest takie wyłączanie urządzeń, aby uszkodzić pulę. Nie można 
+<para>Niemożliwe jest takie wyłączanie urządzeń, które uszkodzi pulę. Nie można 
 na przykład wyłączyć dwóch urządzeń w RAID-Z ani wyłączyć wirtualnego urządzenia
  najwyższego poziomu. <indexterm xml:id="indexterm-143">
 <primary>wyłączanie urządzenia (<command>zpool offline</command>)</primary>
@@ -1269,10 +1269,10 @@ cannot offline c1t0d0: no valid replicas</screen>
 t</option>. Na przykład:</para>
 <screen># <userinput>zpool offline -t tank c1t0d0</userinput>
  bringing device 'c1t0d0' offline</screen>
-<para>Po restarcie systemu urządzenie to zostanie automatycznie przywrócone do stanu online <literal>ONLINE</literal>.</para>
+<para>Po restarcie systemu urządzenie to zostanie automatycznie przywrócone do stanu <literal>ONLINE</literal>.</para>
 </listitem>
 <listitem>
-<para>Przy wyłączeniu urządzenia, nie jest ono usuwane z puli. Podczas próby użycia urządzenia w innej puli, nawet po zniszczeniu oryginalnej puli, wydrukowana zostanie wiadomość podobna do poniższej:</para>
+<para>Przy wyłączeniu urządzenia, nie jest ono usuwane z puli. Podczas próby użycia urządzenia w innej puli, nawet po zniszczeniu oryginalnej puli, wyświetlona zostanie wiadomość podobna do poniższej:</para>
 <screen>
 <replaceable>device</replaceable> is part of exported or potentially active ZFS <replaceable>pool</replaceable>. Please see zpool(1M)</screen>
 <para>Przed użyciem wyłączonego urządzenia w innej puli, najpierw należy urządzenie to włączyć, później zaś zniszczyć pulę, do której jest podłączone. </para>
@@ -1280,11 +1280,11 @@ t</option>. Na przykład:</para>
 </listitem>
 </itemizedlist>
 <para>Wyłączone urządzenie ma flagę <literal>OFFLINE</literal> podczas sprawdzania statusu puli. Więcej informacji o określaniu stanu puli: <olink remap="internal" targetdoc="chapter-4.xml" targetptr="gaynp">Sprawdzanie statusu puli ZFS</olink>.</para>
-<para>Więcej informacji: <olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamno">Określanie zdrowia pul nośników danych ZFS</olink>.</para>
+<para>Więcej informacji o stanie zdrowia pul: <olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamno">Określanie zdrowia pul nośników danych ZFS</olink>.</para>
 </sect3>
 <sect3 xml:id="gazgk">
 <title>Włączanie urządzenia</title>
-<para>Po wyłączeniu urządzenia można je włączyć komendą <command>zpool online</command>:</para>
+<para>Po wyłączeniu urządzenia można je włączyć poleceniem <command>zpool online</command>:</para>
 <screen># <userinput>zpool online tank c1t0d0</userinput>
 bringing device c1t0d0 online</screen>
 <para>Po włączeniu urządzenia, wszelkie dane, które pojawiły się w puli są synchronizowane z nowym urządzeniem. Nie można używać wyłączania do wymiany dysków. Próba wymiany wyłączonego urządzenia spowoduje oflagowanie go jako uszkodzone przy włączaniu.<indexterm xml:id="indexterm-146">
@@ -1304,7 +1304,7 @@ bringing device c1t0d0 online</screen>
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>Przy próbie włączenia uszkodzonego urządzenia, przy użyciu komendy <command>fmd</command> pojawi się komunikat podobny do poniższego:</para>
+<para>Przy próbie włączenia uszkodzonego urządzenia, przy użyciu polecenia <command>fmd</command> pojawi się komunikat podobny do poniższego:</para>
 <screen># <userinput>zpool online tank c1t0d0</userinput>
 Bringing device c1t0d0 online
 # 
@@ -1322,7 +1322,7 @@ REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
 </sect2>
 <sect2 xml:id="gazge">
 <title>Zerowanie liczników błędów urządzeń w puli</title>
-<para>Jeśli urządzenie zostało wyłączone z powodu uszkodzenia, które powodowało wyświetlanie się błędów w wyniku komendy <command>zpool status</command>, można wyczyścić licznik błędów komendą <command>zpool clear</command>.<indexterm xml:id="indexterm-149">
+<para>Jeśli urządzenie zostało wyłączone z powodu uszkodzenia, które powodowało wyświetlanie się błędów w wyniku polecenia <command>zpool status</command>, można wyczyścić licznik błędów poleceniem <command>zpool clear</command>.<indexterm xml:id="indexterm-149">
 <primary>czyszczenie</primary>
 <secondary>urządzenie w puli nośników danych ZFS (<command>zpool clear</command>)</secondary>
 <tertiary>opis</tertiary>
@@ -1334,10 +1334,10 @@ REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
 <secondary>opis</secondary>
 </indexterm>
 </para>
-<para>Komenda ta wydana bez argumentów czyści wszystkie błędy wszystkich urządzeń w puli. Na przykład:</para>
+<para>Polecenie te wydane bez argumentów czyści wszystkie błędy wszystkich urządzeń w puli. Na przykład:</para>
 <screen># <userinput>zpool clear tank</userinput>
 </screen>
-<para>Jeśli jako argumenty podano jedno lub więcej urządzeń, komenda wyczyści błędy powiązane tylko z tymi urządzeniami. Na przykład:<indexterm xml:id="indexterm-151">
+<para>Jeśli jako argumenty podano jedno lub więcej urządzeń, polecenie wyczyści błędy powiązane tylko z tymi urządzeniami. Na przykład:<indexterm xml:id="indexterm-151">
 <primary>czyszczenie urządzeń</primary>
 <secondary>puna nośników danych ZFS</secondary>
 <tertiary>(przykład)</tertiary>
@@ -1356,11 +1356,11 @@ REC-ACTION: Run 'zpool status -x' and replace the bad device.</screen>
 </para>
 <screen># <userinput>zpool clear tank c1t0d0</userinput>
 </screen>
-<para>Więcej informacji o czyszczeniu błędów <command>zpool</command> w <olink remap="external" targetdoc="chapter-9.xml" targetptr="gbbzv">Czyszczeniu tymczasowych błędów</olink>.</para>
+<para>Więcej informacji o czyszczeniu błędów <command>zpool</command>: <olink remap="external" targetdoc="chapter-9.xml" targetptr="gbbzv">Usuwanie tymczasowych błędów</olink>.</para>
 </sect2>
 <sect2 xml:id="gazgd">
 <title>Wymiana urządzeń w puli nośników danych</title>
-<para>Urządzenie w puli można wymienić komendą <command>zpool
+<para>Urządzenie w puli można wymienić poleceniem <command>zpool
 replace</command>.<indexterm xml:id="indexterm-154">
 <primary>wymiana</primary>
 <secondary>urządzenia (<command>zpool replace</command>)</secondary>
@@ -1381,7 +1381,7 @@ replace</command>.<indexterm xml:id="indexterm-154">
 <screen># <userinput>zpool replace tank c1t1d0 c1t2d0</userinput>
 </screen>
 <para>W tym przykładzie poprzednie urządzenie, <literal>c1t1d0</literal>, zostało zastąpione urządzeniem <literal>c1t2d0</literal>.</para>
-<para>Pojemność urządzenia dołączanego do puli musi być nie mniejsza niż najmniejsza ze wszystkich pojemności urządzeń w konfiguracji mirror lub RAID-Z. Jeśli dołączone urządzenie jest większe, pojemność puli w konfiguracji innej niż RAID-Z i mirror zostanie powiększona po zakończeniu wymiany urządzenia.</para>
+<para>Pojemność urządzenia dołączanego do puli musi być nie mniejsza niż największa ze wszystkich pojemności urządzeń w konfiguracji mirror lub RAID-Z. Jeśli dołączone urządzenie jest większe, pojemność puli w konfiguracji innej niż RAID-Z i mirror zostanie powiększona po zakończeniu wymiany urządzenia.</para>
 <para>Więcej informacji o wymianie urządzeń: <olink remap="external" targetdoc="chapter-9.xml" targetptr="gbbvb">Naprawa brakującego urządzenia</olink> oraz <olink remap="external" targetdoc="chapter-9.xml" targetptr="gbbvf">Naprawa uszkodzonego urządzenia</olink>.</para>
 </sect2>
 <sect2 xml:id="gcvcw">
@@ -1395,16 +1395,16 @@ replace</command>.<indexterm xml:id="indexterm-154">
 <para>Urządzenia można wskazać jako hot spare w następujący sposób:</para>
 <itemizedlist>
 <listitem>
-<para>Przy tworzeniu puli komendą <command>zpool create</command></para>
+<para>Przy tworzeniu puli poleceniem <command>zpool create</command></para>
 </listitem>
 <listitem>
-<para>Po utworzeniu puli komendą <command>zpool add</command></para>
+<para>Po utworzeniu puli poleceniem <command>zpool add</command></para>
 </listitem>
 <listitem>
 <para>Urządzenia hot spare mogą być współdzielone między kilkoma pulami.</para>
 </listitem>
 </itemizedlist>
-<para>Wskazanie hot spare podczas tworzenia puli. Na przykład:<indexterm xml:id="indexterm-158">
+<para>Przykład wskazania urządzeń hot spare podczas tworzenia puli:<indexterm xml:id="indexterm-158">
 <primary>hot spares</primary>
 <secondary>opis</secondary>
 <tertiary>(przykład)</tertiary>
@@ -1425,7 +1425,7 @@ config:
         spares
           c1t2d0     AVAIL
           c2t2d0     AVAIL   </screen>
-<para>Dodanie hot spare po utworzeniu puli. Na przykład:</para>
+<para>Przykład dodania urządzeń hot spare po utworzeniu puli:</para>
 <screen># <userinput>zpool add -f zeepool spare c1t3d0 c2t3d0</userinput>
 # <userinput>zpool status zeepool</userinput>
 pool: zeepool
@@ -1445,7 +1445,7 @@ config:
 <screen># <userinput>zpool create zeepool mirror c1t1d0 c2t1d0 spare c1t2d0 c2t2d0</userinput>
 # <userinput>zpool create tank raidz c3t1d0 c4t1d0 spare c1t2d0 c2t2d0</userinput>
 </screen>
-<para>Hot spares można usunąć z puli poleceniem <command>zpool
+<para>Urządzenia Hot spare można usunąć z puli poleceniem <command>zpool
 remove</command>. Na przykład:</para>
 <screen># <userinput>zpool remove zeepool c1t2d0</userinput>
 # <userinput>zpool status zeepool</userinput>
@@ -1465,10 +1465,10 @@ config:
 <para>Podczas używania urządzeń hot spare z ZFS należy pamiętać o:</para>
 <itemizedlist>
 <listitem>
-<para>Komendy <command>zpool remove</command> można obecnie używać tylko do usuwania z puli urządzeń hot spare.</para>
+<para>Polecenia <command>zpool remove</command> można obecnie używać tylko do usuwania z puli urządzeń hot spare.</para>
 </listitem>
 <listitem>
-<para>Urządzenie hot spare powinno być nie mniejsze niż największe urządzenie w puli. Wprawdzie dozwolone jest tworzenie mniejszych hot spare, ale przy awarii większego dysku próba uruchomienia urządzenia hot spare, automatycznie bądź komendą <command>zpool replace</command>, powoduje błąd podobny do poniższego:</para>
+<para>Urządzenie hot spare powinno być nie mniejsze niż największe urządzenie w puli. Wprawdzie dozwolone jest tworzenie mniejszych urządzeń hot spare, ale przy awarii większego dysku próba uruchomienia takiego urządzenia, automatycznie bądź poleceniem <command>zpool replace</command>, powoduje błąd podobny do poniższego:</para>
 <screen>cannot replace <replaceable>disk3</replaceable> with <replaceable>disk4</replaceable>: device is too small</screen>
 </listitem>
 </itemizedlist>
@@ -1477,16 +1477,16 @@ config:
 <para>Urządzenia hot spare włączane są w następujący sposób:</para>
 <itemizedlist>
 <listitem>
-<para>Ręczna wymiana - ręczna wymiana uszkodzonego urządzenia w puli za pomocą komendy <command>zpool replace</command>.</para>
+<para>Ręczna wymiana - ręczna wymiana uszkodzonego urządzenia w puli za pomocą polecenia <command>zpool replace</command>.</para>
 </listitem>
 <listitem>
 <para>Automatyczna wymiana – po pojawieniu się informacji o uszkodzeniu urządzenia, agent FMA szuka w puli wolnych urządzeń hot spare. Jeśli takie są, podmienia uszkodzone urządzenie.</para>
-<para>Jeśli urządzeni hot spare zawiedzie, agent je odłączy, efektywnie anulując podmianę. Próbuje wtedy podłączyć inne urządzenie hot spare, jeśli jest dostępne. W chwili obecnej mechanizm ten jest ograniczony przez fakt, że ZFS emituje sygnał faul, tylko wtedy, gdy urządzenie zniknie z puli. </para>
-<para>Nie ma obecnie możliwości automatycznego przywrócenia oryginalnego urządzenia. Należy samodzielnie wykonać polecenia z poniższego przykładu. W przyszłości ZFS będzie umiał korzystać ze zdarzeń hotplug u automatycznie wymieniać uszkodzone urządzenia po ich wymianie w systemie.</para>
+<para>Jeśli urządzenie hot spare zawiedzie, agent je odłączy, efektywnie anulując podmianę. Próbuje wtedy podłączyć inne urządzenie hot spare, jeśli jest dostępne. W chwili obecnej mechanizm ten jest ograniczony przez fakt, że ZFS emituje sygnał awarii tylko wtedy, gdy urządzenie zniknie z puli. </para>
+<para>Nie ma obecnie możliwości automatycznego przywrócenia oryginalnego urządzenia. Należy samodzielnie wykonać polecenia z poniższego przykładu. W przyszłości ZFS będzie umiał korzystać ze zdarzeń hotplug i automatycznie wymieniać uszkodzone urządzenia po ich wymianie w systemie.</para>
 </listitem>
 </itemizedlist>
-<para>Ręczna wymiana urządzenia na hot spare komendą <command>zpool
-replace</command>. Na przykład:</para>
+<para>Przykład ręcznej wymiany urządzenia na hot spare poleceniem <command>zpool
+replace</command>:</para>
 <screen># <userinput>zpool replace zeepool c2t1d0 c2t3d0</userinput>
 # <userinput>zpool status zeepool</userinput>
   pool: zeepool
@@ -1529,7 +1529,7 @@ config:
           c2t3d0             INUSE     currently in use
 
 errors: No known data errors</screen>
-<para>Hot spare można wyłączyć na trzy sposoby:</para>
+<para>Urządzenie hot spare można wyłączyć na trzy sposoby:</para>
 <itemizedlist>
 <listitem>
 <para>Usuwając hot spare z puli</para>
@@ -1541,7 +1541,7 @@ errors: No known data errors</screen>
 <para>Włączając urządzenie hot spare jako aktywne urządzenie w puli</para>
 </listitem>
 </itemizedlist>
-<para>Po wymianie uszkodzonego urządzenia, komendą <command>zpool detach</command> należy odłączyć urządzenie hot spare, aby przywrócić je do zestawu urządzeń hot spare w puli. Na przykład:</para>
+<para>Po wymianie uszkodzonego urządzenia, poleceniem <command>zpool detach</command> należy odłączyć urządzenie hot spare, aby przywrócić je do zestawu urządzeń hot spare w puli. Na przykład:</para>
 <screen># <userinput>zpool detach zeepool c2t3d0</userinput>
 # <userinput>zpool status zeepool</userinput>
   pool: zeepool
@@ -1564,7 +1564,7 @@ errors: No known data errors</screen>
 </sect1>
 <sect1 xml:id="gaynp">
 <title>Sprawdzanie statusu puli ZFS</title>
-<para>Komenda <command>zpool list</command> pozwala na sprawdzanie stanu puli na wiele sposobów. Dostępne w ten sposób informacje należą do trzech kategorii: podstawowe użycie, statystyki we/wy i zdrowie urządzeń. Wszystkie trzy są omawiane w poniższym podrozdziale.<indexterm xml:id="indexterm-159">
+<para>Polecenie <command>zpool list</command> pozwala na sprawdzanie stanu puli na wiele sposobów. Dostępne w ten sposób informacje należą do trzech kategorii: podstawowe użycie, statystyki we/wy i zdrowie urządzeń. Wszystkie trzy są omawiane w poniższym podrozdziale.<indexterm xml:id="indexterm-159">
 <primary>lista</primary>
 <secondary>pule nośników danych ZFS</secondary>
 <tertiary>opis</tertiary>
