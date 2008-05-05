@@ -426,7 +426,7 @@ CPU     ID                    FUNCTION:NAME
     przeznaczenie programu. Podobnie jak w językach C, C++ i Java kompilator D
     ignoruje znaki między symbolami <literal>/*</literal> i
     <literal>*/</literal>. Komentarzy można używać w dowolnym miejscu w
-    programie D, zarówno wewnątrz i na zewnątrz klauzul z sondami. </para>
+    programie D, zarówno wewnątrz i na zewnątrz klauzul z sondami.</para>
 
     <para>Sonda <literal>BEGIN</literal> definiuje zmienną nazwaną
     <literal>i</literal> i przypisuje jej wartość całkowitą zero w poniższym
@@ -599,19 +599,19 @@ CPU     ID                    FUNCTION:NAME
 	0  25499                       :tick-1sec   blastoff!
 # </programlisting>
 
-    <para>This example uses the <literal>BEGIN</literal> probe to initialize
-    an integer <literal>i</literal> to 10 to begin the countdown. Next, as in
-    the previous example, the program uses the <literal>tick-1sec</literal>
-    probe to implement a timer that fires once per second. Notice that in
-    <filename>countdown.d</filename>, the <literal>tick-1sec</literal> probe
-    description is used in two different clauses, each with a different
-    predicate and action list. The predicate is a logical expression
-    surrounded by enclosing slashes <literal>/ /</literal> that appears after
-    the probe name and before the braces <literal>{ }</literal> that surround
-    the clause statement list.</para>
+    <para>W tym przykładzie wykorzystano sondę <literal>BEGIN</literal> do
+    zainicjalizowania zmiennej całkowitej <literal>i</literal> wartością 10 w
+    celu rozpoczęcia odliczania. Następnie, jak poprzednio, w programie
+    zaimplementowane licznik cosekundowy za pomocą sondy
+    <literal>tick-1sec</literal>. Należy zauważyć, że w
+    <filename>countdown.d</filename> sonda <literal>tick-1sec</literal>
+    pojawia się w dwóch klauzulach, z których każda ma swój predykat i listę
+    akcji. Predykat jest wyrażeniem logicznym zamkniętym w linie ukośne
+    <literal>/ /</literal> i pojawia się po nazwie sondy, ale przed klamrą
+    <literal>{ }</literal> zamykającą klauzulę z listą wyrażeń.</para>
 
-    <para>The first predicate tests whether <literal>i</literal> is greater
-    than zero, indicating that the timer is still running:</para>
+    <para>Pierwszy predykat sprawdza, czy <literal>i</literal> jest większe od
+    zera, co oznacza, że licznik wciąż odlicza:</para>
 
     <programlisting>profile:::tick-1sec
 /i &gt; 0/
@@ -619,18 +619,18 @@ CPU     ID                    FUNCTION:NAME
 	trace(i--);
 }</programlisting>
 
-    <para>The relational operator <literal>&gt;</literal> means
-    <emphasis>greater than</emphasis> and returns the integer value zero for
-    false and one for true. All of the C relational operators are supported in
-    D; the complete list is found in <olink remap="internal"
+    <para>Operator <literal>&gt;</literal> oznacza <emphasis>większe
+    niż</emphasis> i zwraca zero dla nieprawdzy i jeden dla prawdy. Język D
+    zawiera wszystki operatory relacyjne z języka C; kompletną listę
+    wydrukowano w <olink remap="internal"
     targetptr="chp-typeopexpr">Chapter 2, Types, Operators, and
-    Expressions</olink>. If <literal>i</literal> is not yet zero, the script
-    traces <literal>i</literal> and then decrements it by one using the
-    <literal>--</literal> operator.</para>
+    Expressions</olink>. Jeśli <literal>i</literal> nie jest jeszcze równe
+    zero, skrypt śledzi wartość zmiennej <literal>i</literal> i zmniejsza ją o
+    jeden używając operatora <literal>--</literal>.</para>
 
-    <para>The second predicate uses the <literal>==</literal> operator to
-    return true when <literal>i</literal> is exactly equal to zero, indicating
-    that the countdown is complete:</para>
+    <para>Drugi predykat używa oepratora <literal>==</literal> zwraicającego
+    prawdę, jeśli <literal>i</literal> jest równa zero, co oznacza, że
+    odliczanie zostało zakończone:</para>
 
     <programlisting>profile:::tick-1sec
 /i == 0/
@@ -639,58 +639,56 @@ CPU     ID                    FUNCTION:NAME
 	exit(0);
 }</programlisting>
 
-    <para>Similar to the first example, <filename>hello.d</filename>,
-    <filename>countdown.d</filename> uses a sequence of characters enclosed in
-    double quotes, called a <firstterm>string constant</firstterm>, to print a
-    final message when the countdown is complete. The
-    <function>exit</function> function is then used to exit
-    <command>dtrace</command> and return to the shell prompt.</para>
+    <para>Podobnie jak w pierwszym przykładzie skrypt
+    <filename>countdown.d</filename> używa sekwencji znaków zamkniętych w
+    cudzysłowie, zwnacych stałą łańcuchową, do drukowania wiadomości o
+    zakończeniu odliczania. Funkcja <function>exit</function> powoduje wyjście
+    z <command>dtrace</command> i powrót do powłoki.</para>
 
-    <para>If you look back at the structure of
-    <filename>countdown.d</filename>, you will see that by creating two
-    clauses with the same probe description but different predicates and
-    actions, we effectively created the logical flow:</para>
+    <para>Po przyjdrzeniu się skryptowi <filename>countdown.d</filename> łatwo
+    zauważyć, że zapisując dwie klauzule z tą samą sondą ale z innymi
+    predykatami i akcjami, stworzono następujący przepływ logiczny:</para>
 
     <literallayout>i = 10
-once per second,
-	if i is greater than zero
+raz na sekundę,
+	jeśli i jest większe niż zeo
 		trace(i--);
-	otherwise if i is equal to zero
+	innym przypadku jeśli i równe jest zero
 		trace("blastoff!");
 		exit(0);</literallayout>
 
-    <para>When you wish to write complex programs using predicates, try to
-    first visualize your algorithm in this manner, and then transform each
-    path of your conditional constructs into a separate clause and
-    predicate.</para>
+    <para>Podczas pisania skomplikowanmych programów z użyciem predykatów
+    wskazane jest takie właśnie zwizualizowanie algorytmu i późniejsze
+    przekształcenie fragmentów w osobne klauzule i predykaty.</para>
 
-    <para>Now let's combine predicates with a new provider, the
-    <literal>syscall</literal> provider, and create our first real D tracing
-    program. The <literal>syscall</literal> provider permits you to enable
-    probes on entry to or return from any Solaris system call. The next
-    example uses DTrace to observe every time your shell performs a <olink
-    remap="external" targetdoc="refman2" targetptr="read-2"><citerefentry>
+    <para>Nadszedł czas na połączenie predykatów z nowym dostawcą
+    <literal>syscall</literal> i stworzenie pierwszego prawdziwego programu
+    wykonującego śledzenie. Dostyawca <literal>syscall</literal> umożliwia
+    odpalenie sond podczas wchodzenia i wychodzenia z dowolnego wywołania
+    systemowego systemu operacyjnego Solaris. W następnym przykładzie użyto
+    DTrace'a do obserwacji każdego wywołania <olink remap="external"
+    targetdoc="refman2" targetptr="read-2"><citerefentry>
         <refentrytitle>read</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> or <olink remap="external" targetdoc="refman2"
+      </citerefentry></olink> i <olink remap="external" targetdoc="refman2"
     targetptr="write-2"><citerefentry>
         <refentrytitle>write</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> system call. First, open two terminal windows,
-    one to use for DTrace and the other containing the shell process you're
-    going to watch. In the second window, type the following command to obtain
-    the process ID of this shell:</para>
+      </citerefentry></olink> przez powłoke użytkownika. Najpierw należy
+    otworzyć dwa okna terminala; jedno posłuży do wykonywania skyrptu
+    DTrace'a, drugie do wykonania śledzonego procesu. W drugim oknie należy
+    wykonać następującą komendę w celu uzyskania PID (numeru procesu)
+    powłoki:</para>
 
     <screen><userinput># echo $$</userinput>
 12345</screen>
 
-    <para>Now go back to your first terminal window and type the following D
-    program and save it in a file named <filename>rw.d</filename>. As you type
-    in the program, replace the integer constant <literal>12345</literal> with
-    the process ID of the shell that was printed in response to your
-    <command>echo</command> command.</para>
+    <para>W pierwszym oknie należy wpisać do pliku <filename>rw.d</filename>
+    następujący skrypt. Podczas wpisywania programu ciąg cyfr
+    <literal>12345</literal> należy zamianić na PID procesu powłoki uzyskany
+    wcześniej komendą <command>echo</command>.</para>
 
     <programlisting>syscall::read:entry,
 syscall::write:entry
@@ -699,14 +697,13 @@ syscall::write:entry
 
 }</programlisting>
 
-    <para>Notice that the body of <filename>rw.d</filename>'s probe clause is
-    left empty because the program is only intended to trace notification of
-    probe firings and not to trace any additional data. Once you're done
-    typing in <filename>rw.d</filename>, use <command>dtrace</command> to
-    start your experiment and then go to your second shell window and type a
-    few commands, pressing return after each command. As you type, you should
-    see <command>dtrace</command> report probe firings in your first window,
-    similar to the following example:</para>
+    <para>Ciało klauzuli sondy <filename>rw.d</filename> jest puste, ponieważ
+    skrypt ma tylko śledzić tylko odpalanie sond i nie śledzi żadnych
+    dodatkowych danych. Po zapisaniu skryptu w pliku <filename>rw.d</filename>
+    należy wywołać go komendą <command>dtrace</command> i w drugim oknie
+    wykonać kilka komend. Podczas wykonywania komend <command>dtrace</command>
+    będzie informował w pierwszym oknie o każdym odpaleniu sondy, jak w
+    przykładzie poniżej:</para>
 
     <screen><userinput># dtrace -s rw.d</userinput>
 dtrace: script 'rw.d' matched 2 probes
@@ -721,49 +718,48 @@ CPU     ID                    FUNCTION:NAME
 	0     32                       read:entry 
 ...</screen>
 
-    <para>You are now watching your shell perform <olink remap="external"
-    targetdoc="refman2" targetptr="read-2"><citerefentry>
+    <para>W tym momencie obserwowane są wywołania systemowe <olink
+    remap="external" targetdoc="refman2" targetptr="read-2"><citerefentry>
         <refentrytitle>read</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> and <olink remap="external" targetdoc="refman2"
+      </citerefentry></olink> i <olink remap="external" targetdoc="refman2"
     targetptr="write-2"><citerefentry>
         <refentrytitle>write</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> system calls to read a character from your
-    terminal window and echo back the result! This example includes many of
-    the concepts described so far and a few new ones as well. First, to
-    instrument <olink remap="external" targetdoc="refman2"
+      </citerefentry></olink> służące odczytowi znaków z okna terminala i
+    drukowania wyników działania wpisywanych komend! Przykład ten wykorzystuje
+    wiele opisanych wcześniej elementów języka D oraz kilka nowych. Do
+    instrumentalizacji wywołań <olink remap="external" targetdoc="refman2"
     targetptr="read-2"><citerefentry>
         <refentrytitle>read</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> and <olink remap="external" targetdoc="refman2"
+      </citerefentry></olink> i <olink remap="external" targetdoc="refman2"
     targetptr="write-2"><citerefentry>
         <refentrytitle>write</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> in the same manner, the script uses a single
-    probe clause with multiple probe descriptions by separating the
-    descriptions with commas like this:</para>
+      </citerefentry></olink> w ten sam spoób skrypt używa jednej klauzuli
+    sondy z wieloma opisami sond oddzielonymi przecinkami, jak poniżej:</para>
 
     <programlisting>syscall::read:entry,
 syscall::write:entry</programlisting>
 
-    <para>For readability, each probe description appears on its own line.
-    This arrangement is not strictly required, but it makes for a more
-    readable script. Next the script defines a predicate that matches only
-    those system calls that are executed by your shell process:</para>
+    <para>W trosce o czytelność każdą sondę umieszczono w odrębnym wierszu.
+    Nie jest to wymóg, ale poprawia czytelność kodu. Następnie skrypt
+    definiuje predykat dopasowujący tylko te wywołania systemowe, ktorę są
+    wykonywane przez proces powłoki użytkownika:</para>
 
     <programlisting>/pid == 12345/</programlisting>
 
-    <para>The predicate uses the predefined DTrace variable
-    <literal>pid</literal>, which always evaluates to the process ID
-    associated with the thread that fired the corresponding probe. DTrace
-    provides many built-in variable definitions for useful things like the
-    process ID. Here is a list of a few DTrace variables you can use to write
-    your first D programs:</para>
+    <para>W predykacie użyto wbudowanej w język zmiennej
+    <literal>pid</literal>, która zawsze zawiera PID wątku, dla którego
+    odpaliła sonda. DTrace zawiera wiele wbudowanych zmiennych służących
+    uzyskaniu pożytecznych informacji, jak na przykład numer identyfikacyjny
+    procesu. Poniżej przedstawiono listę kilku takich zmiennych do
+    wykorzystania w d-skryptach:</para>
 
     <informaltable frame="topbot">
       <tgroup cols="3" colsep="0" rowsep="1">
@@ -775,11 +771,11 @@ syscall::write:entry</programlisting>
 
         <thead>
           <row>
-            <entry rowsep="1"><para>Variable Name</para></entry>
+            <entry rowsep="1"><para>Nazwa zmiennej</para></entry>
 
-            <entry rowsep="1"><para>Data Type</para></entry>
+            <entry rowsep="1"><para>Typ danych</para></entry>
 
-            <entry rowsep="1"><para>Meaning</para></entry>
+            <entry rowsep="1"><para>Znaczenie</para></entry>
           </row>
         </thead>
 
@@ -789,8 +785,8 @@ syscall::write:entry</programlisting>
 
             <entry rowsep="0"><para><literal>int</literal></para></entry>
 
-            <entry rowsep="0"><para>Current <literal>errno</literal> value for
-            system calls</para></entry>
+            <entry rowsep="0"><para>Aktualna wartość <literal>errno</literal>
+            dla wywołań systemowych</para></entry>
           </row>
 
           <row>
@@ -798,8 +794,8 @@ syscall::write:entry</programlisting>
 
             <entry rowsep="0"><para><literal>string</literal></para></entry>
 
-            <entry rowsep="0"><para>Name of the current process's executable
-            file</para></entry>
+            <entry rowsep="0"><para>Nazwa aktualnego pliku wykonywalnego dla
+            procesu</para></entry>
           </row>
 
           <row>
@@ -807,8 +803,7 @@ syscall::write:entry</programlisting>
 
             <entry rowsep="0"><para><literal>pid_t</literal></para></entry>
 
-            <entry rowsep="0"><para>Process ID of the current
-            process</para></entry>
+            <entry rowsep="0"><para>PID aktualnego procesu</para></entry>
           </row>
 
           <row>
@@ -816,8 +811,8 @@ syscall::write:entry</programlisting>
 
             <entry rowsep="0"><para><literal>id_t</literal></para></entry>
 
-            <entry rowsep="0"><para>Thread ID of the current
-            thread</para></entry>
+            <entry rowsep="0"><para>Identyfikator aktualnego
+            wątku</para></entry>
           </row>
 
           <row>
@@ -826,8 +821,8 @@ syscall::write:entry</programlisting>
 
             <entry rowsep="0"><para><literal>string</literal></para></entry>
 
-            <entry rowsep="0"><para>Current probe description's provider
-            field</para></entry>
+            <entry rowsep="0"><para>Pole dostawcy aktualnej
+            sondy</para></entry>
           </row>
 
           <row>
@@ -835,8 +830,7 @@ syscall::write:entry</programlisting>
 
             <entry rowsep="0"><para><literal>string</literal></para></entry>
 
-            <entry rowsep="0"><para>Current probe description's module
-            field</para></entry>
+            <entry rowsep="0"><para>Pole modułu aktualnej sondy</para></entry>
           </row>
 
           <row>
@@ -845,8 +839,8 @@ syscall::write:entry</programlisting>
 
             <entry rowsep="0"><para><literal>string</literal></para></entry>
 
-            <entry rowsep="0"><para>Current probe description's function
-            field</para></entry>
+            <entry rowsep="0"><para>Pole funkcji aktualnej
+            sondy</para></entry>
           </row>
 
           <row>
@@ -856,27 +850,24 @@ syscall::write:entry</programlisting>
             <entry colname="colspec3"
             rowsep="0"><para><literal>string</literal></para></entry>
 
-            <entry colname="colspec4" rowsep="0"><para>Current probe
-            description's name field</para></entry>
+            <entry colname="colspec4" rowsep="0"><para>Pole nazwy aktualnej
+            sondy</para></entry>
           </row>
         </tbody>
       </tgroup>
     </informaltable>
 
-    <para>Now that you've written a real instrumentation program, try
-    experimenting with it on different processes running on your system by
-    changing the process ID and the system call probes that are instrumented.
-    Then, you can make one more simple change and turn
-    <filename>rw.d</filename> into a very simple version of a system call
-    tracing tool like <olink remap="external" targetdoc="refman1"
+    <para>Czas na kilka eksperymentów z właśnie napisanym skryptem; można
+    zmieniać PID lub sondy wywołań systemowych. JEdna dodatkowa zmiana pozwoli
+    na przekształcenie skryptu w bardzo prostą wersję narzędzia do śledzenia
+    wywołań systemowych w rodzaju <olink remap="external" targetdoc="refman1"
     targetptr="truss-1"><citerefentry>
         <refentrytitle>truss</refentrytitle>
 
         <manvolnum>1</manvolnum>
-      </citerefentry></olink>. An empty probe description field acts as a
-    wildcard, matching any probe, so change your program to the following new
-    source code to trace <emphasis>any</emphasis> system call executed by your
-    shell:</para>
+      </citerefentry></olink>. Puste pole sondy w opisie sondy pozwoli na
+    śledzenie dowolnego wywołania systemowego związanego ze śledzonym
+    procesem:</para>
 
     <programlisting>syscall:::entry
 /pid == 12345/
@@ -884,9 +875,10 @@ syscall::write:entry</programlisting>
 
 }</programlisting>
 
-    <para>Try typing a few commands in the shell such as
-    <command>cd</command>, <command>ls</command>, and <command>date</command>
-    and see what your DTrace program reports.</para>
+    <para>W przypadku skryptu z PID powłoki, należy wykonać po kolei kilka
+    komend, na przykład <command>cd</command>, <command>ls</command> i
+    <command>date</command>, co pozwoli w opknie DTrace'a obserwować wyniki
+    śledzenia.</para>
   </sect1>
 
   <sect1 id="chp-intro-6">
@@ -1346,6 +1338,6 @@ syscall::write:return
     how to use DTrace to connect user application behavior to system behavior,
     giving you the capability to analyze your entire software stack.</para>
 
-    <para>You've only just begun!</para>
+    <para>A to dopiero początek!</para>
   </sect1>
 </chapter>
