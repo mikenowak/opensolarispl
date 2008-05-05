@@ -613,12 +613,12 @@ urządzeniem RAID-Z składającym się z pięciu dysków:
 <para>Przykład ten pokazuje, że dyski można wskazywać ich pełnymi ścieżkami. 
 Urządzenie <filename>/dev/dsk/c5t0d0</filename> jest identyczne z urządzeniem 
 <filename>c5t0d0</filename>.</para>
-<para>Podobna konfiguracja może zostać stworzona przy pomocy bloków dysków. Na 
+<para>Podobna konfiguracja może zostać stworzona przy pomocy segmentów (ang. slice) dysków. Na 
 przykład:</para>
 <screen># <userinput>zpool create tank raidz c1t0d0s0 c2t0d0s0 c3t0d0s0 c4t0d0s0 c5t0d0s0</userinput>
 </screen>
 <para>Dyski te muszą jednak być odpowiednio sformatowane, aby mieć właściwą 
-wielkość bloku zero.</para>
+wielkość segmentu zero.</para>
 <para>Można stworzyć konfigurację RAID-Z z podwójną kontrolą parzystości poprzez
 użycie słowa kluczowego <literal>raidz2</literal> w czasie tworzenia puli.
 Na przykład:<indexterm xml:id="indexterm-119">
@@ -668,7 +668,7 @@ RAID-Z:</para>
 dokument RFE został wypełniony w celu dodania tej funkcjonalności.</para>
 </listitem>
 </itemizedlist>
-<para>Więcej informacji o konfiguracji RAID-Z w <olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamtu">Konfiguracja pul nośników danych RAID-Z</olink>.</para>
+<para>Więcej informacji o konfiguracji RAID-Z: <olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamtu">Konfiguracja puli nośników danych typu RAID-Z</olink>.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gazhs">
@@ -707,8 +707,8 @@ f</option> i należy usunąć je ręcznie:<indexterm xml:id="indexterm-120">
 <emphasis role="strong">Zamontowane systemy plików</emphasis>
 </term>
 <listitem>
-<para>Dysk lub jeden z bloków zawiera system plików zamontowany w systemie. Błąd
- ten należy poprawić komendą <command>umount</command>.</para>
+<para>Dysk lub jeden z segmentów zawiera system plików zamontowany w systemie. Błąd
+ ten należy poprawić poleceniem <command>umount</command>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -728,7 +728,7 @@ jako komentarz linię w pliku <filename>/etc/vfstab</filename>.</para>
 </term>
 <listitem>
 <para>Dysk jest używany jako urządzenie przeznaczone na zrzuty pamięci (dump). 
-Błąd ten można poprawić komendą <command>dumpadm</command>.</para>
+Błąd ten można poprawić poleceniem <command>dumpadm</command>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -737,7 +737,7 @@ Błąd ten można poprawić komendą <command>dumpadm</command>.</para>
 </term>
 <listitem>
 <para>Dysk lub plik jest częścią puli ZFS. Błąd ten można naprawić niszcząc pulę
- przy użyciu komendy <command>zpool</command>.</para>
+ przy użyciu polecenia <command>zpool</command>.</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -767,7 +767,7 @@ nieużywany.</para>
 <emphasis role="strong">Live upgrade</emphasis>
 </term>
 <listitem>
-<para>Dysk jest używany jako alternatywne otoczenie startowe dla Solaris Live 
+<para>Dysk jest używany jako alternatywne środowisko startowe dla Solaris Live 
 Upgrade.</para>
 </listitem>
 </varlistentry>
@@ -797,7 +797,7 @@ use '-f' to override the following errors:
 <sect3 xml:id="gazgc">
 <title>Niepasujące poziomy replikacji</title>
 <para>Tworzenie pul z urządzeniami wirtualnymi o różnych poziomach replikacji 
-jest niezalecane. Komenda <command>zpool</command> próbuje zapobiec utworzeniu 
+jest niezalecane. Polecenie <command>zpool</command> próbuje zapobiec utworzeniu 
 puli z niepasującymi poziomami redundancji. Przy próbie utworzenia takiej 
 konfiguracji puli, pojawią się błędy podobne do poniższych:
 <indexterm xml:id="indexterm-122">
@@ -829,11 +829,11 @@ ostrzeżenie.</para>
 </sect3>
 <sect3 xml:id="gazhd">
 <title>Suchy przebieg tworzenia puli nośników danych</title>
-<para>Tworzenie puli może się niespodziewanie nie udać na wiele sposobów, a 
+<para>Ponieważ tworzenie puli może się niespodziewanie nie udać na wiele sposobów, a 
 formatowanie dysków może być szkodliwą czynnością, polecenie <command>zpool
 create</command> ma dodatkową opcję <option>
 n</option>, symulującą tworzenie puli bez zapisu danych na dysku. Opcja ta 
-wykonuje testy na użyciu urządzeń i poprawność poziomów replikacji i informuje o
+wykonuje testy na użycie urządzeń i poprawność poziomów replikacji i informuje o
  wszelkich błędach. Jeśli nie ma błędów, pojawi się wynik podobny do poniższego:
 <indexterm xml:id="indexterm-124">
 <primary>suchy przebieg</primary>
@@ -875,7 +875,7 @@ sukcesie, ale faktyczne utworzenie puli może się nie udać.</para>
 jest, powinien być pusty. Jeśli nie istnieje, jest tworzony automatycznie. 
 Jeśli istnieje, dataset jest automatycznie montowany w istniejącym katalogu. 
 Aby utworzyć pulę z innym domyślnym punktem montowania należy użyć opcji 
-<option>m</option> przy wykonywaniu komendy <command>zpool create</command>:
+<option>m</option> przy wykonywaniu polecenia <command>zpool create</command>:
 <indexterm xml:id="indexterm-127">
 <primary>punkt montowania</primary>
 <secondary>domyślny dla puli nośników danych ZFS</secondary>
@@ -895,17 +895,17 @@ default mountpoint '/home' exists and is not empty
 use '-m' option to provide a different default
 # <userinput>zpool create -m /export/zfs home c1t0d0</userinput>
 </screen>
-<para>Komenda ta tworzy nową pulę <literal>home</literal> i dataset <literal>
+<para>Polecenie te tworzy nową pulę <literal>home</literal> i dataset <literal>
 home</literal> z punktem montowania w <filename>/export/zfs</filename>.</para>
-<para>Więcej informacji o punktach montowania w 
+<para>Więcej informacji o punktach montowania: 
 <olink remap="external" targetdoc="chapter-5.xml" targetptr="gaztn">Zarządzanie punktami 
 montowania ZFS</olink>.</para>
 </sect3>
 </sect2>
 <sect2 xml:id="gammr">
 <title>Niszczenie puli nośników danych ZFS</title>
-<para>Pule niszczy się przy użyciu komendy <command>zpool destroy</command>. 
-Niszczy ona pulę nawet wtedy, kiedy zawiera ona datasety.
+<para>Pule niszczy się przy użyciu polecenia <command>zpool destroy</command>. 
+Niszczy ono pulę nawet wtedy, kiedy zawiera datasety.
 <indexterm xml:id="indexterm-129">
 <primary>niszczenie</primary>
 <secondary>pul nośników danych ZFS (<command>zpool destroy</command>)
@@ -946,7 +946,7 @@ niedostępnych, nadal można zniszczyć pulę. Dane o usunięciu puli nie będą
 potencjalnie aktywne</emphasis> przy tworzeniu nowej puli i przedstawią się jako
  prawidłowe urządzenia przy importowaniu puli. Jeśli w puli jest wystarczająco 
 uszkodzonych urządzeń aby cała pula była uszkodzona (co oznacza, że urządzenie 
-wirtualne najwyższego poziomu jest uszkodzone), wtedy komenda zgłosi błąd i nie
+wirtualne najwyższego poziomu jest uszkodzone), wtedy polecenie zgłosi błąd i nie
  wykona się bez użycia opcji <option>f</option>. Opcja ta jest konieczna, 
 ponieważ nie można odtworzyć puli i nie można ustalić, czy są w niej 
 przechowywane dane. Na przykład:</para>
@@ -955,12 +955,10 @@ cannot destroy 'tank': pool is faulted
 use '-f' to force destruction anyway
 # <userinput>zpool destroy -f tank</userinput>
 </screen>
-<para>Więcej informacji o zdrowiu pul i urządzeń w 
-<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamno">Określanie zdrowia pul nośników 
-danych ZFS</olink>.</para>
-<para>Więcej informacji o importowaniu pul w 
-<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazuf">Importowanie pul nośników
- danych ZFS</olink>.</para>
+<para>Więcej informacji o zdrowiu pul i urządzeń: 
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamno">Określanie zdrowia pul nośników danych ZFS</olink>.</para>
+<para>Więcej informacji o importowaniu pul: 
+<olink remap="internal" targetdoc="chapter-4.xml" targetptr="gazuf">Importowanie pul nośników danych ZFS</olink>.</para>
 </sect3>
 </sect2>
 </sect1>
@@ -1282,7 +1280,7 @@ t</option>. Na przykład:</para>
 </listitem>
 </itemizedlist>
 <para>Wyłączone urządzenie ma flagę <literal>OFFLINE</literal> podczas sprawdzania statusu puli. Więcej informacji o określaniu stanu puli: <olink remap="internal" targetdoc="chapter-4.xml" targetptr="gaynp">Sprawdzanie statusu puli ZFS</olink>.</para>
-<para>Więcej informacji o zdrowiu urządzeń w <olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamno">Ustalanie zdrowia urządzeń w pulach nośników danych ZFS</olink>.</para>
+<para>Więcej informacji: <olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamno">Określanie zdrowia pul nośników danych ZFS</olink>.</para>
 </sect3>
 <sect3 xml:id="gazgk">
 <title>Włączanie urządzenia</title>
@@ -1653,7 +1651,7 @@ dozer                   1.2T    384G    816G    32%  ONLINE     -</screen>
 </term>
 <listitem>
 <para>Obecny poziom zdrowia puli.</para>
-<para>Więcej o zdrowiu puli w <olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamno">Określaniu zdrowia pul nośników danych ZFS</olink>.</para>
+<para>Więcej informacji: <olink remap="internal" targetdoc="chapter-4.xml" targetptr="gamno">Określanie zdrowia pul nośników danych ZFS</olink>.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
