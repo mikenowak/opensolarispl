@@ -2424,7 +2424,7 @@ użycie polecenia <command>zfs set</command>.</para>
 <para>Wartość tego parametru została określona poprzez użycie opcji <option>
 o</option> polecenia <command>zfs mount</command>
 i obowiązuje przez czas zamontowania tego systemu plików. Więcej informacji
-na temat tymczasowych parametrów punktu montowania znajduje się pod
+na temat tymczasowych parametrów punktu montowania:
 <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gamnt">Używanie tymczasowych parametrów montowania</olink>.</para>
 </entry>
 </row>
@@ -2600,7 +2600,7 @@ w ZFS.</para>
 </listitem>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gamnr">Odmontowanie systemów plików ZFS</olink>
+<olink remap="internal" targetdoc="chapter-5.xml" targetptr="gamnr">Odmontowywanie systemów plików ZFS</olink>
 </para>
 </listitem>
 <listitem>
@@ -2653,7 +2653,7 @@ wartość <property>legacy</property> poleceniem <command>zfs set</command>. Zap
 automatycznemu montowaniu i zarządzaniu tym systemem plików przez ZFS. W zamian muszą zostać
 użyte standardowe narzędzia, włączając w to polecenia <command>mount</command> i <command>umount</command>
 oraz plik <filename>/etc/vfstab</filename>. Więcej informacji o tradycyjnym montowaniu systemu
-plików znajduje się pod <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gbaln">Legacy Mount Points</olink>.</para>
+plików ZFS: <olink remap="internal" targetdoc="chapter-5.xml" targetptr="gbaln">Tradycyjne zarządzanie punktami montowania</olink>.</para>
 <para>W przypadku zmiany strategii zarządzania punktem montowania, mogą mieć miejsce następujące zachowania:</para>
 <itemizedlist>
 <listitem>
@@ -2743,7 +2743,7 @@ datasetu. Poniższy przykład pokazuje jak ustawić i zarządzać datasetem ZFS 
 <para>W szczególnym przypadku, jeśli są tworzone oddzielne systemy plików ZFS
 <filename>/usr</filename> lub <filename>/var</filename>, muszą być one określone
 jako tradycyjne systemy plików. Dodatkowo muszą być one montowane poprzez stworzenie
-odpowiednich wpisów w pliku <filename>/etc/vfstab</filename>. W przeciwnym przypadku
+odpowiednich wpisów w pliku <filename>/etc/vfstab</filename>. W przeciwnym razie
 serwis <filename>system/filesystem/local</filename> wejdzie w tryb "maintenance"
 w trakcie startu systemu.<indexterm xml:id="indexterm-365">
 <primary>setting</primary>
@@ -2795,7 +2795,7 @@ tank/home/bonwick               /tank/home/bonwick
 tank/ws                         /tank/ws</screen>
 <para>Użycie opcji <option>
 a</option> spowoduje zamontowanie wszystkich systemów plików zarządzanych
-przez ZFS. Tradycyjnie zarządzane systemy plików są nie montowane. Na przykład:</para>
+przez ZFS. Tradycyjnie zarządzane systemy plików nie są montowane. Na przykład:</para>
 <screen># <userinput>zfs mount -a</userinput>
 </screen>
 <para>Domyślnie ZFS nie pozwoli zamontować systemu plików w katalogu, który nie jest pusty.
@@ -2944,12 +2944,12 @@ jego nazwy:</para>
 punktu montowania:</para>
 <screen># <userinput>zfs unmount /export/home/tabriz</userinput>
 </screen>
-<para>Wykonanie polecenia <command>unmount</command> zawiedzie, jeśli system plików
+<para>Wykonanie polecenia <command>unmount</command> nie powiedzie się, jeśli system plików
 jest aktywny lub zajęty. W celu wymuszenia odmontowania systemu plików można użyć opcji
 <option>f</option>.
 Należy zachować ostrożność przy wymuszonym odmontowaniu systemu plików, jeśli jego
 zawartość jest aktywnie wykorzystywana. Może to skutkować nieprzewidywalnym
-zachowaniem aplikacji.</para>
+zachowaniem aplikacji korzystającym z tego zasobu.</para>
 <screen># <userinput>zfs unmount tank/home/eschrock</userinput>
 cannot unmount '/export/home/eschrock': Device busy
 # <userinput>zfs unmount -f tank/home/eschrock</userinput>
@@ -2959,8 +2959,8 @@ polecenia <command>umount</command> do odmontowania systemów plików ZFS.
 Na przykład:</para>
 <screen># <userinput>umount /export/home/bob</userinput>
 </screen>
-<para>Więcej informacji o poleceniu <command>zfs umount</command> znajduje się
-pod <olink remap="external" targetdoc="819-2240" targetptr="zfs-1m">
+<para>Więcej informacji o poleceniu <command>zfs unmount</command>:
+<olink remap="external" targetdoc="819-2240" targetptr="zfs-1m">
 <citerefentry>
 <refentrytitle>zfs</refentrytitle>
 <manvolnum>
@@ -2971,7 +2971,7 @@ pod <olink remap="external" targetdoc="819-2240" targetptr="zfs-1m">
 </sect2>
 <sect2 xml:id="gamnd">
 <title>Udostępnianie i wyłączanie udostępniania systemów plików ZFS</title>
-<para>Analogicznie do punktów montowania ZFS może automatycznie udostępniać
+<para>Analogicznie do punktów montowania, ZFS może automatycznie udostępniać
 systemy plików poprzez użycie parametru <property>sharenfs</property>. Używając
 tej metody nie ma potrzeby modyfikacji pliku <filename>/etc/dfs/dfstab</filename>,
 kiedy zostaje dodany nowy system plików. Parametr <property>sharenfs</property>
@@ -2982,7 +2982,7 @@ Specjalna wartość <literal>off</literal> określa, że ten system plików
 nie jest zarządzany przez ZFS i może być udostępniony tradycyjnymi metodami,
 jak plik <filename>/etc/dfs/dfstab</filename>.
 Wszystkie systemy plików, których parametr <property>sharenfs</property> nie jest ustawiony
-na <literal>off</literal> są udostępniane na etapie startu systemu.<indexterm xml:id="indexterm-374">
+na <literal>off</literal>, są udostępniane na etapie startu systemu.<indexterm xml:id="indexterm-374">
 <primary>sharing</primary>
 <secondary>systemy plików ZFS</secondary>
 <tertiary>opis</tertiary>
@@ -3037,10 +3037,10 @@ staje się tylko do odczytu w momencie, kiedy parametr zostaje ustawiony na <lit
 <filename>tank/home</filename>.</para>
 </sect3>
 <sect3 xml:id="gbdze">
-<title>Wyłączenie udostępniania (unsharing) systemów plików ZFS</title>
-<para>Kiedy większość systemów plików jest automatycznie udostępniana lub też nie
+<title>Wyłączenie udostępniania systemów plików ZFS</title>
+<para>Kiedy wskazane systemy plików są automatycznie udostępniane
 podczas startu systemu, tworzenia lub kasowania, czasami istnieje potrzeba jawnego
-wyłączenia udostępniania. Służy do tego polecenia <command>zfs unshare</command>.
+wyłączenia udostępniania. Służy do tego polecenie <command>zfs unshare</command>.
 Na przykład:</para>
 <screen># <userinput>zfs unshare tank/home/tabriz</userinput>
 </screen>
@@ -3061,7 +3061,7 @@ a</option>.<indexterm xml:id="indexterm-380">
 </screen>
 </sect3>
 <sect3 xml:id="gbdxw">
-<title>Udostępnianie (sharing) systemów plików ZFS</title>
+<title>Udostępnianie systemów plików ZFS</title>
 <para>W większości przypadków automatyczne zachowanie ZFS, udostępnianie w czasie
 startu systemu i tworzenia jest wystarczające. Jeśli z jakichś przyczyn udostępnianie
 systemu plików zostało wyłączone, można udostępnić go ponownie poprzez użycie polecenia
@@ -3087,7 +3087,7 @@ jest odradzany. Zaleca się zarządzanie udostępnianiem NFS całkowicie poprzez
 całkowicie poprzez plik <filename>/etc/dfs/dfstab</filename>. Model zarządzania ZFS
 został zaprojektowany tak, żeby był prostszy i wymagający mniejszego nakładu pracy niż
 tradycyjny. Jednakże w niektórych przypadkach może ciągle zachodzić potrzeba kontrolowania
-udostępniania systemu plików poprzez tradycyjny, znajomy sposób.</para>
+udostępniania systemu plików w tradycyjny, znajomy sposób.</para>
 </sect3>
 </sect2>
 </sect1>
@@ -3108,7 +3108,7 @@ całkowita ilość miejsca użyta przez <filename>tank/home</filename> <emphasis
 wszystkie dla niego potomne datasety</emphasis> nie może przekroczyć wartości limitu.
 Analogicznie jeśli <filename>tank/home</filename> ma określoną rezerwację,
 <filename>tank/home</filename> <emphasis>i wszystkie dla niego potomne datasety</emphasis>
-dostają tą rezerwację. Ilość miejsca użyta przez dataset i potomne dla niego jest podawana
+dostają tę rezerwację. Ilość miejsca użyta przez dataset i potomne dla niego jest podawana
 poprzez parametr <property>used</property>.</para>
 <sect2 xml:id="gazud">
 <title>Ustawianie limitu dla systemów plików ZFS</title>
