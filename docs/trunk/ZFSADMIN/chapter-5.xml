@@ -29,7 +29,7 @@ określonych operacji na systemach plików. Rozdział ten opisuje te komendy szc
 Obrazy, woluminy i klony są także zarządzane przy użyciu tego polecenia, ale te cechy
 są opisane pobieżnie w tym rozdziale. Więcej informacji na temat obrazów i klonów:
 <olink remap="external" targetdoc="chapter-6.xml" targetptr="gavvx">Rozdział 6, Praca z klonami i obrazami ZFS</olink>.
-Więcej informacji o woluminach ZFS zawiera podrozdział
+Więcej informacji na temat woluminów ZFS:
 <olink remap="external" targetdoc="chapter-8.xml" targetptr="gaypf">Woluminy ZFS</olink>.</para>
 <note>
 <para>Pojęcie <emphasis>dataset</emphasis> używane w tym rozdziale
@@ -1591,7 +1591,7 @@ miejsca i jego rezerwacji.
 <para>W momencie tworzenia obrazów (snapshotów) ich przestrzeń jest pierwotnie
 współdzielona między nimi a systemem plików, a także prawdopodobnie poprzednimi
 obrazami. W momencie zmiany danych w systemie plików przestrzeń, która pierwotnie
-była współdzielona staje się unikalna dla obrazu i jest wliczana jako przestrzeń
+była współdzielona, staje się unikalna dla obrazu i jest wliczana jako przestrzeń
 zużywana przez obraz. Dodatkowo usunięcie snapshotów może zwiększyć wielkość przestrzeni
 unikalnej (i używanej przez) inne obrazy.
 Więcej informacji o obrazach i niuansach związanych z miejscem: <olink remap="external" targetdoc="chapter-3.xml" targetptr="gayra">Zachowanie przy braku miejsca</olink>.</para>
@@ -1632,13 +1632,13 @@ dotyczy wszystkich rodzajów: systemu plików, woluminów, klonów i obrazów.
 <para>
 <property>aclinherit</property>
 </para>
-<para>Dokładniejszy opis zawiera podrozdział <olink remap="external" targetdoc="chapter-7.xml" targetptr="gbaaz">Tryby właściwości ACL-i</olink>.</para>
+<para>Dokładniejszy opis: <olink remap="external" targetdoc="chapter-7.xml" targetptr="gbaaz">Tryby właściwości ACL-i</olink>.</para>
 </listitem>
 <listitem>
 <para>
 <property>aclmode</property>
 </para>
-<para>Dokładniejszy opis zawiera podrozdział <olink remap="external" targetdoc="chapter-7.xml" targetptr="gbaaz">Tryby właściwości ACL-i</olink>.</para>
+<para>Dokładniejszy opis: <olink remap="external" targetdoc="chapter-7.xml" targetptr="gbaaz">Tryby właściwości ACL-i</olink>.</para>
 </listitem>
 <listitem>
 <para>
@@ -1748,9 +1748,9 @@ dotyczy wszystkich rodzajów: systemu plików, woluminów, klonów i obrazów.
 być zamontowany poprzez użycie poleceń <command>zfs mount</command> lub
 <command>zfs mount</command> <option>a</option>.
 Parametr ten jest podobny do ustawienia parametru <property>mountpoint</property>
-na <literal>none</literal>, z wyjątkiem tego, że dataset ciągle ma ustawiony
+na <literal>none</literal> z wyjątkiem tego, że dataset ciągle ma ustawiony
 parametr <property>mountpoint</property>, który może być dziedziczony. Na przykład
-można ustawić parametr <property>canmount</property> na <literal>none</literal>,
+można ustawić parametr <property>canmount</property> na <literal>no</literal>,
 ustawić dziedziczone parametry dla potomnych systemów plików, ale nie zostanie
 on sam z siebie nigdy zamontowany, ani nie będzie dostępny dla użytkowników.
 W tym przypadku nadrzędny system plików z ustawionym tym parametrem na <literal>no</literal>
@@ -1775,10 +1775,10 @@ ale sam z siebie nigdy nie będzie dostępny.<indexterm xml:id="indexterm-312">
 <secondary>detailed description</secondary>
 </indexterm>
 </para>
-<para>W poniższym przykładzie zostaje utworzony dataset <filename>userpool</filename> z ustawionym
+<para>W poniższym przykładzie zostanie utworzony dataset <filename>userpool</filename> z ustawionym
 parametrem <property>canmount</property> na <literal>off</literal>. Punkty montowania dla
 potomnych systemów plików są ustawione w jednym wspólnym punkcie montowania <filename>/export/home</filename>.
-Parametry, które są ustawiony w nadrzędnym systemie plików są dziedziczone na potomne, ale nadrzędny
+Parametry, które są ustawione w nadrzędnym systemie plików są dziedziczone na potomne, ale nadrzędny
 system plików nigdy nie zostanie zamontowany.</para>
 <screen># <userinput>zpool create userpool mirror c0t5d0 c1t6d0</userinput>
 # <userinput>zfs set canmount=off userpool</userinput>
@@ -1817,7 +1817,7 @@ userpool/user2  24.5K  8.24G  24.5K  /export/home/user2</screen>
 <para>Ten parametr jest przeznaczony wyłącznie do użytku w środowisku baz danych,
 które wymaga dostępu do pliku w sztywno określonych rozmiarach rekordów. ZFS automatycznie
 dopasowuje wielkość bloków zgodnie z wewnętrznym algorytmem zoptymalizowanym do użytku
-w typowych szablonach dostępu do plików. Dla baz danych, które tworzą bardzo duże pliki,
+w typowych szablonowych operacjach dostępu do plików. Dla baz danych, które tworzą bardzo duże pliki,
 ale uzyskują dostęp do plików w małych losowych kawałkach, te algorytmy niekoniecznie
 są optymalne. Poprzez określenie parametru <property>recordsize</property> na wartość
 większą lub równą wielkości rekordu bazy danych można uzyskać znaczący zysk wydajności.
@@ -1860,13 +1860,13 @@ ostrożność.<indexterm xml:id="indexterm-318">
 </indexterm>
 </para>
 <para>Chociaż jest to niezalecane, można utworzyć tzw. "rozrzedzony wolumin" 
-(sparse volume) poprzez określenie opcji <option>s</option> przy poleceniu
+(ang. sparse volume) poprzez określenie opcji <option>s</option> przy poleceniu
 <command>zfs create -V</command> lub poprzez zmianę rezerwacji po utworzeniu
 już woluminu. <emphasis>Rozrzedzony wolumin</emphasis> jest definiowany jako wolumin,
 gdzie rezerwacja nie jest równa wielkości woluminu. Dla takiego woluminu zmiany
 parametru <property>volsize</property> nie są przenoszone na zmianę rezerwacji.
 </para>
-<para>Więcej informacji o woluminach omawia podrozdział <olink remap="external" targetdoc="chapter-8.xml" targetptr="gaypf">Woluminy ZFS</olink>.</para>
+<para>Więcej informacji na temat woluminów: <olink remap="external" targetdoc="chapter-8.xml" targetptr="gaypf">Woluminy ZFS</olink>.</para>
 </sect3>
 </sect2>
 
@@ -1931,7 +1931,7 @@ userpool        dept:users  all             local
 userpool/user1  dept:users  finance         local
 userpool/user2  dept:users  general         local
 userpool/user3  dept:users  itops           local</screen>
-<para>Do wyczyeszcznie parametru użytkownika należy użyć polecenia <command>zfs inherit</command>.
+<para>Do wyczyszczenia parametru użytkownika należy użyć polecenia <command>zfs inherit</command>.
 Na przykład:</para>
 <screen># <userinput>zfs inherit -r dept:users userpool</userinput>
 </screen>
