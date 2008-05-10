@@ -971,21 +971,21 @@ write(2, 0x8089e48,   52)                = 52
 read(0, 0x8089878,    1)<userinput>^C</userinput>
 #</screen>
 
-    <para>Now let's examine your D program and its output in more detail.
-    First, a clause similar to the earlier program instruments each of the
-    shell's calls to <olink remap="external" targetdoc="refman2"
+    <para>Czas na bardziej szczegółową analizę d-programu. Podobnie jak w
+    poprzednim programie klauzula nakazuje śledzenie wywołań systemowych
+    <olink remap="external" targetdoc="refman2"
     targetptr="read-2"><citerefentry>
         <refentrytitle>read</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> and <olink remap="external" targetdoc="refman2"
+      </citerefentry></olink> i <olink remap="external" targetdoc="refman2"
     targetptr="write-2"><citerefentry>
         <refentrytitle>write</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink>. But for this example, a new function,
-    <function>printf</function>, is used to trace data and print it out in a
-    specific format:</para>
+      </citerefentry></olink> z poziomu powłoki. Ale w tym przykładzie użyto
+    nowej funkcji, <function>printf</function>, w celu sformatowanego
+    wydrukowania śledzonych danych:</para>
 
     <programlisting>syscall::read:entry,
 syscall::write:entry
@@ -994,24 +994,24 @@ syscall::write:entry
 	printf("%s(%d, 0x%x, %4d)", probefunc, arg0, arg1, arg2);
 }</programlisting>
 
-    <para>The <function>printf</function> function combines the ability to
-    trace data, as if by the <function>trace</function> function used earlier,
-    with the ability to output the data and other text in a specific format
-    that you describe. The <function>printf</function> function tells DTrace
-    to trace the data associated with each argument after the first argument,
-    and then to format the results using the rules described by the first
-    <function>printf</function> argument, known as a <firstterm>format
-    string</firstterm>.</para>
+    <para>Funkcja <function>printf</function> pozwala na jednoczesne śledzenie
+    danych, jak w funkcji <function>trace</function> użytej wcześniej, a także
+    na sformatowane drukowanie danych i innego tekstu. Funkcja
+    <function>printf</function> instruuje DTrace, aby śledził dane związane z
+    każdym argumentem po pierwszym argumencie, a potem aby wydrukował wyniki w
+    formacie opisanym w pierwszym argumencie funkcji
+    <function>printf</function> zwanym <firstterm>łańcuchem formatującym (ang.
+    format string)</firstterm>.</para>
 
-    <para>The format string is a regular string that contains any number of
-    format conversions, each beginning with the <literal>%</literal>
-    character, that describe how to format the corresponding argument. The
-    first conversion in the format string corresponds to the second
-    <function>printf</function> argument, the second conversion to the third
-    argument, and so on. All of the text between conversions is printed
-    verbatim. The character following the <literal>%</literal> conversion
-    character describes the format to use for the corresponding argument. Here
-    are the meanings of the three format conversions used in
+    <para>Łańcuch formatujący jest zwykłym łańcuchem zawierającym dowolną
+    liczbę konwersji formatowania, z których każda zaczyna się od znaku
+    <literal>%</literal>, opisujących sposób formatowania odpowiadających im
+    argumentów. Pierwsza konwersja w łańcuchu formatującym odnosi się do
+    drugiego argumentu funkcji <function>printf</function>, druga do trzeciego
+    argumentu i tak dalej. Tekst pomiędzy konwersjami drukowany jest bez
+    zmian. Znak następujący po znaku konwersji <literal>%</literal> opisuje
+    format użyty podczas drukowania odpowiedniego argumentu. Poniższa tabela
+    określa znaczenie poszczególnych konwersji użytych w
     <filename>trussrw.d</filename>:</para>
 
     <informaltable frame="none">
@@ -1024,22 +1024,21 @@ syscall::write:entry
           <row>
             <entry><para><literal>%d</literal></para></entry>
 
-            <entry><para>Print the corresponding value as a decimal
-            integer</para></entry>
+            <entry><para>Drukuj jako całkowitą liczbę
+            dziesiętną</para></entry>
           </row>
 
           <row>
             <entry><para><literal>%s</literal></para></entry>
 
-            <entry><para>Print the corresponding value as a
-            string</para></entry>
+            <entry><para>Drukuj jako łańcuch znaków</para></entry>
           </row>
 
           <row>
             <entry><para><literal>%x</literal></para></entry>
 
-            <entry><para>Print the corresponding value as a hexadecimal
-            integer</para></entry>
+            <entry><para>Drukuj jako całkowitą liczbę
+            szesnastkową</para></entry>
           </row>
         </tbody>
       </tgroup>
