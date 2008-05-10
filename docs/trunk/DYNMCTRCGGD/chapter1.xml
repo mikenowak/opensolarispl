@@ -521,7 +521,7 @@ CPU     ID                    FUNCTION:NAME
 	trace(++i);
 }</programlisting>
 
-    <para>Jeśłi wymagana jest ścisła kontrola typu zmiennej
+    <para>Jeśli wymagana jest ścisła kontrola typu zmiennej
     <literal>i</literal>, jej pożądany typ można ująć w nawias okrągły i w ten
     spoób <firstterm>rzutować (ang. cast)</firstterm> na typ całkowity zero
     inny typ danych. Na przykład, gdyby chcieć określic maksymalny rozmiar
@@ -858,7 +858,7 @@ syscall::write:entry</programlisting>
     </informaltable>
 
     <para>Czas na kilka eksperymentów z właśnie napisanym skryptem; można
-    zmieniać PID lub sondy wywołań systemowych. JEdna dodatkowa zmiana pozwoli
+    zmieniać PID lub sondy wywołań systemowych. Jedna dodatkowa zmiana pozwoli
     na przekształcenie skryptu w bardzo prostą wersję narzędzia do śledzenia
     wywołań systemowych w rodzaju <olink remap="external" targetdoc="refman1"
     targetptr="truss-1"><citerefentry>
@@ -877,7 +877,7 @@ syscall::write:entry</programlisting>
 
     <para>W przypadku skryptu z PID powłoki, należy wykonać po kolei kilka
     komend, na przykład <command>cd</command>, <command>ls</command> i
-    <command>date</command>, co pozwoli w opknie DTrace'a obserwować wyniki
+    <command>date</command>, co pozwoli w oknie DTrace'a obserwować wyniki
     śledzenia.</para>
   </sect1>
 
@@ -885,36 +885,34 @@ syscall::write:entry</programlisting>
     <title>Output Formatting</title>
 
     <para>Śledzenie wywołań systemowych jest wszechstronnym narzędziem
-    obserwacji większości procesów przestrzeni użytkownika. If you've used the
-    Solaris <olink remap="external" targetdoc="refman1"
-    targetptr="truss-1"><citerefentry>
-        <refentrytitle>truss</refentrytitle>
-
-        <manvolnum>1</manvolnum>
-      </citerefentry></olink> utility before as an administrator or developer,
-    you've probably learned that it's a useful tool to keep around for
-    whenever there is a problem. If you've never used <command>truss</command>
-    before, give it a try right now by typing this command into one of your
-    shells:</para>
-
-    <screen><userinput>$ truss date</userinput></screen>
-
-    <para>You will see a formatted trace of all the system calls executed by
-    <olink remap="external" targetdoc="refman1"
-    targetptr="date-1"><citerefentry>
-        <refentrytitle>date</refentrytitle>
-
-        <manvolnum>1</manvolnum>
-      </citerefentry></olink> followed by its one line of output at the end.
-    The following example improves upon the earlier <filename>rw.d</filename>
-    program by formatting its output to look more like <olink remap="external"
+    obserwacji większości procesów przestrzeni użytkownika. Każdy kto miał
+    okazję używać Solarisowego narzędzia <olink remap="external"
     targetdoc="refman1" targetptr="truss-1"><citerefentry>
         <refentrytitle>truss</refentrytitle>
 
         <manvolnum>1</manvolnum>
-      </citerefentry></olink> so you can more easily understand the output.
-    Type the following program and save it in a file called
-    <filename>trussrw.d</filename>:</para>
+      </citerefentry></olink> jako administrator albo programista, z pewnością
+    wie, że jest to cenne narzędzie i warto zawsze mieć je pod ręką. Warto
+    zaznajomić się z nim i wpisać w linii poleceń:</para>
+
+    <screen><userinput>$ truss date</userinput></screen>
+
+    <para>Wydruk stanowi sformatowany wynik śledzenia wywołań systemowych
+    wykonywanych przez <olink remap="external" targetdoc="refman1"
+    targetptr="date-1"><citerefentry>
+        <refentrytitle>date</refentrytitle>
+
+        <manvolnum>1</manvolnum>
+      </citerefentry></olink> oraz na końcu jedną linijkę wydruku z samego
+    komendy <command>date</command>. Poniższy przykład poprawia program
+    <filename>rw.d</filename> wprowadzając formatowanie wydruku w sposób
+    podobny jak robi to <olink remap="external" targetdoc="refman1"
+    targetptr="truss-1"><citerefentry>
+        <refentrytitle>truss</refentrytitle>
+
+        <manvolnum>1</manvolnum>
+      </citerefentry></olink>, co ułatwi jego zrozumienie. Poniższy kod
+    pochodzi z pliku <filename>trussrw.d</filename>:</para>
 
     <example id="ex-trussrw.d">
       <title><filename>trussrw.d</filename>: Trace System Calls with
@@ -939,20 +937,20 @@ syscall::write:return
 }</programlisting>
     </example>
 
-    <para>In this example, the constant <literal>12345</literal> is replaced
-    with the label <literal>$1</literal> in each predicate. This label allows
-    you to specify the process of interest as an <emphasis>argument</emphasis>
-    to the script: <literal>$1</literal> is replaced by the value of the first
-    argument when the script is compiled. To execute
-    <filename>trussrw.d</filename>, use the <command>dtrace</command> options
-    <option>q</option> and <option>s</option>, followed by the process ID of
-    your shell as the final argument. The <option>q</option> option indicates
-    that <command>dtrace</command> should be quiet and suppress the header
-    line and the CPU and ID columns shown in the preceding examples. As a
-    result, you will only see the output for the data that you explicitly
-    traced. Type the following command (replacing <literal>12345</literal>
-    with the process ID of a shell process) and then press return a few times
-    in the specified shell:</para>
+    <para>W tym przykładzie stałą <literal>12345</literal> zastąpiono w każdym
+    predykacie etykietą <literal>$1</literal>. Pozwala ona na wskazanie numeru
+    procesu jako <emphasis>argument</emphasis> wywołania skryptu:
+    <literal>$1</literal> jest podmieniana na wartość pierwszego argumentu
+    podczas kompilacji skryptu. Do wykonania skryptu
+    <filename>trussrw.d</filename> należy użyć komendy
+    <command>dtrace</command> z opcjami <option>q</option> i
+    <option>s</option> oraz numerem PID procesu jako ostatni argument. Opcja
+    <option>q</option> instruuje <command>dtrace</command> aby nie podawał
+    linii nagłówkowej oraz kolumn CPU i ID w poniższych przykładach. Skrypt w
+    związku z tym wydrukuje tylko dane, które nakazano mu śledzić. Poniźszą
+    komendę należy wprowdzić w linii poleceń (zamieniając
+    <literal>12345</literal> na prawdziwy numer procesu powłoki) i nacisnąć
+    przycisk return we wskazanym skryptowi procesie powłoki:</para>
 
     <screen><userinput># dtrace -q -s trussrw.d 12345</userinput>
 	                 = 1
