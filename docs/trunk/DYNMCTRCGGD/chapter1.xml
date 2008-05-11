@@ -1044,32 +1044,33 @@ syscall::write:entry
       </tgroup>
     </informaltable>
 
-    <para>DTrace <function>printf</function> works just like the C <olink
-    remap="external" targetdoc="refman3a" targetptr="printf-3c"><citerefentry>
+    <para>Funkcja <function>printf</function> z bibliteki DTrace działa tak
+    samo jak <olink remap="external" targetdoc="refman3a"
+    targetptr="printf-3c"><citerefentry>
         <refentrytitle>printf</refentrytitle>
 
         <manvolnum>3C</manvolnum>
-      </citerefentry></olink> library routine or the shell <olink
-    remap="external" targetdoc="refman1" targetptr="printf-1"><citerefentry>
+      </citerefentry></olink> z biblioteki języka C lub narzędzie
+    powłoki<olink remap="external" targetdoc="refman1"
+    targetptr="printf-1"><citerefentry>
         <refentrytitle>printf</refentrytitle>
 
         <manvolnum>1</manvolnum>
-      </citerefentry></olink> utility. If you've never seen
-    <function>printf</function> before, the formats and options are explained
-    in detail in <olink remap="internal" targetptr="chp-fmt">Chapter 12,
-    Output Formatting</olink>. You should read this chapter carefully even if
-    you're already familiar with <function>printf</function> from another
-    language. In D, <function>printf</function> is provided as a built-in and
-    some new format conversions are available to you designed specifically for
-    DTrace.</para>
+      </citerefentry></olink>. Dla osób, które nigdy wcześniej nie korzystały
+    z funkcji <function>printf</function>, podsumowanie przedstawiono w <olink
+    remap="internal" targetptr="chp-fmt">Chapter 12, Output
+    Formatting</olink>. Dokładną lekturę tego rozdziału poleca się nawet tym
+    osobom, które znają już funkcję <function>printf</function> z innego
+    języka. W D <function>printf</function> jest funkcją wbudowaną i pozwala
+    na pewne nowe formatowania zaprojektowane specjalnie dla DTrace.</para>
 
-    <para>To help you write correct programs, the D compiler validates each
-    <function>printf</function> format string against its argument list. Try
-    changing <literal>probefunc</literal> in the clause above to the integer
-    <literal>123</literal>. If you run the modified program, you will see an
-    error message telling you that the string format conversion
-    <literal>%s</literal> is not appropriate for use with an integer
-    argument:</para>
+    <para>Pomocne przy pisaniu prawidłowych programów jest sprawdzanie przez
+    kompilator DTrace każdego łańcuhca formatującego
+    <function>printf</function> w odniesieniu do arumentów tej funkcji. Jeśli
+    spróbować uruchomić skrypt zamieniając <literal>probefunc</literal> na
+    liczbę <literal>123</literal>, wydrukowany zostanie komunikat, że
+    konwersja <literal>%s</literal> jest niewłaściwa dla argumentu w postaci
+    liczby całkowitej:</para>
 
     <screen><userinput># dtrace -q -s trussrw.d</userinput>
 dtrace: failed to compile script trussrw.d: line 4: printf( )
@@ -1079,37 +1080,39 @@ dtrace: failed to compile script trussrw.d: line 4: printf( )
 	          argument: int
 #</screen>
 
-    <para>To print the name of the read or write system call and its
-    arguments, use the <function>printf</function> statement:</para>
+    <para>Do wydrukowania wywołania systemowego read i write oraz ich
+    argumentów może posłużyć poniższa postać funkcji
+    <function>printf</function>:</para>
 
     <programlisting>printf("%s(%d, 0x%x, %4d)", probefunc, arg0, arg1, arg2);</programlisting>
 
-    <para>to trace the name of the current probe function and the first three
-    integer arguments to the system call, available in the DTrace variables
-    <literal>arg0</literal>, <literal>arg1</literal>, and
-    <literal>arg2</literal>. For more information about probe arguments, see
-    <olink remap="internal" targetptr="chp-variables">Chapter 3,
-    Variables</olink>. The first argument to <olink remap="external"
-    targetdoc="refman2" targetptr="read-2"><citerefentry>
+    <para>Powoduje ona śledzenie nazwy aktualnej funkcji sondy oraz pierwszych
+    trzech argumentów całkowitoliczbowych przekazanych do wywołania
+    systemowego, dostępnych jako zmienne DTrace <literal>arg0</literal>,
+    <literal>arg1</literal> i <literal>arg2</literal>. Więcej informacji o
+    argumentach sond w <olink remap="internal"
+    targetptr="chp-variables">Chapter 3, Variables</olink>. Pierwszy argument
+    wywołania <olink remap="external" targetdoc="refman2"
+    targetptr="read-2"><citerefentry>
         <refentrytitle>read</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> and <olink remap="external" targetdoc="refman2"
+      </citerefentry></olink> i <olink remap="external" targetdoc="refman2"
     targetptr="write-2"><citerefentry>
         <refentrytitle>write</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> is a file descriptor, printed in decimal. The
-    second argument is a buffer address, formatted as a hexadecimal value. The
-    final argument is the buffer size, formatted as a decimal value. The
-    format specifier <literal>%4d</literal> is used for the third argument to
-    indicate that the value should be printed using the <literal>%d</literal>
-    format conversion with a minimum field width of 4 characters. If the
-    integer is less than 4 characters wide, <function>printf</function> will
-    insert extra blanks to align the output.</para>
+      </citerefentry></olink> to deskryptor pliku drukowany jako liczba
+    dziesiętna. Drugi argument to adres buforu wydrukowany jako liczba
+    szesnastkowa. Ostatni argument to wielkość buforu drukowana jako liczba
+    dziesiętna. Do wydrukowania trzeciego argumentu użyto formatu
+    <literal>%4d</literal>, który powoduje drukowanie liczby dziesiętnej z
+    najmniejszą długością czterech znaków. Jesli liczba do wydrukowania jest
+    krótsza, funkcja <function>printf</function> poprzedzi ją odpowiednią
+    liczbą pustych znaków, aby wyrównać wydruk.</para>
 
-    <para>To print the result of the system call and complete each line of
-    output, use the following clause:</para>
+    <para>Drukowanie wyniku każdego wywołania systemowego oraz zamknięcie
+    każdej linii wydruku wykonuje się w poniższej klauzuli:</para>
 
     <programlisting>syscall::read:return,
 syscall::write:return
@@ -1118,63 +1121,64 @@ syscall::write:return
 	printf("\t\t = %d\n", arg1);
 }</programlisting>
 
-    <para>Notice that the <literal>syscall</literal> provider also publishes a
-    probe named <literal>return</literal> for each system call in addition to
-    <literal>entry</literal>. The DTrace variable <literal>arg1</literal> for
-    the syscall <literal>return</literal> probes evaluates to the system
-    call's return value. The return value is formatted as a decimal integer.
-    The character sequences beginning with backwards slashes in the format
-    string expand to tab (<literal>\t</literal>) and newline
-    (<literal>\n</literal>) respectively. These <firstterm>escape
-    sequences</firstterm> help you print or record characters that are
-    difficult to type. D supports the same set of escape sequences as C, C++,
-    and the Java programming language. The complete list of escape sequences
-    is found in <olink remap="internal" targetptr="chp-typeopexpr">Chapter 2,
-    Types, Operators, and Expressions</olink>.</para>
+    <para>Należy zauważyć, że dostawca <literal>syscall</literal> dodatkowo
+    dostarcza dla każdego wywołania systemowego sondę
+    <literal>return</literal> jako uzupełnienie sondy
+    <literal>entry</literal>. Zmienna DTrace <literal>arg1</literal> dla sond
+    <literal>return</literal> otrzymuje wartość zwracaną przez wywołanie
+    systemowe. Wartość ta jest drukowana jako całkowita liczba dziesiętna.
+    Łańcuchy znakowe zaczynające się od ukośników oznaczają wcięcie
+    (<literal>\t</literal>) oraz przejście do nowej linii
+    (<literal>\n</literal>). Są to tak zwane <firstterm>sekwencje ucieczki
+    (ang. escape sequences)</firstterm> i pozwalają drukować znaki, które są
+    trudne do wprowadzania z kalwiatury. Język D pozwala na wykorzystanie tych
+    samych sekwencji ucieczki jak język C, C++ i Java. Kompletna lista
+    sekwencji ucieczki wydrukowana została w <olink remap="internal"
+    targetptr="chp-typeopexpr">Chapter 2, Types, Operators, and
+    Expressions</olink>.</para>
   </sect1>
 
   <sect1 id="chp-intro-7">
     <title>Arrays</title>
 
-    <para>D permits you to define variables that are integers, as well as
-    other types to represent strings and composite types called
-    <firstterm>structs</firstterm> and <firstterm>unions</firstterm>. If you
-    are familiar with C programming, you'll be happy to know you can use any
-    type in D that you can in C. If you're not a C expert, don't worry: the
-    different kinds of data types are all described in <olink remap="internal"
-    targetptr="chp-typeopexpr">Chapter 2, Types, Operators, and
-    Expressions</olink>. D also supports a special kind of variable called an
-    <firstterm>associative array</firstterm>. An associative array is similar
-    to a normal array in that it associates a set of keys with a set of
-    values, but in an associative array the keys are not limited to integers
-    of a fixed range.</para>
+    <para>Język D pozwala definiowac zmienne do reprezentacji liczb
+    całkowitych oraz innych typów, na przykład łańcuchów znaków lub typów
+    złożonych, takich jak <firstterm>struktury</firstterm> i
+    <firstterm>unie</firstterm>. Programistów języka C pownno ucieszyć, że w
+    języku D mogą używać takich samych typów zmiennych jak w C. Dla
+    niezaznajomionych z językiem C zamieszczono dokładny opis wszystkich typów
+    danych w <olink remap="internal" targetptr="chp-typeopexpr">Chapter 2,
+    Types, Operators, and Expressions</olink>. D obsługuje także doatkowy
+    specjalny typ danych nazywany <firstterm>tablicą asocjacyjną
+    (ang. associative array</firstterm>). Tablica asocjacyjna jest podobna do
+    zwykłej tablicy, z tym że do roli indeksu można użyć innych typów danych
+    niż całkowite liczbe dzisiętne.</para>
 
-    <para>D associative arrays can be indexed by a list of one or more values
-    of any type. Together the individual key values form a
-    <firstterm>tuple</firstterm> that is used to index into the array and
-    access or modify the value corresponding to that key. Every tuple used
-    with a given associative array must conform to the same type signature;
-    that is, each tuple key must be of the same length and have the same key
-    types in the same order. The value associated with each element of a given
-    associative array is also of a single fixed type for the entire array. For
-    example, the following D statement defines a new associative array
-    <literal>a</literal> of value type <literal>int</literal> with the tuple
-    signature <literal>[ string, int ]</literal> and stores the integer value
-    456 in the array:</para>
+    <para>Tablice asocjacyjne w D można indeksować za pomocą listy jednej lub
+    więcej wartości dowolnego typu. Indywidualne klucze tworzą tak zwane
+    <firstterm>dwójki (ang. tuple)</firstterm> lub pary, które służą do
+    indeksowania tablicy i sięgania lub zmiany wartości wskazywanej przez ten
+    klucz. Typ wszystkich par użytych do indeksowania tablicy musi mieć tę
+    samą sygnaturę, czyli każdy klucz pary musi mieć tę samą długość i musi
+    mieć te same kluczowe typy danych w tej samej kolejności. Wartość związana
+    z każdym elementem danej tablicy asocjacyjnej musi być także tego samego
+    typu dla całej tablicy. Poniższe wyrażenie D definiuje tablicę asocjacyjną
+    <literal>a</literal> z typem wartości <literal>int</literal>, sygnaturą
+    pary <literal>[ string, int ]</literal> i przechowująca liczbę dzisiętną
+    456:</para>
 
     <programlisting>a["hello", 123] = 456;</programlisting>
 
-    <para>Once an array is defined, its elements can be accessed like any
-    other D variable. For example, the following D statement modifies the
-    array element previously stored in <literal>a</literal> by incrementing
-    the value from 456 to 457:</para>
+    <para>Po zdefiniowaniu tablicy po jej elementy mozna sięgać w taki sam
+    sposób jak po inne zmienne D. Poniższe wyrażenie D zmienia wartość
+    poprzednio zapisanego elementu tablicy przez zwiększenie jego wartości z
+    456 do 457:</para>
 
     <programlisting>a["hello", 123]++;</programlisting>
 
-    <para>The values of any array elements you have not yet assigned are set
-    to zero. Now let's use an associative array in a D program. Type the
-    following program and save it in a file named
-    <filename>rwtime.d</filename>:</para>
+    <para>Wartości dowolnych elementów tablicy, którym nie nadano wartości,
+    zostały zainicjowane wartością zero. Czas na użycie tablicy w d-srypcie.
+    Poniższy kod pochodzi z pliku <filename>rwtime.d</filename>:</para>
 
     <example id="ex-rwtime.d">
       <title><filename>rwtime.d</filename>: Time <citerefentry>
@@ -1202,11 +1206,12 @@ syscall::write:return
 }</programlisting>
     </example>
 
-    <para>As with <filename>trussrw.d</filename>, specify the ID of shell
-    process when you execute <filename>rwtime.d</filename>. If you type a few
-    shell commands, you'll see the amount time elapsed during each system
-    call. Type in the following command and then press return a few times in
-    your other shell:</para>
+    <para>Tak jak w przypadku <filename>trussrw.d</filename> podczas
+    wywoływania <filename>rwtime.d</filename> należy podać PID procesu
+    powłoki. Podczas wykonywania komend w oknie śledzonej powłoki, skrypt
+    powinien drukować czas poświęcony na każde wywołanie systemowe. W oknie
+    powłoki należy wpisac poniższą komendę i kilka razy nacisnąć
+    return:</para>
 
     <screen><userinput># dtrace -s rwtime.d `pgrep -n ksh`</userinput>
 dtrace: script 'rwtime.d' matched 4 probes
@@ -1223,23 +1228,24 @@ CPU     ID                    FUNCTION:NAME
 <userinput>^C</userinput>
 #</screen>
 
-    <para>To trace the elapsed time for each system call, you must instrument
-    both the entry to and return from <olink remap="external"
-    targetdoc="refman2" targetptr="read-2"><citerefentry>
+    <para>Aby prześledzić czas poświęcony na każde wywołanie systemowe, należy
+    instrumentować zarówno moment wejścia jak i moment wyjścia z wywołania
+    systemowego <olink remap="external" targetdoc="refman2"
+    targetptr="read-2"><citerefentry>
         <refentrytitle>read</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> and <olink remap="external" targetdoc="refman2"
+      </citerefentry></olink> i <olink remap="external" targetdoc="refman2"
     targetptr="write-2"><citerefentry>
         <refentrytitle>write</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> and sample the time at each point. Then, on
-    return from a given system call, you must compute the difference between
-    our first and second timestamp. You could use separate variables for each
-    system call, but this would make the program annoying to extend to
-    additional system calls. Instead, it's easier to use an associative array
-    indexed by the probe function name. Here is the first probe clause:</para>
+      </citerefentry></olink> i pobrać czas w każdym z tych punktów. Podczas
+    wychodzenia z wywołania należy obliczyć różnicę między pierwszym i drugim
+    czasem. Można użyć odrębnych zmiennych dla każdego wywołania, ale
+    utrudniałoby to dodawanie do programu kolejnych wywołań. Łatwiej jest użyć
+    tablicy asocjacyjnej indeksowanej nazwą funkcji sondy. Oto klauzula
+    pierwszej sondy:</para>
 
     <programlisting>syscall::read:entry,
 syscall::write:entry
@@ -1248,19 +1254,19 @@ syscall::write:entry
 	ts[probefunc] = timestamp;
 }</programlisting>
 
-    <para>This clause defines an array named <literal>ts</literal> and assigns
-    the appropriate member the value of the DTrace variable
-    <literal>timestamp</literal>. This variable returns the value of an
-    always-incrementing nanosecond counter, similar to the Solaris library
-    routine <olink remap="external" targetdoc="refman3a"
+    <para>Klauzula ta definiuje tablicę nazwaną <literal>ts</literal> i
+    przypisuje odpowiednim elementom wartości zmiennej DTrace'a
+    <literal>timestamp</literal>. Zmienna ta zwraca wartość ciągle
+    zwiększanego licznika nanosekundowego, podobnie do finkcji biblitoecznej
+    Solarisa <olink remap="external" targetdoc="refman3a"
     targetptr="gethrtime-3c"><citerefentry>
         <refentrytitle>gethrtime</refentrytitle>
 
         <manvolnum>3C</manvolnum>
-      </citerefentry></olink>. Once the entry timestamp is saved, the
-    corresponding return probe samples <literal>timestamp</literal> again and
-    reports the difference between the current time and the saved
-    value:</para>
+      </citerefentry></olink>. Po zapisaniu znacznika czasu wejścia w
+    wywołanie systemowe, odpowiednia sonda <literal>return</literal> ponownie
+    tworzy znacznik czasu i zwraca różnicę między aktualnym czasem a zapisaną
+    wartością:</para>
 
     <programlisting>syscall::read:return,
 syscall::write:return
@@ -1269,50 +1275,50 @@ syscall::write:return
 	printf("%d nsecs", timestamp - ts[probefunc]);
 }</programlisting>
 
-    <para>The predicate on the return probe requires that DTrace is tracing
-    the appropriate process and that the corresponding
-    <literal>entry</literal> probe has already fired and assigned
-    <literal>ts[probefunc]</literal> a non-zero value. This trick eliminates
-    invalid output when DTrace first starts. If your shell is already waiting
-    in a <olink remap="external" targetdoc="refman2"
+    <para>Predykat dla sondy return wymaga od DTrace śledzenia właściwego
+    procesu, dla którego odpaliła sonda <literal>entry</literal> i zapisała
+    odpowiednią niezerową wartość do tablicy <literal>ts[probefunc]</literal>.
+    Ta sztuczka pozwala na uniknięcie pojawienia się niewłaściwych wartości
+    zaraz po uruchomieniu DTrace. Jeśli śledzona powłoka właśnie oczekuje w
+    wywołaniu <olink remap="external" targetdoc="refman2"
     targetptr="read-2"><citerefentry>
         <refentrytitle>read</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> system call for input when you execute
-    <command>dtrace</command>, the <literal>read:return</literal> probe will
-    fire without a preceding <literal>read:entry</literal> for this first
-    <olink remap="external" targetdoc="refman2"
+      </citerefentry></olink> podczas wykonania komendy
+    <command>dtrace</command>, to sonda <literal>read:return</literal> odpali
+    przed odpowiednią sondą <literal>read:entry</literal> dla pierwszego
+    wywołania systmowego <olink remap="external" targetdoc="refman2"
     targetptr="read-2"><citerefentry>
         <refentrytitle>read</refentrytitle>
 
         <manvolnum>2</manvolnum>
-      </citerefentry></olink> and <literal>ts[probefunc]</literal> will
-    evaluate to zero because it has not yet been assigned.</para>
+      </citerefentry></olink> i <literal>ts[probefunc]</literal> będzie
+    zawierała wartość zero, ponieważ nie otrzymała jeszcze wartości od
+    skryptu.</para>
   </sect1>
 
   <sect1 id="chp-intro-8">
     <title>External Symbols and Types</title>
 
-    <para>DTrace instrumentation executes inside the Solaris operating system
-    kernel, so in addition to accessing special DTrace variables and probe
-    arguments, you can also access kernel data structures, symbols, and types.
-    These capabilities enable advanced DTrace users, administrators, service
-    personnel, and driver developers to examine low-level behavior of the
-    operating system kernel and device drivers. The reading list at the start
-    of this book includes books that can help you learn more about Solaris
-    operating system internals.</para>
+    <para>Instrumentacja DTrace wykonywana jest wewnątrz jądra systemu
+    oepracyjnego Solaris, zatem oprócz specjalnych zmiennych i argumentów
+    sond, można sięgać także po struktury danych, symbole i typy jądra.
+    Umozliwia to zaawansowanym użytkownikom DTrace'a śledzenie
+    niskopoziomowego zachowania jądra systemu i sterowników urządzeń.
+    Bibliografia na początku książki zawiera pozycje, które mogą okazać sie
+    pomocne podczas nauki wewnętrznych mechanizmów systemu operacyjnego
+    Solaris.</para>
 
-    <para>D uses the backquote character (<literal>`</literal>) as a special
-    scoping operator for accessing symbols that are defined in the operating
-    system and not in your D program. For example, the Solaris kernel contains
-    a C declaration of a system tunable named <literal>kmem_flags</literal>
-    for enabling memory allocator debugging features. See the <olink
-    remap="external" targetdoc="soltuneparamref"><citetitle
-    remap="book">Solaris Tunable Parameters Reference
-    Manual</citetitle></olink>for more information about
-    <literal>kmem_flags</literal>. This tunable is declared in C in the kernel
-    source code as follows:</para>
+    <para>Język D używa znaku <literal>`</literal> jako specjalnego opeartora
+    zasięgu podczas sięgania do symboli zdefiniowanych w systemie operacyjnym,
+    a nie w d-programie. Na przykład jądro Solarisa zawiera deklaracje w C
+    parametru systemowego <literal>kmem_flags</literal> pozwalającego na
+    włączenie debuggowania alokatora pamięci. Więcej informacji o
+    <literal>kmem_flags</literal> w <olink remap="external"
+    targetdoc="soltuneparamref"><citetitle remap="book">Solaris Tunable
+    Parameters Reference Manual</citetitle></olink>. Deklaracja tego parametru
+    w C wygląda następująco:</para>
 
     <programlisting>int kmem_flags;</programlisting>
 
