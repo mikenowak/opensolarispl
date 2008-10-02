@@ -11,7 +11,7 @@
 <title>ZFS - zagadnienia zaawansowane</title>
 <toc>
 <para>W tym rozdziale przedstawiono woluminy ZFS, używanie ZFS w systemie Solaris
-z zainstalowanymi zonami, ZFS alternatywne pule główne oraz ZFS profile praw.</para>
+z zainstalowanymi zonami, alternatywne główne katalogi pul ZFS oraz profile uprawnień.</para>
 <para>Rozdział składa się z następujących podrozdziałów:</para>
 <itemizedlist>
 <listitem>
@@ -39,7 +39,7 @@ z zainstalowanymi zonami, ZFS alternatywne pule główne oraz ZFS profile praw.<
 <sect1 xml:id="gaypf">
 <title>Woluminy ZFS</title>
 <para>Wolumin ZFS to dataset reprezentujący urządzenie blokowe, którego można używać jak każdego innego urządzenia blokowego. Woluminom tym odpowiadają
-pliki urządzeń w katalogu <filename>/dev/zvol/{dsk,rdsk}/path</filename>.<indexterm xml:id="indexterm-476">
+pliki urządzeń w katalogu <filename>/dev/zvol/{dsk,rdsk}/ścieżka</filename>.<indexterm xml:id="indexterm-476">
 <primary>emulowany wolumin</primary>
 <secondary>opis</secondary>
 </indexterm>
@@ -54,30 +54,30 @@ pliki urządzeń w katalogu <filename>/dev/zvol/{dsk,rdsk}/path</filename>.<inde
 <tertiary>(przykład)</tertiary>
 </indexterm>
 </para>
-<para>Poniższy przykład ilustruje tworzenie ZFSgo woluminu <filename>tank/vol</filename> o pojemności 5 GB:</para>
+<para>Poniższy przykład ilustruje tworzenie woluminu ZFS <filename>tank/vol</filename> o pojemności 5 GB:</para>
 <screen># <userinput>zfs create -V 5gb tank/vol</userinput>
 </screen>
 <para>Podczas tworzenia woluminu, rezerwacja jest automatycznie ustawiana
-na rozmiar równy początkowej wielkości woluminu.  Wielkość rezerwacji cały
+na rozmiar równy początkowej wielkości woluminu. Wielkość rezerwacji cały
 czas jest równa wielkości woluminu, dzięki czemu nie występują nieprzewidziane
 efekty.  Na przykład, jeśli wielkość woluminu zmniejsza się, może
 nastąpić uszkodzenie danych.  Należy zachować ostrożność podczas zmniejszania
 woluminu.</para>
-<para>Dodatkowo, jeśli w czasie tworzenia migawki nastąpi zmiana rozmiaru woluminu,
+<para>Dodatkowo, jeśli w czasie tworzenia migawki (ang. snapshot) nastąpi zmiana rozmiaru woluminu,
 mogą wystąpić problemy ze spójnością systemu plików przy próbie "odwinięcia"
 migawki lub utworzeniu klonu z migawki.</para>
 <para>Więcej informacji o parametrach systemu pliku, które mogą być używane dla woluminów
 znajduje się <olink remap="external" targetdoc="chapter-5.xml" targetptr="gcfgr">tabeli 5–1</olink>.</para>
-<para>Jeśli używasz systemu Solaris z zainstalowanymi strefami (zones), nie możesz tworzyć ani klonować ZFSgo woluminu
+<para>Jeśli używasz systemu Solaris z zainstalowanymi strefami (ang. zones), nie możesz tworzyć ani klonować woluminu ZFS
 w strefie innej niż globalna.  Jakakolwiek próba stworzenia lub sklonowania 
 woluminu z strefy innej niż globalna nie powiedzie się.  Więcej
-informacji o używaniu ZFS-owych woluminów w globalnej strefie w
-<olink remap="internal" targetdoc="chapter-8.xml" targetptr="gbebi">Dodawanie ZFS-owych woluminów do stref innych niż globalna</olink>.</para>
+informacji o używaniu woluminów ZFS w globalnej strefie zawiera podrozdział
+<olink remap="internal" targetdoc="chapter-8.xml" targetptr="gbebi">Dodawanie woluminów ZFS do nieglobalnej strefy</olink>.</para>
 <sect2 xml:id="gbfvg">
-<title>Używanie woluminów ZFS jako urządzenia wymiany (swap) i urządzenia zrzutów awaryjnych</title>
-<para>W celu skonfigurowania przestrzeni wymiany należy utworzyć ZFS-owy wolumin o ustalonym rozmiarze
-i włączyć wymianę na to urządzenie. Nie należy używać jako urządzenia wymiany pliku w ZFS-owym systemie
-plików. Konfiguracja z ZFS-owym plikiem wymiany nie jest obsługiwana.<indexterm xml:id="indexterm-479">
+<title>Używanie woluminów ZFS jako urządzenia wymiany (ang. swap) i urządzenia zrzutów awaryjnych (ang. core dump)</title>
+<para>W celu skonfigurowania przestrzeni wymiany należy utworzyć wolumin ZFS o ustalonym rozmiarze
+i włączyć dodać go jako urządzenie wymiany. Nie należy używać jako urządzenia wymiany pliku utworzonego w systemie
+plików ZFS. Taka konfiguracja nie jest obsługiwana.<indexterm xml:id="indexterm-479">
 <primary>wolumin ZFS</primary>
 <secondary>jako urządzenie wymiany</secondary>
 </indexterm>
@@ -100,26 +100,26 @@ swapfile                 dev  swaplo blocks   free
 /dev/dsk/c0t0d0s1      32,33      16 1048688  1048688
 /dev/zvol/dsk/tank/vol 254,1      16 10485744 10485744</screen>
 <para>Używanie woluminu ZFS jako urządzenia zrzutów awaryjnych nie jest obsługiwane. W celu
-skonfigurowania urządzenia zrzutów awaryjnych należy użyć komendy <command>dumpadm</command>.</para>
+skonfigurowania urządzenia zrzutów awaryjnych należy użyć polecenia <command>dumpadm</command>.</para>
 </sect2>
 <sect2 xml:id="gechv">
 <title>Używanie woluminu ZFS jako celu iSCSI</title>
 <para>W obecnym wydaniu Solarisa obsługiwane są cele i inicjatory iSCSI.</para>
-<para>Dodatkowo w łatwy sposób można stworzyć cel iSCSI z ZFS ustalając woluminowi właściwość <literal>shareiscsi</literal>. Na przykład:</para>
+<para>Dodatkowo w łatwy sposób można stworzyć wolumin ZFS jako cel iSCSI ustalając woluminowi właściwość <literal>shareiscsi</literal>. Na przykład:</para>
 <screen># <userinput>zfs create -V 2g tank/volumes/v2</userinput>
 # <userinput>zfs set shareiscsi=on tank/volumes/v2</userinput>
 # <userinput>iscsitadm list target</userinput>
 Target: tank/volumes/v2
     iSCSI Name: iqn.1986-03.com.sun:02:984fe301-c412-ccc1-cc80-cf9a72aa062a
     Connections: 0</screen>
-<para>Po utworzeniu celu iSCSI należy uruchomić inicjatora iSCSI. Więcej informacji o celach i inicjatorach iSCSI w Solarisie w <olink remap="external" targetdoc="819-2723" targetptr="fmvcd">Chapter 14, <citetitle remap="chapter">Configurin
+<para>Po utworzeniu celu iSCSI należy uruchomić inicjatora iSCSI. Więcej informacji o celach i inicjatorach iSCSI: <olink remap="external" targetdoc="819-2723" targetptr="fmvcd">Chapter 14, <citetitle remap="chapter">Configurin
  Solaris iSCSI Targets and Initiators (Tasks),</citetitle> w <citetitle remap="book">System Administration Guide: Devices and File Systems</citetitle>
 </olink>.</para>
 <note>
 
-<para>Cele iSCSI mozna w Solarisie tworzyć i zarządać komendą <command>iscsitadm</command>. Po ustawieniu woluminowi właściwości <literal>shareiscsi</literal>, nie należy tworzyć celu iSCSI komendą <command>iscsitadm</command>. Spowoduje to obecność dwóch zestawów danych celów na tym samym urządzeniu.</para>
+<para>Cele iSCSI mozna w Solarisie tworzyć i zarządzać poleceniem <command>iscsitadm</command>. Po ustawieniu woluminowi właściwości <literal>shareiscsi</literal>, nie należy tworzyć celu iSCSI poleceniem <command>iscsitadm</command>. Spowoduje to obecność dwóch zestawów danych celów na tym samym urządzeniu.</para>
 </note>
-<para>Cele iSCSI ZFS zarządza się tak samo jak wszystkie inne datsety ZFS. Jednakże operacje <literal>rename</literal>, <literal>export</literal> oraz <literal>import</literal> wykonuje się nieco inaczej.</para>
+<para>Cele iSCSI ZFS zarządza się tak samo jak wszystkie inne datasety ZFS. Jednakże operacje <literal>rename</literal>, <literal>export</literal> oraz <literal>import</literal> wykonuje się nieco inaczej.</para>
 <itemizedlist>
 <listitem>
 <para>Po zmianie nazwy woluminu ZFS, nazwa celu iSCSI zostaje taka sama. Na przykład:</para>
@@ -130,7 +130,7 @@ Target: tank/volumes/v1
     Connections: 0</screen>
 </listitem>
 <listitem>
-<para>Eksportowanie puli zawierającej współdzielony wolumin ZFS powoduje usunięcie celu. Import puli zawierającej współdzielony wolumin ZFS powoduje współdzielenie celu. Na przykład:</para>
+<para>Eksportowanie puli zawierającej współdzielony wolumin ZFS powoduje usunięcie celu. Import puli zawierającej współdzielony wolumin ZFS powoduje udostępnienie celu. Na przykład:</para>
 <screen># <userinput>zpool export tank</userinput>
 # <userinput>iscsitadm list target</userinput>
 # <userinput>zpool import tank</userinput>
@@ -144,8 +144,8 @@ Target: tank/volumes/v1
 </sect2>
 </sect1>
 <sect1 xml:id="gayov">
-<title>Używanie ZFS w systemie Solaris z zainstalowanymi strefami</title>
-<para>Następujące podrozdziały opisują, jak używać ZFS w systemie ze strefami.</para>
+<title>Używanie ZFS w systemie Solaris z zainstalowanymi zonami</title>
+<para>Następujące podrozdziały opisują, jak używać ZFS w systemie ze strefami (ang. zones).</para>
 <itemizedlist>
 <listitem>
 <para>
@@ -204,20 +204,20 @@ wydelegowania uprawnień administracyjnych.</para>
 <tertiary>opis</tertiary>
 </indexterm>
 </para>
-<para>Poniższy przypadek opisuje pracę z ZFS w systemie Solaris z zainstalowanymi zonami:</para>
+<para>Poniższy przypadek opisuje pracę z ZFS w systemie Solaris z zainstalowanymi strefami:</para>
 <itemizedlist>
 <listitem>
 <para>Właściwość <command>mountpoint</command> systemu plików ZFS dodawanego do nieglobalnej strefy musi mieć wartość legacy.</para>
 </listitem>
 <listitem>
-<para>Kiedy źródłowa <literal>zonepath</literal> i docelowa <literal>zonepath</literal> znajdują się na ZFS i są w tej samej puli, <command>zoneadm clone</command> automatycznie użyje ZFS clone do sklonowania strefy. Komenda <command>zoneadm clone</command> zrzuci obraz ZFS źródłowej <literal>zonepath</literal> i ustawi docelową <literal>zonepath</literal>. Nie należy używać polecenia <command>zfs clone</command> do klonowania strefy. Więcej informacji w <olink remap="external" targetdoc="819-2450" targetptr="zone">Części II, <citetitle remap="chapter">strefy,</citetitle> w <citetitle remap="book">Przewodnik administracji systemu: kontenery Solarisa - zarządzanie zasobami i zonami Solarisa</citetitle>
+<para>Kiedy źródłowa <literal>zonepath</literal> i docelowa <literal>zonepath</literal> znajdują się na ZFS i są w tej samej puli, <command>zoneadm clone</command> automatycznie użyje ZFS clone do sklonowania strefy. Komenda <command>zoneadm clone</command> zrzuci obraz ZFS źródłowej <literal>zonepath</literal> i ustawi docelową <literal>zonepath</literal>. Nie należy używać polecenia <command>zfs clone</command> do klonowania strefy. Więcej informacji: <olink remap="external" targetdoc="819-2450" targetptr="zone">Części II, <citetitle remap="chapter">strefy,</citetitle> w <citetitle remap="book">Przewodnik administracji systemu: kontenery Solarisa - zarządzanie zasobami i zonami Solarisa</citetitle>
 </olink>.</para>
 </listitem>
 </itemizedlist>
 <sect2 xml:id="gbbrq">
 <title>Dodawanie systemu plików ZFS do nieglobalnej strefy</title>
 <para>Kiedy zakłada się głównie współdzielenie przestrzeni, można dodać system plików ZFS jako ogólny system plików. Właściwość <literal>mountpoint</literal> systemu plików ZFS dodawanego do nieglobalnej strefy musi być ustawiona na legacy.</para>
-<para>Dodawanie systemu plików ZFS do nieglobalnej strefy wykonuje się subkomendą <literal>add fs</literal> komendy <command>zonecfg</command>. Na przykład:<indexterm xml:id="indexterm-484">
+<para>Dodawanie systemu plików ZFS do nieglobalnej strefy wykonuje się poleceniem <literal>add fs</literal> komendy <command>zonecfg</command>. Na przykład:<indexterm xml:id="indexterm-484">
 <primary>strefy</primary>
 <secondary>dodawanie systemu plików ZFS do nieglobalnej strefy</secondary>
 <tertiary>(przykład)</tertiary>
@@ -246,12 +246,12 @@ zonecfg:zion:fs&gt; <userinput>end</userinput>
 </screen>
 <para>Polecenie to dodaje system plików ZFS <filename>tank/zone/zion</filename> do strefy <literal>zion</literal> i montuje go w <filename>/export/shared</filename>.
 Właściwość <property>mountpoint</property> systemu plików musi być ustawiona na <property>legacy</property>, a sam system plików nie może być wcześniej zamontowany w innej lokalizacji. Administrator strefy może tworzyć i niszczyć pliki w systemie plików. System plików nie może zostać przemontowany w inną lokalizację, a administrator strefy nie może zmienić właściwości systemu plików: atime, readonly, compression, itd. Odpowiedzialnym za ustalenie i kontrolę właściwości systemu plików jest administrator globalnej strefy.</para>
-<para>Więcej informacji i komendzie <command>zonecfg</command> i konfiguracji typów zasobów za pomocą <command>zonecfg</command> w <olink remap="external" targetdoc="819-2450" targetptr="zone">Części II, <citetitle remap="chapter">strefy,</citetitle> in <citetitle remap="book">Przewodnik administracji systemu: kontenery Solarisa - zarządzanie zasobami i strefami Solarisa</citetitle>
+<para>Więcej informacji o poleceniu <command>zonecfg</command> i konfiguracji typów zasobów za pomocą <command>zonecfg</command>: <olink remap="external" targetdoc="819-2450" targetptr="zone">Część II, <citetitle remap="chapter">strefy,</citetitle> w <citetitle remap="book">Przewodnik administracji systemu: kontenery Solarisa - zarządzanie zasobami i strefami Solarisa</citetitle>
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gbbst">
 <title>Delegowanie datasetów do nieglobalnej strefy</title>
-<para>Jeśli głównym celem jest oddelegowanie administrowania nośnikami danych do strefy, wtedy należy skorzystać z możliwości ZFS dodania datasetu do strefy za pomocą komendy <command>zonecfg</command> i jej podkomendy <literal>add dataset</literal>.<indexterm xml:id="indexterm-487">
+<para>Jeśli głównym celem jest oddelegowanie administrowania nośnikami danych do strefy, wtedy należy skorzystać z możliwości ZFS dodania datasetu do strefy za pomocą komendy <command>zonecfg</command> i jej polecenia <literal>add dataset</literal>.<indexterm xml:id="indexterm-487">
 <primary>strefy</primary>
 <secondary>delegowanie datasetu do nieglobalnej strefy</secondary>
 <tertiary>(przykład)</tertiary>
@@ -277,11 +277,11 @@ zonecfg:zion:dataset&gt; <userinput>set name=tank/zone/zion</userinput>
 zonecfg:zion:dataset&gt; <userinput>end</userinput>
 </screen>
 <para>Inaczej niż w przypadku dodania systemu plików, polecenie spowoduje widoczność systemu plików ZFS <filename>tank/zone/zion</filename> w strefie <literal>zion</literal>. Administrator strefy może modyfikować właściwości systemu plików i tworzyć potomków. Dodatkowo może wykonywać obrazy systemu plików, klonować i w inny sposób kontrolować całą hierarchię systemu plików.</para>
-<para>Więcej informacji o działaniach dozwolonych w strefie w <olink remap="internal" targetdoc="chapter-8.xml" targetptr="gbbsn">Zarządzenie właściwościami w strefie</olink>.</para>
+<para>Więcej informacji o działaniach dozwolonych w strefie: <olink remap="internal" targetdoc="chapter-8.xml" targetptr="gbbsn">Zarządzenie parametrami ZFS w strefie</olink>.</para>
 </sect2>
 <sect2 xml:id="gbebi">
-<title>Dodawanie woluminu ZFS do nieglobalnej strefy</title>
-<para>Emulowane woluminy nie mogą być dodawane do nieglobalnej strefy poleceniem <command>zonecfg</command> <literal>add dataset</literal>. Przy wykryciu próby dodania takiego datasetu strefa nie wystartuje. Można jednak dodać woluminy do strefy za pomocą komendy <command>zonecfg</command> i komendy <literal>add device</literal>.<indexterm xml:id="indexterm-490">
+<title>Dodawanie woluminów ZFS do nieglobalnej strefy</title>
+<para>Emulowane woluminy nie mogą być dodawane do nieglobalnej strefy poleceniem <command>zonecfg</command> <literal>add dataset</literal>. Przy wykryciu próby dodania takiego datasetu strefa nie wystartuje. Można jednak dodać woluminy do strefy za pomocą komendy <command>zonecfg</command> i jej polecenia <literal>add device</literal>.<indexterm xml:id="indexterm-490">
 <primary>strefy</primary>
 <secondary>dodawanie woluminu ZFS do nieglobalnej strefy</secondary>
 <tertiary>(przykład)</tertiary>
@@ -306,13 +306,13 @@ zonecfg:zion&gt; <userinput>add device</userinput>
 zonecfg:zion:device&gt; <userinput>set match=/dev/zvol/dsk/tank/vol</userinput>
 zonecfg:zion:device&gt; <userinput>end</userinput>
 </screen>
-<para>Powyższe polecenie eksportuje wolumin ZFS <literal>tank/vol</literal> do strefy. Należy pamiętać, że dodawanie surowego (ang. raw) woluminu do strefy niesie ze sobą zagrożenia bezpieczeństwa, nawet jeśli wolumin nie odpowiada fizycznemu urządzeniu. W szczególności administrator strefy mógłby stworzyć uszkodzone systemy plików, które spowodowałyby panikę systemu przy próbie zamontowania. Więcej informacji o dodawaniu urządzeń do stref i związanych z tym zagrożeniach w <olink remap="internal" targetdoc="chapter-8.xml" targetptr="gbbre">Znaczenie właściwości <property>zoned</property></olink>.</para>
-<para>Więcej informacji o dodawaniu urządzeń do stref w <olink remap="external" targetdoc="819-2450" targetptr="zone">Części II, <citetitle remap="chapter">Zonach,</citetitle> w <citetitle remap="book">Przewodnik administratora systemu: zarządzanie kontenerami i zasobami Solarisa oraz strefy Solarisa</citetitle>
+<para>Powyższe polecenie eksportuje wolumin ZFS <literal>tank/vol</literal> do strefy. Należy pamiętać, że dodawanie surowego (ang. raw) woluminu do strefy niesie ze sobą zagrożenia bezpieczeństwa, nawet jeśli wolumin nie odpowiada fizycznemu urządzeniu. W szczególności administrator strefy mógłby stworzyć uszkodzone systemy plików, które spowodowałyby panikę systemu przy próbie zamontowania. Więcej informacji o dodawaniu urządzeń do stref i związanych z tym zagrożeniach: <olink remap="internal" targetdoc="chapter-8.xml" targetptr="gbbre">Znaczenie parametru <property>zoned</property></olink>.</para>
+<para>Więcej informacji o dodawaniu urządzeń do stref: <olink remap="external" targetdoc="819-2450" targetptr="zone">Część II, <citetitle remap="chapter">Strefy,</citetitle> w <citetitle remap="book">Przewodnik administratora systemu: zarządzanie kontenerami i zasobami Solarisa oraz strefy Solarisa</citetitle>
 </olink>.</para>
 </sect2>
 <sect2 xml:id="gbbso">
 <title>Używanie puli nośników danych w strefie</title>
-<para>Pule nośników danych ZFS nie mogą być modyfikowane wewnątrz strefy. Model delegowanej administracji centralizuje kontrolę nad fizycznymi urządzeniami w globalnej strefie, a kontrolę nad nad wirtualnymi nośnikami danych przekazuje do stref nieglobalnych. Wprawdzie można dodać do strefy dataset na poziomie puli, to jednak komendy modyfikujące fizyczne właściwości puli, takie jak tworzenie, dodawanie lub usuwanie są zabronione w strefie. Nawet jeśli do strefy dodano fizyczne nośniki za pomocą komendy <command>zonecfg</command> i <literal>add device</literal> lub jeśli używane są pliki, komenda <command>zpool</command> odmówi utworzenia nowych pul w strefie.</para>
+<para>Pule nośników danych ZFS nie mogą być modyfikowane wewnątrz strefy. Model delegowanej administracji centralizuje kontrolę nad fizycznymi urządzeniami w globalnej strefie, a kontrolę nad nad wirtualnymi nośnikami danych przekazuje do stref nieglobalnych. Wprawdzie można dodać do strefy dataset na poziomie puli, to jednak komendy modyfikujące fizyczne właściwości puli, takie jak tworzenie, dodawanie lub usuwanie są zabronione w strefie. Nawet jeśli do strefy dodano fizyczne nośniki za pomocą komendy <command>zonecfg</command> i <literal>add device</literal> lub jeśli używane są pliki, polecenie <command>zpool</command> odmówi utworzenia nowych pul w strefie.</para>
 </sect2>
 <sect2 xml:id="gbbsn">
 <title>Zarządzanie parametrami ZFS w strefie</title>
@@ -466,12 +466,12 @@ tank/data/zion/home</screen>
 </tbody>
 </tgroup>
 </informaltable>
-<para>Wszyscy rodzice <filename>tank/zone/zion</filename> widoczni są w trybie tylko do odczytu, wszyscy potomkowie w trybie do zapisu a datasety, które nie są częścią hierarchii rodzic-potomek są zupełnie niewidoczne. Administrator strefy nie może zmienić właściwości <property>sharenfs</property>, ponieważ strefy nieglobalne nie mogą być serwerami NFS. Administrator strefy nie może też zmienić właściwości <literal>zoned</literal>, ponieważ utworzyłoby to lukę w zabezpieczeniach, co wyjaśnimy później.</para>
+<para>Wszyscy rodzice <filename>tank/zone/zion</filename> widoczni są w trybie tylko do odczytu, wszyscy potomkowie w trybie do zapisu a datasety, które nie są częścią hierarchii rodzic-potomek są zupełnie niewidoczne. Administrator strefy nie może zmienić właściwości <property>sharenfs</property>, ponieważ strefy nieglobalne nie mogą być serwerami NFS. Administrator strefy nie może też zmienić właściwości <literal>zoned</literal>, ponieważ utworzyłoby to lukę w zabezpieczeniach, co zostanie wyjaśnione później.</para>
 <para>Zmianom poddają się wszystkie pozostałe właściwości, poza samym datasetem, dla którego właściwości <property>quota</property> i <property>reservation</property> są niezmienialne. Pozwala to administratorowi globalnemu kontrolować zużycie miejsca wszystkich datasetów w nieglobalnych strefach. </para>
 <para>Dodatkowo po dodaniu datasetu do nieglobalnej zony właściwości <property>sharenfs</property> i <property>mountpoint</property> nie można zmienić także w strefie globalnej.</para>
 </sect2>
 <sect2 xml:id="gbbre">
-<title>Znaczenie właściwości <property>zoned</property></title>
+<title>Znaczenie parametru <property>zoned</property></title>
 <para>Przy dodawaniu datasetu do nieglobalnej strefy, musi być on szczególnie oznaczony, aby uniknąć interpretowania niektórych właściwości w kontekście strefy globalnej. Od chwili kiedy dataset został dodany do nieglobalnej strefy i oddany pod kontrolę administratora tej strefy, nie można dłużej zaufać zasobom, które się w nim znajdują. Jak każdy system plików  może zawierać pliki wykonywalne z ustawionym bitem setuid, dowiązania symboliczne lub inne wątpliwe dane, które mogłyby zagrozić bezpieczeństwu globalnej strefy. Dodatkowo nie należy interpretować właściwości <property>mountpoint</property> w kontekście strefy globalnej. Gdyby tak zrobić, administrator strefy mógłby wpływać na przestrzeń nazw globalnej strefy. W związku z tym wprowadzono w ZFS właściwość <property>zoned</property>, która wskazuje, że w pewnym momencie dataset był podłączony do nieglobalnej strefy.<indexterm xml:id="indexterm-496">
 <primary>strefy</primary>
 <secondary>właściwość 
@@ -501,7 +501,7 @@ tank/zone/zion             /export/zone/zion/root/tank/zone/zion</screen>
 <para>Należy zwrócić uwagę na właściwość <property>mountpoint</property> i katalog, w którym dataset <filename>tank/zone/zion</filename> jest zamontowany. Właściwość <property>mountpoint</property> odpowiada właściwości na dysku, nie zaś aktualnemu punktowi montowania.</para>
 <para>Po wycofaniu datasetu ze strefy lub usunięciu strefy, właściwość <property>zoned</property> <emphasis role="strong">nie jest</emphasis> czyszczona automatycznie. Wynika to z zagrożeń bezpieczeństwa. Niezaufany użytkownik ma całkowity dostęp do datasetu i jego potomków, stąd też właściwość <property>mountpoint</property> może mieć złe ustawienia, bądź w systemie plików mogą istnieć pliki wykonywalne z ustawionym bitem setuid.</para>
 <para>W gestii administratora globalnej strefy pozostaje wyłączenie właściwości <property>zoned</property>, w celu uniknięcia przypadkowego zagrożenia bezpieczeństwa, przed ponownym wykorzystaniem datasetu. Przed ustawieniem właściwości <property>zoned</property> na wartość <literal>off</literal>, należy upewnić się, że właściwość <property>mountpoint</property> datasetu i wszystkich jego potomków jest sensownie skonfigurowana i że nie istnieją pliki wykonywalne z ustawionym bitem setuid, bądź należy wyłączyć właściwość <property>setuid</property>.</para>
-<para>Po wykluczeniu wszystkich zagrożeń bezpieczeństwa właściwość <property>zoned</property> można wyłączyć komendami <command>zfs set</command> lub <command>zfs inherit</command>. Jeśli wyłączy się właściwość <property>zoned</property> kiedy dataset jest nadal w użyciu w nieglobalnej strefie, system może zachowywać się w nieprzewidywalny sposób. Należy wyłączać ją tylko mając pewność, że dataset nie jest już używany przez żadną nieglobalną strefę.</para>
+<para>Po wykluczeniu wszystkich zagrożeń bezpieczeństwa właściwość <property>zoned</property> można wyłączyć poleceniami <command>zfs set</command> lub <command>zfs inherit</command>. Jeśli wyłączy się właściwość <property>zoned</property> kiedy dataset jest nadal w użyciu w nieglobalnej strefie, system może zachowywać się w nieprzewidywalny sposób. Należy wyłączać ją tylko mając pewność, że dataset nie jest już używany przez żadną nieglobalną strefę.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gbcgl">
@@ -517,7 +517,7 @@ tank/zone/zion             /export/zone/zion/root/tank/zone/zion</screen>
 </para>
 <sect2 xml:id="gbdaw">
 <title>Tworzenie alternatywnych korzeni pul ZFS</title>
-<para>Najczęściej wykorzystuje się alternatywne korzenie przy tworzeniu wymiennych nośników danych. W takim przypadku użytkowników zazwyczaj oczekuje pojedynczego systemu plików oraz montowania w dowolnym wybranym przez siebie miejscu. Po utworzeniu alternatywnego korzenia puli przy pomocy opcji <option>R</option>, punkt montowania głównego systemu plików automatycznie ustawiany jest na <filename>/</filename>, co odpowiada alternatywnemu korzeniowi puli.<indexterm xml:id="indexterm-501">
+<para>Najczęściej wykorzystuje się alternatywne korzenie przy tworzeniu wymiennych nośników danych. W takim przypadku użytkownik zazwyczaj oczekuje pojedynczego systemu plików oraz montowania w dowolnym wybranym przez siebie miejscu. Po utworzeniu alternatywnego korzenia puli przy pomocy opcji <option>R</option>, punkt montowania głównego systemu plików automatycznie ustawiany jest na <filename>/</filename>, co odpowiada alternatywnemu korzeniowi puli.<indexterm xml:id="indexterm-501">
 <primary>alternatywne korzenie pul</primary>
 <secondary>tworzenie</secondary>
 <tertiary>(przykład)</tertiary>
@@ -582,8 +582,8 @@ morpheus              32.5K  33.5G     8K  /mnt/morpheus</screen>
 <para>ZFS File system Management – pozwala na tworzenie, niszczenie i modyfikowanie systemów plików ZFS</para>
 </listitem>
 </itemizedlist>
-<para>Więcej informacji o tworzeniu i nadawaniu ról w <olink remap="external" targetdoc="819-3321">
-<citetitle remap="book">Przewodniku administratora systemu: usługi bezpieczeństwa</citetitle>
+<para>Więcej informacji o tworzeniu i nadawaniu ról: <olink remap="external" targetdoc="819-3321">
+<citetitle remap="book">Przewodnik administratora systemu: usługi bezpieczeństwa</citetitle>
 </olink>.</para>
 </sect1>
 </chapter>

@@ -58,7 +58,7 @@ Informuje również jak zapisywać stworzone obrazy.</para>
 </toc>
 <sect1 xml:id="gbciq">
 <title>Wprowadzenie do obrazów ZFS</title>
-<para><emphasis>Obraz</emphasis> jest kopią systemu plików (tylko do odczytu) lub woluminu. Obrazy mogą być stworzone niemal natychmiastowo i początkowo nie zajmują dodatkowego miejsca na dysku poza pulą. Niemniej jednak, wraz z kolejnymi zmianami danych, obraz pochłania przestrzeń dyskową poprzez czynienie kolejnych odniesień do starych danych.<indexterm xml:id="indexterm-389">
+<para><emphasis>Obraz</emphasis> jest kopią systemu plików (tylko do odczytu) lub woluminu. Obrazy mogą być stworzone niemal natychmiastowo i początkowo nie zajmują dodatkowego miejsca na dysku w puli ZFS. Niemniej jednak, wraz z kolejnymi zmianami danych, obraz pochłania przestrzeń dyskową poprzez czynienie kolejnych odniesień do starych danych.<indexterm xml:id="indexterm-389">
 <primary>System plików ZFS</primary>
 <secondary>obraz</secondary>
 <tertiary>opis</tertiary>
@@ -81,7 +81,7 @@ Informuje również jak zapisywać stworzone obrazy.</para>
 </listitem>
 <listitem>
 <para>Rekursywne obrazy są tworzone jako jedna atomowa operacja. Są one
-tworzone wszystkie naraz (w jednym czasie) lub w ogóle. Zyskiem z takiej
+tworzone wszystkie naraz (w jednym czasie) lub, w przypadku niepowodzenia operacji, w ogóle. Zyskiem z takiej
 atomowej operacji tworzenia obrazów jest to, że zapewniają spójność czasu
 utworzenia obrazu, nawet dla potomnych systemów plików.</para>
 </listitem>
@@ -89,7 +89,7 @@ utworzenia obrazu, nawet dla potomnych systemów plików.</para>
 <para>Obrazy woluminów nie są dostępne bezpośrednio, mogą być jednakże klonowane, zapisywane, przywracane i tak dalej. Więcej informacji o zapisywaniu obrazu ZFS w <olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbchx">Zapis i odtwarzanie danych ZFS</olink>.</para>
 <sect2 xml:id="gbcya">
 <title>Tworzenie i niszczenie obrazów ZFS</title>
-<para>Obrazy tworzone są za pomocą komendy <command>zfs snapshot</command>, której jedynym argumentem jest nazwa obrazu do utworzenia. Nazwę tworzy się w sposób następujący:</para>
+<para>Obrazy tworzone są za pomocą polecenia <command>zfs snapshot</command>, której jedynym argumentem jest nazwa obrazu do utworzenia. Nazwę tworzy się w sposób następujący:</para>
 <screen>
 <replaceable>systemplików@nazwaobrazu</replaceable>
 <replaceable>wolumin@nazwaobrazu</replaceable>
@@ -114,7 +114,7 @@ utworzenia obrazu, nawet dla potomnych systemów plików.</para>
 <screen># <userinput>zfs snapshot tank/home/ahrens@friday</userinput>
 </screen>
 <para>Można także tworzyć obrazy dla wszystkich potomnych systemów plików poprzez użycie opcji <option>
-+r</option>. Na przykład:</para>
+r</option>. Na przykład:</para>
 <screen># <userinput>zfs snapshot -r tank/home@now</userinput>
 # <userinput>zfs list -t snapshot</userinput>
 NAME                   USED  AVAIL  REFER  MOUNTPOINT
@@ -127,7 +127,7 @@ tank/home/cindys@now      0      -  2.15M  -</screen>
 <screen># zfs set compression=on tank/home/ahrens@tuesday
 cannot set compression property for 'tank/home/ahrens@tuesday': snapshot
 properties cannot be modified</screen>
-<para>Obrazy niszczy się za pomocą komendy <command>zfs destroy</command>. Na przykład:</para>
+<para>Obrazy niszczy się za pomocą polecenia <command>zfs destroy</command>. Na przykład:</para>
 <screen># <userinput>zfs destroy tank/home/ahrens@friday</userinput>
 </screen>
 <para>Nie można zniszczyć datasetu, jeśli wciąż istnieją obrazy tego datasetu. Na przykład:</para>
@@ -137,7 +137,7 @@ use '-r' to destroy the following datasets:
 tank/home/ahrens@tuesday
 tank/home/ahrens@wednesday
 tank/home/ahrens@thursday</screen>
-<para>Jeśli dodatkowo istnieją klony obrazu, muszą zostać zniszczone zanim zniszczony będzie obraz.<indexterm xml:id="indexterm-394">
+<para>Jeśli dodatkowo istnieją klony obrazu, muszą zostać one zniszczone jako pierwsze zanim zniszczony będzie obraz.<indexterm xml:id="indexterm-394">
 <primary>systemy plików ZFS</primary>
 <secondary>obraz</secondary>
 <tertiary>niszczenie</tertiary>
@@ -228,7 +228,7 @@ users/home/neil@2daysago       0      -    18K  -</screen>
 </para>
 <screen># <userinput>ls /tank/home/ahrens/.zfs/snapshot</userinput>
 tuesday wednesday thursday</screen>
-<para>Listę obrazów można wydrukować następująco:</para>
+<para>Listę obrazów można wyświetlić następująco:</para>
 <screen># <userinput>zfs list -t snapshot</userinput>
 NAME                        USED  AVAIL  REFER  MOUNTPOINT
 pool/home/anne@monday          0      -   780K  -
@@ -237,7 +237,7 @@ tank/home/ahrens@tuesday   8.50K      -   780K  -
 tank/home/ahrens@wednesday 8.50K      -  1.01M  -
 tank/home/ahrens@thursday      0      -  1.77M  -
 tank/home/cindys@today     8.50K      -   524K  -</screen>
-<para>Listę obrazów dla konkretnego systemu plików można wydrukować następująco:</para>
+<para>Listę obrazów dla konkretnego systemu plików można wyświetlić następująco:</para>
 <screen># <userinput>zfs list -r -t snapshot -o name,creation tank/home</userinput>
 NAME                       CREATION
 tank/home@now               Wed Aug 30 10:53 2006
@@ -262,7 +262,7 @@ tank/home/cindys@now        Wed Aug 30 10:57 2006</screen>
 </sect2>
 <sect2 xml:id="gbcxk">
 <title>Przywracanie obrazu ZFS</title>
-<para>Przy pomocy komendy <command>zfs rollback</command> można cofnąć wszystkie zmiany aż do momentu utworzenia dowolnego obrazu. System plików powraca do stanu z momentu utworzenia obrazu. Domyślnie nie można cofnąć się dalej, niż do ostatniego obrazu.</para>
+<para>Przy pomocy polecenia <command>zfs rollback</command> można cofnąć wszystkie zmiany aż do momentu utworzenia dowolnego obrazu. System plików powraca do stanu z momentu utworzenia obrazu. Domyślnie nie można cofnąć się dalej, niż do ostatniego obrazu.</para>
 <para>Zanim będzie można cofnąć się do wcześniejszego obrazu, wszystkie obrazy utworzone później należy zniszczyć. Można to zrobić za pomocą opcji <option>r</option>.</para>
 <para>Jeśli istnieją klony pośrednich obrazów, należy zniszczyć je za pomocą opcji <option>R</option>. </para>
 <note>
@@ -327,13 +327,13 @@ tank/home/ahrens@tuesday  Wed Aug 30 10:53 2006</screen>
 </listitem>
 </itemizedlist>
 
-<para>Klony można utworzyć wyłącznie z obrazu. Po sklonowaniu obrazu powstaje implikowana zależność między klonem a obrazem. Pomimo tego, że klon jest tworzony w innym miejscu hierarchii datasetu, nie można zniszczyć oryginalnego obrazu tak długo, jak długo istnieje jego klon. Właściwość <property>origin</property> eksponuje tę zależność, a komenda <command>zfs destroy</command> podaje listę takich zależności, jeśli istnieją.</para>
-<para>Klony nie dziedziczą właściwości datasetu, z którego są tworzone, ale raczej dziedziczą właściwości wynikłe z miejsca utworzenia ich w hierarchii puli. Do drukowania i modyfikowania właściwości sklonowanego datasetu służą odpowiednio komendy <command>zfs get</command> i <command>zfs set</command>.
+<para>Klony można utworzyć wyłącznie z obrazu. Po sklonowaniu obrazu powstaje implikowana zależność między klonem a obrazem. Pomimo tego, że klon jest tworzony w innym miejscu hierarchii datasetu, nie można zniszczyć oryginalnego obrazu tak długo, jak długo istnieje jego klon. Właściwość <property>origin</property> eksponuje tę zależność, a polecenie <command>zfs destroy</command> podaje listę takich zależności, jeśli istnieją.</para>
+<para>Klony nie dziedziczą właściwości datasetu, z którego są tworzone, ale raczej dziedziczą właściwości wynikłe z miejsca utworzenia ich w hierarchii puli. Do wyświetlania i modyfikowania właściwości sklonowanego datasetu służą odpowiednio polecenia <command>zfs get</command> i <command>zfs set</command>.
 Więcej informacji: <olink remap="external" targetdoc="chapter-5.xml" targetptr="gazsp">Ustawianie parametrów ZFS</olink>.</para>
 <para>Klon zaraz po utworzeniu współdzieli przestrzeń dyskową z oryginalnym obrazem, dlatego jego właściwość <property>used</property> jest początkowo równa zeru. W miarę postępowania zmian w klonie, zaczyna on zużywać więcej przestrzeni. Właściwość <property>used</property> oryginalnego obrazu nie obejmuje przestrzeni zużytej przez jego klony.</para>
 <sect2 xml:id="gbcyg">
 <title>Tworzenie klonu ZFS</title>
-<para>Klon tworzy się przy pomocy komendy <command>klon ZFS</command>, podając nazwę klonowanego obrazu i nazwę nowego systemu plików lub woluminu. Nowy system plików lub wolumin może znajdować się w dowolnym miejscu hierarchii ZFS. Typ nowego datasetu (system plików lub wolumin) jest taki sam, jak typ klonowanego obrazu. Nie można utworzyć klonu systemu plików w puli innej niż pula, w której znajduje się klonowany obraz.<indexterm xml:id="indexterm-410">
+<para>Klon tworzy się przy pomocy polecenia <command>zfs clone</command>, podając nazwę klonowanego obrazu i nazwę nowego systemu plików lub woluminu. Nowy system plików lub wolumin może znajdować się w dowolnym miejscu hierarchii ZFS. Typ nowego datasetu (system plików lub wolumin) jest taki sam, jak typ klonowanego obrazu. Nie można utworzyć klonu systemu plików w puli innej niż pula, w której znajduje się klonowany obraz.<indexterm xml:id="indexterm-410">
 <primary>systemy plików ZFS</primary>
 <secondary>klon</secondary>
 <tertiary>tworzenie</tertiary>
@@ -362,7 +362,7 @@ Więcej informacji: <olink remap="external" targetdoc="chapter-5.xml" targetptr=
 </sect2>
 <sect2 xml:id="gbiob">
 <title>Niszczenie klonu ZFS</title>
-<para>Klony ZFS niszczone są komendą <command>zfs destroy</command>. Na przykład:<indexterm xml:id="indexterm-413">
+<para>Klony ZFS niszczone są poleceniem <command>zfs destroy</command>. Na przykład:<indexterm xml:id="indexterm-413">
 <primary>systemy plików ZFS</primary>
 <secondary>klon</secondary>
 <tertiary>niszczenie</tertiary>
@@ -384,7 +384,7 @@ Więcej informacji: <olink remap="external" targetdoc="chapter-5.xml" targetptr=
 </sect2>
 <sect2 xml:id="gcvfl">
 <title>Zastąpienie systemu plików ZFS klonem</title>
-<para>Komendą <command>zfs promote</command> można zamienić aktywny system plików ZFS na jego klon. Umożliwia to sklonowanie systemu plików i zamianę, tak że klon staje się systemem plików, a system plików klonem. Pozwala to także na niszczenie systemów plików, z których utworzono klon. Bez wypromowania klonu niemożliwe jest zniszczenie systemu plików z aktywnymi klonami. Więcej o niszczeniu klonów w <olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbiob">Niszczenie klonu ZFS</olink>.<indexterm xml:id="indexterm-416">
+<para>Poleceniem <command>zfs promote</command> można zamienić aktywny system plików ZFS na jego klon. Umożliwia to sklonowanie systemu plików i zamianę, tak że klon staje się systemem plików, a system plików klonem. Pozwala to także na niszczenie systemów plików, z których utworzono klon. Bez wypromowania klonu niemożliwe jest zniszczenie systemu plików z aktywnymi klonami. Więcej o niszczeniu klonów: <olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbiob">Niszczenie klonu ZFS</olink>.<indexterm xml:id="indexterm-416">
 <primary>systemy plików ZFS</primary>
 <secondary>klon</secondary>
 <tertiary>zamiana systemu plików (przykład)</tertiary>
@@ -414,7 +414,7 @@ tank/test              316K  8.24G  27.5K  /tank/test
 tank/test/productA        0  8.24G   288K  /tank/test/productA
 tank/test/productAbeta   288K  8.24G   288K  /tank/test/productAbeta
 tank/test/productAbeta@today      0      -   288K  -</screen>
-<para>W powyższym wydruku komendy <command>zfs</command> <option>
+<para>W powyższym wyniku polecenia <command>zfs</command> <option>
 list</option> widoczne jest, że obliczanie zużycia miejsca oryginalnego systemu plików <filename>productA</filename> zamieniono na system plików <filename>productAbeta</filename></para>
 <para>Dokończenie podmiany następuje przez zmianę nazw systemów plików. Na przykład:</para>
 <screen># <userinput>zfs rename tank/test/productA tank/test/productAlegacy</userinput>
@@ -432,7 +432,7 @@ tank/test/productAlegacy      0  8.24G   288K  /tank/test/productAlegacy</screen
 </sect1>
 <sect1 xml:id="gbchx">
 <title>Zapis i odtwarzanie danych ZFS</title>
-<para>Komenda <command>zfs send</command> tworzy strumieniową reprezentację obrazu drukowaną na standardowym wyjściu. Domyślnie drukuje się cały strumień. Wyjście komendy można przekierować do pliku lub do innego systemu. Komenda <command>zfs receive</command> tworzy obraz ze strumienia, którego zawartość pochodzi ze standardowego wejścia. Przy pomocy tych komend można zapisywać i odczytywać dane obrazów i systemów plików ZFS. Przykłady w następnym podrozdziale.<indexterm xml:id="indexterm-418">
+<para>Polecenie <command>zfs send</command> tworzy strumieniową reprezentację obrazu kierowaną na standardowe wyjście. Domyślnie kierowany jest cały strumień. Wyjście polecenia można przekierować do pliku lub do innego systemu. Polecenie <command>zfs receive</command> tworzy obraz ze strumienia, którego zawartość pochodzi ze standardowego wejścia. Przy pomocy tych poleceń można zapisywać i odczytywać dane obrazów i systemów plików ZFS. Przykłady znajdują się w następnym podrozdziale.<indexterm xml:id="indexterm-418">
 <primary>zapisywanie i odzyskiwanie</primary>
 <secondary>dane systemów plików ZFS</secondary>
 <tertiary>opis</tertiary>
@@ -446,7 +446,7 @@ tank/test/productAlegacy      0  8.24G   288K  /tank/test/productAlegacy</screen
 <itemizedlist>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbscu">Zapisywanie danych ZFS przy użyciu innynch produktów do backupu</olink>
+<olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbscu">Zapisywanie danych ZFS przy użyciu produktów do backupu pochodzących od osób trzecich</olink>
 </para>
 </listitem>
 <listitem>
@@ -480,22 +480,22 @@ tank/test/productAlegacy      0  8.24G   288K  /tank/test/productAlegacy</screen
 <para>Zapisywanie danych ZFS przy pomocy narzędzi archiwizujących typu <command>tar</command> i <command>cpio</command> lub produktów tworzących kopie zapasowe pochodzących od osób trzecich.</para>
 </listitem>
 </itemizedlist>
-<para>Przed wybraniem opcji należy rozważnyć następujące:</para>
+<para>Przed wybraniem opcji należy rozważyć następujące zagadnienia:</para>
 <itemizedlist>
 <listitem>
-<para>Obrazy systemu plików i cofanie zmian. Kopie systemu plików można w łatwy sposób utworzyć za pomocą komendy <command>zfs snapshot</command>, natomiast wycofać zmiany do wcześniej ustalonego punku można za pomocą komendy <command>zfs rollback</command>. Można w ten sposób na przykład odzyskać pliki z poprzedniej wersji systemu plików.</para>
+<para>Obrazy systemu plików i cofanie zmian. Kopie systemu plików można w łatwy sposób utworzyć za pomocą polecenia <command>zfs snapshot</command>, natomiast wycofać zmiany do wcześniej ustalonego punku można za pomocą polecenia <command>zfs rollback</command>. Można w ten sposób na przykład odzyskać pliki z poprzedniej wersji systemu plików.</para>
 <para>Więcej informacji: <olink remap="internal" targetdoc="chapter-6.xml" targetptr="gbciq">Wprowadzenie do obrazów ZFS</olink>.</para>
 </listitem>
 <listitem>
-<para>Zapisywanie obrazów. Wykonuje się je za pomocą komendy <command>zfs send</command> lub <command>zfs receive</command>, które zapisują i odzyskują obrazy ZFS. Można zapisać przyrostowe zmiany między obrazami, ale nie można odzyskać pojedynczych plików - konieczne jest odzyskanie całego obrazu.</para>
+<para>Zapisywanie obrazów. Wykonuje się je za pomocą polecenia <command>zfs send</command> lub <command>zfs receive</command>, które zapisują i odzyskują obrazy ZFS. Można zapisać przyrostowe zmiany między obrazami, ale nie można odzyskać pojedynczych plików - konieczne jest odzyskanie całego obrazu.</para>
 </listitem>
 <listitem>
-<para>Zdalna replikacja. Przy pomocy komend <command>zfs send</command> i <command>zfs receive</command> można wysłać kopię systemu plików z jednego systemu do drugiego. Proces ten różni się od tradycyjnych produktów zarządzania woluminami mirrorującymi urządzenia w sieci LAN. W przypadku komend ZFS nie wymaga się dodatkowej konfiguracji bądź sprzętu. Zaletą tego rozwiązania jest możliwość odtworzenia systemu plików w puli nośników danych innego systemu i zdefiniowania innej konfiguracji w nowoutworzonej puli, na przykład RAID-Z, z tymi samymi danymi.</para>
+<para>Zdalna replikacja. Przy pomocy poleceń <command>zfs send</command> i <command>zfs receive</command> można wysłać kopię systemu plików z jednego systemu do drugiego. Proces ten różni się od tradycyjnych produktów zarządzania woluminami mirrorującymi urządzenia w sieci LAN. W przypadku poleceń ZFS nie wymaga się dodatkowej konfiguracji bądź sprzętu. Zaletą tego rozwiązania jest możliwość odtworzenia systemu plików w puli nośników danych innego systemu i zdefiniowania innej konfiguracji w nowoutworzonej puli, na przykład RAID-Z, z tymi samymi danymi.</para>
 </listitem>
 </itemizedlist>
 <sect2 xml:id="gbscu">
-<title>Zapisywanie danych ZFS z innymi produktami kopii zapasowych</title>
-<para>Oprócz wykorzystania komend <command>zfs send</command> i <command>zfs receive</command>, można zapisać pliki ZFS korzystając z narzędzi archiwizujących, takich jak <command>tar</command> i <command>cpio</command>. Wszystkie te narzędzia zapisują i odtwarzają atrybuty plików i ACL-e ZFS. Przed wykonanie kopii należy sprawdzić opcje wywołania komend <command>tar</command> i <command>cpio</command>.</para>
+<title>Zapisywanie danych ZFS przy użyciu produktów do backupu pochodzących od osób trzecich</title>
+<para>Oprócz wykorzystania poleceń <command>zfs send</command>  i <command>zfs receive</command>, można zapisać pliki ZFS korzystając z narzędzi archiwizujących, takich jak <command>tar</command> i <command>cpio</command>. Wszystkie te narzędzia zapisują i odtwarzają atrybuty plików i ACL-e ZFS. Przed wykonaniem kopii należy sprawdzić opcje wywołania poleceń <command>tar</command> i <command>cpio</command>.</para>
 <para>Informacje o problemach ZFS z produktami archiwizującymi od firm trzecich znajdują się w notach do wydań Solaris Express.</para>
 </sect2>
 <sect2 xml:id="gbinw">
@@ -521,23 +521,23 @@ Na przykład:<indexterm xml:id="indexterm-420">
 <screen>host1# <userinput>zfs send tank/dana@snap1 | ssh host2 zfs recv newtank/dana</userinput>
 </screen>
 <para>W przypadku przesyłania pełnego obrazu, docelowy system plików nie może istnieć.</para>
-<para>Inkrementalne zapisy danych można wykonać za pomocą komendy <command>zfs send</command> z opcją <option>
+<para>Przyrostowe zapisy danych można wykonać za pomocą polecenia <command>zfs send</command> z opcją <option>
 i</option>. Na przykład:</para>
 <screen>host1# <userinput>zfs send -i tank/dana@snap1 tank/dana@snap2 | ssh host2 zfs recv newtank/dana</userinput>
 </screen>
 <para>Pierwszym argumentem jest wcześniejszy obraz, drugim zaś obraz późniejszy. W tym przypadku system plików <filename>newtank/dana</filename>
-musi istnieć na docelowym systemie, żeby przesył inkrementalny się powiódł.</para>
-<para>Źródło dla przesyłu inkrementalnego <replaceable>snap1</replaceable> może być określone jako
+musi istnieć na docelowym systemie, żeby przesył przyrostowy się powiódł.</para>
+<para>Źródło dla przesyłu przyrostowego <replaceable>snap1</replaceable> może być określone jako
 ostatni człon nazwy obrazu. Ten skrót oznacza, że wystarczy podać nazwę po znaku <literal>@</literal>
 dla <replaceable>snap1</replaceable>, co zakłada, że nazwa systemu pliku jest taka sama, jak
 dla <replaceable>snap2</replaceable>. Na przykład:</para>
 <screen>host1# <userinput>zfs send -i snap1 tank/dana@snap2 &gt; ssh host2 zfs recv newtank/dana</userinput>
 </screen>
-<para>Ta składnia jest równoważna przykładowi powyżej dla przesyłu inkrementalnego.</para>
-<para>Następujący komunikat zostanie wyświetlony w przypadku próby wygenerowania strumienia inkrementalnego
+<para>Ta składnia jest równoważna przykładowi powyżej dla przesyłu przyrostowego.</para>
+<para>Następujący komunikat zostanie wyświetlony w przypadku próby wygenerowania strumienia przyrostowego
 z innego systemu plików niż <replaceable>snapshot1</replaceable>:</para>
 <screen>cannot send 'pool/fs@name': not an earlier snapshot from the same fs</screen>
-<para>Jeśli zachodzi konieczność utworzenia wielu kopii, strumieniową reprezentację obrazu można spakować za pomocą komendy <command>gzip</command>. Na przykład:</para>
+<para>Jeśli zachodzi konieczność utworzenia wielu kopii, strumieniową reprezentację obrazu można spakować za pomocą polecenia <command>gzip</command>. Na przykład:</para>
 <screen># <userinput>zfs send pool/fs@snap | gzip &gt; backupfile.gz</userinput>
 </screen>
 </sect2>
@@ -575,7 +575,7 @@ z innego systemu plików niż <replaceable>snapshot1</replaceable>:</para>
 </listitem>
 <listitem>
 <para>Jeśli występuje konflikt nazw systemów plików, można użyć polecenia <command>zfs rename</command>
-Do zmiany nazwy.</para>
+do zmiany nazwy.</para>
 </listitem>
 </itemizedlist>
 <para>Na przykład:</para>
@@ -584,32 +584,32 @@ Do zmiany nazwy.</para>
 # <userinput>zfs rename tank/gozer tank/gozer.old</userinput>
 # <userinput>zfs rename tank/gozer2 tank/gozer</userinput>
 </screen>
-<para>Jako skrótu komendy <command>zfs receive</command> można użyć <command>zfs recv</command>.</para>
-<para>Jeśli wystąpiły zmiany na systemie plików, zanim nastąpi próba przesłania inkrementalnego obrazu plików,
+<para>Jako skrótu polecenia <command>zfs receive</command> można użyć <command>zfs recv</command>.</para>
+<para>Jeśli wystąpiły zmiany na systemie plików, zanim nastąpi próba przesłania przyrostowego obrazu plików,
 muszą być cofnięte zmiany na systemie plików, który będzie odbierał dane.</para>
 <para>Na przykład, jeśli została wykonana zmiana, jak poniżej:</para>
 <screen>host2# <userinput>rm newtank/dana/file.1</userinput>
 </screen>
-<para>I użytkownik chce przesłać inkrementalnie obraz <filename>tank/dana@snap3</filename>,
-trzeba najpierw cofnąć zmiany na systemie plików odbierającym nowy inkrementalny obraz. Można
+<para>I użytkownik chce przesłać przyrostowo obraz <filename>tank/dana@snap3</filename>,
+trzeba najpierw cofnąć zmiany na systemie plików odbierającym nowy przyrostowy obraz. Można
 ominąć ten krok poprzez użycie opcji <option>F</option>. Na przykład:</para>
 <screen>host1# <userinput>zfs send -i tank/dana@snap2 tank/dana@snap3 | ssh host2 zfs recv -F newtank/dana</userinput>
 </screen>
-<para>W przypadku odbierania obrazu inkrementalnego, docelowy system plików musi już istnieć.</para>
+<para>W przypadku odbierania obrazu przyrostowego, docelowy system plików musi już istnieć.</para>
 <para>Jeśli istnieją zmiany na docelowym systemie plików, a użytkownik ani nie cofnął tych zmian,
-ani nie użył opcji <option>F</option> do przesyłu inkrementalnego, zobaczy następujący komunikat:</para>
+ani nie użył opcji <option>F</option> do przesyłu przyrostowego, zobaczy następujący komunikat:</para>
 <screen>host1# <userinput>zfs send -i tank/dana@snap4 tank/dana@snap5 | ssh host2 zfs recv newtank/dana</userinput>
 cannot receive: destination has been modified since most recent snapshot</screen>
 <para>Użycie opcji <option>F</option> musi spełnić następujące założenia, zanim powiedzie się sukcesem:</para>
 <itemizedlist>
 <listitem>
-<para>Jeśli najświeższy obraz nie odpowiada źródłu do przesyłu inkrementalnego, jak również
+<para>Jeśli najświeższy obraz nie odpowiada źródłu do przesyłu przyrostowego, jak również
 nie jest zakończone odzyskiwanie systemu plików z obrazu lub odbiór innego obrazu, zostanie wyświetlony
 komunikat o błędzie.</para>
 </listitem>
 <listitem>
 <para>Jeśli do polecenia <command>zfs receive</command> zostanie podana nazwa innego
-systemu plików, która nie odpowiada źródłu inkrementalnego obrazu, zostanie wyświetlony
+systemu plików, która nie odpowiada źródłu przyrostowemu obrazu, zostanie wyświetlony
 komunikat o błędzie:</para>
 <screen>cannot send 'pool/fs@name': not an earlier snapshot from the same fs</screen>
 </listitem>
@@ -617,10 +617,10 @@ komunikat o błędzie:</para>
 </sect2>
 <sect2 xml:id="gbinz">
 <title>Zdalna replikacja danych ZFS</title>
-<para>Do zdalnego skopiowania strumieniowej reprezentacji obrazu z jednego systemu na drugi można użyć komend <command>zfs send</command> i <command>zfs recv</command>. Na przykład:</para>
+<para>Do zdalnego skopiowania strumieniowej reprezentacji obrazu z jednego systemu na drugi można użyć poleceń <command>zfs send</command> i <command>zfs recv</command>. Na przykład:</para>
 <screen># <userinput>zfs send tank/cindy@today | ssh newsys zfs recv sandbox/restfs@today</userinput>
 </screen>
-<para>Komenda ta zapisuje obraz systemu plików <filename>tank/cindy@today</filename> i odzyskuje go w systemie plików <filename>sandbox/restfs</filename>. Tworzy także obraz <filename>restfs@today</filename> w systemie <literal>newsys</literal>. W tym przykładzie na zdalnym systemie istnieje użytkownik do używania komendy <command>ssh</command>.</para>
+<para>Polecenie to zapisuje obraz systemu plików <filename>tank/cindy@today</filename> i odzyskuje go w systemie plików <filename>sandbox/restfs</filename>. Tworzy także obraz <filename>restfs@today</filename> w systemie <literal>newsys</literal>. W tym przykładzie na zdalnym systemie istnieje użytkownik do używania polecenia <command>ssh</command>.</para>
 </sect2>
 </sect1>
 </chapter>

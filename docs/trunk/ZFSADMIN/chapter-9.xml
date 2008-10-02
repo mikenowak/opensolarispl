@@ -9,8 +9,8 @@
 
 <title>Usuwanie problemów i odzyskiwanie danych w ZFS-ie</title>
 <toc>
-<para>Ten rozdział opisuje w jaki sposłób identyfikować i naprawiać błędy w ZFS-ie. Zawarto równierz informacje dotyczącą zapobieganiu powstawania błędow.</para>
-<para>W tym rozdziale znajduja sa nastepujace sekcje:</para>
+<para>Ten rozdział opisuje w jaki sposłób identyfikować i naprawiać błędy w ZFS-ie. Zawarto również informacje dotyczącą zapobieganiu powstawania błędów.</para>
+<para>W tym rozdziale omówiono następujące kwestie:</para>
 <itemizedlist>
 <listitem>
 <para>
@@ -49,7 +49,7 @@
 </listitem>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbwc">Naprawa nie ładującego sie systemu</olink>
+<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbwc">Naprawa nie ładującego się systemu</olink>
 </para>
 </listitem>
 </itemizedlist>
@@ -76,12 +76,12 @@ ZFS może napotkać trzy podstawowe typy błędów:
 <itemizedlist>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbxj">Brakujące urządzenia w puli pamięcu ZFS</olink>
+<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbxj">Brakujące urządzenia w puli ZFS</olink>
 </para>
 </listitem>
 <listitem>
 <para>
-<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbym">Uszkodzone urządzenia w puli pamięcu ZFS</olink>
+<olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbym">Uszkodzone urządzenia w puli ZFS</olink>
 </para>
 </listitem>
 <listitem>
@@ -95,15 +95,15 @@ błędów, dlatego pełna procedura naprawy pociąga za sobą znajdowanie i usuw
 wszystkich typów awarii.
 </para>
 <sect2 xml:id="gbbxj">
-<title>Brakujące urządzenie w puli pamięci ZFS</title>
-<para>Jeśli z systemu usunięto urządzenie, ZFS odkrywa, że nie może być
+<title>Brakujące urządzenie w puli ZFS</title>
+<para>Jeśli z systemu usunięto urządzenie, ZFS odkrywa, że nie może być ono
 użyte i oznacza je stanem <literal>FAULTED</literal>. W zależności od poziomu 
 replikacji, może to spowodować niedostępność całej puli. W przypadku usunięcia z macierzy 
 RAID-Z lub mirrorowanego dysku jednego urządzenia, pula pozostaje dostępna. Jeżeli usunięto 
-wszystkie mirrorowane komponenty, jedno urządzenie z macierzy RAID-Z, lub pojedynczy dysk 
+wszystkie mirrorowane komponenty, więcej niż jedno urządzenie z macierzy RAID-Z, lub pojedynczy dysk 
 najwyższego poziomu, pula zostanie oznaczona stanem <literal>FAULTED</literal>. Do czasu 
-ponownego podłączenia brakujących urządzeń, dostęp do danych z puli pozostaje 
-niedostępny.<indexterm xml:id="indexterm-511">
+ponownego podłączenia brakujących urządzeń, dostęp do danych z puli jest 
+niemożliwy.<indexterm xml:id="indexterm-511">
 <primary>Pule pamięci ZFS</primary>
 <secondary>brakujące (uszkodzone) urządzenia</secondary>
 <tertiary>opis</tertiary>
@@ -119,9 +119,9 @@ niedostępny.<indexterm xml:id="indexterm-511">
 </para>
 </sect2>
 <sect2 xml:id="gbbym">
-<title>Uszkodzone urządzenia w puli pamięci ZFS</title>
+<title>Uszkodzone urządzenia w puli ZFS</title>
 <para>Określenie “uszkodzone” dotyczy szeregu możliwych błędów, które
-przestawiono w poniższych przykładach:<indexterm xml:id="indexterm-514">
+przedstawiono w poniższych przykładach:<indexterm xml:id="indexterm-514">
 <primary>Pule pamięci ZFS</primary>
 <secondary>uszkodzone urządzenia</secondary>
 <tertiary>opis</tertiary>
@@ -143,19 +143,19 @@ przestawiono w poniższych przykładach:<indexterm xml:id="indexterm-514">
 <para>Uszkodzenie danych związane z promieniowaniem kosmicznym</para>
 </listitem>
 <listitem>
-<para>Błędy w sterownikach, powodujące nieprawidłowy transfer danych do lub ze złego miejsca</para>
+<para>Błędy w sterownikach, powodujące nieprawidłowy przepływ danych do lub ze złego miejsca</para>
 </listitem>
 <listitem>
-<para>Inny użytkownik, przypadkowo nadpisujący porcje danych na fizycznym urządzeniu</para>
+<para>Inny użytkownik przypadkowo nadpisujący porcje danych na fizycznym urządzeniu</para>
 </listitem>
 </itemizedlist>
-<para>W niektórych przypadkach błędy te są tymczasowe, jak na przykład losowe błędy we/wy podczas problemów z kontrolerem. W reszcie przypadków uszkodzenia są trwałe, jak na przykład fizyczne uszkodzenie dysku. Nawet wtedy, kiedy uszkodzenia są trwałe, błędy niekoniecznie się powtórzą. Na przykład, jeżeli administrator przez przypadek nadpisze część dysku, nie wystąpił błąd sprzętowy i urządzenie nie musi zostać wymienione. Identyfikacja problemów dyskowych nie jest prostym zadaniem i jest opisana bardziej szczegółowo w późniejszej sekcji.</para>
+<para>W niektórych przypadkach błędy te są tymczasowe, jak na przykład losowe błędy we/wy podczas problemów z kontrolerem. W reszcie przypadków uszkodzenia są trwałe, jak na przykład fizyczne uszkodzenie dysku. Nawet wtedy, kiedy uszkodzenia są trwałe, błędy niekoniecznie się powtórzą. Na przykład, jeżeli administrator przez przypadek nadpisze część dysku, nie wystąpił błąd sprzętowy i urządzenie nie musi zostać wymienione. Identyfikacja problemów dyskowych nie jest prostym zadaniem i jest opisana bardziej szczegółowo w dalszej części rozdziału.</para>
 </sect2>
 <sect2 xml:id="gbbwx">
-<title>Zepsute dane ZFS</title>
+<title>Uszkodzone dane ZFS</title>
 <para>Uszkodzenie danych występuje, kiedy jedno lub więcej urządzeń (wliczając brakujące lub zniszczone urządzenia) dotyczy wirtualnego urządzenia najwyższego poziomu. Na przykład połowa mirroru może doświadczyć tysięcy błędów dyskowych, bez utraty danych. Kiedy błąd zostanie napotkany w tej samej lokacji po drugiej strony mirroru, rezultatem będzie uszkodzenie danych. <indexterm xml:id="indexterm-517"><primary>Pule pamięci</primary><secondary>uszkodzone dane</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-518"><primary>rodzaje błędów</primary><secondary>uszkodzone dane</secondary></indexterm><indexterm xml:id="indexterm-519"><primary>dane</primary><secondary>uszkodzone</secondary></indexterm>
 </para>
-<para>Zepsucie danych jest zawsze trwałe i wymaga specjalnej uwagi podczas naprawy. Nawet kiedy odpowiednie urządzenia zostaną naprawione lub wymienione, oryginalne dane są utracone na zawsze. W większości przypadków, ten scenariusz wymaga odtworzenia danych z kopi zapasowych. Podczas napotkania, błędy danych są rejestrowane i mogą zostać skontrolowane poprzez rutynową weryfikację danych dysku, co zostało wyjaśnione w kolejnej sekcji. Kiedy popsuty blok zostanie usunięty, kolejna weryfikacja danych rozpoznaje, że uszkodzenie zostało naprawione i usuwa wszelkie ślady błędu z systemu.</para>
+<para>Zepsucie danych jest zawsze trwałe i wymaga specjalnej uwagi podczas naprawy. Nawet kiedy odpowiednie urządzenia zostaną naprawione lub wymienione, oryginalne dane są utracone na zawsze. W większości przypadków, ten scenariusz wymaga odtworzenia danych z kopii zapasowych. Podczas napotkania błędy danych są rejestrowane i mogą zostać skontrolowane poprzez rutynową weryfikację danych dysku, co zostało wyjaśnione w kolejnym podrozdziale. Kiedy popsuty blok zostanie usunięty, kolejna weryfikacja danych rozpoznaje, że uszkodzenie zostało naprawione i usuwa wszelkie ślady błędu z systemu.</para>
 </sect2>
 </sect1>
 <sect1 xml:id="gbbwa">
@@ -163,14 +163,14 @@ przestawiono w poniższych przykładach:<indexterm xml:id="indexterm-514">
 <para>Dla ZFS nie istnieje równoważne narzędzie jak <command>fsck</command>. To narzędzie było stosowane w celu naprawiania danych oraz sprawdzania ich poprawności.</para>
 <sect2 xml:id="gbbyc">
 <title>Naprawa danych</title>
-<para>W tradycyjnych systemach plików, sposób w jaki dane są zapisywane jest podatny na uszkodzenia co powoduje błędy w regularności danych. Ponieważ tradycyjne systemy plików nie są transakcyjne, niepowiązane bloki, uszkodzone linki lub inne niespójne struktury danych są dozwolone.  Dodatkowo dzienniki (jouornal) rozwiązują niektóre z tych problemów, ale mogą powodować dodatkowe, kiedy dziennik nie może zostać odtworzony. Żaden z powyższych problemów nie istnieje dla ZFS. Jedynym sposobem na niespójne dane na dysku jest uszkodzenie sprzętowe (w tym wypadku pula powinna była zostać redundantna) lub błąd w oprogramowaniu ZFS.<indexterm xml:id="indexterm-520"><primary>Pule pamięci ZFS</primary><secondary>naprawa danych</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-521"><primary>sprawdzanie</primary><secondary>Spójność danych ZFS</secondary></indexterm><indexterm xml:id="indexterm-522"><primary>dane</primary><secondary>naprawa</secondary></indexterm>
+<para>W tradycyjnych systemach plików, sposób w jaki dane są zapisywane jest podatny na uszkodzenia co powoduje błędy w regularności danych. Ponieważ tradycyjne systemy plików nie są transakcyjne, niepowiązane bloki, uszkodzone linki lub inne niespójne struktury danych są dozwolone.  Dodatkowo dzienniki (ang. journal) rozwiązują niektóre z tych problemów, ale mogą powodować dodatkowe, kiedy dziennik nie może zostać odtworzony. Żaden z powyższych problemów nie istnieje dla ZFS. Jedynym sposobem na niespójne dane na dysku jest uszkodzenie sprzętowe (w tym wypadku pula powinna była zostać redundantna) lub błąd w oprogramowaniu ZFS.<indexterm xml:id="indexterm-520"><primary>Pule pamięci ZFS</primary><secondary>naprawa danych</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-521"><primary>sprawdzanie</primary><secondary>Spójność danych ZFS</secondary></indexterm><indexterm xml:id="indexterm-522"><primary>dane</primary><secondary>naprawa</secondary></indexterm>
 </para>
 <para>Biorąc pod uwagę, że narzędzie <command>fsck</command> zostało stworzone do naprawy znanych problemów specyficznych dla danych systemów plików, napisanie takiego narzędzia dla systemu plików, w którym problemy są nieznane nie jest możliwe. W przyszłości, problemy mogą okazać się na tyle wspólne, że stworzenie takiego narzędzia stanie się możliwe. Jednak problemy te mogą zostać zawsze ominięte przy użyciu redundantnych pul.</para>
 <para>Jeśli pule nie są redundantne, szansa niedostępności danych jest zawsze możliwa.</para>
 </sect2>
 <sect2 xml:id="gbbyd">
 <title>Sprawdzanie poprawności danych</title>
-<para>Dodatkowo, oprócz naprawy danych, narzędzie <command>fsck</command> sprawdza dane na dysku pod względem ich poprawności. Tradycyjnie to zadanie odbywa się poprzez odmontowanie systemu plików oraz uruchomnienie narzędzia <command>fsck</command>. W tym przypadku może zaistnieć potrzeba uruchomienia systemu w trybie pojedyńczego użytkownika. Ten scenariusz powoduje przestój działania proporcjonalny do rozmiaru sprawdzanego systemu plików. Zamiast konieczności używania odpowiedniego narzędzia do sprawdzania danych, ZFS oferuje mechanizm sprawdzający je rutynowo. Ta funkcjonalność jest znana jako <emphasis>weryfikacja danych (scrubbing)</emphasis> i jest w powrzechnym użyciu w pamięci podręcznej jako metoda wykrywania i zapobiegania błędom, zanim spowodują awarie sprzętową lub programową. <indexterm xml:id="indexterm-523"><primary>Pule pamięci ZFS</primary><secondary>sprawdzanie poprawności danych</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-524"><primary>dane</primary><secondary>weryfikacja danych (scrubbing)</secondary></indexterm><indexterm xml:id="indexterm-525"><primary>weryfikacja danych</primary><secondary>sprawdzanie poprawności danych</secondary></indexterm>
+<para>Dodatkowo, oprócz naprawy danych, narzędzie <command>fsck</command> sprawdza dane na dysku pod względem ich poprawności. Tradycyjnie to zadanie odbywa się poprzez odmontowanie systemu plików oraz uruchomnienie narzędzia <command>fsck</command>. W tym przypadku może zaistnieć potrzeba uruchomienia systemu w trybie pojedynczego użytkownika. Ten scenariusz powoduje przestój działania proporcjonalny do rozmiaru sprawdzanego systemu plików. Zamiast konieczności używania odpowiedniego narzędzia do sprawdzania danych, ZFS oferuje mechanizm sprawdzający je rutynowo. Ta funkcjonalność jest znana jako <emphasis>weryfikacja danych (scrubbing)</emphasis> i jest w powszechnym użyciu chociażby dla pamięci i innych elementów systemu, jako metoda wykrywania i zapobiegania błędom, zanim spowodują awarie sprzętową lub programową. <indexterm xml:id="indexterm-523"><primary>Pule pamięci ZFS</primary><secondary>sprawdzanie poprawności danych</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-524"><primary>dane</primary><secondary>weryfikacja danych (scrubbing)</secondary></indexterm><indexterm xml:id="indexterm-525"><primary>weryfikacja danych</primary><secondary>sprawdzanie poprawności danych</secondary></indexterm>
 </para>
 </sect2>
 <sect2 xml:id="gbbxi">
@@ -179,11 +179,11 @@ przestawiono w poniższych przykładach:<indexterm xml:id="indexterm-514">
 </para>
 <sect3 xml:id="gbbws">
 <title>Jawna kontrola danych ZFS</title>
-<para>Najprostrzą metodą na sprawdzenie integralności danych jest zainicjowanie jawnej kontroli wszystkich danych dla puli. Ta operacja sprawdza jednokrotnie wszystkie dane w puli i weryfikuje, czy wszystkie bloki mogą być odczytane. Weryfikacja danych przebiega z maksymalną dostępną dla urządzenia prędkością, aczkolwiek priorytet każdej szczątkowej operacji we/wy pozostaje poniżej normalnych operacji. Weryfikacja danych może mieć negatywny wpływ na wydajność, jednak system powinien pozostawać czuły podczas weryfikacji. Aby zainicjować jawną kontrolę danych, użyj komendy <command>zpool scrub</command> Na przykład:<indexterm xml:id="indexterm-528"><primary>Pule pamięci ZFS</primary><secondary>weryfikacja danych</secondary><tertiary>(przykład)</tertiary></indexterm><indexterm xml:id="indexterm-529"><primary>weryfikacja</primary><secondary>(przykład)</secondary></indexterm><indexterm xml:id="indexterm-530"><primary>dane</primary><secondary>weryfikacja</secondary><tertiary>(przykład)</tertiary></indexterm>
+<para>Najprostszą metodą na sprawdzenie integralności danych jest zainicjowanie jawnej kontroli wszystkich danych dla puli. Ta operacja sprawdza jednokrotnie wszystkie dane w puli i weryfikuje, czy wszystkie bloki mogą być odczytane. Weryfikacja danych przebiega z maksymalną dostępną dla urządzenia prędkością, aczkolwiek priorytet każdej szczątkowej operacji we/wy pozostaje poniżej normalnych operacji. Weryfikacja danych może mieć negatywny wpływ na wydajność, jednak system powinien pozostawać responsywny i używalny podczas weryfikacji. Aby zainicjować jawną kontrolę danych, należy użyć polecenia <command>zpool scrub</command> Na przykład:<indexterm xml:id="indexterm-528"><primary>Pule pamięci ZFS</primary><secondary>weryfikacja danych</secondary><tertiary>(przykład)</tertiary></indexterm><indexterm xml:id="indexterm-529"><primary>weryfikacja</primary><secondary>(przykład)</secondary></indexterm><indexterm xml:id="indexterm-530"><primary>dane</primary><secondary>weryfikacja</secondary><tertiary>(przykład)</tertiary></indexterm>
 </para>
 <screen># <userinput>zpool scrub tank</userinput>
 </screen>
-<para>Status aktualnej jawnej kontroli może zostać wyświetlony przy użyciu komendy <command>zpool status</command>. Na przykład:</para>
+<para>Status aktualnej jawnej kontroli może zostać wyświetlony przy użyciu polecenia <command>zpool status</command>. Na przykład:</para>
 <screen># <userinput>zpool status -v tank</userinput>
   pool: tank
  state: ONLINE
@@ -198,12 +198,12 @@ config:
 
 errors: No known data errors</screen>
 <para>Należy zwrócić uwagę, że jednocześnie możliwa jest tylko jedna operacja weryfikacji danych dla każdej z puli.</para>
-<para>Można zatrzymać operacje weryfikacji danych, która jest aktualnie wykonywana, używając opcji <option>s</option>Na przykład:</para><screen># zpool scrub -s tank</screen><para>W większości przypadków, operacja weryfikacji danych powinna być ukoćczona, aby być pewnym integralności danych. Zatrzymanie operacji weryfikacji można zatrzymać, gdy wpływa ono na wydajność systemu.</para><para>Wykonywanie rutynowej weryfikacji gwarantuje ciągłość we/wy dla wszystkich dysków w systemie. Rutynowa weryfikacja danych posiada uboczny efekt, powodujący uniemożliwienie menadżerowi zasilania postawienia niepracujących dysków w stanie niskiego poboru energii. Jeśli system w większości przypadków korzysta ciągle z operacji we/wy lub zużycie energii nie jest brane pod uwagę, wtedy ten problem może zostać bezpiecznie zignorowany.</para>
+<para>Można zatrzymać operacje weryfikacji danych, która jest aktualnie wykonywana, używając opcji <option>s</option>Na przykład:</para><screen># zpool scrub -s tank</screen><para>W większości przypadków, operacja weryfikacji danych powinna być ukończona, aby być pewnym integralności danych. Operację weryfikacji danych można zatrzymać, gdy wpływa ono na wydajność systemu.</para><para>Wykonywanie rutynowej weryfikacji gwarantuje ciągłość we/wy dla wszystkich dysków w systemie. Rutynowa weryfikacja danych posiada uboczny efekt, powodujący uniemożliwienie menadżerowi zasilania postawienia niepracujących dysków w stanie niskiego poboru energii. Jeśli system w większości przypadków korzysta ciągle z operacji we/wy lub zużycie energii nie jest brane pod uwagę, wtedy ten problem może zostać bezpiecznie zignorowany.</para>
 <para>Więcej informacji na temat interpretowania wyniku polecenia <command>zpool status</command> zawiera podrozdział <olink remap="external" targetdoc="chapter-4.xml" targetptr="gaynp">Sprawdzanie statusu puli ZFS</olink>.</para>
 </sect3>
 <sect3 xml:id="gbbya">
 <title>Jawna kontrola danych ZFS i Resilvering</title>
-<para>Kiedy urządzenie zostaje wymienione, operacja resilweringu jest inicjowana. Zdrowe dane są kopiowane na nowe urządzenie. Ta akcja jest formą weryfikacji danych dysku. Dlatego jednocześnie tylko jedna taka akcja może się odbywać w obrębie jednej puli. Jeśli operacja weryfikacji danych jest w toku, resilwering usypia weryfikacje i ją restartuje w momencie kiedy zostanie zakończony.<indexterm xml:id="indexterm-531"><primary>Pule pamięci ZFS</primary><secondary>weryfikacja danych i resilwering</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-532"><primary>resilwering i weryfikacja danych</primary><secondary>opis</secondary></indexterm><indexterm xml:id="indexterm-533"><primary>dane</primary><secondary>resilwering</secondary><tertiary>opis</tertiary></indexterm>
+<para>Kiedy urządzenie zostaje wymienione, inicjowana jest operacja tzw. resilveringu. Zdrowe dane są kopiowane na nowe urządzenie. Ta operacja jest także formą weryfikacji danych dysku. Dlatego jednocześnie tylko jedna taka akcja może się odbywać w obrębie jednej puli. Jeśli operacja weryfikacji danych jest w toku, resilvering usypia weryfikację i ją restartuje w momencie kiedy zostanie zakończony resilvering.<indexterm xml:id="indexterm-531"><primary>Pule pamięci ZFS</primary><secondary>weryfikacja danych i resilwering</secondary><tertiary>opis</tertiary></indexterm><indexterm xml:id="indexterm-532"><primary>resilwering i weryfikacja danych</primary><secondary>opis</secondary></indexterm><indexterm xml:id="indexterm-533"><primary>dane</primary><secondary>resilwering</secondary><tertiary>opis</tertiary></indexterm>
 </para>
 <para>Więcej informacji na temat resilveringu: <olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbcus">Podgląd statusu resilveringu</olink>.</para>
 </sect3>
@@ -211,7 +211,7 @@ errors: No known data errors</screen>
 </sect1>
 <sect1 xml:id="gbbuw">
 <title>Identyfikacja problemów z ZFS</title>
-<para>Ta sekcja opisuje, w jaki sposób identyfikować problemy w systemach plików ZFS lub w pulach danych.</para>
+<para>Ten podrozdział opisuje, w jaki sposób identyfikować problemy w systemach plików ZFS lub w pulach danych.</para>
 <itemizedlist>
 <listitem>
 <para>
@@ -399,7 +399,7 @@ errors: No known data errors</screen>
 <sect3 xml:id="gbcvd">
 <title>Status Weryfikacji Danych</title>
 <para>Trzecia sekcja komunikatu komendy  <command>zpool status</command>, opisuje aktualny stan jakiejkolwiej operacji weryfikacji. Ta informacja jest odrębna od jakichkolwiek błędów znalezionych w systemie, aczkolwiek mozę być użyta do określenia błędności raportu uszkodzenia danych. Jeśli operacja weryfikacji danych została uokńczona niedawno, w większości przypadków wszystkie znane typy błędów danych zostały odkryte.</para>
-<para>Więcej informacji na temat weryfikacji danych oraz interpretacji informacji można znaleźć w <olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbwa">Sprawdzanie Integralnośći Danych ZFS </olink>.</para>
+<para>Więcej informacji na temat weryfikacji danych oraz interpretacji informacji zawiera podrozdział <olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbwa">Sprawdzanie integralności danych w ZFS-ie</olink>.</para>
 </sect3>
 <sect3 xml:id="gbcwe">
 <title>Błędy uszkodzenia danych</title>
@@ -550,7 +550,7 @@ pool 'tank' is healthy</screen>
 <emphasis>Czy występowały inne błędy na tym urządzeniu?</emphasis>
 </para>
 <para>Błędy które wystąpiły tylko raz, są rozpatrywane jako <emphasis>tymczasowe (transient)</emphasis> i niekoniecznie oznaczają potencjalną awarię. Trwałe błędy, lub kilka, które mogą oznaczać potencjalną awarie sprzętową, są rozpatrywane jako “fatalne (fatal).” Działania pozwalające na określeniu typu błędu jest poza zasięgiem istniejących automatycznych narzędzi, dostępnych wraz z ZFS, tak więc muszą zostać określone ręcznie przec Ciebie, czyli administratora. Kiedy operacja określenia typu błędu jest wykonana, odpowiednie czynności mogą zostać podjęte. Może to być wyczyszczenie ulotnych błędów lub wymiana uszkodzonego urządzenia związana z fatalnymi błędami. Procedura naprawy jest opisana w następnej sekcji.</para>
-<para>Nawet gdy błędy urządzenia zostały rozwarzone jako ulotne, mogło to spowodować nienaprawialne błędy danych w puli. Te błędy wymagają specjalnych procedur naprawy, nawet jeśli odpowiednie urządzenie jest uznane jako zdrowe lub w innym przypadku naprawione. Więcej informacji na temat naprawy błędów danych można zobaczyć w <olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbwl">Naprawa Uszkodzonych Danych</olink>.</para>
+<para>Nawet gdy błędy urządzenia zostały rozwarzone jako ulotne, mogło to spowodować nienaprawialne błędy danych w puli. Te błędy wymagają specjalnych procedur naprawy, nawet jeśli odpowiednie urządzenie jest uznane jako zdrowe lub w innym przypadku naprawione. Więcej informacji na temat naprawy błędów danych: <olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbwl">Naprawa uszkodzonych danych</olink>.</para>
 </sect2>
 <sect2 xml:id="gbbzv">
 <title>Usuwanie tymczasowych błędów</title>
@@ -703,7 +703,7 @@ errors: No known data errors</screen>
 <para>Dane objektowe - W tym wypadku, uszkodzenie nastąpiło w odpowiednim pliku lub katalogu. Ten problem może spowodować, że część pliku lub katalogu, będzie niedostępna, lub może spowodować, ze obiekty będą wspólnie niedostępne.</para>
 </listitem>
 </itemizedlist>
-<para>Dane są sprawdzane podczas normalnych operacji, ale również podczas sprawdzania weryfikacji danych. Więcej informacji na temat weryfikacji spójności danych puli można znaleźć w <olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbwa">Sprawdzanie Spójności Danych ZFS</olink>.</para>
+<para>Dane są sprawdzane podczas normalnych operacji, ale również podczas sprawdzania weryfikacji danych. Więcej informacji na temat weryfikacji spójności danych puli: <olink remap="internal" targetdoc="chapter-9.xml" targetptr="gbbwa">Sprawdzanie integralności danych w ZFS-ie</olink>.</para>
 <sect2 xml:id="gbcuz">
 <title>Identyfikowanie rodzaju uszkodzenia danych</title>
 <para>Domyślnie komenda  <command>zpool status</command> pokazuje tylko, że uszkodzenie nastąpiło, ale nie zawiera informacji, gdzie wystąpiło. Na przykład:<indexterm xml:id="indexterm-570"> <primary>Pule pamięci ZFS</primary> <secondary>identyfikowanie typu błędów danych (<command>zpool status -v</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-571"> <primary>identyfikowanie</primary> <secondary>typy błedów danch (<command>zpool status -v</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> <indexterm xml:id="indexterm-572"> <primary>usuwanie problemów</primary> <secondary>identyfikowanie typu błędów danych (<command>zpool status -v</command>)</secondary> <tertiary>(przykład)</tertiary> </indexterm> 
